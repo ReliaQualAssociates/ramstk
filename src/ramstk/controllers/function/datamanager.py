@@ -29,14 +29,14 @@ class DataManager(RAMSTKDataManager):
     """
 
     # Define private scalar class attributes.
-    _tag = 'functions'
+    _tag = "functions"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Function data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {'function': ['revision_id', 'function_id']}
+        self._pkey = {"function": ["revision_id", "function_id"]}
 
         # Initialize private list attributes.
 
@@ -49,19 +49,16 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes,
-                      'request_get_function_attributes')
-        pub.subscribe(super().do_set_attributes,
-                      'request_set_function_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_function')
-        pub.subscribe(super().do_update_all, 'request_update_all_functions')
+        pub.subscribe(super().do_get_attributes, "request_get_function_attributes")
+        pub.subscribe(super().do_set_attributes, "request_set_function_attributes")
+        pub.subscribe(super().do_set_attributes, "wvw_editing_function")
+        pub.subscribe(super().do_update, "request_update_function")
 
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_function')
-        pub.subscribe(self.do_get_tree, 'request_get_functions_tree')
+        pub.subscribe(self.do_select_all, "selected_revision")
+        pub.subscribe(self.do_get_tree, "request_get_functions_tree")
 
-        pub.subscribe(self._do_delete, 'request_delete_function')
-        pub.subscribe(self._do_insert_function, 'request_insert_function')
+        pub.subscribe(self._do_delete, "request_delete_function")
+        pub.subscribe(self._do_insert_function, "request_insert_function")
 
     def do_get_tree(self) -> None:
         """Retrieve the function treelib Tree.
@@ -70,7 +67,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_functions_tree',
+            "succeed_get_functions_tree",
             tree=self.tree,
         )
 
@@ -81,74 +78,31 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
+        self._revision_id = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
         for _function in self.dao.do_select_all(
-                RAMSTKFunction,
-                key=['revision_id'],
-                value=[self._revision_id],
-                order=RAMSTKFunction.function_id):
+            RAMSTKFunction,
+            key=["revision_id"],
+            value=[self._revision_id],
+            order=RAMSTKFunction.function_id,
+        ):
 
-            self.tree.create_node(tag='function',
-                                  identifier=_function.function_id,
-                                  parent=_function.parent_id,
-                                  data={'function': _function})
+            self.tree.create_node(
+                tag="function",
+                identifier=_function.function_id,
+                parent=_function.parent_id,
+                data={"function": _function},
+            )
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
-            'succeed_retrieve_functions',
+            "succeed_retrieve_functions",
             tree=self.tree,
         )
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (function) ID of the function to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['function'])
-            pub.sendMessage(
-                'succeed_update_function',
-                tree=self.tree,
-            )
-        except AttributeError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = (
-                '{1}: Attempted to save non-existent function with function '
-                'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_function',
-                error_message=_error_msg,
-            )
-        except TypeError:
-            if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
-                _error_msg = (
-                    '{1}: The value for one or more attributes for function '
-                    'ID {0} was the wrong type.').format(
-                        str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_function',
-                    error_message=_error_msg,
-                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a function.
@@ -159,28 +113,27 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            super().do_delete(node_id, 'function')
+            super().do_delete(node_id, "function")
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
-                'succeed_delete_function',
+                "succeed_delete_function",
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent function ID {'
-                '0}.').format(str(node_id), _method_name)
+                "{1}: Attempted to delete non-existent function ID {" "0}."
+            ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_function',
+                "fail_delete_function",
                 error_message=_error_msg,
             )
 
@@ -192,50 +145,59 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _last_id = self.dao.get_last_id('ramstk_function', 'function_id')
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
         try:
+            _last_id = self.dao.get_last_id("ramstk_function", "function_id")
+
             _function = RAMSTKFunction()
             _function.revision_id = self._revision_id
             _function.function_id = _last_id + 1
-            _function.name = 'New Function'
+            _function.name = "New Function"
             _function.parent_id = parent_id
 
             self.dao.do_insert(_function)
 
-            self.tree.create_node(tag='function',
-                                  identifier=_function.function_id,
-                                  parent=_function.parent_id,
-                                  data={'function': _function})
-
             self.last_id = _function.function_id
 
+            self.tree.create_node(
+                tag="function",
+                identifier=_function.function_id,
+                parent=_function.parent_id,
+                data={"function": _function},
+            )
+
             pub.sendMessage(
-                'succeed_insert_function',
+                "succeed_insert_function",
                 node_id=self.last_id,
                 tree=self.tree,
             )
         except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = ('{1}: Attempted to insert child function under '
-                               'non-existent function ID {0}.').format(
-                                   str(parent_id), _method_name)
+            _error_msg: str = (
+                "{1}: Attempted to insert child function under "
+                "non-existent function ID {0}."
+            ).format(str(parent_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
                 "fail_insert_function",
                 error_message=_error_msg,
             )
-        except DataAccessError as _error:
+        except DataAccessError:
+            _error_msg = (
+                "{1}: A database error occurred when attempting to "
+                "add a child function to parent function ID "
+                "{0}."
+            ).format(str(parent_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error.msg,
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
             )
             pub.sendMessage(
                 "fail_insert_function",
-                error_message=_error.msg,
+                error_message=_error_msg,
             )
