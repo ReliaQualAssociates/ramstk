@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKFunction
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKFunction
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _function_1 = RAMSTKFunction()
+    _function_1 = MockRAMSTKFunction()
     _function_1.revision_id = 1
     _function_1.function_id = 1
     _function_1.availability_logistics = 1.0
@@ -49,7 +49,7 @@ def mock_program_dao(monkeypatch):
     _function_1.total_part_count = 0
     _function_1.type_id = 0
 
-    _function_2 = RAMSTKFunction()
+    _function_2 = MockRAMSTKFunction()
     _function_2.revision_id = 1
     _function_2.function_id = 2
     _function_2.availability_logistics = 1.0
@@ -115,7 +115,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["function"], RAMSTKFunction)
+        assert isinstance(tree.get_node(1).data["function"], MockRAMSTKFunction)
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
 
     @pytest.mark.unit
@@ -140,7 +140,7 @@ class TestSelectMethods:
 
         _function = DUT.do_select(1, table="function")
 
-        assert isinstance(_function, RAMSTKFunction)
+        assert isinstance(_function, MockRAMSTKFunction)
         assert _function.availability_logistics == 1.0
         assert _function.name == "Function Name"
 
@@ -240,7 +240,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["function"], RAMSTKFunction)
+        assert isinstance(tree.get_node(1).data["function"], MockRAMSTKFunction)
         print("\033[36m\nsucceed_get_function_tree topic was broadcast")
 
     @pytest.mark.unit

@@ -30,7 +30,7 @@ def date_to_ordinal(date: str) -> int:
     try:
         return parse(str(date)).toordinal()
     except (ValueError, TypeError):
-        return parse('01/01/1970').toordinal()
+        return parse("01/01/1970").toordinal()
 
 
 def dir_exists(directory: str) -> bool:
@@ -78,8 +78,8 @@ def none_to_string(string: None) -> str:
     :rtype: str
     """
     _return = string
-    if string is None or string == 'None':
-        _return = ''
+    if string is None or string == "None":
+        _return = ""
 
     return _return
 
@@ -94,10 +94,10 @@ def ordinal_to_date(ordinal: int) -> str:
     :rtype: str
     """
     try:
-        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+        return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
     except ValueError:
         ordinal = datetime.now().toordinal()
-        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+        return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
 
 
 def split_string(string: str) -> List[str]:
@@ -108,7 +108,7 @@ def split_string(string: str) -> List[str]:
     :return: _strlist
     :rtype: list of strings
     """
-    _strlist = string.rsplit(':')
+    _strlist = string.rsplit(":")
 
     return _strlist
 
@@ -158,8 +158,12 @@ def string_to_boolean(string: str) -> bool:
 
     _string = str(string)
 
-    if (_string.lower() == 'true' or _string.lower() == 'yes'
-            or _string.lower() == 't' or _string.lower() == 'y'):
+    if (
+        _string.lower() == "true"
+        or _string.lower() == "yes"
+        or _string.lower() == "t"
+        or _string.lower() == "y"
+    ):
         _result = True
 
     return _result
@@ -176,11 +180,11 @@ def get_install_prefix() -> str:
     _rules: List[Any] = [
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
-        lambda x: x in ['lib64', 'lib'],  # nosec
-        lambda x: x == ('python%s' % sys.version[:3]),
-        lambda x: x in ['site-packages', 'dist-packages'],
+        lambda x: x in ["lib64", "lib"],  # nosec
+        lambda x: x == ("python%s" % sys.version[:3]),
+        lambda x: x in ["site-packages", "dist-packages"],
         lambda x: x == _name,  # 'project'
-        lambda x: x == _this  # 'prefix.py'
+        lambda x: x == _this,  # 'prefix.py'
     ]
 
     # Matching engine
@@ -189,7 +193,7 @@ def get_install_prefix() -> str:
         _rule = _rules.pop()
         # To account for the possibility python is using lib instead of lib64
         # on a 64-bit or multilib system.
-        if not _rule(_token) and _token != 'lib64':  # nosec
-            _path = '/usr'
+        if not _rule(_token) and _token != "lib64":  # nosec
+            _path = "/usr"
 
     return _path
