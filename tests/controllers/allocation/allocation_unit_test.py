@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKAllocation
 from pubsub import pub
 from treelib import Tree
 
@@ -26,7 +26,7 @@ from ramstk.models.programdb import RAMSTKAllocation
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _allocation_1 = RAMSTKAllocation()
+    _allocation_1 = MockRAMSTKAllocation()
     _allocation_1.revision_id = 1
     _allocation_1.hardware_id = 1
     _allocation_1.availability_alloc = 0.0
@@ -50,7 +50,7 @@ def mock_program_dao(monkeypatch):
     _allocation_1.soa_factor = 1
     _allocation_1.weight_factor = 1
 
-    _allocation_2 = RAMSTKAllocation()
+    _allocation_2 = MockRAMSTKAllocation()
     _allocation_2.revision_id = 1
     _allocation_2.hardware_id = 2
     _allocation_2.availability_alloc = 0.0
@@ -74,7 +74,7 @@ def mock_program_dao(monkeypatch):
     _allocation_2.soa_factor = 1
     _allocation_2.weight_factor = 1
 
-    _allocation_3 = RAMSTKAllocation()
+    _allocation_3 = MockRAMSTKAllocation()
     _allocation_3.revision_id = 1
     _allocation_3.hardware_id = 3
     _allocation_3.availability_alloc = 0.0
@@ -176,7 +176,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], MockRAMSTKAllocation)
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.unit
@@ -214,7 +214,7 @@ class TestSelectMethods:
 
         _allocation = DUT.do_select(1, table="allocation")
 
-        assert isinstance(_allocation, RAMSTKAllocation)
+        assert isinstance(_allocation, MockRAMSTKAllocation)
         assert _allocation.included == 1
         assert _allocation.parent_id == 0
 
@@ -271,8 +271,7 @@ class TestDeleteMethods:
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage("request_delete_hardware", node_id=DUT.last_id)
+        DUT._do_delete(node_id=DUT.last_id)
 
         assert DUT.last_id == 2
 
@@ -286,8 +285,7 @@ class TestDeleteMethods:
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage("request_delete_hardware", node_id=300)
+        DUT._do_delete(node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
@@ -336,7 +334,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], MockRAMSTKAllocation)
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
 
     @pytest.mark.unit
@@ -351,8 +349,7 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        pub.sendMessage(
-            "request_get_allocation_attributes",
+        DUT.do_get_attributes(
             node_id=2,
             table="allocation",
         )
@@ -371,10 +368,7 @@ class TestGetterSetter:
         DATAMGR = dmAllocation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage(
-            "request_get_allocation_attributes", node_id=2, table="allocation"
-        )
+        DATAMGR.do_get_attributes(node_id=2, table="allocation")
 
         assert DUT._attributes["hardware_id"] == 2
         assert DUT._attributes["mtbf_alloc"] == 0.0
@@ -392,8 +386,7 @@ class TestGetterSetter:
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage("request_get_allocation_tree")
+        DUT.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
@@ -406,16 +399,8 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        pub.sendMessage(
-            "request_set_allocation_attributes",
-            node_id=[2, -1],
-            package={"hazard_rate_goal": 0.00005},
-        )
-        pub.sendMessage(
-            "request_set_allocation_attributes",
-            node_id=[2, -1],
-            package={"reliability_goal": 0.9995},
-        )
+        DUT.do_set_attributes(node_id=[2, -1], package={"hazard_rate_goal": 0.00005})
+        DUT.do_set_attributes(node_id=[2, -1], package={"reliability_goal": 0.9995})
         assert DUT.do_select(2, table="allocation").hazard_rate_goal == 0.00005
         assert DUT.do_select(2, table="allocation").reliability_goal == 0.9995
 
@@ -431,11 +416,8 @@ class TestGetterSetter:
         DATAMGR = dmAllocation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage("request_get_allocation_tree")
-        pub.sendMessage(
-            "request_get_allocation_attributes", node_id=2, table="allocation"
-        )
+        DATAMGR.do_get_tree()
+        DATAMGR.do_get_attributes(node_id=2, table="allocation")
 
         DUT._attributes["allocation_method_id"] = method_id
         DUT._attributes["hazard_rate_goal"] = 0.00002681
@@ -475,8 +457,7 @@ class TestInsertMethods:
         DUT = dmAllocation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        pub.sendMessage("request_insert_allocation", hardware_id=4, parent_id=1)
+        DUT._do_insert_allocation(hardware_id=4, parent_id=1)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
 
@@ -622,9 +603,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
         DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.99732259
 
-        pub.sendMessage(
-            "request_calculate_allocation_goals", node=DUT._tree.get_node(1)
-        )
+        DUT._do_calculate_allocation_goals(DUT._tree.get_node(1))
 
         assert DUT._tree.get_node(1).data[
             "allocation"
@@ -649,10 +628,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].goal_measure_id = 2
         DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
         DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.00002681
-
-        pub.sendMessage(
-            "request_calculate_allocation_goals", node=DUT._tree.get_node(1)
-        )
+        DUT._do_calculate_allocation_goals(node=DUT._tree.get_node(1))
 
         assert DUT._tree.get_node(1).data["allocation"].mtbf_goal == pytest.approx(
             37299.5151063
@@ -677,10 +653,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].goal_measure_id = 3
         DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
         DUT._tree.get_node(1).data["allocation"].mtbf_goal = 37300.0
-
-        pub.sendMessage(
-            "request_calculate_allocation_goals", node=DUT._tree.get_node(1)
-        )
+        DUT._do_calculate_allocation_goals(node=DUT._tree.get_node(1))
 
         assert DUT._tree.get_node(1).data[
             "allocation"
@@ -710,8 +683,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(2).data["allocation"].n_sub_subsystems = 6
         DUT._tree.get_node(2).data["allocation"].n_sub_elements = 2
         DUT._tree.get_node(2).data["allocation"].weight_factor = 0.95
-
-        pub.sendMessage("request_allocate_reliability", node_id=1)
+        DUT._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
@@ -736,8 +708,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].goal_measure_id = 2
         DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
         DUT._tree.get_node(2).data["allocation"].hazard_rate_active = 0.000628
-
-        pub.sendMessage("request_allocate_reliability", node_id=1)
+        DUT._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
@@ -764,8 +735,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].hazard_rate_active = 0.0
         DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
         DUT._tree.get_node(2).data["allocation"].hazard_rate_active = 0.000628
-
-        pub.sendMessage("request_allocate_reliability", node_id=1)
+        DUT._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
 
@@ -786,8 +756,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(1).data["allocation"].allocation_method_id = 1
         DUT._tree.get_node(1).data["allocation"].goal_measure_id = 1
         DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.995
-
-        pub.sendMessage("request_allocate_reliability", node_id=1)
+        DUT._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
@@ -812,8 +781,7 @@ class TestAnalysisMethods:
         DUT._tree.get_node(2).data["allocation"].soa_factor = 2
         DUT._tree.get_node(2).data["allocation"].op_time_factor = 9
         DUT._tree.get_node(2).data["allocation"].int_factor = 3
-
-        pub.sendMessage("request_allocate_reliability", node_id=1)
+        DUT._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
@@ -845,8 +813,7 @@ class TestAnalysisMethods:
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        pub.sendMessage(
-            "succeed_get_all_hardware_attributes",
+        DUT._on_get_hardware_attributes(
             attributes={
                 "revision_id": 1,
                 "hazard_rate_active": 0.00032,
@@ -869,8 +836,7 @@ class TestAnalysisMethods:
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        pub.sendMessage(
-            "succeed_get_all_hardware_attributes",
+        DUT._on_get_hardware_attributes(
             attributes={
                 "revision_id": 1,
                 "hazard_rate_active": 0.00032,
