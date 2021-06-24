@@ -15,10 +15,28 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import amAllocation, dmAllocation
+from ramstk.controllers import dmAllocation
 
 
-@pytest.mark.usefixtures("test_program_dao")
+@pytest.fixture(scope="class")
+def test_datamanager(test_program_dao):
+    """Test fixture for Allocation data manager."""
+    dut = dmAllocation()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_update, "request_update_allocation")
+    pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
+    pub.unsubscribe(dut._do_insert_allocation, "request_insert_allocation")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.mark.usefixtures("test_datamanager", "test_program_dao")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -31,34 +49,28 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_allocation topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_program_dao):
+    def test_do_insert_no_hardware(self, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_allocation(hardware_id=5, parent_id=0)
+        test_datamanager._do_insert_allocation(hardware_id=5, parent_id=0)
 
         pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_program_dao):
+    def test_do_insert_no_revision(self, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._revision_id = 40
-        DUT._do_insert_allocation(hardware_id=1, parent_id=0)
+        test_datamanager._revision_id = 40
+        test_datamanager._do_insert_allocation(hardware_id=1, parent_id=0)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
 
 
-@pytest.mark.usefixtures("test_program_dao")
+@pytest.mark.usefixtures("test_datamanager", "test_program_dao")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -77,17 +89,13 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_allocation topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_program_dao):
+    def test_do_update(self, test_datamanager):
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        _allocation = DUT.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.percent_weight_factor = 0.9832
-        _allocation = DUT.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.mtbf_goal = 12000
 
         pub.sendMessage("request_update_allocation", node_id=2, table="allocation")
@@ -95,52 +103,48 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_allocation")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_program_dao):
+    def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        _allocation = DUT.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1, table="allocation")
         _allocation.mtbf_goal = {1: 2}
 
-        DUT.do_update(node_id=1, table="allocation")
+        test_datamanager.do_update(node_id=1, table="allocation")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
     @pytest.mark.integration
-    def test_do_update_root_node(self, test_program_dao):
+    def test_do_update_root_node(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Requirement ID that doesn't exist."""
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        _allocation = DUT.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1, table="allocation")
         _allocation.mtbf_goal = {1: 2}
 
         pub.sendMessage("request_update_allocation", node_id=0, table="allocation")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
+    def test_do_update_all(self, test_datamanager):
         """do_update_all() should return a zero error code on success."""
-        DUT = dmAllocation()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        _allocation = DUT.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1, table="allocation")
         _allocation.percent_weight_factor = 0.9832
-        _allocation = DUT.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1, table="allocation")
         _allocation.mtbf_goal = 12000
-        _allocation = DUT.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.percent_weight_factor = 0.9961
-        _allocation = DUT.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.mtbf_goal = 18500
 
         pub.sendMessage("request_update_all_allocation")
 
-        assert DUT.tree.get_node(1).data["allocation"].percent_weight_factor == 0.9832
-        assert DUT.tree.get_node(1).data["allocation"].mtbf_goal == 12000
-        assert DUT.tree.get_node(2).data["allocation"].percent_weight_factor == 0.9961
-        assert DUT.tree.get_node(2).data["allocation"].mtbf_goal == 18500
+        assert (
+            test_datamanager.tree.get_node(1).data["allocation"].percent_weight_factor
+            == 0.9832
+        )
+        assert test_datamanager.tree.get_node(1).data["allocation"].mtbf_goal == 12000
+        assert (
+            test_datamanager.tree.get_node(2).data["allocation"].percent_weight_factor
+            == 0.9961
+        )
+        assert test_datamanager.tree.get_node(2).data["allocation"].mtbf_goal == 18500

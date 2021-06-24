@@ -24,7 +24,7 @@ from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKAllocation
 
 
-@pytest.fixture
+@pytest.fixture()
 def mock_program_dao(monkeypatch):
     _allocation_1 = MockRAMSTKAllocation()
     _allocation_1.revision_id = 1
@@ -108,6 +108,33 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture(scope="function")
+def test_analysismanager(test_toml_user_configuration):
+    """Test fixture for Allocation analysis manager."""
+    dut = amAllocation(test_toml_user_configuration)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Test fixture for Allocation data manager."""
+    dut = dmAllocation()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+
+    # Delete the device under test.
+    del dut
+
+
 @pytest.mark.usefixtures("test_toml_user_configuration")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
@@ -171,6 +198,7 @@ class TestCreateControllers:
         )
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -180,67 +208,57 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKAllocation instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should clear nodes from an existing allocation
         tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKAllocation on
         success."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        _allocation = DUT.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1, table="allocation")
 
         assert isinstance(_allocation, MockRAMSTKAllocation)
         assert _allocation.included == 1
         assert _allocation.parent_id == 0
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         with pytest.raises(KeyError):
-            DUT.do_select(1, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Allocation ID is
         requested."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        assert DUT.do_select(100, table="allocation") is None
+        assert test_datamanager.do_select(100, table="allocation") is None
 
 
-@pytest.mark.usefixtures("mock_program_dao", "test_toml_user_configuration")
+@pytest.mark.usefixtures("test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -263,49 +281,43 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_allocation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._do_delete(node_id=DUT.last_id)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_delete(node_id=test_datamanager.last_id)
 
-        assert DUT.last_id == 2
+        assert test_datamanager.last_id == 2
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_allocation")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._do_delete(node_id=300)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_delete(node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
     @pytest.mark.unit
-    def test_do_delete_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree even if it exists in the
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT.tree.remove_node(2)
-        DUT._do_delete(2)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.tree.remove_node(2)
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
 
 
-@pytest.mark.usefixtures("test_toml_user_configuration")
+@pytest.mark.usefixtures("test_datamanager", "test_toml_user_configuration")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -338,18 +350,15 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """do_get_attributes() should return a dict of allocation attributes on
         success."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_allocation_attributes"
         )
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT.do_get_attributes(
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_attributes(
             node_id=2,
             table="allocation",
         )
@@ -359,71 +368,66 @@ class TestGetterSetter:
         )
 
     @pytest.mark.unit
-    def test_on_get_attributes(self, mock_program_dao, test_toml_user_configuration):
+    def test_on_get_attributes(self, test_analysismanager, test_datamanager):
         """_get_all_attributes() should update the attributes dict on
         success."""
         # This test would require using the dmHardware() to get the attributes.
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_attributes(node_id=2, table="allocation")
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DATAMGR.do_get_attributes(node_id=2, table="allocation")
-
-        assert DUT._attributes["hardware_id"] == 2
-        assert DUT._attributes["mtbf_alloc"] == 0.0
+        assert test_analysismanager._attributes["hardware_id"] == 2
+        assert test_analysismanager._attributes["mtbf_alloc"] == 0.0
 
     @pytest.mark.unit
-    def test_on_get_data_manager_tree(
-        self, mock_program_dao, test_toml_user_configuration
-    ):
+    def test_on_get_data_manager_tree(self, test_datamanager):
         """_on_get_tree() should assign the data manager's tree to the _tree
         attribute in response to the succeed_get_allocation_tree message."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
         )
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT.do_get_tree()
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
         )
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DUT.do_set_attributes(node_id=[2, -1], package={"hazard_rate_goal": 0.00005})
-        DUT.do_set_attributes(node_id=[2, -1], package={"reliability_goal": 0.9995})
-        assert DUT.do_select(2, table="allocation").hazard_rate_goal == 0.00005
-        assert DUT.do_select(2, table="allocation").reliability_goal == 0.9995
+        test_datamanager.do_set_attributes(
+            node_id=[2, -1], package={"hazard_rate_goal": 0.00005}
+        )
+        test_datamanager.do_set_attributes(
+            node_id=[2, -1], package={"reliability_goal": 0.9995}
+        )
+        assert (
+            test_datamanager.do_select(2, table="allocation").hazard_rate_goal
+            == 0.00005
+        )
+        assert (
+            test_datamanager.do_select(2, table="allocation").reliability_goal == 0.9995
+        )
 
     @pytest.mark.unit
     @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
     def test_do_get_allocation_goal(
-        self, mock_program_dao, test_toml_user_configuration, method_id
+        self, test_analysismanager, test_datamanager, method_id
     ):
         """do_calculate_goal() should return the proper allocation goal
         measure."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_tree()
+        test_datamanager.do_get_attributes(node_id=2, table="allocation")
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DATAMGR.do_get_tree()
-        DATAMGR.do_get_attributes(node_id=2, table="allocation")
+        test_analysismanager._attributes["allocation_method_id"] = method_id
+        test_analysismanager._attributes["hazard_rate_goal"] = 0.00002681
+        test_analysismanager._attributes["reliability_goal"] = 0.9995
 
-        DUT._attributes["allocation_method_id"] = method_id
-        DUT._attributes["hazard_rate_goal"] = 0.00002681
-        DUT._attributes["reliability_goal"] = 0.9995
-
-        _goal = DUT._do_get_allocation_goal()
+        _goal = test_analysismanager._do_get_allocation_goal()
 
         if method_id in [2, 4]:
             assert _goal == 0.00002681
@@ -431,7 +435,7 @@ class TestGetterSetter:
             assert _goal == 0.9995
 
 
-@pytest.mark.usefixtures("test_toml_user_configuration")
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -449,33 +453,29 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_allocation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, mock_program_dao):
+    def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new sibling allocation assembly."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_allocation(hardware_id=4, parent_id=1)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_insert_allocation(hardware_id=4, parent_id=1)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
 
     @pytest.mark.unit
-    def test_do_insert_no_parent(self, mock_program_dao):
+    def test_do_insert_no_parent(self, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_allocation(hardware_id=5, parent_id=0)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_insert_allocation(hardware_id=5, parent_id=0)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
 
 
-@pytest.mark.usefixtures("test_toml_user_configuration")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -493,36 +493,30 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_allocation topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Allocation ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT.do_update(100, table="allocation")
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_update(100, table="allocation")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a Hazard
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 
-        DUT = dmAllocation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        DUT.tree.get_node(1).data.pop("allocation")
-
-        DUT.do_update(1, table="allocation")
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.tree.get_node(1).data.pop("allocation")
+        test_datamanager.do_update(1, table="allocation")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 
 
-@pytest.mark.usefixtures("test_toml_user_configuration")
+@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
 class TestAnalysisMethods:
     """Class for allocation methods test suite."""
 
@@ -588,232 +582,230 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_goals_reliability_specified(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_goal() should calculate the equivalent h(t) and MTBF
         goals from a specified reliability goal."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_analysismanager._tree.get_node(1).data["allocation"].mission_time = 100.0
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].reliability_goal = 0.99732259
 
-        DUT._tree.get_node(1).data["allocation"].hardware_id = 1
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
-        DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.99732259
+        test_analysismanager._do_calculate_allocation_goals(
+            test_analysismanager._tree.get_node(1)
+        )
 
-        DUT._do_calculate_allocation_goals(DUT._tree.get_node(1))
-
-        assert DUT._tree.get_node(1).data[
+        assert test_analysismanager._tree.get_node(1).data[
             "allocation"
         ].hazard_rate_goal == pytest.approx(0.00002681)
-        assert DUT._tree.get_node(1).data["allocation"].mtbf_goal == pytest.approx(
-            37299.5151063
-        )
+        assert test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].mtbf_goal == pytest.approx(37299.5151063)
 
     @pytest.mark.unit
     def test_do_calculate_goals_hazard_rate_specified(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_goal() should calculate the equivalent MTBF and R(t)
         goals from a specified hazard rate goal."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._tree.get_node(1).data["allocation"].hardware_id = 1
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 2
-        DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.00002681
-        DUT._do_calculate_allocation_goals(node=DUT._tree.get_node(1))
-
-        assert DUT._tree.get_node(1).data["allocation"].mtbf_goal == pytest.approx(
-            37299.5151063
+        test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 2
+        test_analysismanager._tree.get_node(1).data["allocation"].mission_time = 100.0
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.00002681
+        test_analysismanager._do_calculate_allocation_goals(
+            node=test_analysismanager._tree.get_node(1)
         )
-        assert DUT._tree.get_node(1).data[
+
+        assert test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].mtbf_goal == pytest.approx(37299.5151063)
+        assert test_analysismanager._tree.get_node(1).data[
             "allocation"
         ].reliability_goal == pytest.approx(0.99732259)
 
     @pytest.mark.unit
     def test_do_calculate_goals_mtbf_specified(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_goal() should calculate the equivalent h(t) and R(t)
         goals from a specified MTBF goal."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 3
+        test_analysismanager._tree.get_node(1).data["allocation"].mission_time = 100.0
+        test_analysismanager._tree.get_node(1).data["allocation"].mtbf_goal = 37300.0
+        test_analysismanager._do_calculate_allocation_goals(
+            node=test_analysismanager._tree.get_node(1)
+        )
 
-        DUT._tree.get_node(1).data["allocation"].hardware_id = 1
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 3
-        DUT._tree.get_node(1).data["allocation"].mission_time = 100.0
-        DUT._tree.get_node(1).data["allocation"].mtbf_goal = 37300.0
-        DUT._do_calculate_allocation_goals(node=DUT._tree.get_node(1))
-
-        assert DUT._tree.get_node(1).data[
+        assert test_analysismanager._tree.get_node(1).data[
             "allocation"
         ].hazard_rate_goal == pytest.approx(2.68096515e-05)
-        assert DUT._tree.get_node(1).data[
+        assert test_analysismanager._tree.get_node(1).data[
             "allocation"
         ].reliability_goal == pytest.approx(0.99732259)
 
     @pytest.mark.unit
     def test_do_calculate_agree_allocation(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_allocation() should apportion the node ID reliability
         goal using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 2
-        DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.717
-        DUT._tree.get_node(2).data["allocation"].duty_cycle = 90.0
-        DUT._tree.get_node(2).data["allocation"].mission_time = 100.0
-        DUT._tree.get_node(2).data["allocation"].n_sub_subsystems = 6
-        DUT._tree.get_node(2).data["allocation"].n_sub_elements = 2
-        DUT._tree.get_node(2).data["allocation"].weight_factor = 0.95
-        DUT._do_calculate_allocation(node_id=1)
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 2
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].reliability_goal = 0.717
+        test_analysismanager._tree.get_node(2).data["allocation"].duty_cycle = 90.0
+        test_analysismanager._tree.get_node(2).data["allocation"].mission_time = 100.0
+        test_analysismanager._tree.get_node(2).data["allocation"].n_sub_subsystems = 6
+        test_analysismanager._tree.get_node(2).data["allocation"].n_sub_elements = 2
+        test_analysismanager._tree.get_node(2).data["allocation"].weight_factor = 0.95
+        test_analysismanager._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
     @pytest.mark.unit
     def test_do_calculate_arinc_allocation(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_allocation() should apportion the node ID reliability
         goal using the ARINC method."""
         pub.subscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_analysismanager._node_hazard_rate = 0.000628
+        test_analysismanager._system_hazard_rate = 0.002681
 
-        DUT._node_hazard_rate = 0.000628
-        DUT._system_hazard_rate = 0.002681
-
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 3
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 2
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-        DUT._tree.get_node(2).data["allocation"].hazard_rate_active = 0.000628
-        DUT._do_calculate_allocation(node_id=1)
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 3
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 2
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
+        test_analysismanager._tree.get_node(2).data[
+            "allocation"
+        ].hazard_rate_active = 0.000628
+        test_analysismanager._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
     @pytest.mark.unit
     def test_do_calculate_arinc_allocation_zero_system_hazard_rate(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_allocation() should send an error message when
         attempting to allocate an assembly with a zero hazard rate using the
         ARINC method."""
         pub.subscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
 
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_analysismanager._node_hazard_rate = 0.000628
+        test_analysismanager._system_hazard_rate = 0.0
 
-        DUT._node_hazard_rate = 0.000628
-        DUT._system_hazard_rate = 0.0
-
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 3
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 2
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_active = 0.0
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-        DUT._tree.get_node(2).data["allocation"].hazard_rate_active = 0.000628
-        DUT._do_calculate_allocation(node_id=1)
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 3
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 2
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_active = 0.0
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
+        test_analysismanager._tree.get_node(2).data[
+            "allocation"
+        ].hazard_rate_active = 0.000628
+        test_analysismanager._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
 
     @pytest.mark.unit
     def test_do_calculate_equal_allocation(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_allocation() should apportion the node ID reliability
         goal using the equal apportionment method."""
         pub.subscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 1
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        DUT._tree.get_node(1).data["allocation"].reliability_goal = 0.995
-        DUT._do_calculate_allocation(node_id=1)
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 1
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].reliability_goal = 0.995
+        test_analysismanager._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
     @pytest.mark.unit
-    def test_do_calculate_foo_allocation(
-        self, mock_program_dao, test_toml_user_configuration
-    ):
+    def test_do_calculate_foo_allocation(self, test_analysismanager, test_datamanager):
         """do_calculate_allocation() should apportion the node ID reliability
         goal using the feasibility of objectives method."""
         pub.subscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 4
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-        DUT._tree.get_node(2).data["allocation"].env_factor = 6
-        DUT._tree.get_node(2).data["allocation"].soa_factor = 2
-        DUT._tree.get_node(2).data["allocation"].op_time_factor = 9
-        DUT._tree.get_node(2).data["allocation"].int_factor = 3
-        DUT._do_calculate_allocation(node_id=1)
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 4
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
+        test_analysismanager._tree.get_node(2).data["allocation"].env_factor = 6
+        test_analysismanager._tree.get_node(2).data["allocation"].soa_factor = 2
+        test_analysismanager._tree.get_node(2).data["allocation"].op_time_factor = 9
+        test_analysismanager._tree.get_node(2).data["allocation"].int_factor = 3
+        test_analysismanager._do_calculate_allocation(node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
     @pytest.mark.unit
     def test_do_calculate_no_allocation_method(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_analysismanager, test_datamanager
     ):
         """do_calculate_allocation() should apportion the node ID reliability
         goal using the feasibility of objectives method."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 16
+        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_analysismanager._tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
 
-        DUT._tree.get_node(1).data["allocation"].allocation_method_id = 16
-        DUT._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        DUT._tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-
-        assert DUT._do_calculate_allocation(1) is None
+        assert test_analysismanager._do_calculate_allocation(1) is None
 
     @pytest.mark.unit
-    def test_on_select_hardware(self, mock_program_dao, test_toml_user_configuration):
+    def test_on_select_hardware(self, test_analysismanager, test_datamanager):
         """_on_select_hardware() should assign the node hazard rate to the
         _node_hazard_rate attribute."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._on_get_hardware_attributes(
+        test_analysismanager._on_get_hardware_attributes(
             attributes={
                 "revision_id": 1,
                 "hazard_rate_active": 0.00032,
@@ -821,22 +813,16 @@ class TestAnalysisMethods:
             },
         )
 
-        assert DUT._node_hazard_rate == 0.00032
-        assert DUT._system_hazard_rate == 0.0
+        assert test_analysismanager._node_hazard_rate == 0.00032
+        assert test_analysismanager._system_hazard_rate == 0.0
 
     @pytest.mark.unit
-    def test_on_select_hardware_system(
-        self, mock_program_dao, test_toml_user_configuration
-    ):
+    def test_on_select_hardware_system(self, test_analysismanager, test_datamanager):
         """_on_select_hardware() should assign the node and system hazard rate
         when the system node is selected."""
-        DUT = amAllocation(test_toml_user_configuration)
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        DATAMGR = dmAllocation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        DUT._on_get_hardware_attributes(
+        test_analysismanager._on_get_hardware_attributes(
             attributes={
                 "revision_id": 1,
                 "hazard_rate_active": 0.00032,
@@ -844,5 +830,5 @@ class TestAnalysisMethods:
             },
         )
 
-        assert DUT._node_hazard_rate == 0.00032
-        assert DUT._system_hazard_rate == 0.00032
+        assert test_analysismanager._node_hazard_rate == 0.00032
+        assert test_analysismanager._system_hazard_rate == 0.00032
