@@ -23,6 +23,20 @@ from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKFunction
 
 
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Test fixture for Function data manager."""
+    dut = dmFunction()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+
+    # Delete the device under test.
+    del dut
+
+
 @pytest.fixture
 def mock_program_dao(monkeypatch):
     _function_1 = MockRAMSTKFunction()
@@ -110,6 +124,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT._do_insert_function, "request_insert_function")
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -119,53 +134,46 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKFunction instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKFunction on
         success."""
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
-        _function = DUT.do_select(1, table="function")
+        _function = test_datamanager.do_select(1, table="function")
 
         assert isinstance(_function, MockRAMSTKFunction)
         assert _function.availability_logistics == 1.0
         assert _function.name == "Function Name"
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         with pytest.raises(KeyError):
-            DUT.do_select(1, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Function ID is
         requested."""
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
-        assert DUT.do_select(100, table="function") is None
+        assert test_datamanager.do_select(100, table="function") is None
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -186,48 +194,43 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_delete(DUT.last_id)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_delete(test_datamanager.last_id)
 
-        assert DUT.last_id == 1
+        assert test_datamanager.last_id == 1
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_function")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to delete
         a function ID that doesn't exist in the database."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_delete(300)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_function")
 
     @pytest.mark.unit
-    def test_do_delete_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.tree.remove_node(2)
-        DUT._do_delete(2)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.tree.remove_node(2)
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_function")
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -244,48 +247,44 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_function_tree topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """_do_get_attributes() should return a dict of function attributes on
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_function_attributes")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_get_attributes(1, "function")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_attributes(1, "function")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_function_attributes"
         )
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_set_attributes(
+            node_id=[1, -1], package={"function_code": "-"}
+        )
 
-        DUT.do_set_attributes(node_id=[1, -1], package={"function_code": "-"})
-
-        assert DUT.do_select(1, table="function").function_code == "-"
+        assert test_datamanager.do_select(1, table="function").function_code == "-"
 
     @pytest.mark.unit
-    def test_on_get_data_manager_tree(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, test_datamanager):
         """on_get_tree() should return the function treelib Tree."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_function_tree"
         )
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_get_tree()
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_function_tree"
         )
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -308,91 +307,85 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, mock_program_dao):
+    def test_do_insert_sibling(self, test_datamanager):
         """_do_insert_function() should send the success message after
         successfully inserting a sibling function."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_insert_function()
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_insert_function()
 
-        assert isinstance(DUT.tree.get_node(3).data["function"], RAMSTKFunction)
-        assert DUT.tree.get_node(3).data["function"].function_id == 3
-        assert DUT.tree.get_node(3).data["function"].name == "New Function"
+        assert isinstance(
+            test_datamanager.tree.get_node(3).data["function"], RAMSTKFunction
+        )
+        assert test_datamanager.tree.get_node(3).data["function"].function_id == 3
+        assert test_datamanager.tree.get_node(3).data["function"].name == "New Function"
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_function")
 
     @pytest.mark.unit
-    def test_do_insert_child(self, mock_program_dao):
+    def test_do_insert_child(self, test_datamanager):
         """_do_insert_function() should send the success message after
         successfully inserting a child function."""
         pub.subscribe(self.on_succeed_insert_child, "succeed_insert_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_insert_function(parent_id=2)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_insert_function(parent_id=2)
 
-        assert isinstance(DUT.tree.get_node(3).data["function"], RAMSTKFunction)
-        assert DUT.tree.get_node(3).data["function"].function_id == 3
-        assert DUT.tree.get_node(3).data["function"].name == "New Function"
+        assert isinstance(
+            test_datamanager.tree.get_node(3).data["function"], RAMSTKFunction
+        )
+        assert test_datamanager.tree.get_node(3).data["function"].function_id == 3
+        assert test_datamanager.tree.get_node(3).data["function"].name == "New Function"
 
         pub.unsubscribe(self.on_succeed_insert_child, "succeed_insert_function")
 
     @pytest.mark.unit
-    def test_do_insert_no_parent(self, mock_program_dao):
+    def test_do_insert_no_parent(self, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_insert_function(parent_id=40)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_insert_function(parent_id=40)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_function")
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
     def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent function with function "
-            "ID 100."
+        assert (
+            error_message == "do_update: Attempted to save non-existent function "
+            "with function ID 100."
         )
         print("\033[35m\nfail_update_function topic was broadcast")
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for function ID 1.")
+        assert error_message == "do_update: No data package found for function ID 1."
         print("\033[35m\nfail_update_function topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Function ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_update(100, "function")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_update(100, "function")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_function")
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_function")
 
-        DUT = dmFunction()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.tree.get_node(1).data.pop("function")
-
-        DUT.do_update(1, "function")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.tree.get_node(1).data.pop("function")
+        test_datamanager.do_update(1, "function")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_function")
