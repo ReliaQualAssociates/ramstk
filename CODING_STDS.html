@@ -658,6 +658,26 @@ labels/widgets are divided into the different sections).</p></td>
 <li><p>All exceptions caught by GUI components shall be logged at the debug level.Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.</p></li>
 </ol>
 </div>
+<div class="section" id="test-conventions">
+<h1>Test Conventions<a class="headerlink" href="#test-conventions" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple" start="10000">
+<li><p>Each function or method <strong>shall</strong> have at least one test; this test may be either a unit test or an integration test.</p></li>
+</ol>
+<ol class="arabic simple" start="10100">
+<li><p><em>Unit Tests</em></p></li>
+<li><p><strong>Shall not</strong> use pypubsub to call the function/method being tested; call the method being tested directly, even private ones.</p></li>
+<li><p><strong>Shall</strong> use mocks for database tables.</p></li>
+<li><p><strong>Shall</strong> use a mock for the DAO.</p></li>
+<li><p><strong>Shall</strong> use fixtures to create test objects (e.g., data manager, analysis manager).</p></li>
+</ol>
+<ol class="arabic simple" start="10200">
+<li><p><em>Integration Tests</em></p></li>
+<li><p><strong>Shall</strong> use pypubsub to call the function/method being tested.</p></li>
+<li><p><strong>Shall</strong> use actual data models.</p></li>
+<li><p><strong>Shall</strong> use actual DAO.</p></li>
+<li><p><strong>Shall</strong> use fixtures to create test objects (e.g., data manager, analysis manager).</p></li>
+</ol>
+</div>
 
 
           </div>
@@ -673,6 +693,7 @@ labels/widgets are divided into the different sections).</p></td>
 <li><a class="reference internal" href="#">Naming Conventions for RAMSTK</a></li>
 <li><a class="reference internal" href="#design-conventions-for-ramstk">Design Conventions for RAMSTK</a></li>
 <li><a class="reference internal" href="#exception-and-error-handling">Exception and Error Handling</a></li>
+<li><a class="reference internal" href="#test-conventions">Test Conventions</a></li>
 </ul>
 
   <h4>Previous topic</h4>
