@@ -20,7 +20,7 @@ from ramstk.controllers import dmFunction
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
-    """Test fixture for Allocation data manager."""
+    """Test fixture for Function data manager."""
     dut = dmFunction()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
