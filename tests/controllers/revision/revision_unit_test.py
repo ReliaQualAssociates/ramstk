@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKRevision
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKRevision
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _revision_1 = RAMSTKRevision()
+    _revision_1 = MockRAMSTKRevision()
     _revision_1.revision_id = 1
     _revision_1.availability_logistics = 0.9986
     _revision_1.availability_mission = 0.99934
@@ -53,7 +53,7 @@ def mock_program_dao(monkeypatch):
     _revision_1.program_cost = 26492.83
     _revision_1.program_cost_sd = 15.62
 
-    _revision_2 = RAMSTKRevision()
+    _revision_2 = MockRAMSTKRevision()
     _revision_2.revision_id = 2
     _revision_2.availability_logistics = 1.0
     _revision_2.availability_mission = 1.0
@@ -130,7 +130,7 @@ class TestSelectMethods:
         DUT.do_select_all()
 
         assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.tree.get_node(1).data["revision"], RAMSTKRevision)
+        assert isinstance(DUT.tree.get_node(1).data["revision"], MockRAMSTKRevision)
 
     @pytest.mark.unit
     def test_do_select(self, mock_program_dao):
@@ -142,7 +142,7 @@ class TestSelectMethods:
 
         _revision = DUT.do_select(1, table="revision")
 
-        assert isinstance(_revision, RAMSTKRevision)
+        assert isinstance(_revision, MockRAMSTKRevision)
         assert _revision.availability_logistics == 0.9986
         assert _revision.name == "Original Revision"
 
@@ -232,7 +232,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["revision"], RAMSTKRevision)
+        assert isinstance(tree.get_node(1).data["revision"], MockRAMSTKRevision)
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
     @pytest.mark.unit

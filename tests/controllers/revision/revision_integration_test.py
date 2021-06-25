@@ -56,6 +56,29 @@ class TestUpdateMethods:
         success."""
         DUT = dmRevision()
         DUT.do_connect(test_program_dao)
+
+        pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
+
+    @pytest.mark.integration
+    def test_do_update_all(self, test_program_dao):
+        """do_update() should send the succeed_update_revision message on
+        success."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
+
+        _revision = DUT.do_select(1, table="revision")
+        _revision.name = "Test Revision"
+
+        DUT.do_update(1, table="revision")
+
+        pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
+
+    @pytest.mark.integration
+    def test_do_update_all(self, test_program_dao):
+        """do_update() should send the succeed_update_revision message on
+        success."""
+        DUT = dmRevision()
+        DUT.do_connect(test_program_dao)
         DUT.do_select_all()
 
         _revision = DUT.do_select(1, table="revision")
