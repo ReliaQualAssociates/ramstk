@@ -23,20 +23,6 @@ from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKFunction
 
 
-@pytest.fixture(scope="function")
-def test_datamanager(mock_program_dao):
-    """Test fixture for Function data manager."""
-    dut = dmFunction()
-    dut.do_connect(mock_program_dao)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-
-    # Delete the device under test.
-    del dut
-
-
 @pytest.fixture
 def mock_program_dao(monkeypatch):
     _function_1 = MockRAMSTKFunction()
@@ -94,6 +80,20 @@ def mock_program_dao(monkeypatch):
     ]
 
     yield DAO
+
+
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Test fixture for Function data manager."""
+    dut = dmFunction()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+
+    # Delete the device under test.
+    del dut
 
 
 class TestCreateControllers:

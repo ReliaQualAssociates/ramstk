@@ -18,7 +18,29 @@ from treelib import Tree
 from ramstk.controllers import dmRevision
 
 
-@pytest.mark.usefixtures("test_program_dao")
+@pytest.fixture(scope="class")
+def test_datamanager(test_program_dao):
+    dut = dmRevision()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all()
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_revision")
+    pub.unsubscribe(dut.do_update, "request_update_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
+    pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
+    pub.unsubscribe(dut._do_delete, "request_delete_revision")
+    pub.unsubscribe(dut._do_insert_revision, "request_insert_revision")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class to test data controller update methods using actual database."""
 
@@ -35,82 +57,54 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_program_dao):
+    def test_do_update(self, test_datamanager):
         """do_update() should send the succeed_update_revision message on
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-
-        _revision = DUT.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1, table="revision")
         _revision.name = "Test Revision"
-        DUT.do_update(1, table="revision")
+        test_datamanager.do_update(1, table="revision")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
+    def test_do_update_all(self, test_datamanager):
         """do_update() should send the succeed_update_revision message on
         success."""
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
-
-    @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
-        """do_update() should send the succeed_update_revision message on
-        success."""
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-
-        _revision = DUT.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1, table="revision")
         _revision.name = "Test Revision"
 
-        DUT.do_update(1, table="revision")
+        test_datamanager.do_update(1, table="revision")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
+    def test_do_update_all(self, test_datamanager):
         """do_update() should send the succeed_update_revision message on
         success."""
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-
-        _revision = DUT.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1, table="revision")
         _revision.name = "Test Revision"
 
         pub.sendMessage("request_update_all_revisions")
 
-        _revision = DUT.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1, table="revision")
         assert _revision.name == "Test Revision"
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_program_dao):
+    def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should send the fail_update_revision message when passed
         a revision ID that that has a wrong data type for one or more
         attributes."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-        DUT.tree.get_node(1).data["revision"].cost = None
-
-        DUT.do_update(1, table="revision")
+        test_datamanager.tree.get_node(1).data["revision"].cost = None
+        test_datamanager.do_update(1, table="revision")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_revision")
 
     @pytest.mark.integration
-    def test_do_update_root_node(self, test_program_dao):
+    def test_do_update_root_node(self, test_datamanager):
         """do_update() should end the fail_update_revision message when passed
         a revision ID that has no data package."""
-        DUT = dmRevision()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all()
-
-        DUT.do_update(0, table="revision")
+        test_datamanager.do_update(0, table="revision")

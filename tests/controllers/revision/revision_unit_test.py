@@ -90,6 +90,20 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Test fixture for Function data manager."""
+    dut = dmRevision()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+
+    # Delete the device under test.
+    del dut
+
+
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
@@ -118,65 +132,59 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT._do_insert_revision, "request_insert_revision")
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKRevision instances on success."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
+        test_datamanager.do_select_all()
 
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.tree.get_node(1).data["revision"], MockRAMSTKRevision)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(
+            test_datamanager.tree.get_node(1).data["revision"], MockRAMSTKRevision
+        )
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKRevision on
         success."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
+        test_datamanager.do_select_all()
 
-        _revision = DUT.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1, table="revision")
 
         assert isinstance(_revision, MockRAMSTKRevision)
         assert _revision.availability_logistics == 0.9986
         assert _revision.name == "Original Revision"
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select() should clear any existing tree when selecting
         revisions."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.do_select_all()
+        test_datamanager.do_select_all()
+        test_datamanager.do_select_all()
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
+        test_datamanager.do_select_all()
 
         with pytest.raises(KeyError):
-            DUT.do_select(1, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
+        test_datamanager.do_select_all()
 
-        assert DUT.do_select(100, table="revision") is None
+        assert test_datamanager.do_select(100, table="revision") is None
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -191,35 +199,31 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_revision topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT._do_delete(DUT.last_id)
+        test_datamanager.do_select_all()
+        test_datamanager._do_delete(test_datamanager.last_id)
 
-        assert DUT.last_id == 1
+        assert test_datamanager.last_id == 1
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_revision")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to delete
         a non-existent revision."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-
-        DUT._do_delete(300)
+        test_datamanager.do_select_all()
+        test_datamanager._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_revision")
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -236,53 +240,47 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_revision_tree topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """_do_get_attributes() should return a dict of revision attributes on
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_revision_attributes")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.do_get_attributes(1, "revision")
+        test_datamanager.do_select_all()
+        test_datamanager.do_get_attributes(1, "revision")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_revision_attributes"
         )
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-
-        DUT.do_set_attributes(
+        test_datamanager.do_select_all()
+        test_datamanager.do_set_attributes(
             node_id=[
                 1,
             ],
             package={"revision_code": "-"},
         )
-        assert DUT.do_select(1, table="revision").revision_code == "-"
+
+        assert test_datamanager.do_select(1, table="revision").revision_code == "-"
 
     @pytest.mark.unit
-    def test_on_get_data_manager_tree(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, test_datamanager):
         """on_get_tree() should return the revision treelib Tree."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_revision_tree"
         )
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.do_get_tree()
+        test_datamanager.do_select_all()
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_revision_tree"
         )
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -298,19 +296,19 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_revision topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, mock_program_dao):
+    def test_do_insert_sibling(self, test_datamanager):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT._do_insert_revision()
+        test_datamanager.do_select_all()
+        test_datamanager._do_insert_revision()
 
-        assert isinstance(DUT.tree.get_node(3).data["revision"], RAMSTKRevision)
-        assert DUT.tree.get_node(3).data["revision"].revision_id == 3
-        assert DUT.tree.get_node(3).data["revision"].name == "New Revision"
+        assert isinstance(
+            test_datamanager.tree.get_node(3).data["revision"], RAMSTKRevision
+        )
+        assert test_datamanager.tree.get_node(3).data["revision"].revision_id == 3
+        assert test_datamanager.tree.get_node(3).data["revision"].name == "New Revision"
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_revision")
 
@@ -326,7 +324,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_fail_insert_no_database, "fail_insert_revision")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -342,29 +340,24 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_revision topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         revision ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.do_update(100, table="revision")
+        test_datamanager.do_select_all()
+        test_datamanager.do_update(100, table="revision")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_revision")
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_revision")
 
-        DUT = dmRevision()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all()
-        DUT.tree.get_node(1).data.pop("revision")
-
-        DUT.do_update(1, table="revision")
+        test_datamanager.do_select_all()
+        test_datamanager.tree.get_node(1).data.pop("revision")
+        test_datamanager.do_update(1, table="revision")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_revision")
