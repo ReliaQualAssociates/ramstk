@@ -16,19 +16,20 @@ import pytest
 from ramstk.models.programdb import RAMSTKCause
 
 ATTRIBUTES = {
-    'rpn_new': 0,
-    'rpn_occurrence_new': 10,
-    'description': 'Test Failure Cause #1',
-    'rpn_occurrence': 10,
-    'rpn_detection_new': 10,
-    'rpn_detection': 10,
-    'rpn': 0
+    "rpn_new": 0,
+    "rpn_occurrence_new": 10,
+    "description": "Test Failure Cause #1",
+    "rpn_occurrence": 10,
+    "rpn_detection_new": 10,
+    "rpn_detection": 10,
+    "rpn": 0,
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
-class TestRAMSTKCause():
+@pytest.mark.usefixtures("test_program_dao")
+class TestRAMSTKCause:
     """Class for testing the RAMSTKCause model."""
+
     @pytest.mark.integration
     def test_ramstkcause_create(self, test_program_dao):
         """ __init__() should create an RAMSTKCause model. """
@@ -37,16 +38,16 @@ class TestRAMSTKCause():
         assert isinstance(DUT, RAMSTKCause)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_cause'
-        assert DUT.mode_id == 5
+        assert DUT.__tablename__ == "ramstk_cause"
+        assert DUT.mode_id == 4
         assert DUT.cause_id == 1
-        assert DUT.description == 'Test Failure Cause #2 for Mechanism ID 2'
+        assert DUT.description == "Test Failure Cause #1 for Mechanism ID 1"
         assert DUT.rpn == 0
-        assert DUT.rpn_detection == 4
-        assert DUT.rpn_detection_new == 3
+        assert DUT.rpn_detection == 2
+        assert DUT.rpn_detection_new == 1
         assert DUT.rpn_new == 0
-        assert DUT.rpn_occurrence == 4
-        assert DUT.rpn_occurrence_new == 3
+        assert DUT.rpn_occurrence == 8
+        assert DUT.rpn_occurrence_new == 5
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -56,17 +57,18 @@ class TestRAMSTKCause():
         _attributes = DUT.get_attributes()
 
         assert isinstance(_attributes, dict)
-        assert _attributes['mode_id'] == 5
-        assert _attributes['mechanism_id'] == 1
-        assert _attributes['cause_id'] == 1
-        assert _attributes['description'] == (
-            'Test Failure Cause #2 for Mechanism ID 2')
-        assert _attributes['rpn'] == 0
-        assert _attributes['rpn_detection'] == 4
-        assert _attributes['rpn_detection_new'] == 3
-        assert _attributes['rpn_new'] == 0
-        assert _attributes['rpn_occurrence'] == 4
-        assert _attributes['rpn_occurrence_new'] == 3
+        assert _attributes["mode_id"] == 4
+        assert _attributes["mechanism_id"] == 1
+        assert _attributes["cause_id"] == 1
+        assert _attributes["description"] == (
+            "Test Failure Cause #1 for Mechanism ID 1"
+        )
+        assert _attributes["rpn"] == 0
+        assert _attributes["rpn_detection"] == 2
+        assert _attributes["rpn_detection_new"] == 1
+        assert _attributes["rpn_new"] == 0
+        assert _attributes["rpn_occurrence"] == 8
+        assert _attributes["rpn_occurrence_new"] == 5
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -80,10 +82,10 @@ class TestRAMSTKCause():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_program_dao.session.query(RAMSTKCause).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == ''
+        assert DUT.get_attributes()["description"] == ""
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):
@@ -91,4 +93,4 @@ class TestRAMSTKCause():
         DUT = test_program_dao.session.query(RAMSTKCause).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -15,39 +15,51 @@ import pytest
 from ramstk.models.programdb import RAMSTKOpStress
 
 ATTRIBUTES = {
-    'description': 'Test Operating Stress',
-    'load_history': '',
-    'measurable_parameter': '',
-    'remarks': '',
+    "description": "Test Operating Stress",
+    "load_history": "",
+    "measurable_parameter": "",
+    "remarks": "",
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
-class TestRAMSTKOpStress():
+@pytest.mark.usefixtures("test_program_dao")
+class TestRAMSTKOpStress:
     """Class for testing the RAMSTKOpStress model."""
+
     @pytest.mark.integration
     def test_ramstkopstress_create(self, test_program_dao):
         """ __init__() should create an RAMSTKOpStress model."""
-        DUT = test_program_dao.session.query(RAMSTKOpStress).filter(
-            RAMSTKOpStress.stress_id == 1).first()
+        DUT = (
+            test_program_dao.session.query(RAMSTKOpStress)
+            .filter(RAMSTKOpStress.stress_id == 1)
+            .first()
+        )
 
         assert isinstance(DUT, RAMSTKOpStress)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_op_stress'
+        assert DUT.__tablename__ == "ramstk_op_stress"
         assert DUT.load_id == 1
         assert DUT.stress_id == 1
-        assert DUT.description == 'Lock and chain'
-        assert DUT.measurable_parameter == ''
-        assert DUT.load_history == 'Waterfall histogram'
-        assert DUT.remarks == ''
+        assert DUT.description == "Test Operating Stress"
+        assert DUT.measurable_parameter == ""
+        assert DUT.load_history == ""
+        assert DUT.remarks == ""
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
         """ get_attributes() should return a dict of attribute:value pairs. """
         DUT = test_program_dao.session.query(RAMSTKOpStress).first()
 
-        assert DUT.set_attributes(ATTRIBUTES) is None
+        _attributes = DUT.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["load_id"] == 1
+        assert _attributes["stress_id"] == 1
+        assert _attributes["description"] == "Test Operating Stress"
+        assert _attributes["measurable_parameter"] == ""
+        assert _attributes["load_history"] == ""
+        assert _attributes["remarks"] == ""
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -61,10 +73,10 @@ class TestRAMSTKOpStress():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_program_dao.session.query(RAMSTKOpStress).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == ''
+        assert DUT.get_attributes()["description"] == ""
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):
@@ -72,4 +84,4 @@ class TestRAMSTKOpStress():
         DUT = test_program_dao.session.query(RAMSTKOpStress).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})
