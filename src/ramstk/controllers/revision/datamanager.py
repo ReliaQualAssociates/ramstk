@@ -29,14 +29,14 @@ class DataManager(RAMSTKDataManager):
     RAMSKTEnvironment data models.
     """
 
-    _tag = 'revision'
+    _tag = "revisions"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Revision data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {'revision': ['revision_id']}
+        self._pkey = {"revision": ["revision_id"]}
 
         # Initialize private list attributes.
 
@@ -49,19 +49,16 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes,
-                      'request_get_revision_attributes')
-        pub.subscribe(super().do_set_attributes,
-                      'request_set_revision_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_revision')
-        pub.subscribe(super().do_update_all, 'request_update_all_revisions')
+        pub.subscribe(super().do_get_attributes, "request_get_revision_attributes")
+        pub.subscribe(super().do_set_attributes, "request_set_revision_attributes")
+        pub.subscribe(super().do_set_attributes, "wvw_editing_revision")
+        pub.subscribe(super().do_update, "request_update_revision")
 
-        pub.subscribe(self.do_get_tree, 'request_get_revision_tree')
-        pub.subscribe(self.do_select_all, 'request_retrieve_revisions')
-        pub.subscribe(self.do_update, 'request_update_revision')
+        pub.subscribe(self.do_get_tree, "request_get_revision_tree")
+        pub.subscribe(self.do_select_all, "request_retrieve_revisions")
 
-        pub.subscribe(self._do_delete, 'request_delete_revision')
-        pub.subscribe(self._do_insert_revision, 'request_insert_revision')
+        pub.subscribe(self._do_delete, "request_delete_revision")
+        pub.subscribe(self._do_insert_revision, "request_insert_revision")
 
     def do_get_tree(self) -> None:
         """Retrieve the revision treelib Tree.
@@ -69,7 +66,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_revision_tree', tree=self.tree)
+        pub.sendMessage("succeed_get_revision_tree", tree=self.tree)
 
     def do_select_all(self) -> None:
         """Retrieve all the Revision data from the RAMSTK Program database.
@@ -81,78 +78,22 @@ class DataManager(RAMSTKDataManager):
             self.tree.remove_node(_node.identifier)
 
         for _revision in self.dao.do_select_all(
-                RAMSTKRevision,
-                key=None,
-                value=None,
-                order=RAMSTKRevision.revision_id):
+            RAMSTKRevision, key=None, value=None, order=RAMSTKRevision.revision_id
+        ):
 
-            self.tree.create_node(tag=_revision.name,
-                                  identifier=_revision.revision_id,
-                                  parent=self._root,
-                                  data={'revision': _revision})
+            self.tree.create_node(
+                tag=_revision.name,
+                identifier=_revision.revision_id,
+                parent=self._root,
+                data={"revision": _revision},
+            )
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
-            'succeed_retrieve_revisions',
+            "succeed_retrieve_revisions",
             tree=self.tree,
         )
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (revision) ID of the revision to save.
-        :return: None
-        :rtype: None
-        """
-        _method_name: str = inspect.currentframe(  # type: ignore
-        ).f_code.co_name
-
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['revision'])
-            pub.sendMessage(
-                'succeed_update_revision',
-                tree=self.tree,
-            )
-        except AttributeError:
-            _error_msg: str = (
-                '{1}: Attempted to save non-existent revision with revision '
-                'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_revision',
-                error_message=_error_msg,
-            )
-        except KeyError:
-            _error_msg = ('{1}: No data package found for revision '
-                          'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_revision',
-                error_message=_error_msg,
-            )
-        except (DataAccessError, TypeError):
-            if node_id != 0:
-                _error_msg = ('{1}: The value for one or more attributes for '
-                              'revision ID {0} was the wrong type.').format(
-                                  str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_revision',
-                    error_message=_error_msg,
-                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a revision.
@@ -163,28 +104,27 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            super().do_delete(node_id, 'revision')
+            super().do_delete(node_id, "revision")
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
-                'succeed_delete_revision',
+                "succeed_delete_revision",
                 tree=self.tree,
             )
         except (DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent revision ID {'
-                '0}.').format(str(node_id), _method_name)
+                "{1}: Attempted to delete non-existent revision ID " "{0}."
+            ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_revision',
+                "fail_delete_revision",
                 error_message=_error_msg,
             )
 
@@ -201,31 +141,34 @@ class DataManager(RAMSTKDataManager):
         :raise: AttributeError if not connected to a RAMSTK program database.
         """
         try:
-            _last_id = self.dao.get_last_id('ramstk_revision', 'revision_id')
+            _last_id = self.dao.get_last_id("ramstk_revision", "revision_id")
             _revision = RAMSTKRevision()
             _revision.revision_id = _last_id + 1
-            _revision.name = 'New Revision'
+            _revision.name = "New Revision"
 
             self.dao.do_insert(_revision)
 
-            self.tree.create_node(tag=_revision.name,
-                                  identifier=_revision.revision_id,
-                                  parent=self._root,
-                                  data={'revision': _revision})
+            self.tree.create_node(
+                tag=_revision.name,
+                identifier=_revision.revision_id,
+                parent=self._root,
+                data={"revision": _revision},
+            )
             self.last_id = _revision.revision_id
             pub.sendMessage(
-                'succeed_insert_revision',
+                "succeed_insert_revision",
                 node_id=self.last_id,
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg: str = ('{0}: Failed to insert revision into program '
-                               'database.'.format(_method_name))
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg: str = (
+                "{0}: Failed to insert revision into program "
+                "database.".format(_method_name)
+            )
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
