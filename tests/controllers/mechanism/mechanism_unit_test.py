@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKMechanism
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKMechanism
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _mechanism_1 = RAMSTKMechanism()
+    _mechanism_1 = MockRAMSTKMechanism()
     _mechanism_1.revision_id = 1
     _mechanism_1.mode_id = 6
     _mechanism_1.mechanism_id = 2
@@ -38,7 +38,7 @@ def mock_program_dao(monkeypatch):
     _mechanism_1.rpn_occurrence = 10
     _mechanism_1.pof_include = 1
 
-    _mechanism_2 = RAMSTKMechanism()
+    _mechanism_2 = MockRAMSTKMechanism()
     _mechanism_2.revision_id = 1
     _mechanism_2.mode_id = 1
     _mechanism_2.mechanism_id = 3
@@ -98,7 +98,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mechanism"], RAMSTKMechanism)
+        assert isinstance(tree.get_node(1).data["mechanism"], MockRAMSTKMechanism)
         print("\033[36m\nsucceed_retrieve_mechanism topic was broadcast.")
 
     @pytest.mark.unit
@@ -137,7 +137,7 @@ class TestSelectMethods:
 
         _mechanism = DUT.do_select(2, table="mechanism")
 
-        assert isinstance(_mechanism, RAMSTKMechanism)
+        assert isinstance(_mechanism, MockRAMSTKMechanism)
         assert _mechanism.pof_include == 1
         assert _mechanism.rpn_detection_new == 10
 
@@ -240,7 +240,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["mechanism"], RAMSTKMechanism)
+        assert isinstance(tree.get_node(2).data["mechanism"], MockRAMSTKMechanism)
         print("\033[36m\nsucceed_get_mechanism_tree topic was broadcast")
 
     @pytest.mark.unit
