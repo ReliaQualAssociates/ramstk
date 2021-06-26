@@ -20,12 +20,15 @@ from ramstk.controllers import dmHazards
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
     dut = dmHazards()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "function_id": 1})
 
     yield dut
 
+    # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.do_get_attributes, "request_get_hazard_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_hazard_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
@@ -36,6 +39,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut._do_delete, "request_delete_hazard")
     pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
 
+    # Delete the device under test.
     del dut
 
 

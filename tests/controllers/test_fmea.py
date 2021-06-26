@@ -1082,7 +1082,7 @@ class TestAnalysisMethods:
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_calculate_rpn topic was broadcast")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_criticality(
         self, test_program_dao, test_toml_user_configuration
     ):
@@ -1103,7 +1103,7 @@ class TestAnalysisMethods:
         assert DUT._tree.get_node("4").data["mode"].mode_hazard_rate == 0.0003085
         assert DUT._tree.get_node("4").data["mode"].mode_criticality == 0.003085
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_rpn_using_mechanism(
         self, test_program_dao, test_toml_user_configuration
     ):
