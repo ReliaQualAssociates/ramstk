@@ -8,9 +8,7 @@
 """The RAMSTK controllers package."""
 
 # RAMSTK Package Imports
-from ramstk.controllers.managers import (
-    RAMSTKAnalysisManager, RAMSTKDataManager
-)
+from ramstk.controllers.managers import RAMSTKAnalysisManager, RAMSTKDataManager
 
 # RAMSTK Local Imports
 from .allocation.analysismanager import AnalysisManager as amAllocation
@@ -23,6 +21,7 @@ from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
 from .hazards.analysismanager import AnalysisManager as amHazards
 from .hazards.datamanager import DataManager as dmHazards
+from .mechanism.datamanager import DataManager as dmMechanism
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
 from .preferences.datamanager import DataManager as dmPreferences
