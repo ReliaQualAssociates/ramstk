@@ -78,20 +78,42 @@ def mock_program_dao(monkeypatch):
 
 @pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
+    """Get an analysis manager instance for each test function."""
+    # Create the device under test (dut) and connect to the user configuration.
     dut = amHazards(test_toml_user_configuration)
 
     yield dut
 
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_hazard_attributes")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_hazard_tree")
+    pub.unsubscribe(dut.do_calculate_fha, "request_calculate_fha")
+
+    # Delete the device under test.
     del dut
 
 
 @pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
     dut = dmHazards()
     dut.do_connect(mock_program_dao)
 
     yield dut
 
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
+    pub.unsubscribe(dut.do_update, "request_update_hazard")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
+    pub.unsubscribe(dut._do_delete, "request_delete_hazard")
+    pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
+
+    # Delete the device under test.
     del dut
 
 
