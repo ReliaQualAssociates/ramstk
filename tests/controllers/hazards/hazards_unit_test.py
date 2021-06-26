@@ -12,7 +12,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKHazardAnalysis
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _hazard_1 = RAMSTKHazardAnalysis()
+    _hazard_1 = MockRAMSTKHazardAnalysis()
     _hazard_1.revision_id = 1
     _hazard_1.function_id = 1
     _hazard_1.hazard_id = 1
@@ -122,7 +122,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(1).data["hazard"], MockRAMSTKHazardAnalysis)
         print("\033[36m\nsucceed_retrieve_hazards topic was broadcast.")
 
     @pytest.mark.unit
@@ -159,7 +159,7 @@ class TestSelectMethods:
 
         _hazard = DUT.do_select(1, table="hazard")
 
-        assert isinstance(_hazard, RAMSTKHazardAnalysis)
+        assert isinstance(_hazard, MockRAMSTKHazardAnalysis)
         assert _hazard.assembly_hri_f == 4
         assert _hazard.assembly_probability == "Level A - Frequent"
 
@@ -258,7 +258,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(1).data["hazard"], MockRAMSTKHazardAnalysis)
         print("\033[36m\nsucceed_get_hazard_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -319,7 +319,9 @@ class TestGetterSetter:
         DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)
-        assert isinstance(DUT._tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(
+            DUT._tree.get_node(1).data["hazard"], MockRAMSTKHazardAnalysis
+        )
 
 
 class TestInsertMethods:
