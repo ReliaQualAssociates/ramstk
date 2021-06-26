@@ -18,7 +18,28 @@ from treelib import Tree
 from ramstk.controllers import dmHazards
 
 
-@pytest.mark.usefixtures("test_program_dao")
+@pytest.fixture(scope="class")
+def test_datamanager(test_program_dao):
+    dut = dmHazards()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+
+    yield dut
+
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
+    pub.unsubscribe(dut.do_update, "request_update_hazard")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
+    pub.unsubscribe(dut._do_delete, "request_delete_hazard")
+    pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
+
+    del dut
+
+
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -35,35 +56,29 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_hazard topic was broadcast.")
 
     @pytest.mark.integration
-    def test_insert_no_revision(self, test_program_dao):
+    def test_insert_no_revision(self, test_datamanager):
         """_do_insert_hazard() should send the fail message when attempting to
         add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-        DUT.revision_id = 40
-        DUT._do_insert_hazard(parent_id=1)
+        test_datamanager.revision_id = 40
+        test_datamanager._do_insert_hazard(parent_id=1)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
     @pytest.mark.integration
-    def test_insert_no_function(self, test_program_dao):
+    def test_insert_no_function(self, test_datamanager):
         """_do_insert_hazard() should send the fail message when attempting to
         add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_no_function, "fail_insert_hazard")
 
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-        DUT.function_id = 40
-        DUT._do_insert_hazard(parent_id=1)
+        test_datamanager.function_id = 40
+        test_datamanager._do_insert_hazard(parent_id=1)
 
         pub.unsubscribe(self.on_fail_insert_no_function, "fail_insert_hazard")
 
 
-@pytest.mark.usefixtures("test_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -80,54 +95,43 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_hazard topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_program_dao):
+    def test_do_update(self, test_datamanager):
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_hazard")
 
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-
-        DUT.tree.get_node(1).data["hazard"].potential_hazard = "Big Hazard"
-        DUT.do_update(1, "hazard")
+        test_datamanager.tree.get_node(1).data["hazard"].potential_hazard = "Big Hazard"
+        test_datamanager.do_update(1, "hazard")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_hazard")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_program_dao):
+    def test_do_update_all(self, test_datamanager):
         """do_update() should return a zero error code on success."""
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-
-        DUT.tree.get_node(1).data["hazard"].potential_hazard = "Big test hazard"
+        test_datamanager.tree.get_node(1).data[
+            "hazard"
+        ].potential_hazard = "Big test hazard"
 
         pub.sendMessage("request_update_all_functions")
 
-        assert DUT.tree.get_node(1).data["hazard"].potential_hazard == "Big test hazard"
+        assert (
+            test_datamanager.tree.get_node(1).data["hazard"].potential_hazard
+            == "Big test hazard"
+        )
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_program_dao):
+    def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a Hazard
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-        DUT.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
-
-        DUT.do_update(1, "hazard")
+        test_datamanager.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
+        test_datamanager.do_update(1, "hazard")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
     @pytest.mark.integration
-    def test_do_update_root_node(self, test_program_dao):
+    def test_do_update_root_node(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Function ID that has no data package."""
-        DUT = dmHazards()
-        DUT.do_connect(test_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-        DUT.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
-
-        DUT.do_update(0, "hazard")
+        test_datamanager.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
+        test_datamanager.do_update(0, "hazard")
