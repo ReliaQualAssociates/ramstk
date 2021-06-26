@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKFailureDefinition
 from pubsub import pub
 from treelib import Tree
 
@@ -25,12 +25,12 @@ from ramstk.models.programdb import RAMSTKFailureDefinition
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _definition_1 = RAMSTKFailureDefinition()
+    _definition_1 = MockRAMSTKFailureDefinition()
     _definition_1.revision_id = 1
     _definition_1.definition_id = 1
     _definition_1.definition = "Mock Failure Definition 1"
 
-    _definition_2 = RAMSTKFailureDefinition()
+    _definition_2 = MockRAMSTKFailureDefinition()
     _definition_2.revision_id = 1
     _definition_2.definition_id = 2
     _definition_2.definition = "Mock Failure Definition 2"
@@ -90,7 +90,7 @@ class TestSelectMethods:
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(
-            DUT.tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinition
+            DUT.tree.get_node(1).data["failure_definition"], MockRAMSTKFailureDefinition
         )
 
     @pytest.mark.unit
@@ -105,7 +105,7 @@ class TestSelectMethods:
 
         assert isinstance(DUT.tree, Tree)
         assert isinstance(
-            DUT.tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinition
+            DUT.tree.get_node(1).data["failure_definition"], MockRAMSTKFailureDefinition
         )
 
     @pytest.mark.unit
@@ -118,7 +118,7 @@ class TestSelectMethods:
 
         _failure_definition = DUT.do_select(1, table="failure_definition")
 
-        assert isinstance(_failure_definition, RAMSTKFailureDefinition)
+        assert isinstance(_failure_definition, MockRAMSTKFailureDefinition)
         assert _failure_definition.definition == "Mock Failure Definition 1"
 
     @pytest.mark.unit
@@ -204,7 +204,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinition
+            tree.get_node(1).data["failure_definition"], MockRAMSTKFailureDefinition
         )
         print("\033[36m\nsucceed_get_failure_definition_tree topic was broadcast")
 
@@ -281,7 +281,7 @@ class TestInsertMethods:
         DUT._do_insert_failure_definition()
 
         assert isinstance(
-            DUT.tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinition
+            DUT.tree.get_node(1).data["failure_definition"], MockRAMSTKFailureDefinition
         )
 
         pub.unsubscribe(
