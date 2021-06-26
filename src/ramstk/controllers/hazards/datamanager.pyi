@@ -4,9 +4,7 @@ from typing import Any, Dict
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.exceptions import DataAccessError as DataAccessError
-from ramstk.models.programdb import (
-    RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
-)
+from ramstk.models.programdb import RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
 
 class DataManager(RAMSTKDataManager):
     _tag: str = ...
@@ -25,9 +23,6 @@ class DataManager(RAMSTKDataManager):
         ...
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        ...
-
-    def do_update(self, node_id: int) -> None:
         ...
 
     def _do_delete(self, node_id: int) -> None:

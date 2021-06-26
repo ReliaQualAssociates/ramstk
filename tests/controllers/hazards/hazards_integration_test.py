@@ -89,7 +89,7 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
 
         DUT.tree.get_node(1).data["hazard"].potential_hazard = "Big Hazard"
-        DUT.do_update(1, table="hazard")
+        DUT.do_update(1, "hazard")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_hazard")
 
@@ -117,7 +117,7 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
         DUT.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
 
-        DUT.do_update(1, table="hazard")
+        DUT.do_update(1, "hazard")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
@@ -130,4 +130,4 @@ class TestUpdateMethods:
         DUT.do_select_all(attributes={"revision_id": 1, "function_id": 1})
         DUT.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
 
-        DUT.do_update(0, table="hazard")
+        DUT.do_update(0, "hazard")
