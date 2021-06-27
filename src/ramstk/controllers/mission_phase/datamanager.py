@@ -141,6 +141,7 @@ class DataManager(RAMSTKDataManager):
         try:
             _last_id = self.dao.get_last_id("ramstk_mission_phase", "phase_id")
             _phase = RAMSTKMissionPhase()
+            _phase.revision_id = self._revision_id
             _phase.mission_id = mission_id
             _phase.phase_id = _last_id + 1
 
