@@ -48,6 +48,7 @@ CREATE TABLE ramstk_mission (
 );
 INSERT INTO "ramstk_mission" VALUES(1,1,'Default Mission',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
+    fld_revision_id INTEGER,
     fld_mission_id INTEGER,
     fld_phase_id INTEGER NOT NULL,
     fld_description VARCHAR,
@@ -57,7 +58,7 @@ CREATE TABLE ramstk_mission_phase (
     PRIMARY KEY (fld_phase_id),
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mission_phase" VALUES (1,1,'Default Mission Phase 1','',0,0.0);
+INSERT INTO "ramstk_mission_phase" VALUES (1, 1,1,'Default Mission Phase 1','',0,0.0);
 CREATE TABLE ramstk_environment (
     fld_phase_id INTEGER,
     fld_environment_id INTEGER NOT NULL,

@@ -23,6 +23,7 @@ from .hazards.analysismanager import AnalysisManager as amHazards
 from .hazards.datamanager import DataManager as dmHazards
 from .mechanism.datamanager import DataManager as dmMechanism
 from .mission.datamanager import DataManager as dmMission
+from .mission_phase.datamanager import DataManager as dmMissionPhase
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
 from .preferences.datamanager import DataManager as dmPreferences
