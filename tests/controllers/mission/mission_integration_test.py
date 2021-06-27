@@ -22,7 +22,6 @@ from ramstk.models.programdb import RAMSTKMission
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
-    """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmMission()
     dut.do_connect(test_program_dao)
@@ -57,9 +56,8 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKMission, RAMSTKMissionPhase, and RAMSTKMission instances on
-        success."""
+        """do_select_all() should clear out an existing tree and build a new
+        one when called on a populated Mission data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1})
@@ -327,10 +325,10 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_set_attributes")
+        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mission_tree")
 
         test_datamanager.do_set_attributes(
             node_id=[1, ""], package={"mission_time": 12.86}
         )
 
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_set_attributes")
+        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mission_tree")

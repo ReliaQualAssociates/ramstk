@@ -50,7 +50,6 @@ def mock_program_dao(monkeypatch):
 
 @pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
-    """Get a data manager instance for each test class."""
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmMission()
@@ -110,8 +109,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select_all(self, test_datamanager):
-        """do_select_all() should return a Tree() object when the tree is
-        already populated."""
+        """do_select_all() should return a Tree() object on success."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(test_datamanager.tree, Tree)
@@ -151,20 +149,6 @@ class TestSelectMethods:
 
 
 @pytest.mark.usefixtures("test_datamanager")
-class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
-
-    @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
-        """_do_delete_mission() should send the success message after
-        successfully deleting a mission."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_delete(1)
-
-        assert test_datamanager.tree.get_node(1) is None
-
-
-@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -179,3 +163,17 @@ class TestInsertMethods:
         assert isinstance(
             test_datamanager.tree.get_node(3).data["mission"], RAMSTKMission
         )
+
+
+@pytest.mark.usefixtures("test_datamanager")
+class TestDeleteMethods:
+    """Class for testing the data manager delete() method."""
+
+    @pytest.mark.unit
+    def test_do_delete(self, test_datamanager):
+        """_do_delete_mission() should send the success message after
+        successfully deleting a mission."""
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_delete(1)
+
+        assert test_datamanager.tree.get_node(1) is None
