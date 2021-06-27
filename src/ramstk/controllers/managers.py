@@ -333,15 +333,19 @@ class RAMSTKDataManager:
                     "{1}: The value for one or more attributes for "
                     "{2} ID {0} was the wrong type."
                 ).format(str(node_id), _method_name, table.replace("_", " "))
-                pub.sendMessage(
-                    "do_log_debug",
-                    logger_name="DEBUG",
-                    message=_error_msg,
+            else:
+                _error_msg = ("{1}: Attempting to update the root node {0}.").format(
+                    str(node_id), _method_name
                 )
-                pub.sendMessage(
-                    _fail_topic,
-                    error_message=_error_msg,
-                )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                _fail_topic,
+                error_message=_error_msg,
+            )
 
     # noinspection PyUnresolvedReferences
     # pylint: disable=no-value-for-parameter

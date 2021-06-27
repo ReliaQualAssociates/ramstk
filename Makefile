@@ -141,7 +141,7 @@ upgrade:
 # Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc
 	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
-	pip install . --prefix=$(PREFIX)
+	pip install . --prefix=$(PREFIX) --use-feature=in-tree-build
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/16x16"
