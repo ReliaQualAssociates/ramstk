@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKMissionPhase
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKMissionPhase
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _mission_phase_1 = RAMSTKMissionPhase()
+    _mission_phase_1 = MockRAMSTKMissionPhase()
     _mission_phase_1.revision_id = 1
     _mission_phase_1.mission_id = 1
     _mission_phase_1.phase_id = 1
@@ -34,7 +34,7 @@ def mock_program_dao(monkeypatch):
     _mission_phase_1.phase_start = 0.0
     _mission_phase_1.phase_end = 0.0
 
-    _mission_phase_2 = RAMSTKMissionPhase()
+    _mission_phase_2 = MockRAMSTKMissionPhase()
     _mission_phase_2.revision_id = 1
     _mission_phase_2.mission_id = 1
     _mission_phase_2.phase_id = 2
@@ -43,7 +43,7 @@ def mock_program_dao(monkeypatch):
     _mission_phase_2.phase_start = 0.0
     _mission_phase_2.phase_end = 0.0
 
-    _mission_phase_3 = RAMSTKMissionPhase()
+    _mission_phase_3 = MockRAMSTKMissionPhase()
     _mission_phase_3.revision_id = 1
     _mission_phase_3.mission_id = 1
     _mission_phase_3.phase_id = 3
@@ -95,8 +95,12 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission_phase"], RAMSTKMissionPhase)
-        assert isinstance(tree.get_node(2).data["mission_phase"], RAMSTKMissionPhase)
+        assert isinstance(
+            tree.get_node(1).data["mission_phase"], MockRAMSTKMissionPhase
+        )
+        assert isinstance(
+            tree.get_node(2).data["mission_phase"], MockRAMSTKMissionPhase
+        )
         print("\033[36m\nsucceed_retrieve_mission_phases topic was broadcast.")
 
     @pytest.mark.unit
@@ -126,15 +130,14 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, mock_program_dao):
-        """do_select() should return the RAMSTKMission instance on
-        success."""
+        """do_select() should return the RAMSTKMission instance on success."""
         DUT = dmMissionPhase()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
 
         _mission_phase = DUT.do_select(1, table="mission_phase")
 
-        assert isinstance(_mission_phase, RAMSTKMissionPhase)
+        assert isinstance(_mission_phase, MockRAMSTKMissionPhase)
         assert _mission_phase.phase_id == 1
 
     @pytest.mark.unit
@@ -194,8 +197,8 @@ class TestDeleteMethods:
 
     @pytest.mark.unit
     def test_do_delete_mission_phase_non_existent_id(self, mock_program_dao):
-        """_do_delete_mission_phase() should send the sfail message when attempting
-        to delete a non-existent mission phase ID."""
+        """_do_delete_mission_phase() should send the sfail message when
+        attempting to delete a non-existent mission phase ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission_phase")
 
         DUT = dmMissionPhase()
@@ -236,7 +239,9 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission_phase"], RAMSTKMissionPhase)
+        assert isinstance(
+            tree.get_node(1).data["mission_phase"], MockRAMSTKMissionPhase
+        )
         print("\033[36m\nsucceed_get_mission_phase_tree topic was broadcast")
 
     @pytest.mark.unit

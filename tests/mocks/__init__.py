@@ -20,5 +20,6 @@ from .mock_ramstkfunction import MockRAMSTKFunction
 from .mock_ramstkhazardanalysis import MockRAMSTKHazardAnalysis
 from .mock_ramstkmechanism import MockRAMSTKMechanism
 from .mock_ramstkmission import MockRAMSTKMission
+from .mock_ramstkmissionphase import MockRAMSTKMissionPhase
 from .mock_ramstkrevision import MockRAMSTKRevision
 from .MockDAO import MockDAO
