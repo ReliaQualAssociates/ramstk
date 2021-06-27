@@ -60,7 +60,29 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = dmMechanism()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_mechanism_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_mechanism_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mechanism")
+    pub.unsubscribe(dut.do_update, "request_update_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_mode")
+    pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
+    pub.unsubscribe(dut._do_delete, "request_delete_mechanism")
+    pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
+
+    # Delete the device under test.
+    del dut
+
+
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
@@ -92,7 +114,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT._do_insert_mechanism, "request_insert_mechanism")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -102,68 +124,70 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_mechanism topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMechanism instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 1})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 1}
+        )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMechanism instances on success."""
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 1})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 1}
+        )
 
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 1})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 1}
+        )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKMechanism on
         success."""
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
 
-        _mechanism = DUT.do_select(2, table="mechanism")
+        _mechanism = test_datamanager.do_select(2, table="mechanism")
 
         assert isinstance(_mechanism, MockRAMSTKMechanism)
         assert _mechanism.pof_include == 1
         assert _mechanism.rpn_detection_new == 10
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
 
         with pytest.raises(KeyError):
-            DUT.do_select(2, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent mechanism ID is
         requested."""
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
 
-        assert DUT.do_select(100, table="mechanism") is None
+        assert test_datamanager.do_select(100, table="mechanism") is None
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -187,48 +211,48 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_mechanism topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib Tree
         when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT._do_delete(2)
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mechanism")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to delete
         a node ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT._do_delete(300)
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mechanism")
 
     @pytest.mark.unit
-    def test_do_delete_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree even if it exists in the
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT.tree.remove_node(2)
-        DUT._do_delete(2)
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.tree.remove_node(2)
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mechanism")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -244,56 +268,55 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_mechanism_tree topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """do_get_attributes() should return a dict of mode attributes on
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT.do_get_attributes(2, "mechanism")
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.do_get_attributes(2, "mechanism")
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should return None when successfully setting
         operating load attributes."""
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-
-        DUT.do_set_attributes(node_id=[2, -1], package={"rpn_detection": 4})
-        DUT.do_set_attributes(
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.do_set_attributes(
+            node_id=[2, -1], package={"rpn_detection": 4}
+        )
+        test_datamanager.do_set_attributes(
             node_id=[2, -1], package={"description": "Big test failure mechanism."}
         )
         assert (
-            DUT.do_select(2, table="mechanism").description
+            test_datamanager.do_select(2, table="mechanism").description
             == "Big test failure mechanism."
         )
-        assert DUT.do_select(2, table="mechanism").rpn_detection == 4
-
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_mechanism_attributes")
+        assert test_datamanager.do_select(2, table="mechanism").rpn_detection == 4
 
     @pytest.mark.unit
-    def test_on_get_tree_data_manager(self, mock_program_dao):
+    def test_on_get_tree_data_manager(self, test_datamanager):
         """on_get_tree() should return the PoF treelib Tree."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_mechanism_tree"
         )
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT.do_get_tree()
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_mechanism_tree"
         )
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -304,21 +327,20 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, mock_program_dao):
+    def test_do_insert_sibling(self, test_datamanager):
         """_do_insert_opload() should send the success message after
         successfully inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-
-        DUT._do_insert_mechanism()
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager._do_insert_mechanism()
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mechanism")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -333,28 +355,28 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_mechanism topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a PoF ID
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT.do_update(100, table="mechanism")
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.do_update(100, table="mechanism")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mechanism")
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a FMEA
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mechanism")
 
-        DUT = dmMechanism()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
-        DUT.tree.get_node(2).data.pop("mechanism")
-        DUT.do_update(2, table="mechanism")
+        test_datamanager.do_select_all(
+            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+        )
+        test_datamanager.tree.get_node(2).data.pop("mechanism")
+        test_datamanager.do_update(2, table="mechanism")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mechanism")
