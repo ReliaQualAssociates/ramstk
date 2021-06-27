@@ -16,8 +16,27 @@ from ramstk.db.base import BaseDatabase
 from ramstk.ramstk import RAMSTKProgramManager
 
 
+@pytest.fixture(scope="class")
+def test_datamanager(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKProgramManager()
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_create_program, "request_create_program")
+    pub.unsubscribe(dut.do_open_program, "request_open_program")
+    pub.unsubscribe(dut.do_close_program, "request_close_program")
+    pub.unsubscribe(dut.do_save_program, "request_update_program")
+
+    # Delete the device under test.
+    del dut
+
+
 @pytest.mark.usefixtures(
     "make_home_config_dir",
+    "test_datamanager",
     "test_program_dao",
     "test_toml_user_configuration",
     "test_bald_dao",
@@ -30,14 +49,12 @@ class TestProgramManager:
         print("\033[36m\nsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
-        assert error_message == (
-            "The database bad_database_url.ramstk does " "not exist."
-        )
+        assert error_message == ("The database bad_database_url.ramstk does not exist.")
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
     def on_fail_open_program_unknown_dialect(self, error_message):
         assert error_message == (
-            "Unknown database dialect in database " "connection dict."
+            "Unknown database dialect in database connection dict."
         )
         print("\033[35m\nfail_connect_program_database topic was broadcast.")
 
@@ -110,13 +127,17 @@ class TestProgramManager:
         assert pub.isSubscribed(DUT.do_close_program, "request_close_program")
         assert pub.isSubscribed(DUT.do_save_program, "request_update_program")
 
+        # Unsubscribe from pypubsub topics.
+        pub.unsubscribe(DUT.do_create_program, "request_create_program")
+        pub.unsubscribe(DUT.do_open_program, "request_open_program")
+        pub.unsubscribe(DUT.do_close_program, "request_close_program")
+        pub.unsubscribe(DUT.do_save_program, "request_update_program")
+
     @pytest.mark.integration
-    def test_do_open_program(self, test_program_dao):
+    def test_do_open_program(self, test_datamanager, test_program_dao):
         """do_open_program() should connect to the test program database and
         broadcast the success message."""
         pub.subscribe(self.on_succeed_open_program, "succeed_connect_program_database")
-
-        _database = test_program_dao.database
 
         test_program_db = {
             "dialect": "postgres",
@@ -126,20 +147,16 @@ class TestProgramManager:
             "port": "5432",
             "database": test_program_dao.cxnargs["dbname"],
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), test_program_db)
-
-        assert DUT.program_dao.database == _database
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(
             self.on_succeed_open_program, "succeed_connect_program_database"
         )
 
-        DUT.do_close_program()
+        test_datamanager.do_close_program()
 
     @pytest.mark.integration
-    def test_do_open_program_bad_url(self):
+    def test_do_open_program_bad_url(self, test_datamanager, test_program_dao):
         """do_open_program() should broadcast the fail message when attempting
         to open a bad URL."""
         pub.subscribe(
@@ -154,16 +171,14 @@ class TestProgramManager:
             "port": "5432",
             "database": "bad_database_url.ramstk",
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), test_program_db)
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(
             self.on_fail_open_program_bad_url, "fail_connect_program_database"
         )
 
     @pytest.mark.integration
-    def test_do_open_program_unknown_dialect(self):
+    def test_do_open_program_unknown_dialect(self, test_datamanager, test_program_dao):
         """do_open_program() should broadcast the fail message when attempting
         to open a database of unsupported dialect."""
         pub.subscribe(
@@ -176,25 +191,21 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": "TestProgramDB",
+            "database": test_program_dao.cxnargs["dbname"],
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), test_program_db)
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(
             self.on_fail_open_program_unknown_dialect, "fail_connect_program_database"
         )
 
     @pytest.mark.integration
-    def test_do_open_program_non_string_url(self):
+    def test_do_open_program_non_string_url(self, test_datamanager, test_program_dao):
         """do_open_program() should broadcast the fail message when attempting
         to open a non-string URL."""
         pub.subscribe(
             self.on_fail_open_program_non_string_url, "fail_connect_program_database"
         )
-
-        DUT = RAMSTKProgramManager()
 
         test_program_db = {
             "dialect": "postgres",
@@ -204,15 +215,14 @@ class TestProgramManager:
             "port": "5432",
             "database": 8742.11,
         }
-
-        DUT.do_open_program(BaseDatabase(), test_program_db)
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
 
         pub.unsubscribe(
             self.on_fail_open_program_non_string_url, "fail_connect_program_database"
         )
 
     @pytest.mark.integration
-    def test_do_close_program(self):
+    def test_do_close_program(self, test_datamanager, test_program_dao):
         """do_close_program() should disconnect from the test program database
         and broadcast the success message."""
         pub.subscribe(
@@ -227,26 +237,23 @@ class TestProgramManager:
             "port": "5432",
             "database": "TestProgramDB",
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), test_program_db)
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
 
         assert (
-            DUT.program_dao.database
+            test_datamanager.program_dao.database
             == "postgresql+psycopg2://postgres:postgres@localhost:5432/TestProgramDB"
         )
 
-        DUT.do_close_program()
+        test_datamanager.do_close_program()
 
-        assert DUT.program_dao.session is None
-        # assert DUT.program_dao.database == ""
+        assert test_datamanager.program_dao.session is None
 
         pub.unsubscribe(
             self.on_succeed_close_program, "succeed_disconnect_program_database"
         )
 
     @pytest.mark.integration
-    def test_do_close_program_none_open(self):
+    def test_do_close_program_none_open(self, test_datamanager, test_program_dao):
         """do_close_program() should broadcast the fail message if it attempts
         to close a database when not connected."""
         pub.subscribe(self.on_fail_close_program, "fail_disconnect_program_database")
@@ -257,9 +264,13 @@ class TestProgramManager:
         assert isinstance(DUT.program_dao, BaseDatabase)
 
         pub.unsubscribe(self.on_fail_close_program, "fail_disconnect_program_database")
+        pub.unsubscribe(DUT.do_create_program, "request_create_program")
+        pub.unsubscribe(DUT.do_open_program, "request_open_program")
+        pub.unsubscribe(DUT.do_close_program, "request_close_program")
+        pub.unsubscribe(DUT.do_save_program, "request_update_program")
 
     @pytest.mark.integration
-    def test_save_program(self):
+    def test_save_program(self, test_datamanager, test_program_dao):
         """do_save_program() should cause all workstream modules to execute
         their save_all() method."""
         pub.subscribe(self.on_request_update_revision, "request_update_all_revisions")
@@ -281,12 +292,10 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": "TestProgramDB",
+            "database": test_program_dao.cxnargs["dbname"],
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.do_open_program(BaseDatabase(), test_program_db)
-        DUT.do_save_program()
+        test_datamanager.do_open_program(BaseDatabase(), test_program_db)
+        test_datamanager.do_save_program()
 
         pub.unsubscribe(self.on_request_update_revision, "request_update_all_revisions")
         pub.unsubscribe(self.on_request_update_function, "request_update_all_functions")
@@ -301,11 +310,11 @@ class TestProgramManager:
             self.on_request_update_validation, "request_update_all_validation"
         )
 
-        DUT.do_close_program()
+        test_datamanager.do_close_program()
 
     @pytest.mark.integration
     def test_do_create_postgres_program(
-        self, test_bald_dao, test_toml_user_configuration
+        self, test_datamanager, test_bald_dao, test_toml_user_configuration
     ):
         """do_create_program() should broadcast the success message when a
         postgres database is created."""
@@ -321,13 +330,11 @@ class TestProgramManager:
             "port": "5432",
             "database": test_bald_dao.cxnargs["dbname"],
         }
-
-        DUT = RAMSTKProgramManager()
-        DUT.user_configuration = test_toml_user_configuration
-        DUT.do_create_program(test_bald_dao, test_program_db)
+        test_datamanager.user_configuration = test_toml_user_configuration
+        test_datamanager.do_create_program(test_bald_dao, test_program_db)
 
         pub.unsubscribe(
             self.on_succeed_create_postgres_program, "succeed_create_program_database"
         )
 
-        DUT.do_close_program()
+        test_datamanager.do_close_program()
