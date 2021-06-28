@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKOpLoad
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKOpLoad
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _opload_1 = RAMSTKOpLoad()
+    _opload_1 = MockRAMSTKOpLoad()
     _opload_1.revision_id = 1
     _opload_1.hardware_id = 1
     _opload_1.mode_id = 6
@@ -35,7 +35,7 @@ def mock_program_dao(monkeypatch):
     _opload_1.description = "Test Operating Load #1"
     _opload_1.priority_id = 0
 
-    _opload_2 = RAMSTKOpLoad()
+    _opload_2 = MockRAMSTKOpLoad()
     _opload_2.revision_id = 1
     _opload_2.hardware_id = 1
     _opload_2.mode_id = 6
@@ -88,7 +88,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["opload"], RAMSTKOpLoad)
+        assert isinstance(tree.get_node(1).data["opload"], MockRAMSTKOpLoad)
         print("\033[36m\nsucceed_retrieve_opload topic was broadcast.")
 
     @pytest.mark.pof
@@ -138,7 +138,7 @@ class TestSelectMethods:
 
         _opload = DUT.do_select(2, table="opload")
 
-        assert isinstance(_opload, RAMSTKOpLoad)
+        assert isinstance(_opload, MockRAMSTKOpLoad)
         assert _opload.description == "Test Operating Load #2"
         assert _opload.priority_id == 0
 
@@ -256,7 +256,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["opload"], RAMSTKOpLoad)
+        assert isinstance(tree.get_node(2).data["opload"], MockRAMSTKOpLoad)
         print("\033[36m\nsucceed_get_opload_tree topic was broadcast")
 
     @pytest.mark.pof
