@@ -137,12 +137,11 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mission_phase")
 
     @pytest.mark.integration
-    def test_do_delete_mission_phase_non_existent_id(self, test_datamanager):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete_mission_phase() should send the fail message when
         attempting to delete a non-existent mission phase ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission_phase")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
         test_datamanager._do_delete(10)
 
         pub.unsubscribe(
@@ -156,7 +155,6 @@ class TestDeleteMethods:
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission_phase")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
         test_datamanager.tree.remove_node(2)
         test_datamanager._do_delete(2)
 
@@ -195,7 +193,7 @@ class TestUpdateMethods:
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
-            "do_update: No data package found for mission phase " "ID 1."
+            "do_update: No data package found for mission phase ID 1."
         )
         print("\033[35m\nfail_update_mission_phase topic was broadcast")
 
