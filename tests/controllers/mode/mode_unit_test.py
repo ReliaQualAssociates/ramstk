@@ -93,6 +93,29 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = dmMode()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_mode_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_mode_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mode")
+    pub.unsubscribe(dut.do_update, "request_update_mode")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
+    pub.unsubscribe(dut._do_delete, "request_delete_mode")
+    pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
+
+    # Delete the device under test.
+    del dut
+
+
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
@@ -118,7 +141,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT._do_insert_mode, "request_insert_mode")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -128,69 +151,59 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_mode topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMode, RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and
         RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should return a Tree() object when the tree is
         already populated."""
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKMode on
         success."""
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
-        _mode = DUT.do_select(1, table="mode")
+        _mode = test_datamanager.do_select(1, table="mode")
 
         assert isinstance(_mode, MockRAMSTKMode)
         assert _mode.effect_probability == 0.8
         assert _mode.description == "Test Failure Mode #1"
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
         with pytest.raises(KeyError):
-            DUT.do_select(2, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent PoF ID is
         requested."""
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
 
-        assert DUT.do_select(100, table="mode") is None
+        assert test_datamanager.do_select(100, table="mode") is None
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -211,50 +224,44 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib Tree
         when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._do_delete(4)
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_delete(4)
 
-        assert DUT.tree.get_node(4) is None
+        assert test_datamanager.tree.get_node(4) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mode")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to delete
         a node ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._do_delete(300)
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mode")
 
     @pytest.mark.unit
-    def test_do_delete_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree even if it exists in the
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT.tree.remove_node(2)
-        DUT._do_delete(2)
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.tree.remove_node(2)
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -271,49 +278,47 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_mode_tree topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """do_get_attributes() should return a dict of mode attributes on
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT.do_get_attributes(2, "mode")
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_attributes(2, "mode")
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should return None when successfully setting
         operating load attributes."""
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-
-        DUT.do_set_attributes(
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_set_attributes(
             node_id=[1, -1], package={"detection_method": "Test detection method."}
         )
-        DUT.do_set_attributes(node_id=[1, -1], package={"description": "Jared Kushner"})
-        assert DUT.do_select(1, table="mode").description == "Jared Kushner"
+        test_datamanager.do_set_attributes(
+            node_id=[1, -1], package={"description": "Jared Kushner"}
+        )
         assert (
-            DUT.do_select(1, table="mode").detection_method == "Test detection method."
+            test_datamanager.do_select(1, table="mode").description == "Jared Kushner"
+        )
+        assert (
+            test_datamanager.do_select(1, table="mode").detection_method
+            == "Test detection method."
         )
 
     @pytest.mark.unit
-    def test_on_get_data_manager_tree(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, test_datamanager):
         """on_get_tree() should return the PoF treelib Tree."""
         pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_mode_tree")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT.do_get_tree()
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(self.on_succeed_get_data_manager_tree, "succeed_get_mode_tree")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -333,35 +338,30 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, mock_program_dao):
+    def test_do_insert_sibling(self, test_datamanager):
         """_do_insert_opload() should send the success message after
         successfully inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-
-        DUT._do_insert_mode()
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager._do_insert_mode()
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
     @pytest.mark.unit
-    def test_do_insert_no_parent(self, mock_program_dao):
+    def test_do_insert_no_parent(self, test_datamanager):
         """_do_insert_opload() should send the fail message if attempting to
         add an operating load to a non-existent mechanism ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._parent_id = 4
-        DUT._do_insert_mode()
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager._parent_id = 4
+        test_datamanager._do_insert_mode()
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
 
-@pytest.mark.usefixtures("mock_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -376,29 +376,24 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_mode topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a PoF ID
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT.do_update(100, table="mode")
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_update(100, table="mode")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mode")
 
     @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
+    def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a FMEA
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mode")
 
-        DUT = dmMode()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT.tree.get_node(1).data.pop("mode")
-
-        DUT.do_update(1, table="mode")
+        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.tree.get_node(1).data.pop("mode")
+        test_datamanager.do_update(1, table="mode")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mode")
