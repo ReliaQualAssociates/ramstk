@@ -6,7 +6,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Class for testing Mode integrations."""
+"""Class for testing failure mode integrations."""
 
 # Third Party Imports
 import pytest
@@ -48,18 +48,18 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mode"], MockRAMSTKMode)
+        assert isinstance(tree.get_node(4).data["mode"], RAMSTKMode)
         print("\033[36m\nsucceed_retrieve_mode topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should clear out an existing tree and build a new
         one when called on a populated Mission Phase data manager."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
-        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -74,6 +74,14 @@ class TestInsertMethods:
         assert tree.get_node(3).data["mode"].description is None
         print("\033[36m\nsucceed_insert_mode topic was broadcast.")
 
+    def on_fail_insert_no_parent(self, error_message):
+        assert error_message == (
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_revision_id, fld_hardware_id)=(1, 100) is not "
+            'present in table "ramstk_hardware".'
+        )
+        print("\033[35m\nfail_insert_mode topic was broadcast.")
+
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a "
@@ -83,24 +91,16 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
-    def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id)=(1, 100) is not "
-            'present in table "ramstk_hardware".'
-        )
-        print("\033[35m\nfail_insert_mode topic was broadcast.")
-
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message with the ID of the newly
         inserted node and the data manager's tree after successfully inserting
-        a new mission."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
+        a new mode."""
+        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
         pub.sendMessage("request_insert_mode")
 
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
+        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_datamanager):
@@ -203,20 +203,17 @@ class TestUpdateMethods:
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print("\033[35m\nfail_update_mode topic was broadcast")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            "do_update: Attempted to save non-existent mission phase with mission "
-            "phase ID 10."
+            "do_update: Attempted to save non-existent mode with mode ID 100."
         )
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print("\033[35m\nfail_update_mode topic was broadcast")
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for mission phase " "ID 1."
-        )
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        assert error_message == ("do_update: No data package found for mode ID 4.")
+        print("\033[35m\nfail_update_mode topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
@@ -244,7 +241,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        mode ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mode")
 
         _mode = test_datamanager.do_select(4, table="mode")
@@ -257,7 +254,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        mode ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "fail_update_mode")
 
         _mode = test_datamanager.do_select(4, table="mode")
@@ -271,22 +268,22 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a PoF ID
+        """do_update() should return a non-zero error code when passed a mode ID
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mode")
 
-        pub.sendMessage("request_update_mission_phase", node_id=100, table="mode")
+        pub.sendMessage("request_update_mode", node_id=100, table="mode")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mode")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a FMEA
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a mode ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mode")
 
         test_datamanager.tree.get_node(4).data.pop("mode")
-        pub.sendMessage("request_update_mission_phase", node_id=4, table="mode")
+        pub.sendMessage("request_update_mode", node_id=4, table="mode")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mode")
 
