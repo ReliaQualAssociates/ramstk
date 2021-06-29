@@ -61,9 +61,9 @@ class DataManager(RAMSTKDataManager):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_option_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_option_attributes")
+        pub.subscribe(super().do_update, "request_update_option")
 
         pub.subscribe(self.do_get_tree, "request_get_options_tree")
-        pub.subscribe(self.do_update, "request_update_option")
 
     def do_get_tree(self) -> None:
         """Retrieve the Options treelib Tree.

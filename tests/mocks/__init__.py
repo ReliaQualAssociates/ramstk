@@ -25,4 +25,5 @@ from .mock_ramstkmode import MockRAMSTKMode
 from .mock_ramstkopload import MockRAMSTKOpLoad
 from .mock_ramstkopstress import MockRAMSTKOpStress
 from .mock_ramstkrevision import MockRAMSTKRevision
+from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .MockDAO import MockDAO

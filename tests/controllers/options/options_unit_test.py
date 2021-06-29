@@ -14,19 +14,18 @@ from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKSiteInfo
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmOptions
 from ramstk.db.base import BaseDatabase
-from ramstk.models.commondb import RAMSTKSiteInfo
 
 
 @pytest.fixture
 def mock_common_dao(monkeypatch):
-    _site_1 = RAMSTKSiteInfo()
+    _site_1 = MockRAMSTKSiteInfo()
     _site_1.site_id = 1
     _site_1.site_name = "DEMO SITE"
     _site_1.product_key = "DEMO"
@@ -86,7 +85,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["siteinfo"], RAMSTKSiteInfo)
+        assert isinstance(tree.get_node(1).data["siteinfo"], MockRAMSTKSiteInfo)
         # There should be a root node with no data package and a node with
         # the one RAMSTKSiteInfo record.
         assert len(tree.all_nodes()) == 2
@@ -127,7 +126,7 @@ class TestSelectMethods:
 
         _options = DUT.do_select(1, table="siteinfo")
 
-        assert isinstance(_options, RAMSTKSiteInfo)
+        assert isinstance(_options, MockRAMSTKSiteInfo)
         assert _options.site_id == 1
         assert _options.site_name == "DEMO SITE"
         assert _options.product_key == "DEMO"
@@ -197,7 +196,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["siteinfo"], RAMSTKSiteInfo)
+        assert isinstance(tree.get_node(1).data["siteinfo"], MockRAMSTKSiteInfo)
         print("\033[36m\nsucceed_get_options_tree topic was broadcast")
 
     @pytest.mark.unit
