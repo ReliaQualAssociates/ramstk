@@ -23,5 +23,6 @@ from .mock_ramstkmission import MockRAMSTKMission
 from .mock_ramstkmissionphase import MockRAMSTKMissionPhase
 from .mock_ramstkmode import MockRAMSTKMode
 from .mock_ramstkopload import MockRAMSTKOpLoad
+from .mock_ramstkopstress import MockRAMSTKOpStress
 from .mock_ramstkrevision import MockRAMSTKRevision
 from .MockDAO import MockDAO
