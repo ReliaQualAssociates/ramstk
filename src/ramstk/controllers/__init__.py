@@ -26,6 +26,7 @@ from .mission.datamanager import DataManager as dmMission
 from .mission_phase.datamanager import DataManager as dmMissionPhase
 from .mode.datamanager import DataManager as dmMode
 from .opload.datamanager import DataManager as dmOpLoad
+from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions
 from .pof.datamanager import DataManager as dmPoF
 from .preferences.datamanager import DataManager as dmPreferences
