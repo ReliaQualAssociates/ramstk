@@ -248,7 +248,7 @@ class BaseDatabase:
         try:
             self.session.add(record)
             self.session.commit()
-        except (exc.IntegrityError, exc.StatementError) as _error:
+        except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
             # unlikely to be user errors as the programmer should ensure
@@ -342,6 +342,7 @@ class BaseDatabase:
         try:
             self.session.commit()
         except (
+            exc.DataError,
             exc.IntegrityError,
             exc.InvalidRequestError,
             exc.ProgrammingError,
