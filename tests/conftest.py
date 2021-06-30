@@ -550,16 +550,24 @@ def test_bald_dao():
     yield dao
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="class")
 def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
+    # Create a random name for the test database.  This ensures each test class uses
+    # a unique, clean database to test against.
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+    # This will create a RAMSTK Common database using the
+    # test_common_db.sql file in ./data for each group of tests collected in a
+    # class.  Group tests in the class in such a way as to produce predictable behavior
+    # (e.g., all the tests for select() and select_all()).
     test_config = {
         "dialect": "postgres",
         "user": "postgres",
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "TestCommonDB",
+        "database": "test_common_db_{}".format(db_name),
     }
 
     # Setup the test database.

@@ -326,7 +326,7 @@ class TestGetterSetter:
         assert isinstance(attributes, dict)
         assert attributes["load_id"] == 1
         assert attributes["description"] == "System Test Failure Mode #2"
-        print("\033[36m\nsucceed_get_mode_attributes topic was broadcast.")
+        print("\033[36m\nsucceed_get_opstress_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
@@ -335,7 +335,9 @@ class TestGetterSetter:
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["opstress"].description == "Jared Kushner"
+        assert (
+            tree.get_node(1).data["opstress"].description == "Big test operating load."
+        )
         print("\033[36m\nsucceed_get_opstress_tree topic was broadcast")
 
     @pytest.mark.pof
@@ -368,9 +370,7 @@ class TestGetterSetter:
     def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should return None when successfully setting
         operating load attributes."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_opstress_tree"
-        )
+        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_opstress_tree")
 
         pub.sendMessage(
             "request_set_opstress_attributes",
@@ -378,6 +378,4 @@ class TestGetterSetter:
             package={"description": "Big test operating load."},
         )
 
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_opstress_tree"
-        )
+        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_opstress_tree")
