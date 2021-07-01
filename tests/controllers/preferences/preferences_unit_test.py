@@ -16,7 +16,7 @@ from datetime import date
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKProgramInfo
 from pubsub import pub
 from treelib import Tree
 
@@ -28,7 +28,7 @@ from ramstk.models.programdb import RAMSTKProgramInfo
 
 @pytest.fixture(scope="function")
 def mock_program_dao(monkeypatch):
-    _program_1 = RAMSTKProgramInfo()
+    _program_1 = MockRAMSTKProgramInfo()
     _program_1.revision_id = 1
     _program_1.function_active = 1
     _program_1.requirement_active = 1
@@ -94,7 +94,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo)
         print("\033[36m\nsucceed_retrieve_preferences topic was broadcast.")
 
     @pytest.mark.unit
@@ -130,7 +130,7 @@ class TestSelectMethods:
 
         _preferences = DUT.do_select(1, table="programinfo")
 
-        assert isinstance(_preferences, RAMSTKProgramInfo)
+        assert isinstance(_preferences, MockRAMSTKProgramInfo)
         assert _preferences.function_active == 1
         assert _preferences.requirement_active == 1
         assert _preferences.hardware_active == 1
@@ -204,7 +204,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo)
         print("\033[36m\nsucceed_get_preferences_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -219,7 +219,9 @@ class TestGetterSetter:
         DUT._do_select_all(mock_program_dao)
         DUT.do_get_attributes(1, "programinfo")
 
-        assert isinstance(DUT.tree.get_node(1).data["programinfo"], RAMSTKProgramInfo)
+        assert isinstance(
+            DUT.tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo
+        )
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_programinfo_attributes"
