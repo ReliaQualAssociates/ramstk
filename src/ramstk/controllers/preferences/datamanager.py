@@ -70,12 +70,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self._do_select_all, "succeed_connect_program_database")
 
     def do_get_tree(self) -> None:
-        """Retrieve the Options treelib Tree.
+        """Retrieve the Preferences treelib Tree.
 
         :return: None
         :rtype: None
         """
-        pub.sendMessage("succeed_get_options_tree", tree=self.tree)
+        pub.sendMessage("succeed_get_preferences_tree", tree=self.tree)
 
     def _do_select_all(self, dao: BaseDatabase) -> None:
         """Retrieve all the Options data from the RAMSTK Program database.
