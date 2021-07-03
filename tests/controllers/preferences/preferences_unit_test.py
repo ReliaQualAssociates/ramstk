@@ -23,7 +23,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmPreferences
 from ramstk.db.base import BaseDatabase
-from ramstk.models.programdb import RAMSTKProgramInfo
 
 
 @pytest.fixture(scope="function")
@@ -60,6 +59,25 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = dmPreferences()
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_preference_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_preference_attributes")
+    pub.unsubscribe(dut.do_update, "request_update_preference")
+    pub.unsubscribe(dut.do_get_tree, "request_get_preferences_tree")
+    pub.unsubscribe(dut._do_select_all, "succeed_connect_program_database")
+
+    # Delete the device under test.
+    del dut
+
+
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
@@ -87,48 +105,40 @@ class TestCreateControllers:
             DUT.do_set_attributes, "request_set_preference_attributes"
         )
 
+        # Unsubscribe from pypubsub topics.
+        pub.unsubscribe(DUT.do_get_attributes, "request_get_preference_attributes")
+        pub.unsubscribe(DUT.do_set_attributes, "request_set_preference_attributes")
+        pub.unsubscribe(DUT.do_update, "request_update_preference")
+        pub.unsubscribe(DUT.do_get_tree, "request_get_preferences_tree")
+        pub.unsubscribe(DUT._do_select_all, "succeed_connect_program_database")
 
-@pytest.mark.usefixtures("mock_program_dao")
+
+@pytest.mark.usefixtures("mock_program_dao", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo)
+
         print("\033[36m\nsucceed_retrieve_preferences topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, mock_program_dao, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKProgramInfo and RAMSTKSiteInfo instances on success."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
+        test_datamanager._do_select_all(mock_program_dao)
 
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
-
-    @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
-        """do_select_all() should clear nodes from an existing Preferences
-        tree."""
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
-
-        DUT._do_select_all(mock_program_dao)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
+        assert isinstance(
+            test_datamanager.tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo
+        )
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, mock_program_dao, test_datamanager):
         """do_select() should return an instance of the RAMSTKProgramInfo on
         success."""
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
+        test_datamanager._do_select_all(mock_program_dao)
 
-        _preferences = DUT.do_select(1, table="programinfo")
+        _preferences = test_datamanager.do_select(1, table="programinfo")
 
         assert isinstance(_preferences, MockRAMSTKProgramInfo)
         assert _preferences.function_active == 1
@@ -154,163 +164,18 @@ class TestSelectMethods:
         assert _preferences.last_saved_by == ""
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, mock_program_dao, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
+        test_datamanager._do_select_all(mock_program_dao)
 
         with pytest.raises(KeyError):
-            DUT.do_select(1, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, mock_program_dao, test_datamanager):
         """do_select() should return None when a non-existent Options ID is
         requested."""
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
+        test_datamanager._do_select_all(mock_program_dao)
 
-        assert DUT.do_select(100, table="programinfo") is None
-
-
-@pytest.mark.usefixtures("mock_program_dao")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["function_active"] == 1
-        assert attributes["requirement_active"] == 1
-        assert attributes["hardware_active"] == 1
-        assert attributes["software_active"] == 0
-        assert attributes["rcm_active"] == 0
-        assert attributes["testing_active"] == 0
-        assert attributes["incident_active"] == 0
-        assert attributes["survival_active"] == 0
-        assert attributes["vandv_active"] == 1
-        assert attributes["hazard_active"] == 1
-        assert attributes["stakeholder_active"] == 1
-        assert attributes["allocation_active"] == 1
-        assert attributes["similar_item_active"] == 1
-        assert attributes["fmea_active"] == 1
-        assert attributes["pof_active"] == 1
-        assert attributes["rbd_active"] == 0
-        assert attributes["fta_active"] == 0
-        assert attributes["created_on"] == date.today()
-        assert attributes["created_by"] == ""
-        assert attributes["last_saved"] == date.today()
-        assert attributes["last_saved_by"] == ""
-        print("\033[36m\nsucceed_get_programinfo_attributes topic was broadcast.")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo)
-        print("\033[36m\nsucceed_get_preferences_tree topic was broadcast")
-
-    @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
-        """do_get_attributes() should return a dict of program information
-        attributes on success."""
-        pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_programinfo_attributes"
-        )
-
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-        DUT.do_get_attributes(1, "programinfo")
-
-        assert isinstance(
-            DUT.tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo
-        )
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_programinfo_attributes"
-        )
-
-    @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
-        """do_set_attributes() should return None when successfully setting
-        program information attributes."""
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-
-        pub.sendMessage(
-            "request_set_preference_attributes",
-            node_id=[1],
-            package={"function_active": 0},
-        )
-        pub.sendMessage(
-            "request_set_preference_attributes", node_id=[1], package={"rcm_active": 1}
-        )
-        assert DUT.do_select(1, table="programinfo").function_active == 0
-        assert DUT.do_select(1, table="programinfo").rcm_active == 1
-
-        pub.sendMessage(
-            "request_set_preference_attributes",
-            node_id=[1],
-            package={"function_active": 1},
-        )
-        pub.sendMessage(
-            "request_set_preference_attributes", node_id=[1], package={"rcm_active": 0}
-        )
-        assert DUT.do_select(1, table="programinfo").function_active == 1
-        assert DUT.do_select(1, table="programinfo").rcm_active == 0
-
-    @pytest.mark.unit
-    def test_on_get_data_manager_tree(self, mock_program_dao):
-        """on_get_tree() should return the Options treelib Tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_preferences_tree"
-        )
-
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-
-        DUT.do_get_tree()
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_preferences_tree"
-        )
-
-
-@pytest.mark.usefixtures("mock_program_dao")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
-
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent " "Program ID skullduggery."
-        )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
-
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for " "Preference 1."
-        )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
-
-    @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Options ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
-
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-        DUT.do_update("skullduggery", table="programinfo")
-
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
-
-    @pytest.mark.unit
-    def test_do_update_no_data_package(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Options ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
-
-        DUT = dmPreferences()
-        DUT._do_select_all(mock_program_dao)
-        DUT.tree.get_node(1).data.pop("programinfo")
-
-        DUT.do_update(1, table="programinfo")
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
+        assert test_datamanager.do_select(100, table="programinfo") is None
