@@ -16,7 +16,7 @@ from datetime import date
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKRequirement
 from pubsub import pub
 from treelib import Tree
 
@@ -28,7 +28,7 @@ from ramstk.models.programdb import RAMSTKRequirement
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _requirement_1 = RAMSTKRequirement()
+    _requirement_1 = MockRAMSTKRequirement()
     _requirement_1.revision_id = 1
     _requirement_1.requirement_id = 1
     _requirement_1.derived = 0
@@ -78,7 +78,7 @@ def mock_program_dao(monkeypatch):
     _requirement_1.q_verifiable_4 = 0
     _requirement_1.q_verifiable_5 = 0
 
-    _requirement_2 = RAMSTKRequirement()
+    _requirement_2 = MockRAMSTKRequirement()
     _requirement_2.revision_id = 1
     _requirement_2.requirement_id = 2
     _requirement_2.derived = 1
@@ -175,7 +175,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["requirement"], RAMSTKRequirement)
+        assert isinstance(tree.get_node(1).data["requirement"], MockRAMSTKRequirement)
 
         print("\033[36m\nsucceed_retrieve_requirements topic was broadcast.")
 
@@ -214,7 +214,7 @@ class TestSelectMethods:
 
         _requirement = DUT.do_select(1, table="requirement")
 
-        assert isinstance(_requirement, RAMSTKRequirement)
+        assert isinstance(_requirement, MockRAMSTKRequirement)
         assert _requirement.description == ""
         assert _requirement.priority == 0
 
@@ -316,7 +316,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["requirement"], RAMSTKRequirement)
+        assert isinstance(tree.get_node(1).data["requirement"], MockRAMSTKRequirement)
         print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
 
     def on_succeed_create_code(self, requirement_code):
