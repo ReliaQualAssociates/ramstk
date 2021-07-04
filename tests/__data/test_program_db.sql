@@ -67,6 +67,8 @@ CREATE TABLE ramstk_program_status (
     UNIQUE (fld_date_status)
 );
 INSERT INTO "ramstk_program_status" VALUES(1,1,0.0,'2019-07-21',0.0);
+INSERT INTO "ramstk_program_status" VALUES(1,2,0.0,'2019-07-22',0.0);
+INSERT INTO "ramstk_program_status" VALUES(1,3,0.0,'2019-07-23',0.0);
 CREATE TABLE ramstk_mission (
     fld_revision_id INTEGER,
     fld_mission_id INTEGER NOT NULL,
