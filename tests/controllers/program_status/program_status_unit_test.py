@@ -16,7 +16,7 @@ from datetime import date, timedelta
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKProgramStatus
 from pubsub import pub
 from treelib import Tree
 
@@ -28,14 +28,14 @@ from ramstk.models.programdb import RAMSTKProgramStatus
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _status_1 = RAMSTKProgramStatus()
+    _status_1 = MockRAMSTKProgramStatus()
     _status_1.revision_id = 1
     _status_1.status_id = 1
     _status_1.cost_remaining = 284.98
     _status_1.date_status = date.today() - timedelta(days=1)
     _status_1.time_remaining = 125.0
 
-    _status_2 = RAMSTKProgramStatus()
+    _status_2 = MockRAMSTKProgramStatus()
     _status_2.revision_id = 1
     _status_2.status_id = 2
     _status_2.cost_remaining = 212.32
@@ -86,7 +86,9 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["program_status"], RAMSTKProgramStatus)
+        assert isinstance(
+            tree.get_node(1).data["program_status"], MockRAMSTKProgramStatus
+        )
         print("\033[36m\nsucceed_retrieve_program_status topic was broadcast.")
 
     @pytest.mark.unit
@@ -120,7 +122,7 @@ class TestSelectMethods:
 
         _status = DUT.do_select(2, table="program_status")
 
-        assert isinstance(_status, RAMSTKProgramStatus)
+        assert isinstance(_status, MockRAMSTKProgramStatus)
         assert _status.cost_remaining == 212.32
         assert _status.time_remaining == 112.5
 
@@ -224,7 +226,9 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["program_status"], RAMSTKProgramStatus)
+        assert isinstance(
+            tree.get_node(1).data["program_status"], MockRAMSTKProgramStatus
+        )
         print("\033[36m\nsucceed_get_program_status_tree topic was broadcast")
 
     def on_request_get_program_status_tree(self):
