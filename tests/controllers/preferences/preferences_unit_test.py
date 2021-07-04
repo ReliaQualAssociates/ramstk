@@ -117,11 +117,6 @@ class TestCreateControllers:
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-
-        print("\033[36m\nsucceed_retrieve_preferences topic was broadcast.")
-
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao, test_datamanager):
         """do_select_all() should return a Tree() object populated with
