@@ -212,13 +212,6 @@ class TestCreateControllers:
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["requirement"], MockRAMSTKRequirement)
-
-        print("\033[36m\nsucceed_retrieve_requirements topic was broadcast.")
-
     @pytest.mark.unit
     def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree object populated with
@@ -230,17 +223,6 @@ class TestSelectMethods:
         assert isinstance(
             test_datamanager.tree.get_node(1).data["requirement"], MockRAMSTKRequirement
         )
-
-    @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should clear the existing Tree when a new group of
-        requirements is selected."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_requirements")
-
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_requirements")
 
     @pytest.mark.unit
     def test_do_select(self, test_datamanager):
