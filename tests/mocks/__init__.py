@@ -30,4 +30,5 @@ from .mock_ramstkrequirement import MockRAMSTKRequirement
 from .mock_ramstkrevision import MockRAMSTKRevision
 from .mock_ramstksimilaritem import MockRAMSTKSimilarItem
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
+from .mock_ramstkstakeholder import MockRAMSTKStakeholder
 from .MockDAO import MockDAO

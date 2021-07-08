@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKStakeholder
 from pubsub import pub
 from treelib import Tree
 
@@ -26,7 +26,7 @@ from ramstk.models.programdb import RAMSTKStakeholder
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _stakeholder_1 = RAMSTKStakeholder()
+    _stakeholder_1 = MockRAMSTKStakeholder()
     _stakeholder_1.revision_id = 1
     _stakeholder_1.requirement_id = 1
     _stakeholder_1.stakeholder_id = 1
@@ -44,7 +44,7 @@ def mock_program_dao(monkeypatch):
     _stakeholder_1.user_float_4 = 1.0
     _stakeholder_1.user_float_5 = 1.0
 
-    _stakeholder_2 = RAMSTKStakeholder()
+    _stakeholder_2 = MockRAMSTKStakeholder()
     _stakeholder_2.revision_id = 1
     _stakeholder_2.requirement_id = 1
     _stakeholder_2.stakeholder_id = 2
@@ -126,7 +126,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["stakeholder"], RAMSTKStakeholder)
+        assert isinstance(tree.get_node(1).data["stakeholder"], MockRAMSTKStakeholder)
         print("\033[36m\nsucceed_retrieve_stakeholders topic was broadcast.")
 
     @pytest.mark.unit
@@ -164,7 +164,7 @@ class TestSelectMethods:
 
         _stakeholder = DUT.do_select(1, table="stakeholder")
 
-        assert isinstance(_stakeholder, RAMSTKStakeholder)
+        assert isinstance(_stakeholder, MockRAMSTKStakeholder)
         assert _stakeholder.description == "Stakeholder Input"
         assert _stakeholder.priority == 1
 
@@ -266,7 +266,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["stakeholder"], RAMSTKStakeholder)
+        assert isinstance(tree.get_node(1).data["stakeholder"], MockRAMSTKStakeholder)
         print("\033[36m\nsucceed_get_stakeholder_tree topic was broadcast")
 
     @pytest.mark.unit
