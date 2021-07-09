@@ -26,7 +26,7 @@ class TestInsertMethods:
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_load_id)=(1, 1, 6, 100) is not present in table "
+            "fld_mechanism_id, fld_load_id)=(1, 1, 6, 1, 100) is not present in table "
             '"ramstk_op_load".'
         )
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
@@ -35,7 +35,7 @@ class TestInsertMethods:
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_load_id)=(10, 1, 6, 1) is not present in table "
+            "fld_mechanism_id, fld_load_id)=(10, 1, 6, 1, 1) is not present in table "
             '"ramstk_op_load".'
         )
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
