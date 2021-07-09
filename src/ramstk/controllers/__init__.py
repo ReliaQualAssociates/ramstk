@@ -37,6 +37,7 @@ from .similar_item.analysismanager import AnalysisManager as amSimilarItem
 from .similar_item.datamanager import DataManager as dmSimilarItem
 from .stakeholder.analysismanager import AnalysisManager as amStakeholder
 from .stakeholder.datamanager import DataManager as dmStakeholder
+from .test_method.datamanager import DataManager as dmTestMethod
 from .usage_profile.datamanager import DataManager as dmUsageProfile
 from .validation.analysismanager import AnalysisManager as amValidation
 from .validation.datamanager import DataManager as dmValidation
