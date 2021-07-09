@@ -71,6 +71,45 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture(scope="function")
+def test_analysismanager(test_toml_user_configuration):
+    # Create the device under test (dut) and connect to the configuration.
+    dut = amStakeholder(test_toml_user_configuration)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_stakeholder_attributes")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_stakeholder_tree")
+    pub.unsubscribe(dut.do_calculate_stakeholder, "request_calculate_stakeholder")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="function")
+def test_datamanager(mock_program_dao):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = dmStakeholder()
+    dut.do_connect(mock_program_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_stakeholder_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_stakeholder_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_stakeholder")
+    pub.unsubscribe(dut.do_update, "request_update_stakeholders")
+    pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut._do_delete, "request_delete_stakeholder")
+    pub.unsubscribe(dut._do_insert_stakeholder, "request_insert_stakeholder")
+
+    # Delete the device under test.
+    del dut
+
+
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
@@ -130,64 +169,54 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_stakeholders topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKStakeholder instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all(1) should clear a populate Tree when selecting a new
         set of stakeholder records."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKStakeholder on
         success."""
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
-        _stakeholder = DUT.do_select(1, table="stakeholder")
+        _stakeholder = test_datamanager.do_select(1, table="stakeholder")
 
         assert isinstance(_stakeholder, MockRAMSTKStakeholder)
         assert _stakeholder.description == "Stakeholder Input"
         assert _stakeholder.priority == 1
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao):
+    def test_do_select_unknown_table(self, test_datamanager):
         """do_select() should raise a KeyError when an unknown table name is
         requested."""
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
         with pytest.raises(KeyError):
-            DUT.do_select(1, table="scibbidy-bibbidy-doo")
+            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Stakeholder ID is
         requested."""
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
-        assert DUT.do_select(100, table="stakeholder") is None
+        assert test_datamanager.do_select(100, table="stakeholder") is None
 
 
 class TestDeleteMethods:
@@ -210,45 +239,39 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_delete(self, mock_program_dao):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_stakeholder")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_delete(DUT.last_id)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_delete(test_datamanager.last_id)
 
-        assert DUT.last_id == 1
+        assert test_datamanager.last_id == 1
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_stakeholder")
 
     @pytest.mark.unit
-    def test_do_delete_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to delete
         a non-existent stakeholder."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_stakeholder")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_delete(300)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_delete(300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_stakeholder")
 
     @pytest.mark.unit
-    def test_do_delete_not_in_tree(self, mock_program_dao):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree even if it exists in the
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_stakeholder")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.tree.remove_node(2)
-        DUT._do_delete(2)
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.tree.remove_node(2)
+        test_datamanager._do_delete(2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_stakeholder")
 
@@ -270,43 +293,41 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_stakeholder_tree topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_get_attributes(self, mock_program_dao):
+    def test_do_get_attributes(self, test_datamanager):
         """do_get_attributes() should return a dict of stakeholder attributes
         on success."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
         )
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_get_attributes(1, "stakeholder")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_attributes(1, "stakeholder")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
         )
 
     @pytest.mark.unit
-    def test_do_set_attributes(self, mock_program_dao):
+    def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
 
-        DUT.do_set_attributes(node_id=[1, -1], package={"stakeholder": "Customer"})
-        assert DUT.do_select(1, table="stakeholder").stakeholder == "Customer"
+        test_datamanager.do_set_attributes(
+            node_id=[1, -1], package={"stakeholder": "Customer"}
+        )
+        assert (
+            test_datamanager.do_select(1, table="stakeholder").stakeholder == "Customer"
+        )
 
     @pytest.mark.unit
-    def test_on_get_data_manager_tree(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, test_datamanager):
         """on_get_tree() should return the stakeholder treelib Tree."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_stakeholder_tree"
         )
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_get_tree()
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_stakeholder_tree"
@@ -327,15 +348,13 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_insert(self, mock_program_dao):
+    def test_do_insert(self, test_datamanager):
         """_do_insert_stakeholder() should send the success message after
         successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_insert_stakeholder()
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager._do_insert_stakeholder()
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
 
@@ -357,57 +376,51 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_stakeholder topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_update_non_existent_id(self, mock_program_dao):
+    def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should broadcast the fail update message when passed an
         ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_stakeholders")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.do_update(100, table="stakeholder")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_update(100, table="stakeholder")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_stakeholders")
 
     @pytest.mark.unit
-    def test_do_update_data_manager_no_data_package(self, mock_program_dao):
+    def test_do_update_data_manager_no_data_package(self, test_datamanager):
         """do_update() should broadcast the fail update message when there is
         no data package attached to the node."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_stakeholders")
 
-        DUT = dmStakeholder()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT.tree.get_node(1).data.pop("stakeholder")
-        DUT.do_update(1, table="stakeholder")
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.tree.get_node(1).data.pop("stakeholder")
+        test_datamanager.do_update(1, table="stakeholder")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_stakeholders")
 
 
-@pytest.mark.usefixtures("test_toml_user_configuration")
+@pytest.mark.usefixtures("test_toml_user_configuration", "test_datamanager")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
     def test_do_calculate_improvement(
-        self, mock_program_dao, test_toml_user_configuration
+        self, test_toml_user_configuration, test_datamanager
     ):
         """do_calculate_stakeholder() should calculate the improvement factor
         and overall weight of a stakeholder input."""
         DUT = amStakeholder(test_toml_user_configuration)
 
-        DATAMGR = dmStakeholder()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1})
-        DATAMGR.do_get_tree()
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_tree()
 
-        _stakeholder = DATAMGR.do_select(1, "stakeholder")
+        _stakeholder = test_datamanager.do_select(1, "stakeholder")
         _stakeholder.planned_rank = 3
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4
         _stakeholder.user_float_1 = 2.6
-        DATAMGR.do_update(1, table="stakeholder")
-        DATAMGR.do_get_attributes(node_id=1, table="stakeholder")
+        test_datamanager.do_update(1, table="stakeholder")
+        test_datamanager.do_get_attributes(node_id=1, table="stakeholder")
 
         DUT.do_calculate_stakeholder(1)
 
