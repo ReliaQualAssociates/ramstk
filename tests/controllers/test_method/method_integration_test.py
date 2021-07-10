@@ -51,7 +51,6 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -62,7 +61,7 @@ class TestSelectMethods:
 
     @pytest.mark.pof
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self):
         """do_select_all() should return a Tree() object populated with
         RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
