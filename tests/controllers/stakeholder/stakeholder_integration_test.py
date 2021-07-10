@@ -288,7 +288,6 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_stakeholder")
 
 
-@pytest.mark.usefixtures("test_datamanager")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -315,7 +314,7 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_stakeholder_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
+    def test_do_get_attributes(self):
         """do_get_attributes() should return a dict of stakeholder attributes
         on success."""
         pub.subscribe(

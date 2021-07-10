@@ -135,6 +135,7 @@ class DataManager(RAMSTKDataManager):
             super().do_delete(node_id, "test_method")
 
             self.tree.remove_node(node_id)
+            self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
                 "succeed_delete_test_method",
