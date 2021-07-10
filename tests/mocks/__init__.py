@@ -32,4 +32,5 @@ from .mock_ramstksimilaritem import MockRAMSTKSimilarItem
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .mock_ramstkstakeholder import MockRAMSTKStakeholder
 from .mock_ramstktestmethod import MockRAMSTKTestMethod
+from .mock_ramstkvalidation import MockRAMSTKValidation
 from .MockDAO import MockDAO
