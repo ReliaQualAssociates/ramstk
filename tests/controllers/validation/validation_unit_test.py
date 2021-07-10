@@ -2,11 +2,12 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_validation.py is part of The RAMSTK Project
+#       tests.controllers.validation.validation_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Validation algorithms and models."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Test class for testing Validation module algorithms and models."""
 
 # Standard Library Imports
 from datetime import date, timedelta
@@ -14,7 +15,9 @@ from datetime import date, timedelta
 # Third Party Imports
 import pandas as pd
 import pytest
-from __mocks__ import MOCK_STATUS, MOCK_VALIDATIONS
+
+# noinspection PyUnresolvedReferences
+from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -22,77 +25,112 @@ from treelib import Tree
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amValidation, dmProgramStatus, dmValidation
 from ramstk.db.base import BaseDatabase
-from ramstk.exceptions import DataAccessError
-from ramstk.models.programdb import RAMSTKProgramStatus, RAMSTKValidation
-
-
-class MockDao:
-    _all_validations = []
-    _all_status = []
-
-    def _do_delete_validation(self, record):
-        _popped = False
-        for _idx, _validation in enumerate(self._all_validations):
-            if _validation.validation_id == record.validation_id:
-                self._all_validations.pop(_idx)
-                _popped = True
-
-        if not _popped:
-            self._all_validations.pop(record.validation_id)
-
-    def do_delete(self, record):
-        if record is None:
-            raise DataAccessError("")
-        elif isinstance(record, RAMSTKValidation):
-            self._do_delete_validation(record)
-
-    def do_insert(self, record):
-        if record.revision_id == 30:
-            raise DataAccessError("An error occurred with RAMSTK.")
-        else:
-            self._all_validations.append(record)
-
-    def do_select_all(self, table, key=None, value=None, order=None, _all=None):
-        if table == RAMSTKValidation:
-            self._all_validations = []
-            for _key in MOCK_VALIDATIONS:
-                _record = table()
-                _record.revision_id = value
-                _record.validation_id = _key
-                _record.set_attributes(MOCK_VALIDATIONS[_key])
-                self._all_validations.append(_record)
-            return self._all_validations
-        elif table == RAMSTKProgramStatus:
-            self._all_status = []
-            for _key in MOCK_STATUS:
-                _record = table()
-                _record.revision_id = value
-                _record.status_id = _key
-                _record.set_attributes(MOCK_STATUS[_key])
-                self._all_status.append(_record)
-            return self._all_status
-
-    def do_update(self, record):
-        if isinstance(record, RAMSTKValidation):
-            for _key in MOCK_VALIDATIONS:
-                if _key == record.validation_id:
-                    MOCK_VALIDATIONS[_key]["name"] = record.name
-                    MOCK_VALIDATIONS[_key]["time_maximum"] = record.time_maximum
-                    MOCK_VALIDATIONS[_key]["time_mean"] = float(record.time_mean)
-                    MOCK_VALIDATIONS[_key]["time_minimum"] = record.time_minimum
-                    MOCK_VALIDATIONS[_key]["time_average"] = record.time_average
-                    MOCK_VALIDATIONS[_key]["cost_minimum"] = record.cost_minimum
-                    MOCK_VALIDATIONS[_key]["cost_average"] = record.cost_average
-                    MOCK_VALIDATIONS[_key]["cost_maximum"] = record.cost_maximum
-                    MOCK_VALIDATIONS[_key]["confidence"] = record.confidence
-
-    def get_last_id(self, table, id_column):
-        return max(MOCK_VALIDATIONS.keys())
+from ramstk.models.programdb import RAMSTKValidation
 
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    yield MockDao()
+    _validation_1 = RAMSTKValidation()
+    _validation_1.revision_id = 1
+    _validation_1.validation_id = 1
+    _validation_1.acceptable_maximum = 30.0
+    _validation_1.acceptable_mean = 20.0
+    _validation_1.acceptable_minimum = 10.0
+    _validation_1.acceptable_variance = 0.0
+    _validation_1.confidence = 95.0
+    _validation_1.cost_average = 0.0
+    _validation_1.cost_ll = 0.0
+    _validation_1.cost_maximum = 0.0
+    _validation_1.cost_mean = 0.0
+    _validation_1.cost_minimum = 0.0
+    _validation_1.cost_ul = 0.0
+    _validation_1.cost_variance = 0.0
+    _validation_1.date_end = date.today() + timedelta(days=30)
+    _validation_1.date_start = date.today()
+    _validation_1.description = ""
+    _validation_1.measurement_unit = 0
+    _validation_1.name = "PRF-0001"
+    _validation_1.status = 0.0
+    _validation_1.task_type = 0
+    _validation_1.task_specification = ""
+    _validation_1.time_average = 0.0
+    _validation_1.time_ll = 0.0
+    _validation_1.time_maximum = 0.0
+    _validation_1.time_mean = 0.0
+    _validation_1.time_minimum = 0.0
+    _validation_1.time_ul = 0.0
+    _validation_1.time_variance = 0.0
+
+    _validation_2 = RAMSTKValidation()
+    _validation_2.revision_id = 1
+    _validation_2.validation_id = 2
+    _validation_2.acceptable_maximum = 30.0
+    _validation_2.acceptable_mean = 20.0
+    _validation_2.acceptable_minimum = 10.0
+    _validation_2.acceptable_variance = 0.0
+    _validation_2.confidence = 95.0
+    _validation_2.cost_average = 0.0
+    _validation_2.cost_ll = 0.0
+    _validation_2.cost_maximum = 0.0
+    _validation_2.cost_mean = 0.0
+    _validation_2.cost_minimum = 0.0
+    _validation_2.cost_ul = 0.0
+    _validation_2.cost_variance = 0.0
+    _validation_2.date_end = date.today() + timedelta(days=20)
+    _validation_2.date_start = date.today() - timedelta(days=10)
+    _validation_2.description = ""
+    _validation_2.measurement_unit = 0
+    _validation_2.name = ""
+    _validation_2.status = 0.0
+    _validation_2.task_type = 5
+    _validation_2.task_specification = ""
+    _validation_2.time_average = 0.0
+    _validation_2.time_ll = 0.0
+    _validation_2.time_maximum = 0.0
+    _validation_2.time_mean = 0.0
+    _validation_2.time_minimum = 0.0
+    _validation_2.time_ul = 0.0
+    _validation_2.time_variance = 0.0
+
+    _validation_3 = RAMSTKValidation()
+    _validation_3.revision_id = 1
+    _validation_3.validation_id = 3
+    _validation_3.acceptable_maximum = 30.0
+    _validation_3.acceptable_mean = 20.0
+    _validation_3.acceptable_minimum = 10.0
+    _validation_3.acceptable_variance = 0.0
+    _validation_3.confidence = 95.0
+    _validation_3.cost_average = 0.0
+    _validation_3.cost_ll = 0.0
+    _validation_3.cost_maximum = 0.0
+    _validation_3.cost_mean = 0.0
+    _validation_3.cost_minimum = 0.0
+    _validation_3.cost_ul = 0.0
+    _validation_3.cost_variance = 0.0
+    _validation_3.date_end = date.today() + timedelta(days=30)
+    _validation_3.date_start = date.today()
+    _validation_3.description = ""
+    _validation_3.measurement_unit = 0
+    _validation_3.name = ""
+    _validation_3.status = 0.0
+    _validation_3.task_type = 5
+    _validation_3.task_specification = ""
+    _validation_3.time_average = 20.0
+    _validation_3.time_ll = 19.0
+    _validation_3.time_maximum = 40.0
+    _validation_3.time_mean = 34.0
+    _validation_3.time_minimum = 12.0
+    _validation_3.time_ul = 49.0
+    _validation_3.time_variance = 0.0
+
+    DAO = MockDAO()
+    DAO.table = [
+        _validation_1,
+        _validation_2,
+        _validation_3,
+    ]
+
+    yield DAO
 
 
 @pytest.mark.usefixtures("test_toml_user_configuration")
@@ -151,40 +189,41 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT.do_calculate_plan, "request_calculate_plan")
 
 
-@pytest.mark.usefixtures("test_program_dao", "test_toml_user_configuration")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
-    def on_succeed_retrieve_validations(self, tree):
+    def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
         print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
-
-    def on_request_select_matrix(self, matrix_type):
-        assert matrix_type == "vldtn_hrdwr"
-        print(
-            "\033[36m\nrequest_select_matrix topic was broadcast for the "
-            "vldtn_hrdwr matrix."
-        )
 
     @pytest.mark.unit
     def test_do_select_all(self, mock_program_dao):
         """do_select_all() should return a Tree() object populated with
         RAMSTKValidation instances on success."""
-        pub.subscribe(
-            self.on_succeed_retrieve_validations, "succeed_retrieve_validations"
-        )
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
 
-        pub.unsubscribe(
-            self.on_succeed_retrieve_validations, "succeed_retrieve_validations"
-        )
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
     @pytest.mark.unit
-    def test_do_select_validation(self, mock_program_dao):
+    def test_do_select_all_populated_tree(self, mock_program_dao):
+        """do_select_all() should return a Tree() object populated with
+        RAMSTKValidation instances on success."""
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
+
+        DUT = dmValidation()
+        DUT.do_connect(mock_program_dao)
+        DUT.do_select_all(attributes={"revision_id": 1})
+        DUT.do_select_all(attributes={"revision_id": 1})
+
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
+
+    @pytest.mark.unit
+    def test_do_select(self, mock_program_dao):
         """do_select() should return an instance of the RAMSTKValidation on
         success."""
         DUT = dmValidation()
@@ -219,17 +258,22 @@ class TestSelectMethods:
         assert DUT.do_select(100, table="validation") is None
 
 
-@pytest.mark.usefixtures("test_program_dao", "test_toml_user_configuration")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
-    def on_succeed_delete_validation(self, tree):
+    def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_delete_validation topic was broadcast.")
 
-    def on_fail_delete_validation(self, error_message):
+    def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent validation task ID 300."
+            "_do_delete: Attempted to delete non-existent validation task " "ID 300."
+        )
+        print("\033[35m\nfail_delete_validation topic was broadcast.")
+
+    def on_fail_delete_not_in_tree(self, error_message):
+        assert error_message == (
+            "_do_delete: Attempted to delete non-existent validation task " "ID 2."
         )
         print("\033[35m\nfail_delete_validation topic was broadcast.")
 
@@ -237,7 +281,7 @@ class TestDeleteMethods:
     def test_do_delete_validation(self, mock_program_dao):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        pub.subscribe(self.on_succeed_delete_validation, "succeed_delete_validation")
+        pub.subscribe(self.on_succeed_delete, "succeed_delete_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
@@ -246,101 +290,59 @@ class TestDeleteMethods:
 
         assert DUT.last_id == 2
 
-        pub.unsubscribe(self.on_succeed_delete_validation, "succeed_delete_validation")
+        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_validation")
 
     @pytest.mark.unit
-    def test_do_delete_validation_non_existent_id(self, mock_program_dao):
+    def test_do_delete_non_existent_id(self, mock_program_dao):
         """_do_delete() should send the fail message when attempting to delete
         a record that doesn't exist in the database."""
-        pub.subscribe(self.on_fail_delete_validation, "fail_delete_validation")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
         DUT._do_delete(300)
 
-        pub.unsubscribe(self.on_fail_delete_validation, "fail_delete_validation")
-
-
-@pytest.mark.usefixtures("test_program_dao", "test_toml_user_configuration")
-class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
-
-    def on_succeed_insert_validation(self, node_id, tree):
-        assert node_id == 4
-        assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_insert_validation topic was broadcast.")
-
-    def on_fail_insert_validation(self, error_message):
-        assert error_message == (
-            "Attempting to add a validation as a child of "
-            "non-existent parent node 40."
-        )
-        print("\033[35m\nfail_insert_validation topic was broadcast.")
-
-    def on_fail_insert_validation_db_error(self, error_message):
-        assert error_message == ("An error occurred with RAMSTK.")
-        print("\033[35m\nfail_insert_validation topic was broadcast.")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_validation")
 
     @pytest.mark.unit
-    def test_do_insert_validation(self, mock_program_dao):
-        """_do_insert_validation() should send the success message after
-        successfully inserting a validation task."""
-        pub.subscribe(self.on_succeed_insert_validation, "succeed_insert_validation")
+    def test_do_delete_not_in_tree(self, mock_program_dao):
+        """_do_delete() should send the fail message when attempting to remove
+        a node that doesn't exist from the tree even if it exists in the
+        database."""
+        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._do_insert_validation(parent_id=0)
+        DUT.tree.remove_node(2)
+        DUT._do_delete(2)
 
-        assert isinstance(DUT.tree.get_node(4).data["validation"], RAMSTKValidation)
-        assert DUT.tree.get_node(4).data["validation"].validation_id == 4
-        assert DUT.tree.get_node(4).data["validation"].name == "New Validation Task"
-
-        pub.unsubscribe(self.on_succeed_insert_validation, "succeed_insert_validation")
-
-    @pytest.mark.unit
-    def test_do_insert_validation_database_error(self, mock_program_dao):
-        """_do_insert_function() should send the fail message if attempting to
-        add a function to a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_validation_db_error, "fail_insert_validation")
-
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        DUT._revision_id = 30
-        DUT._do_insert_validation(parent_id=0)
-
-        pub.unsubscribe(
-            self.on_fail_insert_validation_db_error, "fail_insert_validation"
-        )
+        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_validation")
 
 
-@pytest.mark.usefixtures("test_program_dao", "test_toml_user_configuration")
+@pytest.mark.usefixtures("test_toml_user_configuration")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
-    def on_succeed_get_validation_attrs(self, attributes):
+    def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes["validation_id"] == 1
         assert attributes["name"] == "PRF-0001"
         assert attributes["time_average"] == 0.0
         print("\033[36m\nsucceed_get_validation_attributes topic was broadcast.")
 
-    def on_succeed_get_validation_tree(self, tree):
+    def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
         print("\033[36m\nsucceed_get_validation_tree topic was broadcast")
 
-    def on_request_get_validation_tree(self):
-        print("\033[36m\nrequest_get_validation_tree topic was broadcast")
-
     @pytest.mark.unit
-    def test_do_get_attributes_validation(self, mock_program_dao):
+    def test_do_get_attributes(self, mock_program_dao):
         """do_get_attributes() should return a dict of validation attributes on
         success."""
         pub.subscribe(
-            self.on_succeed_get_validation_attrs, "succeed_get_validation_attributes"
+            self.on_succeed_get_attributes, "succeed_get_validation_attributes"
         )
 
         DUT = dmValidation()
@@ -349,7 +351,7 @@ class TestGetterSetter:
         DUT.do_get_attributes(1, "validation")
 
         pub.unsubscribe(
-            self.on_succeed_get_validation_attrs, "succeed_get_validation_attributes"
+            self.on_succeed_get_attributes, "succeed_get_validation_attributes"
         )
 
     @pytest.mark.unit
@@ -359,40 +361,19 @@ class TestGetterSetter:
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
 
-        pub.sendMessage(
-            "request_set_validation_attributes",
-            node_id=[1],
-            package={"task_specification": "MIL-HDBK-217F"},
+        DUT.do_set_attributes(
+            node_id=[1], package={"task_specification": "MIL-HDBK-217F"}
         )
+
         assert (
             DUT.do_select(1, table="validation").task_specification == "MIL-HDBK-217F"
         )
 
     @pytest.mark.unit
-    def test_do_set_attributes_unknown_attr(self, mock_program_dao):
-        """do_set_attributes() should return None and leave all attributes
-        unchanged if passed an attribute key that does not exist."""
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-
-        pub.sendMessage(
-            "request_set_validation_attributes",
-            node_id=[1],
-            package={"task_filliwonga": "This is a filli-wonga."},
-        )
-
-        with pytest.raises(AttributeError):
-            assert (
-                DUT.do_select(1, table="validation").task_filliwonga
-                == "This is a filli-wonga."
-            )
-
-    @pytest.mark.unit
-    def test_on_get_validation_tree(self, mock_program_dao):
+    def test_on_get_data_manager_tree(self, mock_program_dao):
         """on_get_tree() should return the validation treelib Tree."""
         pub.subscribe(
-            self.on_succeed_get_validation_tree, "succeed_get_validation_tree"
+            self.on_succeed_get_data_manager_tree, "succeed_get_validation_tree"
         )
 
         DUT = dmValidation()
@@ -401,151 +382,100 @@ class TestGetterSetter:
         DUT.do_get_tree()
 
         pub.unsubscribe(
-            self.on_succeed_get_validation_tree, "succeed_get_validation_tree"
+            self.on_succeed_get_data_manager_tree, "succeed_get_validation_tree"
         )
 
     @pytest.mark.unit
-    def test_analysis_manager_do_request_trees(
+    def test_on_get_analysis_manager_tree(
         self, mock_program_dao, test_toml_user_configuration
     ):
         """_do_request_tree() should send the tree request messages."""
-        pub.subscribe(
-            self.on_request_get_validation_tree, "request_get_validations_tree"
-        )
-
         DUT = amValidation(test_toml_user_configuration)
 
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1})
+        DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)
         assert isinstance(DUT._tree.get_node(1).data["validation"], RAMSTKValidation)
 
-        pub.unsubscribe(
-            self.on_request_get_validation_tree, "request_get_validations_tree"
-        )
 
+class TestInsertMethods:
+    """Class for testing the data manager insert() method."""
 
-@pytest.mark.usefixtures("test_program_dao", "test_toml_user_configuration")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
-
-    def on_succeed_update_validation(self, tree):
+    def on_succeed_insert_sibling(self, node_id, tree):
+        assert node_id == 4
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_update_validation topic was broadcast")
-
-    def on_fail_update_validation(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent validation task with validation ID 100."
-        )
-        print("\033[35m\nfail_update_validation topic was broadcast")
-
-    def on_fail_update_validation_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for validation task ID 1."
-        )
-        print("\033[35m\nfail_update_validation topic was broadcast")
-
-    def on_fail_update_validation_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for validation "
-            "task ID 1 was the wrong type."
-        )
-        print("\033[35m\nfail_update_validation topic was broadcast")
+        assert isinstance(tree.get_node(4).data["validation"], RAMSTKValidation)
+        assert tree.get_node(4).data["validation"].validation_id == 4
+        assert tree.get_node(4).data["validation"].name == "New Validation Task"
+        print("\033[36m\nsucceed_insert_validation topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_update_data_manager(self, mock_program_dao):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update_validation, "succeed_update_validation")
+    def test_do_insert_sibling(self, mock_program_dao):
+        """_do_insert_validation() should send the success message after
+        successfully inserting a validation task."""
+        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
+        DUT._do_insert_validation(parent_id=0)
 
-        _validation = DUT.do_select(1, "validation")
-        _validation.name = "Test Validation"
-        _validation.time_maximum = 10.5
-        DUT.do_update(1)
+        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
-        DUT.do_select_all(attributes={"revision_id": 1})
-        _validation = DUT.do_select(1, "validation")
 
-        assert _validation.name == "Test Validation"
-        assert _validation.time_maximum == 10.5
+class TestUpdateMethods:
+    """Class for testing update() and update_all() methods."""
 
-        pub.unsubscribe(self.on_succeed_update_validation, "succeed_update_validation")
+    def on_fail_update_non_existent_id(self, error_message):
+        assert error_message == (
+            "do_update: Attempted to save non-existent validation with "
+            "validation ID 100."
+        )
+        print("\033[35m\nfail_update_validation topic was broadcast")
+
+    def on_fail_update_no_data_package(self, error_message):
+        assert error_message == (
+            "do_update: No data package found for validation ID 1."
+        )
+        print("\033[35m\nfail_update_validation topic was broadcast")
 
     @pytest.mark.unit
     def test_do_update_non_existent_id(self, mock_program_dao):
         """do_update() should raise the 'fail_update_validation' message when
         passed a Validation ID that doesn't exist."""
-        pub.subscribe(self.on_fail_update_validation, "fail_update_validation")
+        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
 
-        DUT.do_update(100)
+        DUT.do_update(100, table="validation")
 
-        pub.unsubscribe(self.on_fail_update_validation, "fail_update_validation")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_validation")
 
     @pytest.mark.unit
     def test_do_update_no_data_package(self, mock_program_dao):
         """do_update() should raise the 'fail_update_validation' message when
         passed a Validation ID that doesn't exist in the tree."""
-        pub.subscribe(
-            self.on_fail_update_validation_no_data_package, "fail_update_validation"
-        )
+        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_validation")
 
         DUT = dmValidation()
         DUT.do_connect(mock_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
         DUT.tree.get_node(1).data.pop("validation")
-        DUT.do_update(1)
+        DUT.do_update(1, table="validation")
 
-        pub.unsubscribe(
-            self.on_fail_update_validation_no_data_package, "fail_update_validation"
-        )
-
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        pub.subscribe(
-            self.on_fail_update_validation_wrong_data_type, "fail_update_validation"
-        )
-
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        _validation = DUT.do_select(1, table="validation")
-        _validation.time_mean = {1: 2}
-
-        DUT.do_update(1)
-
-        pub.unsubscribe(
-            self.on_fail_update_validation_wrong_data_type, "fail_update_validation"
-        )
-
-    @pytest.mark.unit
-    def test_do_update_wrong_data_type_root_node(self, mock_program_dao):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
-        DUT = dmValidation()
-        DUT.do_connect(mock_program_dao)
-        DUT.do_select_all(attributes={"revision_id": 1})
-        _validation = DUT.do_select(1, table="validation")
-        _validation.time_mean = {1: 2}
-
-        DUT.do_update(0)
+        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_validation")
 
 
 @pytest.mark.usefixtures("mock_program_dao", "test_toml_user_configuration")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
-    def on_succeed_calculate_verification_plan(self, attributes):
+    def on_succeed_calculate_plan(self, attributes):
         assert attributes["plan"].loc[
             pd.to_datetime(date.today() - timedelta(days=10)), "lower"
         ] == pytest.approx(50.0004502)
@@ -582,12 +512,12 @@ class TestAnalysisMethods:
     def test_do_calculate_task(self, mock_program_dao, test_toml_user_configuration):
         """do_calculate_task() should calculate the validation task time and
         cost."""
+        DUT = amValidation(test_toml_user_configuration)
+
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1})
-        DUT = amValidation(test_toml_user_configuration)
-
-        pub.sendMessage("request_get_validations_tree")
+        DATAMGR.do_get_tree()
 
         _validation = DATAMGR.do_select(1, "validation")
         _validation.time_minimum = 10.0
@@ -597,9 +527,9 @@ class TestAnalysisMethods:
         _validation.cost_average = 2200.0
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
-        DATAMGR.do_update(1)
+        DATAMGR.do_update(1, table="validation")
 
-        pub.sendMessage("request_calculate_validation_task", node_id=1)
+        DUT._do_calculate_task(node_id=1)
 
         assert DUT._tree.get_node(1).data["validation"].time_ll == pytest.approx(
             11.86684674
@@ -630,12 +560,12 @@ class TestAnalysisMethods:
     ):
         """_do_calculate_all_tasks() should calculate the validation tasks time
         and cost."""
+        DUT = amValidation(test_toml_user_configuration)
+
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1})
-        DUT = amValidation(test_toml_user_configuration)
-
-        pub.sendMessage("request_get_validations_tree")
+        DATAMGR.do_get_tree()
 
         _validation = DATAMGR.do_select(1, "validation")
         _validation.time_minimum = 10.0
@@ -645,9 +575,9 @@ class TestAnalysisMethods:
         _validation.cost_average = 2200.0
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
-        DATAMGR.do_update(1)
+        DATAMGR.do_update(1, table="validation")
 
-        pub.sendMessage("request_calculate_validation_tasks")
+        DUT._do_calculate_all_tasks()
 
         assert DUT._tree.get_node(1).data["validation"].time_ll == pytest.approx(
             11.86684674
@@ -679,16 +609,15 @@ class TestAnalysisMethods:
         """do_calculate_plan() should calculate the planned validation effort
         time and cost."""
         pub.subscribe(
-            self.on_succeed_calculate_verification_plan,
-            "succeed_calculate_verification_plan",
+            self.on_succeed_calculate_plan, "succeed_calculate_verification_plan"
         )
+
+        DUT = amValidation(test_toml_user_configuration)
 
         DATAMGR = dmValidation()
         DATAMGR.do_connect(mock_program_dao)
         DATAMGR.do_select_all(attributes={"revision_id": 1})
-        DUT = amValidation(test_toml_user_configuration)
-
-        pub.sendMessage("request_get_validations_tree")
+        DATAMGR.do_get_tree()
 
         _validation = DATAMGR.do_select(1, "validation")
         _validation.time_minimum = 10.0
@@ -699,7 +628,8 @@ class TestAnalysisMethods:
         _validation.cost_average = 2200.0
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
-        DATAMGR.do_update(1)
+        DATAMGR.do_update(1, table="validation")
+
         _validation = DATAMGR.do_select(2, "validation")
         _validation.time_minimum = 15.0
         _validation.time_average = 32.0
@@ -709,38 +639,10 @@ class TestAnalysisMethods:
         _validation.cost_average = 1200.0
         _validation.cost_maximum = 2500.0
         _validation.confidence = 95.0
-        DATAMGR.do_update(2)
+        DATAMGR.do_update(2, table="validation")
 
-        pub.sendMessage("request_calculate_plan")
+        DUT.do_calculate_plan()
 
         pub.unsubscribe(
-            self.on_succeed_calculate_verification_plan,
-            "succeed_calculate_verification_plan",
+            self.on_succeed_calculate_plan, "succeed_calculate_verification_plan"
         )
-
-    @pytest.mark.skip
-    def test_do_select_actuals(self, mock_program_dao, test_toml_user_configuration):
-        """_do_select_actuals() should return a pandas DataFrame() containing
-        actual plan status."""
-        DATAMGR = dmValidation()
-        DATAMGR.do_connect(mock_program_dao)
-        DATAMGR.do_select_all(attributes={"revision_id": 1})
-        PSMGR = dmProgramStatus()
-        PSMGR.do_connect(mock_program_dao)
-        PSMGR.do_select_all(attributes={"revision_id": 1})
-
-        DUT = amValidation(test_toml_user_configuration)
-
-        pub.sendMessage("request_get_validations_tree")
-        pub.sendMessage(
-            "succeed_calculate_all_validation_tasks",
-            cost_remaining=212.32,
-            time_remaining=112.5,
-        )
-        pub.sendMessage("request_get_program_status_tree")
-
-        _actuals = DUT._do_select_actual_status()
-
-        assert isinstance(_actuals, pd.DataFrame)
-        assert _actuals.loc[pd.to_datetime(date.today()), "cost"] == 212.32
-        assert _actuals.loc[pd.to_datetime(date.today()), "time"] == 112.5
