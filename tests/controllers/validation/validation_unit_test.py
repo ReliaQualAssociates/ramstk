@@ -17,20 +17,20 @@ import pandas as pd
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKValidation
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amValidation, dmProgramStatus, dmValidation
+from ramstk.controllers import amValidation, dmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKValidation
 
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _validation_1 = RAMSTKValidation()
+    _validation_1 = MockRAMSTKValidation()
     _validation_1.revision_id = 1
     _validation_1.validation_id = 1
     _validation_1.acceptable_maximum = 30.0
@@ -61,7 +61,7 @@ def mock_program_dao(monkeypatch):
     _validation_1.time_ul = 0.0
     _validation_1.time_variance = 0.0
 
-    _validation_2 = RAMSTKValidation()
+    _validation_2 = MockRAMSTKValidation()
     _validation_2.revision_id = 1
     _validation_2.validation_id = 2
     _validation_2.acceptable_maximum = 30.0
@@ -92,7 +92,7 @@ def mock_program_dao(monkeypatch):
     _validation_2.time_ul = 0.0
     _validation_2.time_variance = 0.0
 
-    _validation_3 = RAMSTKValidation()
+    _validation_3 = MockRAMSTKValidation()
     _validation_3.revision_id = 1
     _validation_3.validation_id = 3
     _validation_3.acceptable_maximum = 30.0
@@ -194,7 +194,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
+        assert isinstance(tree.get_node(1).data["validation"], MockRAMSTKValidation)
         print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
 
     @pytest.mark.unit
@@ -232,7 +232,7 @@ class TestSelectMethods:
 
         _validation = DUT.do_select(1, table="validation")
 
-        assert isinstance(_validation, RAMSTKValidation)
+        assert isinstance(_validation, MockRAMSTKValidation)
         assert _validation.acceptable_maximum == 30.0
         assert _validation.name == "PRF-0001"
 
@@ -334,7 +334,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
+        assert isinstance(tree.get_node(1).data["validation"], MockRAMSTKValidation)
         print("\033[36m\nsucceed_get_validation_tree topic was broadcast")
 
     @pytest.mark.unit
@@ -398,7 +398,9 @@ class TestGetterSetter:
         DATAMGR.do_get_tree()
 
         assert isinstance(DUT._tree, Tree)
-        assert isinstance(DUT._tree.get_node(1).data["validation"], RAMSTKValidation)
+        assert isinstance(
+            DUT._tree.get_node(1).data["validation"], MockRAMSTKValidation
+        )
 
 
 class TestInsertMethods:
