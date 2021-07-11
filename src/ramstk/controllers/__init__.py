@@ -13,6 +13,7 @@ from ramstk.controllers.managers import RAMSTKAnalysisManager, RAMSTKDataManager
 # RAMSTK Local Imports
 from .allocation.analysismanager import AnalysisManager as amAllocation
 from .allocation.datamanager import DataManager as dmAllocation
+from .environment.datamanager import DataManager as dmEnvironment
 from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
 from .fmea.datamanager import DataManager as dmFMEA
