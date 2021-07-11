@@ -108,16 +108,17 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
+    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message with the ID of the newly
         inserted node and the data manager's tree after successfully inserting
         a new opstress."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
+        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
         pub.sendMessage("request_insert_opstress", parent_id=2)
 
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
+        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
     @pytest.mark.pof
     @pytest.mark.integration
