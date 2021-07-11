@@ -22,7 +22,6 @@ from ramstk.models.programdb import RAMSTKMissionPhase
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
-    """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmMissionPhase()
     dut.do_connect(test_program_dao)
@@ -83,7 +82,7 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_mission_phase topic was broadcast")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message with the ID of the newly
         inserted node and the data manager's tree after successfully inserting
@@ -94,7 +93,7 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_no_revision(self, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new mission phase."""
@@ -227,7 +226,7 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
         Requirement ID that doesn't exist."""
@@ -277,7 +276,7 @@ class TestUpdateMethods:
             self.on_fail_update_non_existent_id, "fail_update_mission_phase"
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_update_no_data_package(self, test_datamanager):
         """do_update_usage_profile() should broadcast the fail message when
         attempting to save a non-existent ID."""
@@ -329,7 +328,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_on_get_tree(self, test_datamanager):
         """on_get_tree() should return the revision treelib Tree."""
         pub.subscribe(
@@ -342,7 +341,7 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_mission_phase_tree"
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should send the success message."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mission_phase_tree")
