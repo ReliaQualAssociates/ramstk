@@ -268,7 +268,6 @@ class TestUpdateMethods:
 
         _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.percent_weight_factor = 0.9832
-        _allocation = test_datamanager.do_select(2, table="allocation")
         _allocation.mtbf_goal = 12000
         pub.sendMessage("request_update_allocation", node_id=2, table="allocation")
 
@@ -419,7 +418,7 @@ class TestGetterSetter:
         assert test_analysismanager._attributes["mtbf_alloc"] == 0.0
 
     @pytest.mark.integration
-    def test_on_get_data_manager_tree(self):
+    def test_on_get_tree_data_manager(self):
         """_on_get_tree() should assign the data manager's tree to the _tree
         attribute in response to the succeed_get_allocation_tree message."""
         pub.subscribe(
