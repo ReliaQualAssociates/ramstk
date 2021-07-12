@@ -445,3 +445,25 @@ class TestAnalysisMethods:
 
         assert test_analysismanager._node_hazard_rate == 0.00032
         assert test_analysismanager._system_hazard_rate == 0.00032
+
+    @pytest.mark.unit
+    @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
+    def test_do_get_allocation_goal(
+        self, test_analysismanager, test_datamanager, method_id
+    ):
+        """do_calculate_goal() should return the proper allocation goal
+        measure."""
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_get_tree()
+        test_datamanager.do_get_attributes(node_id=2, table="allocation")
+
+        test_analysismanager._attributes["allocation_method_id"] = method_id
+        test_analysismanager._attributes["hazard_rate_goal"] = 0.00002681
+        test_analysismanager._attributes["reliability_goal"] = 0.9995
+
+        _goal = test_analysismanager._do_get_allocation_goal()
+
+        if method_id in [2, 4]:
+            assert _goal == 0.00002681
+        else:
+            assert _goal == 0.9995

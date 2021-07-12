@@ -169,6 +169,8 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
         try:
             _allocation = RAMSTKAllocation()
             _allocation.revision_id = self._revision_id
@@ -191,6 +193,20 @@ class DataManager(RAMSTKDataManager):
                 node_id=self.last_id,
                 tree=self.tree,
             )
+        except NodeIDAbsentError:
+            _error_msg: str = (
+                "{1}: Attempted to insert child allocation under "
+                "non-existent allocation ID {0}."
+            ).format(str(parent_id), _method_name)
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_insert_allocation",
+                error_message=_error_msg,
+            )
         except DataAccessError as _error:
             pub.sendMessage(
                 "do_log_debug",
@@ -198,6 +214,6 @@ class DataManager(RAMSTKDataManager):
                 message=_error.msg,
             )
             pub.sendMessage(
-                "fail_insert_hardware",
+                "fail_insert_allocation",
                 error_message=_error.msg,
             )

@@ -370,12 +370,9 @@ CREATE TABLE ramstk_allocation (
 );
 INSERT INTO "ramstk_allocation" VALUES(1,1,0.0,100.0,1,1,0.0,0.0,1,1,1,10.0,0.0,0.0,1,1,0,0.0,1.0,1.0,1,1,1);
 INSERT INTO "ramstk_allocation" VALUES(1,2,0.0,100.0,1,1,0.0,0.000617,1,1,4,100.0,0.0,0.0,1,1,1,0.0,1.0,0.995,1,1,1);
-INSERT INTO "ramstk_allocation" VALUES(1,3,0.0,100.0,1,1,0.0,0.0,1,1,1,100.0,0.0,0.0,1,1,1,0.0,1.0,1.0,1,1,1);
-INSERT INTO "ramstk_allocation" VALUES(1,4,0.0,100.0,1,1,0.0,0.0,1,1,1,100.0,0.0,0.0,1,1,1,0.0,1.0,1.0,1,1,1);
 INSERT INTO "ramstk_allocation" VALUES(1,5,0.0,100.0,1,1,0.0,0.0,1,1,1,100.0,0.0,0.0,1,1,1,0.0,1.0,1.0,1,1,1);
 INSERT INTO "ramstk_allocation" VALUES(1,6,0.0,80.0,6,1,0.000157531914893617,0.0,1,3,1,100.0,6.3479200432198813358e+03,12000.0,1,2,2,0.0,9.84370241029675296928e-01,0.9995,9,2,0.8);
 INSERT INTO "ramstk_allocation" VALUES(1,7,0.0,90.0,3,1,4.59468085106382972786e-04,0.0,1,5,1,100.0,2.17642972910395928929e+03,0.0,1,4,2,0.0,0.955092763646177,1.0,9,7,0.95);
-INSERT INTO "ramstk_allocation" VALUES(1,8,0.0,100.0,1,1,0.0,0.0,1,1,1,100.0,0.0,0.0,1,1,1,0.0,1.0,1.0,1,1,1);
 CREATE TABLE ramstk_design_electric (
     fld_hardware_id INTEGER,
     fld_application_id INTEGER,
