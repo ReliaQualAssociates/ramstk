@@ -184,11 +184,11 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for environment "
             "ID 1 was the wrong type."
         )
-        print("\033[35m\nfail_update_usage_profile topic was broadcast")
+        print("\033[35m\nfail_update_environment topic was broadcast")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_stakeholder topic was broadcast")
+        print("\033[35m\nfail_update_environment topic was broadcast")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
