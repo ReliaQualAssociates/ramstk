@@ -18,6 +18,7 @@ from treelib import Tree
 from ramstk.controllers import dmEnvironment
 
 
+@pytest.mark.usefixtures("test_program_dao")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -39,7 +40,7 @@ class TestInsertMethods:
         DUT.do_connect(test_program_dao)
         DUT.do_select_all(attributes={"revision_id": 1})
         DUT._revision_id = 4
-        DUT._do_insert_environment(phase_id=1)
+        DUT._do_insert_environment(1)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
 

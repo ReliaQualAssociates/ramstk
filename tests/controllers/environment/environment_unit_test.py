@@ -13,7 +13,7 @@
 import pytest
 
 # noinspection PyUnresolvedReferences
-from mocks import MockDAO
+from mocks import MockDAO, MockRAMSTKEnvironment
 from pubsub import pub
 from treelib import Tree
 
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKEnvironment
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
-    _environment_1 = RAMSTKEnvironment()
+    _environment_1 = MockRAMSTKEnvironment()
     _environment_1.revision_id = 1
     _environment_1.phase_id = 1
     _environment_1.environment_id = 1
@@ -39,7 +39,7 @@ def mock_program_dao(monkeypatch):
     _environment_1.low_dwell_time = 0.0
     _environment_1.high_dwell_time = 0.0
 
-    _environment_2 = RAMSTKEnvironment()
+    _environment_2 = MockRAMSTKEnvironment()
     _environment_2.revision_id = 1
     _environment_2.phase_id = 1
     _environment_2.environment_id = 2
@@ -53,7 +53,7 @@ def mock_program_dao(monkeypatch):
     _environment_2.low_dwell_time = 0.0
     _environment_2.high_dwell_time = 0.0
 
-    _environment_3 = RAMSTKEnvironment()
+    _environment_3 = MockRAMSTKEnvironment()
     _environment_3.revision_id = 1
     _environment_3.phase_id = 1
     _environment_3.environment_id = 3
@@ -110,9 +110,9 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironment)
-        assert isinstance(tree.get_node(2).data["environment"], RAMSTKEnvironment)
-        assert isinstance(tree.get_node(3).data["environment"], RAMSTKEnvironment)
+        assert isinstance(tree.get_node(1).data["environment"], MockRAMSTKEnvironment)
+        assert isinstance(tree.get_node(2).data["environment"], MockRAMSTKEnvironment)
+        assert isinstance(tree.get_node(3).data["environment"], MockRAMSTKEnvironment)
         print("\033[36m\nsucceed_retrieve_environments topic was broadcast.")
 
     @pytest.mark.unit
@@ -151,7 +151,7 @@ class TestSelectMethods:
 
         _environment = DUT.do_select(1, table="environment")
 
-        assert isinstance(_environment, RAMSTKEnvironment)
+        assert isinstance(_environment, MockRAMSTKEnvironment)
         assert _environment.environment_id == 1
 
     @pytest.mark.unit
@@ -251,7 +251,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironment)
+        assert isinstance(tree.get_node(1).data["environment"], MockRAMSTKEnvironment)
         print("\033[36m\nsucceed_get_environment_tree topic was broadcast")
 
     @pytest.mark.unit
