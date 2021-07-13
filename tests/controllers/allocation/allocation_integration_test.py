@@ -410,8 +410,6 @@ class TestGetterSetter:
     def test_on_get_attributes(self, test_analysismanager, test_datamanager):
         """_get_all_attributes() should update the attributes dict on
         success."""
-        # This test would require using the dmHardware() to get the attributes.
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
         test_datamanager.do_get_attributes(node_id=2, table="allocation")
 
         assert test_analysismanager._attributes["hardware_id"] == 2
@@ -425,7 +423,7 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
         )
 
-        pub.sendMessage("request_allocation_tree")
+        pub.sendMessage("request_get_allocation_tree")
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
