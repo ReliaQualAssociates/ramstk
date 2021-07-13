@@ -819,9 +819,10 @@ CREATE TABLE ramstk_hazard_analysis (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,1,'','','','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,1,'','','','Major','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,2,2,'','','','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,3,3,'','','','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,4,'','','','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 
 CREATE TABLE ramstk_incident (
     fld_revision_id INTEGER NOT NULL,
