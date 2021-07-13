@@ -205,7 +205,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
-        """should send the fail message when the allocation ID does not exist.."""
+        """should send the fail message when the allocation ID does not exist."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
         pub.sendMessage("request_delete_hardware", node_id=300)
