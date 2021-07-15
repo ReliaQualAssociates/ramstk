@@ -333,7 +333,7 @@ class TestInsertMethods:
 
     def on_succeed_insert_opstress(self, node_id, tree):
         assert isinstance(tree, Tree)
-        assert node_id == "5.2.2.4.s"
+        assert node_id == "5.2.2.5.s"
         print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
 
     def on_fail_insert_opstress(self, error_message):
@@ -345,7 +345,7 @@ class TestInsertMethods:
 
     def on_succeed_insert_test_method(self, node_id, tree):
         assert isinstance(tree, Tree)
-        assert node_id == "5.2.2.4.t"
+        assert node_id == "5.2.2.5.t"
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     def on_fail_insert_test_method(self, error_message):
@@ -403,11 +403,11 @@ class TestInsertMethods:
         DUT._do_insert_opstress("5.2.2")
 
         assert isinstance(
-            DUT.tree.get_node("5.2.2.4.s").data["opstress"], RAMSTKOpStress
+            DUT.tree.get_node("5.2.2.5.s").data["opstress"], RAMSTKOpStress
         )
-        assert DUT.tree.get_node("5.2.2.4.s").data["opstress"].stress_id == 4
+        assert DUT.tree.get_node("5.2.2.5.s").data["opstress"].stress_id == 5
         assert (
-            DUT.tree.get_node("5.2.2.4.s").data["opstress"].description
+            DUT.tree.get_node("5.2.2.5.s").data["opstress"].description
             == "New Operating Stress"
         )
 
@@ -440,11 +440,11 @@ class TestInsertMethods:
         DUT._do_insert_testmethod("5.2.2")
 
         assert isinstance(
-            DUT.tree.get_node("5.2.2.4.t").data["testmethod"], RAMSTKTestMethod
+            DUT.tree.get_node("5.2.2.5.t").data["testmethod"], RAMSTKTestMethod
         )
-        assert DUT.tree.get_node("5.2.2.4.t").data["testmethod"].test_id == 4
+        assert DUT.tree.get_node("5.2.2.5.t").data["testmethod"].test_id == 5
         assert (
-            DUT.tree.get_node("5.2.2.4.t").data["testmethod"].description
+            DUT.tree.get_node("5.2.2.5.t").data["testmethod"].description
             == "New Test Method"
         )
 
@@ -453,7 +453,7 @@ class TestInsertMethods:
         )
 
     @pytest.mark.integration
-    def test_do_insert_test_method_no_cause(self, test_program_dao):
+    def test_do_insert_test_method_no_load(self, test_program_dao):
         """_do_insert_testmethod() should send the fail message if attempting
         to add an action to a non-existent cause ID."""
         pub.subscribe(self.on_fail_insert_test_method, "fail_insert_test_method")

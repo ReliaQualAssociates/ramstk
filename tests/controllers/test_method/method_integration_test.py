@@ -30,8 +30,8 @@ def test_datamanager(test_program_dao):
             "revision_id": 1,
             "hardware_id": 1,
             "mode_id": 6,
-            "mechanism_id": 1,
-            "load_id": 1,
+            "mechanism_id": 3,
+            "load_id": 3,
         }
     )
 
@@ -85,25 +85,15 @@ class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 2
+        assert node_id == 5
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(5).data["test_method"], RAMSTKTestMethod)
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_load_id)=(1, 1, 6, 100) is not present in table "
-            '"ramstk_op_load".'
-        )
-        print("\033[35m\nfail_insert_test_method topic was broadcast.")
-
-    def on_fail_insert_no_revision(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_load_id)=(10, 1, 6, 1) is not present in table "
+            "returned:\n\tKey (fld_load_id)=(100) is not present in table "
             '"ramstk_op_load".'
         )
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
@@ -115,7 +105,7 @@ class TestInsertMethods:
         successfully inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
-        pub.sendMessage("request_insert_test_method", parent_id=1)
+        pub.sendMessage("request_insert_test_method", parent_id=3)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
@@ -131,18 +121,6 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 
-    @pytest.mark.pof
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
-        """_do_insert_test_method() should send the success message after
-        successfully inserting an operating stress."""
-        pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_test_method")
-
-        test_datamanager._revision_id = 10
-        pub.sendMessage("request_insert_test_method", parent_id=1)
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_test_method")
-
 
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
@@ -150,10 +128,7 @@ class TestDeleteMethods:
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(1) is None
-        print(
-            "\033[36m\nsucceed_delete_test_method topic was broadcast when deleting "
-            "a failure mode."
-        )
+        print("\033[36m\nsucceed_delete_test_method topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
@@ -163,18 +138,20 @@ class TestDeleteMethods:
 
     def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent Test Method ID 1."
+            "_do_delete: Attempted to delete non-existent Test Method ID 4."
         )
         print("\033[35m\nfail_delete_test_method topic was broadcast.")
 
     @pytest.mark.pof
     @pytest.mark.integration
-    def test_do_delete(self):
+    def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib Tree
         when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
-        pub.sendMessage("request_delete_test_method", node_id=1)
+        pub.sendMessage("request_delete_test_method", node_id=3)
+
+        assert test_datamanager.last_id == 4
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
@@ -191,13 +168,14 @@ class TestDeleteMethods:
 
     @pytest.mark.pof
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self):
+    def test_do_delete_not_in_tree(self, test_datamanager):
         """_do_delete() should send the fail message when attempting to remove
         a node that doesn't exist from the tree even if it exists in the
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_test_method")
 
-        pub.sendMessage("request_delete_test_method", node_id=1)
+        test_datamanager.tree.remove_node(4)
+        pub.sendMessage("request_delete_test_method", node_id=4)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_test_method")
 
@@ -208,11 +186,11 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["test_method"].description == (
+        assert tree.get_node(3).data["test_method"].description == (
             "Big test test_method."
         )
-        assert tree.get_node(1).data["test_method"].load_history == (
-            "Big test load history."
+        assert tree.get_node(3).data["test_method"].boundary_conditions == (
+            "Big test boundary conditions."
         )
         print("\033[36m\nsucceed_update_test_method topic was broadcast")
 
@@ -221,7 +199,7 @@ class TestUpdateMethods:
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
-            "do_update: The value for one or more attributes for test_method ID 1 was "
+            "do_update: The value for one or more attributes for test method ID 3 was "
             "the wrong type."
         )
         print("\033[35m\nfail_update_test_method topic was broadcast")
@@ -239,7 +217,7 @@ class TestUpdateMethods:
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
-            "do_update: No data package found for test method ID 1."
+            "do_update: No data package found for test method ID 4."
         )
         print("\033[35m\nfail_update_test_method topic was broadcast")
 
@@ -249,13 +227,13 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_test_method")
 
-        test_datamanager.tree.get_node(1).data[
+        test_datamanager.tree.get_node(3).data[
             "test_method"
         ].description = "Big test test_method."
-        test_datamanager.tree.get_node(1).data[
+        test_datamanager.tree.get_node(3).data[
             "test_method"
-        ].load_history = "Big test load history."
-        pub.sendMessage("request_update_test_method", node_id=1, table="test_method")
+        ].boundary_conditions = "Big test boundary conditions."
+        pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_test_method")
 
@@ -276,10 +254,10 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
-        _test_method = test_datamanager.do_select(1, table="test_method")
-        _test_method.rpn_detection = {1: 2}
+        _test_method = test_datamanager.do_select(3, table="test_method")
+        _test_method.boundary_conditions = {1: 2}
 
-        pub.sendMessage("request_update_test_method", node_id=1, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
@@ -292,10 +270,10 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
         )
 
-        _test_method = test_datamanager.do_select(1, table="test_method")
-        _test_method.rpn_detection_new = {1: 2}
+        _test_method = test_datamanager.do_select(4, table="test_method")
+        _test_method.boundary_conditions = {1: 2}
 
-        pub.sendMessage("request_update_test_method", node_id=1, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=0, table="test_method")
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
@@ -319,8 +297,8 @@ class TestUpdateMethods:
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 
-        test_datamanager.tree.get_node(1).data.pop("test_method")
-        pub.sendMessage("request_update_test_method", node_id=1, table="test_method")
+        test_datamanager.tree.get_node(4).data.pop("test_method")
+        pub.sendMessage("request_update_test_method", node_id=4, table="test_method")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 

@@ -896,6 +896,7 @@ CREATE TABLE ramstk_test_method (
 INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method','','');
 INSERT INTO "ramstk_test_method" VALUES(1,1,5,2,2,2,'','','');
 INSERT INTO "ramstk_test_method" VALUES(1,1,6,3,3,3,'','','');
+INSERT INTO "ramstk_test_method" VALUES(1,1,6,3,3,4,'','','');
 
 CREATE TABLE ramstk_validation (
     fld_revision_id INTEGER,
