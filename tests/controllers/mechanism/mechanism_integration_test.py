@@ -233,11 +233,12 @@ class TestUpdateMethods:
             test_datamanager.tree.get_node(3).data["mechanism"].description
             == "Test failure mechanism"
         )
-        test_datamanager.tree.get_node(3).data["mechanism"].rpn_detection == 2
-        test_datamanager.tree.get_node(4).data[
-            "mechanism"
-        ].description == "Big test failure mechanism"
-        test_datamanager.tree.get_node(4).data["mechanism"].rpn_detection == 7
+        assert test_datamanager.tree.get_node(3).data["mechanism"].rpn_detection == 2
+        assert (
+            test_datamanager.tree.get_node(4).data["mechanism"].description
+            == "Big test failure mechanism"
+        )
+        assert test_datamanager.tree.get_node(4).data["mechanism"].rpn_detection == 7
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
