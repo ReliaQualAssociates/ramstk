@@ -26,7 +26,7 @@ def test_datamanager(test_program_dao):
     dut = dmOpLoad()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
-        attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 1}
+        attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 4}
     )
 
     yield dut
@@ -73,16 +73,15 @@ class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+        assert node_id == 5
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(3).data["opload"], RAMSTKOpLoad)
+        assert isinstance(tree.get_node(5).data["opload"], RAMSTKOpLoad)
         print("\033[36m\nsucceed_insert_opload topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id, fld_mode_id, "
-            "fld_mechanism_id)=(1, 1, 6, 100) is not present in table "
+            "returned:\n\tKey (fld_mechanism_id)=(100) is not present in table "
             '"ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
@@ -104,7 +103,7 @@ class TestInsertMethods:
         a new opload."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_opload")
 
-        pub.sendMessage("request_insert_opload", parent_id=2)
+        pub.sendMessage("request_insert_opload", parent_id=4)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opload")
 
@@ -115,8 +114,10 @@ class TestInsertMethods:
         add an operating load to a non-existent opload ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_opload")
 
+        _parent_id = test_datamanager._parent_id
         test_datamanager._parent_id = 100
         pub.sendMessage("request_insert_opload", parent_id=100)
+        test_datamanager._parent_id = _parent_id
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_opload")
 
@@ -128,7 +129,7 @@ class TestInsertMethods:
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_opload")
 
         test_datamanager._revision_id = 10
-        pub.sendMessage("request_insert_opload", parent_id=1)
+        pub.sendMessage("request_insert_opload", parent_id=4)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_opload")
 
@@ -152,7 +153,7 @@ class TestDeleteMethods:
 
     def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent OpLoad ID 1."
+            "_do_delete: Attempted to delete non-existent OpLoad ID 4."
         )
         print("\033[35m\nfail_delete_opload topic was broadcast.")
 
@@ -163,7 +164,7 @@ class TestDeleteMethods:
         when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_opload")
 
-        test_datamanager._do_delete(2)
+        test_datamanager._do_delete(3)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_opload")
 
@@ -186,8 +187,8 @@ class TestDeleteMethods:
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_opload")
 
-        test_datamanager.tree.remove_node(1)
-        test_datamanager._do_delete(1)
+        test_datamanager.tree.remove_node(4)
+        test_datamanager._do_delete(4)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_opload")
 
@@ -198,8 +199,8 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["opload"].description == ("Test failure " "opload")
-        assert tree.get_node(1).data["opload"].rpn_detection == 4
+        assert tree.get_node(4).data["opload"].description == ("Test failure " "opload")
+        assert tree.get_node(4).data["opload"].priority_id == 4
         print("\033[36m\nsucceed_update_opload topic was broadcast")
 
     def on_succeed_update_all(self):
@@ -207,7 +208,7 @@ class TestUpdateMethods:
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
-            "do_update: The value for one or more attributes for opload ID 1 was "
+            "do_update: The value for one or more attributes for opload ID 4 was "
             "the wrong type."
         )
         print("\033[35m\nfail_update_opload topic was broadcast")
@@ -223,7 +224,7 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_opload topic was broadcast")
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for opload ID 1.")
+        assert error_message == ("do_update: No data package found for opload ID 4.")
         print("\033[35m\nfail_update_opload topic was broadcast")
 
     @pytest.mark.pof
@@ -232,12 +233,18 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_opload")
 
-        test_datamanager.tree.get_node(1).data[
+        test_datamanager.tree.get_node(4).data[
             "opload"
         ].description = "Test failure opload"
-        test_datamanager.tree.get_node(1).data["opload"].rpn_detection = 4
+        test_datamanager.tree.get_node(4).data["opload"].priority_id = 4
 
-        pub.sendMessage("request_update_opload", node_id=1, table="opload")
+        pub.sendMessage("request_update_opload", node_id=4, table="opload")
+
+        assert (
+            test_datamanager.tree.get_node(4).data["opload"].description
+            == "Test failure opload"
+        )
+        assert test_datamanager.tree.get_node(4).data["opload"].priority_id == 4
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_opload")
 
@@ -258,10 +265,10 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
-        _opload = test_datamanager.do_select(1, table="opload")
-        _opload.rpn_detection = {1: 2}
+        _opload = test_datamanager.do_select(4, table="opload")
+        _opload.priority_id = {1: 2}
 
-        pub.sendMessage("request_update_opload", node_id=1, table="opload")
+        pub.sendMessage("request_update_opload", node_id=4, table="opload")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
@@ -274,8 +281,8 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opload"
         )
 
-        _opload = test_datamanager.do_select(1, table="opload")
-        _opload.rpn_detection_new = {1: 2}
+        _opload = test_datamanager.do_select(4, table="opload")
+        _opload.priority_id = {1: 2}
 
         pub.sendMessage("request_update_opload", node_id=0, table="opload")
 
@@ -299,8 +306,8 @@ class TestUpdateMethods:
         ID that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_opload")
 
-        test_datamanager.tree.get_node(1).data.pop("opload")
-        pub.sendMessage("request_update_opload", node_id=1, table="opload")
+        test_datamanager.tree.get_node(4).data.pop("opload")
+        pub.sendMessage("request_update_opload", node_id=4, table="opload")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_opload")
 
@@ -317,12 +324,12 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["opload"], RAMSTKOpLoad)
+        assert isinstance(tree.get_node(4).data["opload"], RAMSTKOpLoad)
         print("\033[36m\nsucceed_get_opload_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["opload"].description == "Jared Kushner"
+        assert tree.get_node(4).data["opload"].description == "Jared Kushner"
         print("\033[36m\nsucceed_get_opload_tree topic was broadcast")
 
     @pytest.mark.pof
@@ -332,7 +339,7 @@ class TestGetterSetter:
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-        pub.sendMessage("request_get_opload_attributes", node_id=1, table="opload")
+        pub.sendMessage("request_get_opload_attributes", node_id=4, table="opload")
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
@@ -357,7 +364,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_opload_attributes",
-            node_id=[1, ""],
+            node_id=[4],
             package={"description": "Big test operating load."},
         )
 

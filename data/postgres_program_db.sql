@@ -138,6 +138,52 @@ CREATE TABLE ramstk_function (
     PRIMARY KEY (fld_function_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
+CREATE TABLE ramstk_hazard_analysis (
+    fld_revision_id INTEGER,
+    fld_function_id INTEGER,
+    fld_hazard_id INTEGER NOT NULL,
+    fld_potential_hazard VARCHAR(256),
+    fld_potential_cause VARCHAR(512),
+    fld_assembly_effect VARCHAR(512),
+    fld_assembly_severity VARCHAR(256),
+    fld_assembly_probability VARCHAR(256),
+    fld_assembly_hri INTEGER,
+    fld_assembly_mitigation VARCHAR,
+    fld_assembly_severity_f VARCHAR(256),
+    fld_assembly_probability_f VARCHAR(256),
+    fld_assembly_hri_f INTEGER,
+    fld_function_1 VARCHAR(128),
+    fld_function_2 VARCHAR(128),
+    fld_function_3 VARCHAR(128),
+    fld_function_4 VARCHAR(128),
+    fld_function_5 VARCHAR(128),
+    fld_remarks VARCHAR,
+    fld_result_1 FLOAT,
+    fld_result_2 FLOAT,
+    fld_result_3 FLOAT,
+    fld_result_4 FLOAT,
+    fld_result_5 FLOAT,
+    fld_system_effect VARCHAR(512),
+    fld_system_severity VARCHAR(256),
+    fld_system_probability VARCHAR(256),
+    fld_system_hri INTEGER,
+    fld_system_mitigation VARCHAR,
+    fld_system_severity_f VARCHAR(256),
+    fld_system_probability_f VARCHAR(256),
+    fld_system_hri_f INTEGER,
+    fld_user_blob_1 VARCHAR,
+    fld_user_blob_2 VARCHAR,
+    fld_user_blob_3 VARCHAR,
+    fld_user_float_1 FLOAT,
+    fld_user_float_2 FLOAT,
+    fld_user_float_3 FLOAT,
+    fld_user_int_1 INTEGER,
+    fld_user_int_2 INTEGER,
+    fld_user_int_3 INTEGER,
+    PRIMARY KEY (fld_hazard_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
+);
 
 CREATE TABLE ramstk_requirement (
     fld_revision_id INTEGER,
@@ -399,52 +445,6 @@ CREATE TABLE ramstk_design_mechanic (
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_design_mechanic" VALUES(1,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
-CREATE TABLE ramstk_hazard_analysis (
-    fld_revision_id INTEGER,
-    fld_function_id INTEGER,
-    fld_hazard_id INTEGER NOT NULL,
-    fld_potential_hazard VARCHAR(256),
-    fld_potential_cause VARCHAR(512),
-    fld_assembly_effect VARCHAR(512),
-    fld_assembly_severity VARCHAR(256),
-    fld_assembly_probability VARCHAR(256),
-    fld_assembly_hri INTEGER,
-    fld_assembly_mitigation VARCHAR,
-    fld_assembly_severity_f VARCHAR(256),
-    fld_assembly_probability_f VARCHAR(256),
-    fld_assembly_hri_f INTEGER,
-    fld_function_1 VARCHAR(128),
-    fld_function_2 VARCHAR(128),
-    fld_function_3 VARCHAR(128),
-    fld_function_4 VARCHAR(128),
-    fld_function_5 VARCHAR(128),
-    fld_remarks VARCHAR,
-    fld_result_1 FLOAT,
-    fld_result_2 FLOAT,
-    fld_result_3 FLOAT,
-    fld_result_4 FLOAT,
-    fld_result_5 FLOAT,
-    fld_system_effect VARCHAR(512),
-    fld_system_severity VARCHAR(256),
-    fld_system_probability VARCHAR(256),
-    fld_system_hri INTEGER,
-    fld_system_mitigation VARCHAR,
-    fld_system_severity_f VARCHAR(256),
-    fld_system_probability_f VARCHAR(256),
-    fld_system_hri_f INTEGER,
-    fld_user_blob_1 VARCHAR,
-    fld_user_blob_2 VARCHAR,
-    fld_user_blob_3 VARCHAR,
-    fld_user_float_1 FLOAT,
-    fld_user_float_2 FLOAT,
-    fld_user_float_3 FLOAT,
-    fld_user_int_1 INTEGER,
-    fld_user_int_2 INTEGER,
-    fld_user_int_3 INTEGER,
-    PRIMARY KEY (fld_hazard_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
-    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
-);
 CREATE TABLE ramstk_mil_hdbk_f (
     fld_hardware_id INTEGER,
     fld_a_one FLOAT,
@@ -659,7 +659,7 @@ INSERT INTO "ramstk_similar_item" VALUES(1,1,'','','','','','','','','','',0.0,0
 CREATE TABLE ramstk_mode (
     fld_revision_id INTEGER,
     fld_hardware_id INTEGER,
-    fld_mode_id INTEGER PRIMARY KEY NOT NULL,
+    fld_mode_id INTEGER NOT NULL,
     fld_critical_item INTEGER,
     fld_description VARCHAR(512),
     fld_design_provisions VARCHAR,
@@ -684,7 +684,9 @@ CREATE TABLE ramstk_mode (
     fld_rpn_severity_new INTEGER,
     fld_severity_class VARCHAR(64),
     fld_single_point INTEGER,
-    fld_type_id INTEGER
+    fld_type_id INTEGER,
+    PRIMARY KEY (fld_mode_id),
+    FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_mechanism (
     fld_revision_id INTEGER,
@@ -791,12 +793,46 @@ CREATE TABLE ramstk_test_method (
     PRIMARY KEY (fld_test_id),
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
 );
+
+CREATE TABLE ramstk_validation (
+    fld_revision_id INTEGER,
+    fld_validation_id INTEGER NOT NULL,
+    fld_acceptable_maximum FLOAT,
+    fld_acceptable_mean FLOAT,
+    fld_acceptable_minimum FLOAT,
+    fld_acceptable_variance FLOAT,
+    fld_confidence FLOAT,
+    fld_cost_average FLOAT,
+    fld_cost_ll FLOAT,
+    fld_cost_maximum FLOAT,
+    fld_cost_mean FLOAT,
+    fld_cost_minimum FLOAT,
+    fld_cost_ul FLOAT,
+    fld_cost_variance FLOAT,
+    fld_date_end DATE,
+    fld_date_start DATE,
+    fld_description VARCHAR,
+    fld_measurement_unit INTEGER,
+    fld_name VARCHAR(256),
+    fld_status FLOAT,
+    fld_type INTEGER,
+    fld_task_specification VARCHAR(512),
+    fld_time_average FLOAT,
+    fld_time_ll FLOAT,
+    fld_time_maximum FLOAT,
+    fld_time_mean FLOAT,
+    fld_time_minimum FLOAT,
+    fld_time_ul FLOAT,
+    fld_time_variance FLOAT,
+    PRIMARY KEY (fld_validation_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
+);
+
 CREATE TABLE ramstk_load_history (
     fld_load_history_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
     PRIMARY KEY (fld_load_history_id)
 );
-
 CREATE TABLE ramstk_test (
     fld_revision_id INTEGER NOT NULL,
     fld_test_id INTEGER NOT NULL,
@@ -1165,37 +1201,4 @@ CREATE TABLE ramstk_unit (
     fld_description VARCHAR(512),
     fld_type VARCHAR(256),
     PRIMARY KEY (fld_unit_id)
-);
-CREATE TABLE ramstk_validation (
-    fld_revision_id INTEGER,
-    fld_validation_id INTEGER NOT NULL,
-    fld_acceptable_maximum FLOAT,
-    fld_acceptable_mean FLOAT,
-    fld_acceptable_minimum FLOAT,
-    fld_acceptable_variance FLOAT,
-    fld_confidence FLOAT,
-    fld_cost_average FLOAT,
-    fld_cost_ll FLOAT,
-    fld_cost_maximum FLOAT,
-    fld_cost_mean FLOAT,
-    fld_cost_minimum FLOAT,
-    fld_cost_ul FLOAT,
-    fld_cost_variance FLOAT,
-    fld_date_end DATE,
-    fld_date_start DATE,
-    fld_description VARCHAR,
-    fld_measurement_unit INTEGER,
-    fld_name VARCHAR(256),
-    fld_status FLOAT,
-    fld_type INTEGER,
-    fld_task_specification VARCHAR(512),
-    fld_time_average FLOAT,
-    fld_time_ll FLOAT,
-    fld_time_maximum FLOAT,
-    fld_time_mean FLOAT,
-    fld_time_minimum FLOAT,
-    fld_time_ul FLOAT,
-    fld_time_variance FLOAT,
-    PRIMARY KEY (fld_validation_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
