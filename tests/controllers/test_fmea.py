@@ -467,57 +467,54 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
     def on_succeed_insert_mechanism(self, node_id, tree):
-        assert node_id == "6.2"
+        assert node_id == "6.5"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
 
     def on_fail_insert_mechanism(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id, fld_hardware_id, "
-            'fld_mode_id)=(1, 1, 40) is not present in table "ramstk_mode".'
+            "Database returned:\n\tKey (fld_mode_id)=(40) is not present in table "
+            '"ramstk_mode".'
         )
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id, tree):
-        assert node_id == "6.2.2"
+        assert node_id == "6.3.4"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
     def on_fail_insert_cause(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id, fld_hardware_id, "
-            "fld_mode_id, fld_mechanism_id)=(1, 1, 7, 40) is not present in "
+            "Database returned:\n\tKey (fld_mechanism_id)=(40) is not present in "
             'table "ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id, tree):
-        assert node_id == "6.2.2.2.c"
+        assert node_id == "6.3.3.4.c"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
     def on_fail_insert_control(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id, fld_hardware_id, "
-            "fld_mode_id, fld_mechanism_id, fld_cause_id)=("
-            '1, 1, 7, 6, 40) is not present in table "ramstk_cause".'
+            "Database returned:\n\tKey (fld_cause_id)=(40) is not present in table "
+            '"ramstk_cause".'
         )
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id, tree):
-        assert node_id == "6.2.2.2.a"
+        assert node_id == "6.3.3.4.a"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
     def on_fail_insert_action(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id, fld_hardware_id, "
-            "fld_mode_id, fld_mechanism_id, fld_cause_id)=("
-            '1, 1, 7, 6, 40) is not present in table "ramstk_cause".'
+            "Database returned:\n\tKey (fld_cause_id)=(40) is not present in table "
+            '"ramstk_cause".'
         )
         print("\033[35m\nfail_insert_action topic was broadcast.")
 
@@ -563,10 +560,10 @@ class TestInsertMethods:
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
         DUT._do_insert_mechanism("6")
 
-        assert isinstance(DUT.tree.get_node("6.2").data["mechanism"], RAMSTKMechanism)
-        assert DUT.tree.get_node("6.2").data["mechanism"].mechanism_id == 2
+        assert isinstance(DUT.tree.get_node("6.5").data["mechanism"], RAMSTKMechanism)
+        assert DUT.tree.get_node("6.5").data["mechanism"].mechanism_id == 5
         assert (
-            DUT.tree.get_node("6.2").data["mechanism"].description
+            DUT.tree.get_node("6.5").data["mechanism"].description
             == "New Failure Mechanism"
         )
 
@@ -607,12 +604,12 @@ class TestInsertMethods:
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_cause("6.2")
+        DUT._do_insert_cause("6.3")
 
-        assert isinstance(DUT.tree.get_node("6.2.2").data["cause"], RAMSTKCause)
-        assert DUT.tree.get_node("6.2.2").data["cause"].cause_id == 2
+        assert isinstance(DUT.tree.get_node("6.3.4").data["cause"], RAMSTKCause)
+        assert DUT.tree.get_node("6.3.4").data["cause"].cause_id == 4
         assert (
-            DUT.tree.get_node("6.2.2").data["cause"].description == "New Failure Cause"
+            DUT.tree.get_node("6.3.4").data["cause"].description == "New Failure Cause"
         )
 
         pub.unsubscribe(self.on_succeed_insert_cause, "succeed_insert_cause")
@@ -639,11 +636,11 @@ class TestInsertMethods:
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_control("6.2.2")
+        DUT._do_insert_control("6.3.3")
 
-        assert isinstance(DUT.tree.get_node("6.2.2.2.c").data["control"], RAMSTKControl)
-        assert DUT.tree.get_node("6.2.2.2.c").data["control"].control_id == 2
-        assert DUT.tree.get_node("6.2.2.2.c").data["control"].description == (
+        assert isinstance(DUT.tree.get_node("6.3.3.4.c").data["control"], RAMSTKControl)
+        assert DUT.tree.get_node("6.3.3.4.c").data["control"].control_id == 4
+        assert DUT.tree.get_node("6.3.3.4.c").data["control"].description == (
             "New Control"
         )
 
@@ -673,11 +670,11 @@ class TestInsertMethods:
         DUT = dmFMEA()
         DUT.do_connect(test_program_dao)
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
-        DUT._do_insert_action("6.2.2")
+        DUT._do_insert_action("6.3.3")
 
-        assert isinstance(DUT.tree.get_node("6.2.2.2.a").data["action"], RAMSTKAction)
-        assert DUT.tree.get_node("6.2.2.2.a").data["action"].action_id == 2
-        assert DUT.tree.get_node("6.2.2.2.a").data["action"].action_recommended == (
+        assert isinstance(DUT.tree.get_node("6.3.3.4.a").data["action"], RAMSTKAction)
+        assert DUT.tree.get_node("6.3.3.4.a").data["action"].action_id == 4
+        assert DUT.tree.get_node("6.3.3.4.a").data["action"].action_recommended == (
             "Recommended Action"
         )
 
@@ -988,7 +985,7 @@ class TestUpdateMethods:
         DUT.tree.get_node("5").data["mode"].description = "Test failure mode"
         DUT.tree.get_node("5").data["mode"].operator_actions = "Take evasive actions."
         DUT.do_update("5")
-        DUT.tree.get_node("5.1").data[
+        DUT.tree.get_node("5.2").data[
             "mechanism"
         ].description = "Test failure mechanism, updated"
 
@@ -997,7 +994,7 @@ class TestUpdateMethods:
         assert DUT.tree.get_node("5").data["mode"].operator_actions == (
             "Take evasive actions."
         )
-        assert DUT.tree.get_node("5.1").data["mechanism"].description == (
+        assert DUT.tree.get_node("5.2").data["mechanism"].description == (
             "Test failure mechanism, updated"
         )
 
