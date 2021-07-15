@@ -879,6 +879,7 @@ CREATE TABLE ramstk_op_stress (
 INSERT INTO "ramstk_op_stress" VALUES(1,1,4,1,1,1,'Test Operating Stress','','','');
 INSERT INTO "ramstk_op_stress" VALUES(1,1,5,2,2,2,'','','','');
 INSERT INTO "ramstk_op_stress" VALUES(1,1,6,3,3,3,'','','','');
+INSERT INTO "ramstk_op_stress" VALUES(1,1,6,3,3,4,'','','','');
 CREATE TABLE ramstk_test_method (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
