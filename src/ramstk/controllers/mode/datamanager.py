@@ -114,6 +114,7 @@ class DataManager(RAMSTKDataManager):
             super().do_delete(node_id, _table)
 
             self.tree.remove_node(node_id)
+            self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
                 "succeed_delete_mode",
@@ -141,7 +142,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            _last_id: int = self.dao.get_last_id("ramstk_mission", "mission_id")
+            _last_id: int = self.dao.get_last_id("ramstk_mode", "mode_id")
             _mode = RAMSTKMode()
             _mode.revision_id = self._revision_id
             _mode.hardware_id = self._parent_id

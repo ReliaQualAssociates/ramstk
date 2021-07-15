@@ -67,18 +67,18 @@ class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+        assert node_id == 7
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(3).data["mode"], RAMSTKMode)
-        assert tree.get_node(3).data["mode"].mode_id == 3
-        assert tree.get_node(3).data["mode"].description is None
+        assert isinstance(tree.get_node(7).data["mode"], RAMSTKMode)
+        assert tree.get_node(7).data["mode"].mode_id == 7
+        assert tree.get_node(7).data["mode"].description == ""
         print("\033[36m\nsucceed_insert_mode topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id, fld_hardware_id)=(1, 100) is not "
-            'present in table "ramstk_hardware".'
+            "returned:\n\tKey (fld_hardware_id)=(100) is not present in table "
+            '"ramstk_hardware".'
         )
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
@@ -108,8 +108,10 @@ class TestInsertMethods:
         add an operating load to a non-existent mechanism ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
+        _parent_id = test_datamanager._parent_id
         test_datamanager._parent_id = 100
-        test_datamanager._do_insert_mode()
+        pub.sendMessage("request_insert_mode")
+        test_datamanager._parent_id = _parent_id
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
@@ -120,7 +122,7 @@ class TestInsertMethods:
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 
         test_datamanager._revision_id = 4
-        test_datamanager._do_insert_mode()
+        pub.sendMessage("request_insert_mode")
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 
