@@ -19,7 +19,9 @@ from ramstk.analyses import improvementfactor
 @pytest.mark.calculation
 def test_calculate_improvementfactor():
     """calculate_improvement() should return a tuple of improvement factor and weight."""
-    _improvement, _weight = improvementfactor.calculate_improvement(3, 2, 4, user_float_1=2.6)
+    _improvement, _weight = improvementfactor.calculate_improvement(
+        3, 2, 4, user_float_1=2.6
+    )
 
     assert _improvement == 1.2
     assert _weight == 12.48

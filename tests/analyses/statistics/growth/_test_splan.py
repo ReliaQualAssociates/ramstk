@@ -42,11 +42,11 @@ from os.path import dirname
 
 # Third Party Imports
 import numpy as np
-
-# RAMSTK Package Imports
 from analyses.statistics.growth.SPLAN import (
-    calculate_fef, calculate_growth_potential,
-    calculate_management_strategy, calculate_probability
+    calculate_fef,
+    calculate_growth_potential,
+    calculate_management_strategy,
+    calculate_probability,
 )
 from nose.plugins.attrib import attr
 
@@ -56,10 +56,9 @@ sys.path.insert(
 )
 
 
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
 

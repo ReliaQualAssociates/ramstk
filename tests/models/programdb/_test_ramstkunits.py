@@ -16,12 +16,10 @@ import unittest
 from os.path import dirname
 
 # Third Party Imports
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-# RAMSTK Package Imports
 from dao.RAMSTKUnit import RAMSTKUnit
 from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 sys.path.insert(
     0,
@@ -29,11 +27,9 @@ sys.path.insert(
 )
 
 
-
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
@@ -42,14 +38,14 @@ class TestRAMSTKUnit(unittest.TestCase):
     Class for testing the RAMSTKUnit class.
     """
 
-    attributes = (1, 'lbf', 'Pounds Force', 'measurement')
+    attributes = (1, "lbf", "Pounds Force", "measurement")
 
     def setUp(self):
         """
         Sets up the test fixture for the RAMSTKUnit class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestCommonDB.ramstk', echo=False)
+        engine = create_engine("sqlite:////tmp/TestCommonDB.ramstk", echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -71,11 +67,11 @@ class TestRAMSTKUnit(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKUnit))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'ramstk_unit')
+        self.assertEqual(self.DUT.__tablename__, "ramstk_unit")
         self.assertEqual(self.DUT.unit_id, 1)
-        self.assertEqual(self.DUT.description, 'Pounds Force')
-        self.assertEqual(self.DUT.code, 'lbf')
-        self.assertEqual(self.DUT.unit_type, 'measurement')
+        self.assertEqual(self.DUT.description, "Pounds Force")
+        self.assertEqual(self.DUT.code, "lbf")
+        self.assertEqual(self.DUT.unit_type, "measurement")
 
     @attr(all=True, unit=True)
     def test01_RAMSTKUnit_get_attributes(self):
@@ -91,13 +87,16 @@ class TestRAMSTKUnit(unittest.TestCase):
         (TestRAMSTKUnit) set_attributes should return a zero error code on success
         """
 
-        _attributes = ('N', 'Newtons', 'measurement')
+        _attributes = ("N", "Newtons", "measurement")
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RAMSTK SUCCESS: Updating RAMSTKUnit {0:d} " \
-                               "attributes.".format(self.DUT.unit_id))
+        self.assertEqual(
+            _msg,
+            "RAMSTK SUCCESS: Updating RAMSTKUnit {0:d} "
+            "attributes.".format(self.DUT.unit_id),
+        )
 
     @attr(all=True, unit=True)
     def test02b_RAMSTKUnits_set_attributes_to_few(self):
@@ -106,12 +105,15 @@ class TestRAMSTKUnit(unittest.TestCase):
         """
 
         _attributes = (
-            'N',
-            'Newtons',
+            "N",
+            "Newtons",
         )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RAMSTK ERROR: Insufficient number of input " \
-                               "values to RAMSTKUnit.set_attributes().")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Insufficient number of input "
+            "values to RAMSTKUnit.set_attributes().",
+        )

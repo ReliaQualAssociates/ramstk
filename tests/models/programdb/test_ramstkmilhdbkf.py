@@ -15,47 +15,48 @@ import pytest
 from ramstk.models.programdb import RAMSTKMilHdbkF
 
 ATTRIBUTES = {
-    'A1': 0.0,
-    'A2': 0.0,
-    'B1': 0.0,
-    'B2': 0.0,
-    'C1': 0.0,
-    'C2': 0.0,
-    'lambdaBD': 0.0,
-    'lambdaBP': 0.0,
-    'lambdaCYC': 0.0,
-    'lambdaEOS': 0.0,
-    'piA': 0.0,
-    'piC': 0.0,
-    'piCD': 0.0,
-    'piCF': 0.0,
-    'piCR': 0.0,
-    'piCV': 0.0,
-    'piCYC': 0.0,
-    'piE': 0.0,
-    'piF': 0.0,
-    'piI': 0.0,
-    'piK': 0.0,
-    'piL': 0.0,
-    'piM': 0.0,
-    'piMFG': 0.0,
-    'piN': 0.0,
-    'piNR': 0.0,
-    'piP': 0.0,
-    'piPT': 0.0,
-    'piQ': 0.0,
-    'piR': 0.0,
-    'piS': 0.0,
-    'piT': 0.0,
-    'piTAPS': 0.0,
-    'piU': 0.0,
-    'piV': 0.0
+    "A1": 0.0,
+    "A2": 0.0,
+    "B1": 0.0,
+    "B2": 0.0,
+    "C1": 0.0,
+    "C2": 0.0,
+    "lambdaBD": 0.0,
+    "lambdaBP": 0.0,
+    "lambdaCYC": 0.0,
+    "lambdaEOS": 0.0,
+    "piA": 0.0,
+    "piC": 0.0,
+    "piCD": 0.0,
+    "piCF": 0.0,
+    "piCR": 0.0,
+    "piCV": 0.0,
+    "piCYC": 0.0,
+    "piE": 0.0,
+    "piF": 0.0,
+    "piI": 0.0,
+    "piK": 0.0,
+    "piL": 0.0,
+    "piM": 0.0,
+    "piMFG": 0.0,
+    "piN": 0.0,
+    "piNR": 0.0,
+    "piP": 0.0,
+    "piPT": 0.0,
+    "piQ": 0.0,
+    "piR": 0.0,
+    "piS": 0.0,
+    "piT": 0.0,
+    "piTAPS": 0.0,
+    "piU": 0.0,
+    "piV": 0.0,
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
-class TestRAMSTKMilHdbk217F():
+@pytest.mark.usefixtures("test_program_dao")
+class TestRAMSTKMilHdbk217F:
     """Class for testing the RAMSTKMilHdbk217F model."""
+
     @pytest.mark.integration
     def test_ramstkmilhdbkf_create(self, test_program_dao):
         """ __init__() should create an RAMSTKMilHdbkF model. """
@@ -64,7 +65,7 @@ class TestRAMSTKMilHdbk217F():
         assert isinstance(DUT, RAMSTKMilHdbkF)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_mil_hdbk_f'
+        assert DUT.__tablename__ == "ramstk_mil_hdbk_f"
         assert DUT.hardware_id == 1
         assert DUT.A1 == 0.0
         assert DUT.A2 == 0.0
@@ -110,42 +111,42 @@ class TestRAMSTKMilHdbk217F():
         _attributes = DUT.get_attributes()
 
         assert isinstance(_attributes, dict)
-        assert _attributes['hardware_id'] == 1
-        assert _attributes['A1'] == 0.0
-        assert _attributes['A2'] == 0.0
-        assert _attributes['B1'] == 0.0
-        assert _attributes['B2'] == 0.0
-        assert _attributes['C1'] == 0.0
-        assert _attributes['C2'] == 0.0
-        assert _attributes['lambdaBD'] == 0.0
-        assert _attributes['lambdaBP'] == 0.0
-        assert _attributes['lambdaCYC'] == 0.0
-        assert _attributes['lambdaEOS'] == 0.0
-        assert _attributes['piA'] == 0.0
-        assert _attributes['piC'] == 0.0
-        assert _attributes['piCD'] == 0.0
-        assert _attributes['piCF'] == 0.0
-        assert _attributes['piCR'] == 0.0
-        assert _attributes['piCV'] == 0.0
-        assert _attributes['piCYC'] == 0.0
-        assert _attributes['piE'] == 0.0
-        assert _attributes['piF'] == 0.0
-        assert _attributes['piI'] == 0.0
-        assert _attributes['piK'] == 0.0
-        assert _attributes['piL'] == 0.0
-        assert _attributes['piM'] == 0.0
-        assert _attributes['piMFG'] == 0.0
-        assert _attributes['piN'] == 0.0
-        assert _attributes['piNR'] == 0.0
-        assert _attributes['piP'] == 0.0
-        assert _attributes['piPT'] == 0.0
-        assert _attributes['piQ'] == 0.0
-        assert _attributes['piR'] == 0.0
-        assert _attributes['piS'] == 0.0
-        assert _attributes['piT'] == 0.0
-        assert _attributes['piTAPS'] == 0.0
-        assert _attributes['piU'] == 0.0
-        assert _attributes['piV'] == 0.0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["A1"] == 0.0
+        assert _attributes["A2"] == 0.0
+        assert _attributes["B1"] == 0.0
+        assert _attributes["B2"] == 0.0
+        assert _attributes["C1"] == 0.0
+        assert _attributes["C2"] == 0.0
+        assert _attributes["lambdaBD"] == 0.0
+        assert _attributes["lambdaBP"] == 0.0
+        assert _attributes["lambdaCYC"] == 0.0
+        assert _attributes["lambdaEOS"] == 0.0
+        assert _attributes["piA"] == 0.0
+        assert _attributes["piC"] == 0.0
+        assert _attributes["piCD"] == 0.0
+        assert _attributes["piCF"] == 0.0
+        assert _attributes["piCR"] == 0.0
+        assert _attributes["piCV"] == 0.0
+        assert _attributes["piCYC"] == 0.0
+        assert _attributes["piE"] == 0.0
+        assert _attributes["piF"] == 0.0
+        assert _attributes["piI"] == 0.0
+        assert _attributes["piK"] == 0.0
+        assert _attributes["piL"] == 0.0
+        assert _attributes["piM"] == 0.0
+        assert _attributes["piMFG"] == 0.0
+        assert _attributes["piN"] == 0.0
+        assert _attributes["piNR"] == 0.0
+        assert _attributes["piP"] == 0.0
+        assert _attributes["piPT"] == 0.0
+        assert _attributes["piQ"] == 0.0
+        assert _attributes["piR"] == 0.0
+        assert _attributes["piS"] == 0.0
+        assert _attributes["piT"] == 0.0
+        assert _attributes["piTAPS"] == 0.0
+        assert _attributes["piU"] == 0.0
+        assert _attributes["piV"] == 0.0
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -159,10 +160,10 @@ class TestRAMSTKMilHdbk217F():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_program_dao.session.query(RAMSTKMilHdbkF).first()
 
-        ATTRIBUTES['piA'] = None
+        ATTRIBUTES["piA"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['piA'] == 0.0
+        assert DUT.get_attributes()["piA"] == 0.0
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):
@@ -170,4 +171,4 @@ class TestRAMSTKMilHdbk217F():
         DUT = test_program_dao.session.query(RAMSTKMilHdbkF).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

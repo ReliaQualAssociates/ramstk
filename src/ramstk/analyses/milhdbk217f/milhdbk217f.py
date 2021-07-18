@@ -15,8 +15,19 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from .models import (
-    capacitor, connection, crystal, efilter, fuse, inductor,
-    integratedcircuit, lamp, meter, relay, resistor, semiconductor, switch
+    capacitor,
+    connection,
+    crystal,
+    efilter,
+    fuse,
+    inductor,
+    integratedcircuit,
+    lamp,
+    meter,
+    relay,
+    resistor,
+    semiconductor,
+    switch,
 )
 
 
@@ -45,28 +56,29 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             1: crystal.calculate_part_count,
             2: efilter.calculate_part_count,
             3: fuse.calculate_part_count,
-            4: lamp.calculate_part_count
-        }
+            4: lamp.calculate_part_count,
+        },
     }
 
-    if attributes['category_id'] == 2:
-        attributes = _part_count[attributes['category_id']](**attributes)
-    elif attributes['category_id'] == 10:
-        attributes['lambda_b'] = _part_count[attributes['category_id']][
-            attributes['subcategory_id']](**attributes)
+    if attributes["category_id"] == 2:
+        attributes = _part_count[attributes["category_id"]](**attributes)
+    elif attributes["category_id"] == 10:
+        attributes["lambda_b"] = _part_count[attributes["category_id"]][
+            attributes["subcategory_id"]
+        ](**attributes)
     else:
-        attributes['lambda_b'] = _part_count[attributes['category_id']](
-            **attributes)
+        attributes["lambda_b"] = _part_count[attributes["category_id"]](**attributes)
 
-    if attributes['category_id'] != 2:
-        attributes['piQ'] = _get_part_count_quality_factor(
-            attributes['category_id'], attributes['subcategory_id'],
-            attributes['quality_id'])
+    if attributes["category_id"] != 2:
+        attributes["piQ"] = _get_part_count_quality_factor(
+            attributes["category_id"],
+            attributes["subcategory_id"],
+            attributes["quality_id"],
+        )
     else:
         attributes = semiconductor.get_part_count_quality_factor(attributes)
 
-    attributes['hazard_rate_active'] = (attributes['lambda_b']
-                                        * attributes['piQ'])
+    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piQ"]
 
     return attributes
 
@@ -96,35 +108,41 @@ def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             1: crystal.calculate_part_stress,
             2: efilter.calculate_part_stress,
             3: fuse.calculate_part_stress,
-            4: lamp.calculate_part_stress
-        }
+            4: lamp.calculate_part_stress,
+        },
     }
 
-    if attributes['category_id'] != 6:
-        attributes['piE'] = _get_environment_factor(
-            attributes['category_id'],
-            attributes['environment_active_id'],
-            subcategory_id=attributes['subcategory_id'],
-            quality_id=attributes['quality_id'])
+    if attributes["category_id"] != 6:
+        attributes["piE"] = _get_environment_factor(
+            attributes["category_id"],
+            attributes["environment_active_id"],
+            subcategory_id=attributes["subcategory_id"],
+            quality_id=attributes["quality_id"],
+        )
 
-    if attributes['category_id'] not in [2, 5]:
-        attributes['piQ'] = _get_part_stress_quality_factor(
-            attributes['category_id'], attributes['subcategory_id'],
-            attributes['quality_id'])
+    if attributes["category_id"] not in [2, 5]:
+        attributes["piQ"] = _get_part_stress_quality_factor(
+            attributes["category_id"],
+            attributes["subcategory_id"],
+            attributes["quality_id"],
+        )
 
-    if attributes['category_id'] == 10:
-        _part_stress = _functions[attributes['category_id']][
-            attributes['subcategory_id']]
+    if attributes["category_id"] == 10:
+        _part_stress = _functions[attributes["category_id"]][
+            attributes["subcategory_id"]
+        ]
     else:
-        _part_stress = _functions[attributes['category_id']]
+        _part_stress = _functions[attributes["category_id"]]
 
     return _part_stress(**attributes)
 
 
-def _get_environment_factor(category_id: int,
-                            environment_active_id: int,
-                            subcategory_id: int = -1,
-                            quality_id: int = -1) -> float:
+def _get_environment_factor(
+    category_id: int,
+    environment_active_id: int,
+    subcategory_id: int = -1,
+    quality_id: int = -1,
+) -> float:
     """Retrieve the MIL-HDBK-217F environment factor (piE) for the component.
 
     Most component types have a single list of piE factors, but some require
@@ -151,30 +169,26 @@ def _get_environment_factor(category_id: int,
         7: switch.PI_E,
         8: connection.PI_E,
         9: meter.PI_E,
-        10: {
-            1: crystal.PI_E,
-            2: efilter.PI_E,
-            3: fuse.PI_E,
-            4: lamp.PI_E
-        }
+        10: {1: crystal.PI_E, 2: efilter.PI_E, 3: fuse.PI_E, 4: lamp.PI_E},
     }
 
     if category_id == 8 and subcategory_id in [1, 2]:
         _pi_e = _pi_e_lists[category_id][subcategory_id][quality_id][
-            environment_active_id - 1]
-    elif category_id in [
-            2, 3, 5, 7, 9, 10
-    ] or (category_id == 8 and subcategory_id not in [1, 2]):
-        _pi_e = _pi_e_lists[category_id][subcategory_id][environment_active_id
-                                                         - 1]
+            environment_active_id - 1
+        ]
+    elif category_id in [2, 3, 5, 7, 9, 10] or (
+        category_id == 8 and subcategory_id not in [1, 2]
+    ):
+        _pi_e = _pi_e_lists[category_id][subcategory_id][environment_active_id - 1]
     else:
         _pi_e = _pi_e_lists[category_id][environment_active_id - 1]
 
     return _pi_e
 
 
-def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
-                                   quality_id: int) -> float:
+def _get_part_count_quality_factor(
+    category_id: int, subcategory_id: int, quality_id: int
+) -> float:
     """Retrieve the MIL-HDBK-217F parts count quality factor (piQ).
 
     .. note:: Fuses and Lamps have no piQ input.
@@ -201,10 +215,7 @@ def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
         7: switch.PART_COUNT_PI_Q,
         8: connection.PART_COUNT_PI_Q,
         9: meter.PART_COUNT_PI_Q,
-        10: {
-            1: crystal.PART_COUNT_PI_Q,
-            2: efilter.PI_Q
-        }
+        10: {1: crystal.PART_COUNT_PI_Q, 2: efilter.PI_Q},
     }
 
     if category_id in [6, 7, 9]:
@@ -219,8 +230,9 @@ def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
     return _pi_q
 
 
-def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
-                                    quality_id: int) -> float:
+def _get_part_stress_quality_factor(
+    category_id: int, subcategory_id: int, quality_id: int
+) -> float:
     """Retrieve the MIL-HDBK-217F part stress quality factor (piQ).
 
     .. note:: Fuses and Lamps have no piQ input.
@@ -241,17 +253,14 @@ def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
         7: switch.PART_STRESS_PI_Q,
         8: connection.PART_STRESS_PI_Q,
         9: meter.PART_STRESS_PI_Q,
-        10: {
-            1: crystal.PART_STRESS_PI_Q,
-            2: efilter.PI_Q
-        },
+        10: {1: crystal.PART_STRESS_PI_Q, 2: efilter.PI_Q},
     }
 
     if category_id == 1:
         _pi_q = _pi_q_lists[category_id][quality_id - 1]
-    elif (category_id == 8
-          and subcategory_id in [4, 5]) or (category_id == 7
-                                            and subcategory_id == 5):
+    elif (category_id == 8 and subcategory_id in [4, 5]) or (
+        category_id == 7 and subcategory_id == 5
+    ):
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
     elif category_id == 7 and subcategory_id != 5:
         _pi_q = 0.0
@@ -283,51 +292,61 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     try:
-        if attributes['hazard_rate_method_id'] == 1:
+        if attributes["hazard_rate_method_id"] == 1:
             attributes = _do_calculate_part_count(**attributes)
-        elif attributes['hazard_rate_method_id'] == 2:
+        elif attributes["hazard_rate_method_id"] == 2:
             attributes = _do_calculate_part_stress(**attributes)
 
-        pub.sendMessage('succeed_predict_reliability', attributes=attributes)
+        pub.sendMessage("succeed_predict_reliability", attributes=attributes)
 
-        return attributes['hazard_rate_active']
+        return attributes["hazard_rate_active"]
     except ValueError:
-        pub.sendMessage('fail_predict_reliability',
-                        error_message=("Failed to predict MIL-HDBK-217F "
-                                       "hazard rate for hardware ID {0:d}; "
-                                       "one or more inputs has a negative or "
-                                       "missing value. Hardware item category "
-                                       "ID={1:d}, subcategory ID={2:d}, rated "
-                                       "power={3:f}, number of "
-                                       "elements={4:d}.").format(
-                                           attributes['hardware_id'],
-                                           attributes['category_id'],
-                                           attributes['subcategory_id'],
-                                           attributes['power_rated'],
-                                           attributes['n_elements']))
+        pub.sendMessage(
+            "fail_predict_reliability",
+            error_message=(
+                "Failed to predict MIL-HDBK-217F "
+                "hazard rate for hardware ID {0:d}; "
+                "one or more inputs has a negative or "
+                "missing value. Hardware item category "
+                "ID={1:d}, subcategory ID={2:d}, rated "
+                "power={3:f}, number of "
+                "elements={4:d}."
+            ).format(
+                attributes["hardware_id"],
+                attributes["category_id"],
+                attributes["subcategory_id"],
+                attributes["power_rated"],
+                attributes["n_elements"],
+            ),
+        )
     except ZeroDivisionError:
-        pub.sendMessage('fail_predict_reliability',
-                        error_message=("Failed to predict MIL-HDBK-217F "
-                                       "hazard rate for hardware ID {0:d}; "
-                                       "one or more inputs has a value of "
-                                       "0.0.  Hardware item category "
-                                       "ID={1:d}, subcategory ID={2:d}, "
-                                       "operating ac voltage={3:f}, operating "
-                                       "DC voltage={4:f}, operating "
-                                       "temperature={5:f}, temperature "
-                                       "rise={10:f}, rated maximum "
-                                       "temperature={6:f}, "
-                                       "feature size={7:f}, "
-                                       "surface area={8:f}, and item "
-                                       "weight={9:f}.").format(
-                                           attributes['hardware_id'],
-                                           attributes['category_id'],
-                                           attributes['subcategory_id'],
-                                           attributes['voltage_ac_operating'],
-                                           attributes['voltage_dc_operating'],
-                                           attributes['temperature_active'],
-                                           attributes['temperature_rated_max'],
-                                           attributes['feature_size'],
-                                           attributes['area'],
-                                           attributes['weight'],
-                                           attributes['temperature_rise']))
+        pub.sendMessage(
+            "fail_predict_reliability",
+            error_message=(
+                "Failed to predict MIL-HDBK-217F "
+                "hazard rate for hardware ID {0:d}; "
+                "one or more inputs has a value of "
+                "0.0.  Hardware item category "
+                "ID={1:d}, subcategory ID={2:d}, "
+                "operating ac voltage={3:f}, operating "
+                "DC voltage={4:f}, operating "
+                "temperature={5:f}, temperature "
+                "rise={10:f}, rated maximum "
+                "temperature={6:f}, "
+                "feature size={7:f}, "
+                "surface area={8:f}, and item "
+                "weight={9:f}."
+            ).format(
+                attributes["hardware_id"],
+                attributes["category_id"],
+                attributes["subcategory_id"],
+                attributes["voltage_ac_operating"],
+                attributes["voltage_dc_operating"],
+                attributes["temperature_active"],
+                attributes["temperature_rated_max"],
+                attributes["feature_size"],
+                attributes["area"],
+                attributes["weight"],
+                attributes["temperature_rise"],
+            ),
+        )

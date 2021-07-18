@@ -19,29 +19,25 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent ramstk_manufacturer in the RAMSTK Common database."""
 
     __defaults__ = {
-        'description': 'Manufacturer Description',
-        'location': 'unknown',
-        'cage_code': 'CAGE Code'
+        "description": "Manufacturer Description",
+        "location": "unknown",
+        "cage_code": "CAGE Code",
     }
-    __tablename__ = 'ramstk_manufacturer'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "ramstk_manufacturer"
+    __table_args__ = {"extend_existing": True}
 
     manufacturer_id = Column(
-        'fld_manufacturer_id',
+        "fld_manufacturer_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    location = Column('fld_location',
-                      String(512),
-                      default=__defaults__['location'])
-    cage_code = Column('fld_cage_code',
-                       String(512),
-                       default=__defaults__['cage_code'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    location = Column("fld_location", String(512), default=__defaults__["location"])
+    cage_code = Column("fld_cage_code", String(512), default=__defaults__["cage_code"])
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKManufacturer data model attributes.
@@ -50,10 +46,10 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'manufacturer_id': self.manufacturer_id,
-            'description': self.description,
-            'location': self.location,
-            'cage_code': self.cage_code,
+            "manufacturer_id": self.manufacturer_id,
+            "description": self.description,
+            "location": self.location,
+            "cage_code": self.cage_code,
         }
 
         return _attributes

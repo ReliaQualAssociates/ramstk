@@ -14,7 +14,9 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets.dialog import (
-    RAMSTKDatabaseSelect, RAMSTKDialog, RAMSTKMessageDialog
+    RAMSTKDatabaseSelect,
+    RAMSTKDialog,
+    RAMSTKMessageDialog,
 )
 from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 
@@ -24,9 +26,12 @@ class CreateProject:
 
     RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
-    def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration,
-                 parent: object) -> None:
+    def __init__(
+        self,
+        __button: Gtk.ToolButton,
+        configuration: RAMSTKUserConfiguration,
+        parent: object,
+    ) -> None:
         """Initialize an instance of the Create Project Assistant.
 
         :param __button: the Gtk.ToolButton() that launched this class.
@@ -57,23 +62,30 @@ class CreateProject:
         :return: None
         :rtype: None
         """
-        _dialog = RAMSTKDialog(_("RAMSTK - Confirm Overwrite"),
-                               dlgbuttons=(Gtk.STOCK_YES, Gtk.ResponseType.YES,
-                                           Gtk.STOCK_NO, Gtk.ResponseType.NO),
-                               dlgparent=self._parent)
+        _dialog = RAMSTKDialog(
+            _("RAMSTK - Confirm Overwrite"),
+            dlgbuttons=(
+                Gtk.STOCK_YES,
+                Gtk.ResponseType.YES,
+                Gtk.STOCK_NO,
+                Gtk.ResponseType.NO,
+            ),
+            dlgparent=self._parent,
+        )
 
         _label = RAMSTKLabel(
-            _("RAMSTK Program database already exists:"
-              "\n\n\t\t{0:s}\n\nOverwrite?").format(database))
+            _(
+                "RAMSTK Program database already exists:" "\n\n\t\t{0:s}\n\nOverwrite?"
+            ).format(database)
+        )
         _label.do_set_properties(width=-1, height=-1, bold=False, wrap=True)
         _dialog.vbox.pack_start(_label, True, True, 0)
         _dialog.show_all()
 
         if _dialog.run() == Gtk.ResponseType.YES:
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
-                'database'] = database
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"] = database
         else:
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database'] = ''
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"] = ""
 
         _dialog.destroy()
 
@@ -84,33 +96,34 @@ class CreateProject:
         :rtype: None
         """
         _dialog = RAMSTKDatabaseSelect(
-            dlgtitle=("Select RAMSTK Program "
-                      "Database on the {0:s} Server".format(
-                          self.RAMSTK_USER_CONFIGURATION.
-                          RAMSTK_PROG_INFO['dialect'])),
+            dlgtitle=(
+                "Select RAMSTK Program "
+                "Database on the {0:s} Server".format(
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["dialect"]
+                )
+            ),
             dlgparent=self._parent,
             dao=BaseDatabase(),
             database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
             icons={
-                'refresh':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-                + '/icons/32x32/view-refresh.png',
-                'save':
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-                + '/icons/32x32/save.png'
-            })
+                "refresh": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                + "/icons/32x32/view-refresh.png",
+                "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                + "/icons/32x32/save.png",
+            },
+        )
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
-                _dialog.database
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = _dialog.database
 
             if _dialog.exists:
-                self._do_confirm_overwrite(_dialog.database['database'])
+                self._do_confirm_overwrite(_dialog.database["database"])
 
             pub.sendMessage(
-                'request_create_program',
+                "request_create_program",
                 program_db=BaseDatabase(),
-                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO)
+                database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+            )
 
         _dialog.destroy()
 
@@ -120,9 +133,12 @@ class OpenProject:
 
     RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
 
-    def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration,
-                 parent: object) -> None:
+    def __init__(
+        self,
+        __button: Gtk.ToolButton,
+        configuration: RAMSTKUserConfiguration,
+        parent: object,
+    ) -> None:
         """Initialize an instance of the Create Project Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
@@ -155,36 +171,38 @@ class OpenProject:
             self.__project_is_open()
         else:
             _dialog = RAMSTKDatabaseSelect(
-                dlgtitle=("Select RAMSTK Program "
-                          "Database on the {0:s} Server".format(
-                              self.RAMSTK_USER_CONFIGURATION.
-                              RAMSTK_PROG_INFO['dialect'])),
+                dlgtitle=(
+                    "Select RAMSTK Program "
+                    "Database on the {0:s} Server".format(
+                        self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["dialect"]
+                    )
+                ),
                 dlgparent=self._parent,
                 dao=BaseDatabase(),
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
                 icons={
-                    'refresh':
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-                    + '/icons/32x32/view-refresh.png',
-                    'save':
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-                    + '/icons/32x32/save.png'
-                })
+                    "refresh": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                    + "/icons/32x32/view-refresh.png",
+                    "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
+                    + "/icons/32x32/save.png",
+                },
+            )
 
             if _dialog.do_run() == Gtk.ResponseType.OK:
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = \
-                    _dialog.database
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = _dialog.database
 
                 if _dialog.exists:
-                    pub.sendMessage('request_open_program',
-                                    program_db=BaseDatabase(),
-                                    database=self.RAMSTK_USER_CONFIGURATION.
-                                    RAMSTK_PROG_INFO)
+                    pub.sendMessage(
+                        "request_open_program",
+                        program_db=BaseDatabase(),
+                        database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+                    )
                 else:
-                    pub.sendMessage('request_create_program',
-                                    program_db=BaseDatabase(),
-                                    database=self.RAMSTK_USER_CONFIGURATION.
-                                    RAMSTK_PROG_INFO)
+                    pub.sendMessage(
+                        "request_create_program",
+                        program_db=BaseDatabase(),
+                        database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+                    )
 
                 if _dialog.btnSave.get_active():
                     self.RAMSTK_USER_CONFIGURATION.set_user_configuration()
@@ -196,13 +214,15 @@ class OpenProject:
 
         :return: None
         """
-        _prompt = _("A database is already open.  Only one database can "
-                    "be open at a time in RAMSTK.  You must close the "
-                    "currently open RAMSTK database before a new "
-                    "database can be opened.")
+        _prompt = _(
+            "A database is already open.  Only one database can "
+            "be open at a time in RAMSTK.  You must close the "
+            "currently open RAMSTK database before a new "
+            "database can be opened."
+        )
         _dialog = RAMSTKMessageDialog(parent=self._parent)
         _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('information')
+        _dialog.do_set_message_type("information")
 
         if _dialog.run() == Gtk.ResponseType.OK:
             _dialog.destroy()

@@ -18,18 +18,16 @@ from ramstk.models import RAMSTKBaseTable
 class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent the table ramstk_load_history."""
 
-    __defaults__ = {'description': 'Load History Description'}
-    __tablename__ = 'ramstk_load_history'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "Load History Description"}
+    __tablename__ = "ramstk_load_history"
+    __table_args__ = {"extend_existing": True}
 
-    history_id = Column('fld_history_id',
-                        Integer,
-                        primary_key=True,
-                        autoincrement=True,
-                        nullable=False)
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
+    history_id = Column(
+        "fld_history_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    )
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKLoadHistory data model attributes.
@@ -38,8 +36,8 @@ class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _values = {
-            'history_id': self.history_id,
-            'description': self.description,
+            "history_id": self.history_id,
+            "description": self.description,
         }
 
         return _values

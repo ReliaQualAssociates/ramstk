@@ -14,12 +14,12 @@ from typing import Dict
 # Third Party Imports
 from pubsub import pub
 
-LOGFORMAT = logging.Formatter(
-    '%(asctime)s - %(name)s - %(lineno)s : %(message)s')
+LOGFORMAT = logging.Formatter("%(asctime)s - %(name)s - %(lineno)s : %(message)s")
 
 
 class RAMSTKLogManager:
     """Class to manage logging of RAMSTK messages."""
+
     loggers: Dict[str, logging.Logger] = {}
 
     def __init__(self, log_file: str) -> None:
@@ -42,51 +42,48 @@ class RAMSTKLogManager:
         self.log_file = log_file
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_log_fail_message,
-                      'fail_connect_program_database')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_environment')
-        pub.subscribe(self._do_log_fail_message,
-                      'fail_delete_failure_definition')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_fmea')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_function')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_hazard')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_mission')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_mission_phase')
-        pub.subscribe(self._do_log_fail_message, 'fail_delete_revision')
-        pub.subscribe(self._do_log_fail_message, 'fail_import_module')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_action')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_cause')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_control')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_environment')
-        pub.subscribe(self._do_log_fail_message,
-                      'fail_insert_failure_definition')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mechanism')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mission_phase')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_mode')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_function')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_hazard')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_hardware')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_validation')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_stakeholder')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_revision')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_requirement')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_opload')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_opstress')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_record')
-        pub.subscribe(self._do_log_fail_message, 'fail_insert_test_method')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_fmea')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_function')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_hardware')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_record')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_requirement')
-        pub.subscribe(self._do_log_fail_message, 'fail_update_revision')
+        pub.subscribe(self._do_log_fail_message, "fail_connect_program_database")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_environment")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_failure_definition")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_fmea")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_function")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_hazard")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_mission")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_mission_phase")
+        pub.subscribe(self._do_log_fail_message, "fail_delete_revision")
+        pub.subscribe(self._do_log_fail_message, "fail_import_module")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_action")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_cause")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_control")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_environment")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_failure_definition")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_mechanism")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_mission")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_mission_phase")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_mode")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_function")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_hazard")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_hardware")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_validation")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_stakeholder")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_revision")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_requirement")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_opload")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_opstress")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_record")
+        pub.subscribe(self._do_log_fail_message, "fail_insert_test_method")
+        pub.subscribe(self._do_log_fail_message, "fail_update_fmea")
+        pub.subscribe(self._do_log_fail_message, "fail_update_function")
+        pub.subscribe(self._do_log_fail_message, "fail_update_hardware")
+        pub.subscribe(self._do_log_fail_message, "fail_update_record")
+        pub.subscribe(self._do_log_fail_message, "fail_update_requirement")
+        pub.subscribe(self._do_log_fail_message, "fail_update_revision")
 
-        pub.subscribe(self.do_log_debug, 'do_log_debug_msg')
-        pub.subscribe(self.do_log_info, 'do_log_info_msg')
-        pub.subscribe(self.do_log_warning, 'do_log_warning_msg')
-        pub.subscribe(self.do_log_error, 'do_log_error_msg')
-        pub.subscribe(self.do_log_critical, 'do_log_critical_msg')
+        pub.subscribe(self.do_log_debug, "do_log_debug_msg")
+        pub.subscribe(self.do_log_info, "do_log_info_msg")
+        pub.subscribe(self.do_log_warning, "do_log_warning_msg")
+        pub.subscribe(self.do_log_error, "do_log_error_msg")
+        pub.subscribe(self.do_log_critical, "do_log_critical_msg")
 
         # Create a logger for the pypubsub fail_* messages.
         self.do_create_logger(__name__, "WARN")
@@ -126,10 +123,9 @@ class RAMSTKLogManager:
 
         return _f_handler
 
-    def do_create_logger(self,
-                         logger_name: str,
-                         log_level: str,
-                         to_tty: bool = False) -> None:
+    def do_create_logger(
+        self, logger_name: str, log_level: str, to_tty: bool = False
+    ) -> None:
         """Create a logger instance.
 
         :param logger_name: the name of the logger used in the application.

@@ -49,28 +49,38 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     # Define private dict class attributes.
     _dic_quality = {
         1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
-        2: [["MIL-SPEC"], [_("Lower")]]
+        2: [["MIL-SPEC"], [_("Lower")]],
     }
     # Key is subcategory ID.  Index is type ID.
     _dic_pc_types = {
-        1: [[_("General Purpose")], [_("Contactor, High Current")],
-            [_("Latching")], [_("Reed")], [_("Thermal, Bi-Metal")],
-            [_("Meter Movement")]],
-        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]]
+        1: [
+            [_("General Purpose")],
+            [_("Contactor, High Current")],
+            [_("Latching")],
+            [_("Reed")],
+            [_("Thermal, Bi-Metal")],
+            [_("Meter Movement")],
+        ],
+        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]],
     }
     # Key is subcategory ID, index is type ID.
     _dic_types = {
         1: [[_("85C Rated")], [_("125C Rated")]],
-        2: [[_("Solid State")], [_("Solid State Time Delay")], [_("Hybrid")]]
+        2: [[_("Solid State")], [_("Solid State Time Delay")], [_("Hybrid")]],
     }
     # Key is contact rating ID.  Index is application ID.
     _dic_application = {
         1: [[_("Dry Circuit")]],
-        2:
-        [[_("General Purpose")], [_("Sensitive (0 - 100mW)")],
-         [_("Polarized")], [_("Vibrating Reed")], [_("High Speed")],
-         [_("Thermal Time Delay")], [_("Electronic Time Delay, Non-Thermal")],
-         [_("Latching, Magnetic")]],
+        2: [
+            [_("General Purpose")],
+            [_("Sensitive (0 - 100mW)")],
+            [_("Polarized")],
+            [_("Vibrating Reed")],
+            [_("High Speed")],
+            [_("Thermal Time Delay")],
+            [_("Electronic Time Delay, Non-Thermal")],
+            [_("Latching, Magnetic")],
+        ],
         3: [[_("High Voltage")], [_("Medium Power")]],
         4: [[_("Contactors, High Current")]],
     }
@@ -78,16 +88,24 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     # construction ID.
     _dic_construction = {
         1: {
-            1: [[_("Armature (Long)")], [_("Dry Reed")], [_("Mercury Wetted")],
-                [_("Magnetic Latching")], [_("Balanced Armature")],
-                [_("Solenoid")]]
+            1: [
+                [_("Armature (Long)")],
+                [_("Dry Reed")],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
+            ]
         },
         2: {
-            1: [[_("Armature (Long)")], [_("Balanced Armature")],
-                [_("Solenoid")]],
-            2: [[_("Armature (LOng and Short)")], [_("Mercury Wetted")],
-                [_("Magnetic Latching")], [_("Meter Movement")],
-                [_("Balanced Armature")]],
+            1: [[_("Armature (Long)")], [_("Balanced Armature")], [_("Solenoid")]],
+            2: [
+                [_("Armature (LOng and Short)")],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Meter Movement")],
+                [_("Balanced Armature")],
+            ],
             3: [[_("Armature (Short)")], [_("Meter Movement")]],
             4: [[_("Dry Reed")], [_("Mercury Wetted")]],
             5: [[_("Armature (Balanced and Short)")], [_("Dry Reed")]],
@@ -96,18 +114,27 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                 [_("Dry Reed")],
                 [_("Mercury Wetted")],
                 [_("Balanced Armature")],
-            ]
+            ],
         },
         3: {
             1: [[_("Vacuum (Glass)")], [_("Vacuum (Ceramic)")]],
-            2: [[_("Armature (Long and Short)")], [_("Mercury Wetted")],
-                [_("Magnetic Latching")], [_("Mechanical Latching")],
-                [_("Balanced Armature")], [_("Solenoid")]]
+            2: [
+                [_("Armature (Long and Short)")],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Mechanical Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
+            ],
         },
         4: {
-            1: [[_("Armature (Short)")], [_("Mechanical Latching")],
-                [_("Balanced Armature")], [_("Solenoid")]]
-        }
+            1: [
+                [_("Armature (Short)")],
+                [_("Mechanical Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
+            ]
+        },
     }
 
     # Define private list class attributes.
@@ -116,13 +143,25 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     _lst_technology = [[_("Resistive")], [_("Inductive")], [_("Lamp")]]
 
     # Index is the contact form ID.
-    _lst_contact_form = [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"],
-                         ["DPDT"], ["3PDT"], ["4PDT"], ["6PDT"]]
+    _lst_contact_form = [
+        ["SPST"],
+        ["DPST"],
+        ["SPDT"],
+        ["3PST"],
+        ["4PST"],
+        ["DPDT"],
+        ["3PDT"],
+        ["4PDT"],
+        ["6PDT"],
+    ]
 
     # Index is contact rating ID.
-    _lst_contact_rating = [[_("Signal Current (low mV and mA)")],
-                           [_("0 - 5 Amp")], [_("5 - 20 Amp")],
-                           [_("20 - 600 Amp")]]
+    _lst_contact_rating = [
+        [_("Signal Current (low mV and mA)")],
+        [_("0 - 5 Amp")],
+        [_("5 - 20 Amp")],
+        [_("20 - 600 Amp")],
+    ]
 
     # Define private scalar class attributes.
 
@@ -138,14 +177,14 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # Initialize private dictionary attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['quality_id', 'integer'],
-            1: ['type_id', 'integer'],
-            2: ['technology_id', 'integer'],
-            3: ['contact_form_id', 'integer'],
-            4: ['contact_rating_id', 'integer'],
-            5: ['application_id', 'integer'],
-            6: ['construction_id', 'integer'],
-            7: ['n_cycles', 'integer'],
+            0: ["quality_id", "integer"],
+            1: ["type_id", "integer"],
+            2: ["technology_id", "integer"],
+            3: ["contact_form_id", "integer"],
+            4: ["contact_rating_id", "integer"],
+            5: ["application_id", "integer"],
+            6: ["construction_id", "integer"],
+            7: ["n_cycles", "integer"],
         }
 
         # Initialize private list attributes.
@@ -160,7 +199,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _("Number of Cycles/Hour:"),
         ]
         self._lst_tooltips: List[str] = [
-            _('The quality level of the relay.'),
+            _("The quality level of the relay."),
             _("The relay type."),
             _("The type of load the relay is switching."),
             _("The contact form of the relay."),
@@ -187,15 +226,14 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtCycles: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
-            'type_id': [self.cmbType.do_update, 'changed', 1],
-            'technology_id': [self.cmbLoadType.do_update, 'changed', 2],
-            'contact_form_id': [self.cmbContactForm.do_update, 'changed', 3],
-            'contact_rating_id':
-            [self.cmbContactRating.do_update, 'changed', 4],
-            'application_id': [self.cmbApplication.do_update, 'changed', 5],
-            'construction': [self.cmbConstruction.do_update, 'changed', 6],
-            'n_cycles': [self.txtCycles, 'changed', 7],
+            "quality_id": [self.cmbQuality.do_update, "changed", 0],
+            "type_id": [self.cmbType.do_update, "changed", 1],
+            "technology_id": [self.cmbLoadType.do_update, "changed", 2],
+            "contact_form_id": [self.cmbContactForm.do_update, "changed", 3],
+            "contact_rating_id": [self.cmbContactRating.do_update, "changed", 4],
+            "application_id": [self.cmbApplication.do_update, "changed", 5],
+            "construction": [self.cmbConstruction.do_update, "changed", 6],
+            "n_cycles": [self.txtCycles, "changed", 7],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -213,10 +251,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
+        pub.subscribe(self.do_load_comboboxes, "changed_subcategory")
 
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -232,11 +269,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.__do_load_quality_combo()
         self.__do_load_type_combo()
 
-        self.cmbLoadType.do_load_combo(self._lst_technology, signal='changed')
-        self.cmbContactForm.do_load_combo(self._lst_contact_form,
-                                          signal='changed')
-        self.cmbContactRating.do_load_combo(self._lst_contact_rating,
-                                            signal='changed')
+        self.cmbLoadType.do_load_combo(self._lst_technology, signal="changed")
+        self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
+        self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Relay assessment input widgets.
@@ -248,26 +283,30 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         """
         super().do_load_common(attributes)
 
-        self.cmbType.do_update(attributes['type_id'], signal='changed')
+        self.cmbType.do_update(attributes["type_id"], signal="changed")
 
         if self._hazard_rate_method_id == 2:
-            self.cmbLoadType.do_update(attributes['technology_id'],
-                                       signal='changed')
-            self.cmbContactForm.do_update(attributes['contact_form_id'],
-                                          signal='changed')
-            self.cmbContactRating.do_update(attributes['contact_rating_id'],
-                                            signal='changed')
+            self.cmbLoadType.do_update(attributes["technology_id"], signal="changed")
+            self.cmbContactForm.do_update(
+                attributes["contact_form_id"], signal="changed"
+            )
+            self.cmbContactRating.do_update(
+                attributes["contact_rating_id"], signal="changed"
+            )
 
             self.__do_load_application_combo()
-            self.cmbApplication.do_update(attributes['application_id'],
-                                          signal='changed')
+            self.cmbApplication.do_update(
+                attributes["application_id"], signal="changed"
+            )
 
             self.__do_load_construction_combo()
-            self.cmbConstruction.do_update(attributes['construction_id'],
-                                           signal='changed')
+            self.cmbConstruction.do_update(
+                attributes["construction_id"], signal="changed"
+            )
 
-            self.txtCycles.do_update(str(attributes['n_cycles']),
-                                     signal='changed')  # noqa
+            self.txtCycles.do_update(
+                str(attributes["n_cycles"]), signal="changed"
+            )  # noqa
 
     def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected relay.
@@ -304,7 +343,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _data = self._dic_application[_contact_rating_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data, signal='changed')
+        self.cmbApplication.do_load_combo(_data, signal="changed")
 
     def __do_load_construction_combo(self) -> None:
         """Load the selections in the Relay construction RAMSTKComboBox().
@@ -318,7 +357,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _data = self._dic_construction[_contact_rating_id][_application_id]
         except KeyError:
             _data = []
-        self.cmbConstruction.do_load_combo(_data, signal='changed')
+        self.cmbConstruction.do_load_combo(_data, signal="changed")
 
     def __do_load_quality_combo(self) -> None:
         """Load the selections in the Relay quality RAMSTKComboBox().
@@ -327,14 +366,13 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"],
-                     [_("Lower")]]
+            _data = [[_("Established Reliability")], ["MIL-SPEC"], [_("Lower")]]
         else:
             try:
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal='changed')
+        self.cmbQuality.do_load_combo(_data, signal="changed")
 
     def __do_load_type_combo(self) -> None:
         """Load the selections in the Relay type RAMSTKComboBox().
@@ -346,7 +384,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _data = self._dic_types[self._subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal='changed')
+        self.cmbType.do_load_combo(_data, signal="changed")
 
     def __set_callbacks(self) -> None:
         """Set callback methods for Relay assessment input widgets.
@@ -355,36 +393,34 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbApplication.dic_handler_id[
-            'changed'] = self.cmbApplication.connect('changed',
-                                                     self.on_changed_combo, 5,
-                                                     'wvw_editing_hardware')
-        self.cmbApplication.connect('changed', self._on_combo_changed, 5)
-        self.cmbConstruction.dic_handler_id[
-            'changed'] = self.cmbConstruction.connect('changed',
-                                                      self.on_changed_combo, 6,
-                                                      'wvw_editing_hardware')
-        self.cmbContactForm.dic_handler_id[
-            'changed'] = self.cmbContactForm.connect('changed',
-                                                     self.on_changed_combo, 3,
-                                                     'wvw_editing_hardware')
-        self.cmbContactRating.dic_handler_id[
-            'changed'] = self.cmbContactRating.connect('changed',
-                                                       self.on_changed_combo,
-                                                       4,
-                                                       'wvw_editing_hardware')
-        self.cmbContactRating.connect('changed', self._on_combo_changed, 4)
-        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
-            'changed', self.on_changed_combo, 0, 'wvw_editing_hardware')
-        self.cmbLoadType.dic_handler_id['changed'] = self.cmbLoadType.connect(
-            'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
-        self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
-            'changed', self.on_changed_combo, 1, 'wvw_editing_hardware')
+        self.cmbApplication.dic_handler_id["changed"] = self.cmbApplication.connect(
+            "changed", self.on_changed_combo, 5, "wvw_editing_hardware"
+        )
+        self.cmbApplication.connect("changed", self._on_combo_changed, 5)
+        self.cmbConstruction.dic_handler_id["changed"] = self.cmbConstruction.connect(
+            "changed", self.on_changed_combo, 6, "wvw_editing_hardware"
+        )
+        self.cmbContactForm.dic_handler_id["changed"] = self.cmbContactForm.connect(
+            "changed", self.on_changed_combo, 3, "wvw_editing_hardware"
+        )
+        self.cmbContactRating.dic_handler_id["changed"] = self.cmbContactRating.connect(
+            "changed", self.on_changed_combo, 4, "wvw_editing_hardware"
+        )
+        self.cmbContactRating.connect("changed", self._on_combo_changed, 4)
+        self.cmbQuality.dic_handler_id["changed"] = self.cmbQuality.connect(
+            "changed", self.on_changed_combo, 0, "wvw_editing_hardware"
+        )
+        self.cmbLoadType.dic_handler_id["changed"] = self.cmbLoadType.connect(
+            "changed", self.on_changed_combo, 2, "wvw_editing_hardware"
+        )
+        self.cmbType.dic_handler_id["changed"] = self.cmbType.connect(
+            "changed", self.on_changed_combo, 1, "wvw_editing_hardware"
+        )
 
         # ----- ENTRIES
-        self.txtCycles.dic_handler_id['changed'] = self.txtCycles.connect(
-            'focus-out-event', self.on_changed_entry, 7,
-            'wvw_editing_hardware')
+        self.txtCycles.dic_handler_id["changed"] = self.txtCycles.connect(
+            "focus-out-event", self.on_changed_entry, 7, "wvw_editing_hardware"
+        )
 
     def __set_properties(self) -> None:
         """Set properties for Relay assessment input widgets.
@@ -395,8 +431,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtCycles.do_set_properties(tooltip=self._lst_tooltips[7],
-                                         width=125)
+        self.txtCycles.do_set_properties(tooltip=self._lst_tooltips[7], width=125)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -445,14 +480,12 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress = {
-        1:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
         "\u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub"
         ">CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
         "></span>",
-        2:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span> "
+        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
+        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span> ",
     }
 
     # Define private list class attributes.
@@ -477,20 +510,20 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
             "\u03BB<sub>b</sub>:",
             "\u03C0<sub>Q</sub>:",
             "\u03C0<sub>E</sub>:",
-            '\u03C0<sub>C</sub>:',
-            '\u03C0<sub>CYC</sub>:',
-            '\u03C0<sub>F</sub>:',
-            '\u03C0<sub>L</sub>:',
+            "\u03C0<sub>C</sub>:",
+            "\u03C0<sub>CYC</sub>:",
+            "\u03C0<sub>F</sub>:",
+            "\u03C0<sub>L</sub>:",
         ]
         self._lst_tooltips: List[str] = [
             _("The assessment model used to calculate the relay hazard rate."),
-            _('The base hazard rate for the relay.'),
-            _('The quality factor for the relay.'),
-            _('The environment factor for the relay.'),
-            _('The contact form factor for the relay.'),
-            _('The cycling factor for the relay.'),
-            _('The application and construction factor for the relay.'),
-            _('The load stress factor for the relay.'),
+            _("The base hazard rate for the relay."),
+            _("The quality factor for the relay."),
+            _("The environment factor for the relay."),
+            _("The contact form factor for the relay."),
+            _("The cycling factor for the relay."),
+            _("The application and construction factor for the relay."),
+            _("The load stress factor for the relay."),
         ]
 
         # Initialize private scalar attributes.
@@ -520,8 +553,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Relay assessment results widgets.
@@ -531,10 +563,10 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         """
         super().do_load_common(attributes)
 
-        self.txtPiC.do_update(str(self.fmt.format(attributes['piC'])))
-        self.txtPiCYC.do_update(str(self.fmt.format(attributes['piCYC'])))
-        self.txtPiF.do_update(str(self.fmt.format(attributes['piF'])))
-        self.txtPiL.do_update(str(self.fmt.format(attributes['piL'])))
+        self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))
+        self.txtPiCYC.do_update(str(self.fmt.format(attributes["piCYC"])))
+        self.txtPiF.do_update(str(self.fmt.format(attributes["piF"])))
+        self.txtPiL.do_update(str(self.fmt.format(attributes["piL"])))
 
         self._do_set_sensitive()
 

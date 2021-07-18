@@ -11,15 +11,24 @@
 from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = [
-    0.032, 0.096, 0.32, 0.19, 0.51, 0.38, 0.54, 0.70, 0.90, 0.74, 0.016, 0.42,
-    1.0, 16.0
+    0.032,
+    0.096,
+    0.32,
+    0.19,
+    0.51,
+    0.38,
+    0.54,
+    0.70,
+    0.90,
+    0.74,
+    0.016,
+    0.42,
+    1.0,
+    16.0,
 ]
 PART_COUNT_PI_Q = [1.0, 3.4]
 PART_STRESS_PI_Q = [1.0, 2.1]
-PI_E = [
-    1.0, 3.0, 10.0, 6.0, 16.0, 12.0, 17.0, 22.0, 28.0, 23.0, 0.5, 13.0, 32.0,
-    500.0
-]
+PI_E = [1.0, 3.0, 10.0, 6.0, 16.0, 12.0, 17.0, 22.0, 28.0, 23.0, 0.5, 13.0, 32.0, 500.0]
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -32,8 +41,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the list of base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['environment_active_id'])  # type: ignore
+    return get_part_count_lambda_b(attributes["environment_active_id"])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -47,12 +55,13 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
              dictionary with updated values.
     :rtype: dict
     """
-    attributes['lambda_b'] = 0.013 * attributes[  # type: ignore
-        'frequency_operating']**0.23
+    attributes["lambda_b"] = (
+        0.013 * attributes["frequency_operating"] ** 0.23  # type: ignore
+    )
 
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b']  # type: ignore
-        * attributes['piQ'] * attributes['piE'])
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]  # type: ignore
+    )
 
     return attributes
 

@@ -17,8 +17,9 @@ from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from .widget import RAMSTKWidget
 
 
-def do_make_buttonbox(view: Any,
-                      **kwargs: Any) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]:
+def do_make_buttonbox(
+    view: Any, **kwargs: Any
+) -> Union[Gtk.HButtonBox, Gtk.VButtonBox]:
     """Create the buttonbox for RAMSTK Views.
 
     This method creates the base buttonbox used by all RAMSTK Views.  Use a
@@ -44,14 +45,14 @@ def do_make_buttonbox(view: Any,
     :return: _buttonbox
     :rtype: :class:`Gtk.ButtonBox`
     """
-    _callbacks = kwargs.get('callbacks', [])
-    _height = kwargs.get('height', -1)
-    _icons = kwargs.get('icons', [])
-    _orientation = kwargs.get('orientation', 'vertical')
-    _tooltips = kwargs.get('tooltips', [])
-    _width = kwargs.get('width', -1)
+    _callbacks = kwargs.get("callbacks", [])
+    _height = kwargs.get("height", -1)
+    _icons = kwargs.get("icons", [])
+    _orientation = kwargs.get("orientation", "vertical")
+    _tooltips = kwargs.get("tooltips", [])
+    _width = kwargs.get("width", -1)
 
-    if _orientation == 'horizontal':
+    if _orientation == "horizontal":
         _buttonbox = Gtk.HButtonBox()
     else:
         _buttonbox = Gtk.VButtonBox()
@@ -60,8 +61,9 @@ def do_make_buttonbox(view: Any,
 
     for _idx, _icon in enumerate(_icons):
         _image = Gtk.Image()
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(view._dic_icons[_icon],
-                                                       _height, _width)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            view._dic_icons[_icon], _height, _width
+        )
         _image.set_from_pixbuf(_icon)
 
         _button = Gtk.Button()
@@ -76,7 +78,7 @@ def do_make_buttonbox(view: Any,
             _button.set_tooltip_markup("")
 
         try:
-            _button.connect('clicked', _callbacks[_idx])
+            _button.connect("clicked", _callbacks[_idx])
         except IndexError:
             _button.set_sensitive(False)
 
@@ -116,14 +118,15 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         :rtype: None
         """
         super().do_set_properties(**kwargs)
-        self.set_property('always_show_image', True)
+        self.set_property("always_show_image", True)
 
-        _icon = kwargs.get('icon', None)
+        _icon = kwargs.get("icon", None)
 
         if _icon is not None:
-            self.set_label('')
+            self.set_label("")
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                _icon, self.height, self.width)
+                _icon, self.height, self.width
+            )
             _image = Gtk.Image()
             _image.set_from_pixbuf(_icon)
             self.set_image(_image)
@@ -167,10 +170,10 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.set_use_underline(True)
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
-        self.get_child().set_property('height-request', self.height)
-        self.get_child().set_property('width-request', self.width)
+        self.get_child().set_property("height-request", self.height)
+        self.get_child().set_property("width-request", self.width)
 
-    def do_update(self, value: int, signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = "") -> None:
         """Update the RAMSTK CheckButton with a new value.
 
         :param value: the information to update the RAMSTKCheckButton() to
@@ -189,9 +192,8 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
 
 class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
     """The RAMSTK Option Button class."""
-    def __init__(self,
-                 group: Gtk.RadioButton = None,
-                 label: str = _("")) -> None:
+
+    def __init__(self, group: Gtk.RadioButton = None, label: str = _("")) -> None:
         """Initialize an instance of the RAMSTK OptionButton.
 
         :keyword group: the group the Gtk.RadioButton() belongs to, if any.
@@ -253,18 +255,18 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _limits = kwargs.get('limits', [0, 0, 100, 1, 0.1])
-        _numeric = kwargs.get('numeric', True)
-        _snap_to_ticks = kwargs.get('ticks', True)
+        _limits = kwargs.get("limits", [0, 0, 100, 1, 0.1])
+        _numeric = kwargs.get("numeric", True)
+        _snap_to_ticks = kwargs.get("ticks", True)
 
         self.set_adjustment(
-            Gtk.Adjustment(_limits[0], _limits[1], _limits[2], _limits[3],
-                           _limits[4]))
+            Gtk.Adjustment(_limits[0], _limits[1], _limits[2], _limits[3], _limits[4])
+        )
         self.set_numeric(_numeric)
         self.set_snap_to_ticks(_snap_to_ticks)
         self.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
 
-    def do_update(self, value: int, signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = "") -> None:
         """Update the RAMSTK Spin Button with a new value.
 
         :param value: the information to update the RAMSTKSpinButton() to

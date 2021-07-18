@@ -32,8 +32,10 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         RAMSTK module name; value is the View associated with that RAMSTK
         module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize an instance of the Module Book class.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -43,11 +45,11 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
-            'revision': mvwRevision(configuration, logger),
-            'function': mvwFunction(configuration, logger),
-            'requirement': mvwRequirement(configuration, logger),
-            'hardware': mvwHardware(configuration, logger),
-            'validation': mvwValidation(configuration, logger)
+            "revision": mvwRevision(configuration, logger),
+            "function": mvwFunction(configuration, logger),
+            "requirement": mvwRequirement(configuration, logger),
+            "hardware": mvwHardware(configuration, logger),
+            "validation": mvwValidation(configuration, logger),
         }
 
         # Initialize private list attributes.
@@ -61,13 +63,13 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize public scalar attributes.
         self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
-        self._set_properties('modulebook')
+        self._set_properties("modulebook")
         self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_open, 'succeed_retrieve_revisions')
-        pub.subscribe(self._on_close, 'succeed_closed_program')
+        pub.subscribe(self._on_open, "succeed_retrieve_revisions")
+        pub.subscribe(self._on_close, "succeed_closed_program")
 
     def __make_ui(self) -> None:
         """Build the user interface.
@@ -76,9 +78,10 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :rtype: None
         """
         self.insert_page(
-            self._dic_module_views['revision'],
-            tab_label=self._dic_module_views['revision'].hbx_tab_label,
-            position=0)
+            self._dic_module_views["revision"],
+            tab_label=self._dic_module_views["revision"].hbx_tab_label,
+            position=0,
+        )
 
         self.show_all()
         self.set_current_page(0)
@@ -89,10 +92,12 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        self.dic_handler_id['select-page'] = self.connect(
-            'select-page', self._on_switch_page)
-        self.dic_handler_id['switch-page'] = self.connect(
-            'switch-page', self._on_switch_page)
+        self.dic_handler_id["select-page"] = self.connect(
+            "select-page", self._on_switch_page
+        )
+        self.dic_handler_id["switch-page"] = self.connect(
+            "switch-page", self._on_switch_page
+        )
 
     def _on_close(self) -> None:
         """Update the Module View when a RAMSTK Program database is closed.
@@ -107,7 +112,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             self.remove_page(-1)
 
         # Clear the Revision page treeview.
-        _model = self._dic_module_views['revision'].treeview.get_model()
+        _model = self._dic_module_views["revision"].treeview.get_model()
         _model.clear()
 
     # pylint: disable=unused-argument
@@ -123,19 +128,17 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _key in list(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
+        for _key in list(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             _module = self._dic_module_views[_mkey]
 
-            self.insert_page(_module,
-                             tab_label=_module.hbx_tab_label,
-                             position=_key)
+            self.insert_page(_module, tab_label=_module.hbx_tab_label, position=_key)
 
-        pub.sendMessage('mvwSwitchedPage', module='revision')
+        pub.sendMessage("mvwSwitchedPage", module="revision")
 
-    def _on_switch_page(self, __notebook: Gtk.Notebook, __page: Gtk.Widget,
-                        page_num: int) -> None:
+    def _on_switch_page(
+        self, __notebook: Gtk.Notebook, __page: Gtk.Widget, page_num: int
+    ) -> None:
         """Handle page changes in the Module Book Gtk.Notebook().
 
         :param __notebook: the Tree Book notebook widget.
@@ -165,9 +168,8 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # // should be raised for the user to understand why the Revision
         # // module was shown instead.
         try:
-            _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[
-                page_num]
+            _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
         except KeyError:
-            _module = 'revision'
+            _module = "revision"
 
-        pub.sendMessage('mvwSwitchedPage', module=_module)
+        pub.sendMessage("mvwSwitchedPage", module=_module)
