@@ -39,7 +39,7 @@ jobs:
           use-rstcheck: false
           use-check-manifest: false
           use-pyroma: false
-          extra-black-options: "--config pyproject.toml --diff"
+          extra-black-options: ""
           extra-yapf-options: ""
           extra-isort-options: "--settings-file ./pyproject.toml"
           extra-docformatter-options: ""
