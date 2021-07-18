@@ -11,20 +11,26 @@ from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: [
-        0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24, 0.018,
-        0.15, 0.33, 2.6
+        0.022,
+        0.044,
+        0.13,
+        0.088,
+        0.20,
+        0.15,
+        0.20,
+        0.24,
+        0.29,
+        0.24,
+        0.018,
+        0.15,
+        0.33,
+        2.6,
     ],
-    2: [
-        0.12, 0.24, 0.72, 0.48, 1.1, 0.84, 1.1, 1.3, 1.6, 1.3, 0.096, 0.84,
-        1.8, 1.4
-    ],
-    3:
-    [0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1, 32.0]
+    2: [0.12, 0.24, 0.72, 0.48, 1.1, 0.84, 1.1, 1.3, 1.6, 1.3, 0.096, 0.84, 1.8, 1.4],
+    3: [0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1, 32.0],
 }
 PART_STRESS_LAMBDA_B = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
-PI_E = [
-    1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0, 120.0
-]
+PI_E = [1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0, 120.0]
 PI_Q = [1.0, 2.9]
 
 
@@ -39,8 +45,8 @@ def calculate_part_count(**attributes: Dict[str, int]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        attributes['type_id'],  # type: ignore
-        attributes['environment_active_id'])  # type: ignore
+        attributes["type_id"], attributes["environment_active_id"]  # type: ignore
+    )  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -52,12 +58,13 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     :rtype: dict
     :raise: KeyError if an unknown type ID is passed.
     """
-    attributes['lambda_b'] = PART_STRESS_LAMBDA_B[  # type: ignore
-        attributes['type_id']]  # type: ignore
+    attributes["lambda_b"] = PART_STRESS_LAMBDA_B[  # type: ignore
+        attributes["type_id"]
+    ]  # type: ignore
 
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b']  # type: ignore
-        * attributes['piQ'] * attributes['piE'])
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]  # type: ignore
+    )
 
     return attributes
 

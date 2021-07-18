@@ -17,8 +17,11 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKEntry, RAMSTKPanel,
-    RAMSTKTextView, RAMSTKWorkView
+    RAMSTKCheckButton,
+    RAMSTKEntry,
+    RAMSTKPanel,
+    RAMSTKTextView,
+    RAMSTKWorkView,
 )
 
 # RAMSTK Local Imports
@@ -27,6 +30,7 @@ from . import ATTRIBUTE_KEYS
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Function."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Function General Data panel."""
         super().__init__()
@@ -39,7 +43,7 @@ class GeneralDataPanel(RAMSTKPanel):
             _("Function Code:"),
             _("Function Description:"),
             _("Remarks:"),
-            '',
+            "",
         ]
 
         # Initialize private scalar instance attributes.
@@ -51,17 +55,17 @@ class GeneralDataPanel(RAMSTKPanel):
 
         # Initialize public scalar instance attributes.
         self.chkSafetyCritical: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Function is safety critical."))
+            label=_("Function is safety critical.")
+        )
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
         self.txtName: RAMSTKEntry = RAMSTKEntry()
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
         self._dic_attribute_updater = {
-            'function_code': [self.txtCode.do_update, 'changed', 0],
-            'name': [self.txtName.do_update, 'changed', 5],
-            'remarks': [self.txtRemarks.do_update, 'changed', 15],
-            'safety_critical':
-            [self.chkSafetyCritical.do_update, 'toggled', 17]
+            "function_code": [self.txtCode.do_update, "changed", 0],
+            "name": [self.txtName.do_update, "changed", 5],
+            "remarks": [self.txtRemarks.do_update, "changed", 15],
+            "safety_critical": [self.chkSafetyCritical.do_update, "toggled", 17],
         }
 
         self._lst_widgets = [
@@ -77,10 +81,10 @@ class GeneralDataPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_function')
+        pub.subscribe(self.on_edit, "mvw_editing_function")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_function')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "selected_function")
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -88,10 +92,10 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update('', signal='changed')
-        self.txtName.do_update('', signal='changed')
-        self.txtRemarks.do_update('', signal='changed')
-        self.chkSafetyCritical.do_update(False, signal='toggled')
+        self.txtCode.do_update("", signal="changed")
+        self.txtName.do_update("", signal="changed")
+        self.txtRemarks.do_update("", signal="changed")
+        self.chkSafetyCritical.do_update(False, signal="toggled")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Function General Data page widgets.
@@ -101,14 +105,14 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['function_id']
+        self._record_id = attributes["function_id"]
 
-        self.txtCode.do_update(str(attributes['function_code']),
-                               signal='changed')
-        self.txtName.do_update(str(attributes['name']), signal='changed')
-        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
-        self.chkSafetyCritical.do_update(int(attributes['safety_critical']),
-                                         signal='toggled')
+        self.txtCode.do_update(str(attributes["function_code"]), signal="changed")
+        self.txtName.do_update(str(attributes["name"]), signal="changed")
+        self.txtRemarks.do_update(str(attributes["remarks"]), signal="changed")
+        self.chkSafetyCritical.do_update(
+            int(attributes["safety_critical"]), signal="toggled"
+        )
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -116,21 +120,25 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.txtCode.dic_handler_id['changed'] = (self.txtCode.connect(
-            'changed',
-            super().on_changed_entry, 0, 'wvw_editing_function'))
-        self.txtName.dic_handler_id['changed'] = (self.txtName.connect(
-            'changed',
-            super().on_changed_entry, 1, 'wvw_editing_function'))
+        self.txtCode.dic_handler_id["changed"] = self.txtCode.connect(
+            "changed", super().on_changed_entry, 0, "wvw_editing_function"
+        )
+        self.txtName.dic_handler_id["changed"] = self.txtName.connect(
+            "changed", super().on_changed_entry, 1, "wvw_editing_function"
+        )
         _buffer: Gtk.TextBuffer = self.txtRemarks.do_get_buffer()
-        self.txtRemarks.dic_handler_id['changed'] = (_buffer.connect(
-            'changed',
-            super().on_changed_textview, 2, 'wvw_editing_function',
-            self.txtRemarks))
-        self.chkSafetyCritical.dic_handler_id['toggled'] = (
-            self.chkSafetyCritical.connect('toggled',
-                                           super().on_toggled, 3,
-                                           'wvw_editing_function'))
+        self.txtRemarks.dic_handler_id["changed"] = _buffer.connect(
+            "changed",
+            super().on_changed_textview,
+            2,
+            "wvw_editing_function",
+            self.txtRemarks,
+        )
+        self.chkSafetyCritical.dic_handler_id[
+            "toggled"
+        ] = self.chkSafetyCritical.connect(
+            "toggled", super().on_toggled, 3, "wvw_editing_function"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -142,19 +150,23 @@ class GeneralDataPanel(RAMSTKPanel):
 
         # ----- BUTTONS
         self.chkSafetyCritical.do_set_properties(
-            tooltip=_("Indicates whether or not the selected function is "
-                      "safety critical."))
+            tooltip=_(
+                "Indicates whether or not the selected function is " "safety critical."
+            )
+        )
 
         # ----- ENTRIES
         self.txtCode.do_set_properties(
-            width=125, tooltip=_("A unique code for the selected function."))
+            width=125, tooltip=_("A unique code for the selected function.")
+        )
         self.txtName.do_set_properties(
-            width=800, tooltip=_("The name of the selected function."))
+            width=800, tooltip=_("The name of the selected function.")
+        )
         self.txtRemarks.do_set_properties(
             height=100,
             width=800,
-            tooltip=_("Enter any remarks associated with the "
-                      "selected function."))
+            tooltip=_("Enter any remarks associated with the " "selected function."),
+        )
 
 
 class GeneralData(RAMSTKWorkView):
@@ -185,10 +197,9 @@ class GeneralData(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'function'
+    _module: str = "function"
     _tablabel = _("General\nData")
-    _tabtooltip = _("Displays general information for the "
-                    "selected Function")
+    _tabtooltip = _("Displays general information for the " "selected Function")
 
     # Define public dict class attributes.
 
@@ -196,8 +207,9 @@ class GeneralData(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Function Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -229,7 +241,7 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_function')
+        pub.subscribe(self._do_set_record_id, "selected_function")
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
@@ -239,8 +251,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['function_id']
-        self._parent_id = attributes['parent_id']
+        self._record_id = attributes["function_id"]
+        self._parent_id = attributes["parent_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function General Data tab.

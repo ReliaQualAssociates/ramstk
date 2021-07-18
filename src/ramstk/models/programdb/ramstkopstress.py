@@ -23,66 +23,62 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'description': '',
-        'load_history': '',
-        'measurable_parameter': '',
-        'remarks': ''
+        "description": "",
+        "load_history": "",
+        "measurable_parameter": "",
+        "remarks": "",
     }
-    __tablename__ = 'ramstk_op_stress'
-    __table_args__ = (ForeignKeyConstraint(
-        [
-            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
-            'fld_mechanism_id', 'fld_load_id'
-        ],
-        [
-            'ramstk_op_load.fld_revision_id', 'ramstk_op_load.fld_hardware_id',
-            'ramstk_op_load.fld_mode_id', 'ramstk_op_load.fld_mechanism_id',
-            'ramstk_op_load.fld_load_id'
-        ],
-    ), {
-        'extend_existing': True
-    })
+    __tablename__ = "ramstk_op_stress"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            [
+                "fld_revision_id",
+                "fld_hardware_id",
+                "fld_mode_id",
+                "fld_mechanism_id",
+                "fld_load_id",
+            ],
+            [
+                "ramstk_op_load.fld_revision_id",
+                "ramstk_op_load.fld_hardware_id",
+                "ramstk_op_load.fld_mode_id",
+                "ramstk_op_load.fld_mechanism_id",
+                "ramstk_op_load.fld_load_id",
+            ],
+        ),
+        {"extend_existing": True},
+    )
 
-    revision_id = Column('fld_revision_id',
-                         Integer,
-                         primary_key=True,
-                         nullable=False)
-    hardware_id = Column('fld_hardware_id',
-                         Integer,
-                         primary_key=True,
-                         default=-1,
-                         nullable=False)
-    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
-    mechanism_id = Column('fld_mechanism_id',
-                          Integer,
-                          primary_key=True,
-                          nullable=False)
-    load_id = Column('fld_load_id',
-                     Integer,
-                     primary_key=True,
-                     nullable=False,
-                     unique=True)
-    stress_id = Column('fld_stress_id',
-                       Integer,
-                       primary_key=True,
-                       autoincrement=True,
-                       nullable=False)
+    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
+    hardware_id = Column(
+        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+    )
+    mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
+    mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
+    load_id = Column(
+        "fld_load_id", Integer, primary_key=True, nullable=False, unique=True
+    )
+    stress_id = Column(
+        "fld_stress_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    )
 
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    load_history = Column('fld_load_history',
-                          String(512),
-                          default=__defaults__['load_history'])
-    measurable_parameter = Column('fld_measurable_parameter',
-                                  String(512),
-                                  default=__defaults__['measurable_parameter'])
-    remarks = Column('fld_remarks', String, default=__defaults__['remarks'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    load_history = Column(
+        "fld_load_history", String(512), default=__defaults__["load_history"]
+    )
+    measurable_parameter = Column(
+        "fld_measurable_parameter",
+        String(512),
+        default=__defaults__["measurable_parameter"],
+    )
+    remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship(  # type: ignore
-        'RAMSTKOpLoad',
-        back_populates='op_stress',
+        "RAMSTKOpLoad",
+        back_populates="op_stress",
     )
 
     is_mode = False
@@ -99,12 +95,12 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: tuple
         """
         _attributes = {
-            'load_id': self.load_id,
-            'stress_id': self.stress_id,
-            'description': self.description,
-            'load_history': self.load_history,
-            'measurable_parameter': self.measurable_parameter,
-            'remarks': self.remarks
+            "load_id": self.load_id,
+            "stress_id": self.stress_id,
+            "description": self.description,
+            "load_history": self.load_history,
+            "measurable_parameter": self.measurable_parameter,
+            "remarks": self.remarks,
         }
 
         return _attributes

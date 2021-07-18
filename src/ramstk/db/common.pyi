@@ -7,9 +7,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.models.commondb import RAMSTKRPN as RAMSTKRPN
 from ramstk.models.commondb import RAMSTKCategory as RAMSTKCategory
@@ -46,100 +44,43 @@ RAMSTK_STATUSES: Any
 RAMSTK_SUBCATEGORIES: Any
 RAMSTK_TYPES: Dict[int, Tuple[str, str, str]]
 
-
-def _load_fmea_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_hazard_analysis_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_incident_report_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_miscellaneous_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_pof_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_requirements_analysis_tables(session: scoped_session) -> None:
-    ...
-
-
-def _load_site_info(session: scoped_session) -> None:
-    ...
-
-
-def do_add_administrator(session: scoped_session) -> None:
-    ...
-
-
-def do_create_common_db(engine: Engine, session: scoped_session) -> None:
-    ...
-
-
-def do_make_commondb_tables(engine: Engine) -> None:
-    ...
-
-
+def _load_fmea_tables(session: scoped_session) -> None: ...
+def _load_hazard_analysis_tables(session: scoped_session) -> None: ...
+def _load_incident_report_tables(session: scoped_session) -> None: ...
+def _load_miscellaneous_tables(session: scoped_session) -> None: ...
+def _load_pof_tables(session: scoped_session) -> None: ...
+def _load_requirements_analysis_tables(session: scoped_session) -> None: ...
+def _load_site_info(session: scoped_session) -> None: ...
+def do_add_administrator(session: scoped_session) -> None: ...
+def do_create_common_db(engine: Engine, session: scoped_session) -> None: ...
+def do_make_commondb_tables(engine: Engine) -> None: ...
 def _do_load_action_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_hardware_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_incident_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_miscellaneous_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_pof_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_requirement_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_rpn_variables(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
-def _do_load_severity(site_db: BaseDatabase,
-                      user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
+def _do_load_severity(
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
 def _do_load_user_workgroups(
-        site_db: BaseDatabase,
-        user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
-
-
-def do_load_variables(site_db: BaseDatabase,
-                      user_configuration: RAMSTKUserConfiguration) -> None:
-    ...
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...
+def do_load_variables(
+    site_db: BaseDatabase, user_configuration: RAMSTKUserConfiguration
+) -> None: ...

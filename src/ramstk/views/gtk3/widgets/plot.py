@@ -18,11 +18,15 @@ try:
     # noinspection PyPackageRequirements
     # Third Party Imports
     import matplotlib
+
     # noinspection PyPackageRequirements
-    from matplotlib.backends.backend_gtk3cairo import (FigureCanvasGTK3Cairo as
-                                                       FigureCanvas)
+    from matplotlib.backends.backend_gtk3cairo import (
+        FigureCanvasGTK3Cairo as FigureCanvas,
+    )
+
     # noinspection PyPackageRequirements
     from matplotlib.figure import Figure
+
     # noinspection PyPackageRequirements
     from matplotlib.lines import Line2D
 except RuntimeError:
@@ -38,6 +42,7 @@ class RAMSTKPlot:
     with RAMSTK specific property values and methods.  This ensures a
     consistent look and feel to widgets in the RAMSTK application.
     """
+
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTKPlot."""
         # Initialize private dictionary attributes.
@@ -57,8 +62,9 @@ class RAMSTKPlot:
         self.canvas = FigureCanvas(self.figure)
         self.axis = self.figure.add_subplot(111)
 
-    def do_load_plot(self, x_values: List[float], y_values: List[float],
-                     **kwargs: Dict[str, str]) -> None:
+    def do_load_plot(
+        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+    ) -> None:
         """Load the RAMSTKPlot.
 
         Plots can be one of the following types:
@@ -78,15 +84,15 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _plot_type = kwargs.get('plot_type', 'scatter')
+        _plot_type = kwargs.get("plot_type", "scatter")
 
-        if _plot_type == 'step':
+        if _plot_type == "step":
             self._do_make_step_plot(x_values, y_values, **kwargs)
-        elif _plot_type == 'scatter':
+        elif _plot_type == "scatter":
             self._do_make_scatter_plot(x_values, y_values, **kwargs)
-        elif _plot_type == 'histogram':
+        elif _plot_type == "histogram":
             self._do_make_histogram(x_values, y_values, **kwargs)
-        elif _plot_type == 'date':
+        elif _plot_type == "date":
             self._do_make_date_plot(x_values, y_values, **kwargs)
 
         _min, _max = self._get_minimax_ordinates()
@@ -95,11 +101,13 @@ class RAMSTKPlot:
 
         self.canvas.show()
 
-    def do_add_line(self,
-                    x_values: List[float],
-                    y_values: List[float] = None,
-                    color: str = 'k',
-                    marker: str = '^') -> None:
+    def do_add_line(
+        self,
+        x_values: List[float],
+        y_values: List[float] = None,
+        color: str = "k",
+        marker: str = "^",
+    ) -> None:
         """Load the RAMSTKPlot.
 
         :param x_values: list of the x-values to plot.
@@ -113,16 +121,14 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _line = Line2D(x_values,
-                       y_values,
-                       lw=0.0,
-                       color=color,
-                       marker=marker,
-                       markersize=10)
+        _line = Line2D(
+            x_values, y_values, lw=0.0, color=color, marker=marker, markersize=10
+        )
         self.axis.add_line(_line)
 
-    def do_close_plot(self, __window: Gtk.Window, __event: Gdk.Event,
-                      parent: Gtk.Widget) -> None:
+    def do_close_plot(
+        self, __window: Gtk.Window, __event: Gdk.Event, parent: Gtk.Widget
+    ) -> None:
         """Return the plot to the Work Book page it is part of.
 
         :param __window: the Gtk.Window() that is being destroyed.
@@ -137,8 +143,7 @@ class RAMSTKPlot:
         self.canvas.reparent(parent)
 
     # noinspection PyUnresolvedReferences
-    def do_expand_plot(self,
-                       event: matplotlib.backend_bases.MouseEvent) -> None:
+    def do_expand_plot(self, event: matplotlib.backend_bases.MouseEvent) -> None:
         """Display a plot in it's own window.
 
         :param event: the matplotlib.backend_bases.MouseEvent() that called
@@ -157,17 +162,16 @@ class RAMSTKPlot:
             _window.set_default_size(800, 400)
             _window.set_border_width(5)
             _window.set_position(Gtk.WindowPosition.NONE)
-            _window.set_title(_(u"RAMSTK Plot"))
+            _window.set_title(_("RAMSTK Plot"))
 
-            _window.connect('delete_event', self.do_close_plot, _parent)
+            _window.connect("delete_event", self.do_close_plot, _parent)
 
             self.canvas.reparent(_window)
 
             _window.show_all()
 
     # noinspection PyUnresolvedReferences
-    def do_make_labels(self, label: str,
-                       **kwargs: Any) -> matplotlib.text.Text:
+    def do_make_labels(self, label: str, **kwargs: Any) -> matplotlib.text.Text:
         """Make the abscissa or ordinate label.
 
         Accepts keyword arguments:
@@ -183,33 +187,37 @@ class RAMSTKPlot:
         :return: matplotlib text instance representing the label.
         :rtype: :class:`matplotlib.text.Text`
         """
-        _fontsize = kwargs.get('fontsize', 14)
-        _fontweight = kwargs.get('fontweight', 'bold')
-        _set_x = kwargs.get('set_x', True)
-        _x_pos = kwargs.get('x_pos', 0)
-        _y_pos = kwargs.get('y_pos', 0)
+        _fontsize = kwargs.get("fontsize", 14)
+        _fontweight = kwargs.get("fontweight", "bold")
+        _set_x = kwargs.get("set_x", True)
+        _x_pos = kwargs.get("x_pos", 0)
+        _y_pos = kwargs.get("y_pos", 0)
 
         _label = None
 
         if _set_x:
             _label = self.axis.set_xlabel(
-                label, {
-                    'fontsize': _fontsize,
-                    'fontweight': _fontweight,
-                    'verticalalignment': 'center',
-                    'horizontalalignment': 'center',
-                    'x': _x_pos,
-                    'y': _y_pos
-                })
+                label,
+                {
+                    "fontsize": _fontsize,
+                    "fontweight": _fontweight,
+                    "verticalalignment": "center",
+                    "horizontalalignment": "center",
+                    "x": _x_pos,
+                    "y": _y_pos,
+                },
+            )
         else:
             _label = self.axis.set_ylabel(
-                label, {
-                    'fontsize': _fontsize,
-                    'fontweight': _fontweight,
-                    'verticalalignment': 'center',
-                    'horizontalalignment': 'center',
-                    'rotation': 'vertical'
-                })
+                label,
+                {
+                    "fontsize": _fontsize,
+                    "fontweight": _fontweight,
+                    "verticalalignment": "center",
+                    "horizontalalignment": "center",
+                    "rotation": "vertical",
+                },
+            )
 
         return _label
 
@@ -253,20 +261,22 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _fontsize = kwargs.get('fontsize', 'small')
-        _frameon = kwargs.get('frameon', False)
-        _location = kwargs.get('location', 'upper right')
-        _lwd = kwargs.get('lwd', 0.5)
-        _ncol = kwargs.get('ncol', 1)
-        _shadow = kwargs.get('shadow', True)
-        _title = kwargs.get('title', "")
+        _fontsize = kwargs.get("fontsize", "small")
+        _frameon = kwargs.get("frameon", False)
+        _location = kwargs.get("location", "upper right")
+        _lwd = kwargs.get("lwd", 0.5)
+        _ncol = kwargs.get("ncol", 1)
+        _shadow = kwargs.get("shadow", True)
+        _title = kwargs.get("title", "")
 
-        _legend = self.axis.legend(text,
-                                   frameon=_frameon,
-                                   loc=_location,
-                                   ncol=_ncol,
-                                   shadow=_shadow,
-                                   title=_title)
+        _legend = self.axis.legend(
+            text,
+            frameon=_frameon,
+            loc=_location,
+            ncol=_ncol,
+            shadow=_shadow,
+            title=_title,
+        )
 
         for _text in _legend.get_texts():
             _text.set_fontsize(_fontsize)
@@ -274,10 +284,9 @@ class RAMSTKPlot:
             _line.set_linewidth(_lwd)
 
     # noinspection PyUnresolvedReferences
-    def do_make_title(self,
-                      title: str,
-                      fontsize: int = 16,
-                      fontweight: str = 'bold') -> matplotlib.text.Text:
+    def do_make_title(
+        self, title: str, fontsize: int = 16, fontweight: str = "bold"
+    ) -> matplotlib.text.Text:
         """Make the plot title.
 
         :param title: the text to display as the title.
@@ -287,15 +296,18 @@ class RAMSTKPlot:
         :rtype: :class:`matplotlib.text.Text`
         """
         return self.axis.set_title(
-            title, {
-                'fontsize': fontsize,
-                'fontweight': fontweight,
-                'verticalalignment': 'baseline',
-                'horizontalalignment': 'center'
-            })
+            title,
+            {
+                "fontsize": fontsize,
+                "fontweight": fontweight,
+                "verticalalignment": "baseline",
+                "horizontalalignment": "center",
+            },
+        )
 
-    def _do_make_date_plot(self, x_values: List[float], y_values: List[float],
-                           **kwargs: Dict[str, str]) -> None:
+    def _do_make_date_plot(
+        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+    ) -> None:
         """Make a date plot.
 
         Use the keyword marker to set the type and color of marker to use
@@ -306,19 +318,16 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _marker = kwargs.get('marker', 'g-')
+        _marker = kwargs.get("marker", "g-")
 
         if y_values is not None:
-            self.axis.plot_date(x_values,
-                                y_values,
-                                _marker,
-                                xdate=True,
-                                linewidth=2)
+            self.axis.plot_date(x_values, y_values, _marker, xdate=True, linewidth=2)
             self._lst_min.append(min(y_values))
             self._lst_max.append(max(y_values))
 
-    def _do_make_histogram(self, x_values: List[float], y_values: List[float],
-                           **kwargs: Dict[str, str]) -> None:
+    def _do_make_histogram(
+        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+    ) -> None:
         """Make a histogram.
 
         Use the keyword marker to set the color of the bars used for the plot.
@@ -331,20 +340,18 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _marker = kwargs.get('marker', 'g')
+        _marker = kwargs.get("marker", "g")
 
         if y_values is not None:
-            self.axis.grid(False, which='both')
+            self.axis.grid(False, which="both")
             # pylint: disable=unused-variable
-            _values, _edges, __ = self.axis.hist(x_values,
-                                                 bins=y_values,
-                                                 color=_marker)
+            _values, _edges, __ = self.axis.hist(x_values, bins=y_values, color=_marker)
             self._lst_min.append(min(_values))
             self._lst_max.append(max(_values) + 1)
 
-    def _do_make_scatter_plot(self, x_values: List[float],
-                              y_values: List[float],
-                              **kwargs: Dict[str, str]) -> None:
+    def _do_make_scatter_plot(
+        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+    ) -> None:
         """Make a scatter plot.
 
         Use the keyword marker to set the type and color of marker to use
@@ -355,16 +362,17 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _marker = kwargs.get('marker', 'go')
+        _marker = kwargs.get("marker", "go")
 
         if y_values is not None:
-            _line, = self.axis.plot(x_values, y_values, _marker, linewidth=2)
+            (_line,) = self.axis.plot(x_values, y_values, _marker, linewidth=2)
             _line.set_ydata(y_values)
             self._lst_min.append(min(y_values))
             self._lst_max.append(max(y_values))
 
-    def _do_make_step_plot(self, x_values: List[float], y_values: List[float],
-                           **kwargs: Dict[str, str]) -> None:
+    def _do_make_step_plot(
+        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+    ) -> None:
         """Make a step plot.
 
         Use the keyword marker to set the type and color of marker to use
@@ -375,10 +383,10 @@ class RAMSTKPlot:
         :return: None
         :rtype: None
         """
-        _marker = kwargs.get('marker', 'g-')
+        _marker = kwargs.get("marker", "g-")
 
         if y_values is not None:
-            _line, = self.axis.step(x_values, y_values, _marker, where='mid')
+            (_line,) = self.axis.step(x_values, y_values, _marker, where="mid")
             _line.set_ydata(y_values)
             self._lst_min.append(min(y_values))
             self._lst_max.append(max(y_values))
@@ -395,7 +403,7 @@ class RAMSTKPlot:
         _min: float = min(self._lst_min)
         _max: float = max(1.0, self._lst_max[0])
         for i in range(1, len(self._lst_max)):
-            if _max < self._lst_max[i] != float('inf'):
+            if _max < self._lst_max[i] != float("inf"):
                 _max = self._lst_max[i]
 
         return _min, _max

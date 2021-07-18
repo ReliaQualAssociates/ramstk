@@ -19,17 +19,18 @@ from .label import RAMSTKLabel
 
 class RAMSTKFrame(Gtk.Frame):
     """The RAMSTK Frame class."""
+
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTK Frame."""
         GObject.GObject.__init__(self)
 
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set the RAMSTKFrame properties."""
-        _bold: Union[Dict[str, Any], bool] = kwargs.get('bold', False)
-        _shadow = kwargs.get('shadow', Gtk.ShadowType.ETCHED_OUT)
-        _title: Union[Dict[str, Any], str] = kwargs.get('title', "")
+        _bold: Union[Dict[str, Any], bool] = kwargs.get("bold", False)
+        _shadow = kwargs.get("shadow", Gtk.ShadowType.ETCHED_OUT)
+        _title: Union[Dict[str, Any], str] = kwargs.get("title", "")
 
-        _label: RAMSTKLabel = RAMSTKLabel(_title)   # type: ignore
+        _label: RAMSTKLabel = RAMSTKLabel(_title)  # type: ignore
         _label.do_set_properties(bold=_bold)
         _label.show_all()
         self.set_label_widget(_label)

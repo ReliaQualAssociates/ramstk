@@ -17,8 +17,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKLabel,
-    RAMSTKPanel, RAMSTKScrolledWindow, RAMSTKTextView
+    RAMSTKCheckButton,
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKLabel,
+    RAMSTKPanel,
+    RAMSTKScrolledWindow,
+    RAMSTKTextView,
 )
 
 
@@ -82,14 +87,14 @@ class RAMSTKAssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
-        self._subcategory_id = attributes['subcategory_id']
+        self._record_id = attributes["hardware_id"]
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._subcategory_id = attributes["subcategory_id"]
 
-        self.do_load_comboboxes(attributes['subcategory_id'])
+        self.do_load_comboboxes(attributes["subcategory_id"])
         self._do_set_sensitive()
 
-        self.cmbQuality.do_update(attributes['quality_id'], signal='changed')
+        self.cmbQuality.do_update(attributes["quality_id"], signal="changed")
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set properties for Hardware assessment input widgets.
@@ -162,16 +167,16 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
 
         # Initialize private dictionary attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['temperature_rated_min', 'float'],
-            1: ['temperature_knee', 'float'],
-            2: ['temperature_rated_max', 'float'],
-            3: ['current_rated', 'float'],
-            4: ['current_operating', 'float'],
-            5: ['power_rated', 'float'],
-            6: ['power_operating', 'float'],
-            7: ['voltage_rated', 'float'],
-            8: ['voltage_ac_operating', 'float'],
-            9: ['voltage_dc_operating', 'float'],
+            0: ["temperature_rated_min", "float"],
+            1: ["temperature_knee", "float"],
+            2: ["temperature_rated_max", "float"],
+            3: ["current_rated", "float"],
+            4: ["current_operating", "float"],
+            5: ["power_rated", "float"],
+            6: ["power_operating", "float"],
+            7: ["voltage_rated", "float"],
+            8: ["voltage_ac_operating", "float"],
+            9: ["voltage_dc_operating", "float"],
         }
 
         # Initialize private list attributes.
@@ -185,15 +190,15 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
             _("Operating Power (W):"),
             _("Rated Voltage (V):"),
             _("Operating ac Voltage (V):"),
-            _("Operating DC Voltage (V):")
+            _("Operating DC Voltage (V):"),
         ]
         self._lst_tooltips: List[str] = [
-            _("The minimum rated temperature (in \u00B0C) of the hardware "
-              "item."),
-            _("The break temperature (in \u00B0C) of the hardware item beyond "
-              "which it must be derated."),
-            _("The maximum rated temperature (in \u00B0C) of the hardware "
-              "item."),
+            _("The minimum rated temperature (in \u00B0C) of the hardware " "item."),
+            _(
+                "The break temperature (in \u00B0C) of the hardware item beyond "
+                "which it must be derated."
+            ),
+            _("The maximum rated temperature (in \u00B0C) of the hardware " "item."),
             _("The rated current (in A) of the hardware item."),
             _("The operating current (in A) of the hardware item."),
             _("The rated power (in W) of the hardware item."),
@@ -242,8 +247,7 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Component stress input widgets.
@@ -252,39 +256,39 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
+        self._record_id = attributes["hardware_id"]
+        self._subcategory_id = attributes["subcategory_id"]
 
-        self.txtTemperatureRatedMin.do_update(str(
-            self.fmt.format(attributes['temperature_rated_min'])),
-                                              signal='changed')  # noqa
-        self.txtTemperatureKnee.do_update(str(
-            self.fmt.format(attributes['temperature_knee'])),
-                                          signal='changed')  # noqa
-        self.txtTemperatureRatedMax.do_update(str(
-            self.fmt.format(attributes['temperature_rated_max'])),
-                                              signal='changed')  # noqa
-        self.txtCurrentRated.do_update(str(
-            self.fmt.format(attributes['current_rated'])),
-                                       signal='changed')  # noqa
-        self.txtCurrentOperating.do_update(str(
-            self.fmt.format(attributes['current_operating'])),
-                                           signal='changed')  # noqa
-        self.txtPowerRated.do_update(str(
-            self.fmt.format(attributes['power_rated'])),
-                                     signal='changed')  # noqa
-        self.txtPowerOperating.do_update(str(
-            self.fmt.format(attributes['power_operating'])),
-                                         signal='changed')  # noqa
-        self.txtVoltageRated.do_update(str(
-            self.fmt.format(attributes['voltage_rated'])),
-                                       signal='changed')  # noqa
-        self.txtVoltageAC.do_update(str(
-            self.fmt.format(attributes['voltage_ac_operating'])),
-                                    signal='changed')  # noqa
-        self.txtVoltageDC.do_update(str(
-            self.fmt.format(attributes['voltage_dc_operating'])),
-                                    signal='changed')  # noqa
+        self.txtTemperatureRatedMin.do_update(
+            str(self.fmt.format(attributes["temperature_rated_min"])), signal="changed"
+        )  # noqa
+        self.txtTemperatureKnee.do_update(
+            str(self.fmt.format(attributes["temperature_knee"])), signal="changed"
+        )  # noqa
+        self.txtTemperatureRatedMax.do_update(
+            str(self.fmt.format(attributes["temperature_rated_max"])), signal="changed"
+        )  # noqa
+        self.txtCurrentRated.do_update(
+            str(self.fmt.format(attributes["current_rated"])), signal="changed"
+        )  # noqa
+        self.txtCurrentOperating.do_update(
+            str(self.fmt.format(attributes["current_operating"])), signal="changed"
+        )  # noqa
+        self.txtPowerRated.do_update(
+            str(self.fmt.format(attributes["power_rated"])), signal="changed"
+        )  # noqa
+        self.txtPowerOperating.do_update(
+            str(self.fmt.format(attributes["power_operating"])), signal="changed"
+        )  # noqa
+        self.txtVoltageRated.do_update(
+            str(self.fmt.format(attributes["voltage_rated"])), signal="changed"
+        )  # noqa
+        self.txtVoltageAC.do_update(
+            str(self.fmt.format(attributes["voltage_ac_operating"])), signal="changed"
+        )  # noqa
+        self.txtVoltageDC.do_update(
+            str(self.fmt.format(attributes["voltage_dc_operating"])), signal="changed"
+        )  # noqa
 
     def __set_callbacks(self) -> None:
         """Set common callback methods for the ModuleView and widgets.
@@ -293,47 +297,45 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
         :rtype: None
         """
         self.txtTemperatureRatedMin.dic_handler_id[
-            'changed'] = self.txtTemperatureRatedMin.connect(
-                'changed',
-                super().on_changed_entry, 0, 'wvw_editing_hardware')
+            "changed"
+        ] = self.txtTemperatureRatedMin.connect(
+            "changed", super().on_changed_entry, 0, "wvw_editing_hardware"
+        )
         self.txtTemperatureKnee.dic_handler_id[
-            'changed'] = self.txtTemperatureKnee.connect(
-                'changed',
-                super().on_changed_entry, 1, 'wvw_editing_hardware')
+            "changed"
+        ] = self.txtTemperatureKnee.connect(
+            "changed", super().on_changed_entry, 1, "wvw_editing_hardware"
+        )
         self.txtTemperatureRatedMax.dic_handler_id[
-            'changed'] = self.txtTemperatureRatedMax.connect(
-                'changed',
-                super().on_changed_entry, 2, 'wvw_editing_hardware')
-        self.txtCurrentRated.dic_handler_id[
-            'changed'] = self.txtCurrentRated.connect('changed',
-                                                      super().on_changed_entry,
-                                                      3,
-                                                      'wvw_editing_hardware')
+            "changed"
+        ] = self.txtTemperatureRatedMax.connect(
+            "changed", super().on_changed_entry, 2, "wvw_editing_hardware"
+        )
+        self.txtCurrentRated.dic_handler_id["changed"] = self.txtCurrentRated.connect(
+            "changed", super().on_changed_entry, 3, "wvw_editing_hardware"
+        )
         self.txtCurrentOperating.dic_handler_id[
-            'changed'] = self.txtCurrentOperating.connect(
-                'changed',
-                super().on_changed_entry, 4, 'wvw_editing_hardware')
-        self.txtPowerRated.dic_handler_id[
-            'changed'] = self.txtPowerRated.connect('changed',
-                                                    super().on_changed_entry,
-                                                    5, 'wvw_editing_hardware')
+            "changed"
+        ] = self.txtCurrentOperating.connect(
+            "changed", super().on_changed_entry, 4, "wvw_editing_hardware"
+        )
+        self.txtPowerRated.dic_handler_id["changed"] = self.txtPowerRated.connect(
+            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
+        )
         self.txtPowerOperating.dic_handler_id[
-            'changed'] = self.txtPowerOperating.connect(
-                'changed',
-                super().on_changed_entry, 6, 'wvw_editing_hardware')
-        self.txtVoltageRated.dic_handler_id[
-            'changed'] = self.txtVoltageRated.connect('changed',
-                                                      super().on_changed_entry,
-                                                      7,
-                                                      'wvw_editing_hardware')
-        self.txtVoltageAC.dic_handler_id[
-            'changed'] = self.txtVoltageAC.connect('changed',
-                                                   super().on_changed_entry, 8,
-                                                   'wvw_editing_hardware')
-        self.txtVoltageDC.dic_handler_id[
-            'changed'] = self.txtVoltageDC.connect('changed',
-                                                   super().on_changed_entry, 9,
-                                                   'wvw_editing_hardware')
+            "changed"
+        ] = self.txtPowerOperating.connect(
+            "changed", super().on_changed_entry, 6, "wvw_editing_hardware"
+        )
+        self.txtVoltageRated.dic_handler_id["changed"] = self.txtVoltageRated.connect(
+            "changed", super().on_changed_entry, 7, "wvw_editing_hardware"
+        )
+        self.txtVoltageAC.dic_handler_id["changed"] = self.txtVoltageAC.connect(
+            "changed", super().on_changed_entry, 8, "wvw_editing_hardware"
+        )
+        self.txtVoltageDC.dic_handler_id["changed"] = self.txtVoltageDC.connect(
+            "changed", super().on_changed_entry, 9, "wvw_editing_hardware"
+        )
 
     def __set_properties(self) -> None:
         """Set properties for the stress input widgets.
@@ -345,8 +347,7 @@ class RAMSTKStressInputPanel(RAMSTKPanel):
 
         _idx = 0
         for _widget in self._lst_widgets:
-            _widget.do_set_properties(tooltip=self._lst_tooltips[_idx],
-                                      width=125)
+            _widget.do_set_properties(tooltip=self._lst_tooltips[_idx], width=125)
             _idx += 1
 
 
@@ -405,7 +406,7 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.lblModel: RAMSTKLabel = RAMSTKLabel('')
+        self.lblModel: RAMSTKLabel = RAMSTKLabel("")
 
         self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
         self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
@@ -420,16 +421,16 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
-        self._hazard_rate_method_id = attributes['hazard_rate_method_id']
+        self._record_id = attributes["hardware_id"]
+        self._subcategory_id = attributes["subcategory_id"]
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
 
         # Display the correct calculation model.
         self.__do_set_model_label()
 
-        self.txtLambdaB.do_update(str(self.fmt.format(attributes['lambda_b'])))
-        self.txtPiQ.do_update(str(self.fmt.format(attributes['piQ'])))
-        self.txtPiE.do_update(str(self.fmt.format(attributes['piE'])))
+        self.txtLambdaB.do_update(str(self.fmt.format(attributes["lambda_b"])))
+        self.txtPiQ.do_update(str(self.fmt.format(attributes["piQ"])))
+        self.txtPiE.do_update(str(self.fmt.format(attributes["piE"])))
 
     def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
         """Set properties for Meter assessment result widgets.
@@ -443,10 +444,9 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
 
         _idx = 1
         for _widget in self._lst_widgets[1:]:
-            _widget.do_set_properties(width=125,
-                                      editable=False,
-                                      bold=True,
-                                      tooltip=self._lst_tooltips[_idx])
+            _widget.do_set_properties(
+                width=125, editable=False, bold=True, tooltip=self._lst_tooltips[_idx]
+            )
             _idx += 1
 
     def __do_set_model_label(self) -> None:
@@ -457,12 +457,12 @@ class RAMSTKAssessmentResultPanel(RAMSTKPanel):
         """
         if self._hazard_rate_method_id == 1:
             self.lblModel.set_markup(
-                "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> ")
+                '<span foreground="blue">\u03BB<sub>p</sub> = '
+                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> "
+            )
         elif self._hazard_rate_method_id == 2:
             try:
-                self.lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
+                self.lblModel.set_markup(self._dic_part_stress[self._subcategory_id])
             except KeyError:
                 self.lblModel.set_markup("No Model")
         else:
@@ -518,8 +518,10 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_derate_criteria: List[List[float]] = [[0.6, 0.6, 0.0],
-                                                        [0.9, 0.9, 0.0]]
+        self._lst_derate_criteria: List[List[float]] = [
+            [0.6, 0.6, 0.0],
+            [0.9, 0.9, 0.0],
+        ]
         self._lst_labels: List[str] = [
             _("Current Ratio:"),
             _("Power Ratio:"),
@@ -528,14 +530,19 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
             _("Overstress Reason:"),
         ]
         self._lst_tooltips: List[str] = [
-            _("Indicates whether or not the selected hardware item is "
-              "overstressed."),
-            _("The ratio of operating current to rated current for the "
-              "hardware item."),
-            _("The ratio of operating power to rated power for the hardware "
-              "item."),
-            _("The ratio of operating voltage to rated voltage for the "
-              "hardware item."),
+            _(
+                "Indicates whether or not the selected hardware item is "
+                "overstressed."
+            ),
+            _(
+                "The ratio of operating current to rated current for the "
+                "hardware item."
+            ),
+            _("The ratio of operating power to rated power for the hardware " "item."),
+            _(
+                "The ratio of operating voltage to rated voltage for the "
+                "hardware item."
+            ),
             _("The reason(s) the selected hardware item is overstressed."),
         ]
 
@@ -550,7 +557,8 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
 
         # Initialize public scalar attributes.
         self.chkOverstress: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Overstressed"))
+            label=_("Overstressed")
+        )
         self.txtCurrentRatio: RAMSTKEntry = RAMSTKEntry()
         self.txtPowerRatio: RAMSTKEntry = RAMSTKEntry()
         self.txtVoltageRatio: RAMSTKEntry = RAMSTKEntry()
@@ -569,12 +577,11 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         self.__set_properties()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
-    def _do_load_derating_curve(self,
-                                attributes: Dict[str, Any],
-                                stress: str = 'voltage') -> None:
+    def _do_load_derating_curve(
+        self, attributes: Dict[str, Any], stress: str = "voltage"
+    ) -> None:
         """Load the benign and harsh environment derating curves.
 
         :return: None
@@ -582,45 +589,52 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         """
         # Plot the derating curves.
         _x = [
-            float(attributes['temperature_rated_min']),
-            float(attributes['temperature_knee']),
-            float(attributes['temperature_rated_max'])
+            float(attributes["temperature_rated_min"]),
+            float(attributes["temperature_knee"]),
+            float(attributes["temperature_rated_max"]),
         ]
 
-        self.pltPlot.axis.grid(True, which='both')
-
-        self.pltPlot.do_load_plot(x_values=_x,
-                                  y_values=self._lst_derate_criteria[0],
-                                  marker='r.-')
-
-        self.pltPlot.do_load_plot(x_values=_x,
-                                  y_values=self._lst_derate_criteria[1],
-                                  marker='b.-')
+        self.pltPlot.axis.grid(True, which="both")
 
         self.pltPlot.do_load_plot(
-            x_values=[attributes['temperature_active']],
-            y_values=[attributes['{}_ratio'.format(stress)]],
-            marker='go')
+            x_values=_x, y_values=self._lst_derate_criteria[0], marker="r.-"
+        )
+
+        self.pltPlot.do_load_plot(
+            x_values=_x, y_values=self._lst_derate_criteria[1], marker="b.-"
+        )
+
+        self.pltPlot.do_load_plot(
+            x_values=[attributes["temperature_active"]],
+            y_values=[attributes["{}_ratio".format(stress)]],
+            marker="go",
+        )
 
         self.pltPlot.do_make_title(
             _("{2} Derating Curve for {0} at {1}").format(
-                attributes['part_number'], attributes['ref_des'],
-                stress.title()),
-            fontsize=12)
+                attributes["part_number"], attributes["ref_des"], stress.title()
+            ),
+            fontsize=12,
+        )
 
         self.pltPlot.do_make_legend(
-            (_("Harsh Environment"), _("Mild Environment"),
-             _("{} Operating Point").format(stress.title())))
+            (
+                _("Harsh Environment"),
+                _("Mild Environment"),
+                _("{} Operating Point").format(stress.title()),
+            )
+        )
 
-        self.pltPlot.do_make_labels(_("Temperature (\u2070C)"),
-                                    x_pos=0,
-                                    y_pos=-0.2,
-                                    fontsize=10)
-        self.pltPlot.do_make_labels(_("{} Ratio").format(stress.title()),
-                                    x_pos=-1,
-                                    y_pos=0,
-                                    set_x=False,
-                                    fontsize=10)
+        self.pltPlot.do_make_labels(
+            _("Temperature (\u2070C)"), x_pos=0, y_pos=-0.2, fontsize=10
+        )
+        self.pltPlot.do_make_labels(
+            _("{} Ratio").format(stress.title()),
+            x_pos=-1,
+            y_pos=0,
+            set_x=False,
+            fontsize=10,
+        )
 
         self.pltPlot.figure.canvas.draw()
 
@@ -631,25 +645,26 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._subcategory_id = attributes['subcategory_id']
+        self._record_id = attributes["hardware_id"]
+        self._subcategory_id = attributes["subcategory_id"]
 
         self.txtCurrentRatio.do_update(
-            str(self.fmt.format(attributes['current_ratio'])))
-        self.txtPowerRatio.do_update(
-            str(self.fmt.format(attributes['power_ratio'])))
+            str(self.fmt.format(attributes["current_ratio"]))
+        )
+        self.txtPowerRatio.do_update(str(self.fmt.format(attributes["power_ratio"])))
         self.txtVoltageRatio.do_update(
-            str(self.fmt.format(attributes['voltage_ratio'])))
-        self.chkOverstress.set_active(attributes['overstress'])
-        self.txtReason.do_update(attributes['reason'])
+            str(self.fmt.format(attributes["voltage_ratio"]))
+        )
+        self.chkOverstress.set_active(attributes["overstress"])
+        self.txtReason.do_update(attributes["reason"])
 
         self.pltPlot.axis.cla()
-        if attributes['category_id'] in [2, 4]:
-            self._do_load_derating_curve(attributes, stress='voltage')
-        elif attributes['category_id'] == 3:
-            self._do_load_derating_curve(attributes, stress='power')
-        elif attributes['category_id'] in [6, 7]:
-            self._do_load_derating_curve(attributes, stress='current')
+        if attributes["category_id"] in [2, 4]:
+            self._do_load_derating_curve(attributes, stress="voltage")
+        elif attributes["category_id"] == 3:
+            self._do_load_derating_curve(attributes, stress="power")
+        elif attributes["category_id"] in [6, 7]:
+            self._do_load_derating_curve(attributes, stress="current")
 
     def __make_ui(self) -> None:
         """Make the Hardware stress results page.
@@ -679,21 +694,18 @@ class RAMSTKStressResultPanel(RAMSTKPanel):
         super().do_set_properties(bold=True, title=self._title)
 
         self.chkOverstress.do_set_properties(tooltip=self._lst_tooltips[0])
-        self.txtCurrentRatio.do_set_properties(width=125,
-                                               editable=False,
-                                               bold=True,
-                                               tooltip=self._lst_tooltips[1])
-        self.txtPowerRatio.do_set_properties(width=125,
-                                             editable=False,
-                                             bold=True,
-                                             tooltip=self._lst_tooltips[2])
-        self.txtVoltageRatio.do_set_properties(width=125,
-                                               editable=False,
-                                               bold=True,
-                                               tooltip=self._lst_tooltips[3])
-        self.txtReason.do_set_properties(height=100,
-                                         width=350,
-                                         tooltip=self._lst_tooltips[4])
+        self.txtCurrentRatio.do_set_properties(
+            width=125, editable=False, bold=True, tooltip=self._lst_tooltips[1]
+        )
+        self.txtPowerRatio.do_set_properties(
+            width=125, editable=False, bold=True, tooltip=self._lst_tooltips[2]
+        )
+        self.txtVoltageRatio.do_set_properties(
+            width=125, editable=False, bold=True, tooltip=self._lst_tooltips[3]
+        )
+        self.txtReason.do_set_properties(
+            height=100, width=350, tooltip=self._lst_tooltips[4]
+        )
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)

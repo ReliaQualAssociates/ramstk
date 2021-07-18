@@ -16,23 +16,28 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKDialog, RAMSTKEntry, RAMSTKLabel, RAMSTKTreeView
+    RAMSTKCheckButton,
+    RAMSTKDialog,
+    RAMSTKEntry,
+    RAMSTKLabel,
+    RAMSTKTreeView,
 )
 
 
 class EditFunction(RAMSTKDialog):
     """Assistant for editing similar item functions."""
-    def __init__(self, treeview: RAMSTKTreeView, **kwargs: Dict[str,
-                                                                Any]) -> None:
+
+    def __init__(self, treeview: RAMSTKTreeView, **kwargs: Dict[str, Any]) -> None:
         """Initialize instance of the Similar Item Function Editor Assistant.
 
         :param treeview: the Similar Item Work View RAMSTKTreeView().
         :type treeview: :class:`ramstk.views.gtk3.RAMSTKTreeView`
         """
-        _dlgparent = kwargs['dlgparent']
+        _dlgparent = kwargs["dlgparent"]
         super().__init__(
             _("RAMSTK Similar Item Analysis User Function Editing Assistant"),
-            dlgparent=_dlgparent)
+            dlgparent=_dlgparent,
+        )
 
         # Initialize private dictionary attributes.
 
@@ -46,7 +51,8 @@ class EditFunction(RAMSTKDialog):
 
         # Initialize public scalar attributes.
         self.chkApplyAll: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Apply to all assemblies."))
+            label=_("Apply to all assemblies.")
+        )
         self.txtFunction1: RAMSTKEntry = RAMSTKEntry()
         self.txtFunction2: RAMSTKEntry = RAMSTKEntry()
         self.txtFunction3: RAMSTKEntry = RAMSTKEntry()
@@ -65,37 +71,43 @@ class EditFunction(RAMSTKDialog):
         self.set_default_size(610, -1)
 
         _label1: RAMSTKLabel = RAMSTKLabel(
-            _("You can define up to five functions.  "
-              "You can use the system failure rate, "
-              "selected assembly failure rate, the "
-              "change factor, the user float, the "
-              "user integer values, and results of "
-              "other functions.\n\n \
+            _(
+                "You can define up to five functions.  "
+                "You can use the system failure rate, "
+                "selected assembly failure rate, the "
+                "change factor, the user float, the "
+                "user integer values, and results of "
+                "other functions.\n\n \
         System hazard rate is hr_sys\n \
         Assembly hazard rate is hr\n \
         Change factor is pi[1-8]\n \
         User float is uf[1-3]\n \
         User integer is ui[1-3]\n \
-        Function result is res[1-5]\n\n"))
+        Function result is res[1-5]\n\n"
+            )
+        )
         _label1.do_set_properties(width=600, height=-1, wrap=True)
-        _height1 = _label1.get_attribute('height')
+        _height1 = _label1.get_attribute("height")
 
         _label2: RAMSTKLabel = RAMSTKLabel(
-            _("For example, pi1*pi2+pi3, multiplies "
-              "the first two change factors and "
-              "adds the value to the third change "
-              "factor.\n\n"))
+            _(
+                "For example, pi1*pi2+pi3, multiplies "
+                "the first two change factors and "
+                "adds the value to the third change "
+                "factor.\n\n"
+            )
+        )
         _label2.do_set_properties(width=600, height=-1, wrap=True)
-        _height2 = _label2.get_attribute('height')
+        _height2 = _label2.get_attribute("height")
 
         # Build the dialog assistant.
         _fixed = Gtk.Fixed()
 
         _y_pos = 10
         _fixed.put(_label1, 5, _y_pos)
-        _y_pos += (_height1 + 50)
+        _y_pos += _height1 + 50
         _fixed.put(_label2, 5, _y_pos)
-        _y_pos += (_height2 + 30)
+        _y_pos += _height2 + 30
 
         _separator = Gtk.HSeparator()
         _separator.props.width_request = 600
@@ -155,7 +167,7 @@ class EditFunction(RAMSTKDialog):
             str(self.txtFunction2.get_text()),
             str(self.txtFunction3.get_text()),
             str(self.txtFunction4.get_text()),
-            str(self.txtFunction5.get_text())
+            str(self.txtFunction5.get_text()),
         ]
 
     def _cancel(self, __button: Gtk.Button) -> None:
@@ -205,22 +217,27 @@ class EditFunction(RAMSTKDialog):
         :rtype: None
         """
         pub.sendMessage(
-            'wvw_editing_similar_item',
+            "wvw_editing_similar_item",
             node_id=[hardware_id, -1],
-            package={'function_1': str(self.txtFunction1.get_text())})
+            package={"function_1": str(self.txtFunction1.get_text())},
+        )
         pub.sendMessage(
-            'wvw_editing_similar_item',
+            "wvw_editing_similar_item",
             node_id=[hardware_id, -1],
-            package={'function_2': str(self.txtFunction2.get_text())})
+            package={"function_2": str(self.txtFunction2.get_text())},
+        )
         pub.sendMessage(
-            'wvw_editing_similar_item',
+            "wvw_editing_similar_item",
             node_id=[hardware_id, -1],
-            package={'function_3': str(self.txtFunction3.get_text())})
+            package={"function_3": str(self.txtFunction3.get_text())},
+        )
         pub.sendMessage(
-            'wvw_editing_similar_item',
+            "wvw_editing_similar_item",
             node_id=[hardware_id, -1],
-            package={'function_4': str(self.txtFunction4.get_text())})
+            package={"function_4": str(self.txtFunction4.get_text())},
+        )
         pub.sendMessage(
-            'wvw_editing_similar_item',
+            "wvw_editing_similar_item",
             node_id=[hardware_id, -1],
-            package={'function_5': str(self.txtFunction5.get_text())})
+            package={"function_5": str(self.txtFunction5.get_text())},
+        )

@@ -29,7 +29,7 @@ class HazOpsPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = 'hazards'
+    _module = "hazards"
 
     # Define public dictionary class attributes.
 
@@ -43,67 +43,67 @@ class HazOpsPanel(RAMSTKPanel):
 
         # Initialize private dict instance attributes.
         self._dic_attribute_keys = {
-            3: ['potential_hazard', 'string'],
-            4: ['potential_cause', 'string'],
-            5: ['assembly_effect', 'string'],
-            6: ['assembly_severity', 'string'],
-            7: ['assembly_probability', 'string'],
-            9: ['assembly_mitigation', 'string'],
-            10: ['assembly_severity_f', 'string'],
-            11: ['assembly_probability_f', 'string'],
-            13: ['system_effect', 'string'],
-            14: ['system_severity', 'string'],
-            15: ['system_probability', 'string'],
-            17: ['system_mitigation', 'string'],
-            18: ['system_severity_f', 'string'],
-            19: ['system_probability_f', 'string'],
-            21: ['remarks', 'string'],
+            3: ["potential_hazard", "string"],
+            4: ["potential_cause", "string"],
+            5: ["assembly_effect", "string"],
+            6: ["assembly_severity", "string"],
+            7: ["assembly_probability", "string"],
+            9: ["assembly_mitigation", "string"],
+            10: ["assembly_severity_f", "string"],
+            11: ["assembly_probability_f", "string"],
+            13: ["system_effect", "string"],
+            14: ["system_severity", "string"],
+            15: ["system_probability", "string"],
+            17: ["system_mitigation", "string"],
+            18: ["system_severity_f", "string"],
+            19: ["system_probability_f", "string"],
+            21: ["remarks", "string"],
         }
         self._dic_attribute_updater = {
-            'revision_id': [None, 'edited', 0],
-            'function_id': [None, 'edited', 1],
-            'hazard_id': [None, 'edited', 2],
-            'potential_hazard': [None, 'edited', 3],
-            'potential_cause': [None, 'edited', 4],
-            'assembly_effect': [None, 'edited', 5],
-            'assembly_severity': [None, 'edited', 6],
-            'assembly_probability': [None, 'edited', 7],
-            'assembly_hri': [None, 'edited', 8],
-            'assembly_mitigation': [None, 'edited', 9],
-            'assembly_severity_f': [None, 'edited', 10],
-            'assembly_probability_f': [None, 'edited', 11],
-            'assembly_hri_f': [None, 'edited', 12],
-            'system_effect': [None, 'edited', 13],
-            'system_severity': [None, 'edited', 14],
-            'system_probability': [None, 'edited', 15],
-            'system_hri': [None, 'edited', 16],
-            'system_mitigation': [None, 'edited', 17],
-            'system_severity_f': [None, 'edited', 18],
-            'system_probability_f': [None, 'edited', 19],
-            'system_hri_f': [None, 'edited', 20],
-            'remarks': [None, 'edited', 21],
-            'function_1': [None, 'edited', 22],
-            'function_2': [None, 'edited', 23],
-            'function_3': [None, 'edited', 24],
-            'function_4': [None, 'edited', 25],
-            'function_5': [None, 'edited', 26],
-            'result_1': [None, 'edited', 27],
-            'result_2': [None, 'edited', 28],
-            'result_3': [None, 'edited', 29],
-            'result_4': [None, 'edited', 30],
-            'result_5': [None, 'edited', 31],
-            'user_blob_1': [None, 'edited', 32],
-            'user_blob_2': [None, 'edited', 33],
-            'user_blob_3': [None, 'edited', 34],
-            'user_float_1': [None, 'edited', 35],
-            'user_float_2': [None, 'edited', 36],
-            'user_float_3': [None, 'edited', 37],
-            'user_int_1': [None, 'edited', 38],
-            'user_int_2': [None, 'edited', 39],
-            'user_int_3': [None, 'edited', 40],
+            "revision_id": [None, "edited", 0],
+            "function_id": [None, "edited", 1],
+            "hazard_id": [None, "edited", 2],
+            "potential_hazard": [None, "edited", 3],
+            "potential_cause": [None, "edited", 4],
+            "assembly_effect": [None, "edited", 5],
+            "assembly_severity": [None, "edited", 6],
+            "assembly_probability": [None, "edited", 7],
+            "assembly_hri": [None, "edited", 8],
+            "assembly_mitigation": [None, "edited", 9],
+            "assembly_severity_f": [None, "edited", 10],
+            "assembly_probability_f": [None, "edited", 11],
+            "assembly_hri_f": [None, "edited", 12],
+            "system_effect": [None, "edited", 13],
+            "system_severity": [None, "edited", 14],
+            "system_probability": [None, "edited", 15],
+            "system_hri": [None, "edited", 16],
+            "system_mitigation": [None, "edited", 17],
+            "system_severity_f": [None, "edited", 18],
+            "system_probability_f": [None, "edited", 19],
+            "system_hri_f": [None, "edited", 20],
+            "remarks": [None, "edited", 21],
+            "function_1": [None, "edited", 22],
+            "function_2": [None, "edited", 23],
+            "function_3": [None, "edited", 24],
+            "function_4": [None, "edited", 25],
+            "function_5": [None, "edited", 26],
+            "result_1": [None, "edited", 27],
+            "result_2": [None, "edited", 28],
+            "result_3": [None, "edited", 29],
+            "result_4": [None, "edited", 30],
+            "result_5": [None, "edited", 31],
+            "user_blob_1": [None, "edited", 32],
+            "user_blob_2": [None, "edited", 33],
+            "user_blob_3": [None, "edited", 34],
+            "user_float_1": [None, "edited", 35],
+            "user_float_2": [None, "edited", 36],
+            "user_float_3": [None, "edited", 37],
+            "user_int_1": [None, "edited", 38],
+            "user_int_2": [None, "edited", 39],
+            "user_int_3": [None, "edited", 40],
         }
         self._dic_row_loader = {
-            'hazard': super()._do_load_treerow,
+            "hazard": super()._do_load_treerow,
         }
 
         # Initialize private list instance attributes.
@@ -122,15 +122,14 @@ class HazOpsPanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_hazards')
-        pub.subscribe(super().do_load_panel, 'succeed_get_hazard_tree')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_hazard')
-        pub.subscribe(super().on_delete, 'succeed_delete_hazard')
+        pub.subscribe(super().do_load_panel, "succeed_retrieve_hazards")
+        pub.subscribe(super().do_load_panel, "succeed_get_hazard_tree")
+        pub.subscribe(super().do_load_panel, "succeed_insert_hazard")
+        pub.subscribe(super().on_delete, "succeed_delete_hazard")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
 
-    def do_load_severity(
-            self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
+    def do_load_severity(self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
         """Load the Gtk.CellRendererCombo() containing severities.
 
         :param criticalities: the dict containing the hazard severity
@@ -141,7 +140,7 @@ class HazOpsPanel(RAMSTKPanel):
         for i in [6, 10, 14, 18]:
             _model = self.tvwTreeView.get_cell_model(i)
             for _key in criticalities:
-                _model.append((criticalities[_key][1], ))
+                _model.append((criticalities[_key][1],))
 
     def do_load_hazards(self, hazards: Dict[Any, Any]) -> None:
         """Load the Gtk.CellRendererCombos() containing hazards.
@@ -153,8 +152,8 @@ class HazOpsPanel(RAMSTKPanel):
         """
         _model = self.tvwTreeView.get_cell_model(3)
         for _key in hazards:
-            _hazard = '{0}, {1}'.format(hazards[_key][0], hazards[_key][1])
-            _model.append((_hazard, ))
+            _hazard = "{0}, {1}".format(hazards[_key][0], hazards[_key][1])
+            _model.append((_hazard,))
 
     def do_load_probability(self, probabilities: List[str]) -> None:
         """Load the Gtk.CellRendererCombos() containing probabilities.
@@ -166,7 +165,7 @@ class HazOpsPanel(RAMSTKPanel):
         for i in [7, 11, 15, 19]:
             _model = self.tvwTreeView.get_cell_model(i)
             for _probability in probabilities:
-                _model.append((_probability[0], ))
+                _model.append((_probability[0],))
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -176,19 +175,24 @@ class HazOpsPanel(RAMSTKPanel):
         """
         _lst_col_order: List[int] = list(self.tvwTreeView.position.values())
 
-        self.tvwTreeView.dic_handler_id[
-            'changed'] = self.tvwTreeView.selection.connect(
-                'changed', self._on_row_change)
+        self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
+            "changed", self._on_row_change
+        )
 
         for i in _lst_col_order[3:]:
             _cell = self.tvwTreeView.get_column(_lst_col_order[i]).get_cells()
             try:
-                _cell[0].connect('edited',
-                                 super().on_cell_edit, i, 'wvw_editing_hazard')
+                _cell[0].connect(
+                    "edited", super().on_cell_edit, i, "wvw_editing_hazard"
+                )
             except TypeError:
-                _cell[0].connect('toggled',
-                                 super().on_cell_toggled, 'new text', i,
-                                 'wvw_editing_hazard')
+                _cell[0].connect(
+                    "toggled",
+                    super().on_cell_toggled,
+                    "new text",
+                    i,
+                    "wvw_editing_hazard",
+                )
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -223,11 +227,11 @@ class HazOpsPanel(RAMSTKPanel):
         _attributes = super().on_row_change(selection)
 
         if _attributes:
-            self._parent_id = _attributes['function_id']
-            self._record_id = _attributes['hazard_id']
+            self._parent_id = _attributes["function_id"]
+            self._record_id = _attributes["hazard_id"]
 
             pub.sendMessage(
-                'selected_hazard',
+                "selected_hazard",
                 attributes=_attributes,
             )
 
@@ -237,11 +241,11 @@ class HazOpsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         self.tvwTreeView.set_tooltip_text(
-            _("Displays the Hazards Analysis for the currently selected "
-              "Function."))
+            _("Displays the Hazards Analysis for the currently selected " "Function.")
+        )
 
 
 class HazOps(RAMSTKWorkView):
@@ -265,15 +269,15 @@ class HazOps(RAMSTKWorkView):
         order they appear on the toolbar or pop-up menu.
     :ivar int _hazard_id: the ID of the currently selected hazard.
     """
+
     # Define private dict class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'hazard'
+    _module: str = "hazard"
     _tablabel: str = _("HazOps")
-    _tabtooltip: str = _("Displays the HazOps analysis for the selected "
-                         "Function.")
+    _tabtooltip: str = _("Displays the HazOps analysis for the selected " "Function.")
 
     # Define public dict class attributes.
 
@@ -281,8 +285,9 @@ class HazOps(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Work View for the HazOps.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -296,9 +301,9 @@ class HazOps(RAMSTKWorkView):
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, self.do_request_delete)
         self._lst_callbacks.insert(2, self._do_request_calculate)
-        self._lst_icons.insert(0, 'add')
-        self._lst_icons.insert(1, 'remove')
-        self._lst_icons.insert(2, 'calculate')
+        self._lst_icons.insert(0, "add")
+        self._lst_icons.insert(1, "remove")
+        self._lst_icons.insert(2, "calculate")
         self._lst_mnu_labels = [
             _("Add Hazard"),
             _("Delete Selected Hazard"),
@@ -326,8 +331,8 @@ class HazOps(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_hazard')
-        pub.subscribe(self._on_select_function, 'selected_function')
+        pub.subscribe(self._do_set_record_id, "selected_hazard")
+        pub.subscribe(self._on_select_function, "selected_function")
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate the HazOps HRI.
@@ -337,7 +342,7 @@ class HazOps(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_calculate_fha', node_id=self._record_id)
+        pub.sendMessage("request_calculate_fha", node_id=self._record_id)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record ID when a hazard is selected.
@@ -346,7 +351,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hazard_id']
+        self._record_id = attributes["hazard_id"]
 
     def _on_select_function(self, attributes: Dict[str, Any]) -> None:
         """Set the parent ID when a function is selected.
@@ -355,7 +360,7 @@ class HazOps(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes['function_id']
+        self._parent_id = attributes["function_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function Hazard Analysis tab.
@@ -368,11 +373,10 @@ class HazOps(RAMSTKWorkView):
 
         self._pnlPanel.do_set_callbacks()
 
-        self._pnlPanel.do_load_severity(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY)
-        self._pnlPanel.do_load_hazards(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
+        self._pnlPanel.do_load_severity(self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY)
+        self._pnlPanel.do_load_hazards(self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
         self._pnlPanel.do_load_probability(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY
+        )
 
         self.show_all()

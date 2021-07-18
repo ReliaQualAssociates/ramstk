@@ -11,13 +11,37 @@ from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: [
-        3.9, 7.8, 12.0, 12.0, 16.0, 16.0, 16.0, 19.0, 23.0, 19.0, 2.7, 16.0,
-        23.0, 100.0
+        3.9,
+        7.8,
+        12.0,
+        12.0,
+        16.0,
+        16.0,
+        16.0,
+        19.0,
+        23.0,
+        19.0,
+        2.7,
+        16.0,
+        23.0,
+        100.0,
     ],
     2: [
-        13.0, 26.0, 38.0, 38.0, 51.0, 51.0, 51.0, 64.0, 77.0, 64.0, 9.0, 51.0,
-        77.0, 350.0
-    ]
+        13.0,
+        26.0,
+        38.0,
+        38.0,
+        51.0,
+        51.0,
+        51.0,
+        64.0,
+        77.0,
+        64.0,
+        9.0,
+        51.0,
+        77.0,
+        350.0,
+    ],
 }
 PI_E = [1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0]
 
@@ -33,8 +57,9 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        attributes['application_id'],  # type: ignore
-        attributes['environment_active_id'])  # type: ignore
+        attributes["application_id"],  # type: ignore
+        attributes["environment_active_id"],
+    )  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -47,31 +72,32 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
              dictionary with updated values.
     :rtype: dict
     """
-    attributes[
-        'lambda_b'] = 0.074 * attributes['voltage_rated']**1.29  # type: ignore
+    attributes["lambda_b"] = 0.074 * attributes["voltage_rated"] ** 1.29  # type: ignore
 
     # Determine the utilization factor (piU).
-    if attributes['duty_cycle'] < 10.0:  # type: ignore
-        attributes['piU'] = 0.1  # type: ignore
-    elif 10.0 <= attributes['duty_cycle'] < 90.0:  # type: ignore
-        attributes['piU'] = 0.72  # type: ignore
+    if attributes["duty_cycle"] < 10.0:  # type: ignore
+        attributes["piU"] = 0.1  # type: ignore
+    elif 10.0 <= attributes["duty_cycle"] < 90.0:  # type: ignore
+        attributes["piU"] = 0.72  # type: ignore
     else:
-        attributes['piU'] = 1.0  # type: ignore
+        attributes["piU"] = 1.0  # type: ignore
 
     # Determine the application factor (piA).
-    attributes['piA'] = (
-        3.3 if (attributes['application_id']) -  # type: ignore
-        (1) else 1.0)
+    attributes["piA"] = (
+        3.3 if (attributes["application_id"]) - (1) else 1.0  # type: ignore
+    )
 
-    attributes['hazard_rate_active'] = (
-        attributes['lambda_b']  # type: ignore
-        * attributes['piU'] * attributes['piA'] * attributes['piE'])
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"]  # type: ignore
+        * attributes["piU"]
+        * attributes["piA"]
+        * attributes["piE"]
+    )
 
     return attributes
 
 
-def get_part_count_lambda_b(application_id: int,
-                            environment_active_id: int) -> float:
+def get_part_count_lambda_b(application_id: int, environment_active_id: int) -> float:
     """Retrieve the part count hazard rate for a lamp.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts

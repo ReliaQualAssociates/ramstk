@@ -25,66 +25,55 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
     ramstk_test_method.
     """
 
-    __defaults__ = {'description': '', 'damage_model': '', 'priority_id': 0}
-    __tablename__ = 'ramstk_op_load'
-    __table_args__ = (ForeignKeyConstraint(
-        [
-            'fld_revision_id', 'fld_hardware_id', 'fld_mode_id',
-            'fld_mechanism_id'
-        ],
-        [
-            'ramstk_mechanism.fld_revision_id',
-            'ramstk_mechanism.fld_hardware_id', 'ramstk_mechanism.fld_mode_id',
-            'ramstk_mechanism.fld_mechanism_id'
-        ],
-    ), {
-        'extend_existing': True
-    })
+    __defaults__ = {"description": "", "damage_model": "", "priority_id": 0}
+    __tablename__ = "ramstk_op_load"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["fld_revision_id", "fld_hardware_id", "fld_mode_id", "fld_mechanism_id"],
+            [
+                "ramstk_mechanism.fld_revision_id",
+                "ramstk_mechanism.fld_hardware_id",
+                "ramstk_mechanism.fld_mode_id",
+                "ramstk_mechanism.fld_mechanism_id",
+            ],
+        ),
+        {"extend_existing": True},
+    )
 
-    revision_id = Column('fld_revision_id',
-                         Integer,
-                         primary_key=True,
-                         nullable=False)
-    hardware_id = Column('fld_hardware_id',
-                         Integer,
-                         primary_key=True,
-                         default=-1,
-                         nullable=False)
-    mode_id = Column('fld_mode_id', Integer, primary_key=True, nullable=False)
-    mechanism_id = Column('fld_mechanism_id',
-                          Integer,
-                          primary_key=True,
-                          nullable=False)
-    load_id = Column('fld_load_id',
-                     Integer,
-                     primary_key=True,
-                     autoincrement=True,
-                     nullable=False)
+    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
+    hardware_id = Column(
+        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+    )
+    mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
+    mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
+    load_id = Column(
+        "fld_load_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    )
 
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    damage_model = Column('fld_damage_model',
-                          String(512),
-                          default=__defaults__['damage_model'])
-    priority_id = Column('fld_priority_id',
-                         Integer,
-                         default=__defaults__['priority_id'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    damage_model = Column(
+        "fld_damage_model", String(512), default=__defaults__["damage_model"]
+    )
+    priority_id = Column(
+        "fld_priority_id", Integer, default=__defaults__["priority_id"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mechanism = relationship(  # type: ignore
-        'RAMSTKMechanism',
-        back_populates='op_load',
+        "RAMSTKMechanism",
+        back_populates="op_load",
     )
     op_stress = relationship(  # type: ignore
-        'RAMSTKOpStress',
-        back_populates='op_load',
-        cascade='all,delete',
+        "RAMSTKOpStress",
+        back_populates="op_load",
+        cascade="all,delete",
     )
     test_method = relationship(  # type: ignore
-        'RAMSTKTestMethod',
-        back_populates='op_load',
-        cascade='all,delete',
+        "RAMSTKTestMethod",
+        back_populates="op_load",
+        cascade="all,delete",
     )
 
     is_mode = False
@@ -101,11 +90,11 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'mechanism_id': self.mechanism_id,
-            'load_id': self.load_id,
-            'description': self.description,
-            'damage_model': self.damage_model,
-            'priority_id': self.priority_id
+            "mechanism_id": self.mechanism_id,
+            "load_id": self.load_id,
+            "description": self.description,
+            "damage_model": self.damage_model,
+            "priority_id": self.priority_id,
         }
 
         return _attributes

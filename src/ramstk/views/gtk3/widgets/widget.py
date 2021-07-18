@@ -14,7 +14,7 @@ from typing import Any, Dict
 from ramstk.views.gtk3 import GObject, _
 
 
-class RAMSTKWidget():
+class RAMSTKWidget:
     """The RAMSTK Base Widget class."""
 
     # Define private scalar class attributes.
@@ -32,7 +32,7 @@ class RAMSTKWidget():
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_handler_id: Dict[str, int] = {'': 0}
+        self.dic_handler_id: Dict[str, int] = {"": 0}
 
         # Initialize public list attributes.
 
@@ -53,13 +53,16 @@ class RAMSTKWidget():
         :return: None
         :rtype: None
         """
-        _can_focus = kwargs.get('can_focus', True)
-        _height = kwargs.get('height', self._default_height)
+        _can_focus = kwargs.get("can_focus", True)
+        _height = kwargs.get("height", self._default_height)
         _tooltip = kwargs.get(
-            'tooltip',
-            _("Missing tooltip, please file a quality type issue to have one "
-              "added."))
-        _width = kwargs.get('width', self._default_width)
+            "tooltip",
+            _(
+                "Missing tooltip, please file a quality type issue to have one "
+                "added."
+            ),
+        )
+        _width = kwargs.get("width", self._default_width)
 
         if _height == 0:
             _height = self._default_height
@@ -68,7 +71,7 @@ class RAMSTKWidget():
 
         self.height = _height
         self.width = _width
-        self.set_property('can-focus', _can_focus)  # type: ignore
-        self.set_property('height-request', _height)  # type: ignore
-        self.set_property('tooltip-markup', _tooltip)  # type: ignore
-        self.set_property('width-request', _width)  # type: ignore
+        self.set_property("can-focus", _can_focus)  # type: ignore
+        self.set_property("height-request", _height)  # type: ignore
+        self.set_property("tooltip-markup", _tooltip)  # type: ignore
+        self.set_property("width-request", _width)  # type: ignore

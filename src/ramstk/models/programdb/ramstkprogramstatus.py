@@ -27,34 +27,31 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'cost_remaining': 0.0,
-        'date_status': date.today(),
-        'time_remaining': 0.0
+        "cost_remaining": 0.0,
+        "date_status": date.today(),
+        "time_remaining": 0.0,
     }
-    __tablename__ = 'ramstk_program_status'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "ramstk_program_status"
+    __table_args__ = {"extend_existing": True}
 
-    revision_id = Column('fld_revision_id',
-                         Integer,
-                         ForeignKey('ramstk_revision.fld_revision_id'),
-                         nullable=False)
-    status_id = Column('fld_status_id',
-                       Integer,
-                       primary_key=True,
-                       autoincrement=True,
-                       nullable=False)
+    revision_id = Column(
+        "fld_revision_id",
+        Integer,
+        ForeignKey("ramstk_revision.fld_revision_id"),
+        nullable=False,
+    )
+    status_id = Column(
+        "fld_status_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    )
 
-    cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
-    date_status = Column('fld_date_status',
-                         Date,
-                         unique=True,
-                         default=date.today())
-    time_remaining = Column('fld_time_remaining', Float, default=0.0)
+    cost_remaining = Column("fld_cost_remaining", Float, default=0.0)
+    date_status = Column("fld_date_status", Date, unique=True, default=date.today())
+    time_remaining = Column("fld_time_remaining", Float, default=0.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision: relationship = relationship(
-        'RAMSTKRevision',
-        back_populates='program_status',
+        "RAMSTKRevision",
+        back_populates="program_status",
     )
 
     def get_attributes(self):
@@ -65,11 +62,11 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'revision_id': self.revision_id,
-            'status_id': self.status_id,
-            'cost_remaining': self.cost_remaining,
-            'date_status': self.date_status,
-            'time_remaining': self.time_remaining,
+            "revision_id": self.revision_id,
+            "status_id": self.status_id,
+            "cost_remaining": self.cost_remaining,
+            "date_status": self.date_status,
+            "time_remaining": self.time_remaining,
         }
 
         return _attributes
