@@ -16,25 +16,25 @@ import pytest
 from ramstk.analyses.milhdbk217f import capacitor
 
 ATTRIBUTES = {
-    'hardware_id': 12,
-    'subcategory_id': 1,
-    'temperature_rated_max': 105.0,
-    'temperature_active': 45.0,
-    'voltage_ratio': 0.54,
-    'capacitance': 0.0000033,
-    'construction_id': 1,
-    'configuration_id': 1,
-    'resistance': 0.05,
-    'voltage_dc_operating': 3.3,
-    'voltage_ac_operating': 0.04,
-    'lambda_b': 0.0,
-    'piQ': 1.0,
-    'piE': 1.0,
-    'piC': 0.0,
-    'piCF': 0.0,
-    'piCV': 0.0,
-    'piSR': 0.0,
-    'hazard_rate_active': 0.0
+    "hardware_id": 12,
+    "subcategory_id": 1,
+    "temperature_rated_max": 105.0,
+    "temperature_active": 45.0,
+    "voltage_ratio": 0.54,
+    "capacitance": 0.0000033,
+    "construction_id": 1,
+    "configuration_id": 1,
+    "resistance": 0.05,
+    "voltage_dc_operating": 3.3,
+    "voltage_ac_operating": 0.04,
+    "lambda_b": 0.0,
+    "piQ": 1.0,
+    "piE": 1.0,
+    "piC": 0.0,
+    "piCF": 0.0,
+    "piCV": 0.0,
+    "piSR": 0.0,
+    "hazard_rate_active": 0.0,
 }
 
 
@@ -44,11 +44,13 @@ ATTRIBUTES = {
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
+@pytest.mark.parametrize(
+    "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+)
 @pytest.mark.parametrize("specification_id", [1, 2])
-def test_get_part_count_lambda_b(subcategory_id, environment_active_id,
-                                 specification_id):
+def test_get_part_count_lambda_b(
+    subcategory_id, environment_active_id, specification_id
+):
     """get_part_count_lambda_b_list() should return a list of base hazard rates on success or raise a KeyError when no key exists."""
     _lambda_b = capacitor.get_part_count_lambda_b(
         subcategory_id,
@@ -82,9 +84,7 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_specification():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = capacitor.get_part_count_lambda_b(1,
-                                                      2,
-                                                      specification_id=22)
+        _lambda_b = capacitor.get_part_count_lambda_b(1, 2, specification_id=22)
 
 
 @pytest.mark.unit
@@ -146,6 +146,7 @@ def test_calculate_part_stress_lambda_b_unknown_ref_temp():
     assert isinstance(_base_hr, float)
     assert _base_hr == pytest.approx(0.06621194)
 
+
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize(
@@ -173,7 +174,7 @@ def test_calculate_capacitance_factor(subcategory_id):
         16: 1.0,
         17: 1.0,
         18: 1.0,
-        19: 1.0
+        19: 1.0,
     }
     _pi_cv = capacitor.calculate_capacitance_factor(subcategory_id, 0.0000033)
 
@@ -217,7 +218,7 @@ def test_calculate_series_resistance_factor(resistance):
 def test_calculate_series_resistance_factor_zero_voltage():
     """calculate_series_resistance_factor() should raise a ZeroDivisionError passed zreo voltage."""
     with pytest.raises(ZeroDivisionError):
-        _pi_sr, = capacitor.calculate_series_resistance_factor(
+        (_pi_sr,) = capacitor.calculate_series_resistance_factor(
             1.0,
             0.0,
             0.0,
@@ -229,9 +230,9 @@ def test_calculate_series_resistance_factor_zero_voltage():
 def test_calculate_series_resistance_factor_string_input():
     """calculate_series_resistance_factor() should raise a TypeError if passed a string input."""
     with pytest.raises(TypeError):
-        _pi_sr, = capacitor.calculate_series_resistance_factor(
+        (_pi_sr,) = capacitor.calculate_series_resistance_factor(
             1.0,
-            '10.0',
+            "10.0",
             0.1,
         )
 
@@ -281,35 +282,35 @@ def test_get_construction_factor_unknown_construction():
 @pytest.mark.parametrize("subcategory_id", [1, 12, 13, 19])
 def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return a dict of updated attributes and an empty error message on success."""
-    ATTRIBUTES['subcategory_id'] = subcategory_id
+    ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = capacitor.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1:
-        assert _attributes['lambda_b'] == pytest.approx(0.029446888)
-        assert _attributes['piCV'] == pytest.approx(0.36177626)
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.010653185)
+        assert _attributes["lambda_b"] == pytest.approx(0.029446888)
+        assert _attributes["piCV"] == pytest.approx(0.36177626)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.010653185)
     elif subcategory_id == 12:
-        assert _attributes['lambda_b'] == pytest.approx(0.022463773)
-        assert _attributes['piCV'] == pytest.approx(0.2198982)
-        assert _attributes['piSR'] == 0.33
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.0016301152)
+        assert _attributes["lambda_b"] == pytest.approx(0.022463773)
+        assert _attributes["piCV"] == pytest.approx(0.2198982)
+        assert _attributes["piSR"] == 0.33
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0016301152)
     elif subcategory_id == 13:
-        assert _attributes['lambda_b'] == pytest.approx(0.0098840599)
-        assert _attributes['piC'] == 0.3
-        assert _attributes['piCV'] == pytest.approx(0.3564805)
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.0010570424)
+        assert _attributes["lambda_b"] == pytest.approx(0.0098840599)
+        assert _attributes["piC"] == 0.3
+        assert _attributes["piCV"] == pytest.approx(0.3564805)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0010570424)
     elif subcategory_id == 19:
-        assert _attributes['lambda_b'] == pytest.approx(0.48854794)
-        assert _attributes['piCF'] == 0.1
-        assert _attributes['piCV'] == 1.0
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.048854794)
+        assert _attributes["lambda_b"] == pytest.approx(0.48854794)
+        assert _attributes["piCF"] == 0.1
+        assert _attributes["piCV"] == 1.0
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.048854794)
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_part_stress_missing_attribute_key():
     """calculate_part_stress() should return a dict of updated attributes and an empty error message on success."""
-    ATTRIBUTES.pop('voltage_ratio')
+    ATTRIBUTES.pop("voltage_ratio")
     with pytest.raises(KeyError):
         _attributes = capacitor.calculate_part_stress(**ATTRIBUTES)

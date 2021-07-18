@@ -15,12 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKStakeholders
 
-ATTRIBUTES = {'stakeholder': 'Customer'}
+ATTRIBUTES = {"stakeholder": "Customer"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKStakeholders():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKStakeholders:
     """Class for testing the RAMSTKStakeholders model."""
+
     @pytest.mark.integration
     def test_ramstkstakeholders_create(self, test_common_dao):
         """ __init__() should create an RAMSTKStakeholders model. """
@@ -29,9 +30,9 @@ class TestRAMSTKStakeholders():
         assert isinstance(DUT, RAMSTKStakeholders)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_stakeholders'
+        assert DUT.__tablename__ == "ramstk_stakeholders"
         assert DUT.stakeholders_id == 1
-        assert DUT.stakeholder == 'Customer'
+        assert DUT.stakeholder == "Customer"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -40,8 +41,8 @@ class TestRAMSTKStakeholders():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['stakeholders_id'] == 1
-        assert _attributes['stakeholder'] == 'Customer'
+        assert _attributes["stakeholders_id"] == 1
+        assert _attributes["stakeholder"] == "Customer"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -55,10 +56,10 @@ class TestRAMSTKStakeholders():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKStakeholders).first()
 
-        ATTRIBUTES['stakeholder'] = None
+        ATTRIBUTES["stakeholder"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['stakeholder'] == 'Stakeholder'
+        assert DUT.get_attributes()["stakeholder"] == "Stakeholder"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -66,4 +67,4 @@ class TestRAMSTKStakeholders():
         DUT = test_common_dao.session.query(RAMSTKStakeholders).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

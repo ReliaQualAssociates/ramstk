@@ -17,12 +17,10 @@ from datetime import date
 from os.path import dirname
 
 # Third Party Imports
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-# RAMSTK Package Imports
 from dao.RAMSTKGrowthTest import RAMSTKGrowthTest
 from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 sys.path.insert(
     0,
@@ -30,12 +28,9 @@ sys.path.insert(
 )
 
 
-
-
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
@@ -44,17 +39,45 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
     Class for testing the RAMSTKGrowthTest class.
     """
 
-    _attributes = (1, 1, 0.0, 0.0, 0.0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
-                   date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0, 0.0)
+    _attributes = (
+        1,
+        1,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        date.today(),
+        date.today(),
+        0.0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0,
+    )
 
     def setUp(self):
         """
         Sets up the test fixture for the RAMSTKGrowthTest class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
+        engine = create_engine("sqlite:////tmp/TestDB.ramstk", echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -74,7 +97,7 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKGrowthTest))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'ramstk_growth_test')
+        self.assertEqual(self.DUT.__tablename__, "ramstk_growth_test")
         self.assertEqual(self.DUT.test_id, 1)
         self.assertEqual(self.DUT.phase_id, 1)
         self.assertEqual(self.DUT.i_mi, 0.0)
@@ -120,33 +143,91 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         (TestRAMSTKGrowthTest) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
-                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0)
+        _attributes = (
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            date.today(),
+            date.today(),
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RAMSTK SUCCESS: Updating RAMSTKGrowthTest {0:d} " \
-                               "attributes.".format(self.DUT.phase_id))
+        self.assertEqual(
+            _msg,
+            "RAMSTK SUCCESS: Updating RAMSTKGrowthTest {0:d} "
+            "attributes.".format(self.DUT.phase_id),
+        )
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_wrong_type(self):
         """
         (TestRAMSTKGrowthTest) set_attributes should return a 10 error code when passed the wrong type
         """
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
-                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       'None', 0.0, 0.0, 0, 0.0)
+        _attributes = (
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            date.today(),
+            date.today(),
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "None",
+            0.0,
+            0.0,
+            0,
+            0.0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RAMSTK ERROR: Incorrect data type when " \
-                               "converting one or more RAMSTKGrowthTest " \
-                               "attributes.")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Incorrect data type when "
+            "converting one or more RAMSTKGrowthTest "
+            "attributes.",
+        )
 
     @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
@@ -154,13 +235,41 @@ class TestRAMSTKGrowthTest(unittest.TestCase):
         (TestRAMSTKGrowthTest) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
-                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0, 0.0)
+        _attributes = (
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            date.today(),
+            date.today(),
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RAMSTK ERROR: Insufficient number of input " \
-                               "values to RAMSTKGrowthTest.set_attributes().")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Insufficient number of input "
+            "values to RAMSTKGrowthTest.set_attributes().",
+        )

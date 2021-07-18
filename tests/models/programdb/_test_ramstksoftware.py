@@ -16,12 +16,10 @@ import unittest
 from os.path import dirname
 
 # Third Party Imports
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-# RAMSTK Package Imports
 from dao.RAMSTKSoftware import RAMSTKSoftware
 from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 sys.path.insert(
     0,
@@ -29,11 +27,9 @@ sys.path.insert(
 )
 
 
-
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
@@ -42,19 +38,91 @@ class TestRAMSTKSoftware(unittest.TestCase):
     Class for testing the RAMSTKSoftware class.
     """
 
-    _attributes = (1, 1, 0.0, 0, 0.0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0,
-                   'Test Software Description', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0, 0, 0, 0,
-                   0, 0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0,
-                   0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0, 0)
+    _attributes = (
+        1,
+        1,
+        0.0,
+        0,
+        0.0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0,
+        "Test Software Description",
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0.0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0.0,
+        0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0,
+        0,
+        0,
+    )
 
     def setUp(self):
         """
         Sets up the test fixture for the RAMSTKSoftware class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
+        engine = create_engine("sqlite:////tmp/TestDB.ramstk", echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -74,7 +142,7 @@ class TestRAMSTKSoftware(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RAMSTKSoftware))
 
         # Verify class attributes are properly initialized.
-        self.assertEqual(self.DUT.__tablename__, 'ramstk_software')
+        self.assertEqual(self.DUT.__tablename__, "ramstk_software")
         self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.software_id, 1)
         self.assertEqual(self.DUT.a, 0.0)
@@ -91,7 +159,7 @@ class TestRAMSTKSoftware(unittest.TestCase):
         self.assertEqual(self.DUT.d, 0.0)
         self.assertEqual(self.DUT.dc, 0.0)
         self.assertEqual(self.DUT.dd, 0)
-        self.assertEqual(self.DUT.description, 'Test Software Description')
+        self.assertEqual(self.DUT.description, "Test Software Description")
         self.assertEqual(self.DUT.development_id, 0)
         self.assertEqual(self.DUT.dev_assess_type_id, 0)
         self.assertEqual(self.DUT.df, 0.0)
@@ -166,18 +234,91 @@ class TestRAMSTKSoftware(unittest.TestCase):
         (TestRAMSTKSoftware) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0.0, 0, 0.0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0,
-                       'Test Software Description', 0, 0, 0.0, 0.0, 0.0, 0, 0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0,
-                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0, 0)
+        _attributes = (
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            "Test Software Description",
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RAMSTK SUCCESS: Updating RAMSTKSoftware {0:d} " \
-                               "attributes.".format(self.DUT.software_id))
+        self.assertEqual(
+            _msg,
+            "RAMSTK SUCCESS: Updating RAMSTKSoftware {0:d} "
+            "attributes.".format(self.DUT.software_id),
+        )
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_wrong_type(self):
@@ -185,19 +326,92 @@ class TestRAMSTKSoftware(unittest.TestCase):
         (TestRAMSTKSoftware) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0.0, 0, 0.0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0,
-                       'Test Software Description', 0, 0, 0.0, 0.0, 0.0, 0, 0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0,
-                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0, 0, 0, 0, 0.0, 0.0, 'None', 0, 0, 0)
+        _attributes = (
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            "Test Software Description",
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            "None",
+            0,
+            0,
+            0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RAMSTK ERROR: Incorrect data type when " \
-                               "converting one or more RAMSTKSoftware " \
-                               "attributes.")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Incorrect data type when "
+            "converting one or more RAMSTKSoftware "
+            "attributes.",
+        )
 
     @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
@@ -205,15 +419,87 @@ class TestRAMSTKSoftware(unittest.TestCase):
         (TestRAMSTKSoftware) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0.0, 0, 0.0, 0, 0, 0.0, 0.0, 0, 0, 0, 0, 0.0, 0.0, 0,
-                       'Test Software Description', 0, 0, 0.0, 0.0, 0.0, 0, 0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0,
-                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0)
+        _attributes = (
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0,
+            "Test Software Description",
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0.0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0,
+            0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RAMSTK ERROR: Insufficient number of input " \
-                               "values to RAMSTKSoftware.set_attributes().")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Insufficient number of input "
+            "values to RAMSTKSoftware.set_attributes().",
+        )

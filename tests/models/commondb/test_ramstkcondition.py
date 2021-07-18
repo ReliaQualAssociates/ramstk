@@ -15,15 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKCondition
 
-ATTRIBUTES = {
-    'condition_type': 'operating',
-    'description': 'Cavitation'
-}
+ATTRIBUTES = {"condition_type": "operating", "description": "Cavitation"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKSiteInfo():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKSiteInfo:
     """Class for testing the RAMSTKSiteInfo model."""
+
     @pytest.mark.integration
     def test_ramstkcondition_create(self, test_common_dao):
         """ __init__() should create an RAMSTKCondition model. """
@@ -32,11 +30,10 @@ class TestRAMSTKSiteInfo():
         assert isinstance(DUT, RAMSTKCondition)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_condition'
+        assert DUT.__tablename__ == "ramstk_condition"
         assert DUT.condition_id == 1
-        assert DUT.description == 'Cavitation'
-        assert DUT.condition_type == 'operating'
-
+        assert DUT.description == "Cavitation"
+        assert DUT.condition_type == "operating"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -44,8 +41,8 @@ class TestRAMSTKSiteInfo():
         DUT = test_common_dao.session.query(RAMSTKCondition).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['condition_type'] == 'operating'
-        assert _attributes['description'] == 'Cavitation'
+        assert _attributes["condition_type"] == "operating"
+        assert _attributes["description"] == "Cavitation"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -59,10 +56,10 @@ class TestRAMSTKSiteInfo():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKCondition).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'Condition Description'
+        assert DUT.get_attributes()["description"] == "Condition Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -70,4 +67,4 @@ class TestRAMSTKSiteInfo():
         DUT = test_common_dao.session.query(RAMSTKCondition).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

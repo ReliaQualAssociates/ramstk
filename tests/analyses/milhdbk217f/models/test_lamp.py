@@ -16,13 +16,13 @@ import pytest
 from ramstk.analyses.milhdbk217f import lamp
 
 ATTRIBUTES = {
-    'category_id': 10,
-    'subcategory_id': 4,
-    'environment_active_id': 3,
-    'application_id': 1,
-    'duty_cycle': 75.0,
-    'voltage_rated': 12.0,
-    'piE': 1.0
+    "category_id": 10,
+    "subcategory_id": 4,
+    "environment_active_id": 3,
+    "application_id": 1,
+    "duty_cycle": 75.0,
+    "voltage_rated": 12.0,
+    "piE": 1.0,
 }
 
 
@@ -34,48 +34,50 @@ ATTRIBUTES = {
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 def test_get_part_count_lambda_b(
-        application_id,
-        environment_active_id,
+    application_id,
+    environment_active_id,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
-    _lambda_b = lamp.get_part_count_lambda_b(application_id,
-                                             environment_active_id)
+    _lambda_b = lamp.get_part_count_lambda_b(application_id, environment_active_id)
 
     assert isinstance(_lambda_b, float)
-    assert _lambda_b == {
-        1: [
-            3.9,
-            7.8,
-            12.0,
-            12.0,
-            16.0,
-            16.0,
-            16.0,
-            19.0,
-            23.0,
-            19.0,
-            2.7,
-            16.0,
-            23.0,
-            100.0,
-        ],
-        2: [
-            13.0,
-            26.0,
-            38.0,
-            38.0,
-            51.0,
-            51.0,
-            51.0,
-            64.0,
-            77.0,
-            64.0,
-            9.0,
-            51.0,
-            77.0,
-            350.0,
-        ],
-    }[application_id][environment_active_id - 1]
+    assert (
+        _lambda_b
+        == {
+            1: [
+                3.9,
+                7.8,
+                12.0,
+                12.0,
+                16.0,
+                16.0,
+                16.0,
+                19.0,
+                23.0,
+                19.0,
+                2.7,
+                16.0,
+                23.0,
+                100.0,
+            ],
+            2: [
+                13.0,
+                26.0,
+                38.0,
+                38.0,
+                51.0,
+                51.0,
+                51.0,
+                64.0,
+                77.0,
+                64.0,
+                9.0,
+                51.0,
+                77.0,
+                350.0,
+            ],
+        }[application_id][environment_active_id - 1]
+    )
 
 
 @pytest.mark.unit
@@ -110,13 +112,13 @@ def test_calculate_part_count():
 @pytest.mark.parametrize("application_id", [1, 2])
 def test_calculate_part_stress(duty_cycle, application_id):
     """calculate_part_stress() should return the attributes dict updated with the calculated values."""
-    ATTRIBUTES['duty_cycle'] = duty_cycle
-    ATTRIBUTES['application_id'] = application_id
+    ATTRIBUTES["duty_cycle"] = duty_cycle
+    ATTRIBUTES["application_id"] = application_id
     _attributes = lamp.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _attributes['lambda_b'] == pytest.approx(1.82547348)
-    assert _attributes['piU'] == {5.0: 0.1, 50.0: 0.72, 95.0: 1.0}[duty_cycle]
-    assert _attributes['piA'] == {1: 1.0, 2: 3.3}[application_id]
+    assert _attributes["lambda_b"] == pytest.approx(1.82547348)
+    assert _attributes["piU"] == {5.0: 0.1, 50.0: 0.72, 95.0: 1.0}[duty_cycle]
+    assert _attributes["piA"] == {1: 1.0, 2: 3.3}[application_id]
     if duty_cycle == 5.0 and application_id == 1:
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.18254735)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.18254735)

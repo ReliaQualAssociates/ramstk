@@ -16,26 +16,27 @@ import pytest
 from ramstk.models.commondb import RAMSTKCategory
 
 ATTRIBUTES = {
-    'category_type': 'hardware',
-    'name': 'IC',
-    'value': 1,
-    'description': 'Integrated Circuit',
-    'harsh_ir_limit': 0.8,
-    'mild_ir_limit': 0.9,
-    'harsh_pr_limit': 1.0,
-    'mild_pr_limit': 1.0,
-    'harsh_vr_limit': 1.0,
-    'mild_vr_limit': 1.0,
-    'harsh_deltat_limit': 0.0,
-    'mild_deltat_limit': 0.0,
-    'harsh_maxt_limit': 125.0,
-    'mild_maxt_limit': 125.0
+    "category_type": "hardware",
+    "name": "IC",
+    "value": 1,
+    "description": "Integrated Circuit",
+    "harsh_ir_limit": 0.8,
+    "mild_ir_limit": 0.9,
+    "harsh_pr_limit": 1.0,
+    "mild_pr_limit": 1.0,
+    "harsh_vr_limit": 1.0,
+    "mild_vr_limit": 1.0,
+    "harsh_deltat_limit": 0.0,
+    "mild_deltat_limit": 0.0,
+    "harsh_maxt_limit": 125.0,
+    "mild_maxt_limit": 125.0,
 }
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKCategory():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKCategory:
     """Class for testing the RAMSTKCategory model."""
+
     @pytest.mark.integration
     def test_ramstkcategory_create(self, test_common_dao):
         """ __init__() should create an RAMSTKCategory model. """
@@ -44,11 +45,11 @@ class TestRAMSTKCategory():
         assert isinstance(DUT, RAMSTKCategory)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_category'
+        assert DUT.__tablename__ == "ramstk_category"
         assert DUT.category_id == 1
-        assert DUT.name == 'IC'
-        assert DUT.description == 'Integrated Circuit'
-        assert DUT.category_type == 'hardware'
+        assert DUT.name == "IC"
+        assert DUT.description == "Integrated Circuit"
+        assert DUT.category_type == "hardware"
         assert DUT.value == 1
         assert DUT.harsh_ir_limit == 0.8
         assert DUT.mild_ir_limit == 0.9
@@ -67,20 +68,20 @@ class TestRAMSTKCategory():
         DUT = test_common_dao.session.query(RAMSTKCategory).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['category_type'] == 'hardware'
-        assert _attributes['name'] == 'IC'
-        assert _attributes['value'] == 1
-        assert _attributes['description'] == 'Integrated Circuit'
-        assert _attributes['harsh_ir_limit'] == 0.8
-        assert _attributes['mild_ir_limit'] == 0.9
-        assert _attributes['harsh_pr_limit'] == 1.0
-        assert _attributes['mild_pr_limit'] == 1.0
-        assert _attributes['harsh_vr_limit'] == 1.0
-        assert _attributes['mild_vr_limit'] == 1.0
-        assert _attributes['harsh_deltat_limit'] == 0.0
-        assert _attributes['mild_deltat_limit'] == 0.0
-        assert _attributes['harsh_maxt_limit'] == 125.0
-        assert _attributes['mild_maxt_limit'] == 125.0
+        assert _attributes["category_type"] == "hardware"
+        assert _attributes["name"] == "IC"
+        assert _attributes["value"] == 1
+        assert _attributes["description"] == "Integrated Circuit"
+        assert _attributes["harsh_ir_limit"] == 0.8
+        assert _attributes["mild_ir_limit"] == 0.9
+        assert _attributes["harsh_pr_limit"] == 1.0
+        assert _attributes["mild_pr_limit"] == 1.0
+        assert _attributes["harsh_vr_limit"] == 1.0
+        assert _attributes["mild_vr_limit"] == 1.0
+        assert _attributes["harsh_deltat_limit"] == 0.0
+        assert _attributes["mild_deltat_limit"] == 0.0
+        assert _attributes["harsh_maxt_limit"] == 125.0
+        assert _attributes["mild_maxt_limit"] == 125.0
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -94,10 +95,10 @@ class TestRAMSTKCategory():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKCategory).first()
 
-        ATTRIBUTES['mild_deltat_limit'] = None
+        ATTRIBUTES["mild_deltat_limit"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['mild_deltat_limit'] == 0.0
+        assert DUT.get_attributes()["mild_deltat_limit"] == 0.0
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -105,4 +106,4 @@ class TestRAMSTKCategory():
         DUT = test_common_dao.session.query(RAMSTKCategory).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

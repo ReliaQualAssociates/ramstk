@@ -18,23 +18,24 @@ from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.books import RAMSTKListBook
 
 
-@pytest.mark.usefixtures('test_toml_user_configuration')
-class TestRAMSTKListBook():
+@pytest.mark.usefixtures("test_toml_user_configuration")
+class TestRAMSTKListBook:
     """Test class for the RAMSTKBook."""
+
     @pytest.mark.gui
     def test_create_listbook(self, test_toml_user_configuration):
         """__init__() should create a RAMSTKListBook."""
         DUT = RAMSTKListBook(
             test_toml_user_configuration,
-            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG))
+            RAMSTKLogManager(test_toml_user_configuration.RAMSTK_USER_LOG),
+        )
 
         assert isinstance(DUT, RAMSTKListBook)
-        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION,
-                          RAMSTKUserConfiguration)
-        assert DUT.dic_tab_position['left'] == Gtk.PositionType.LEFT
-        assert DUT.dic_tab_position['right'] == Gtk.PositionType.RIGHT
-        assert DUT.dic_tab_position['top'] == Gtk.PositionType.TOP
-        assert DUT.dic_tab_position['bottom'] == Gtk.PositionType.BOTTOM
+        assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
+        assert DUT.dic_tab_position["left"] == Gtk.PositionType.LEFT
+        assert DUT.dic_tab_position["right"] == Gtk.PositionType.RIGHT
+        assert DUT.dic_tab_position["top"] == Gtk.PositionType.TOP
+        assert DUT.dic_tab_position["bottom"] == Gtk.PositionType.BOTTOM
         assert isinstance(DUT._dic_list_views, dict)
-        assert pub.isSubscribed(DUT._on_module_change, 'mvwSwitchedPage')
-        assert pub.isSubscribed(DUT._on_close, 'succeed_closed_program')
+        assert pub.isSubscribed(DUT._on_module_change, "mvwSwitchedPage")
+        assert pub.isSubscribed(DUT._on_close, "succeed_closed_program")

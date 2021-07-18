@@ -29,22 +29,23 @@ def test_do_make_label_group():
     assert isinstance(_lst_labels[5], RAMSTKLabel)
 
 
-class TestRAMSTKLabel():
+class TestRAMSTKLabel:
     """Test class for the RAMSTKLabel."""
+
     @pytest.mark.gui
     def test_create_label(self):
         """__init__() should create a RAMSTKLabel."""
         DUT = RAMSTKLabel("Test Label Text")
 
         assert isinstance(DUT, RAMSTKLabel)
-        assert DUT.get_property('attributes') is None
-        assert DUT.get_property('height-request') == -1
-        assert DUT.get_property('justify') == Gtk.Justification.LEFT
-        assert DUT.get_property('label') == "<span>Test Label Text</span>"
-        assert DUT.get_property('tooltip-markup') is None
-        assert DUT.get_property('width-request') == -1
-        assert not DUT.get_property('wrap')
-        assert DUT.get_property('wrap-mode') == Pango.WrapMode.WORD
+        assert DUT.get_property("attributes") is None
+        assert DUT.get_property("height-request") == -1
+        assert DUT.get_property("justify") == Gtk.Justification.LEFT
+        assert DUT.get_property("label") == "<span>Test Label Text</span>"
+        assert DUT.get_property("tooltip-markup") is None
+        assert DUT.get_property("width-request") == -1
+        assert not DUT.get_property("wrap")
+        assert DUT.get_property("wrap-mode") == Pango.WrapMode.WORD
 
     @pytest.mark.gui
     def test_set_properties_default_values(self):
@@ -52,83 +53,87 @@ class TestRAMSTKLabel():
         DUT = RAMSTKLabel("Test Label Text")
         DUT.do_set_properties()
 
-        assert DUT.get_property('height-request') == 25
-        assert DUT.get_property('justify') == Gtk.Justification.LEFT
-        assert DUT.get_property('label') == (
-            "<b><span>Test Label Text</span></b>")
-        assert DUT.get_property('tooltip-markup') == (
-            "Missing tooltip, please file a quality type issue to have one "
-            "added.")
-        assert DUT.get_property('width-request') == 190
-        assert DUT.get_property('xalign') == pytest.approx(0.05)
-        assert DUT.get_property('yalign') == 0.5
+        assert DUT.get_property("height-request") == 25
+        assert DUT.get_property("justify") == Gtk.Justification.LEFT
+        assert DUT.get_property("label") == ("<b><span>Test Label Text</span></b>")
+        assert DUT.get_property("tooltip-markup") == (
+            "Missing tooltip, please file a quality type issue to have one " "added."
+        )
+        assert DUT.get_property("width-request") == 190
+        assert DUT.get_property("xalign") == pytest.approx(0.05)
+        assert DUT.get_property("yalign") == 0.5
 
     @pytest.mark.gui
     def test_set_properties_centered(self):
         """do_set_properties() should center the RAMSTKLabel."""
         DUT = RAMSTKLabel("Test Label Text")
-        DUT.do_set_properties(height=70,
-                              width=150,
-                              tooltip="Test tooltip",
-                              justify=Gtk.Justification.CENTER,
-                              wrap=True,
-                              bold=True)
+        DUT.do_set_properties(
+            height=70,
+            width=150,
+            tooltip="Test tooltip",
+            justify=Gtk.Justification.CENTER,
+            wrap=True,
+            bold=True,
+        )
 
-        assert DUT.get_property('attributes') is None
-        assert DUT.get_property('height-request') == 70
-        assert DUT.get_property('justify') == Gtk.Justification.CENTER
-        assert DUT.get_property('label') == (
-            "<b><span>Test Label Text</span></b>")
-        assert DUT.get_property('tooltip-markup') == "Test tooltip"
-        assert DUT.get_property('width-request') == 150
-        assert DUT.get_property('wrap')
-        assert DUT.get_property('wrap-mode') == Pango.WrapMode.WORD
-        assert DUT.get_property('xalign') == 0.5
-        assert DUT.get_property('yalign') == 0.5
+        assert DUT.get_property("attributes") is None
+        assert DUT.get_property("height-request") == 70
+        assert DUT.get_property("justify") == Gtk.Justification.CENTER
+        assert DUT.get_property("label") == ("<b><span>Test Label Text</span></b>")
+        assert DUT.get_property("tooltip-markup") == "Test tooltip"
+        assert DUT.get_property("width-request") == 150
+        assert DUT.get_property("wrap")
+        assert DUT.get_property("wrap-mode") == Pango.WrapMode.WORD
+        assert DUT.get_property("xalign") == 0.5
+        assert DUT.get_property("yalign") == 0.5
 
     @pytest.mark.gui
     def test_set_properties_left(self):
         """do_set_properties() should left justify the RAMSTKLabel."""
         DUT = RAMSTKLabel("Test Label Text")
-        DUT.do_set_properties(height=70,
-                              width=150,
-                              tooltip="Test tooltip",
-                              justify=Gtk.Justification.LEFT,
-                              wrap=True,
-                              bold=False)
+        DUT.do_set_properties(
+            height=70,
+            width=150,
+            tooltip="Test tooltip",
+            justify=Gtk.Justification.LEFT,
+            wrap=True,
+            bold=False,
+        )
 
-        assert DUT.get_property('attributes') is None
-        assert DUT.get_property('height-request') == 70
-        assert DUT.get_property('justify') == Gtk.Justification.LEFT
-        assert DUT.get_property('label') == "<span>Test Label Text</span>"
-        assert DUT.get_property('tooltip-markup') == "Test tooltip"
-        assert DUT.get_property('width-request') == 150
-        assert DUT.get_property('wrap')
-        assert DUT.get_property('wrap-mode') == Pango.WrapMode.WORD
-        assert DUT.get_property('xalign') == pytest.approx(0.05)
-        assert DUT.get_property('yalign') == 0.5
+        assert DUT.get_property("attributes") is None
+        assert DUT.get_property("height-request") == 70
+        assert DUT.get_property("justify") == Gtk.Justification.LEFT
+        assert DUT.get_property("label") == "<span>Test Label Text</span>"
+        assert DUT.get_property("tooltip-markup") == "Test tooltip"
+        assert DUT.get_property("width-request") == 150
+        assert DUT.get_property("wrap")
+        assert DUT.get_property("wrap-mode") == Pango.WrapMode.WORD
+        assert DUT.get_property("xalign") == pytest.approx(0.05)
+        assert DUT.get_property("yalign") == 0.5
 
     @pytest.mark.gui
     def test_set_properties_right(self):
         """do_set_properties() should right justify the RAMSTKLabel."""
         DUT = RAMSTKLabel("Test Label Text")
-        DUT.do_set_properties(height=70,
-                              width=150,
-                              tooltip="Test tooltip",
-                              justify=Gtk.Justification.RIGHT,
-                              wrap=True,
-                              bold=False)
+        DUT.do_set_properties(
+            height=70,
+            width=150,
+            tooltip="Test tooltip",
+            justify=Gtk.Justification.RIGHT,
+            wrap=True,
+            bold=False,
+        )
 
-        assert DUT.get_property('attributes') is None
-        assert DUT.get_property('height-request') == 70
-        assert DUT.get_property('justify') == Gtk.Justification.RIGHT
-        assert DUT.get_property('label') == "<span>Test Label Text</span>"
-        assert DUT.get_property('tooltip-markup') == "Test tooltip"
-        assert DUT.get_property('width-request') == 150
-        assert DUT.get_property('wrap')
-        assert DUT.get_property('wrap-mode') == Pango.WrapMode.WORD
-        assert DUT.get_property('xalign') == pytest.approx(0.99)
-        assert DUT.get_property('yalign') == 0.5
+        assert DUT.get_property("attributes") is None
+        assert DUT.get_property("height-request") == 70
+        assert DUT.get_property("justify") == Gtk.Justification.RIGHT
+        assert DUT.get_property("label") == "<span>Test Label Text</span>"
+        assert DUT.get_property("tooltip-markup") == "Test tooltip"
+        assert DUT.get_property("width-request") == 150
+        assert DUT.get_property("wrap")
+        assert DUT.get_property("wrap-mode") == Pango.WrapMode.WORD
+        assert DUT.get_property("xalign") == pytest.approx(0.99)
+        assert DUT.get_property("yalign") == 0.5
 
     @pytest.mark.gui
     def test_set_properties_zero_height(self):
@@ -136,7 +141,7 @@ class TestRAMSTKLabel():
         DUT = RAMSTKLabel("Test Label Text")
         DUT.do_set_properties(height=0)
 
-        assert DUT.get_property('height-request') == 25
+        assert DUT.get_property("height-request") == 25
 
     @pytest.mark.gui
     def test_set_properties_zero_width(self):
@@ -144,7 +149,7 @@ class TestRAMSTKLabel():
         DUT = RAMSTKLabel("Test Label Text")
         DUT.do_set_properties(width=0)
 
-        assert DUT.get_property('width-request') == 190
+        assert DUT.get_property("width-request") == 190
 
     @pytest.mark.gui
     def test_get_attribute_height(self):
@@ -152,7 +157,7 @@ class TestRAMSTKLabel():
         DUT = RAMSTKLabel("Test Label Text")
         DUT.do_set_properties(height=300)
 
-        assert DUT.get_attribute('height') == 300
+        assert DUT.get_attribute("height") == 300
 
     @pytest.mark.gui
     def test_get_attribute_width(self):
@@ -160,4 +165,4 @@ class TestRAMSTKLabel():
         DUT = RAMSTKLabel("")
         DUT.do_set_properties(width=30)
 
-        assert DUT.get_attribute('width') == 30
+        assert DUT.get_attribute("width") == 30
