@@ -172,7 +172,7 @@ output = 'cobertura.xml'
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = '--ignore=build --ignore=data --ignore=dist --ignore=docs --ignore=locale --ignore=RAMSTK.egg-info --ignore=tests --ignore=setup.py --ignore=data.py --ignore=__init__.py --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-append --cov-report=html --cov-report=xml --cov-report=term'
+addopts = '--ignore=build --ignore=data --ignore=dist --ignore=docs --ignore=locale --ignore=RAMSTK.egg-info --ignore=tests --ignore=setup.py --ignore=data.py --ignore=__init__.py'
 norecursedirs = [
 	'.git',
 	'.pytest_cache',
