@@ -190,7 +190,9 @@ markers = [
 	'unit: mark the test as a unit test.',
 	'integration: mark the test as an integration test.',
 	'calculation: mark the test as test of a calculation method/function.',
-	'gui: mark the tests as test of a GUI component.'
+	'gui: mark the test as test of a GUI component.',
+	'pof: mark the test as a physics of failure component.',
+	'fmea: mark the test as a FMEA component.'
 ]
 
 [tool.pylint.master]

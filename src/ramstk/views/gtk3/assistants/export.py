@@ -23,9 +23,12 @@ class ExportProject(RAMSTKFileChooser):
 
     RAMSTK_USER_CONFIGURATION = RAMSTKUserConfiguration()
 
-    def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration,
-                 parent: object) -> None:
+    def __init__(
+        self,
+        __button: Gtk.ToolButton,
+        configuration: RAMSTKUserConfiguration,
+        parent: object,
+    ) -> None:
         """Initialize an instance of the Export Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
@@ -51,10 +54,8 @@ class ExportProject(RAMSTKFileChooser):
 
         self.set_current_folder(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
 
-        for _module in [
-                'functions', 'requirements', 'hardwares', 'validations'
-        ]:
-            pub.sendMessage('request_get_{0}_tree'.format(_module))
+        for _module in ["functions", "requirements", "hardwares", "validations"]:
+            pub.sendMessage("request_get_{0}_tree".format(_module))
 
         self._do_select_file()
 
@@ -77,19 +78,21 @@ class ExportProject(RAMSTKFileChooser):
 
         if _filename is not None:
             _filetype = {
-                '.csv': 'csv',
-                '.txt': 'text',
-                '.xls': 'excel',
-                '.xlsm': 'excel',
-                '.xlsx': 'excel'
-            }[_extension]  # type: ignore
+                ".csv": "csv",
+                ".txt": "text",
+                ".xls": "excel",
+                ".xlsm": "excel",
+                ".xlsx": "excel",
+            }[
+                _extension
+            ]  # type: ignore
 
             if os.path.exists(_filename):
                 _dialog = RAMSTKMessageDialog(self._parent)
                 _dialog.do_set_message(
-                    _("File {0} already exists.  Overwrite?").format(
-                        _filename))
-                _dialog.do_set_message_type('question')
+                    _("File {0} already exists.  Overwrite?").format(_filename)
+                )
+                _dialog.do_set_message_type("question")
                 _response = _dialog.do_run()
                 if _response == Gtk.ResponseType.YES:
                     _dialog.destroy()
@@ -102,7 +105,7 @@ class ExportProject(RAMSTKFileChooser):
 
             if _cansave:
                 pub.sendMessage(
-                    'request_export_data',
+                    "request_export_data",
                     file_type=_filetype,
                     file_name=_filename,
                 )

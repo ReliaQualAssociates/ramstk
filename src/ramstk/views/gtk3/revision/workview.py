@@ -17,7 +17,10 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKEntry, RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
+    RAMSTKEntry,
+    RAMSTKPanel,
+    RAMSTKTextView,
+    RAMSTKWorkView,
 )
 
 # RAMSTK Local Imports
@@ -26,6 +29,7 @@ from . import ATTRIBUTE_KEYS
 
 class GeneralDataPanel(RAMSTKPanel):
     """The panel to display general data about the selected Revision."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Revision General Data panel."""
         super().__init__()
@@ -53,9 +57,9 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
         self._dic_attribute_updater = {
-            'name': [self.txtName.do_update, 'changed', 0],
-            'remarks': [self.txtRemarks.do_update, 'changed', 1],
-            'revision_code': [self.txtCode.do_update, 'changed', 2],
+            "name": [self.txtName.do_update, "changed", 0],
+            "remarks": [self.txtRemarks.do_update, "changed", 1],
+            "revision_code": [self.txtCode.do_update, "changed", 2],
         }
 
         self._lst_widgets: List[object] = [
@@ -70,10 +74,10 @@ class GeneralDataPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_revision')
+        pub.subscribe(self.on_edit, "mvw_editing_revision")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_revision')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "selected_revision")
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -81,9 +85,9 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.txtName.do_update('', signal='changed')
-        self.txtRemarks.do_update('', signal='changed')
-        self.txtCode.do_update('', signal='changed')
+        self.txtName.do_update("", signal="changed")
+        self.txtRemarks.do_update("", signal="changed")
+        self.txtCode.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Revision General Data page widgets.
@@ -93,12 +97,11 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['revision_id']
+        self._record_id = attributes["revision_id"]
 
-        self.txtName.do_update(str(attributes['name']), signal='changed')
-        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
-        self.txtCode.do_update(str(attributes['revision_code']),
-                               signal='changed')
+        self.txtName.do_update(str(attributes["name"]), signal="changed")
+        self.txtRemarks.do_update(str(attributes["remarks"]), signal="changed")
+        self.txtCode.do_update(str(attributes["revision_code"]), signal="changed")
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -106,14 +109,20 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
-            'changed', self.on_changed_entry, 0, 'wvw_editing_revision')
+        self.txtName.dic_handler_id["changed"] = self.txtName.connect(
+            "changed", self.on_changed_entry, 0, "wvw_editing_revision"
+        )
         _buffer: Gtk.TextBuffer = self.txtRemarks.do_get_buffer()
-        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
-            'changed', self.on_changed_textview, 1, 'wvw_editing_revision',
-            self.txtRemarks)
-        self.txtCode.dic_handler_id['changed'] = self.txtCode.connect(
-            'changed', self.on_changed_entry, 2, 'wvw_editing_revision')
+        self.txtRemarks.dic_handler_id["changed"] = _buffer.connect(
+            "changed",
+            self.on_changed_textview,
+            1,
+            "wvw_editing_revision",
+            self.txtRemarks,
+        )
+        self.txtCode.dic_handler_id["changed"] = self.txtCode.connect(
+            "changed", self.on_changed_entry, 2, "wvw_editing_revision"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -123,14 +132,16 @@ class GeneralDataPanel(RAMSTKPanel):
         """
         # ----- ENTRIES
         self.txtCode.do_set_properties(
-            width=125, tooltip=_("A unique code for the selected revision."))
+            width=125, tooltip=_("A unique code for the selected revision.")
+        )
         self.txtName.do_set_properties(
-            width=800, tooltip=_("The name of the selected revision."))
+            width=800, tooltip=_("The name of the selected revision.")
+        )
         self.txtRemarks.do_set_properties(
             height=100,
             width=800,
-            tooltip=_(
-                "Enter any remarks associated with the selected revision."))
+            tooltip=_("Enter any remarks associated with the selected revision."),
+        )
 
 
 class GeneralData(RAMSTKWorkView):
@@ -161,7 +172,7 @@ class GeneralData(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'revision'
+    _module: str = "revision"
     _tablabel = _("General\nData")
     _tabtooltip = _("Displays general information for the selected Revision")
 
@@ -171,8 +182,9 @@ class GeneralData(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Revision Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -200,7 +212,7 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_revision')
+        pub.subscribe(self._do_set_record_id, "selected_revision")
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Revision's record ID.
@@ -209,7 +221,7 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['revision_id']
+        self._record_id = attributes["revision_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.

@@ -17,8 +17,8 @@ from scipy.stats import norm
 
 
 def do_calculate_beta_bounds(
-        minimum: float, likely: float, maximum: float,
-        alpha: float) -> Tuple[float, float, float, float]:
+    minimum: float, likely: float, maximum: float, alpha: float
+) -> Tuple[float, float, float, float]:
     """Calculate the mean, standard error, and bounds of the beta distribution.
 
     These are the project management estimators, not exact calculations.
@@ -45,10 +45,9 @@ def do_calculate_beta_bounds(
     return _meanll, _mean, _meanul, _sd
 
 
-def do_calculate_fisher_information(model: Callable,
-                                    p0: List[float],
-                                    data: np.ndarray,
-                                    noise=1.0) -> np.ndarray:
+def do_calculate_fisher_information(
+    model: Callable, p0: List[float], data: np.ndarray, noise=1.0
+) -> np.ndarray:
     """Calculate the Fisher information matrix for model.
 
     Sampled on grid X with parameters p0.  Assumes samples are not correlated
@@ -87,9 +86,11 @@ def do_calculate_fisher_information(model: Callable,
             misc.derivative(
                 lambda p: model(_record, **dict(_p0dict, **{argname: p})),
                 _p0dict[argname],
-                dx=1.0e-6) for _record in data
+                dx=1.0e-6,
+            )
+            for _record in data
         ]
 
-    _fisher = 1.0 / noise**2 * np.einsum('mk, nk', _D, _D)
+    _fisher = 1.0 / noise ** 2 * np.einsum("mk, nk", _D, _D)
 
     return _fisher

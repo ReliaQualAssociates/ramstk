@@ -30,7 +30,7 @@ class FunctionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = 'functions'
+    _module = "functions"
 
     # Define public dictionary class attributes.
 
@@ -45,31 +45,31 @@ class FunctionPanel(RAMSTKPanel):
         # Initialize private dictionary class attributes.
         self._dic_attribute_keys = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
-            'revision_id': [None, 'edited', 0],
-            'function_id': [None, 'edited', 1],
-            'availability_logistics': [None, 'edited', 2],
-            'availability_mission': [None, 'edited', 3],
-            'cost': [None, 'edited', 4],
-            'function_code': [None, 'edited', 5],
-            'failure_rate_logistics': [None, 'edited', 6],
-            'failure_rate_mission': [None, 'edited', 7],
-            'level': [None, 'edited', 8],
-            'mmt': [None, 'edited', 9],
-            'mcmt': [None, 'edited', 10],
-            'mpmt': [None, 'edited', 11],
-            'mtbf_logistics': [None, 'edited', 12],
-            'mtbf_mission': [None, 'edited', 13],
-            'mttr': [None, 'edited', 14],
-            'name': [None, 'edited', 15],
-            'parent_id': [None, 'edited', 16],
-            'remarks': [None, 'edited', 17],
-            'safety_critical': [None, 'toggled', 18],
-            'total_mode_count': [None, 'edited', 19],
-            'total_part_count': [None, 'edited', 20],
-            'type': [None, 'edited', 21],
+            "revision_id": [None, "edited", 0],
+            "function_id": [None, "edited", 1],
+            "availability_logistics": [None, "edited", 2],
+            "availability_mission": [None, "edited", 3],
+            "cost": [None, "edited", 4],
+            "function_code": [None, "edited", 5],
+            "failure_rate_logistics": [None, "edited", 6],
+            "failure_rate_mission": [None, "edited", 7],
+            "level": [None, "edited", 8],
+            "mmt": [None, "edited", 9],
+            "mcmt": [None, "edited", 10],
+            "mpmt": [None, "edited", 11],
+            "mtbf_logistics": [None, "edited", 12],
+            "mtbf_mission": [None, "edited", 13],
+            "mttr": [None, "edited", 14],
+            "name": [None, "edited", 15],
+            "parent_id": [None, "edited", 16],
+            "remarks": [None, "edited", 17],
+            "safety_critical": [None, "toggled", 18],
+            "total_mode_count": [None, "edited", 19],
+            "total_part_count": [None, "edited", 20],
+            "type": [None, "edited", 21],
         }
         self._dic_row_loader = {
-            'function': super()._do_load_treerow,
+            "function": super()._do_load_treerow,
         }
 
         # Initialize private list class attributes.
@@ -88,14 +88,14 @@ class FunctionPanel(RAMSTKPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_functions')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_function')
-        pub.subscribe(super().do_refresh_tree, 'wvw_editing_function')
-        pub.subscribe(super().on_delete, 'succeed_delete_function')
+        pub.subscribe(super().do_load_panel, "succeed_retrieve_functions")
+        pub.subscribe(super().do_load_panel, "succeed_insert_function")
+        pub.subscribe(super().do_refresh_tree, "wvw_editing_function")
+        pub.subscribe(super().on_delete, "succeed_delete_function")
 
-        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
 
-    def _on_module_switch(self, module: str = '') -> None:
+    def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
@@ -103,13 +103,12 @@ class FunctionPanel(RAMSTKPanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == 'functions' and _row is not None:
+        if module == "functions" and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Function {0:s}: {1:s}").format(
-                str(_code), str(_name))
+            _title = _("Analyzing Function {0:s}: {1:s}").format(str(_code), str(_name))
 
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage("request_set_title", title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Function package Module View RAMSTKTreeView().
@@ -123,18 +122,19 @@ class FunctionPanel(RAMSTKPanel):
         _attributes = super().on_row_change(selection)
 
         if _attributes:
-            self._record_id = _attributes['function_id']
-            self._parent_id = _attributes['parent_id']
+            self._record_id = _attributes["function_id"]
+            self._parent_id = _attributes["parent_id"]
 
             _title = _("Analyzing Function {0:s}: {1:s}").format(
-                str(_attributes['function_code']), str(_attributes['name']))
+                str(_attributes["function_code"]), str(_attributes["name"])
+            )
 
             pub.sendMessage(
-                'selected_function',
+                "selected_function",
                 attributes=_attributes,
             )
             pub.sendMessage(
-                'request_set_title',
+                "request_set_title",
                 title=_title,
             )
 
@@ -143,10 +143,11 @@ class FunctionPanel(RAMSTKPanel):
 
         :return: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         self.tvwTreeView.set_tooltip_text(
-            _("Displays the hierarchical list of functions."))
+            _("Displays the hierarchical list of functions.")
+        )
 
 
 class ModuleView(RAMSTKModuleView):
@@ -170,10 +171,11 @@ class ModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'function'
-    _tablabel: str = 'Function'
-    _tabtooltip: str = _("Displays the functional hierarchy for the selected "
-                         "Revision.")
+    _module: str = "function"
+    _tablabel: str = "Function"
+    _tabtooltip: str = _(
+        "Displays the functional hierarchy for the selected " "Revision."
+    )
 
     # Define public dictionary class attributes.
 
@@ -181,8 +183,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Function Module View.
 
         :param configuration: the RAMSTK Configuration class instance.
@@ -191,14 +194,14 @@ class ModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/function.png')
+        self._dic_icons["tab"] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/function.png"
+        )
 
         # Initialize private list attributes.
         self._lst_callbacks.insert(1, super().do_request_insert_child)
-        self._lst_icons[0] = 'insert_sibling'
-        self._lst_icons.insert(1, 'insert_child')
+        self._lst_icons[0] = "insert_sibling"
+        self._lst_icons.insert(1, "insert_child")
         self._lst_mnu_labels = [
             _("Add Sibling Function"),
             _("Add Child Function"),
@@ -226,8 +229,7 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id,
-                      'selected_{0}'.format(self._module))
+        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
@@ -237,8 +239,8 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['function_id']
-        self._parent_id = attributes['parent_id']
+        self._record_id = attributes["function_id"]
+        self._parent_id = attributes["parent_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
@@ -249,9 +251,9 @@ class ModuleView(RAMSTKModuleView):
 
         self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
-        self._pnlPanel.do_set_cell_callbacks('mvw_editing_function',
-                                             [5, 15, 17])
+        self._pnlPanel.do_set_cell_callbacks("mvw_editing_function", [5, 15, 17])
         self._pnlPanel.tvwTreeView.dic_handler_id[
-            'button-press'] = self._pnlPanel.tvwTreeView.connect(
-                "button_press_event",
-                super().on_button_press)
+            "button-press"
+        ] = self._pnlPanel.tvwTreeView.connect(
+            "button_press_event", super().on_button_press
+        )

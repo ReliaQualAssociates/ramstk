@@ -5,7 +5,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Similar Item Package Data Model."""
 
 # Standard Library Imports
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKSimilarItem
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Similar Item data manager."""
 
-    _tag = 'similar_items'
+    _tag = "similar_items"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._pkey = {
-            'similar_item': ['revision_id', 'hardware_id'],
+            "similar_item": ["revision_id", "hardware_id"],
         }
 
         # Initialize private list attributes.
@@ -48,22 +48,17 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes,
-                      'request_get_similar_item_attributes')
-        pub.subscribe(super().do_set_attributes,
-                      'request_set_similar_item_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_similar_item')
-        pub.subscribe(super().do_set_tree, 'succeed_calculate_similar_item')
-        pub.subscribe(super().do_update_all,
-                      'request_update_all_similar_items')
+        pub.subscribe(super().do_get_attributes, "request_get_similar_item_attributes")
+        pub.subscribe(super().do_set_attributes, "request_set_similar_item_attributes")
+        pub.subscribe(super().do_set_attributes, "wvw_editing_similar_item")
+        pub.subscribe(super().do_set_tree, "succeed_calculate_similar_item")
+        pub.subscribe(super().do_update, "request_update_similar_item")
 
-        pub.subscribe(self.do_get_tree, 'request_get_similar_item_tree')
-        pub.subscribe(self.do_select_all, 'selected_revision')
-        pub.subscribe(self.do_update, 'request_update_similar_item')
+        pub.subscribe(self.do_get_tree, "request_get_similar_item_tree")
+        pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, 'request_delete_hardware')
-        pub.subscribe(self._do_insert_similar_item,
-                      'request_insert_similar_item')
+        pub.subscribe(self._do_delete, "request_delete_hardware")
+        pub.subscribe(self._do_insert_similar_item, "request_insert_similar_item")
 
     def do_get_tree(self) -> None:
         """Retrieve the hardware treelib Tree.
@@ -72,99 +67,42 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         pub.sendMessage(
-            'succeed_get_similar_item_tree',
+            "succeed_get_similar_item_tree",
             tree=self.tree,
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Hardware BoM data from the RAMSTK Program database.
+        """Retrieve all the Similar Item data from the RAMSTK Program database.
 
         :param attributes: the attributes dict for the selected Revision.
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
+        self._revision_id = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
         for _similar_item in self.dao.do_select_all(
-                RAMSTKSimilarItem,
-                key=['revision_id'],
-                value=[self._revision_id],
-                order=RAMSTKSimilarItem.parent_id):
+            RAMSTKSimilarItem,
+            key=["revision_id"],
+            value=[self._revision_id],
+            order=RAMSTKSimilarItem.parent_id,
+        ):
 
-            self.tree.create_node(tag='similar_item',
-                                  identifier=_similar_item.hardware_id,
-                                  parent=_similar_item.parent_id,
-                                  data={'similar_item': _similar_item})
+            self.tree.create_node(
+                tag="similar_item",
+                identifier=_similar_item.hardware_id,
+                parent=_similar_item.parent_id,
+                data={"similar_item": _similar_item},
+            )
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
-            'succeed_retrieve_similar_item',
+            "succeed_retrieve_similar_item",
             tree=self.tree,
         )
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the hardware ID of the hardware item to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(
-                self.tree.get_node(node_id).data['similar_item'])
-
-            pub.sendMessage(
-                'succeed_update_similar_item',
-                tree=self.tree,
-            )
-        except AttributeError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{1}: Attempted to save non-existent similar item '
-                          'record ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_similar_item',
-                error_message=_error_msg,
-            )
-        except KeyError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{1}: No data package found for similar item record '
-                          'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_similar_item',
-                error_message=_error_msg,
-            )
-        except TypeError:
-            if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
-                _error_msg = ('{1}: The value for one or more attributes for '
-                              'similar item record ID {0} was the wrong '
-                              'type.').format(str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_similar_item',
-                    error_message=_error_msg,
-                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a similar item record.
@@ -178,35 +116,33 @@ class DataManager(RAMSTKDataManager):
             # Delete the children (if any), then the parent node that was
             # passed.
             for _child in self.tree.children(node_id):
-                super().do_delete(_child.identifier, 'similar_item')
-            super().do_delete(node_id, 'similar_item')
+                super().do_delete(_child.identifier, "similar_item")
+            super().do_delete(node_id, "similar_item")
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
-                'succeed_delete_similar_item',
+                "succeed_delete_similar_item",
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                '{1}: Attempted to delete non-existent similar item record '
-                'with hardware ID {0}.').format(str(node_id), _method_name)
+                "{1}: Attempted to delete non-existent similar item record "
+                "with hardware ID {0}."
+            ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_similar_item',
+                "fail_delete_similar_item",
                 error_message=_error_msg,
             )
 
-    def _do_insert_similar_item(self,
-                                hardware_id: int,
-                                parent_id: int = 0) -> None:
+    def _do_insert_similar_item(self, hardware_id: int, parent_id: int = 0) -> None:
         """Add a new similar item record.
 
         :param hardware_id: the ID of the hardware item to associate the
@@ -225,20 +161,22 @@ class DataManager(RAMSTKDataManager):
 
             self.last_id = _similar_item.hardware_id
 
-            self.tree.create_node(tag='similar_item',
-                                  identifier=_similar_item.hardware_id,
-                                  parent=parent_id,
-                                  data={'similar_item': _similar_item})
+            self.tree.create_node(
+                tag="similar_item",
+                identifier=_similar_item.hardware_id,
+                parent=parent_id,
+                data={"similar_item": _similar_item},
+            )
 
             pub.sendMessage(
-                'succeed_insert_similar_item',
+                "succeed_insert_similar_item",
                 node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error.msg,
             )
             pub.sendMessage(

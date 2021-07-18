@@ -15,12 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.programdb import RAMSTKControl
 
-ATTRIBUTES = {'description': 'Test Control', 'type_id': 'Detection'}
+ATTRIBUTES = {"description": "Test Control", "type_id": "Detection"}
 
 
-@pytest.mark.usefixtures('test_program_dao')
-class TestRAMSTKControl():
+@pytest.mark.usefixtures("test_program_dao")
+class TestRAMSTKControl:
     """Class for testing the RAMSTKControl model."""
+
     @pytest.mark.integration
     def test_ramstkcontrol_create(self, test_program_dao):
         """
@@ -31,11 +32,11 @@ class TestRAMSTKControl():
         assert isinstance(DUT, RAMSTKControl)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_control'
+        assert DUT.__tablename__ == "ramstk_control"
         assert DUT.cause_id == 1
         assert DUT.control_id == 1
-        assert DUT.description == 'Test FMEA Control #1 for Cause ID 5'
-        assert DUT.type_id == ''
+        assert DUT.description == "Test FMEA Control #1 for Cause ID 4"
+        assert DUT.type_id == ""
 
     @pytest.mark.integration
     def test_get_attributes(self, test_program_dao):
@@ -48,11 +49,10 @@ class TestRAMSTKControl():
 
         assert isinstance(_attributes, dict)
 
-        assert _attributes['cause_id'] == 1
-        assert _attributes['control_id'] == 1
-        assert _attributes['description'] == ('Test FMEA Control #1 for Cause '
-                                              'ID 5')
-        assert _attributes['type_id'] == ''
+        assert _attributes["cause_id"] == 1
+        assert _attributes["control_id"] == 1
+        assert _attributes["description"] == ("Test FMEA Control #1 for Cause " "ID 4")
+        assert _attributes["type_id"] == ""
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -68,10 +68,10 @@ class TestRAMSTKControl():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_program_dao.session.query(RAMSTKControl).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == ''
+        assert DUT.get_attributes()["description"] == ""
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):
@@ -79,4 +79,4 @@ class TestRAMSTKControl():
         DUT = test_program_dao.session.query(RAMSTKControl).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

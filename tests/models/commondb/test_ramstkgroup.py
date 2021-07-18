@@ -15,12 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKGroup
 
-ATTRIBUTES = {'description': 'Engineering, Design', 'group_type': 'workgroup'}
+ATTRIBUTES = {"description": "Engineering, Design", "group_type": "workgroup"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKGroup():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKGroup:
     """Class for testing the RAMSTKGroup model."""
+
     @pytest.mark.integration
     def test_ramstkworkgroup_create(self, test_common_dao):
         """ __init__() should create an RAMSTKGroup model. """
@@ -29,10 +30,10 @@ class TestRAMSTKGroup():
         assert isinstance(DUT, RAMSTKGroup)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_group'
+        assert DUT.__tablename__ == "ramstk_group"
         assert DUT.group_id == 1
-        assert DUT.description == 'Engineering, Design'
-        assert DUT.group_type == 'workgroup'
+        assert DUT.description == "Engineering, Design"
+        assert DUT.group_type == "workgroup"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -40,8 +41,8 @@ class TestRAMSTKGroup():
         DUT = test_common_dao.session.query(RAMSTKGroup).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['description'] == 'Engineering, Design'
-        assert _attributes['group_type'] == 'workgroup'
+        assert _attributes["description"] == "Engineering, Design"
+        assert _attributes["group_type"] == "workgroup"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -55,10 +56,10 @@ class TestRAMSTKGroup():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKGroup).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'Group Description'
+        assert DUT.get_attributes()["description"] == "Group Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -66,4 +67,4 @@ class TestRAMSTKGroup():
         DUT = test_common_dao.session.query(RAMSTKGroup).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

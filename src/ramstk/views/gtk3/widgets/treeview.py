@@ -26,22 +26,26 @@ from .widget import RAMSTKWidget
 
 
 def do_make_cell(
-    cell_type: str
-) -> Union[Gtk.CellRendererText, Gtk.CellRendererToggle, Gtk.CellRendererSpin,
-           Gtk.CellRendererCombo]:
+    cell_type: str,
+) -> Union[
+    Gtk.CellRendererText,
+    Gtk.CellRendererToggle,
+    Gtk.CellRendererSpin,
+    Gtk.CellRendererCombo,
+]:
     """Create the appropriate type of Gtk.CellRenderer().
 
     :param cell_type: the name of the type of cell to create.
     :return: the Gtk.CellRenderer() created by this method.
     :rtype: :class:`Gtk.CellRenderer`
     """
-    if cell_type == 'combo':
+    if cell_type == "combo":
         _cell = do_make_combo_cell()
-    elif cell_type == 'spin':
+    elif cell_type == "spin":
         _cell = do_make_spin_cell()
-    elif cell_type == 'toggle':
+    elif cell_type == "toggle":
         _cell = do_make_toggle_cell()
-    elif cell_type == 'blob':
+    elif cell_type == "blob":
         _cell = do_make_text_cell(True)
     else:
         _cell = do_make_text_cell(False)
@@ -49,8 +53,9 @@ def do_make_cell(
     return _cell
 
 
-def do_make_column(cells: List[Gtk.CellRenderer],
-                   **kwargs: Dict[str, Any]) -> Gtk.TreeViewColumn:
+def do_make_column(
+    cells: List[Gtk.CellRenderer], **kwargs: Dict[str, Any]
+) -> Gtk.TreeViewColumn:
     """Make a Gtk.TreeViewColumn().
 
     :param list cells: list of Gtk.CellRenderer()s that are to be packed in
@@ -58,8 +63,8 @@ def do_make_column(cells: List[Gtk.CellRenderer],
     :return: _column
     :rtype: :class:`Gtk.TreeViewColumn`
     """
-    _heading = kwargs.get('heading', "")
-    _visible = kwargs.get('visible', True)
+    _heading = kwargs.get("heading", "")
+    _visible = kwargs.get("visible", True)
 
     _column = Gtk.TreeViewColumn("")
 
@@ -70,9 +75,7 @@ def do_make_column(cells: List[Gtk.CellRenderer],
             _column.pack_start(_cell, True)
 
     _label = RAMSTKLabel(_heading)  # type: ignore
-    _label.do_set_properties(width=-1,
-                             height=-1,
-                             justify=Gtk.Justification.CENTER)
+    _label.do_set_properties(width=-1, height=-1, justify=Gtk.Justification.CENTER)
     _column.set_widget(_label)
     _column.set_resizable(True)
     _column.set_alignment(0.5)
@@ -90,9 +93,9 @@ def do_make_combo_cell() -> Gtk.CellRendererCombo:
     _cell = Gtk.CellRendererCombo()
     _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
     _cellmodel.append([""])
-    _cell.set_property('has-entry', False)
-    _cell.set_property('model', _cellmodel)
-    _cell.set_property('text-column', 0)
+    _cell.set_property("has-entry", False)
+    _cell.set_property("model", _cellmodel)
+    _cell.set_property("text-column", 0)
 
     return _cell
 
@@ -105,8 +108,8 @@ def do_make_spin_cell() -> Gtk.CellRendererSpin:
     """
     _cell = Gtk.CellRendererSpin()
     _adjustment = Gtk.Adjustment(upper=5.0, step_incr=0.05)
-    _cell.set_property('adjustment', _adjustment)
-    _cell.set_property('digits', 2)
+    _cell.set_property("adjustment", _adjustment)
+    _cell.set_property("digits", 2)
 
     return _cell
 
@@ -147,38 +150,39 @@ def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
     :return: None
     :rtype: None
     """
-    _bg_color = kwargs.get('bg_color', '#FFFFFF')
-    _editable = kwargs.get('editable', False)
-    _fg_color = kwargs.get('fg_color', '#000000')
-    _visible = kwargs.get('visible', True)
-    _weight = kwargs.get('weight', 400)
-    _weight_set = kwargs.get('weight_set', False)
+    _bg_color = kwargs.get("bg_color", "#FFFFFF")
+    _editable = kwargs.get("editable", False)
+    _fg_color = kwargs.get("fg_color", "#000000")
+    _visible = kwargs.get("visible", True)
+    _weight = kwargs.get("weight", 400)
+    _weight_set = kwargs.get("weight_set", False)
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
-        _fg_color = '#000000'
-        cell.set_property('cell-background-rgba', _color)
+        _fg_color = "#000000"
+        cell.set_property("cell-background-rgba", _color)
 
-    cell.set_property('visible', _visible)
-    cell.set_property('yalign', 0.1)
+    cell.set_property("visible", _visible)
+    cell.set_property("yalign", 0.1)
 
     if isinstance(cell, Gtk.CellRendererText):
-        cell.set_property('background', _bg_color)
-        cell.set_property('editable', _editable)
-        cell.set_property('foreground', _fg_color)
-        cell.set_property('weight', _weight)
-        cell.set_property('weight-set', _weight_set)
-        cell.set_property('wrap-width', 250)
-        cell.set_property('wrap-mode', Pango.WrapMode.WORD)
+        cell.set_property("background", _bg_color)
+        cell.set_property("editable", _editable)
+        cell.set_property("foreground", _fg_color)
+        cell.set_property("weight", _weight)
+        cell.set_property("weight-set", _weight_set)
+        cell.set_property("wrap-width", 250)
+        cell.set_property("wrap-mode", Pango.WrapMode.WORD)
     elif isinstance(cell, Gtk.CellRendererCombo):
-        cell.set_property('editable', _editable)
+        cell.set_property("editable", _editable)
     elif isinstance(cell, Gtk.CellRendererToggle):
-        cell.set_property('activatable', _editable)
-        cell.set_property('cell-background', _bg_color)
+        cell.set_property("activatable", _editable)
+        cell.set_property("cell-background", _bg_color)
 
 
 class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     """The RAMSTKTreeView class."""
+
     def __init__(self) -> None:
         """Initialize a RAMSTKTreeView() instance.
 
@@ -210,8 +214,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         # Initialize public scalar instance attributes.
         self.selection = self.get_selection()
 
-    def do_build_treeview(self, format_file: str, colors: Dict[str,
-                                                               str]) -> None:
+    def do_build_treeview(self, format_file: str, colors: Dict[str, str]) -> None:
         """Build the instance of a RAMSTKTreeView().
 
         :
@@ -223,8 +226,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.do_make_columns(colors=colors)
         self.do_set_editable_columns(self.do_edit_cell)
 
-    def do_edit_cell(self, cell: Gtk.CellRenderer, path: str, new_text: Any,
-                     position: int) -> Any:
+    def do_edit_cell(
+        self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
+    ) -> Any:
         """Handle Gtk.CellRenderer() edits.
 
         :param cell: the Gtk.CellRenderer() that was edited.
@@ -242,20 +246,20 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         if isinstance(cell, Gtk.CellRendererToggle):
             new_text = not cell.get_active()
-        elif _convert == 'gchararray':
+        elif _convert == "gchararray":
             new_text = str(new_text)
-        elif _convert == 'gint':
+        elif _convert == "gint":
             try:
                 new_text = int(new_text)
             except ValueError:
                 new_text = int(float(new_text))
-        elif _convert == 'gfloat':
+        elif _convert == "gfloat":
             new_text = float(new_text)
 
         _model[path][position] = new_text
 
         if isinstance(cell, Gtk.CellRendererCombo):
-            _cell_model = cell.get_property('model')
+            _cell_model = cell.get_property("model")
             _iter = _cell_model.get_iter_first()
             _idx = 0
             while _iter is not None:
@@ -302,9 +306,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             else:
                 _iter = _model.iter_next(_iter)
 
-    def do_insert_row(self,
-                      data: Dict[str, Any],
-                      prow: Gtk.TreeIter = None) -> None:
+    def do_insert_row(self, data: Dict[str, Any], prow: Gtk.TreeIter = None) -> None:
         """Insert a new row in the treeview.
 
         :param data: the data dictionary for the new row to insert.
@@ -324,10 +326,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.set_cursor(_path, None, False)
         self.row_activated(_path, _column)
 
-    def do_load_tree(self,
-                     tree: treelib.Tree,
-                     tag: str,
-                     row: Gtk.TreeIter = None) -> None:
+    def do_load_tree(
+        self, tree: treelib.Tree, tag: str, row: Gtk.TreeIter = None
+    ) -> None:
         """Load the Module View's Gtk.TreeModel() with the Module's tree.
 
         :param tree: the Module's treelib Tree().
@@ -367,11 +368,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     # noinspection PyDefaultArgument
     # pylint: disable=dangerous-default-value
     def do_make_columns(
-        self,
-        colors: Dict[str, str] = {
-            'bg_color': '#000000',
-            'fg_color': '#FFFFFF'
-        }
+        self, colors: Dict[str, str] = {"bg_color": "#000000", "fg_color": "#FFFFFF"}
     ) -> None:
         """Make the columns for the RAMSTKTreeView().
 
@@ -382,31 +379,35 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         for _key in self.position:
             _cell = do_make_cell(self.widgets[_key])
-            do_set_cell_properties(_cell,
-                                   bg_color=colors['bg_color'],
-                                   fg_color=colors['fg_color'],
-                                   editable=self.editable[_key])
+            do_set_cell_properties(
+                _cell,
+                bg_color=colors["bg_color"],
+                fg_color=colors["fg_color"],
+                editable=self.editable[_key],
+            )
 
             # If creating a RAMSTKTreeView() that displays icons and this is
             # the first column we're creating, add a Gtk.CellRendererPixbuf()
             # to go along with the data in the first column.
-            if self._has_pixbuf and _key == 'col0':
+            if self._has_pixbuf and _key == "col0":
                 _pbcell = Gtk.CellRendererPixbuf()
-                _pbcell.set_property('xalign', 0.5)
-                _pbcell.set_property('cell-background', colors['bg_color'])
+                _pbcell.set_property("xalign", 0.5)
+                _pbcell.set_property("cell-background", colors["bg_color"])
                 _column = do_make_column(
                     [_pbcell, _cell],
                     heading=self.headings[_key],  # type: ignore
-                    visible=self.visible[_key])  # type: ignore
-                _column.set_attributes(_pbcell, pixbuf=self.position['pixbuf'])
+                    visible=self.visible[_key],
+                )  # type: ignore
+                _column.set_attributes(_pbcell, pixbuf=self.position["pixbuf"])
             else:
                 _column = do_make_column(
                     [_cell],
                     heading=self.headings[_key],  # type: ignore
-                    visible=string_to_boolean(self.visible[_key]))
+                    visible=string_to_boolean(self.visible[_key]),
+                )
             _column.set_cell_data_func(
-                _cell, self._do_format_cell,
-                (self.position[_key], self.datatypes[_key]))
+                _cell, self._do_format_cell, (self.position[_key], self.datatypes[_key])
+            )
 
             self._do_set_column_properties(_key, _column)
 
@@ -422,7 +423,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         # Create a list of GObject data types to pass to the model.
         for _key in self.position:
-            if self.datatypes[_key] == 'pixbuf':
+            if self.datatypes[_key] == "pixbuf":
                 _types.append(GdkPixbuf.Pixbuf)
             else:
                 _types.append(GObject.type_from_name(self.datatypes[_key]))
@@ -440,28 +441,28 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         _format = toml.load(fmt_file)
 
-        self._has_pixbuf = string_to_boolean(_format['pixbuf'])
+        self._has_pixbuf = string_to_boolean(_format["pixbuf"])
 
         self.position = {}
-        _keys = sorted(_format['position'], key=_format['position'].get)
+        _keys = sorted(_format["position"], key=_format["position"].get)
         for _key in _keys:
-            self.position[_key] = _format['position'][_key]
+            self.position[_key] = _format["position"][_key]
 
-        self.datatypes = _format['datatype']
-        self.editable = _format['editable']
-        self.headings = _format['usertitle']
-        self.korder = _format['key']
-        self.visible = _format['visible']
-        self.widgets = _format['widget']
+        self.datatypes = _format["datatype"]
+        self.editable = _format["editable"]
+        self.headings = _format["usertitle"]
+        self.korder = _format["key"]
+        self.visible = _format["visible"]
+        self.widgets = _format["widget"]
 
         if self._has_pixbuf:
-            self.datatypes['pixbuf'] = 'pixbuf'
-            self.editable['pixbuf'] = 'False'
-            self.headings['pixbuf'] = ''
-            self.korder['pixbuf'] = ''
-            self.position['pixbuf'] = len(self.position.values())
-            self.visible['pixbuf'] = 'False'
-            self.widgets['pixbuf'] = 'pixbuf'
+            self.datatypes["pixbuf"] = "pixbuf"
+            self.editable["pixbuf"] = "False"
+            self.headings["pixbuf"] = ""
+            self.korder["pixbuf"] = ""
+            self.position["pixbuf"] = len(self.position.values())
+            self.visible["pixbuf"] = "False"
+            self.widgets["pixbuf"] = "pixbuf"
 
     def do_set_columns_editable(self) -> None:
         """Set list of columns editable.
@@ -480,13 +481,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
             # pylint: disable=unused-variable
             for __, _cell in enumerate(_cells):
-                _background = 'light gray'
+                _background = "light gray"
                 if _editable:
-                    _background = 'white'
+                    _background = "white"
 
-                do_set_cell_properties(_cell,
-                                       bg_color=_background,
-                                       editable=_editable)
+                do_set_cell_properties(_cell, bg_color=_background, editable=_editable)
 
     def do_set_editable_columns(self, method: object) -> None:
         """Set the treeview columns editable or read-only.
@@ -503,10 +502,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # that is the one that will be returned.
             _cell = _column.get_cells()[-1]
 
-            if self.widgets[_key] == 'toggle':
-                _cell.connect('toggled', method, None, self.position[_key])
-            elif self.widgets[_key] in ['spin', 'text']:
-                _cell.connect('edited', method, self.position[_key])
+            if self.widgets[_key] == "toggle":
+                _cell.connect("toggled", method, None, self.position[_key])
+            elif self.widgets[_key] in ["spin", "text"]:
+                _cell.connect("edited", method, self.position[_key])
 
     def do_set_visible_columns(self) -> None:
         """Set the treeview columns visible or hidden.
@@ -531,17 +530,15 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _attributes = []
         try:
             for _key in self.korder:
-                if _key == 'dict':
+                if _key == "dict":
                     _attributes.append(str(entity))
                 else:
                     try:
-                        if isinstance(
-                                entity[_key],  # type: ignore
-                                datetime.date):
-                            entity[_key] = entity[  # type: ignore
-                                _key].strftime("%Y-%m-%d")
-                        entity[_key] = entity[_key].decode(  # type: ignore
-                            'utf-8')
+                        if isinstance(entity[_key], datetime.date):  # type: ignore
+                            entity[_key] = entity[_key].strftime(  # type: ignore
+                                "%Y-%m-%d"
+                            )
+                        entity[_key] = entity[_key].decode("utf-8")  # type: ignore
                     except (AttributeError, KeyError):
                         pass
                     _attributes.append(entity[_key])  # type: ignore
@@ -583,10 +580,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         for _key in self.korder:
             try:
                 if isinstance(_temp[self.korder[_key]], datetime.date):
-                    _temp[self.korder[_key]] = _temp[
-                        self.korder[_key]].strftime("%Y-%m-%d")
-                _temp[self.korder[_key]] = _temp[self.korder[_key]].decode(
-                    'utf-8')
+                    _temp[self.korder[_key]] = _temp[self.korder[_key]].strftime(
+                        "%Y-%m-%d"
+                    )
+                _temp[self.korder[_key]] = _temp[self.korder[_key]].decode("utf-8")
             except (AttributeError, KeyError):
                 pass
             _attributes.append(_temp[self.korder[_key]])
@@ -594,9 +591,13 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         return _attributes
 
     @staticmethod
-    def _do_format_cell(__column: Gtk.TreeViewColumn, cell: Gtk.CellRenderer,
-                        model: Gtk.TreeModel, row: Gtk.TreeIter,
-                        data: Tuple[Any]) -> None:
+    def _do_format_cell(
+        __column: Gtk.TreeViewColumn,
+        cell: Gtk.CellRenderer,
+        model: Gtk.TreeModel,
+        row: Gtk.TreeIter,
+        data: Tuple[Any],
+    ) -> None:
         """Set the formatting of the Gtk.Treeview() Gtk.CellRenderers().
 
         :param __column: the Gtk.TreeViewColumn() containing the
@@ -611,24 +612,23 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :type row: :class:`Gtk.TreeIter`
         :param tuple data: a tuple containing the position and the data type.
         """
-        if data[1] == 'gfloat':  # type: ignore
+        if data[1] == "gfloat":  # type: ignore
             # fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
-            fmt = '{0:0.6g}'
-        elif data[1] == 'gint':  # type: ignore
-            fmt = '{0:0d}'
+            fmt = "{0:0.6g}"
+        elif data[1] == "gint":  # type: ignore
+            fmt = "{0:0d}"
         else:
             return
 
         val = model.get_value(row, data[0])
         try:
-            cell.set_property('text', fmt.format(val))
+            cell.set_property("text", fmt.format(val))
         except TypeError:  # It's a Gtk.CellRendererToggle
             pass
         except ValueError:
             pass
 
-    def _do_set_column_properties(self, key: str,
-                                  column: Gtk.TreeViewColumn) -> None:
+    def _do_set_column_properties(self, key: str, column: Gtk.TreeViewColumn) -> None:
         """Set the properties of the RAMSTKTreeView() column.
 
         :param key: the value of the key in the widgets and position dicts.
@@ -638,17 +638,18 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :rtype: None
         """
         _cell = column.get_cells()[-1]
-        if self.widgets[key] == 'toggle':
+        if self.widgets[key] == "toggle":
             column.set_attributes(_cell, active=self.position[key])
-        elif self.widgets[key] in ['combo', 'spin', 'text']:
+        elif self.widgets[key] in ["combo", "spin", "text"]:
             column.set_attributes(_cell, text=self.position[key])
 
-        if key != 'col0':
+        if key != "col0":
             column.set_reorderable(True)
 
     @staticmethod
-    def _resize_wrap(column: Gtk.TreeViewColumn, __param,
-                     cell: Gtk.CellRenderer) -> None:
+    def _resize_wrap(
+        column: Gtk.TreeViewColumn, __param, cell: Gtk.CellRenderer
+    ) -> None:
         """Dynamically set wrap-width property for a Gtk.CellRenderer().
 
         This is called whenever the column width in the Gtk.TreeView() is
@@ -670,13 +671,14 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             _width += 10
 
             try:
-                cell.set_property('wrap-width', _width)
+                cell.set_property("wrap-width", _width)
             except TypeError:  # This is a Gtk.CellRendererToggle
-                cell.set_property('width', _width)
+                cell.set_property("width", _width)
 
 
 class CellRendererML(Gtk.CellRendererText):
     """Create a multi-line cell renderer."""
+
     def __init__(self) -> None:
         """Initialize a CellRendererML instance."""
         GObject.GObject.__init__(self)
@@ -701,8 +703,9 @@ class CellRendererML(Gtk.CellRendererText):
         return size_tuple
 
     # pylint: disable=arguments-differ,too-many-locals
-    def do_start_editing(self, __event, treeview, path, __background_area,
-                         cell_area, __flags):
+    def do_start_editing(
+        self, __event, treeview, path, __background_area, cell_area, __flags
+    ):
         """Handle edits of the CellRendererML.
 
         :param __event:
@@ -712,7 +715,7 @@ class CellRendererML(Gtk.CellRendererText):
         :param cell_area:
         :param __flags:
         """
-        if not self.get_property('editable'):
+        if not self.get_property("editable"):
             return
 
         self.selection = treeview.get_selection()
@@ -721,21 +724,21 @@ class CellRendererML(Gtk.CellRendererText):
         self.textedit_window = Gtk.Dialog(parent=treeview.get_toplevel())
         self.textedit_window.action_area.hide()
         self.textedit_window.set_decorated(False)
-        self.textedit_window.set_property('skip-taskbar-hint', True)
+        self.textedit_window.set_property("skip-taskbar-hint", True)
         self.textedit_window.set_transient_for(None)
 
         self.textedit.set_editable(True)
-        self.textedit.set_property('visible', True)
-        self.textbuffer.set_property('text', self.get_property('text'))
+        self.textedit.set_property("visible", True)
+        self.textbuffer.set_property("text", self.get_property("text"))
 
-        self.textedit_window.connect('key-press-event', self._keyhandler)
+        self.textedit_window.connect("key-press-event", self._keyhandler)
 
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.set_policy(
             Gtk.PolicyType.AUTOMATIC,
             Gtk.PolicyType.AUTOMATIC,
         )
-        scrolled_window.set_property('visible', True)
+        scrolled_window.set_property("visible", True)
         # self.textedit_window.vbox.pack_start(scrolled_window, True, True, 0)
 
         scrolled_window.add(self.textedit)
@@ -771,7 +774,7 @@ class CellRendererML(Gtk.CellRendererText):
 
             treeview.set_cursor(path, None, False)
 
-            self.emit('edited', path, text)
+            self.emit("edited", path, text)
 
         elif response == Gtk.ResponseType.CANCEL:
             self.textedit_window.destroy()
@@ -787,10 +790,11 @@ class CellRendererML(Gtk.CellRendererText):
         """
         _keyname = Gdk.keyval_name(event.keyval)
 
-        if event.get_state() & (
-                Gdk.ModifierType.SHIFT_MASK
-                | Gdk.ModifierType.CONTROL_MASK) and \
-                _keyname == 'Return':
+        if (
+            event.get_state()
+            & (Gdk.ModifierType.SHIFT_MASK | Gdk.ModifierType.CONTROL_MASK)
+            and _keyname == "Return"
+        ):
             self.textedit_window.response(Gtk.ResponseType.OK)
 
 

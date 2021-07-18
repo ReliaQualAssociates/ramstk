@@ -43,9 +43,9 @@ def mock_program_dao(monkeypatch):
     _program_1.rbd_active = 0
     _program_1.fta_active = 0
     _program_1.created_on = date.today()
-    _program_1.created_by = ''
+    _program_1.created_by = ""
     _program_1.last_saved = date.today()
-    _program_1.last_saved_by = ''
+    _program_1.last_saved_by = ""
 
     DAO = MockDAO()
     DAO.table = [
@@ -56,33 +56,34 @@ def mock_program_dao(monkeypatch):
 
 
 ATTRIBUTES = {
-    'created_by': '',
-    'created_on': date.today(),
-    'last_saved': date.today(),
-    'last_saved_by': '',
-    'function_active': 1,
-    'requirement_active': 1,
-    'hardware_active': 1,
-    'software_active': 0,
-    'rcm_active': 0,
-    'testing_active': 0,
-    'incident_active': 0,
-    'survival_active': 0,
-    'vandv_active': 1,
-    'hazard_active': 1,
-    'stakeholder_active': 1,
-    'allocation_active': 1,
-    'similar_item_active': 1,
-    'fmea_active': 1,
-    'pof_active': 1,
-    'rbd_active': 0,
-    'fta_active': 0,
+    "created_by": "",
+    "created_on": date.today(),
+    "last_saved": date.today(),
+    "last_saved_by": "",
+    "function_active": 1,
+    "requirement_active": 1,
+    "hardware_active": 1,
+    "software_active": 0,
+    "rcm_active": 0,
+    "testing_active": 0,
+    "incident_active": 0,
+    "survival_active": 0,
+    "vandv_active": 1,
+    "hazard_active": 1,
+    "stakeholder_active": 1,
+    "allocation_active": 1,
+    "similar_item_active": 1,
+    "fmea_active": 1,
+    "pof_active": 1,
+    "rbd_active": 0,
+    "fta_active": 0,
 }
 
 
-@pytest.mark.usefixtures('mock_program_dao')
-class TestRAMSTKProgramInfo():
+@pytest.mark.usefixtures("mock_program_dao")
+class TestRAMSTKProgramInfo:
     """Class for testing the RAMSTKProgramInfo model."""
+
     @pytest.mark.unit
     def test_ramstkprograminfo_create(self, mock_program_dao):
         """__init__() should create an RAMSTKProgramInfo model."""
@@ -91,7 +92,7 @@ class TestRAMSTKProgramInfo():
         assert isinstance(DUT, RAMSTKProgramInfo)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_program_info'
+        assert DUT.__tablename__ == "ramstk_program_info"
         assert DUT.revision_id == 1
         assert DUT.function_active == 1
         assert DUT.requirement_active == 1
@@ -111,9 +112,9 @@ class TestRAMSTKProgramInfo():
         assert DUT.rbd_active == 0
         assert DUT.fta_active == 0
         assert DUT.created_on == date.today()
-        assert DUT.created_by == ''
+        assert DUT.created_by == ""
         assert DUT.last_saved == date.today()
-        assert DUT.last_saved_by == ''
+        assert DUT.last_saved_by == ""
 
     @pytest.mark.unit
     def test_get_attributes(self, mock_program_dao):
@@ -121,28 +122,28 @@ class TestRAMSTKProgramInfo():
         DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         _attributes = DUT.get_attributes()
-        assert _attributes['revision_id'] == 1
-        assert _attributes['function_active'] == 1
-        assert _attributes['requirement_active'] == 1
-        assert _attributes['hardware_active'] == 1
-        assert _attributes['software_active'] == 0
-        assert _attributes['rcm_active'] == 0
-        assert _attributes['testing_active'] == 0
-        assert _attributes['incident_active'] == 0
-        assert _attributes['survival_active'] == 0
-        assert _attributes['vandv_active'] == 1
-        assert _attributes['hazard_active'] == 1
-        assert _attributes['stakeholder_active'] == 1
-        assert _attributes['allocation_active'] == 1
-        assert _attributes['similar_item_active'] == 1
-        assert _attributes['fmea_active'] == 1
-        assert _attributes['pof_active'] == 1
-        assert _attributes['rbd_active'] == 0
-        assert _attributes['fta_active'] == 0
-        assert _attributes['created_on'] == date.today()
-        assert _attributes['created_by'] == ''
-        assert _attributes['last_saved'] == date.today()
-        assert _attributes['last_saved_by'] == ''
+        assert _attributes["revision_id"] == 1
+        assert _attributes["function_active"] == 1
+        assert _attributes["requirement_active"] == 1
+        assert _attributes["hardware_active"] == 1
+        assert _attributes["software_active"] == 0
+        assert _attributes["rcm_active"] == 0
+        assert _attributes["testing_active"] == 0
+        assert _attributes["incident_active"] == 0
+        assert _attributes["survival_active"] == 0
+        assert _attributes["vandv_active"] == 1
+        assert _attributes["hazard_active"] == 1
+        assert _attributes["stakeholder_active"] == 1
+        assert _attributes["allocation_active"] == 1
+        assert _attributes["similar_item_active"] == 1
+        assert _attributes["fmea_active"] == 1
+        assert _attributes["pof_active"] == 1
+        assert _attributes["rbd_active"] == 0
+        assert _attributes["fta_active"] == 0
+        assert _attributes["created_on"] == date.today()
+        assert _attributes["created_by"] == ""
+        assert _attributes["last_saved"] == date.today()
+        assert _attributes["last_saved_by"] == ""
 
     @pytest.mark.unit
     def test_set_attributes(self, mock_program_dao):
@@ -157,10 +158,10 @@ class TestRAMSTKProgramInfo():
         the attribute is passed with a None value."""
         DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
-        ATTRIBUTES['pof_active'] = None
+        ATTRIBUTES["pof_active"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['pof_active'] == 1
+        assert DUT.get_attributes()["pof_active"] == 1
 
     @pytest.mark.unit
     def test_set_attributes_unknown_attributes(self, mock_program_dao):
@@ -169,4 +170,4 @@ class TestRAMSTKProgramInfo():
         DUT = mock_program_dao.do_select_all(RAMSTKProgramInfo)[0]
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

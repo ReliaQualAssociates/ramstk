@@ -4,6 +4,17 @@
 # RAMSTK Local Imports
 from . import milhdbk217f
 from .models import (
-    capacitor, connection, crystal, efilter, fuse, inductor,
-    integratedcircuit, lamp, meter, relay, resistor, semiconductor, switch
+    capacitor,
+    connection,
+    crystal,
+    efilter,
+    fuse,
+    inductor,
+    integratedcircuit,
+    lamp,
+    meter,
+    relay,
+    resistor,
+    semiconductor,
+    switch,
 )

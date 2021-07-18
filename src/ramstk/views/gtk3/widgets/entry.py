@@ -62,15 +62,15 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _bold = kwargs.get('bold', False)
-        _editable = kwargs.get('editable', True)
+        _bold = kwargs.get("bold", False)
+        _editable = kwargs.get("editable", True)
 
-        self.set_property('editable', _editable)
+        self.set_property("editable", _editable)
 
         if _bold:
-            self.modify_font(Pango.FontDescription('bold'))
+            self.modify_font(Pango.FontDescription("bold"))
 
-    def do_update(self, value: Any, signal: str = '') -> None:
+    def do_update(self, value: Any, signal: str = "") -> None:
         """Update the RAMSTK Entry with a new value.
 
         :param value: the information to update the RAMSTKEntry() to
@@ -81,7 +81,7 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         :rtype: None
         """
         try:
-            _value = datetime.strftime(value, '%Y-%m-%d')
+            _value = datetime.strftime(value, "%Y-%m-%d")
         except TypeError:
             _value = str(value)
 
@@ -121,11 +121,10 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                     Gtk.PolicyType.AUTOMATIC)
+        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrollwindow.add_with_viewport(self)
 
-        self.tag_bold = txvbuffer.create_tag('bold', weight=Pango.Weight.BOLD)
+        self.tag_bold = txvbuffer.create_tag("bold", weight=Pango.Weight.BOLD)
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
         """Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
@@ -159,11 +158,11 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        self.scrollwindow.set_property('height-request', self.height)
-        self.scrollwindow.set_property('width-request', self.width)
+        self.scrollwindow.set_property("height-request", self.height)
+        self.scrollwindow.set_property("width-request", self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, signal: str = '') -> None:
+    def do_update(self, value: str, signal: str = "") -> None:
         """Update the RAMSTK TextView with a new value.
 
         :param value: the information to update the RAMSTKTextView() to

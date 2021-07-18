@@ -3,12 +3,8 @@ from typing import Any, Tuple
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
-)
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration
-)
+from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.controllers import amAllocation as amAllocation
 from ramstk.controllers import amFMEA as amFMEA
 from ramstk.controllers import amHardware as amHardware
@@ -41,30 +37,13 @@ from ramstk.utilities import file_exists as file_exists
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop
 from ramstk.views.gtk3 import _ as _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKDatabaseSelect as RAMSTKDatabaseSelect
-)
+from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect as RAMSTKDatabaseSelect
 
-def do_connect_to_site_db(conn_info: Any) -> BaseDatabase:
-    ...
-
-
-def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
-    ...
-
-
-def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
-    ...
-
-
-def do_read_site_configuration() -> RAMSTKSiteConfiguration:
-    ...
-
-
-def do_read_user_configuration(
-) -> Tuple[RAMSTKUserConfiguration, RAMSTKLogManager]:
-    ...
-
-
-def the_one_ring() -> None:
-    ...
+def do_connect_to_site_db(conn_info: Any) -> BaseDatabase: ...
+def do_first_run(configuration: RAMSTKSiteConfiguration) -> None: ...
+def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager: ...
+def do_read_site_configuration() -> RAMSTKSiteConfiguration: ...
+def do_read_user_configuration() -> Tuple[
+    RAMSTKUserConfiguration, RAMSTKLogManager
+]: ...
+def the_one_ring() -> None: ...

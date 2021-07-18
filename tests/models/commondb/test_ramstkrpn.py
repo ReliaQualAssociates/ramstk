@@ -15,14 +15,15 @@ import pytest
 from ramstk.models.commondb import RAMSTKRPN
 
 ATTRIBUTES = {
-    'description': 'System operable with minimal interference.',
-    'rpn_type': 'severity'
+    "description": "System operable with minimal interference.",
+    "rpn_type": "severity",
 }
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKRPN():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKRPN:
     """Class for testing the RAMSTKRPN rpn."""
+
     @pytest.mark.integration
     def test_ramstkrpn_create(self, test_common_dao):
         """ __init__() should create an RAMSTKRPN rpn. """
@@ -31,10 +32,10 @@ class TestRAMSTKRPN():
         assert isinstance(DUT, RAMSTKRPN)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_rpn'
+        assert DUT.__tablename__ == "ramstk_rpn"
         assert DUT.rpn_id == 1
-        assert DUT.description == 'No effect.'
-        assert DUT.rpn_type == 'severity'
+        assert DUT.description == "No effect."
+        assert DUT.rpn_type == "severity"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -43,8 +44,8 @@ class TestRAMSTKRPN():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['description'] == 'No effect.'
-        assert _attributes['rpn_type'] == 'severity'
+        assert _attributes["description"] == "No effect."
+        assert _attributes["rpn_type"] == "severity"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -58,10 +59,10 @@ class TestRAMSTKRPN():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKRPN).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'RPN Description'
+        assert DUT.get_attributes()["description"] == "RPN Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -69,4 +70,4 @@ class TestRAMSTKRPN():
         DUT = test_common_dao.session.query(RAMSTKRPN).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

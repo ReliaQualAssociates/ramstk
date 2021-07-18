@@ -50,9 +50,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         if not simple:
             _list = Gtk.ListStore()
-            _list.set_column_types([
-                GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING
-            ])
+            _list.set_column_types(
+                [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING]
+            )
         else:
             _list = Gtk.ListStore()
             _list.set_column_types([GObject.TYPE_STRING])
@@ -60,7 +60,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         _cell = Gtk.CellRendererText()
         self.pack_start(_cell, True)
-        self.add_attribute(_cell, 'text', self._index)
+        self.add_attribute(_cell, "text", self._index)
 
         self.show()
 
@@ -84,10 +84,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         return _options
 
     # noinspection PyIncorrectDocstring
-    def do_load_combo(self,
-                      entries: List[List[Union[str, int]]],
-                      signal: str = '',
-                      simple: bool = True) -> None:
+    def do_load_combo(
+        self,
+        entries: List[List[Union[str, int]]],
+        signal: str = "",
+        simple: bool = True,
+    ) -> None:
         """Load RAMSTK ComboBox widgets.
 
         :param entries: the information to load into the Gtk.ComboBox().
@@ -131,7 +133,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         if _handler_id > 0:
             self.handler_unblock(_handler_id)
 
-    def do_update(self, value: int, signal: str = '') -> None:
+    def do_update(self, value: int, signal: str = "") -> None:
         """Update the RAMSTK Combo with a new value.
 
         :param value: the information to update the RAMSTKCombo() to

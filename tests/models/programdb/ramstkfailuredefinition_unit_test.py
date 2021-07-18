@@ -12,6 +12,7 @@ models."""
 # Third Party Imports
 # noinspection PyPackageRequirements
 import pytest
+
 # noinspection PyUnresolvedReferences
 from mocks import MockDAO
 
@@ -24,12 +25,12 @@ def mock_program_dao(monkeypatch):
     _definition_1 = RAMSTKFailureDefinition()
     _definition_1.revision_id = 1
     _definition_1.definition_id = 1
-    _definition_1.definition = 'Mock Failure Definition 1'
+    _definition_1.definition = "Mock Failure Definition 1"
 
     _definition_2 = RAMSTKFailureDefinition()
     _definition_2.revision_id = 1
     _definition_2.definition_id = 2
-    _definition_2.definition = 'Mock Failure Definition 2'
+    _definition_2.definition = "Mock Failure Definition 2"
 
     DAO = MockDAO()
     DAO.table = [
@@ -40,12 +41,13 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
-ATTRIBUTES = {'definition': 'Failure Definition'}
+ATTRIBUTES = {"definition": "Failure Definition"}
 
 
-@pytest.mark.usefixtures('mock_program_dao')
+@pytest.mark.usefixtures("mock_program_dao")
 class TestRAMSTKFailureDefinition:
     """Class for testing the RAMSTKFailureDefinition model."""
+
     @pytest.mark.unit
     def test_ramstkfailuredefinition_create(self, mock_program_dao):
         """__init__() should create an RAMSTKFailureDefinition model."""
@@ -54,10 +56,10 @@ class TestRAMSTKFailureDefinition:
         assert isinstance(DUT, RAMSTKFailureDefinition)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_failure_definition'
+        assert DUT.__tablename__ == "ramstk_failure_definition"
         assert DUT.revision_id == 1
         assert DUT.definition_id == 1
-        assert DUT.definition == 'Mock Failure Definition 1'
+        assert DUT.definition == "Mock Failure Definition 1"
 
     @pytest.mark.unit
     def test_get_attributes(self, mock_program_dao):
@@ -66,7 +68,7 @@ class TestRAMSTKFailureDefinition:
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['definition'] == 'Mock Failure Definition 2'
+        assert _attributes["definition"] == "Mock Failure Definition 2"
 
     @pytest.mark.unit
     def test_set_attributes(self, mock_program_dao):
@@ -81,10 +83,10 @@ class TestRAMSTKFailureDefinition:
         the attribute is passed with a None value."""
         DUT = mock_program_dao.do_select_all(RAMSTKFailureDefinition)[0]
 
-        ATTRIBUTES['definition'] = None
+        ATTRIBUTES["definition"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['definition'] == 'Failure Definition'
+        assert DUT.get_attributes()["definition"] == "Failure Definition"
 
     @pytest.mark.unit
     def test_set_attributes_unknown_attributes(self, mock_program_dao):
@@ -93,4 +95,4 @@ class TestRAMSTKFailureDefinition:
         DUT = mock_program_dao.do_select_all(RAMSTKFailureDefinition)[0]
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -432,3 +432,20 @@ Exception and Error Handling
 #. The error dialog in 3, above, should provide the user a concise statement regarding the cause of the error; for example, data X from the common database is missing.
 #. The error dialog in 3, above, may provide the user a hyperlink to the RAMSTK issue system to simplify the process for the user to submit an issue ticket if desired.
 #. All exceptions caught by GUI components shall be logged at the debug level.Exception caught by GUI components that are the result of other than user error (e.g., missing data from the database) shall raise an error dialog to inform the user of the problem.
+
+Test Conventions
+----------------
+
+10000. Each function or method **shall** have at least one test; this test may be either a unit test or an integration test.
+
+10100. *Unit Tests*
+#. **Shall not** use pypubsub to call the function/method being tested; call the method being tested directly, even private ones.
+#. **Shall** use mocks for database tables.
+#. **Shall** use a mock for the DAO.
+#. **Shall** use fixtures to create test objects (e.g., data manager, analysis manager).
+
+10200. *Integration Tests*
+#. **Shall** use pypubsub to call the function/method being tested.
+#. **Shall** use actual data models.
+#. **Shall** use actual DAO.
+#. **Shall** use fixtures to create test objects (e.g., data manager, analysis manager).

@@ -9,13 +9,14 @@
 
 class RAMSTKError(Exception):
     """Basic exception for errors raised by RAMSTK."""
-    def __init__(self, msg: str = '') -> None:
+
+    def __init__(self, msg: str = "") -> None:
         """Initialize the basic RAMSTK exception.
 
         :keyword str msg: the message to display to the user when this
             exception is raised.
         """
-        if msg == '':
+        if msg == "":
             # Set some default useless error message
             msg = "An error occured with RAMSTK."
 
@@ -24,6 +25,7 @@ class RAMSTKError(Exception):
 
 class DataAccessError(RAMSTKError):
     """Exception raised when attempting to access non-existent data."""
+
     def __init__(self, msg: str) -> None:
         """Initialize DataAccessError instance.
 
@@ -41,6 +43,7 @@ class DataAccessError(RAMSTKError):
 
 class OutOfRangeError(RAMSTKError):
     """Exception raised when an input value is outside legal limits."""
+
     def __init__(self, msg: str) -> None:
         """Initialize OutOfRangeError instance.
 
