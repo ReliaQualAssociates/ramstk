@@ -30,11 +30,11 @@ def calculate_improvement(
 
     _improvement = 1.0 + 0.2 * (planned_rank - customer_rank)
     _weight = (
-        float(priority)
-        * _improvement
+        float(priority)  # type: ignore
+        * _improvement  # type: ignore
         * _user_float_1  # type: ignore
-        * _user_float_2
-        * _user_float_3
+        * _user_float_2  # type: ignore
+        * _user_float_3  # type: ignore
         * _user_float_4  # type: ignore
         * _user_float_5  # type: ignore
     )

@@ -59,7 +59,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: KeyError if an unknown type ID is passed.
     """
     attributes["lambda_b"] = PART_STRESS_LAMBDA_B[  # type: ignore
-        attributes["type_id"]
+        attributes["type_id"]  # type: ignore
     ]  # type: ignore
 
     attributes["hazard_rate_active"] = (

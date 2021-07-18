@@ -58,7 +58,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     return get_part_count_lambda_b(
         attributes["application_id"],  # type: ignore
-        attributes["environment_active_id"],
+        attributes["environment_active_id"],  # type: ignore
     )  # type: ignore
 
 
