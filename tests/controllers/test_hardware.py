@@ -1407,13 +1407,13 @@ class TestAnalysisMethods:
 
         assert DUT._tree.get_node(3).data[
             "reliability"
-        ].hazard_rate_active == pytest.approx(0.0002324999)
+        ].hazard_rate_active == pytest.approx(0.0002325)
         assert DUT._tree.get_node(3).data[
             "reliability"
         ].hazard_rate_logistics == pytest.approx(0.00034875)
         assert DUT._tree.get_node(3).data[
             "reliability"
-        ].hazard_rate_mission == pytest.approx(0.0002324999)
+        ].hazard_rate_mission == pytest.approx(0.0002325)
 
     @pytest.mark.unit
     @pytest.mark.calculation
@@ -1645,7 +1645,7 @@ class TestAnalysisMethods:
 
         assert DUT._tree.get_node(2).data[
             "reliability"
-        ].hazard_rate_dormant == pytest.approx(106.66667)
+        ].hazard_rate_dormant == pytest.approx(106.6667)
         assert DUT._tree.get_node(2).data[
             "reliability"
         ].hazard_rate_logistics == pytest.approx(1440.0)

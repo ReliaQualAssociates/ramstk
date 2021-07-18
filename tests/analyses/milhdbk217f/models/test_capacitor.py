@@ -6,7 +6,7 @@
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the capacitor MIL-HDBK-217F module."""
 
 # Third Party Imports
@@ -15,27 +15,32 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import capacitor
 
-ATTRIBUTES = {
-    "hardware_id": 12,
-    "subcategory_id": 1,
-    "temperature_rated_max": 105.0,
-    "temperature_active": 45.0,
-    "voltage_ratio": 0.54,
-    "capacitance": 0.0000033,
-    "construction_id": 1,
-    "configuration_id": 1,
-    "resistance": 0.05,
-    "voltage_dc_operating": 3.3,
-    "voltage_ac_operating": 0.04,
-    "lambda_b": 0.0,
-    "piQ": 1.0,
-    "piE": 1.0,
-    "piC": 0.0,
-    "piCF": 0.0,
-    "piCV": 0.0,
-    "piSR": 0.0,
-    "hazard_rate_active": 0.0,
-}
+
+@pytest.fixture(scope="function")
+def test_attributes():
+    """Get a set of capacitor attributes for every test function."""
+
+    yield {
+        "hardware_id": 12,
+        "subcategory_id": 1,
+        "temperature_rated_max": 105.0,
+        "temperature_active": 45.0,
+        "voltage_ratio": 0.54,
+        "capacitance": 0.0000033,
+        "construction_id": 1,
+        "configuration_id": 1,
+        "resistance": 0.05,
+        "voltage_dc_operating": 3.3,
+        "voltage_ac_operating": 0.04,
+        "lambda_b": 0.0,
+        "piQ": 1.0,
+        "piE": 1.0,
+        "piC": 0.0,
+        "piCF": 0.0,
+        "piCV": 0.0,
+        "piSR": 0.0,
+        "hazard_rate_active": 0.0,
+    }
 
 
 @pytest.mark.unit
@@ -280,10 +285,11 @@ def test_get_construction_factor_unknown_construction():
 @pytest.mark.unit
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 12, 13, 19])
-def test_calculate_part_stress(subcategory_id):
+@pytest.mark.usefixtures("test_attributes")
+def test_calculate_part_stress(subcategory_id, test_attributes):
     """calculate_part_stress() should return a dict of updated attributes and an empty error message on success."""
-    ATTRIBUTES["subcategory_id"] = subcategory_id
-    _attributes = capacitor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes["subcategory_id"] = subcategory_id
+    _attributes = capacitor.calculate_part_stress(**test_attributes)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1:
@@ -309,8 +315,9 @@ def test_calculate_part_stress(subcategory_id):
 
 @pytest.mark.unit
 @pytest.mark.calculation
-def test_calculate_part_stress_missing_attribute_key():
+@pytest.mark.usefixtures("test_attributes")
+def test_calculate_part_stress_missing_attribute_key(test_attributes):
     """calculate_part_stress() should return a dict of updated attributes and an empty error message on success."""
-    ATTRIBUTES.pop("voltage_ratio")
+    test_attributes.pop("voltage_ratio")
     with pytest.raises(KeyError):
-        _attributes = capacitor.calculate_part_stress(**ATTRIBUTES)
+        _attributes = capacitor.calculate_part_stress(**test_attributes)
