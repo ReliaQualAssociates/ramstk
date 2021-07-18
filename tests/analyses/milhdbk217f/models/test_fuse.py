@@ -69,10 +69,16 @@ def test_get_part_count_lambda_b_no_environment():
 def test_calculate_part_count():
     """calculate_part_count() should return a float base hazard rates on
     success."""
-    _lambda_b = fuse.calculate_part_count(**ATTRIBUTES)
+    _attributes = {
+        "category_id": 10,
+        "subcategory_id": 3,
+        "environment_active_id": 1,
+        "piE": 1.0,
+    }
+    _lambda_b = fuse.calculate_part_count(**_attributes)
 
     assert isinstance(_lambda_b, float)
-    assert _lambda_b == 2.3
+    assert _lambda_b == 0.01
 
 
 @pytest.mark.unit
