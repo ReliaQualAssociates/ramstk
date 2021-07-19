@@ -14,15 +14,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKModel
 
-ATTRIBUTES = {
-    'description': 'Adhesion Wear Model for Bearings',
-    'model_type': 'damage'
-}
+ATTRIBUTES = {"description": "Adhesion Wear Model for Bearings", "model_type": "damage"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKModel():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKModel:
     """Class for testing the RAMSTKModel model."""
+
     @pytest.mark.integration
     def test_ramstkmodel_create(self, test_common_dao):
         """ __init__() should create an RAMSTKModel model. """
@@ -31,10 +29,10 @@ class TestRAMSTKModel():
         assert isinstance(DUT, RAMSTKModel)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_model'
+        assert DUT.__tablename__ == "ramstk_model"
         assert DUT.model_id == 1
-        assert DUT.description == 'Adhesion Wear Model for Bearings'
-        assert DUT.model_type == 'damage'
+        assert DUT.description == "Adhesion Wear Model for Bearings"
+        assert DUT.model_type == "damage"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -43,8 +41,8 @@ class TestRAMSTKModel():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['description'] == 'Adhesion Wear Model for Bearings'
-        assert _attributes['model_type'] == 'damage'
+        assert _attributes["description"] == "Adhesion Wear Model for Bearings"
+        assert _attributes["model_type"] == "damage"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -58,10 +56,10 @@ class TestRAMSTKModel():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKModel).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'Model Description'
+        assert DUT.get_attributes()["description"] == "Model Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -69,4 +67,4 @@ class TestRAMSTKModel():
         DUT = test_common_dao.session.query(RAMSTKModel).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

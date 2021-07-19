@@ -120,15 +120,17 @@ TEMPERATURE_FROM_TO: Dict[Tuple[float, float], float] = {
     (70.0, 40.0): 1.8,
     (70.0, 50.0): 1.5,
     (70.0, 60.0): 1.2,
-    (70.0, 70.0): 1.0
+    (70.0, 70.0): 1.0,
 }
 
 
 # noinspection PyTypeChecker
 def calculate_topic_633(
-        environment: Dict[str, float], quality: Dict[str, float],
-        temperature: Dict[str, float],
-        hazard_rate: float) -> Tuple[float, float, float, float]:
+    environment: Dict[str, float],
+    quality: Dict[str, float],
+    temperature: Dict[str, float],
+    hazard_rate: float,
+) -> Tuple[float, float, float, float]:
     """Calculate the Similar Item analysis using Topic 6.3.3 approach.
 
     This method calculates the new hazard rate using the approach found
@@ -150,20 +152,20 @@ def calculate_topic_633(
     :raise: TypeError if passed a string value for either temperature.
     """
     # Convert user-supplied temperatures to whole values used in Topic 633.
-    temperature['from'] = round(temperature['from'] / 10.0) * 10.0
-    temperature['to'] = round(temperature['to'] / 10.0) * 10.0
+    temperature["from"] = round(temperature["from"] / 10.0) * 10.0
+    temperature["to"] = round(temperature["to"] / 10.0) * 10.0
 
-    _change_factor_1 = QUALITY_FROM_TO[(
-        quality['from'],  # type: ignore
-        quality['to'])]  # type: ignore
-    _change_factor_2 = ENVIRONMENT_FROM_TO[(
-        environment['from'],  # type: ignore
-        environment['to'])]  # type: ignore
-    _change_factor_3 = TEMPERATURE_FROM_TO[(temperature['from'],
-                                            temperature['to'])]
+    _change_factor_1 = QUALITY_FROM_TO[
+        (quality["from"], quality["to"])  # type: ignore
+    ]  # type: ignore
+    _change_factor_2 = ENVIRONMENT_FROM_TO[
+        (environment["from"], environment["to"])  # type: ignore
+    ]  # type: ignore
+    _change_factor_3 = TEMPERATURE_FROM_TO[(temperature["from"], temperature["to"])]
 
-    _result_1 = float(hazard_rate /
-                      (_change_factor_1 * _change_factor_2 * _change_factor_3))
+    _result_1 = float(
+        hazard_rate / (_change_factor_1 * _change_factor_2 * _change_factor_3)
+    )
 
     return _change_factor_1, _change_factor_2, _change_factor_3, _result_1
 
@@ -189,167 +191,200 @@ def calculate_user_defined(sia: Dict[str, float]):
     :return: sia; the similar item assessment dict with updated results.
     :rtype: dict
     """
-    (hr, pi1, pi2, pi3, pi4, pi5, pi6, pi7, pi8, pi9, pi10, uf1, uf2, uf3, uf4,
-     uf5, ui1, ui2, ui3, ui4, ui5, res1, res2, res3, res4, res5) = symbols(
-         'hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 '
-         'ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5')
+    (
+        hr,
+        pi1,
+        pi2,
+        pi3,
+        pi4,
+        pi5,
+        pi6,
+        pi7,
+        pi8,
+        pi9,
+        pi10,
+        uf1,
+        uf2,
+        uf3,
+        uf4,
+        uf5,
+        ui1,
+        ui2,
+        ui3,
+        ui4,
+        ui5,
+        res1,
+        res2,
+        res3,
+        res4,
+        res5,
+    ) = symbols(
+        "hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 "
+        "ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5"
+    )
 
     # The subs argument needs to be passed as a dict of sia values just like
     # it is below.  This will result in duplicate code warnings, but passing
     # it like this is required to allow the use of the results in subsequent
     # calculations.
     # pylint: disable=eval-used
-    sia['res1'] = sympify(sia['equation1']).evalf(
+    sia["res1"] = sympify(sia["equation1"]).evalf(
         subs={
-            hr: sia['hr'],
-            pi1: sia['pi1'],
-            pi2: sia['pi2'],
-            pi3: sia['pi3'],
-            pi4: sia['pi4'],
-            pi5: sia['pi5'],
-            pi6: sia['pi6'],
-            pi7: sia['pi7'],
-            pi8: sia['pi8'],
-            pi9: sia['pi9'],
-            pi10: sia['pi10'],
-            uf1: sia['uf1'],
-            uf2: sia['uf2'],
-            uf3: sia['uf3'],
-            uf4: sia['uf4'],
-            uf5: sia['uf5'],
-            ui1: sia['ui1'],
-            ui2: sia['ui2'],
-            ui3: sia['ui3'],
-            ui4: sia['ui4'],
-            ui5: sia['ui5'],
-            res1: sia['res1'],
-            res2: sia['res2'],
-            res3: sia['res3'],
-            res4: sia['res4'],
-            res5: sia['res5']
-        })
-    sia['res2'] = sympify(sia['equation2']).evalf(
+            hr: sia["hr"],
+            pi1: sia["pi1"],
+            pi2: sia["pi2"],
+            pi3: sia["pi3"],
+            pi4: sia["pi4"],
+            pi5: sia["pi5"],
+            pi6: sia["pi6"],
+            pi7: sia["pi7"],
+            pi8: sia["pi8"],
+            pi9: sia["pi9"],
+            pi10: sia["pi10"],
+            uf1: sia["uf1"],
+            uf2: sia["uf2"],
+            uf3: sia["uf3"],
+            uf4: sia["uf4"],
+            uf5: sia["uf5"],
+            ui1: sia["ui1"],
+            ui2: sia["ui2"],
+            ui3: sia["ui3"],
+            ui4: sia["ui4"],
+            ui5: sia["ui5"],
+            res1: sia["res1"],
+            res2: sia["res2"],
+            res3: sia["res3"],
+            res4: sia["res4"],
+            res5: sia["res5"],
+        }
+    )
+    sia["res2"] = sympify(sia["equation2"]).evalf(
         subs={
-            hr: sia['hr'],
-            pi1: sia['pi1'],
-            pi2: sia['pi2'],
-            pi3: sia['pi3'],
-            pi4: sia['pi4'],
-            pi5: sia['pi5'],
-            pi6: sia['pi6'],
-            pi7: sia['pi7'],
-            pi8: sia['pi8'],
-            pi9: sia['pi9'],
-            pi10: sia['pi10'],
-            uf1: sia['uf1'],
-            uf2: sia['uf2'],
-            uf3: sia['uf3'],
-            uf4: sia['uf4'],
-            uf5: sia['uf5'],
-            ui1: sia['ui1'],
-            ui2: sia['ui2'],
-            ui3: sia['ui3'],
-            ui4: sia['ui4'],
-            ui5: sia['ui5'],
-            res1: sia['res1'],
-            res2: sia['res2'],
-            res3: sia['res3'],
-            res4: sia['res4'],
-            res5: sia['res5']
-        })
-    sia['res3'] = sympify(sia['equation3']).evalf(
+            hr: sia["hr"],
+            pi1: sia["pi1"],
+            pi2: sia["pi2"],
+            pi3: sia["pi3"],
+            pi4: sia["pi4"],
+            pi5: sia["pi5"],
+            pi6: sia["pi6"],
+            pi7: sia["pi7"],
+            pi8: sia["pi8"],
+            pi9: sia["pi9"],
+            pi10: sia["pi10"],
+            uf1: sia["uf1"],
+            uf2: sia["uf2"],
+            uf3: sia["uf3"],
+            uf4: sia["uf4"],
+            uf5: sia["uf5"],
+            ui1: sia["ui1"],
+            ui2: sia["ui2"],
+            ui3: sia["ui3"],
+            ui4: sia["ui4"],
+            ui5: sia["ui5"],
+            res1: sia["res1"],
+            res2: sia["res2"],
+            res3: sia["res3"],
+            res4: sia["res4"],
+            res5: sia["res5"],
+        }
+    )
+    sia["res3"] = sympify(sia["equation3"]).evalf(
         subs={
-            hr: sia['hr'],
-            pi1: sia['pi1'],
-            pi2: sia['pi2'],
-            pi3: sia['pi3'],
-            pi4: sia['pi4'],
-            pi5: sia['pi5'],
-            pi6: sia['pi6'],
-            pi7: sia['pi7'],
-            pi8: sia['pi8'],
-            pi9: sia['pi9'],
-            pi10: sia['pi10'],
-            uf1: sia['uf1'],
-            uf2: sia['uf2'],
-            uf3: sia['uf3'],
-            uf4: sia['uf4'],
-            uf5: sia['uf5'],
-            ui1: sia['ui1'],
-            ui2: sia['ui2'],
-            ui3: sia['ui3'],
-            ui4: sia['ui4'],
-            ui5: sia['ui5'],
-            res1: sia['res1'],
-            res2: sia['res2'],
-            res3: sia['res3'],
-            res4: sia['res4'],
-            res5: sia['res5']
-        })
-    sia['res4'] = sympify(sia['equation4']).evalf(
+            hr: sia["hr"],
+            pi1: sia["pi1"],
+            pi2: sia["pi2"],
+            pi3: sia["pi3"],
+            pi4: sia["pi4"],
+            pi5: sia["pi5"],
+            pi6: sia["pi6"],
+            pi7: sia["pi7"],
+            pi8: sia["pi8"],
+            pi9: sia["pi9"],
+            pi10: sia["pi10"],
+            uf1: sia["uf1"],
+            uf2: sia["uf2"],
+            uf3: sia["uf3"],
+            uf4: sia["uf4"],
+            uf5: sia["uf5"],
+            ui1: sia["ui1"],
+            ui2: sia["ui2"],
+            ui3: sia["ui3"],
+            ui4: sia["ui4"],
+            ui5: sia["ui5"],
+            res1: sia["res1"],
+            res2: sia["res2"],
+            res3: sia["res3"],
+            res4: sia["res4"],
+            res5: sia["res5"],
+        }
+    )
+    sia["res4"] = sympify(sia["equation4"]).evalf(
         subs={
-            hr: sia['hr'],
-            pi1: sia['pi1'],
-            pi2: sia['pi2'],
-            pi3: sia['pi3'],
-            pi4: sia['pi4'],
-            pi5: sia['pi5'],
-            pi6: sia['pi6'],
-            pi7: sia['pi7'],
-            pi8: sia['pi8'],
-            pi9: sia['pi9'],
-            pi10: sia['pi10'],
-            uf1: sia['uf1'],
-            uf2: sia['uf2'],
-            uf3: sia['uf3'],
-            uf4: sia['uf4'],
-            uf5: sia['uf5'],
-            ui1: sia['ui1'],
-            ui2: sia['ui2'],
-            ui3: sia['ui3'],
-            ui4: sia['ui4'],
-            ui5: sia['ui5'],
-            res1: sia['res1'],
-            res2: sia['res2'],
-            res3: sia['res3'],
-            res4: sia['res4'],
-            res5: sia['res5']
-        })
-    sia['res5'] = sympify(sia['equation5']).evalf(
+            hr: sia["hr"],
+            pi1: sia["pi1"],
+            pi2: sia["pi2"],
+            pi3: sia["pi3"],
+            pi4: sia["pi4"],
+            pi5: sia["pi5"],
+            pi6: sia["pi6"],
+            pi7: sia["pi7"],
+            pi8: sia["pi8"],
+            pi9: sia["pi9"],
+            pi10: sia["pi10"],
+            uf1: sia["uf1"],
+            uf2: sia["uf2"],
+            uf3: sia["uf3"],
+            uf4: sia["uf4"],
+            uf5: sia["uf5"],
+            ui1: sia["ui1"],
+            ui2: sia["ui2"],
+            ui3: sia["ui3"],
+            ui4: sia["ui4"],
+            ui5: sia["ui5"],
+            res1: sia["res1"],
+            res2: sia["res2"],
+            res3: sia["res3"],
+            res4: sia["res4"],
+            res5: sia["res5"],
+        }
+    )
+    sia["res5"] = sympify(sia["equation5"]).evalf(
         subs={
-            hr: sia['hr'],
-            pi1: sia['pi1'],
-            pi2: sia['pi2'],
-            pi3: sia['pi3'],
-            pi4: sia['pi4'],
-            pi5: sia['pi5'],
-            pi6: sia['pi6'],
-            pi7: sia['pi7'],
-            pi8: sia['pi8'],
-            pi9: sia['pi9'],
-            pi10: sia['pi10'],
-            uf1: sia['uf1'],
-            uf2: sia['uf2'],
-            uf3: sia['uf3'],
-            uf4: sia['uf4'],
-            uf5: sia['uf5'],
-            ui1: sia['ui1'],
-            ui2: sia['ui2'],
-            ui3: sia['ui3'],
-            ui4: sia['ui4'],
-            ui5: sia['ui5'],
-            res1: sia['res1'],
-            res2: sia['res2'],
-            res3: sia['res3'],
-            res4: sia['res4'],
-            res5: sia['res5']
-        })
+            hr: sia["hr"],
+            pi1: sia["pi1"],
+            pi2: sia["pi2"],
+            pi3: sia["pi3"],
+            pi4: sia["pi4"],
+            pi5: sia["pi5"],
+            pi6: sia["pi6"],
+            pi7: sia["pi7"],
+            pi8: sia["pi8"],
+            pi9: sia["pi9"],
+            pi10: sia["pi10"],
+            uf1: sia["uf1"],
+            uf2: sia["uf2"],
+            uf3: sia["uf3"],
+            uf4: sia["uf4"],
+            uf5: sia["uf5"],
+            ui1: sia["ui1"],
+            ui2: sia["ui2"],
+            ui3: sia["ui3"],
+            ui4: sia["ui4"],
+            ui5: sia["ui5"],
+            res1: sia["res1"],
+            res2: sia["res2"],
+            res3: sia["res3"],
+            res4: sia["res4"],
+            res5: sia["res5"],
+        }
+    )
 
     return sia
 
 
-def set_user_defined_change_factors(sia: Dict[str, float],
-                                    factors: List[float]) -> Dict[str, float]:
+def set_user_defined_change_factors(
+    sia: Dict[str, float], factors: List[float]
+) -> Dict[str, float]:
     """Set the change factors for the user-defined calculations.
 
     :param sia: the similar item assessment dict.
@@ -369,8 +404,9 @@ def set_user_defined_change_factors(sia: Dict[str, float],
     return sia
 
 
-def set_user_defined_floats(sia: Dict[str, float],
-                            floats: List[float]) -> Dict[str, float]:
+def set_user_defined_floats(
+    sia: Dict[str, float], floats: List[float]
+) -> Dict[str, float]:
     """Set the user-defined float values for the user-defined calculations.
 
     :param sia: the similar item assessment dict.
@@ -388,8 +424,7 @@ def set_user_defined_floats(sia: Dict[str, float],
     return sia
 
 
-def set_user_defined_ints(sia: Dict[str, int],
-                          ints: List[int]) -> Dict[str, int]:
+def set_user_defined_ints(sia: Dict[str, int], ints: List[int]) -> Dict[str, int]:
     """Set the user-defined integer values for the user-defined calculations.
 
     :param sia: the similar item assessment dict.
@@ -407,8 +442,9 @@ def set_user_defined_ints(sia: Dict[str, int],
     return sia
 
 
-def set_user_defined_functions(sia: Dict[str, str],
-                               functions: List[str]) -> Dict[str, str]:
+def set_user_defined_functions(
+    sia: Dict[str, str], functions: List[str]
+) -> Dict[str, str]:
     """Set the user-defined functions for the user-defined calculations.
 
     :param sia: the similar item assessment dict.
@@ -421,13 +457,14 @@ def set_user_defined_functions(sia: Dict[str, str],
         try:
             sia[_key] = str(functions[_idx - 21])
         except IndexError:
-            sia[_key] = ''
+            sia[_key] = ""
 
     return sia
 
 
-def set_user_defined_results(sia: Dict[str, float],
-                             results: List[float]) -> Dict[str, float]:
+def set_user_defined_results(
+    sia: Dict[str, float], results: List[float]
+) -> Dict[str, float]:
     """Set the user-defined results for the user-defined calculations.
 
     This allows the use of the results fields to be manually set to float

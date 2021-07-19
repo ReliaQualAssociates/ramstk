@@ -1,4 +1,4 @@
-.PHONY: clean clean-test clean-pyc clean-build docs help
+.PHONY: all clean clean-test clean-pyc clean-build docs help test
 .DEFAULT: help
 
 SHELL := /bin/bash
@@ -62,13 +62,17 @@ help:
 	@echo "	requirements				create/update the poetry.lock file."
 	@echo "	depends					install the packages found in the poetry.lock file into the current (virtual) environment."
 	@echo "	upgrade					update the poetry.lock file with the latest package versions available."
+	@echo ""
 	@echo "Targets related to testing RAMSTK:"
-	@echo "	test.unit				run all tests decorated with the 'unit' marker."
-	@echo "	test.calc				run all tests decorated with the 'calculation' marker."
-	@echo "	test.integration			run all tests decorated with the 'integration' marker."
+	@echo "	test.unit				run the unit tests without coverage."
+	@echo "	test.integration			run the integration tests without coverage."
 	@echo "	test					run the complete RAMSTK test suite without coverage."
 	@echo "	test-all				run the complete RAMSTK test suite on every Python version using tox. <FUTURE>"
+	@echo "	coverage.unit				run the unit tests with coverage."
+	@echo "	coverage.integration			run integration unit tests with coverage."
 	@echo "	coverage				run the complete RAMSTK test suite with coverage."
+	@echo "	coverage.report				create an html report of files with less than 100% coverage."
+	@echo "	"
 	@echo "Targets related to static code checking tools (good for IDE integration):"
 	@echo "	format SRCFILE=<file>			format using black, isort, and docformatter.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
@@ -77,8 +81,10 @@ help:
 	@echo "						If passing a directory, all files will be recusively checked."
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
 	@echo "						Pass wildcard (*) at end of FILE=<file> path to analyze all files in directory."
+	@echo ""
 	@echo "Targets related to documentation:"
 	@echo "	docs					build API and user documentation."
+	@echo ""
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
 	@echo "	install 				install RAMSTK in the current (virtualenv) environment."
@@ -96,8 +102,6 @@ help:
 	@echo "	TESTFILE				set the file or directory to test.  Defaults to $(TESTFILE)"
 	@echo "	VIRTENV					set the name of the virtual environment to create/use.  Defaults to $(VIRTENV)."
 	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
-
-.PHONY: all test clean
 
 # Targets for cleaning up after yourself.
 clean: clean-build clean-docs clean-pyc clean-test		## removes all build, test, coverage, and Python artifacts
@@ -119,7 +123,7 @@ clean-pyc:		## remove Python file artifacts
 	$(shell find . -name '__pycache__' -exec rm -fr {} +)
 
 clean-test:	clean-pyc	## remove test and coverage artifacts
-	@echo -e "\n\t\033[1;33mCleaning up old test run artifacts ...\033[0m\n"
+	@echo -e "\n\t\033[1;36mCleaning up old test run artifacts ...\033[0m\n"
 	rm -fr .tox/
 	rm -f .coverage
 	rm -fr .reports/coverage
@@ -140,8 +144,13 @@ upgrade:
 
 # Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc
+
+# OS is only defined on Windows.
+ifdef OS
+	@echo -e "\n\tRAMSTK cannot be installed on Windows at this time.  Sorry."
+else
 	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
-	pip install . --prefix=$(PREFIX)
+	pip install . --prefix=$(PREFIX) --use-feature=in-tree-build
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/16x16"
@@ -168,6 +177,7 @@ install: clean-build clean-pyc
 	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/Site.toml" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
+endif
 
 uninstall:
 	@echo -e "\n\t\033[1;31mUninstalling RAMSTK :( ...\033[0m\n"
@@ -178,27 +188,43 @@ uninstall:
 
 # Targets for testing.
 test.unit: clean-test
-	py.test $(TESTOPTS) -m unit $(TESTFILE)
-
-test.calc: clean-test
-	py.test $(TESTOPTS) -m calculation $(TESTFILE)
+	@echo -e "\n\t\033[1;33mRunning RAMSTK unit tests without coverage ...\033[0m\n"
+	py.test $(TESTOPTS) -m unit --no-cov $(TESTFILE)
 
 test.integration: clean-test
-	py.test $(TESTOPTS) -m integration $(TESTFILE)
-
-test.gui: clean-test
-	py.test $(TESTOPTS) -m gui $(TESTFILE)
+	@echo -e "\n\t\033[1;33mRunning RAMSTK integration tests without coverage ...\033[0m\n"
+	py.test $(TESTOPTS) -m integration --no-cov $(TESTFILE)
 
 test:
-	@echo -e "\n\t\033[1;33mRunning RAMSTK test suite without coverage ...\033[0m\n"
-	py.test $(TESTOPTS) -v -s $(TESTFILE)
+	@echo -e "\n\t\033[1;33mRunning full RAMSTK test suite without coverage ...\033[0m\n"
+	$(MAKE) test.unit
+	$(MAKE) test.integration
 
 test-all:
 	$(info "TODO: Need to add tox support for this target to work.")
 
+coverage.unit:
+	@echo -e "\n\t\033[1;32mRunning RAMSTK unit tests with coverage ...\033[0m\n"
+	COVERAGE_FILE=".coverage.unit" py.test $(TESTOPTS) -m unit \
+		--cov-config=pyproject.toml --cov=ramstk --cov-branch \
+		--cov-report=term $(TESTFILE)
+
+coverage.integration:
+	@echo -e "\n\t\033[1;32mRunning RAMSTK integration tests with coverage ...\033[0m\n"
+	COVERAGE_FILE=".coverage.integration" py.test $(TESTOPTS) -m integration \
+		--cov-config=pyproject.toml --cov=ramstk --cov-branch \
+		--cov-report=term $(TESTFILE)
+
+coverage.report:
+	@echo -e "\n\t\033[1;36mGenerating html coverage report ...\033[0m\n"
+	coverage html --rcfile=pyproject.toml --skip-covered
+
 coverage: clean-test
-	@echo -e "\n\t\033[1;32mRunning RAMSTK test suite with coverage ...\033[0m\n"
-	py.test $(TESTOPTS) $(TESTFILE)
+	@echo -e "\n\t\033[1;32mRunning full RAMSTK test suite with coverage ...\033[0m\n"
+	$(MAKE) coverage.unit
+	$(MAKE) coverage.integration
+	coverage combine .coverage.unit .coverage.integration
+	coverage xml --rcfile=pyproject.toml
 
 # This target is for use with IDE integration.
 format:

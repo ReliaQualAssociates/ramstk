@@ -16,30 +16,18 @@ from .models import resistor as resistor
 from .models import semiconductor as semiconductor
 from .models import switch as switch
 
-def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    ...
-
-
-def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    ...
-
-
-def _get_environment_factor(category_id: int,
-                            environment_active_id: int,
-                            subcategory_id: int = ...,
-                            quality_id: int = ...) -> float:
-    ...
-
-
-def _get_part_count_quality_factor(category_id: int, subcategory_id: int,
-                                   quality_id: int) -> float:
-    ...
-
-
-def _get_part_stress_quality_factor(category_id: int, subcategory_id: int,
-                                    quality_id: int) -> float:
-    ...
-
-
-def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
-    ...
+def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]: ...
+def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]: ...
+def _get_environment_factor(
+    category_id: int,
+    environment_active_id: int,
+    subcategory_id: int = ...,
+    quality_id: int = ...,
+) -> float: ...
+def _get_part_count_quality_factor(
+    category_id: int, subcategory_id: int, quality_id: int
+) -> float: ...
+def _get_part_stress_quality_factor(
+    category_id: int, subcategory_id: int, quality_id: int
+) -> float: ...
+def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float: ...

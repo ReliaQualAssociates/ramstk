@@ -42,10 +42,8 @@ import unittest
 from os.path import dirname
 
 # Third Party Imports
-import numpy as np
-
-# RAMSTK Package Imports
 import dao.DAO as _dao
+import numpy as np
 from analyses.statistics.Duane import *
 from nose.plugins.attrib import attr
 
@@ -55,10 +53,9 @@ sys.path.insert(
 )
 
 
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2015 Doyle "weibullguy" Rowland'
 
 
@@ -75,12 +72,54 @@ class TestDuane(unittest.TestCase):
 
         # See http://reliawiki.org/index.php/Duane_Model for example data.
         n_failures = [
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
         ]
         fail_times = [
-            9.2, 25.0, 61.5, 260.0, 300.0, 710.0, 916.0, 1010.0, 1220.0,
-            2530.0, 3350.0, 4200.0, 4410.0, 4990.0, 5570.0, 8310.0, 8530.0,
-            9200.0, 10500.0, 12100.0, 13400.0, 14600.0, 22000.0
+            9.2,
+            25.0,
+            61.5,
+            260.0,
+            300.0,
+            710.0,
+            916.0,
+            1010.0,
+            1220.0,
+            2530.0,
+            3350.0,
+            4200.0,
+            4410.0,
+            4990.0,
+            5570.0,
+            8310.0,
+            8530.0,
+            9200.0,
+            10500.0,
+            12100.0,
+            13400.0,
+            14600.0,
+            22000.0,
         ]
 
         _alpha, _beta = calculate_duane_parameters(n_failures, fail_times)
@@ -96,9 +135,29 @@ class TestDuane(unittest.TestCase):
         # See http://reliawiki.org/index.php/Duane_Model for example data.
         n_failures = []
         fail_times = [
-            9.2, 25.0, 61.5, 260.0, 300.0, 710.0, 916.0, 1010.0, 1220.0,
-            2530.0, 3350.0, 4200.0, 4410.0, 4990.0, 5570.0, 8310.0, 8530.0,
-            9200.0, 10500.0, 12100.0, 13400.0, 14600.0, 22000.0
+            9.2,
+            25.0,
+            61.5,
+            260.0,
+            300.0,
+            710.0,
+            916.0,
+            1010.0,
+            1220.0,
+            2530.0,
+            3350.0,
+            4200.0,
+            4410.0,
+            4990.0,
+            5570.0,
+            8310.0,
+            8530.0,
+            9200.0,
+            10500.0,
+            12100.0,
+            13400.0,
+            14600.0,
+            22000.0,
         ]
 
         _alpha, _beta = calculate_duane_parameters(n_failures, fail_times)
@@ -113,18 +172,61 @@ class TestDuane(unittest.TestCase):
 
         # See http://reliawiki.org/index.php/Duane_Model for example data.
         n_failures = [
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
         ]
         fail_times = [
-            9.2, 25.0, 61.5, 260.0, 300.0, 710.0, 916.0, 1010.0, 1220.0,
-            2530.0, 3350.0, 4200.0, 4410.0, 4990.0, 5570.0, 8310.0, 8530.0,
-            9200.0, 10500.0, 12100.0, 13400.0, 14600.0, 22000.0
+            9.2,
+            25.0,
+            61.5,
+            260.0,
+            300.0,
+            710.0,
+            916.0,
+            1010.0,
+            1220.0,
+            2530.0,
+            3350.0,
+            4200.0,
+            4410.0,
+            4990.0,
+            5570.0,
+            8310.0,
+            8530.0,
+            9200.0,
+            10500.0,
+            12100.0,
+            13400.0,
+            14600.0,
+            22000.0,
         ]
         _alpha = 0.6132337
         _beta = 1.9456630
 
         _se_alpha, _se_lnbeta = calculate_duane_standard_error(
-            n_failures, fail_times, _alpha, _beta)
+            n_failures, fail_times, _alpha, _beta
+        )
         self.assertAlmostEqual(_se_alpha, 0.008451551)
         self.assertAlmostEqual(_se_lnbeta, 0.06595950)
 
@@ -141,7 +243,8 @@ class TestDuane(unittest.TestCase):
         _beta = 1.9456630
 
         _se_alpha, _se_lnbeta = calculate_duane_standard_error(
-            n_failures, fail_times, _alpha, _beta)
+            n_failures, fail_times, _alpha, _beta
+        )
         self.assertAlmostEqual(_se_alpha, 0.3166068)
         self.assertAlmostEqual(_se_lnbeta, 0.8752911)
 
@@ -156,7 +259,6 @@ class TestDuane(unittest.TestCase):
         _alpha = 0.6132337
         _beta = 1.9456630
 
-        _cum_mean, _instantaneous_mean = calculate_duane_mean(
-            _est_time, _alpha, _beta)
+        _cum_mean, _instantaneous_mean = calculate_duane_mean(_est_time, _alpha, _beta)
         self.assertAlmostEqual(_cum_mean, 895.3390935)
         self.assertAlmostEqual(_instantaneous_mean, 2314.9356434)

@@ -28,14 +28,14 @@ class DataManager(RAMSTKDataManager):
     RAMSTKHazardAnalysis data models.
     """
 
-    _tag = 'hazards'
+    _tag = "hazards"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Hazard data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {'hazard': ['revision_id', 'function_id', 'hazard_id']}
+        self._pkey = {"hazard": ["revision_id", "function_id", "hazard_id"]}
 
         # Initialize private list attributes.
 
@@ -48,21 +48,17 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes,
-                      'request_get_hazard_attributes')
-        pub.subscribe(super().do_set_attributes,
-                      'request_set_hazard_attributes')
-        pub.subscribe(super().do_set_attributes, 'wvw_editing_hazard')
-        pub.subscribe(super().do_update_all, 'request_update_all_hazards')
+        pub.subscribe(super().do_get_attributes, "request_get_hazard_attributes")
+        pub.subscribe(super().do_set_attributes, "request_set_hazard_attributes")
+        pub.subscribe(super().do_set_attributes, "wvw_editing_hazard")
+        pub.subscribe(super().do_update, "request_update_hazard")
 
-        pub.subscribe(self.do_get_tree, 'request_get_hazard_tree')
-        pub.subscribe(self.do_select_all, 'selected_function')
-        pub.subscribe(self.do_set_all_attributes,
-                      'request_set_all_hazard_attributes')
-        pub.subscribe(self.do_update, 'request_update_hazard')
+        pub.subscribe(self.do_get_tree, "request_get_hazard_tree")
+        pub.subscribe(self.do_select_all, "selected_function")
+        pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
-        pub.subscribe(self._do_delete, 'request_delete_hazard')
-        pub.subscribe(self._do_insert_hazard, 'request_insert_hazard')
+        pub.subscribe(self._do_delete, "request_delete_hazard")
+        pub.subscribe(self._do_insert_hazard, "request_insert_hazard")
 
     def do_get_tree(self) -> None:
         """Retrieve the hazard treelib Tree.
@@ -70,7 +66,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        pub.sendMessage('succeed_get_hazard_tree', tree=self.tree)
+        pub.sendMessage("succeed_get_hazard_tree", tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hazard data from the RAMSTK Program database.
@@ -79,27 +75,30 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes['revision_id']
-        _function_id = attributes['function_id']
+        self._revision_id = attributes["revision_id"]
+        _function_id = attributes["function_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
         for _hazard in self.dao.do_select_all(
-                RAMSTKHazardAnalysis,
-                key=['revision_id', 'function_id'],
-                value=[self._revision_id, _function_id],
-                order=RAMSTKHazardAnalysis.hazard_id):
+            RAMSTKHazardAnalysis,
+            key=["revision_id", "function_id"],
+            value=[self._revision_id, _function_id],
+            order=RAMSTKHazardAnalysis.hazard_id,
+        ):
 
-            self.tree.create_node(tag='hazard',
-                                  identifier=_hazard.hazard_id,
-                                  parent=self._root,
-                                  data={'hazard': _hazard})
+            self.tree.create_node(
+                tag="hazard",
+                identifier=_hazard.hazard_id,
+                parent=self._root,
+                data={"hazard": _hazard},
+            )
 
         self.last_id = max(self.tree.nodes.keys())
 
         pub.sendMessage(
-            'succeed_retrieve_hazards',
+            "succeed_retrieve_hazards",
             tree=self.tree,
         )
 
@@ -114,51 +113,9 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         for _key in attributes:
-            super().do_set_attributes(node_id=[attributes['hazard_id'], ''],
-                                      package={_key: attributes[_key]})
-
-    def do_update(self, node_id: int) -> None:
-        """Update record associated with node ID in RAMSTK Program database.
-
-        :param node_id: the node (hazard) ID of the hazard to save.
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.dao.do_update(self.tree.get_node(node_id).data['hazard'])
-            pub.sendMessage(
-                'succeed_update_hazard',
-                tree=self.tree,
+            super().do_set_attributes(
+                node_id=[attributes["hazard_id"], ""], package={_key: attributes[_key]}
             )
-        except AttributeError:
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{1}: Attempted to delete non-existent hazard '
-                          'ID {0}.').format(str(node_id), _method_name)
-            pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                'fail_update_hazard',
-                error_message=_error_msg,
-            )
-        except TypeError:
-            if node_id != 0:
-                _method_name: str = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
-                _error_msg = ('{1}: No data package found for hazard ID {'
-                              '0}.').format(str(node_id), _method_name)
-                pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
-                    message=_error_msg,
-                )
-                pub.sendMessage(
-                    'fail_update_hazard',
-                    error_message=_error_msg,
-                )
 
     def _do_delete(self, node_id: int) -> None:
         """Remove a hazard.
@@ -169,27 +126,27 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         try:
-            super().do_delete(node_id, 'hazard')
+            super().do_delete(node_id, "hazard")
 
             self.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
             pub.sendMessage(
-                'succeed_delete_hazard',
+                "succeed_delete_hazard",
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{1}: Attempted to delete non-existent hazard '
-                          'ID {0}.').format(str(node_id), _method_name)
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg = (
+                "{1}: Attempted to delete non-existent hazard " "ID {0}."
+            ).format(str(node_id), _method_name)
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_delete_hazard',
+                "fail_delete_hazard",
                 error_message=_error_msg,
             )
 
@@ -197,11 +154,11 @@ class DataManager(RAMSTKDataManager):
         """Add a new hazard to parent (function) ID.
 
         :param parent_id: the parent (function) ID to associate the new hazard
-        with.
+            with.
         :return: None
         :rtype: None
         """
-        _last_id = self.dao.get_last_id('ramstk_hazard_analysis', 'hazard_id')
+        _last_id = self.dao.get_last_id("ramstk_hazard_analysis", "hazard_id")
         try:
             _hazard = RAMSTKHazardAnalysis()
             _hazard.revision_id = self._revision_id
@@ -210,22 +167,24 @@ class DataManager(RAMSTKDataManager):
 
             self.dao.do_insert(_hazard)
 
-            self.tree.create_node(tag='hazard',
-                                  identifier=_hazard.hazard_id,
-                                  parent=self._root,
-                                  data={'hazard': _hazard})
+            self.tree.create_node(
+                tag="hazard",
+                identifier=_hazard.hazard_id,
+                parent=self._root,
+                data={"hazard": _hazard},
+            )
 
             self.last_id = _hazard.hazard_id
 
             pub.sendMessage(
-                'succeed_insert_hazard',
+                "succeed_insert_hazard",
                 node_id=self.last_id,
                 tree=self.tree,
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error.msg,
             )
             pub.sendMessage(

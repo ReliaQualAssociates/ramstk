@@ -24,45 +24,39 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseTable):
     ramstk_mission_phase.
     """
 
-    __defaults__ = {
-        'description': '',
-        'mission_time': 0.0,
-        'time_units': 'hours'
-    }
-    __tablename__ = 'ramstk_mission'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "", "mission_time": 0.0, "time_units": "hours"}
+    __tablename__ = "ramstk_mission"
+    __table_args__ = {"extend_existing": True}
 
     revision_id = Column(
-        'fld_revision_id',
+        "fld_revision_id",
         Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
+        ForeignKey("ramstk_revision.fld_revision_id"),
         nullable=False,
     )
     mission_id = Column(
-        'fld_mission_id',
+        "fld_mission_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String,
-                         default=__defaults__['description'])
-    mission_time = Column('fld_mission_time',
-                          Float,
-                          default=__defaults__['mission_time'])
-    time_units = Column('fld_time_units',
-                        String(256),
-                        default=__defaults__['time_units'])
+    description = Column("fld_description", String, default=__defaults__["description"])
+    mission_time = Column(
+        "fld_mission_time", Float, default=__defaults__["mission_time"]
+    )
+    time_units = Column(
+        "fld_time_units", String(256), default=__defaults__["time_units"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     revision = relationship(  # type: ignore
-        'RAMSTKRevision',
-        back_populates='mission',
+        "RAMSTKRevision",
+        back_populates="mission",
     )
     phase = relationship(  # type: ignore
-        'RAMSTKMissionPhase',
-        back_populates='mission',
+        "RAMSTKMissionPhase",
+        back_populates="mission",
     )
 
     is_mission = True
@@ -77,11 +71,11 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: tuple
         """
         _attributes = {
-            'revision_id': self.revision_id,
-            'mission_id': self.mission_id,
-            'description': self.description,
-            'mission_time': self.mission_time,
-            'time_units': self.time_units,
+            "revision_id": self.revision_id,
+            "mission_id": self.mission_id,
+            "description": self.description,
+            "mission_time": self.mission_time,
+            "time_units": self.time_units,
         }
 
         return _attributes

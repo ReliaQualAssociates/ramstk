@@ -10,10 +10,20 @@
 
 # RAMSTK Local Imports
 from . import (
-    capacitor, connection, inductor, integrated_circuit, meter,
-    miscellaneous, relay, resistor, semiconductor, switch
+    capacitor,
+    connection,
+    inductor,
+    integrated_circuit,
+    meter,
+    miscellaneous,
+    relay,
+    resistor,
+    semiconductor,
+    switch,
 )
 from .panels import (
-    RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel,
-    RAMSTKStressInputPanel, RAMSTKStressResultPanel
+    RAMSTKAssessmentInputPanel,
+    RAMSTKAssessmentResultPanel,
+    RAMSTKStressInputPanel,
+    RAMSTKStressResultPanel,
 )

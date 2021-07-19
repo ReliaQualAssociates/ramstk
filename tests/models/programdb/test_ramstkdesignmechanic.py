@@ -15,64 +15,65 @@ import pytest
 from ramstk.models.programdb import RAMSTKDesignMechanic
 
 ATTRIBUTES = {
-    'pressure_upstream': 0.0,
-    'frequency_operating': 0.0,
-    'surface_finish': 0.0,
-    'friction': 0.0,
-    'length_compressed': 0.0,
-    'load_id': 0,
-    'n_cycles': 0,
-    'balance_id': 0,
-    'lubrication_id': 0,
-    'water_per_cent': 0.0,
-    'misalignment_angle': 0.0,
-    'type_id': 0,
-    'rpm_design': 0.0,
-    'pressure_downstream': 0.0,
-    'diameter_coil': 0.0,
-    'manufacturing_id': 0,
-    'pressure_contact': 0.0,
-    'meyer_hardness': 0.0,
-    'rpm_operating': 0.0,
-    'length_relaxed': 0.0,
-    'impact_id': 0,
-    'n_ten': 0,
-    'material_id': 0,
-    'technology_id': 0,
-    'service_id': 0,
-    'flow_design': 0.0,
-    'application_id': 0,
-    'diameter_wire': 0.0,
-    'deflection': 0.0,
-    'filter_size': 0.0,
-    'diameter_inner': 0.0,
-    'pressure_rated': 0.0,
-    'altitude_operating': 0.0,
-    'thickness': 0.0,
-    'diameter_outer': 0.0,
-    'n_elements': 0,
-    'contact_pressure': 0.0,
-    'particle_size': 0.0,
-    'casing_id': 0,
-    'viscosity_dynamic': 0.0,
-    'viscosity_design': 0.0,
-    'torque_id': 0,
-    'leakage_allowable': 0.0,
-    'offset': 0.0,
-    'width_minimum': 0.0,
-    'load_operating': 0.0,
-    'spring_index': 0.0,
-    'flow_operating': 0.0,
-    'pressure_delta': 0.0,
-    'length': 0.0,
-    'load_design': 0.0,
-    'clearance': 0.0
+    "pressure_upstream": 0.0,
+    "frequency_operating": 0.0,
+    "surface_finish": 0.0,
+    "friction": 0.0,
+    "length_compressed": 0.0,
+    "load_id": 0,
+    "n_cycles": 0,
+    "balance_id": 0,
+    "lubrication_id": 0,
+    "water_per_cent": 0.0,
+    "misalignment_angle": 0.0,
+    "type_id": 0,
+    "rpm_design": 0.0,
+    "pressure_downstream": 0.0,
+    "diameter_coil": 0.0,
+    "manufacturing_id": 0,
+    "pressure_contact": 0.0,
+    "meyer_hardness": 0.0,
+    "rpm_operating": 0.0,
+    "length_relaxed": 0.0,
+    "impact_id": 0,
+    "n_ten": 0,
+    "material_id": 0,
+    "technology_id": 0,
+    "service_id": 0,
+    "flow_design": 0.0,
+    "application_id": 0,
+    "diameter_wire": 0.0,
+    "deflection": 0.0,
+    "filter_size": 0.0,
+    "diameter_inner": 0.0,
+    "pressure_rated": 0.0,
+    "altitude_operating": 0.0,
+    "thickness": 0.0,
+    "diameter_outer": 0.0,
+    "n_elements": 0,
+    "contact_pressure": 0.0,
+    "particle_size": 0.0,
+    "casing_id": 0,
+    "viscosity_dynamic": 0.0,
+    "viscosity_design": 0.0,
+    "torque_id": 0,
+    "leakage_allowable": 0.0,
+    "offset": 0.0,
+    "width_minimum": 0.0,
+    "load_operating": 0.0,
+    "spring_index": 0.0,
+    "flow_operating": 0.0,
+    "pressure_delta": 0.0,
+    "length": 0.0,
+    "load_design": 0.0,
+    "clearance": 0.0,
 }
 
 
-@pytest.mark.usefixtures('test_program_dao')
-class TestRAMSTKDesignMechanic():
+@pytest.mark.usefixtures("test_program_dao")
+class TestRAMSTKDesignMechanic:
     """Class for testing the RAMSTKDesignMechanic model."""
+
     @pytest.mark.integration
     def test_ramstkdesignmechanic_create(self, test_program_dao):
         """ __init__() should create an RAMSTKDesignMechanic model. """
@@ -81,7 +82,7 @@ class TestRAMSTKDesignMechanic():
         assert isinstance(DUT, RAMSTKDesignMechanic)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_design_mechanic'
+        assert DUT.__tablename__ == "ramstk_design_mechanic"
         assert DUT.hardware_id == 1
         assert DUT.altitude_operating == 0.0
         assert DUT.application_id == 0
@@ -143,59 +144,59 @@ class TestRAMSTKDesignMechanic():
 
         _attributes = DUT.get_attributes()
         assert isinstance(_attributes, dict)
-        assert _attributes['pressure_upstream'] == 0.0
-        assert _attributes['frequency_operating'] == 0.0
-        assert _attributes['surface_finish'] == 0.0
-        assert _attributes['friction'] == 0.0
-        assert _attributes['length_compressed'] == 0.0
-        assert _attributes['load_id'] == 0
-        assert _attributes['n_cycles'] == 0
-        assert _attributes['balance_id'] == 0
-        assert _attributes['lubrication_id'] == 0
-        assert _attributes['water_per_cent'] == 0.0
-        assert _attributes['misalignment_angle'] == 0.0
-        assert _attributes['type_id'] == 0
-        assert _attributes['rpm_design'] == 0.0
-        assert _attributes['pressure_downstream'] == 0.0
-        assert _attributes['diameter_coil'] == 0.0
-        assert _attributes['manufacturing_id'] == 0
-        assert _attributes['pressure_contact'] == 0.0
-        assert _attributes['meyer_hardness'] == 0.0
-        assert _attributes['rpm_operating'] == 0.0
-        assert _attributes['length_relaxed'] == 0.0
-        assert _attributes['impact_id'] == 0
-        assert _attributes['n_ten'] == 0
-        assert _attributes['material_id'] == 0
-        assert _attributes['technology_id'] == 0
-        assert _attributes['service_id'] == 0
-        assert _attributes['flow_design'] == 0.0
-        assert _attributes['application_id'] == 0
-        assert _attributes['diameter_wire'] == 0.0
-        assert _attributes['deflection'] == 0.0
-        assert _attributes['filter_size'] == 0.0
-        assert _attributes['diameter_inner'] == 0.0
-        assert _attributes['pressure_rated'] == 0.0
-        assert _attributes['hardware_id'] == 1
-        assert _attributes['altitude_operating'] == 0.0
-        assert _attributes['thickness'] == 0.0
-        assert _attributes['diameter_outer'] == 0.0
-        assert _attributes['n_elements'] == 0
-        assert _attributes['contact_pressure'] == 0.0
-        assert _attributes['particle_size'] == 0.0
-        assert _attributes['casing_id'] == 0
-        assert _attributes['viscosity_dynamic'] == 0.0
-        assert _attributes['viscosity_design'] == 0.0
-        assert _attributes['torque_id'] == 0
-        assert _attributes['leakage_allowable'] == 0.0
-        assert _attributes['offset'] == 0.0
-        assert _attributes['width_minimum'] == 0.0
-        assert _attributes['load_operating'] == 0.0
-        assert _attributes['spring_index'] == 0.0
-        assert _attributes['flow_operating'] == 0.0
-        assert _attributes['pressure_delta'] == 0.0
-        assert _attributes['length'] == 0.0
-        assert _attributes['load_design'] == 0.0
-        assert _attributes['clearance'] == 0.0
+        assert _attributes["pressure_upstream"] == 0.0
+        assert _attributes["frequency_operating"] == 0.0
+        assert _attributes["surface_finish"] == 0.0
+        assert _attributes["friction"] == 0.0
+        assert _attributes["length_compressed"] == 0.0
+        assert _attributes["load_id"] == 0
+        assert _attributes["n_cycles"] == 0
+        assert _attributes["balance_id"] == 0
+        assert _attributes["lubrication_id"] == 0
+        assert _attributes["water_per_cent"] == 0.0
+        assert _attributes["misalignment_angle"] == 0.0
+        assert _attributes["type_id"] == 0
+        assert _attributes["rpm_design"] == 0.0
+        assert _attributes["pressure_downstream"] == 0.0
+        assert _attributes["diameter_coil"] == 0.0
+        assert _attributes["manufacturing_id"] == 0
+        assert _attributes["pressure_contact"] == 0.0
+        assert _attributes["meyer_hardness"] == 0.0
+        assert _attributes["rpm_operating"] == 0.0
+        assert _attributes["length_relaxed"] == 0.0
+        assert _attributes["impact_id"] == 0
+        assert _attributes["n_ten"] == 0
+        assert _attributes["material_id"] == 0
+        assert _attributes["technology_id"] == 0
+        assert _attributes["service_id"] == 0
+        assert _attributes["flow_design"] == 0.0
+        assert _attributes["application_id"] == 0
+        assert _attributes["diameter_wire"] == 0.0
+        assert _attributes["deflection"] == 0.0
+        assert _attributes["filter_size"] == 0.0
+        assert _attributes["diameter_inner"] == 0.0
+        assert _attributes["pressure_rated"] == 0.0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["altitude_operating"] == 0.0
+        assert _attributes["thickness"] == 0.0
+        assert _attributes["diameter_outer"] == 0.0
+        assert _attributes["n_elements"] == 0
+        assert _attributes["contact_pressure"] == 0.0
+        assert _attributes["particle_size"] == 0.0
+        assert _attributes["casing_id"] == 0
+        assert _attributes["viscosity_dynamic"] == 0.0
+        assert _attributes["viscosity_design"] == 0.0
+        assert _attributes["torque_id"] == 0
+        assert _attributes["leakage_allowable"] == 0.0
+        assert _attributes["offset"] == 0.0
+        assert _attributes["width_minimum"] == 0.0
+        assert _attributes["load_operating"] == 0.0
+        assert _attributes["spring_index"] == 0.0
+        assert _attributes["flow_operating"] == 0.0
+        assert _attributes["pressure_delta"] == 0.0
+        assert _attributes["length"] == 0.0
+        assert _attributes["load_design"] == 0.0
+        assert _attributes["clearance"] == 0.0
 
     @pytest.mark.integration
     def test_set_attributes(self, test_program_dao):
@@ -209,10 +210,10 @@ class TestRAMSTKDesignMechanic():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_program_dao.session.query(RAMSTKDesignMechanic).first()
 
-        ATTRIBUTES['type_id'] = None
+        ATTRIBUTES["type_id"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['type_id'] == 0.0
+        assert DUT.get_attributes()["type_id"] == 0.0
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_program_dao):
@@ -220,4 +221,4 @@ class TestRAMSTKDesignMechanic():
         DUT = test_program_dao.session.query(RAMSTKDesignMechanic).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

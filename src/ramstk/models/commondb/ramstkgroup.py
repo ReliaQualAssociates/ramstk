@@ -20,23 +20,23 @@ class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseTable):
     This table shares a Many-to-One relationship with ramstk_user.
     """
 
-    __defaults__ = {'description': 'Group Description', 'group_type': ''}
-    __tablename__ = 'ramstk_group'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "Group Description", "group_type": ""}
+    __tablename__ = "ramstk_group"
+    __table_args__ = {"extend_existing": True}
 
     group_id = Column(
-        'fld_group_id',
+        "fld_group_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    group_type = Column('fld_group_type',
-                        String(256),
-                        default=__defaults__['group_type'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    group_type = Column(
+        "fld_group_type", String(256), default=__defaults__["group_type"]
+    )
 
     def get_attributes(self):
         """Retrieve current values of the RAMSTKGroup data model attributes.
@@ -45,9 +45,9 @@ class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'group_id': self.group_id,
-            'description': self.description,
-            'group_type': self.group_type,
+            "group_id": self.group_id,
+            "description": self.description,
+            "group_type": self.group_type,
         }
 
         return _attributes

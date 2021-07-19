@@ -15,15 +15,21 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTK_CONTROL_TYPES, RAMSTK_CRITICALITY,
-    RAMSTK_FAILURE_PROBABILITY, RAMSTKUserConfiguration
+    RAMSTK_CONTROL_TYPES,
+    RAMSTK_CRITICALITY,
+    RAMSTK_FAILURE_PROBABILITY,
+    RAMSTKUserConfiguration,
 )
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.assistants import AddControlAction
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKLabel, RAMSTKMessageDialog,
-    RAMSTKPanel, RAMSTKTextView, RAMSTKWorkView
+    RAMSTKCheckButton,
+    RAMSTKLabel,
+    RAMSTKMessageDialog,
+    RAMSTKPanel,
+    RAMSTKTextView,
+    RAMSTKWorkView,
 )
 
 
@@ -37,16 +43,16 @@ def do_request_insert(level: str, parent_id: str) -> None:
     :return: None
     :rtype: None
     """
-    if level == 'mode':
-        pub.sendMessage('request_insert_fmea_mode')
-    elif level == 'mechanism':
-        pub.sendMessage('request_insert_fmea_mechanism',
-                        mode_id=str(parent_id))
-    elif level == 'cause':
-        pub.sendMessage('request_insert_fmea_cause', parent_id=str(parent_id))
-    elif level in ['control', 'action']:
-        pub.sendMessage('request_insert_fmea_{0}'.format(level),
-                        parent_id=str(parent_id))
+    if level == "mode":
+        pub.sendMessage("request_insert_fmea_mode")
+    elif level == "mechanism":
+        pub.sendMessage("request_insert_fmea_mechanism", mode_id=str(parent_id))
+    elif level == "cause":
+        pub.sendMessage("request_insert_fmea_cause", parent_id=str(parent_id))
+    elif level in ["control", "action"]:
+        pub.sendMessage(
+            "request_insert_fmea_{0}".format(level), parent_id=str(parent_id)
+        )
 
 
 def get_indenture_level(record_id: str) -> str:
@@ -57,32 +63,33 @@ def get_indenture_level(record_id: str) -> str:
     :return: _level; the level in the FMEA that is currently selected.
     :rtype: str
     """
-    _level = ''
+    _level = ""
 
     if record_id.count(".") == 0:
-        _level = 'mode'
+        _level = "mode"
     elif record_id.count(".") == 1:
-        _level = 'mechanism'
+        _level = "mechanism"
     elif record_id.count(".") == 2:
-        _level = 'cause'
+        _level = "cause"
     elif record_id.count(".") == 4 and record_id[-1] == "c":
-        _level = 'control'
+        _level = "control"
     elif record_id.count(".") == 4 and record_id[-1] == "a":
-        _level = 'action'
+        _level = "action"
 
     return _level
 
 
 class MethodPanel(RAMSTKPanel):
     """Panel to display FMEA criticality methods."""
+
     def __init__(self):
         """Initialize an instance of the FMEA methods panel."""
         super().__init__()
 
         # Initialize private dictionary attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['calculate_1629a', 'boolean'],
-            1: ['calculate_rpn', 'boolean'],
+            0: ["calculate_1629a", "boolean"],
+            1: ["calculate_rpn", "boolean"],
         }
 
         # Initialize private list attributes.
@@ -100,15 +107,12 @@ class MethodPanel(RAMSTKPanel):
 
         # Initialize public scalar attributes.
         self.chkCriticality: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Calculate Criticality"))
-        self.chkRPN: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Calculate RPNs"))
-        self.txtItemCriticality: RAMSTKTextView = RAMSTKTextView(
-            Gtk.TextBuffer())
+            label=_("Calculate Criticality")
+        )
+        self.chkRPN: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Calculate RPNs"))
+        self.txtItemCriticality: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
-        self._lst_widgets = [
-            self.chkCriticality, self.chkRPN, self.txtItemCriticality
-        ]
+        self._lst_widgets = [self.chkCriticality, self.chkRPN, self.txtItemCriticality]
 
         # Make a fixed type panel.
         self.__do_set_properties()
@@ -116,17 +120,15 @@ class MethodPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Move the item criticality RAMSTKTextView() below it's label.
-        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_child(
-        )
+        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_child()
         _label: RAMSTKLabel = _fixed.get_children()[-2]
-        _x_pos: int = _fixed.child_get_property(_label, 'x')
-        _y_pos: int = _fixed.child_get_property(_label, 'y') + 25
+        _x_pos: int = _fixed.child_get_property(_label, "x")
+        _y_pos: int = _fixed.child_get_property(_label, "y") + 25
         _fixed.move(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_calculate_fmea_criticality')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "succeed_calculate_fmea_criticality")
 
     def _do_clear_panel(self) -> None:
         """Clear the widgets on the panel.
@@ -137,7 +139,7 @@ class MethodPanel(RAMSTKPanel):
         self.chkCriticality.do_update(0, signal="toggled")
         self.chkRPN.do_update(0, signal="toggled")
 
-        self.txtItemCriticality.do_update("", signal='changed')
+        self.txtItemCriticality.do_update("", signal="changed")
 
     def _do_load_panel(self, item_criticality: Dict[str, float]) -> None:
         """Update the item criticality RAMSTKTextView() with the results.
@@ -149,10 +151,9 @@ class MethodPanel(RAMSTKPanel):
         """
         _item_criticality = ""
         for _key, _value in item_criticality.items():
-            _item_criticality = _item_criticality + _key + ": " + str(
-                _value) + "\n"
+            _item_criticality = _item_criticality + _key + ": " + str(_value) + "\n"
 
-        self.txtItemCriticality.do_update(_item_criticality, 'changed')
+        self.txtItemCriticality.do_update(_item_criticality, "changed")
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the FMEA widgets.
@@ -161,13 +162,12 @@ class MethodPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECK BUTTONS
-        self.chkCriticality.dic_handler_id['toggled'] = (
-            self.chkCriticality.connect('toggled',
-                                        super().on_toggled, 0,
-                                        'wvw_editing_fmea'))
-        self.chkRPN.dic_handler_id['toggled'] = (self.chkRPN.connect(
-            'toggled',
-            super().on_toggled, 1, 'wvw_editing_fmea'))
+        self.chkCriticality.dic_handler_id["toggled"] = self.chkCriticality.connect(
+            "toggled", super().on_toggled, 0, "wvw_editing_fmea"
+        )
+        self.chkRPN.dic_handler_id["toggled"] = self.chkRPN.connect(
+            "toggled", super().on_toggled, 1, "wvw_editing_fmea"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the Hardware (D)FME(C)A RAMSTK widgets.
@@ -179,12 +179,17 @@ class MethodPanel(RAMSTKPanel):
         # By default, calculate both Task 102 and RPN.
         self.chkCriticality.set_active(True)
         self.chkRPN.set_active(True)
-        self.chkCriticality.do_set_properties(tooltip=_(
-            "Select this option to calculate the MIL-STD-1629, Task 102 "
-            "criticality analysis."))
-        self.chkRPN.do_set_properties(tooltip=_(
-            "Select this option to calculate the risk priority numbers "
-            "(RPN)."))
+        self.chkCriticality.do_set_properties(
+            tooltip=_(
+                "Select this option to calculate the MIL-STD-1629, Task 102 "
+                "criticality analysis."
+            )
+        )
+        self.chkRPN.do_set_properties(
+            tooltip=_(
+                "Select this option to calculate the risk priority numbers " "(RPN)."
+            )
+        )
 
         # ----- ENTRIES
         self.txtItemCriticality.do_set_properties(
@@ -192,7 +197,9 @@ class MethodPanel(RAMSTKPanel):
             height=125,
             tooltip=_(
                 "Displays the MIL-STD-1629A, Task 102 item criticality for "
-                "the selected hardware item."))
+                "the selected hardware item."
+            ),
+        )
 
 
 class FMEAPanel(RAMSTKPanel):
@@ -200,55 +207,249 @@ class FMEAPanel(RAMSTKPanel):
 
     # Define private dictionary class attributes.
     _dic_column_masks: Dict[str, List[bool]] = {
-        'mode': [
-            True, True, True, True, True, True, True, True, True, True, True,
-            True, True, True, True, True, True, True, True, True, False, True,
-            False, False, False, False, False, False, False, False, False,
-            False, False, False, True, False, False, False, True, True, False,
-            True, False, False
+        "mode": [
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            False,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            True,
+            True,
+            False,
+            True,
+            False,
+            False,
         ],
-        'mechanism': [
-            True, True, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, False, False,
-            False, False, False, True, True, True, False, False, False, False,
-            False, False, False, False, False, False, True, True, True, False,
-            False, True, True, False, False
+        "mechanism": [
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            True,
+            True,
+            False,
+            False,
         ],
-        'cause': [
-            True, True, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, False, False,
-            False, False, False, True, True, True, False, False, False, False,
-            False, False, False, False, False, False, True, True, True, False,
-            False, False, True, False, False
+        "cause": [
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
         ],
-        'control': [
-            True, True, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, False, False,
-            False, True, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, False, False,
-            False, False, False, False, True, False, False
+        "control": [
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
         ],
-        'action': [
-            True, True, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, False, False, False,
-            False, False, False, False, False, False, True, True, True, True,
-            True, True, True, True, True, False, False, False, False, False,
-            False, False, True, False, False
-        ]
+        "action": [
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+        ],
     }
     _dic_headings = {
-        'mode': [_("Mode ID"), _("Failure\nMode")],
-        'mechanism': [_("Mechanism ID"),
-                      _("Failure\nMechanism")],
-        'cause': [_("Cause ID"), _("Failure\nCause")],
-        'control': [_("Control ID"), _("Existing\nControl")],
-        'action': [_("Action ID"), _("Recommended\nAction")]
+        "mode": [_("Mode ID"), _("Failure\nMode")],
+        "mechanism": [_("Mechanism ID"), _("Failure\nMechanism")],
+        "cause": [_("Cause ID"), _("Failure\nCause")],
+        "control": [_("Control ID"), _("Existing\nControl")],
+        "action": [_("Action ID"), _("Recommended\nAction")],
     }
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'fmea'
+    _module: str = "fmea"
 
     # Define public dictionary class attributes.
 
@@ -262,119 +463,153 @@ class FMEAPanel(RAMSTKPanel):
 
         # Initialize private dictionary attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            1: ['description', 'text'],
-            2: ['mission', 'text'],
-            3: ['mission_phase', 'text'],
-            4: ['effect_local', 'text'],
-            5: ['effect_next', 'text'],
-            6: ['effect_end', 'text'],
-            7: ['detection_method', 'text'],
-            8: ['other_indications', 'text'],
-            9: ['isolation_method', 'text'],
-            10: ['design_provisions', 'text'],
-            11: ['operator_actions', 'text'],
-            12: ['severity_class', 'text'],
-            13: ['hazard_rate_source', 'text'],
-            14: ['mode_probability', 'float'],
-            15: ['effect_probability', 'float'],
-            16: ['mode_ratio', 'float'],
-            17: ['mode_hazard_rate', 'float'],
-            18: ['mode_op_time', 'float'],
-            19: ['mode_criticality', 'float'],
-            20: ['type_id', 'integer'],
-            21: ['rpn_severity', 'integer'],
-            22: ['rpn_occurrence', 'integer'],
-            23: ['rpn_detection', 'integer'],
-            24: ['rpn', 'integer'],
-            25: ['action_category', 'integer'],
-            26: ['action_owner', 'integer'],
-            27: ['action_due_date', 'text'],
-            28: ['action_status', 'integer'],
-            29: ['action_taken', 'text'],
-            30: ['action_approved', 'boolean'],
-            31: ['action_approve_date', 'text'],
-            32: ['action_closed', 'boolean'],
-            33: ['action_close_date', 'text'],
-            34: ['rpn_severity_new', 'integer'],
-            35: ['rpn_occurrence_new', 'integer'],
-            36: ['rpn_detection_new', 'integer'],
-            37: ['rpn_new', 'integer'],
-            38: ['critical_item', 'boolean'],
-            39: ['single_point', 'boolean'],
-            40: ['pof_include', 'boolean'],
-            41: ['remarks', 'text'],
+            1: ["description", "text"],
+            2: ["mission", "text"],
+            3: ["mission_phase", "text"],
+            4: ["effect_local", "text"],
+            5: ["effect_next", "text"],
+            6: ["effect_end", "text"],
+            7: ["detection_method", "text"],
+            8: ["other_indications", "text"],
+            9: ["isolation_method", "text"],
+            10: ["design_provisions", "text"],
+            11: ["operator_actions", "text"],
+            12: ["severity_class", "text"],
+            13: ["hazard_rate_source", "text"],
+            14: ["mode_probability", "float"],
+            15: ["effect_probability", "float"],
+            16: ["mode_ratio", "float"],
+            17: ["mode_hazard_rate", "float"],
+            18: ["mode_op_time", "float"],
+            19: ["mode_criticality", "float"],
+            20: ["type_id", "integer"],
+            21: ["rpn_severity", "integer"],
+            22: ["rpn_occurrence", "integer"],
+            23: ["rpn_detection", "integer"],
+            24: ["rpn", "integer"],
+            25: ["action_category", "integer"],
+            26: ["action_owner", "integer"],
+            27: ["action_due_date", "text"],
+            28: ["action_status", "integer"],
+            29: ["action_taken", "text"],
+            30: ["action_approved", "boolean"],
+            31: ["action_approve_date", "text"],
+            32: ["action_closed", "boolean"],
+            33: ["action_close_date", "text"],
+            34: ["rpn_severity_new", "integer"],
+            35: ["rpn_occurrence_new", "integer"],
+            36: ["rpn_detection_new", "integer"],
+            37: ["rpn_new", "integer"],
+            38: ["critical_item", "boolean"],
+            39: ["single_point", "boolean"],
+            40: ["pof_include", "boolean"],
+            41: ["remarks", "text"],
         }
         self._dic_attribute_updater = {
-            'description': [None, 'edited', 1],
-            'mission': [None, 'edited', 2],
-            'mission_phase': [None, 'edited', 3],
-            'effect_local': [None, 'edited', 4],
-            'effect_next': [None, 'edited', 5],
-            'effect_end': [None, 'edited', 6],
-            'detection_method': [None, 'edited', 7],
-            'other_indications': [None, 'edited', 8],
-            'isolation_method': [None, 'edited', 9],
-            'design_provisions': [None, 'edited', 10],
-            'operator_actions': [None, 'edited', 11],
-            'severity_class': [None, 'edited', 12],
-            'hazard_rate_source': [None, 'edited', 13],
-            'mode_probability': [None, 'edited', 14],
-            'effect_probability': [None, 'edited', 15],
-            'mode_ratio': [None, 'edited', 16],
-            'mode_hazard_rate': [None, 'edited', 17],
-            'mode_op_time': [None, 'edited', 18],
-            'mode_criticality': [None, 'edited', 19],
-            'type_id': [None, 'edited', 20],
-            'rpn_severity': [None, 'edited', 21],
-            'rpn_occurrence': [None, 'edited', 22],
-            'rpn_detection': [None, 'edited', 23],
-            'rpn': [None, 'edited', 24],
-            'action_category': [None, 'edited', 25],
-            'action_owner': [None, 'edited', 26],
-            'action_due_date': [None, 'edited', 27],
-            'action_status': [None, 'edited', 28],
-            'action_taken': [None, 'edited', 29],
-            'action_approved': [None, 'edited', 30],
-            'action_approve_date': [None, 'edited', 31],
-            'action_closed': [None, 'edited', 32],
-            'action_close_date': [None, 'edited', 33],
-            'rpn_severity_new': [None, 'edited', 34],
-            'rpn_occurrence_new': [None, 'edited', 35],
-            'rpn_detection_new': [None, 'edited', 36],
-            'rpn_new': [None, 'edited', 37],
-            'critical_item': [None, 'edited', 38],
-            'single_point': [None, 'edited', 39],
-            'pof_include': [None, 'edited', 40],
-            'remarks': [None, 'edited', 41],
+            "description": [None, "edited", 1],
+            "mission": [None, "edited", 2],
+            "mission_phase": [None, "edited", 3],
+            "effect_local": [None, "edited", 4],
+            "effect_next": [None, "edited", 5],
+            "effect_end": [None, "edited", 6],
+            "detection_method": [None, "edited", 7],
+            "other_indications": [None, "edited", 8],
+            "isolation_method": [None, "edited", 9],
+            "design_provisions": [None, "edited", 10],
+            "operator_actions": [None, "edited", 11],
+            "severity_class": [None, "edited", 12],
+            "hazard_rate_source": [None, "edited", 13],
+            "mode_probability": [None, "edited", 14],
+            "effect_probability": [None, "edited", 15],
+            "mode_ratio": [None, "edited", 16],
+            "mode_hazard_rate": [None, "edited", 17],
+            "mode_op_time": [None, "edited", 18],
+            "mode_criticality": [None, "edited", 19],
+            "type_id": [None, "edited", 20],
+            "rpn_severity": [None, "edited", 21],
+            "rpn_occurrence": [None, "edited", 22],
+            "rpn_detection": [None, "edited", 23],
+            "rpn": [None, "edited", 24],
+            "action_category": [None, "edited", 25],
+            "action_owner": [None, "edited", 26],
+            "action_due_date": [None, "edited", 27],
+            "action_status": [None, "edited", 28],
+            "action_taken": [None, "edited", 29],
+            "action_approved": [None, "edited", 30],
+            "action_approve_date": [None, "edited", 31],
+            "action_closed": [None, "edited", 32],
+            "action_close_date": [None, "edited", 33],
+            "rpn_severity_new": [None, "edited", 34],
+            "rpn_occurrence_new": [None, "edited", 35],
+            "rpn_detection_new": [None, "edited", 36],
+            "rpn_new": [None, "edited", 37],
+            "critical_item": [None, "edited", 38],
+            "single_point": [None, "edited", 39],
+            "pof_include": [None, "edited", 40],
+            "remarks": [None, "edited", 41],
         }
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
         self._dic_row_loader = {
-            'mode': self.__do_load_mode,
-            'mechanism': self.__do_load_mechanism,
-            'cause': self.__do_load_cause,
-            'control': self.__do_load_control,
-            'action': self.__do_load_action,
+            "mode": self.__do_load_mode,
+            "mechanism": self.__do_load_mechanism,
+            "cause": self.__do_load_cause,
+            "control": self.__do_load_control,
+            "action": self.__do_load_action,
         }
 
         # Initialize private list attributes.
         self._lst_fmea_data: List[Any] = [
-            0, "Description", "Mission", "Mission Phase", "Effect, Local",
-            "Effect, Next", "Effect, End", "Detection Method", "Other "
-            "Indications", "Isolation Method", "Design Provision",
-            "Operator Actions", "Severity Class", "h(t) Data Source",
-            "Failure Probability", 0.0, 0.0, 0.0, 0.0, 0.0, "Control Type",
-            "RPN Severity", "RPN Occurrence", "RPN Detection", 0, "Action "
-            "Category", "Action Owner", "Action Due Date", "Action Status",
-            "Action Taken", 0, "Action Approval Date", 0,
-            "Action Closure Date", "RPN New Severity", "RPN New Occurrence",
-            "RPN New Detection", 0, 0, 0, 0, "Remarks", None, ""
+            0,
+            "Description",
+            "Mission",
+            "Mission Phase",
+            "Effect, Local",
+            "Effect, Next",
+            "Effect, End",
+            "Detection Method",
+            "Other " "Indications",
+            "Isolation Method",
+            "Design Provision",
+            "Operator Actions",
+            "Severity Class",
+            "h(t) Data Source",
+            "Failure Probability",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "Control Type",
+            "RPN Severity",
+            "RPN Occurrence",
+            "RPN Detection",
+            0,
+            "Action " "Category",
+            "Action Owner",
+            "Action Due Date",
+            "Action Status",
+            "Action Taken",
+            0,
+            "Action Approval Date",
+            0,
+            "Action Closure Date",
+            "RPN New Severity",
+            "RPN New Occurrence",
+            "RPN New Detection",
+            0,
+            0,
+            0,
+            0,
+            "Remarks",
+            None,
+            "",
         ]
         self._lst_missions: List[str] = [""]
 
         # Initialize private scalar attributes.
         self._title = _(
-            "(Design) Failure Mode, Effects, (and Criticality) Analysis "
-            "[(D)FME(C)A]")
+            "(Design) Failure Mode, Effects, (and Criticality) Analysis " "[(D)FME(C)A]"
+        )
 
         # Initialize public dictionary attributes.
 
@@ -394,20 +629,19 @@ class FMEAPanel(RAMSTKPanel):
         super().do_make_panel_treeview()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_clear_tree, 'request_clear_workviews')
-        pub.subscribe(super().do_load_panel, 'succeed_retrieve_hardware_fmea')
-        pub.subscribe(super().do_load_panel, 'succeed_calculate_rpn')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_action')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_cause')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_control')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_mechanism')
-        pub.subscribe(super().do_load_panel, 'succeed_insert_mode')
-        pub.subscribe(super().do_load_panel, 'succeed_delete_fmea')
+        pub.subscribe(super().do_clear_tree, "request_clear_workviews")
+        pub.subscribe(super().do_load_panel, "succeed_retrieve_hardware_fmea")
+        pub.subscribe(super().do_load_panel, "succeed_calculate_rpn")
+        pub.subscribe(super().do_load_panel, "succeed_insert_action")
+        pub.subscribe(super().do_load_panel, "succeed_insert_cause")
+        pub.subscribe(super().do_load_panel, "succeed_insert_control")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mechanism")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mode")
+        pub.subscribe(super().do_load_panel, "succeed_delete_fmea")
 
         # pub.subscribe(self._do_load_panel,
         #              'succeed_calculate_fmea_criticality')
-        pub.subscribe(self.__do_load_missions,
-                      'succeed_retrieve_usage_profile')
+        pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
 
     def do_load_combobox(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -438,17 +672,21 @@ class FMEAPanel(RAMSTKPanel):
         for i in _lst_col_order[1:]:
             _cell = self.tvwTreeView.get_column(_lst_col_order[i]).get_cells()
             try:
-                _cell[0].connect('edited',
-                                 super().on_cell_edit, i, 'wvw_editing_fmea')
+                _cell[0].connect("edited", super().on_cell_edit, i, "wvw_editing_fmea")
                 if i == 2:
-                    _cell[0].connect('edited', self._on_mission_change)
+                    _cell[0].connect("edited", self._on_mission_change)
             except TypeError:
-                _cell[0].connect('toggled',
-                                 super().on_cell_toggled, 'new text', i,
-                                 'wvw_editing_hazard')
+                _cell[0].connect(
+                    "toggled",
+                    super().on_cell_toggled,
+                    "new text",
+                    i,
+                    "wvw_editing_hazard",
+                )
 
-    def _on_mission_change(self, __combo: Gtk.CellRendererCombo, path: str,
-                           new_text: str) -> None:
+    def _on_mission_change(
+        self, __combo: Gtk.CellRendererCombo, path: str, new_text: str
+    ) -> None:
         """Load the mission phases whenever the mission combo is changed.
 
         :param __combo: the mission list Gtk.CellRendererCombo().  Unused in
@@ -475,57 +713,275 @@ class FMEAPanel(RAMSTKPanel):
         :rtype: None
         """
         _columns: List[str] = [
-            'col0', 'col1', 'col2', 'col3', 'col4', 'col5', 'col6', 'col7',
-            'col8', 'col9', 'col10', 'col11', 'col12', 'col13', 'col14',
-            'col15', 'col16', 'col17', 'col18', 'col19', 'col20', 'col21',
-            'col22', 'col23', 'col24', 'col25', 'col26', 'col27', 'col28',
-            'col29', 'col30', 'col31', 'col32', 'col33', 'col34', 'col35',
-            'col36', 'col37', 'col38', 'col39', 'col40', 'col41', 'pixbuf'
+            "col0",
+            "col1",
+            "col2",
+            "col3",
+            "col4",
+            "col5",
+            "col6",
+            "col7",
+            "col8",
+            "col9",
+            "col10",
+            "col11",
+            "col12",
+            "col13",
+            "col14",
+            "col15",
+            "col16",
+            "col17",
+            "col18",
+            "col19",
+            "col20",
+            "col21",
+            "col22",
+            "col23",
+            "col24",
+            "col25",
+            "col26",
+            "col27",
+            "col28",
+            "col29",
+            "col30",
+            "col31",
+            "col32",
+            "col33",
+            "col34",
+            "col35",
+            "col36",
+            "col37",
+            "col38",
+            "col39",
+            "col40",
+            "col41",
+            "pixbuf",
         ]
         _visible = {
-            'mode': [
-                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
-                'True', 'True', 'True', 'True', 'True', 'True', 'True', 'True',
-                'True', 'True', 'True', 'True', 'False', 'True', 'False',
-                'False', 'True', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'True', 'False', 'False',
-                'True', 'True', 'True', 'False', 'True', 'False'
+            "mode": [
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "False",
+                "True",
+                "False",
+                "False",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "False",
+                "False",
+                "True",
+                "True",
+                "True",
+                "False",
+                "True",
+                "False",
             ],
-            'mechanism': [
-                'True', 'True', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'True', 'True', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'True', 'True', 'False', 'False', 'False', 'True', 'True',
-                'False'
+            "mechanism": [
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "False",
             ],
-            'cause': [
-                'True', 'True', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'True', 'True', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'True', 'True', 'False', 'False', 'False', 'True', 'False',
-                'False'
+            "cause": [
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "True",
+                "False",
+                "False",
             ],
-            'control': [
-                'True', 'True', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'True',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False'
+            "control": [
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
             ],
-            'action': [
-                'True', 'True', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'False', 'False', 'False',
-                'False', 'False', 'False', 'False', 'True', 'True', 'True',
-                'True', 'True', 'True', 'True', 'True', 'True', 'False',
-                'False', 'False', 'False', 'False', 'False', 'True', 'False',
-                'False'
+            "action": [
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "True",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "False",
+                "True",
+                "False",
+                "False",
             ],
         }
 
@@ -535,18 +991,17 @@ class FMEAPanel(RAMSTKPanel):
             self._record_id = _model.get_value(_row, 0)
             _mission = _model.get_value(_row, 2)
         except TypeError:
-            self._record_id = '0'
+            self._record_id = "0"
             _mission = ""
 
         _level = get_indenture_level(self._record_id)
-        (self.tvwTreeView.headings['col0'],
-         self.tvwTreeView.headings['col1']) = {
-             'mode': ('Mode ID', 'Failure Mode'),
-             'mechanism': ('Mechanism ID', 'Failure Mechanism'),
-             'cause': ('Cause ID', 'Failure Cause'),
-             'control': ('Control ID', 'Control'),
-             'action': ('Action ID', 'Action'),
-         }[_level]
+        (self.tvwTreeView.headings["col0"], self.tvwTreeView.headings["col1"]) = {
+            "mode": ("Mode ID", "Failure Mode"),
+            "mechanism": ("Mechanism ID", "Failure Mechanism"),
+            "cause": ("Cause ID", "Failure Cause"),
+            "control": ("Control ID", "Control"),
+            "action": ("Action ID", "Action"),
+        }[_level]
         super().do_set_headings()
 
         self.__do_load_mission_phases(_mission)
@@ -555,10 +1010,10 @@ class FMEAPanel(RAMSTKPanel):
         self.tvwTreeView.do_set_visible_columns()
 
         _attributes = super().on_row_change(selection)
-        _attributes['node_id'] = self._record_id
+        _attributes["node_id"] = self._record_id
         if _attributes:
             pub.sendMessage(
-                'selected_fmea',
+                "selected_fmea",
                 attributes=_attributes,
             )
 
@@ -571,15 +1026,15 @@ class FMEAPanel(RAMSTKPanel):
         """
         try:
             # noinspection PyUnresolvedReferences
-            self._lst_fmea_data[2] = self._dic_missions[
-                entity.mission]  # type: ignore
+            self._lst_fmea_data[2] = self._dic_missions[entity.mission]  # type: ignore
         except (AttributeError, KeyError):
             self._lst_fmea_data[2] = ""
 
         try:
             # noinspection PyUnresolvedReferences
             self._lst_fmea_data[3] = self._dic_mission_phases[
-                entity.mission_phase]  # type: ignore
+                entity.mission_phase
+            ]  # type: ignore
         except (AttributeError, KeyError):
             self._lst_fmea_data[3] = ""
 
@@ -592,18 +1047,20 @@ class FMEAPanel(RAMSTKPanel):
         """
         # noinspection PyUnresolvedReferences
         _occurrence = str(
-            self.dic_occurrence[entity.rpn_occurrence]['name'])  # type: ignore
+            self.dic_occurrence[entity.rpn_occurrence]["name"]
+        )  # type: ignore
         # noinspection PyUnresolvedReferences
         _detection = str(
-            self.dic_detection[entity.rpn_detection]['name'])  # type: ignore
+            self.dic_detection[entity.rpn_detection]["name"]
+        )  # type: ignore
         # noinspection PyUnresolvedReferences
         _occurrence_new = str(
-            self.dic_occurrence[entity.rpn_occurrence_new]  # type: ignore
-            ['name'])
+            self.dic_occurrence[entity.rpn_occurrence_new]["name"]  # type: ignore
+        )
         # noinspection PyUnresolvedReferences
         _detection_new = str(
-            self.dic_detection[entity.rpn_detection_new]  # type: ignore
-            ['name'])
+            self.dic_detection[entity.rpn_detection_new]["name"]  # type: ignore
+        )
 
         return _occurrence, _detection, _occurrence_new, _detection_new
 
@@ -628,13 +1085,12 @@ class FMEAPanel(RAMSTKPanel):
         }[position]
 
         for _item in _rpn.items():
-            if _item[1]['name'] == name:
-                _value = int(_item[1]['value'])
+            if _item[1]["name"] == name:
+                _value = int(_item[1]["value"])
 
         return _value
 
-    def __do_load_action(self, node: treelib.Node,
-                         row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_action(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load an action record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the action data to load.
@@ -649,20 +1105,52 @@ class FMEAPanel(RAMSTKPanel):
         _model = self.tvwTreeView.get_model()
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["action"], 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["action"], 22, 22)
 
         _attributes = [
-            node.identifier, _entity.action_recommended, "", "", "", "", "",
-            "", "", "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
-            "", "", 0, _entity.action_category, _entity.action_owner,
-            _entity.action_due_date.strftime('%Y-%m-%d'),
-            _entity.action_status, _entity.action_taken,
+            node.identifier,
+            _entity.action_recommended,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "",
+            "",
+            "",
+            "",
+            0,
+            _entity.action_category,
+            _entity.action_owner,
+            _entity.action_due_date.strftime("%Y-%m-%d"),
+            _entity.action_status,
+            _entity.action_taken,
             _entity.action_approved,
-            _entity.action_approve_date.strftime('%Y-%m-%d'),
+            _entity.action_approve_date.strftime("%Y-%m-%d"),
             _entity.action_closed,
-            _entity.action_close_date.strftime('%Y-%m-%d'), "", "", "", 0, 0,
-            0, 0, "", _icon
+            _entity.action_close_date.strftime("%Y-%m-%d"),
+            "",
+            "",
+            "",
+            0,
+            0,
+            0,
+            0,
+            "",
+            _icon,
         ]
 
         try:
@@ -674,10 +1162,11 @@ class FMEAPanel(RAMSTKPanel):
                 "in the FMEA.  This might indicate it was missing it's data "
                 "package, some of the data in the package was missing, or "
                 "some of the data was the wrong type.  Row data was: "
-                "{1}").format(str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+                "{1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage(
+                "do_log_warning_msg", logger_name="WARNING", message=_message
+            )
 
         return _new_row
 
@@ -691,8 +1180,7 @@ class FMEAPanel(RAMSTKPanel):
         for _item in self.dic_action_category:
             _model.append([self.dic_action_category[_item][1]])
 
-    def __do_load_cause(self, node: treelib.Node,
-                        row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_cause(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a failure cause record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the cause data to load.
@@ -708,19 +1196,60 @@ class FMEAPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
-        (_occurrence, _detection, _occurrence_new,
-         _detection_new) = self.__do_get_rpn_names(_entity)
+        (
+            _occurrence,
+            _detection,
+            _occurrence_new,
+            _detection_new,
+        ) = self.__do_get_rpn_names(_entity)
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["cause"],
-                                                       22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["cause"], 22, 22)
 
         _attributes = [
-            node.identifier, _entity.description, "", "", "", "", "", "", "",
-            "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
-            _occurrence, _detection, _entity.rpn, "", "", "", "", "", 0, "", 0,
-            "", "", _occurrence_new, _detection_new, _entity.rpn_new, 0, 0, 0,
-            "", _icon
+            node.identifier,
+            _entity.description,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "",
+            "",
+            _occurrence,
+            _detection,
+            _entity.rpn,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            _occurrence_new,
+            _detection_new,
+            _entity.rpn_new,
+            0,
+            0,
+            0,
+            "",
+            _icon,
         ]
 
         try:
@@ -731,16 +1260,15 @@ class FMEAPanel(RAMSTKPanel):
                 "An error occurred when loading failure cause {0:s} in the "
                 "FMEA.  This might indicate it was missing it's data package, "
                 "some of the data in the package was missing, or some of the "
-                "data was the wrong type.  Row data was: {1}").format(
-                    str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+                "data was the wrong type.  Row data was: {1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage(
+                "do_log_warning_msg", logger_name="WARNING", message=_message
+            )
 
         return _new_row
 
-    def __do_load_control(self, node: treelib.Node,
-                          row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_control(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a control record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the control data to load.
@@ -758,13 +1286,53 @@ class FMEAPanel(RAMSTKPanel):
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["control"], 22, 22)
+            self.dic_icons["control"], 22, 22
+        )
 
         _attributes = [
-            node.identifier, _entity.description, "", "", "", "", "", "", "",
-            "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, _entity.type_id,
-            "", "", "", 0, "", "", "", "", "", 0, "", 0, "", "", "", "", 0, 0,
-            0, 0, "", _icon
+            node.identifier,
+            _entity.description,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            _entity.type_id,
+            "",
+            "",
+            "",
+            0,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            "",
+            "",
+            0,
+            0,
+            0,
+            0,
+            "",
+            _icon,
         ]
 
         try:
@@ -777,9 +1345,9 @@ class FMEAPanel(RAMSTKPanel):
                 "package, some of the data in the package was missing, or "
                 "some of the data was the wrong type.  Row data was: {1}"
             ).format(str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+            pub.sendMessage(
+                "do_log_warning_msg", logger_name="WARNING", message=_message
+            )
 
         return _new_row
 
@@ -803,8 +1371,9 @@ class FMEAPanel(RAMSTKPanel):
         for _item in RAMSTK_FAILURE_PROBABILITY:
             _model.append([_item[0]])
 
-    def __do_load_mechanism(self, node: treelib.Node,
-                            row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_mechanism(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a failure mechanism record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mechanism data to load.
@@ -820,19 +1389,62 @@ class FMEAPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
-        (_occurrence, _detection, _occurrence_new,
-         _detection_new) = self.__do_get_rpn_names(_entity)
+        (
+            _occurrence,
+            _detection,
+            _occurrence_new,
+            _detection_new,
+        ) = self.__do_get_rpn_names(_entity)
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["mechanism"], 22, 22)
+            self.dic_icons["mechanism"], 22, 22
+        )
 
         _attributes = [
-            node.identifier, _entity.description, "", "", "", "", "", "", "",
-            "", "", "", "", "", "", 0.0, 0.0, 0.0, 0.0, 0.0, "", "",
-            _occurrence, _detection, _entity.rpn, "", "", "", "", "", 0, "", 0,
-            "", "", _occurrence_new, _detection_new, _entity.rpn_new, 0, 0,
-            _entity.pof_include, "", _icon
+            node.identifier,
+            _entity.description,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            "",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "",
+            "",
+            _occurrence,
+            _detection,
+            _entity.rpn,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            "",
+            0,
+            "",
+            "",
+            _occurrence_new,
+            _detection_new,
+            _entity.rpn_new,
+            0,
+            0,
+            _entity.pof_include,
+            "",
+            _icon,
         ]
 
         try:
@@ -845,18 +1457,20 @@ class FMEAPanel(RAMSTKPanel):
                 "package, some of the data in the package was missing, or "
                 "some of the data was the wrong type.  Row data was: {1}"
             ).format(str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+            pub.sendMessage(
+                "do_log_warning_msg", logger_name="WARNING", message=_message
+            )
 
         return _new_row
 
     # noinspection PyUnusedLocal
     # pylint: disable=unused-argument
-    def __do_load_missions(self,
-                           tree: treelib.Tree = treelib.Tree(),
-                           node_id: Any = '',
-                           row: Gtk.TreeIter = None) -> None:
+    def __do_load_missions(
+        self,
+        tree: treelib.Tree = treelib.Tree(),
+        node_id: Any = "",
+        row: Gtk.TreeIter = None,
+    ) -> None:
         """Load the mission and mission phase dicts.
 
         :param tree: the treelib usage profile treelib.Tree().
@@ -874,16 +1488,16 @@ class FMEAPanel(RAMSTKPanel):
         self._lst_missions = []
         _model.append([""])
         for _node in tree.children(tree.root):
-            _lst_phases: List[str] = ['']
+            _lst_phases: List[str] = [""]
 
-            _mission = _node.data['usage_profile'].get_attributes(
-            )['description']
+            _mission = _node.data["usage_profile"].get_attributes()["description"]
             _model.append([_mission])
             self._lst_missions.append(_mission)
 
             for _node2 in tree.children(_node.identifier):
-                _mission_phase = _node2.data['usage_profile'].get_attributes(
-                )['description']
+                _mission_phase = _node2.data["usage_profile"].get_attributes()[
+                    "description"
+                ]
                 _lst_phases.append(_mission_phase)
             self._dic_mission_phases[_mission] = _lst_phases
 
@@ -904,8 +1518,7 @@ class FMEAPanel(RAMSTKPanel):
         except KeyError:
             pass
 
-    def __do_load_mode(self, node: treelib.Node,
-                       row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_mode(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a failure mode record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -919,25 +1532,56 @@ class FMEAPanel(RAMSTKPanel):
 
         _model = self.tvwTreeView.get_model()
 
-        _severity = self.dic_severity[_entity.rpn_severity]['name']
-        _severity_new = self.dic_severity[_entity.rpn_severity_new]['name']
+        _severity = self.dic_severity[_entity.rpn_severity]["name"]
+        _severity_new = self.dic_severity[_entity.rpn_severity_new]["name"]
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"],
-                                                       22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"], 22, 22)
 
         _attributes = [
-            node.identifier, _entity.description, _entity.mission,
-            _entity.mission_phase, _entity.effect_local, _entity.effect_next,
-            _entity.effect_end, _entity.detection_method,
-            _entity.other_indications, _entity.isolation_method,
-            _entity.design_provisions, _entity.operator_actions,
-            _entity.severity_class, _entity.hazard_rate_source,
-            _entity.mode_probability, _entity.effect_probability,
-            _entity.mode_ratio, _entity.mode_hazard_rate, _entity.mode_op_time,
-            _entity.mode_criticality, "", _severity, "", "", 0, "", "", "", "",
-            "", 0, "", 0, "", _severity_new, "", "", 0, _entity.critical_item,
-            _entity.single_point, 0, _entity.remarks, _icon
+            node.identifier,
+            _entity.description,
+            _entity.mission,
+            _entity.mission_phase,
+            _entity.effect_local,
+            _entity.effect_next,
+            _entity.effect_end,
+            _entity.detection_method,
+            _entity.other_indications,
+            _entity.isolation_method,
+            _entity.design_provisions,
+            _entity.operator_actions,
+            _entity.severity_class,
+            _entity.hazard_rate_source,
+            _entity.mode_probability,
+            _entity.effect_probability,
+            _entity.mode_ratio,
+            _entity.mode_hazard_rate,
+            _entity.mode_op_time,
+            _entity.mode_criticality,
+            "",
+            _severity,
+            "",
+            "",
+            0,
+            "",
+            "",
+            "",
+            "",
+            "",
+            0,
+            "",
+            0,
+            "",
+            _severity_new,
+            "",
+            "",
+            0,
+            _entity.critical_item,
+            _entity.single_point,
+            0,
+            _entity.remarks,
+            _icon,
         ]
 
         try:
@@ -948,11 +1592,11 @@ class FMEAPanel(RAMSTKPanel):
                 "An error occurred when loading failure mode {0} in the "
                 "FMEA.  This might indicate it was missing it's data package, "
                 "some of the data in the package was missing, or some of the "
-                "data was the wrong type.  Row data was: {1}").format(
-                    str(node.identifier), _attributes)
-            pub.sendMessage('do_log_warning_msg',
-                            logger_name='WARNING',
-                            message=_message)
+                "data was the wrong type.  Row data was: {1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage(
+                "do_log_warning_msg", logger_name="WARNING", message=_message
+            )
 
         return _new_row
 
@@ -963,11 +1607,10 @@ class FMEAPanel(RAMSTKPanel):
         :rtype: None
         """
         for _position in [23, 36]:
-            _model = self.tvwTreeView.get_cell_model(
-                self._lst_col_order[_position])
+            _model = self.tvwTreeView.get_cell_model(self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(self.dic_detection):
-                _model.append([self.dic_detection[_item]['name']])
+                _model.append([self.dic_detection[_item]["name"]])
 
     def __do_load_rpn_occurrence(self) -> None:
         """Load the RPN occurrence Gtk.CellRendererCombo().
@@ -976,11 +1619,10 @@ class FMEAPanel(RAMSTKPanel):
         :rtype: None
         """
         for _position in [22, 35]:
-            _model = self.tvwTreeView.get_cell_model(
-                self._lst_col_order[_position])
+            _model = self.tvwTreeView.get_cell_model(self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(self.dic_occurrence):
-                _model.append([self.dic_occurrence[_item]['name']])
+                _model.append([self.dic_occurrence[_item]["name"]])
 
     def __do_load_rpn_severity(self) -> None:
         """Load the RPN severity Gtk.CellRendererCombo().
@@ -989,11 +1631,10 @@ class FMEAPanel(RAMSTKPanel):
         :rtype: None
         """
         for _position in [21, 34]:
-            _model = self.tvwTreeView.get_cell_model(
-                self._lst_col_order[_position])
+            _model = self.tvwTreeView.get_cell_model(self._lst_col_order[_position])
             _model.append("")
             for _item in sorted(self.dic_severity):
-                _model.append([self.dic_severity[_item]['name']])
+                _model.append([self.dic_severity[_item]["name"]])
 
     def __do_load_severity_class(self) -> None:
         """Load the severity classification Gtk.CellRendererCombo().
@@ -1023,8 +1664,7 @@ class FMEAPanel(RAMSTKPanel):
         """
         _model = self.tvwTreeView.get_cell_model(self._lst_col_order[26])
         for _item in self.dic_users:
-            _user = (self.dic_users[_item][0] + ", "
-                     + self.dic_users[_item][1])
+            _user = self.dic_users[_item][0] + ", " + self.dic_users[_item][1]
             _model.append([_user])
 
     def __do_set_properties(self) -> None:
@@ -1037,12 +1677,16 @@ class FMEAPanel(RAMSTKPanel):
         super().do_set_properties(bold=True, title=self._title)
 
         self.tvwTreeView.set_tooltip_text(
-            _("Displays the (Design) Failure Mode and Effects "
-              "(and Criticality) Analysis [(D)FME(C)A] for the "
-              "currently selected Hardware item."))
+            _(
+                "Displays the (Design) Failure Mode and Effects "
+                "(and Criticality) Analysis [(D)FME(C)A] for the "
+                "currently selected Hardware item."
+            )
+        )
 
-    def __on_cell_edit(self, cell: Gtk.CellRenderer, path: str, new_text: Any,
-                       position: int) -> None:
+    def __on_cell_edit(
+        self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
+    ) -> None:
         """Handle edits of the FMEA Work View RAMSTKTreeview().
 
         :param Gtk.CellRenderer cell: the Gtk.CellRenderer() that was edited.
@@ -1056,24 +1700,23 @@ class FMEAPanel(RAMSTKPanel):
         self.tvwTreeView.do_edit_cell(cell, path, new_text, position)
 
         if position in [21, 22, 23, 34, 35, 36]:
-            new_text = self.__do_get_rpn_values(self._lst_col_order[position],
-                                                new_text)
+            new_text = self.__do_get_rpn_values(self._lst_col_order[position], new_text)
 
         try:
             _key = self._dic_column_keys[self._lst_col_order[position]]
         except (IndexError, KeyError):
-            _key = ''
+            _key = ""
 
         # ISSUE: Rename ramstk_action fld_action_recommended.
         # //
         # // Updating fld_action_recommended to fld_description makes
         # // ramstk_action consistent with other FMEA tables in position 1.
-        if self._lst_col_order[position] == 1 and self._record_id[-1] == 'a':
-            _key = 'action_recommended'
+        if self._lst_col_order[position] == 1 and self._record_id[-1] == "a":
+            _key = "action_recommended"
 
-        pub.sendMessage('wvw_editing_fmea',
-                        node_id=[self._record_id, -1],
-                        package={_key: new_text})
+        pub.sendMessage(
+            "wvw_editing_fmea", node_id=[self._record_id, -1], package={_key: new_text}
+        )
 
 
 class FMEA(RAMSTKWorkView):
@@ -1123,12 +1766,14 @@ class FMEA(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'fmea'
+    _module: str = "fmea"
     _pixbuf: bool = True
     _tablabel: str = _("FMEA")
-    _tabtooltip: str = _("Displays failure mode and effects "
-                         "analysis (FMEA) information for the selected "
-                         "Hardware item.")
+    _tabtooltip: str = _(
+        "Displays failure mode and effects "
+        "analysis (FMEA) information for the selected "
+        "Hardware item."
+    )
 
     # Define public dictionary class attributes.
 
@@ -1136,8 +1781,9 @@ class FMEA(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Work View for the FMEA.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -1161,13 +1807,19 @@ class FMEA(RAMSTKWorkView):
         self._lst_mnu_labels.insert(2, _("Delete Selected"))
         self._lst_mnu_labels.insert(3, _("Calculate FMEA"))
         self._lst_tooltips: List[str] = [
-            _("Add a new (D)FME(C)A entity at the same level as the "
-              "currently selected entity."),
-            _("Add a new (D)FME(C)A entity one level below the currently "
-              "selected entity."),
+            _(
+                "Add a new (D)FME(C)A entity at the same level as the "
+                "currently selected entity."
+            ),
+            _(
+                "Add a new (D)FME(C)A entity one level below the currently "
+                "selected entity."
+            ),
             _("Delete the selected entity from the (D)FME(C)A."),
-            _("Calculate the Task 102 criticality and/or risk priority "
-              "number (RPN)."),
+            _(
+                "Calculate the Task 102 criticality and/or risk priority "
+                "number (RPN)."
+            ),
             _("Save changes to the selected entity in the (D)FME(C)A."),
             _("Save changes to all entities in the (D)FME(C)A."),
         ]
@@ -1187,9 +1839,10 @@ class FMEA(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_fmea')
-        pub.subscribe(self._on_get_hardware_attributes,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_set_record_id, "selected_fmea")
+        pub.subscribe(
+            self._on_get_hardware_attributes, "succeed_get_all_hardware_attributes"
+        )
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Calculate the FMEA RPN or criticality.
@@ -1199,11 +1852,12 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         if self._pnlMethods.chkCriticality.get_active():
-            pub.sendMessage("request_calculate_criticality",
-                            item_hr=self._item_hazard_rate)
+            pub.sendMessage(
+                "request_calculate_criticality", item_hr=self._item_hazard_rate
+            )
 
         if self._pnlMethods.chkRPN.get_active():
-            pub.sendMessage("request_calculate_rpn", method='mechanism')
+            pub.sendMessage("request_calculate_rpn", method="mechanism")
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete the selected entity from the FMEA.
@@ -1213,16 +1867,17 @@ class FMEA(RAMSTKWorkView):
         :rtype: None
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent()
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
-        )
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
         _node_id = _model.get_value(_row, 0)
 
-        _prompt = _("You are about to delete {1} item {0} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(_node_id, self._module.title())
+        _prompt = _(
+            "You are about to delete {1} item {0} and all "
+            "data associated with it.  Is this really what "
+            "you want to do?"
+        ).format(_node_id, self._module.title())
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
+        _dialog.do_set_message_type("question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
@@ -1242,20 +1897,19 @@ class FMEA(RAMSTKWorkView):
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
         # add a failure Mode.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
-        )
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
         try:
             _parent_id = _model.get_value(_row, 0)
             _level = {
-                1: 'mechanism',
-                2: 'cause',
-                3: 'control_action',
-            }[len(str(_parent_id).split('.'))]
+                1: "mechanism",
+                2: "cause",
+                3: "control_action",
+            }[len(str(_parent_id).split("."))]
         except TypeError:
-            _parent_id = '0'
-            _level = 'mechanism'
+            _parent_id = "0"
+            _level = "mechanism"
 
-        if _level == 'control_action':
+        if _level == "control_action":
             _level = self.__on_request_insert_control_action()
 
         super().do_set_cursor_busy()
@@ -1272,21 +1926,20 @@ class FMEA(RAMSTKWorkView):
         # Try to get the information needed to add a new entity at the correct
         # location in the FMEA.  If there is nothing in the FMEA, by default
         # add a failure Mode.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected(
-        )
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
         try:
             _parent_id = _model.get_value(_model.iter_parent(_row), 0)
             _level = {
-                0: 'mode',
-                1: 'mechanism',
-                2: 'cause',
-                3: 'control_action',
-            }[len(str(_parent_id).split('.'))]
+                0: "mode",
+                1: "mechanism",
+                2: "cause",
+                3: "control_action",
+            }[len(str(_parent_id).split("."))]
         except TypeError:
-            _parent_id = '0'
-            _level = 'mode'
+            _parent_id = "0"
+            _level = "mode"
 
-        if _level == 'control_action':
+        if _level == "control_action":
             _level = self.__on_request_insert_control_action()
 
         super().do_set_cursor_busy()
@@ -1300,7 +1953,7 @@ class FMEA(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['node_id']
+        self._record_id = attributes["node_id"]
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware item hazard rate.
@@ -1308,7 +1961,7 @@ class FMEA(RAMSTKWorkView):
         :param attributes:
         :return:
         """
-        self._item_hazard_rate = attributes['hazard_rate_active']
+        self._item_hazard_rate = attributes["hazard_rate_active"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the FMEA tab.
@@ -1318,16 +1971,19 @@ class FMEA(RAMSTKWorkView):
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
-        self._pnlPanel.dic_action_category = \
+        self._pnlPanel.dic_action_category = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY
-        self._pnlPanel.dic_action_status = \
+        )
+        self._pnlPanel.dic_action_status = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS
-        self._pnlPanel.dic_detection =  \
+        )
+        self._pnlPanel.dic_detection = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION
-        self._pnlPanel.dic_occurrence =  \
+        )
+        self._pnlPanel.dic_occurrence = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE
-        self._pnlPanel.dic_severity =  \
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
+        )
+        self._pnlPanel.dic_severity = self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY
         self._pnlPanel.dic_users = self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS
         self._pnlPanel.dic_icons = self._dic_icons
 
@@ -1350,7 +2006,8 @@ class FMEA(RAMSTKWorkView):
         _level = ""
 
         _dialog = AddControlAction(
-            parent=self.get_parent().get_parent().get_parent().get_parent())
+            parent=self.get_parent().get_parent().get_parent().get_parent()
+        )
 
         if _dialog.do_run() == Gtk.ResponseType.OK:
             if _dialog.rdoControl.get_active():

@@ -29,7 +29,7 @@ def test_calculate_stress_ratio():
 def test_calculate_stress_ratio_string_input():
     """calculate_stress_ratio() should raise a TypeError if passed a string as a stress value."""
     with pytest.raises(TypeError):
-        _stress_ratio = stress.calculate_stress_ratio(0.625, '1.25')
+        _stress_ratio = stress.calculate_stress_ratio(0.625, "1.25")
 
 
 @pytest.mark.unit

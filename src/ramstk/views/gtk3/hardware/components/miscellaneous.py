@@ -57,11 +57,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         # Initialize private dictionary attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['quality_id', 'integer'],
-            1: ['application_id', 'integer'],
-            2: ['type_id', 'integer'],
-            3: ['frequency_operating', 'float'],
-            4: ['duty_cycle', 'float'],
+            0: ["quality_id", "integer"],
+            1: ["application_id", "integer"],
+            2: ["type_id", "integer"],
+            3: ["frequency_operating", "float"],
+            4: ["duty_cycle", "float"],
         }
 
         # Initialize private list attributes.
@@ -73,12 +73,14 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _("Utilization:"),
         ]
         self._lst_tooltips: List[str] = [
-            _('The quality level.'),
+            _("The quality level."),
             _("The application of the lamp."),
             _("The type of electronic filter."),
             _("The operating frequency of the crystal."),
-            _("The utilization factor (illuminate hours / equipment operate "
-              "hours) of the lamp.")
+            _(
+                "The utilization factor (illuminate hours / equipment operate "
+                "hours) of the lamp."
+            ),
         ]
 
         # Initialize private scalar attributes.
@@ -95,11 +97,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtUtilization: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'quality_id': [self.cmbQuality.do_update, 'changed', 0],
-            'application_id': [self.cmbApplication.do_update, 'changed', 1],
-            'type_id': [self.cmbType.do_update, 'changed', 2],
-            'frequency_operating': [self.txtFrequency.do_update, 'changed', 3],
-            'duty_cycle': [self.txtUtilization.do_update, 'changed', 4],
+            "quality_id": [self.cmbQuality.do_update, "changed", 0],
+            "application_id": [self.cmbApplication.do_update, "changed", 1],
+            "type_id": [self.cmbType.do_update, "changed", 2],
+            "frequency_operating": [self.txtFrequency.do_update, "changed", 3],
+            "duty_cycle": [self.txtUtilization.do_update, "changed", 4],
         }
         self._lst_widgets = [
             self.cmbQuality,
@@ -114,10 +116,9 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_comboboxes, 'changed_subcategory')
+        pub.subscribe(self.do_load_comboboxes, "changed_subcategory")
 
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -131,27 +132,33 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]],
-                                      signal='changed')
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
 
         # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
-            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
-            signal='changed')
+            [[_("Incandescent, AC")], [_("Incandescent, DC")]], signal="changed"
+        )
 
         # Load the type RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:
             self.cmbType.do_load_combo(
-                [[_("Ceramic-Ferrite")], [_("Discrete LC Components")],
-                 [_("Discrete LC and Crystal Components")]],
-                signal='changed')
+                [
+                    [_("Ceramic-Ferrite")],
+                    [_("Discrete LC Components")],
+                    [_("Discrete LC and Crystal Components")],
+                ],
+                signal="changed",
+            )
         elif self._hazard_rate_method_id == 2:
             self.cmbType.do_load_combo(
-                [[_("MIL-F-15733 Ceramic-Ferrite")],
-                 [_("MIL-F-15733 Discrete LC Components")],
-                 [_("MIL-F-18327 Discrete LC Components")],
-                 [_("MIL-F-18327 Discrete LC and Crystal Components")]],
-                signal='changed')
+                [
+                    [_("MIL-F-15733 Ceramic-Ferrite")],
+                    [_("MIL-F-15733 Discrete LC Components")],
+                    [_("MIL-F-18327 Discrete LC Components")],
+                    [_("MIL-F-18327 Discrete LC and Crystal Components")],
+                ],
+                signal="changed",
+            )
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Miscellaneous assessment input widgets.
@@ -166,7 +173,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         _dic_method = {
             1: self.__do_load_crystal,
             2: self.__do_load_filter,
-            4: self.__do_load_lamp
+            4: self.__do_load_lamp,
         }
         try:
             # noinspection PyArgumentList
@@ -189,7 +196,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         _dic_method = {
             1: self.__do_set_crystal_sensitive,
             2: self.__do_set_filter_sensitive,
-            4: self.__do_set_lamp_sensitive
+            4: self.__do_set_lamp_sensitive,
         }
         try:
             _dic_method[self._subcategory_id]
@@ -205,9 +212,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 2:
-            self.txtFrequency.do_update(str(
-                self.fmt.format(attributes['frequency_operating'])),
-                                        signal='changed')  # noqa
+            self.txtFrequency.do_update(
+                str(self.fmt.format(attributes["frequency_operating"])),
+                signal="changed",
+            )  # noqa
 
     def __do_load_filter(self, attributes: Dict[str, Any]) -> None:
         """Load the Filter assessment input widgets.
@@ -217,7 +225,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        self.cmbType.do_update(attributes['type_id'], signal='changed')
+        self.cmbType.do_update(attributes["type_id"], signal="changed")
 
     def __do_load_lamp(self, attributes: Dict[str, Any]) -> None:
         """Load the Lamp assessment input widgets.
@@ -227,13 +235,12 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
-        self.cmbApplication.do_update(attributes['application_id'],
-                                      signal='changed')
+        self.cmbApplication.do_update(attributes["application_id"], signal="changed")
 
         if self._hazard_rate_method_id == 2:
-            self.txtUtilization.do_update(str(
-                self.fmt.format(attributes['duty_cycle'])),
-                                          signal='changed')  # noqa
+            self.txtUtilization.do_update(
+                str(self.fmt.format(attributes["duty_cycle"])), signal="changed"
+            )  # noqa
 
     def __do_set_crystal_sensitive(self) -> None:
         """Set the widget sensitivity as needed for a Crystal.
@@ -273,24 +280,23 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbQuality.dic_handler_id['changed'] = self.cmbQuality.connect(
-            'changed', self.on_changed_combo, 0, 'wvw_editing_hardware')
-        self.cmbApplication.dic_handler_id[
-            'changed'] = self.cmbApplication.connect('changed',
-                                                     self.on_changed_combo, 1,
-                                                     'wvw_editing_hardware')
-        self.cmbType.dic_handler_id['changed'] = self.cmbType.connect(
-            'changed', self.on_changed_combo, 2, 'wvw_editing_hardware')
+        self.cmbQuality.dic_handler_id["changed"] = self.cmbQuality.connect(
+            "changed", self.on_changed_combo, 0, "wvw_editing_hardware"
+        )
+        self.cmbApplication.dic_handler_id["changed"] = self.cmbApplication.connect(
+            "changed", self.on_changed_combo, 1, "wvw_editing_hardware"
+        )
+        self.cmbType.dic_handler_id["changed"] = self.cmbType.connect(
+            "changed", self.on_changed_combo, 2, "wvw_editing_hardware"
+        )
 
         # ----- ENTRIES
-        self.txtFrequency.dic_handler_id[
-            'changed'] = self.txtFrequency.connect('changed',
-                                                   self.on_changed_entry, 3,
-                                                   'wvw_editing_hardware')
-        self.txtUtilization.dic_handler_id[
-            'changed'] = self.txtUtilization.connect('changed',
-                                                     self.on_changed_entry, 4,
-                                                     'wvw_editing_hardware')
+        self.txtFrequency.dic_handler_id["changed"] = self.txtFrequency.connect(
+            "changed", self.on_changed_entry, 3, "wvw_editing_hardware"
+        )
+        self.txtUtilization.dic_handler_id["changed"] = self.txtUtilization.connect(
+            "changed", self.on_changed_entry, 4, "wvw_editing_hardware"
+        )
 
     def __set_properties(self) -> None:
         """Set properties for Misc hardware assessment input widgets.
@@ -301,10 +307,8 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         super().do_set_properties()
 
         # ----- ENTRIES
-        self.txtFrequency.do_set_properties(tooltip=self._lst_tooltips[3],
-                                            width=125)
-        self.txtUtilization.do_set_properties(tooltip=self._lst_tooltips[4],
-                                              width=125)
+        self.txtFrequency.do_set_properties(tooltip=self._lst_tooltips[3], width=125)
+        self.txtUtilization.do_set_properties(tooltip=self._lst_tooltips[4], width=125)
 
 
 class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
@@ -324,19 +328,15 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
 
     # Define private dict class attributes.
     _dic_part_stress = {
-        1:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
         "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        2:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
         "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        3:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
         "\u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
-        4:
-        "<span foreground=\"blue\">\u03BB<sub>p</sub> = "
+        4: '<span foreground="blue">\u03BB<sub>p</sub> = '
         "\u03BB<sub>b</sub>\u03C0<sub>U</sub>\u03C0<sub>A</sub>\u03C0<sub>E"
-        "</sub></span> "
+        "</sub></span> ",
     }
 
     # Define private class list class attributes.
@@ -361,16 +361,16 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
             "\u03BB<sub>b</sub>:",
             "\u03C0<sub>Q</sub>:",
             "\u03C0<sub>E</sub>:",
-            '\u03C0<sub>U</sub>:',
-            '\u03C0<sub>A</sub>:',
+            "\u03C0<sub>U</sub>:",
+            "\u03C0<sub>A</sub>:",
         ]
         self._lst_tooltips: List[str] = [
             _("The assessment model used to calculate the hazard rate."),
-            _('The base hazard rate.'),
-            _('The quality factor.'),
-            _('The environment factor.'),
-            _('The utilization factor.'),
-            _('The application factor.'),
+            _("The base hazard rate."),
+            _("The quality factor."),
+            _("The environment factor."),
+            _("The utilization factor."),
+            _("The application factor."),
         ]
 
         # Initialize private scalar attributes.
@@ -396,8 +396,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the miscellaneous devices assessment results page.
@@ -409,8 +408,8 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         """
         super().do_load_common(attributes)
 
-        self.txtPiU.do_update(str(self.fmt.format(attributes['piU'])))
-        self.txtPiA.do_update(str(self.fmt.format(attributes['piA'])))
+        self.txtPiU.do_update(str(self.fmt.format(attributes["piU"])))
+        self.txtPiA.do_update(str(self.fmt.format(attributes["piA"])))
 
         self._do_set_sensitive()
 
@@ -431,7 +430,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         _dic_method = {
             1: self.__do_set_crystal_sensitive,
             2: self.__do_set_filter_sensitive,
-            4: self.__do_set_lamp_sensitive
+            4: self.__do_set_lamp_sensitive,
         }
 
         try:

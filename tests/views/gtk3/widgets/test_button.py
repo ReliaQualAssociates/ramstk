@@ -13,12 +13,15 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.widgets import (
-    RAMSTKButton, RAMSTKCheckButton, RAMSTKOptionButton
+    RAMSTKButton,
+    RAMSTKCheckButton,
+    RAMSTKOptionButton,
 )
 
 
-class TestRAMSTKButton():
+class TestRAMSTKButton:
     """Test class for the RAMSTKButton."""
+
     @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKButton."""
@@ -27,8 +30,8 @@ class TestRAMSTKButton():
         assert isinstance(DUT, RAMSTKButton)
         assert DUT.get_label() == "Test Button"
         assert DUT.get_image() is None
-        assert DUT.get_property('height-request') == -1
-        assert DUT.get_property('width-request') == -1
+        assert DUT.get_property("height-request") == -1
+        assert DUT.get_property("width-request") == -1
 
     @pytest.mark.gui
     def test_set_properties(self):
@@ -36,9 +39,9 @@ class TestRAMSTKButton():
         DUT = RAMSTKButton(label="Test Button")
         DUT.do_set_properties(height=20, width=150, tooltip="Test tooltip")
 
-        assert DUT.get_property('height-request') == 20
-        assert DUT.get_property('tooltip-markup') == "Test tooltip"
-        assert DUT.get_property('width-request') == 150
+        assert DUT.get_property("height-request") == 20
+        assert DUT.get_property("tooltip-markup") == "Test tooltip"
+        assert DUT.get_property("width-request") == 150
 
     @pytest.mark.gui
     def test_set_properties_default_values(self):
@@ -46,12 +49,12 @@ class TestRAMSTKButton():
         DUT = RAMSTKButton(label="Test Button")
         DUT.do_set_properties()
 
-        assert DUT.get_property('height-request') == 30
-        assert DUT.get_property('image') is None
-        assert DUT.get_property('tooltip-markup') == (
-            "Missing tooltip, please file a quality type issue to have one "
-            "added.")
-        assert DUT.get_property('width-request') == 200
+        assert DUT.get_property("height-request") == 30
+        assert DUT.get_property("image") is None
+        assert DUT.get_property("tooltip-markup") == (
+            "Missing tooltip, please file a quality type issue to have one " "added."
+        )
+        assert DUT.get_property("width-request") == 200
 
     @pytest.mark.gui
     def test_set_properties_zero_height(self):
@@ -59,7 +62,7 @@ class TestRAMSTKButton():
         DUT = RAMSTKButton(label="Test Button")
         DUT.do_set_properties(height=0)
 
-        assert DUT.get_property('height-request') == 30
+        assert DUT.get_property("height-request") == 30
 
     @pytest.mark.gui
     def test_set_properties_zero_width(self):
@@ -67,11 +70,12 @@ class TestRAMSTKButton():
         DUT = RAMSTKButton(label="Test Button")
         DUT.do_set_properties(width=0)
 
-        assert DUT.get_property('width-request') == 200
+        assert DUT.get_property("width-request") == 200
 
 
-class TestRAMSTKCheckButton():
+class TestRAMSTKCheckButton:
     """Test class for the RAMSTKCheckButton."""
+
     @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKCheckButton."""
@@ -80,8 +84,8 @@ class TestRAMSTKCheckButton():
         assert isinstance(DUT, RAMSTKCheckButton)
         assert isinstance(DUT.get_child(), Gtk.Label)
         assert DUT.get_label() == "Test Check Button"
-        assert DUT.get_property('height-request') == -1
-        assert DUT.get_property('width-request') == -1
+        assert DUT.get_property("height-request") == -1
+        assert DUT.get_property("width-request") == -1
 
     @pytest.mark.gui
     def test_set_properties(self):
@@ -89,9 +93,9 @@ class TestRAMSTKCheckButton():
         DUT = RAMSTKCheckButton(label="Test Check Button")
         DUT.do_set_properties(height=20, width=150, tooltip="Test tooltip")
 
-        assert DUT.get_child().get_property('height-request') == 20
-        assert DUT.get_property('tooltip-markup') == "Test tooltip"
-        assert DUT.get_child().get_property('width-request') == 150
+        assert DUT.get_child().get_property("height-request") == 20
+        assert DUT.get_property("tooltip-markup") == "Test tooltip"
+        assert DUT.get_child().get_property("width-request") == 150
         assert DUT.get_use_underline()
 
     @pytest.mark.gui
@@ -100,11 +104,11 @@ class TestRAMSTKCheckButton():
         DUT = RAMSTKCheckButton(label="Test Check Button")
         DUT.do_set_properties()
 
-        assert DUT.get_child().get_property('height-request') == 40
-        assert DUT.get_property('tooltip-markup') == (
-            "Missing tooltip, please file a quality type issue to have one "
-            "added.")
-        assert DUT.get_child().get_property('width-request') == 200
+        assert DUT.get_child().get_property("height-request") == 40
+        assert DUT.get_property("tooltip-markup") == (
+            "Missing tooltip, please file a quality type issue to have one " "added."
+        )
+        assert DUT.get_child().get_property("width-request") == 200
 
     @pytest.mark.gui
     def test_set_properties_zero_height(self):
@@ -112,7 +116,7 @@ class TestRAMSTKCheckButton():
         DUT = RAMSTKCheckButton(label="Test Check Button")
         DUT.do_set_properties(height=0)
 
-        assert DUT.get_child().get_property('height-request') == 40
+        assert DUT.get_child().get_property("height-request") == 40
 
     @pytest.mark.gui
     def test_set_properties_zero_width(self):
@@ -120,11 +124,12 @@ class TestRAMSTKCheckButton():
         DUT = RAMSTKCheckButton(label="Test Check Button")
         DUT.do_set_properties(width=0)
 
-        assert DUT.get_child().get_property('width-request') == 200
+        assert DUT.get_child().get_property("width-request") == 200
 
 
-class TestRAMSTKOptionButton():
+class TestRAMSTKOptionButton:
     """Test class for the RAMSTKOptionButton."""
+
     @pytest.mark.gui
     def test_create_button(self):
         """__init__() should create a RAMSTKOptionButton."""
@@ -132,5 +137,5 @@ class TestRAMSTKOptionButton():
 
         assert isinstance(DUT, RAMSTKOptionButton)
         assert DUT.get_label() == "Test Option Button"
-        assert DUT.get_property('height-request') == -1
-        assert DUT.get_property('width-request') == -1
+        assert DUT.get_property("height-request") == -1
+        assert DUT.get_property("width-request") == -1

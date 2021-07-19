@@ -15,15 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKHazards
 
-ATTRIBUTES = {
-    'hazard_category': 'Acceleration/Gravity',
-    'hazard_subcategory': 'Falls'
-}
+ATTRIBUTES = {"hazard_category": "Acceleration/Gravity", "hazard_subcategory": "Falls"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKSiteInfo():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKSiteInfo:
     """Class for testing the RAMSTKSiteInfo model."""
+
     @pytest.mark.integration
     def test_ramstkhazards_create(self, test_common_dao):
         """ __init__() should create an RAMSTKHazard model. """
@@ -32,10 +30,10 @@ class TestRAMSTKSiteInfo():
         assert isinstance(DUT, RAMSTKHazards)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_hazards'
+        assert DUT.__tablename__ == "ramstk_hazards"
         assert DUT.hazard_id == 1
-        assert DUT.hazard_category == 'Acceleration/Gravity'
-        assert DUT.hazard_subcategory == 'Falls'
+        assert DUT.hazard_category == "Acceleration/Gravity"
+        assert DUT.hazard_subcategory == "Falls"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -43,8 +41,8 @@ class TestRAMSTKSiteInfo():
         DUT = test_common_dao.session.query(RAMSTKHazards).first()
 
         _attributes = DUT.get_attributes()
-        assert _attributes['hazard_category'] == 'Acceleration/Gravity'
-        assert _attributes['hazard_subcategory'] == 'Falls'
+        assert _attributes["hazard_category"] == "Acceleration/Gravity"
+        assert _attributes["hazard_subcategory"] == "Falls"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -58,10 +56,10 @@ class TestRAMSTKSiteInfo():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKHazards).first()
 
-        ATTRIBUTES['hazard_category'] = None
+        ATTRIBUTES["hazard_category"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['hazard_category'] == 'Hazard Category'
+        assert DUT.get_attributes()["hazard_category"] == "Hazard Category"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -69,4 +67,4 @@ class TestRAMSTKSiteInfo():
         DUT = test_common_dao.session.query(RAMSTKHazards).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

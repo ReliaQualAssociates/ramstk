@@ -14,9 +14,10 @@ import pytest
 from ramstk.views.gtk3.widgets import RAMSTKTreeView
 
 
-@pytest.mark.usefixtures('test_toml_user_configuration')
-class TestRAMSTKTreeView():
+@pytest.mark.usefixtures("test_toml_user_configuration")
+class TestRAMSTKTreeView:
     """Test class for the RAMSTKTreeView."""
+
     @pytest.mark.gui
     def test_create_treeview(self):
         """__init__() should create a RAMSTKTreeView."""

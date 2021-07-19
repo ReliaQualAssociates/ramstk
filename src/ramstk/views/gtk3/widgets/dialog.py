@@ -23,6 +23,7 @@ from ramstk.views.gtk3.widgets.label import do_make_label_group
 
 class RAMSTKDialog(Gtk.Dialog):
     """The RAMSTK Dialog class."""
+
     def __init__(self, dlgtitle: str, **kwargs: Any) -> None:
         """Initialize a RAMSTK Dialog widget.
 
@@ -38,10 +39,16 @@ class RAMSTKDialog(Gtk.Dialog):
 
         :param dlgtitle: the title text for the Gtk.Dialog().
         """
-        _dlgbuttons = kwargs.get('dlgbuttons',
-                                 (Gtk.STOCK_OK, Gtk.ResponseType.OK,
-                                  Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL))
-        _dlgparent = kwargs.get('dlgparent', None)
+        _dlgbuttons = kwargs.get(
+            "dlgbuttons",
+            (
+                Gtk.STOCK_OK,
+                Gtk.ResponseType.OK,
+                Gtk.STOCK_CANCEL,
+                Gtk.ResponseType.CANCEL,
+            ),
+        )
+        _dlgparent = kwargs.get("dlgparent", None)
 
         super().__init__()
 
@@ -63,32 +70,34 @@ class RAMSTKDialog(Gtk.Dialog):
 
 class RAMSTKDatabaseSelect(RAMSTKDialog):
     """The RAMSTK Database Selection Dialog."""
+
     def __init__(self, dlgtitle: str, **kwargs: Any) -> None:
         """Initialize an instance of the RAMSTKdatabaseSelect class."""
         super().__init__(dlgtitle, **kwargs)
 
         # Initialize private dict attributes.
-        self._dao: BaseDatabase = kwargs.get('dao', BaseDatabase)
-        self._dic_icons = kwargs.get('icons', {})
+        self._dao: BaseDatabase = kwargs.get("dao", BaseDatabase)
+        self._dic_icons = kwargs.get("icons", {})
 
         # Initialize private list attributes.
         self._lst_databases: List[str] = []
         self._lst_labels: List[str] = [
-            _('Database Dialect:'),
-            _('Database Server:'),
-            _('Server Port:'),
-            _('Database Name:'),
-            _('RAMSTK User:'),
-            _('RAMSTK Password:')
+            _("Database Dialect:"),
+            _("Database Server:"),
+            _("Server Port:"),
+            _("Database Name:"),
+            _("RAMSTK User:"),
+            _("RAMSTK Password:"),
         ]
 
         # Initialize private scalar attributes.
-        self._old_host: str = ''
+        self._old_host: str = ""
 
         # Initialize public scalar attributes.
-        self.btnRefresh: RAMSTKButton = RAMSTKButton(label='')
+        self.btnRefresh: RAMSTKButton = RAMSTKButton(label="")
         self.btnSave: RAMSTKCheckButton = RAMSTKCheckButton(
-            label='Save Connection Parameters')
+            label="Save Connection Parameters"
+        )
         self.cmbDialect: RAMSTKComboBox = RAMSTKComboBox()
         self.txtHost: RAMSTKEntry = RAMSTKEntry()
         self.txtPort: RAMSTKEntry = RAMSTKEntry()
@@ -98,8 +107,12 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.tvwTreeView: Gtk.TreeView = Gtk.TreeView()
 
         self._lst_widgets = [
-            self.cmbDialect, self.txtHost, self.txtPort, self.txtDatabase,
-            self.txtUser, self.txtPassword
+            self.cmbDialect,
+            self.txtHost,
+            self.txtPort,
+            self.txtDatabase,
+            self.txtUser,
+            self.txtPassword,
         ]
 
         # Initialize public dict attributes.
@@ -107,7 +120,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.database: Dict[str, str] = kwargs.get('database', {})
+        self.database: Dict[str, str] = kwargs.get("database", {})
         self.exists: bool = False
 
         self.__do_set_properties()
@@ -127,7 +140,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         if self.run() == Gtk.ResponseType.OK:
             self._get_database()
-            self.exists = self.database['database'] in self._lst_databases
+            self.exists = self.database["database"] in self._lst_databases
             _return = Gtk.ResponseType.OK
         elif self.run() == Gtk.ResponseType.CANCEL:
             _return = Gtk.ResponseType.CANCEL
@@ -140,16 +153,16 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :return: the database connection parameters.
         :rtype: dict
         """
-        self.database['dialect'] = self.cmbDialect.get_value()
-        self.database['host'] = self.txtHost.do_get_text()
-        self.database['port'] = self.txtPort.do_get_text()
-        self.database['database'] = self.txtDatabase.do_get_text()
-        self.database['user'] = self.txtUser.do_get_text()
-        self.database['password'] = self.txtPassword.do_get_text()
+        self.database["dialect"] = self.cmbDialect.get_value()
+        self.database["host"] = self.txtHost.do_get_text()
+        self.database["port"] = self.txtPort.do_get_text()
+        self.database["database"] = self.txtDatabase.do_get_text()
+        self.database["user"] = self.txtUser.do_get_text()
+        self.database["password"] = self.txtPassword.do_get_text()
 
         # IF the host was changed, reload the database list, otherwise keep
         # going.
-        if self.database['host'] != self._old_host:
+        if self.database["host"] != self._old_host:
             self.__do_load_databases()
 
     def _request_load_databases(self, __button: RAMSTKButton) -> None:
@@ -160,18 +173,18 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         :return: None
         :rtype: None
         """
-        self.database['dialect'] = self.cmbDialect.get_value()
-        self.database['host'] = self.txtHost.do_get_text()
-        self.database['port'] = self.txtPort.do_get_text()
-        self.database['database'] = self.txtDatabase.do_get_text()
-        self.database['user'] = self.txtUser.do_get_text()
-        self.database['password'] = self.txtPassword.do_get_text()
+        self.database["dialect"] = self.cmbDialect.get_value()
+        self.database["host"] = self.txtHost.do_get_text()
+        self.database["port"] = self.txtPort.do_get_text()
+        self.database["database"] = self.txtDatabase.do_get_text()
+        self.database["user"] = self.txtUser.do_get_text()
+        self.database["password"] = self.txtPassword.do_get_text()
 
         self.__do_load_databases()
 
     def __do_load_combobox(self) -> None:
         """Load the dialect RAMSTKComboBox."""
-        self.cmbDialect.do_load_combo([['postgres', '', '']])
+        self.cmbDialect.do_load_combo([["postgres", "", ""]])
 
     def __do_load_databases(self) -> None:
         """Read the database server and load the database list.
@@ -181,63 +194,71 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         """
         _dialect = 0
 
-        self._old_host = self.database['host']
+        self._old_host = self.database["host"]
 
-        self.txtHost.do_update(self.database['host'])
-        self.txtPort.do_update(self.database['port'])
-        self.txtDatabase.do_update(self.database['database'])
-        self.txtUser.do_update(self.database['user'])
-        self.txtPassword.do_update(self.database['password'])
+        self.txtHost.do_update(self.database["host"])
+        self.txtPort.do_update(self.database["port"])
+        self.txtDatabase.do_update(self.database["database"])
+        self.txtUser.do_update(self.database["user"])
+        self.txtPassword.do_update(self.database["password"])
 
         _model = self.tvwTreeView.get_model()
         _model.clear()
 
-        if (self.database['dialect'] == 'postgres'
-                and self.database['user'] != 'first_run'):
+        if (
+            self.database["dialect"] == "postgres"
+            and self.database["user"] != "first_run"
+        ):
             _dialect = 1
-            _stored_db = self.database['database']
-            self.database['database'] = 'postgres'
+            _stored_db = self.database["database"]
+            self.database["database"] = "postgres"
 
             for _db in self._dao.get_database_list(self.database):
                 _model.append([_db])
                 self._lst_databases.append(_db)
 
-            self.database['database'] = _stored_db
+            self.database["database"] = _stored_db
 
         self.cmbDialect.do_update(_dialect)
 
     def __do_set_callbacks(self) -> None:
         """Set widget callback methods."""
-        self.btnRefresh.connect('clicked', self._request_load_databases)
-        self.tvwTreeView.selection.connect('changed', self.__on_row_change)
+        self.btnRefresh.connect("clicked", self._request_load_databases)
+        self.tvwTreeView.selection.connect("changed", self.__on_row_change)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the widgets."""
         _image = Gtk.Image()
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self._dic_icons['refresh'], 22, 22)
+            self._dic_icons["refresh"], 22, 22
+        )
         _image.set_from_pixbuf(_icon)
         self.btnRefresh.set_image(_image)
         self.btnRefresh.do_set_properties(
-            tooltip=_('Refresh server database list.'), width=50)
+            tooltip=_("Refresh server database list."), width=50
+        )
         self.btnSave.do_set_properties(
-            tooltip=_('Save connection information to configuration file.'))
+            tooltip=_("Save connection information to configuration file.")
+        )
         self.cmbDialect.do_set_properties(
-            tooltip=_('Select SQL server dialect for this connection.'),
-            width=300)
+            tooltip=_("Select SQL server dialect for this connection."), width=300
+        )
         self.txtHost.do_set_properties(
-            tooltip=_('Enter the database server hostname.'), width=300)
+            tooltip=_("Enter the database server hostname."), width=300
+        )
         self.txtPort.do_set_properties(
-            tooltip=_('Enter the port number the database server listens on.'),
-            width=300)
+            tooltip=_("Enter the port number the database server listens on."),
+            width=300,
+        )
         self.txtDatabase.do_set_properties(
-            tooltip=_('Enter the name of the database to connect.'), width=300)
+            tooltip=_("Enter the name of the database to connect."), width=300
+        )
         self.txtUser.do_set_properties(
-            tooltip=_('Enter the user name for the database server.'),
-            width=300)
+            tooltip=_("Enter the user name for the database server."), width=300
+        )
         self.txtPassword.do_set_properties(
-            tooltip=_('Enter the user password for the database server.'),
-            width=300)
+            tooltip=_("Enter the user password for the database server."), width=300
+        )
 
         self.tvwTreeView.selection = self.tvwTreeView.get_selection()
 
@@ -264,11 +285,11 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
         _cell = Gtk.CellRendererText()
         _cell.set_alignment(0.1, 0.5)
-        _cell.set_property('background', 'light gray')
-        _cell.set_property('editable', False)
-        _cell.set_property('foreground', '#000000')
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', Pango.WrapMode.WORD_CHAR)
+        _cell.set_property("background", "light gray")
+        _cell.set_property("editable", False)
+        _cell.set_property("foreground", "#000000")
+        _cell.set_property("wrap-width", 250)
+        _cell.set_property("wrap-mode", Pango.WrapMode.WORD_CHAR)
 
         _column = Gtk.TreeViewColumn("Available Databases")
         _column.pack_start(_cell, True)
@@ -292,9 +313,10 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
 
 class RAMSTKDateSelect(Gtk.Dialog):
     """The RAMSTK Date Selection Dialog."""
+
     def __init__(self, **kwargs) -> None:
         """Initialize an instance of the RAMSTKDateSelect class."""
-        _dlgparent = kwargs.get('dlgparent', None)
+        _dlgparent = kwargs.get("dlgparent", None)
 
         super().__init__(self)
 
@@ -322,11 +344,15 @@ class RAMSTKDateSelect(Gtk.Dialog):
         """
         if self.run() == Gtk.ResponseType.ACCEPT:
             _date = self._calendar.get_date()
-            _date = datetime(
-                _date[0],
-                _date[1] + 1,
-                _date[2],
-            ).date().strftime("%Y-%m-%d")
+            _date = (
+                datetime(
+                    _date[0],
+                    _date[1] + 1,
+                    _date[2],
+                )
+                .date()
+                .strftime("%Y-%m-%d")
+            )
         else:
             _date = "1970-01-01"
 
@@ -335,6 +361,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
 class RAMSTKFileChooser(Gtk.FileChooserDialog):
     """The RAMSTK File Chooser Dialog class."""
+
     def __init__(self, title: str, parent: object) -> None:
         """Initialize an instance of the RAMSTKFileChooser dialog.
 
@@ -343,8 +370,12 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
         """
         Gtk.FileChooserDialog.__init__(self)
 
-        self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT,
-                         Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
+        self.add_buttons(
+            Gtk.STOCK_OK,
+            Gtk.ResponseType.ACCEPT,
+            Gtk.STOCK_CANCEL,
+            Gtk.ResponseType.REJECT,
+        )
 
         self.set_title(title)
         self.set_transient_for(parent)
@@ -355,14 +386,14 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
 
         _filter = Gtk.FileFilter()
         _filter.set_name(_("Excel Files"))
-        _filter.add_pattern('*.xls')
-        _filter.add_pattern('*xlsm')
-        _filter.add_pattern('*xlsx')
+        _filter.add_pattern("*.xls")
+        _filter.add_pattern("*xlsm")
+        _filter.add_pattern("*xlsx")
         self.add_filter(_filter)
         _filter = Gtk.FileFilter()
         _filter.set_name(_("Delimited Text Files"))
-        _filter.add_pattern('*.csv')
-        _filter.add_pattern('*.txt')
+        _filter.add_pattern("*.csv")
+        _filter.add_pattern("*.txt")
         self.add_filter(_filter)
         _filter = Gtk.FileFilter()
         _filter.set_name("All files")
@@ -398,6 +429,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
 
     It used for RAMSTK error, warning, and information messages.
     """
+
     def __init__(self, parent: Gtk.Window = None) -> None:
         """Initialize runtime error, warning, and information dialogs.
 
@@ -420,7 +452,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         """
         self.set_markup(message)
 
-    def do_set_message_type(self, message_type: str = 'error') -> None:
+    def do_set_message_type(self, message_type: str = "error") -> None:
         """Set RAMSTKMessageDialog message type.
 
         :param message_type: the RAMSTKMessageDialog message type.
@@ -431,40 +463,49 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         """
         _message_type = Gtk.MessageType.INFO
 
-        if message_type == 'error':
-            _prompt = self.get_property('text')
+        if message_type == "error":
+            _prompt = self.get_property("text")
             # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
             # e-mail address.
-            _hyper = "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG " \
-                     "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;" \
-                     "body=RAMSTK MODULE:%0d%0a%0d%0a" \
-                     "RAMSTK VERSION:%20%0d%0a%0d%0a" \
-                     "YOUR HARDWARE:%20%0d%0a%0d%0a" \
-                     "YOUR OS:%20%0d%0a%0d%0a" \
-                     "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
-            _prompt = '<b>' + _prompt + _(
-                "  Check the error log for additional information "
-                "(if any).  Please e-mail <span foreground='blue' "
-                "underline='single'>", ) + _hyper + _(
+            _hyper = (
+                "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
+                "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;"
+                "body=RAMSTK MODULE:%0d%0a%0d%0a"
+                "RAMSTK VERSION:%20%0d%0a%0d%0a"
+                "YOUR HARDWARE:%20%0d%0a%0d%0a"
+                "YOUR OS:%20%0d%0a%0d%0a"
+                "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
+            )
+            _prompt = (
+                "<b>"
+                + _prompt
+                + _(
+                    "  Check the error log for additional information "
+                    "(if any).  Please e-mail <span foreground='blue' "
+                    "underline='single'>",
+                )
+                + _hyper
+                + _(
                     "bugs@reliaqual.com</a></span> with a detailed "
                     "description of the problem, the workflow you are "
                     "using and the error log attached if the problem "
-                    "persists.</b>", )
+                    "persists.</b>",
+                )
+            )
             self.set_markup(_prompt)
             _message_type = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == 'warning':
+        elif message_type == "warning":
             _message_type = Gtk.MessageType.WARNING
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == 'information':
+        elif message_type == "information":
             _message_type = Gtk.MessageType.INFO
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == 'question':
+        elif message_type == "question":
             _message_type = Gtk.MessageType.QUESTION
-            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No",
-                             Gtk.ResponseType.NO)
+            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
 
-        self.set_property('message-type', _message_type)
+        self.set_property("message-type", _message_type)
 
     def do_run(self) -> Any:
         """Run the RAMSTK Message Dialog."""

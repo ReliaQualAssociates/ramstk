@@ -16,27 +16,27 @@ import pytest
 from ramstk.analyses.milhdbk217f import connection
 
 ATTRIBUTES = {
-    'category_id': 8,
-    'subcategory_id': 1,
-    'environment_active_id': 2,
-    'type_id': 2,
-    'specification_id': 1,
-    'n_circuit_planes': 3,
-    'contact_gauge': 20,
-    'current_operating': 0.005,
-    'n_active_pins': 15,
-    'n_cycles': 0.1,
-    'temperature_active': 40.0,
-    'insert_id': 2,
-    'n_wave_soldered': 45,
-    'n_hand_soldered': 4,
-    'lambda_b': 0.0,
-    'piQ': 1.0,
-    'piE': 1.0,
-    'piC': 0.0,
-    'piK': 0.0,
-    'piP': 0.0,
-    'hazard_rate_active': 0.0
+    "category_id": 8,
+    "subcategory_id": 1,
+    "environment_active_id": 2,
+    "type_id": 2,
+    "specification_id": 1,
+    "n_circuit_planes": 3,
+    "contact_gauge": 20,
+    "current_operating": 0.005,
+    "n_active_pins": 15,
+    "n_cycles": 0.1,
+    "temperature_active": 40.0,
+    "insert_id": 2,
+    "n_wave_soldered": 45,
+    "n_hand_soldered": 4,
+    "lambda_b": 0.0,
+    "piQ": 1.0,
+    "piE": 1.0,
+    "piC": 0.0,
+    "piK": 0.0,
+    "piP": 0.0,
+    "hazard_rate_active": 0.0,
 }
 
 
@@ -51,13 +51,13 @@ ATTRIBUTES = {
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 @pytest.mark.parametrize("type_id", [1, 2])
-def test_get_part_count_lambda_b(subcategory_id, environment_active_id,
-                                 type_id):
+def test_get_part_count_lambda_b(subcategory_id, environment_active_id, type_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rates on success."""
     _lambda_b = connection.get_part_count_lambda_b(
         subcategory_id=subcategory_id,
         environment_active_id=environment_active_id,
-        type_id=type_id)
+        type_id=type_id,
+    )
     assert isinstance(_lambda_b, float)
 
     # Verify a sampling of base hazard rates.
@@ -69,7 +69,8 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
     with pytest.raises(KeyError):
         _lambda_b = connection.get_part_count_lambda_b(
-            subcategory_id=88, environment_active_id=12, type_id=2)
+            subcategory_id=88, environment_active_id=12, type_id=2
+        )
 
 
 @pytest.mark.unit
@@ -78,7 +79,8 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown active environment ID."""
     with pytest.raises(IndexError):
         _lambda_b = connection.get_part_count_lambda_b(
-            subcategory_id=3, environment_active_id=22, type_id=-1)
+            subcategory_id=3, environment_active_id=22, type_id=-1
+        )
 
 
 @pytest.mark.unit
@@ -86,9 +88,9 @@ def test_get_part_count_lambda_b_no_environment():
 def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(subcategory_id=1,
-                                                       environment_active_id=2,
-                                                       type_id=22)
+        _lambda_b = connection.get_part_count_lambda_b(
+            subcategory_id=1, environment_active_id=2, type_id=22
+        )
 
 
 @pytest.mark.unit
@@ -107,11 +109,10 @@ def test_calculate_part_count():
 def test_calculate_insert_temperature(contact_gauge):
     """calculate_insert_temperature() should return a float value for the temperature rise on success."""
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
-    _temperature_rise = connection.calculate_insert_temperature(
-        contact_gauge, 0.05)
+    _temperature_rise = connection.calculate_insert_temperature(contact_gauge, 0.05)
 
     assert isinstance(_temperature_rise, float)
-    assert _temperature_rise == _dic_factors[contact_gauge] * 0.05**1.85
+    assert _temperature_rise == _dic_factors[contact_gauge] * 0.05 ** 1.85
 
 
 @pytest.mark.unit
@@ -127,7 +128,7 @@ def test_calculate_insert_temperature_no_gauge():
 def test_calculate_insert_temperature_string_current():
     """calculate_insert_temperature() should raise a TypeError when passed a string for the operating current."""
     with pytest.raises(TypeError):
-        _temperature_rise = connection.calculate_insert_temperature(12, '0.05')
+        _temperature_rise = connection.calculate_insert_temperature(12, "0.05")
 
 
 @pytest.mark.unit
@@ -181,7 +182,8 @@ def test_calculate_part_stress_lambda_b(subcategory_id):
     else:
         _factor_key = 5
     _lambda_b = connection.calculate_part_stress_lambda_b(
-        subcategory_id, 4, 325, _factor_key)
+        subcategory_id, 4, 325, _factor_key
+    )
 
     assert isinstance(_lambda_b, float)
     if subcategory_id == 1:
@@ -213,23 +215,23 @@ def test_calculate_part_stress_lambda_zero_contact_temperature():
 @pytest.mark.parametrize("subcategory_id", [1, 3, 4, 5])
 def test_calculate_part_stress(subcategory_id):
     """calculate_part_stress() should return a dict of updated attributes on success."""
-    ATTRIBUTES['subcategory_id'] = subcategory_id
+    ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = connection.calculate_part_stress(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1:
-        assert _attributes['lambda_b'] == pytest.approx(0.00073120394)
-        assert _attributes['piK'] == 1.5
-        assert _attributes['piP'] == pytest.approx(3.27874110)
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.0035961426)
+        assert _attributes["lambda_b"] == pytest.approx(0.00073120394)
+        assert _attributes["piK"] == 1.5
+        assert _attributes["piP"] == pytest.approx(3.27874110)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0035961426)
     elif subcategory_id == 3:
-        assert _attributes['lambda_b'] == 0.00042
-        assert _attributes['piP'] == pytest.approx(3.27874110)
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.0013770713)
+        assert _attributes["lambda_b"] == 0.00042
+        assert _attributes["piP"] == pytest.approx(3.27874110)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0013770713)
     elif subcategory_id == 4:
-        assert _attributes['lambda_b'] == 0.00026
-        assert _attributes['piC'] == pytest.approx(1.29867281)
-        assert _attributes['hazard_rate_active'] == pytest.approx(0.030065092)
+        assert _attributes["lambda_b"] == 0.00026
+        assert _attributes["piC"] == pytest.approx(1.29867281)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.030065092)
     elif subcategory_id == 5:
-        assert _attributes['lambda_b'] == 0.00014
-        assert _attributes['hazard_rate_active'] == 0.00014
+        assert _attributes["lambda_b"] == 0.00014
+        assert _attributes["hazard_rate_active"] == 0.00014

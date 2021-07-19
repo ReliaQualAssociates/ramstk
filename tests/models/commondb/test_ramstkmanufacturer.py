@@ -16,15 +16,16 @@ import pytest
 from ramstk.models.commondb import RAMSTKManufacturer
 
 ATTRIBUTES = {
-    'cage_code': '13606',
-    'description': 'Sprague',
-    'location': 'New Hampshire'
+    "cage_code": "13606",
+    "description": "Sprague",
+    "location": "New Hampshire",
 }
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKManufacturer():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKManufacturer:
     """Class for testing the RAMSTKManufacturer model."""
+
     @pytest.mark.integration
     def test_ramstkmanufacturer_create(self, test_common_dao):
         """ __init__() should create an RAMSTKManufacturer model. """
@@ -33,12 +34,11 @@ class TestRAMSTKManufacturer():
         assert isinstance(DUT, RAMSTKManufacturer)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_manufacturer'
+        assert DUT.__tablename__ == "ramstk_manufacturer"
         assert DUT.manufacturer_id == 1
-        assert DUT.description == 'Sprague'
-        assert DUT.location == 'New Hampshire'
-        assert DUT.cage_code == '13606'
-
+        assert DUT.description == "Sprague"
+        assert DUT.location == "New Hampshire"
+        assert DUT.cage_code == "13606"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -47,9 +47,9 @@ class TestRAMSTKManufacturer():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['cage_code'] == '13606'
-        assert _attributes['description'] == 'Sprague'
-        assert _attributes['location'] == 'New Hampshire'
+        assert _attributes["cage_code"] == "13606"
+        assert _attributes["description"] == "Sprague"
+        assert _attributes["location"] == "New Hampshire"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -63,10 +63,10 @@ class TestRAMSTKManufacturer():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKManufacturer).first()
 
-        ATTRIBUTES['location'] = None
+        ATTRIBUTES["location"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['location'] == 'unknown'
+        assert DUT.get_attributes()["location"] == "unknown"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -74,4 +74,4 @@ class TestRAMSTKManufacturer():
         DUT = test_common_dao.session.query(RAMSTKManufacturer).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

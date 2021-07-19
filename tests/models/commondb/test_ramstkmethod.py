@@ -15,16 +15,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKMethod
 
-ATTRIBUTES = {
-    'description': '',
-    'method_type': 'detection',
-    'name': 'Code Reviews'
-}
+ATTRIBUTES = {"description": "", "method_type": "detection", "name": "Code Reviews"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKMethod():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKMethod:
     """Class for testing the RAMSTKMethod model."""
+
     @pytest.mark.integration
     def test_ramstkmethod_create(self, test_common_dao):
         """ __init__() should create an RAMSTKMethod model. """
@@ -33,11 +30,11 @@ class TestRAMSTKMethod():
         assert isinstance(DUT, RAMSTKMethod)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_method'
+        assert DUT.__tablename__ == "ramstk_method"
         assert DUT.method_id == 1
-        assert DUT.description == ''
-        assert DUT.name == 'Code Reviews'
-        assert DUT.method_type == 'detection'
+        assert DUT.description == ""
+        assert DUT.name == "Code Reviews"
+        assert DUT.method_type == "detection"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -46,9 +43,9 @@ class TestRAMSTKMethod():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['description'] == ''
-        assert _attributes['method_type'] == 'detection'
-        assert _attributes['name'] == 'Code Reviews'
+        assert _attributes["description"] == ""
+        assert _attributes["method_type"] == "detection"
+        assert _attributes["name"] == "Code Reviews"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -62,10 +59,10 @@ class TestRAMSTKMethod():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKMethod).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'Method Description'
+        assert DUT.get_attributes()["description"] == "Method Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -73,4 +70,4 @@ class TestRAMSTKMethod():
         DUT = test_common_dao.session.query(RAMSTKMethod).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

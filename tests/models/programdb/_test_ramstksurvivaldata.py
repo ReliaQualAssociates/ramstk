@@ -17,12 +17,10 @@ from datetime import date, timedelta
 from os.path import dirname
 
 # Third Party Imports
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-# RAMSTK Package Imports
 from dao.RAMSTKSurvival import RAMSTKSurvival
 from nose.plugins.attrib import attr
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 sys.path.insert(
     0,
@@ -30,12 +28,9 @@ sys.path.insert(
 )
 
 
-
-
-
-__author__ = 'Doyle Rowland'
-__email__ = 'doyle.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
+__author__ = "Doyle Rowland"
+__email__ = "doyle.rowland@reliaqual.com"
+__organization__ = "ReliaQual Associates, LLC"
 __copyright__ = 'Copyright 2017 Doyle "weibullguy" Rowland'
 
 
@@ -44,17 +39,54 @@ class TestRAMSTKSurvival(unittest.TestCase):
     Class for testing the RAMSTKSurvival class.
     """
 
-    _attributes = (1, 1, 1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
-                   0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   date.today(), date.today() + timedelta(days=30), 0)
+    _attributes = (
+        1,
+        1,
+        1,
+        "Test Survival Analysis",
+        0,
+        0,
+        75.0,
+        0,
+        0,
+        0,
+        0.0,
+        0,
+        0,
+        0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        date.today(),
+        date.today() + timedelta(days=30),
+        0,
+    )
 
     def setUp(self):
         """
         Sets up the test fixture for the RAMSTKSurvival class.
         """
 
-        engine = create_engine('sqlite:////tmp/TestDB.ramstk', echo=False)
+        engine = create_engine("sqlite:////tmp/TestDB.ramstk", echo=False)
         session = scoped_session(sessionmaker())
 
         session.remove()
@@ -75,11 +107,11 @@ class TestRAMSTKSurvival(unittest.TestCase):
             self.assertTrue(isinstance(self.DUT, RAMSTKSurvival))
 
             # Verify class attributes are properly initialized.
-            self.assertEqual(self.DUT.__tablename__, 'ramstk_survival')
+            self.assertEqual(self.DUT.__tablename__, "ramstk_survival")
             self.assertEqual(self.DUT.revision_id, 1)
             self.assertEqual(self.DUT.survival_id, 1)
             self.assertEqual(self.DUT.hardware_id, 0)
-            self.assertEqual(self.DUT.description, 'Test Survival Analysis')
+            self.assertEqual(self.DUT.description, "Test Survival Analysis")
             self.assertEqual(self.DUT.source_id, 0)
             self.assertEqual(self.DUT.distribution_id, 0)
             self.assertEqual(self.DUT.confidence, 75.0)
@@ -113,8 +145,7 @@ class TestRAMSTKSurvival(unittest.TestCase):
             self.assertEqual(self.DUT.mle, 0.0)
             self.assertEqual(self.DUT.start_time, 0.0)
             self.assertEqual(self.DUT.start_date, date.today())
-            self.assertEqual(
-                self.DUT.end_date, date.today() + timedelta(days=30))
+            self.assertEqual(self.DUT.end_date, date.today() + timedelta(days=30))
             self.assertEqual(self.DUT.nevada_chart, 0)
 
     @attr(all=True, unit=True)
@@ -131,17 +162,54 @@ class TestRAMSTKSurvival(unittest.TestCase):
         (TestRAMSTKSurvival) set_attributes should return a zero error code on success
         """
 
-        _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
-                       date.today() + timedelta(days=30), 0)
+        _attributes = (
+            1,
+            "Test Survival Analysis",
+            0,
+            0,
+            75.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            date.today(),
+            date.today() + timedelta(days=30),
+            0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RAMSTK SUCCESS: Updating RAMSTKSurvival {0:d} " \
-                               "attributes.".format(self.DUT.survival_id))
+        self.assertEqual(
+            _msg,
+            "RAMSTK SUCCESS: Updating RAMSTKSurvival {0:d} "
+            "attributes.".format(self.DUT.survival_id),
+        )
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_wrong_type(self):
@@ -149,18 +217,55 @@ class TestRAMSTKSurvival(unittest.TestCase):
         (TestRAMSTKSurvival) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 'None', 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
-                       date.today() + timedelta(days=30), 0)
+        _attributes = (
+            1,
+            "Test Survival Analysis",
+            0,
+            0,
+            75.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            "None",
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            date.today(),
+            date.today() + timedelta(days=30),
+            0,
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RAMSTK ERROR: Incorrect data type when " \
-                               "converting one or more RAMSTKSurvival " \
-                               "attributes.")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Incorrect data type when "
+            "converting one or more RAMSTKSurvival "
+            "attributes.",
+        )
 
     @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
@@ -168,14 +273,50 @@ class TestRAMSTKSurvival(unittest.TestCase):
         (TestRAMSTKSurvival) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
-                       date.today() + timedelta(days=30))
+        _attributes = (
+            1,
+            "Test Survival Analysis",
+            0,
+            0,
+            75.0,
+            0,
+            0,
+            0,
+            0.0,
+            0,
+            0,
+            0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            date.today(),
+            date.today() + timedelta(days=30),
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RAMSTK ERROR: Insufficient number of input " \
-                               "values to RAMSTKSurvival.set_attributes().")
+        self.assertEqual(
+            _msg,
+            "RAMSTK ERROR: Insufficient number of input "
+            "values to RAMSTKSurvival.set_attributes().",
+        )
