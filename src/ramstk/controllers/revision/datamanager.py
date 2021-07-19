@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
 # Standard Library Imports
@@ -22,14 +22,9 @@ from ramstk.models.programdb import RAMSTKRevision
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Revision data manager.
+    """Contain the attributes and methods of the Revision data manager."""
 
-    This class manages the revision data from the RAMSTKRevision,
-    RAMSTKFailureDefinition, RAMSTKMission, RAMSTKMissionPhase, and
-    RAMSKTEnvironment data models.
-    """
-
-    _tag = "revisions"
+    _tag = "revision"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Revision data manager instance."""
@@ -85,7 +80,7 @@ class DataManager(RAMSTKDataManager):
                 tag=_revision.name,
                 identifier=_revision.revision_id,
                 parent=self._root,
-                data={"revision": _revision},
+                data={self._tag: _revision},
             )
 
         self.last_id = max(self.tree.nodes.keys())
