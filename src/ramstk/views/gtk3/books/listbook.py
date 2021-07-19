@@ -30,8 +30,10 @@ class RAMSTKListBook(RAMSTKBaseBook):
         Key is the RAMSTK module name; value is a list of Views associated with
         that RAMSTK module.
     """
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize an instance of the RAMSTK List View class.
 
         :param configuration: the RAMSTKUserConfiguration() class instance.
@@ -41,22 +43,22 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
         # Initialize private dictionary attributes.
         self._dic_list_views = {
-            'revision': [
+            "revision": [
                 lvwUsageProfile(configuration, logger),
-                lvwFailureDefinition(configuration, logger)
+                lvwFailureDefinition(configuration, logger),
             ],
-            'function': [],
-            'requirement': [
+            "function": [],
+            "requirement": [
                 lvwStakeholders(configuration, logger),
             ],
-            'hardware': [],
-            'validation': []
+            "hardware": [],
+            "validation": [],
         }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._module: str = ''
+        self._module: str = ""
 
         # Initialize public dictionary attributes.
 
@@ -64,11 +66,11 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
         # Initialize public scalar attributes.
 
-        self._set_properties('listbook')
+        self._set_properties("listbook")
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-        pub.subscribe(self._on_close, 'succeed_closed_program')
+        pub.subscribe(self._on_module_change, "mvwSwitchedPage")
+        pub.subscribe(self._on_close, "succeed_closed_program")
 
     def _on_close(self) -> None:
         """Clear the List Views when a RAMSTK Program database is closed.
@@ -90,7 +92,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
                 _model.clear()
 
-    def _on_module_change(self, module: str = '') -> None:
+    def _on_module_change(self, module: str = "") -> None:
         """Load List Views for the RAMSTK module selected in the Module Book.
 
         :param module: the name of the RAMSTK workflow module that has

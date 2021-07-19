@@ -12,6 +12,7 @@ from ramstk.utilities import none_to_default
 
 class RAMSTKBaseTable:
     """Meta-class for RAMSTK Common and Program database tables."""
+
     def set_attributes(self, attributes):
         """Set one or more RAMSTK<Table> attributes.
 
@@ -27,5 +28,6 @@ class RAMSTKBaseTable:
         """
         for _key in attributes:
             getattr(self, _key)
-            setattr(self, _key,
-                    none_to_default(attributes[_key], self.__defaults__[_key]))
+            setattr(
+                self, _key, none_to_default(attributes[_key], self.__defaults__[_key])
+            )

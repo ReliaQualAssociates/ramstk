@@ -8,21 +8,13 @@ from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
 from ramstk.models.programdb import RAMSTKControl as RAMSTKControl
-from ramstk.models.programdb import (
-    RAMSTKDesignElectric as RAMSTKDesignElectric
-)
-from ramstk.models.programdb import (
-    RAMSTKDesignMechanic as RAMSTKDesignMechanic
-)
+from ramstk.models.programdb import RAMSTKDesignElectric as RAMSTKDesignElectric
+from ramstk.models.programdb import RAMSTKDesignMechanic as RAMSTKDesignMechanic
 from ramstk.models.programdb import RAMSTKEnvironment as RAMSTKEnvironment
-from ramstk.models.programdb import (
-    RAMSTKFailureDefinition as RAMSTKFailureDefinition
-)
+from ramstk.models.programdb import RAMSTKFailureDefinition as RAMSTKFailureDefinition
 from ramstk.models.programdb import RAMSTKFunction as RAMSTKFunction
 from ramstk.models.programdb import RAMSTKHardware as RAMSTKHardware
-from ramstk.models.programdb import (
-    RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
-)
+from ramstk.models.programdb import RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
 from ramstk.models.programdb import RAMSTKMechanism as RAMSTKMechanism
 from ramstk.models.programdb import RAMSTKMilHdbkF as RAMSTKMilHdbkF
 from ramstk.models.programdb import RAMSTKMission as RAMSTKMission
@@ -40,9 +32,5 @@ from ramstk.models.programdb import RAMSTKStakeholder as RAMSTKStakeholder
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
 from ramstk.models.programdb import RAMSTKValidation as RAMSTKValidation
 
-def do_make_programdb_tables(engine: Engine) -> None:
-    ...
-
-
-def do_create_program_db(engine: Engine, session: scoped_session) -> None:
-    ...
+def do_make_programdb_tables(engine: Engine) -> None: ...
+def do_create_program_db(engine: Engine, session: scoped_session) -> None: ...

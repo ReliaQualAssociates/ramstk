@@ -13,33 +13,51 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
+
 # noinspection PyPackageRequirements
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_DORMANT_ENVIRONMENTS,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS,
-    RAMSTK_HR_TYPES, RAMSTKUserConfiguration
+    RAMSTK_ACTIVE_ENVIRONMENTS,
+    RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_HR_DISTRIBUTIONS,
+    RAMSTK_HR_MODELS,
+    RAMSTK_HR_TYPES,
+    RAMSTKUserConfiguration,
 )
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
-    RAMSTKCheckButton, RAMSTKComboBox, RAMSTKEntry, RAMSTKPanel,
-    RAMSTKScrolledWindow, RAMSTKTextView, RAMSTKWorkView
+    RAMSTKCheckButton,
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKPanel,
+    RAMSTKScrolledWindow,
+    RAMSTKTextView,
+    RAMSTKWorkView,
 )
 
 # RAMSTK Local Imports
 from . import ATTRIBUTE_KEYS
 from .components import (
-    capacitor, connection, inductor, integrated_circuit, meter,
-    miscellaneous, relay, resistor, semiconductor, switch
+    capacitor,
+    connection,
+    inductor,
+    integrated_circuit,
+    meter,
+    miscellaneous,
+    relay,
+    resistor,
+    semiconductor,
+    switch,
 )
 from .components.panels import RAMSTKStressInputPanel, RAMSTKStressResultPanel
 
 
 class GeneralDataPanel(RAMSTKPanel):
     """Panel to display general data about the selected Hardware item."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Hardware General Date panel."""
         super().__init__()
@@ -73,8 +91,7 @@ class GeneralDataPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.chkRepairable: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Repairable"))
+        self.chkRepairable: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Repairable"))
 
         self.cmbCategory: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbSubcategory: RAMSTKComboBox = RAMSTKComboBox()
@@ -91,19 +108,18 @@ class GeneralDataPanel(RAMSTKPanel):
         self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'category_id': [self.cmbCategory.do_update, 'changed', 32],
-            'subcategory_id': [self.cmbSubcategory.do_update, 'changed', 33],
-            'alt_part_number': [self.txtAltPartNum.do_update, 'changed', 2],
-            'comp_ref_des': [self.txtCompRefDes.do_update, 'changed', 4],
-            'description': [self.txtDescription.do_update, 'changed', 8],
-            'figure_number': [self.txtFigureNumber.do_update, 'changed', 10],
-            'lcn': [self.txtLCN.do_update, 'changed', 11],
-            'name': [self.txtName.do_update, 'changed', 15],
-            'page_number': [self.txtPageNumber.do_update, 'changed', 17],
-            'part_number': [self.txtPartNumber.do_update, 'changed', 20],
-            'ref_des': [self.txtRefDes.do_update, 'changed', 22],
-            'specification_number':
-            [self.txtSpecification.do_update, 'changed', 25],
+            "category_id": [self.cmbCategory.do_update, "changed", 32],
+            "subcategory_id": [self.cmbSubcategory.do_update, "changed", 33],
+            "alt_part_number": [self.txtAltPartNum.do_update, "changed", 2],
+            "comp_ref_des": [self.txtCompRefDes.do_update, "changed", 4],
+            "description": [self.txtDescription.do_update, "changed", 8],
+            "figure_number": [self.txtFigureNumber.do_update, "changed", 10],
+            "lcn": [self.txtLCN.do_update, "changed", 11],
+            "name": [self.txtName.do_update, "changed", 15],
+            "page_number": [self.txtPageNumber.do_update, "changed", 17],
+            "part_number": [self.txtPartNumber.do_update, "changed", 20],
+            "ref_des": [self.txtRefDes.do_update, "changed", 22],
+            "specification_number": [self.txtSpecification.do_update, "changed", 25],
         }
 
         self._lst_widgets = [
@@ -128,12 +144,12 @@ class GeneralDataPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_edit, 'mvw_editing_hardware')
+        pub.subscribe(super().on_edit, "mvw_editing_hardware")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_hardware')
-        pub.subscribe(self._do_load_panel, 'succeed_create_comp_ref_des')
-        pub.subscribe(self._do_load_subcategories, 'changed_category')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "selected_hardware")
+        pub.subscribe(self._do_load_panel, "succeed_create_comp_ref_des")
+        pub.subscribe(self._do_load_subcategories, "changed_category")
 
     def do_load_categories(self, category: Dict[int, str]) -> None:
         """Load the category RAMSTKComboBox().
@@ -158,23 +174,23 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECKBUTTONS
-        self.chkRepairable.do_update(False, signal='toggled')
+        self.chkRepairable.do_update(False, signal="toggled")
 
         # ----- COMBOBOXES
-        self.cmbCategory.do_update(0, signal='changed')
-        self.cmbSubcategory.do_update(0, signal='changed')
+        self.cmbCategory.do_update(0, signal="changed")
+        self.cmbSubcategory.do_update(0, signal="changed")
 
         # ----- ENTRIES
-        self.txtAltPartNum.do_update('', signal='changed')
-        self.txtCompRefDes.do_update('', signal='changed')
-        self.txtDescription.do_update('', signal='changed')
-        self.txtFigureNumber.do_update('', signal='changed')
-        self.txtLCN.do_update('', signal='changed')
-        self.txtName.do_update('', signal='changed')
-        self.txtPageNumber.do_update('', signal='changed')
-        self.txtPartNumber.do_update('', signal='changed')
-        self.txtRefDes.do_update('', signal='changed')
-        self.txtSpecification.do_update('', signal='changed')
+        self.txtAltPartNum.do_update("", signal="changed")
+        self.txtCompRefDes.do_update("", signal="changed")
+        self.txtDescription.do_update("", signal="changed")
+        self.txtFigureNumber.do_update("", signal="changed")
+        self.txtLCN.do_update("", signal="changed")
+        self.txtName.do_update("", signal="changed")
+        self.txtPageNumber.do_update("", signal="changed")
+        self.txtPartNumber.do_update("", signal="changed")
+        self.txtRefDes.do_update("", signal="changed")
+        self.txtSpecification.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -184,49 +200,46 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # Disable the category RAMSTKCombo() if the hardware item is not a
         # part.
-        if attributes['part'] == 1:
+        if attributes["part"] == 1:
             self.cmbCategory.set_sensitive(True)
             self.cmbSubcategory.set_sensitive(True)
 
-            self.cmbCategory.do_update(int(attributes['category_id']),
-                                       signal='changed')
+            self.cmbCategory.do_update(int(attributes["category_id"]), signal="changed")
 
-            self._do_load_subcategories(int(attributes['category_id']))
-            self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
-                                          signal='changed')
+            self._do_load_subcategories(int(attributes["category_id"]))
+            self.cmbSubcategory.do_update(
+                int(attributes["subcategory_id"]), signal="changed"
+            )
 
         else:
             self.cmbCategory.set_sensitive(False)
-            self.cmbCategory.do_update(int(attributes['category_id']),
-                                       signal='changed')
+            self.cmbCategory.do_update(int(attributes["category_id"]), signal="changed")
             self.cmbSubcategory.set_sensitive(False)
-            self.cmbSubcategory.do_update(int(attributes['subcategory_id']),
-                                          signal='changed')
+            self.cmbSubcategory.do_update(
+                int(attributes["subcategory_id"]), signal="changed"
+            )
 
-        self.chkRepairable.do_update(int(attributes['repairable']),
-                                     signal='toggled')
-        self.txtAltPartNum.do_update(str(attributes['alt_part_number']),
-                                     signal='changed')
-        self.txtCompRefDes.do_update(str(attributes['comp_ref_des']),
-                                     signal='changed')
-        self.txtDescription.do_update(str(attributes['description']),
-                                      signal='changed')
-        self.txtFigureNumber.do_update(str(attributes['figure_number']),
-                                       signal='changed')
-        self.txtLCN.do_update(str(attributes['lcn']), signal='changed')
-        self.txtName.do_update(str(attributes['name']), signal='changed')
-        self.txtPageNumber.do_update(str(attributes['page_number']),
-                                     signal='changed')
-        self.txtPartNumber.do_update(str(attributes['part_number']),
-                                     signal='changed')
-        self.txtRefDes.do_update(str(attributes['ref_des']), signal='changed')
-        self.txtSpecification.do_update(str(
-            attributes['specification_number']),
-                                        signal='changed')  # noqa
+        self.chkRepairable.do_update(int(attributes["repairable"]), signal="toggled")
+        self.txtAltPartNum.do_update(
+            str(attributes["alt_part_number"]), signal="changed"
+        )
+        self.txtCompRefDes.do_update(str(attributes["comp_ref_des"]), signal="changed")
+        self.txtDescription.do_update(str(attributes["description"]), signal="changed")
+        self.txtFigureNumber.do_update(
+            str(attributes["figure_number"]), signal="changed"
+        )
+        self.txtLCN.do_update(str(attributes["lcn"]), signal="changed")
+        self.txtName.do_update(str(attributes["name"]), signal="changed")
+        self.txtPageNumber.do_update(str(attributes["page_number"]), signal="changed")
+        self.txtPartNumber.do_update(str(attributes["part_number"]), signal="changed")
+        self.txtRefDes.do_update(str(attributes["ref_des"]), signal="changed")
+        self.txtSpecification.do_update(
+            str(attributes["specification_number"]), signal="changed"
+        )  # noqa
 
     def _do_load_subcategories(self, category_id: int) -> None:
         """Load the subcategory RAMSTKComboBox().
@@ -242,8 +255,7 @@ class GeneralDataPanel(RAMSTKPanel):
             _subcategory = []
             for _key in _subcategories:
                 _subcategory.append([_subcategories[_key]])
-            self.cmbSubcategory.do_load_combo(entries=_subcategory,
-                                              signal='changed')
+            self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
 
     @staticmethod
     def _request_load_component(combo: RAMSTKComboBox) -> None:
@@ -252,8 +264,7 @@ class GeneralDataPanel(RAMSTKPanel):
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
         """
-        pub.sendMessage('changed_subcategory',
-                        subcategory_id=combo.get_active())
+        pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
 
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
         """Request to have the subcategory RAMSTKComboBox() loaded.
@@ -270,63 +281,56 @@ class GeneralDataPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECKBUTTONS
-        self.chkRepairable.dic_handler_id['toggled'] = (
-            self.chkRepairable.connect('toggled',
-                                       super().on_toggled, 24,
-                                       'wvw_editing_hardware'))
+        self.chkRepairable.dic_handler_id["toggled"] = self.chkRepairable.connect(
+            "toggled", super().on_toggled, 24, "wvw_editing_hardware"
+        )
 
         # ----- COMBOBOXES
-        self.cmbCategory.dic_handler_id['changed'] = self.cmbCategory.connect(
-            'changed',
-            super().on_changed_combo, 32, 'wvw_editing_hardware')
-        self.cmbCategory.connect('changed', self._request_load_subcategories)
-        self.cmbSubcategory.dic_handler_id[
-            'changed'] = self.cmbSubcategory.connect('changed',
-                                                     super().on_changed_combo,
-                                                     33,
-                                                     'wvw_editing_hardware')
-        self.cmbSubcategory.connect('changed', self._request_load_component)
+        self.cmbCategory.dic_handler_id["changed"] = self.cmbCategory.connect(
+            "changed", super().on_changed_combo, 32, "wvw_editing_hardware"
+        )
+        self.cmbCategory.connect("changed", self._request_load_subcategories)
+        self.cmbSubcategory.dic_handler_id["changed"] = self.cmbSubcategory.connect(
+            "changed", super().on_changed_combo, 33, "wvw_editing_hardware"
+        )
+        self.cmbSubcategory.connect("changed", self._request_load_component)
 
         # ----- ENTRIES
-        self.txtAltPartNum.dic_handler_id[
-            'changed'] = self.txtAltPartNum.connect('changed',
-                                                    super().on_changed_entry,
-                                                    2, 'wvw_editing_hardware')
-        self.txtCompRefDes.dic_handler_id[
-            'changed'] = self.txtCompRefDes.connect('changed',
-                                                    super().on_changed_entry,
-                                                    4, 'wvw_editing_hardware')
+        self.txtAltPartNum.dic_handler_id["changed"] = self.txtAltPartNum.connect(
+            "changed", super().on_changed_entry, 2, "wvw_editing_hardware"
+        )
+        self.txtCompRefDes.dic_handler_id["changed"] = self.txtCompRefDes.connect(
+            "changed", super().on_changed_entry, 4, "wvw_editing_hardware"
+        )
         _buffer: Gtk.TextBuffer = self.txtDescription.do_get_buffer()
-        self.txtDescription.dic_handler_id['changed'] = _buffer.connect(
-            'changed',
-            super().on_changed_textview, 8, 'wvw_editing_hardware',
-            self.txtDescription)
-        self.txtFigureNumber.dic_handler_id[
-            'changed'] = self.txtFigureNumber.connect('changed',
-                                                      super().on_changed_entry,
-                                                      10,
-                                                      'wvw_editing_hardware')
-        self.txtLCN.dic_handler_id['changed'] = self.txtLCN.connect(
-            'changed',
-            super().on_changed_entry, 11, 'wvw_editing_hardware')
-        self.txtName.dic_handler_id['changed'] = self.txtName.connect(
-            'changed',
-            super().on_changed_entry, 15, 'wvw_editing_hardware')
-        self.txtPageNumber.dic_handler_id[
-            'changed'] = self.txtPageNumber.connect('changed',
-                                                    super().on_changed_entry,
-                                                    17, 'wvw_editing_hardware')
-        self.txtPartNumber.dic_handler_id[
-            'changed'] = self.txtPartNumber.connect('changed',
-                                                    super().on_changed_entry,
-                                                    20, 'wvw_editing_hardware')
-        self.txtRefDes.dic_handler_id['changed'] = self.txtRefDes.connect(
-            'changed',
-            super().on_changed_entry, 22, 'wvw_editing_hardware')
-        self.txtSpecification.dic_handler_id[
-            'changed'] = self.txtSpecification.connect(
-                'changed',
-                super().on_changed_entry, 25, 'wvw_editing_hardware')
+        self.txtDescription.dic_handler_id["changed"] = _buffer.connect(
+            "changed",
+            super().on_changed_textview,
+            8,
+            "wvw_editing_hardware",
+            self.txtDescription,
+        )
+        self.txtFigureNumber.dic_handler_id["changed"] = self.txtFigureNumber.connect(
+            "changed", super().on_changed_entry, 10, "wvw_editing_hardware"
+        )
+        self.txtLCN.dic_handler_id["changed"] = self.txtLCN.connect(
+            "changed", super().on_changed_entry, 11, "wvw_editing_hardware"
+        )
+        self.txtName.dic_handler_id["changed"] = self.txtName.connect(
+            "changed", super().on_changed_entry, 15, "wvw_editing_hardware"
+        )
+        self.txtPageNumber.dic_handler_id["changed"] = self.txtPageNumber.connect(
+            "changed", super().on_changed_entry, 17, "wvw_editing_hardware"
+        )
+        self.txtPartNumber.dic_handler_id["changed"] = self.txtPartNumber.connect(
+            "changed", super().on_changed_entry, 20, "wvw_editing_hardware"
+        )
+        self.txtRefDes.dic_handler_id["changed"] = self.txtRefDes.connect(
+            "changed", super().on_changed_entry, 22, "wvw_editing_hardware"
+        )
+        self.txtSpecification.dic_handler_id["changed"] = self.txtSpecification.connect(
+            "changed", super().on_changed_entry, 25, "wvw_editing_hardware"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -334,43 +338,63 @@ class GeneralDataPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         self.chkRepairable.do_set_properties(
-            tooltip=_("Indicates whether or not the selected hardware item is "
-                      "repairable."))
+            tooltip=_(
+                "Indicates whether or not the selected hardware item is " "repairable."
+            )
+        )
 
         self.txtAltPartNum.do_set_properties(
-            tooltip=_("The alternate part number (if any) of the selected "
-                      "hardware item."))
+            tooltip=_(
+                "The alternate part number (if any) of the selected " "hardware item."
+            )
+        )
         self.txtCompRefDes.do_set_properties(
-            tooltip=_("The composite reference designator of the selected "
-                      "hardware item."))
+            tooltip=_(
+                "The composite reference designator of the selected " "hardware item."
+            )
+        )
         self.txtDescription.do_set_properties(
-            width=600,
-            tooltip=_("The description of the selected hardware item."))
+            width=600, tooltip=_("The description of the selected hardware item.")
+        )
         self.txtFigureNumber.do_set_properties(
-            tooltip=_("The figure number in the governing specification for "
-                      "the selected hardware item."))
+            tooltip=_(
+                "The figure number in the governing specification for "
+                "the selected hardware item."
+            )
+        )
         self.txtLCN.do_set_properties(
-            tooltip=_("The Logistics Control Number (LCN) of the selected "
-                      "hardware item."))
+            tooltip=_(
+                "The Logistics Control Number (LCN) of the selected " "hardware item."
+            )
+        )
         self.txtName.do_set_properties(
-            width=600, tooltip=_("The name of the selected hardware item."))
+            width=600, tooltip=_("The name of the selected hardware item.")
+        )
         self.txtPageNumber.do_set_properties(
-            tooltip=_("The page number in the governing specification for the "
-                      "selected hardware item."))
+            tooltip=_(
+                "The page number in the governing specification for the "
+                "selected hardware item."
+            )
+        )
         self.txtPartNumber.do_set_properties(
-            tooltip=_("The part number of the selected hardware item."))
-        self.txtRefDes.do_set_properties(tooltip=_(
-            "The reference designator of the selected hardware item."))
+            tooltip=_("The part number of the selected hardware item.")
+        )
+        self.txtRefDes.do_set_properties(
+            tooltip=_("The reference designator of the selected hardware item.")
+        )
         self.txtSpecification.do_set_properties(
-            tooltip=_("The specification (if any) governing the selected "
-                      "hardware item."))
+            tooltip=_(
+                "The specification (if any) governing the selected " "hardware item."
+            )
+        )
 
 
 class LogisticsPanel(RAMSTKPanel):
     """Panel to display general data about the selected Hardware task."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Hardware Task Description panel."""
         super().__init__()
@@ -407,13 +431,13 @@ class LogisticsPanel(RAMSTKPanel):
         self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'cage_code': [self.txtCAGECode.do_update, 'changed', 3],
-            'cost_type_id': [self.cmbCostType.do_update, 'changed', 30],
-            'manufacturer_id': [self.cmbManufacturer.do_update, 'changed', 13],
-            'cost': [self.txtCost.do_update, 'changed', 5],
-            'nsn': [self.txtNSN.do_update, 'changed', 16],
-            'quantity': [self.txtQuantity.do_update, 'changed', 21],
-            'year_of_manufacture': [self.txtYearMade.do_update, 'changed', 29],
+            "cage_code": [self.txtCAGECode.do_update, "changed", 3],
+            "cost_type_id": [self.cmbCostType.do_update, "changed", 30],
+            "manufacturer_id": [self.cmbManufacturer.do_update, "changed", 13],
+            "cost": [self.txtCost.do_update, "changed", 5],
+            "nsn": [self.txtNSN.do_update, "changed", 16],
+            "quantity": [self.txtQuantity.do_update, "changed", 21],
+            "year_of_manufacture": [self.txtYearMade.do_update, "changed", 29],
         }
 
         self._lst_widgets = [
@@ -432,22 +456,22 @@ class LogisticsPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.on_edit, "mvw_editing_hardware")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_hardware')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "selected_hardware")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def do_load_cost_types(self) -> None:
         """Load the category RAMSTKComboBox().
 
         :return: None
         """
-        self.cmbCostType.do_load_combo([['Assessed'], ['Specified']])
+        self.cmbCostType.do_load_combo([["Assessed"], ["Specified"]])
 
     def do_load_manufacturers(
-            self, manufacturers: Dict[int, Tuple[str, str, str]]) -> None:
+        self, manufacturers: Dict[int, Tuple[str, str, str]]
+    ) -> None:
         """Load the manufacturer RAMSTKComboBox().
 
         :param manufacturers: the dictionary with manufacturer information.
@@ -471,15 +495,15 @@ class LogisticsPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbCostType.do_update(0, signal='changed')
-        self.cmbManufacturer.do_update(0, signal='changed')
+        self.cmbCostType.do_update(0, signal="changed")
+        self.cmbManufacturer.do_update(0, signal="changed")
 
         # ----- ENTRIES
-        self.txtCAGECode.do_update('', signal='changed')
-        self.txtCost.do_update('', signal='changed')
-        self.txtNSN.do_update('', signal='changed')
-        self.txtQuantity.do_update('', signal='changed')
-        self.txtYearMade.do_update('', signal='changed')
+        self.txtCAGECode.do_update("", signal="changed")
+        self.txtCost.do_update("", signal="changed")
+        self.txtNSN.do_update("", signal="changed")
+        self.txtQuantity.do_update("", signal="changed")
+        self.txtYearMade.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -489,24 +513,24 @@ class LogisticsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- COMBOBOXES
-        self.cmbCostType.do_update(int(attributes['cost_type_id']),
-                                   signal='changed')
-        self.cmbManufacturer.do_update(int(attributes['manufacturer_id']),
-                                       signal='changed')
+        self.cmbCostType.do_update(int(attributes["cost_type_id"]), signal="changed")
+        self.cmbManufacturer.do_update(
+            int(attributes["manufacturer_id"]), signal="changed"
+        )
 
         # ----- ENTRIES
-        self.txtCAGECode.do_update(str(attributes['cage_code']),
-                                   signal='changed')
-        self.txtCost.do_update(str(locale.currency(attributes['cost'])),
-                               signal='changed')
-        self.txtNSN.do_update(str(attributes['nsn']), signal='changed')
-        self.txtQuantity.do_update(str(attributes['quantity']),
-                                   signal='changed')
-        self.txtYearMade.do_update(str(attributes['year_of_manufacture']),
-                                   signal='changed')
+        self.txtCAGECode.do_update(str(attributes["cage_code"]), signal="changed")
+        self.txtCost.do_update(
+            str(locale.currency(attributes["cost"])), signal="changed"
+        )
+        self.txtNSN.do_update(str(attributes["nsn"]), signal="changed")
+        self.txtQuantity.do_update(str(attributes["quantity"]), signal="changed")
+        self.txtYearMade.do_update(
+            str(attributes["year_of_manufacture"]), signal="changed"
+        )
 
     def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
         """Load the CAGE code whenever the manufacturer is changed.
@@ -517,11 +541,12 @@ class LogisticsPanel(RAMSTKPanel):
         """
         _model = combo.get_model()
         _row = combo.get_active_iter()
-        self.txtCAGECode.do_update(str(_model.get(_row, 2)[0]),
-                                   signal='changed')
-        pub.sendMessage('wvw_editing_hardware',
-                        node_id=[self._record_id, -1],
-                        package={'cage_code': str(_model.get(_row, 2)[0])})
+        self.txtCAGECode.do_update(str(_model.get(_row, 2)[0]), signal="changed")
+        pub.sendMessage(
+            "wvw_editing_hardware",
+            node_id=[self._record_id, -1],
+            package={"cage_code": str(_model.get(_row, 2)[0])},
+        )
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -530,32 +555,30 @@ class LogisticsPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbCostType.dic_handler_id['changed'] = self.cmbCostType.connect(
-            'changed',
-            super().on_changed_combo, 30, 'wvw_editing_hardware')
-        self.cmbManufacturer.dic_handler_id[
-            'changed'] = self.cmbManufacturer.connect('changed',
-                                                      super().on_changed_combo,
-                                                      13,
-                                                      'wvw_editing_hardware')
-        self.cmbManufacturer.connect('changed', self._do_load_cage_code)
+        self.cmbCostType.dic_handler_id["changed"] = self.cmbCostType.connect(
+            "changed", super().on_changed_combo, 30, "wvw_editing_hardware"
+        )
+        self.cmbManufacturer.dic_handler_id["changed"] = self.cmbManufacturer.connect(
+            "changed", super().on_changed_combo, 13, "wvw_editing_hardware"
+        )
+        self.cmbManufacturer.connect("changed", self._do_load_cage_code)
 
         # ----- ENTRIES
-        self.txtCAGECode.dic_handler_id['changed'] = self.txtCAGECode.connect(
-            'changed',
-            super().on_changed_entry, 3, 'wvw_editing_hardware')
-        self.txtCost.dic_handler_id['changed'] = self.txtCost.connect(
-            'changed',
-            super().on_changed_entry, 5, 'wvw_editing_hardware')
-        self.txtNSN.dic_handler_id['changed'] = self.txtNSN.connect(
-            'changed',
-            super().on_changed_entry, 16, 'wvw_editing_hardware')
-        self.txtQuantity.dic_handler_id['changed'] = self.txtQuantity.connect(
-            'changed',
-            super().on_changed_entry, 21, 'wvw_editing_hardware')
-        self.txtYearMade.dic_handler_id['changed'] = self.txtYearMade.connect(
-            'changed',
-            super().on_changed_entry, 29, 'wvw_editing_hardware')
+        self.txtCAGECode.dic_handler_id["changed"] = self.txtCAGECode.connect(
+            "changed", super().on_changed_entry, 3, "wvw_editing_hardware"
+        )
+        self.txtCost.dic_handler_id["changed"] = self.txtCost.connect(
+            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
+        )
+        self.txtNSN.dic_handler_id["changed"] = self.txtNSN.connect(
+            "changed", super().on_changed_entry, 16, "wvw_editing_hardware"
+        )
+        self.txtQuantity.dic_handler_id["changed"] = self.txtQuantity.connect(
+            "changed", super().on_changed_entry, 21, "wvw_editing_hardware"
+        )
+        self.txtYearMade.dic_handler_id["changed"] = self.txtYearMade.connect(
+            "changed", super().on_changed_entry, 29, "wvw_editing_hardware"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -563,30 +586,36 @@ class LogisticsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # ----- ENTRIES
         self.txtCAGECode.do_set_properties(
-            tooltip=_("The Commercial and Government Entity (CAGE) Code of "
-                      "the selected hardware item."))
+            tooltip=_(
+                "The Commercial and Government Entity (CAGE) Code of "
+                "the selected hardware item."
+            )
+        )
         self.txtCost.do_set_properties(
-            width=100,
-            tooltip=_("The unit cost of the selected hardware item."))
+            width=100, tooltip=_("The unit cost of the selected hardware item.")
+        )
         self.txtNSN.do_set_properties(
-            tooltip=_("The National Stock Number (NSN) of the selected "
-                      "hardware item."))
+            tooltip=_(
+                "The National Stock Number (NSN) of the selected " "hardware item."
+            )
+        )
         self.txtQuantity.do_set_properties(
             width=50,
-            tooltip=_(
-                "The number of the selected hardware items in the design."))
+            tooltip=_("The number of the selected hardware items in the design."),
+        )
         self.txtYearMade.do_set_properties(
             width=100,
-            tooltip=_(
-                "The year the the selected hardware item was manufactured."))
+            tooltip=_("The year the the selected hardware item was manufactured."),
+        )
 
 
 class MiscellaneousPanel(RAMSTKPanel):
     """Panel to display general data about the selected Hardware task."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Hardware Task Description panel."""
         super().__init__()
@@ -609,14 +638,13 @@ class MiscellaneousPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.chkTagged: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Tagged Part"))
+        self.chkTagged: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Tagged Part"))
         self.txtAttachments: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
         self._dic_attribute_updater = {
-            'attachments': [self.txtAttachments.do_update, 'changed', 31],
-            'remarks': [self.txtRemarks.do_update, 'changed', 23],
+            "attachments": [self.txtAttachments.do_update, "changed", 31],
+            "remarks": [self.txtRemarks.do_update, "changed", 23],
         }
         self._lst_widgets = [
             self.txtAttachments,
@@ -630,12 +658,11 @@ class MiscellaneousPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.on_edit, "mvw_editing_hardware")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel, 'selected_hardware')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "selected_hardware")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -644,11 +671,11 @@ class MiscellaneousPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECKBUTTONS
-        self.chkTagged.do_update(False, signal='toggled')
+        self.chkTagged.do_update(False, signal="toggled")
 
         # ----- ENTRIES
-        self.txtAttachments.do_update('', signal='changed')
-        self.txtRemarks.do_update('', signal='changed')
+        self.txtAttachments.do_update("", signal="changed")
+        self.txtRemarks.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -658,16 +685,14 @@ class MiscellaneousPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- CHECKBUTTONS
-        self.chkTagged.do_update(int(attributes['tagged_part']),
-                                 signal='toggled')
+        self.chkTagged.do_update(int(attributes["tagged_part"]), signal="toggled")
 
         # ----- ENTRIES
-        self.txtAttachments.do_update(str(attributes['attachments']),
-                                      signal='changed')
-        self.txtRemarks.do_update(str(attributes['remarks']), signal='changed')
+        self.txtAttachments.do_update(str(attributes["attachments"]), signal="changed")
+        self.txtRemarks.do_update(str(attributes["remarks"]), signal="changed")
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -676,21 +701,27 @@ class MiscellaneousPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECKBUTTONS
-        self.chkTagged.dic_handler_id['toggled'] = (self.chkTagged.connect(
-            'toggled',
-            super().on_toggled, 26, 'wvw_editing_hardware'))
+        self.chkTagged.dic_handler_id["toggled"] = self.chkTagged.connect(
+            "toggled", super().on_toggled, 26, "wvw_editing_hardware"
+        )
 
         # ----- ENTRIES
         _buffer: Gtk.TextBuffer = self.txtAttachments.do_get_buffer()
-        self.txtAttachments.dic_handler_id['changed'] = _buffer.connect(
-            'changed',
-            super().on_changed_textview, 31, 'wvw_editing_hardware',
-            self.txtAttachments)
+        self.txtAttachments.dic_handler_id["changed"] = _buffer.connect(
+            "changed",
+            super().on_changed_textview,
+            31,
+            "wvw_editing_hardware",
+            self.txtAttachments,
+        )
         _buffer = self.txtRemarks.do_get_buffer()
-        self.txtRemarks.dic_handler_id['changed'] = _buffer.connect(
-            'changed',
-            super().on_changed_textview, 23, 'wvw_editing_hardware',
-            self.txtRemarks)
+        self.txtRemarks.dic_handler_id["changed"] = _buffer.connect(
+            "changed",
+            super().on_changed_textview,
+            23,
+            "wvw_editing_hardware",
+            self.txtRemarks,
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -698,40 +729,46 @@ class MiscellaneousPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # ----- ENTRIES
         self.txtAttachments.do_set_properties(
             width=600,
-            tooltip=_("Hyperlinks to any documents associated with the "
-                      "selected hardware item."))
+            tooltip=_(
+                "Hyperlinks to any documents associated with the "
+                "selected hardware item."
+            ),
+        )
         self.txtRemarks.do_set_properties(
             height=150,
             width=600,
-            tooltip=_("Enter any remarks associated with the selected "
-                      "hardware item."))
+            tooltip=_(
+                "Enter any remarks associated with the selected " "hardware item."
+            ),
+        )
 
 
 class AssessmentInputPanel(RAMSTKPanel):
     """Panel to display hazard rate inputs about the selected Hardware item."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Assessment Input panel."""
         super().__init__()
 
         # Initialize private dict instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['failure_distribution_id', 'integer'],
-            1: ['hazard_rate_type_id', 'integer'],
-            2: ['hazard_rate_method_id', 'integer'],
-            3: ['add_adj_factor', 'float'],
-            4: ['scale_parameter', 'float'],
-            5: ['shape_parameter', 'float'],
-            6: ['location_parameter', 'float'],
-            7: ['mult_adj_factor', 'float'],
-            8: ['hazard_rate_specified', 'float'],
-            9: ['hr_specified_variance', 'float'],
-            10: ['mtbf_specified', 'float'],
-            11: ['mtbf_specified_variance', 'float'],
+            0: ["failure_distribution_id", "integer"],
+            1: ["hazard_rate_type_id", "integer"],
+            2: ["hazard_rate_method_id", "integer"],
+            3: ["add_adj_factor", "float"],
+            4: ["scale_parameter", "float"],
+            5: ["shape_parameter", "float"],
+            6: ["location_parameter", "float"],
+            7: ["mult_adj_factor", "float"],
+            8: ["hazard_rate_specified", "float"],
+            9: ["hr_specified_variance", "float"],
+            10: ["mtbf_specified", "float"],
+            11: ["mtbf_specified_variance", "float"],
         }
 
         # Initialize private list instance attributes.
@@ -773,19 +810,15 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.txtSpecifiedMTBFVar: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'add_adj_factor': [self.txtAddAdjFactor.do_update, 'changed', 3],
-            'scale_parameter': [self.txtFailScale.do_update, 'changed', 4],
-            'shape_parameter': [self.txtFailShape.do_update, 'changed', 5],
-            'location_parameter':
-            [self.txtFailLocation.do_update, 'changed', 6],
-            'mult_adj_factor': [self.txtMultAdjFactor.do_update, 'changed', 7],
-            'hazard_rate_specified':
-            [self.txtSpecifiedHt.do_update, 'changed', 8],
-            'hr_specified_variance':
-            [self.txtSpecifiedHtVar.do_update, 'changed', 9],
-            'mtbf_specified': [self.txtSpecifiedMTBF.do_update, 'changed', 10],
-            'mtbf_spec_variance':
-            [self.txtSpecifiedMTBFVar.do_update, 'changed', 11],
+            "add_adj_factor": [self.txtAddAdjFactor.do_update, "changed", 3],
+            "scale_parameter": [self.txtFailScale.do_update, "changed", 4],
+            "shape_parameter": [self.txtFailShape.do_update, "changed", 5],
+            "location_parameter": [self.txtFailLocation.do_update, "changed", 6],
+            "mult_adj_factor": [self.txtMultAdjFactor.do_update, "changed", 7],
+            "hazard_rate_specified": [self.txtSpecifiedHt.do_update, "changed", 8],
+            "hr_specified_variance": [self.txtSpecifiedHtVar.do_update, "changed", 9],
+            "mtbf_specified": [self.txtSpecifiedMTBF.do_update, "changed", 10],
+            "mtbf_spec_variance": [self.txtSpecifiedMTBFVar.do_update, "changed", 11],
         }
         self._lst_widgets = [
             self.cmbHRType,
@@ -808,9 +841,8 @@ class AssessmentInputPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def do_load_hr_distributions(self, distributions: List[str]) -> None:
         """Load the hazard rate distribution RAMSTKComboBox().
@@ -858,20 +890,20 @@ class AssessmentInputPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- CHECKBUTTONS
-        self.cmbFailureDist.do_update(0, signal='changed')
-        self.cmbHRMethod.do_update(0, signal='changed')
-        self.cmbHRType.do_update(0, signal='changed')
+        self.cmbFailureDist.do_update(0, signal="changed")
+        self.cmbHRMethod.do_update(0, signal="changed")
+        self.cmbHRType.do_update(0, signal="changed")
 
         # ----- ENTRIES
-        self.txtAddAdjFactor.do_update('', signal='changed')
-        self.txtFailScale.do_update('', signal='changed')
-        self.txtFailShape.do_update('', signal='changed')
-        self.txtFailLocation.do_update('', signal='changed')
-        self.txtMultAdjFactor.do_update('', signal='changed')
-        self.txtSpecifiedHt.do_update('', signal='changed')
-        self.txtSpecifiedHtVar.do_update('', signal='changed')
-        self.txtSpecifiedMTBF.do_update('', signal='changed')
-        self.txtSpecifiedMTBFVar.do_update('', signal='changed')
+        self.txtAddAdjFactor.do_update("", signal="changed")
+        self.txtFailScale.do_update("", signal="changed")
+        self.txtFailShape.do_update("", signal="changed")
+        self.txtFailLocation.do_update("", signal="changed")
+        self.txtMultAdjFactor.do_update("", signal="changed")
+        self.txtSpecifiedHt.do_update("", signal="changed")
+        self.txtSpecifiedHtVar.do_update("", signal="changed")
+        self.txtSpecifiedMTBF.do_update("", signal="changed")
+        self.txtSpecifiedMTBFVar.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -881,47 +913,49 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- COMBOBOXES
-        self.cmbFailureDist.do_update(int(
-            attributes['failure_distribution_id']),
-                                      signal='changed')  # noqa
-        self.cmbHRMethod.do_update(int(attributes['hazard_rate_method_id']),
-                                   signal='changed')
-        self.cmbHRType.do_update(int(attributes['hazard_rate_type_id']),
-                                 signal='changed')
+        self.cmbFailureDist.do_update(
+            int(attributes["failure_distribution_id"]), signal="changed"
+        )  # noqa
+        self.cmbHRMethod.do_update(
+            int(attributes["hazard_rate_method_id"]), signal="changed"
+        )
+        self.cmbHRType.do_update(
+            int(attributes["hazard_rate_type_id"]), signal="changed"
+        )
 
         # ----- ENTRIES
-        self.txtAddAdjFactor.do_update(self.fmt.format(
-            attributes['add_adj_factor']),
-                                       signal='changed')  # noqa
-        self.txtFailScale.do_update(self.fmt.format(
-            attributes['scale_parameter']),
-                                    signal='changed')  # noqa
-        self.txtFailShape.do_update(self.fmt.format(
-            attributes['shape_parameter']),
-                                    signal='changed')  # noqa
-        self.txtFailLocation.do_update(self.fmt.format(
-            attributes['location_parameter']),
-                                       signal='changed')  # noqa
-        self.txtMultAdjFactor.do_update(self.fmt.format(
-            attributes['mult_adj_factor']),
-                                        signal='changed')  # noqa
-        self.txtSpecifiedHt.do_update(self.fmt.format(
-            attributes['hazard_rate_specified']),
-                                      signal='changed')  # noqa
-        self.txtSpecifiedHtVar.do_update(self.fmt.format(
-            attributes['hr_specified_variance']),
-                                         signal='changed')  # noqa
-        self.txtSpecifiedMTBF.do_update(self.fmt.format(
-            attributes['mtbf_specified']),
-                                        signal='changed')  # noqa
-        self.txtSpecifiedMTBFVar.do_update(self.fmt.format(
-            attributes['mtbf_specified_variance']),
-                                           signal='changed')  # noqa
+        self.txtAddAdjFactor.do_update(
+            self.fmt.format(attributes["add_adj_factor"]), signal="changed"
+        )  # noqa
+        self.txtFailScale.do_update(
+            self.fmt.format(attributes["scale_parameter"]), signal="changed"
+        )  # noqa
+        self.txtFailShape.do_update(
+            self.fmt.format(attributes["shape_parameter"]), signal="changed"
+        )  # noqa
+        self.txtFailLocation.do_update(
+            self.fmt.format(attributes["location_parameter"]), signal="changed"
+        )  # noqa
+        self.txtMultAdjFactor.do_update(
+            self.fmt.format(attributes["mult_adj_factor"]), signal="changed"
+        )  # noqa
+        self.txtSpecifiedHt.do_update(
+            self.fmt.format(attributes["hazard_rate_specified"]), signal="changed"
+        )  # noqa
+        self.txtSpecifiedHtVar.do_update(
+            self.fmt.format(attributes["hr_specified_variance"]), signal="changed"
+        )  # noqa
+        self.txtSpecifiedMTBF.do_update(
+            self.fmt.format(attributes["mtbf_specified"]), signal="changed"
+        )  # noqa
+        self.txtSpecifiedMTBFVar.do_update(
+            self.fmt.format(attributes["mtbf_specified_variance"]), signal="changed"
+        )  # noqa
 
-        self._do_set_sensitive(type_id=attributes['hazard_rate_type_id'])
+        self._do_set_sensitive(type_id=attributes["hazard_rate_type_id"])
 
     def _do_set_sensitive_assessed(self, type_id: int) -> None:
         """Set the widgets used in handbook assessments sensitive.
@@ -1004,7 +1038,7 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        _type_id = kwargs['type_id']
+        _type_id = kwargs["type_id"]
 
         self._do_set_sensitive_assessed(_type_id)
         self._do_set_sensitive_specified_ht(_type_id)
@@ -1018,56 +1052,48 @@ class AssessmentInputPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbFailureDist.dic_handler_id[
-            'changed'] = self.cmbFailureDist.connect('changed',
-                                                     super().on_changed_combo,
-                                                     0, 'wvw_editing_hardware')
-        self.cmbHRType.dic_handler_id['changed'] = self.cmbHRType.connect(
-            'changed',
-            super().on_changed_combo, 1, 'wvw_editing_hardware')
-        self.cmbHRMethod.dic_handler_id['changed'] = self.cmbHRMethod.connect(
-            'changed',
-            super().on_changed_combo, 2, 'wvw_editing_hardware')
+        self.cmbFailureDist.dic_handler_id["changed"] = self.cmbFailureDist.connect(
+            "changed", super().on_changed_combo, 0, "wvw_editing_hardware"
+        )
+        self.cmbHRType.dic_handler_id["changed"] = self.cmbHRType.connect(
+            "changed", super().on_changed_combo, 1, "wvw_editing_hardware"
+        )
+        self.cmbHRMethod.dic_handler_id["changed"] = self.cmbHRMethod.connect(
+            "changed", super().on_changed_combo, 2, "wvw_editing_hardware"
+        )
 
         # ----- ENTRIES
-        self.txtAddAdjFactor.dic_handler_id[
-            'changed'] = self.txtAddAdjFactor.connect('changed',
-                                                      super().on_changed_entry,
-                                                      3,
-                                                      'wvw_editing_hardware')
-        self.txtFailScale.dic_handler_id[
-            'changed'] = self.txtFailScale.connect('changed',
-                                                   super().on_changed_entry, 4,
-                                                   'wvw_editing_hardware')
-        self.txtFailShape.dic_handler_id[
-            'changed'] = self.txtFailShape.connect('changed',
-                                                   super().on_changed_entry, 5,
-                                                   'wvw_editing_hardware')
-        self.txtFailLocation.dic_handler_id[
-            'changed'] = self.txtFailLocation.connect('changed',
-                                                      super().on_changed_entry,
-                                                      6,
-                                                      'wvw_editing_hardware')
-        self.txtMultAdjFactor.dic_handler_id[
-            'changed'] = self.txtMultAdjFactor.connect(
-                'changed',
-                super().on_changed_entry, 7, 'wvw_editing_hardware')
-        self.txtSpecifiedHt.dic_handler_id[
-            'changed'] = self.txtSpecifiedHt.connect('changed',
-                                                     super().on_changed_entry,
-                                                     8, 'wvw_editing_hardware')
+        self.txtAddAdjFactor.dic_handler_id["changed"] = self.txtAddAdjFactor.connect(
+            "changed", super().on_changed_entry, 3, "wvw_editing_hardware"
+        )
+        self.txtFailScale.dic_handler_id["changed"] = self.txtFailScale.connect(
+            "changed", super().on_changed_entry, 4, "wvw_editing_hardware"
+        )
+        self.txtFailShape.dic_handler_id["changed"] = self.txtFailShape.connect(
+            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
+        )
+        self.txtFailLocation.dic_handler_id["changed"] = self.txtFailLocation.connect(
+            "changed", super().on_changed_entry, 6, "wvw_editing_hardware"
+        )
+        self.txtMultAdjFactor.dic_handler_id["changed"] = self.txtMultAdjFactor.connect(
+            "changed", super().on_changed_entry, 7, "wvw_editing_hardware"
+        )
+        self.txtSpecifiedHt.dic_handler_id["changed"] = self.txtSpecifiedHt.connect(
+            "changed", super().on_changed_entry, 8, "wvw_editing_hardware"
+        )
         self.txtSpecifiedHtVar.dic_handler_id[
-            'changed'] = self.txtSpecifiedHtVar.connect(
-                'changed',
-                super().on_changed_entry, 9, 'wvw_editing_hardware')
-        self.txtSpecifiedMTBF.dic_handler_id[
-            'changed'] = self.txtSpecifiedMTBF.connect(
-                'changed',
-                super().on_changed_entry, 10, 'wvw_editing_hardware')
+            "changed"
+        ] = self.txtSpecifiedHtVar.connect(
+            "changed", super().on_changed_entry, 9, "wvw_editing_hardware"
+        )
+        self.txtSpecifiedMTBF.dic_handler_id["changed"] = self.txtSpecifiedMTBF.connect(
+            "changed", super().on_changed_entry, 10, "wvw_editing_hardware"
+        )
         self.txtSpecifiedMTBFVar.dic_handler_id[
-            'changed'] = self.txtSpecifiedMTBFVar.connect(
-                'changed',
-                super().on_changed_entry, 11, 'wvw_editing_hardware')
+            "changed"
+        ] = self.txtSpecifiedMTBFVar.connect(
+            "changed", super().on_changed_entry, 11, "wvw_editing_hardware"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1075,70 +1101,84 @@ class AssessmentInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # _____ COMBOBOXES
-        self.cmbFailureDist.do_set_properties(tooltip=_(
-            "The statistical failure distribution of the selected hardware "
-            "item."),
-                                              width=200)  # noqa
-        self.cmbHRMethod.do_set_properties(tooltip=_(
-            "The assessment method to use for the selected hardware item."),
-                                           width=200)  # noqa
-        self.cmbHRType.do_set_properties(tooltip=_(
-            "The type of reliability assessment for the selected hardware "
-            "item."),
-                                         width=200)  # noqa
+        self.cmbFailureDist.do_set_properties(
+            tooltip=_(
+                "The statistical failure distribution of the selected hardware " "item."
+            ),
+            width=200,
+        )  # noqa
+        self.cmbHRMethod.do_set_properties(
+            tooltip=_("The assessment method to use for the selected hardware item."),
+            width=200,
+        )  # noqa
+        self.cmbHRType.do_set_properties(
+            tooltip=_(
+                "The type of reliability assessment for the selected hardware " "item."
+            ),
+            width=200,
+        )  # noqa
 
         # ----- ENTRIES
-        self.txtAddAdjFactor.do_set_properties(tooltip=_(
-            "An adjustment factor to add to the assessed hazard rate or "
-            "MTBF."),
-                                               width=125)  # noqa
-        self.txtFailLocation.do_set_properties(tooltip=_(
-            "The location parameter of the statistical failure distribution."),
-                                               width=125)  # noqa
-        self.txtFailScale.do_set_properties(tooltip=_(
-            "The scale parameter of the statistical failure distribution."),
-                                            width=125)  # noqa
-        self.txtFailShape.do_set_properties(tooltip=_(
-            "The shape parameter of the statistical failure distribution."),
-                                            width=125)  # noqa
-        self.txtMultAdjFactor.do_set_properties(tooltip=_(
-            "An adjustment factor to multiply the assessed hazard rate or "
-            "MTBF."),
-                                                width=125)  # noqa
-        self.txtSpecifiedHt.do_set_properties(tooltip=_("The stated hazard "
-                                                        "rate."),
-                                              width=125)  # noqa
-        self.txtSpecifiedHtVar.do_set_properties(tooltip=_("The variance of "
-                                                           "the stated "
-                                                           "hazard rate."),
-                                                 width=125)  # noqa
-        self.txtSpecifiedMTBF.do_set_properties(tooltip=_("The stated mean "
-                                                          "time between "
-                                                          "failure ("
-                                                          "MTBF)."),
-                                                width=125)  # noqa
-        self.txtSpecifiedMTBFVar.do_set_properties(tooltip=_(
-            "The variance of the stated mean time between failure (MTBF)."),
-                                                   width=125)  # noqa
+        self.txtAddAdjFactor.do_set_properties(
+            tooltip=_(
+                "An adjustment factor to add to the assessed hazard rate or " "MTBF."
+            ),
+            width=125,
+        )  # noqa
+        self.txtFailLocation.do_set_properties(
+            tooltip=_(
+                "The location parameter of the statistical failure distribution."
+            ),
+            width=125,
+        )  # noqa
+        self.txtFailScale.do_set_properties(
+            tooltip=_("The scale parameter of the statistical failure distribution."),
+            width=125,
+        )  # noqa
+        self.txtFailShape.do_set_properties(
+            tooltip=_("The shape parameter of the statistical failure distribution."),
+            width=125,
+        )  # noqa
+        self.txtMultAdjFactor.do_set_properties(
+            tooltip=_(
+                "An adjustment factor to multiply the assessed hazard rate or " "MTBF."
+            ),
+            width=125,
+        )  # noqa
+        self.txtSpecifiedHt.do_set_properties(
+            tooltip=_("The stated hazard " "rate."), width=125
+        )  # noqa
+        self.txtSpecifiedHtVar.do_set_properties(
+            tooltip=_("The variance of " "the stated " "hazard rate."), width=125
+        )  # noqa
+        self.txtSpecifiedMTBF.do_set_properties(
+            tooltip=_("The stated mean " "time between " "failure (" "MTBF)."),
+            width=125,
+        )  # noqa
+        self.txtSpecifiedMTBFVar.do_set_properties(
+            tooltip=_("The variance of the stated mean time between failure (MTBF)."),
+            width=125,
+        )  # noqa
 
 
 class EnvironmentalInputPanel(RAMSTKPanel):
     """Panel to display environmental data about the selected Hardware item."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Environmental Input panel."""
         super().__init__()
 
         # Initialize private dict instance attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ['environment_active_id', 'integer'],
-            1: ['environment_dormant_id', 'integer'],
-            2: ['temperature_active', 'float'],
-            3: ['temperature_dormant', 'float'],
-            4: ['duty_cycle', 'float'],
-            5: ['mission_time', 'float'],
+            0: ["environment_active_id", "integer"],
+            1: ["environment_dormant_id", "integer"],
+            2: ["temperature_active", "float"],
+            3: ["temperature_dormant", "float"],
+            4: ["duty_cycle", "float"],
+            5: ["mission_time", "float"],
         }
 
         # Initialize private list instance attributes.
@@ -1162,8 +1202,7 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.cmbActiveEnviron: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbDormantEnviron: RAMSTKComboBox = RAMSTKComboBox()
 
-        self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
-            None)
+        self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(None)
 
         self.txtActiveTemp: RAMSTKEntry = RAMSTKEntry()
         self.txtDormantTemp: RAMSTKEntry = RAMSTKEntry()
@@ -1171,11 +1210,10 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.txtMissionTime: RAMSTKEntry = RAMSTKEntry()
 
         self._dic_attribute_updater = {
-            'temperature_active': [self.txtActiveTemp.do_update, 'changed', 2],
-            'temperature_dormant':
-            [self.txtDormantTemp.do_update, 'changed', 3],
-            'duty_cycle': [self.txtDutyCycle.do_update, 'changed', 4],
-            'mission_time': [self.txtMissionTime.do_update, 'changed', 5],
+            "temperature_active": [self.txtActiveTemp.do_update, "changed", 2],
+            "temperature_dormant": [self.txtDormantTemp.do_update, "changed", 3],
+            "duty_cycle": [self.txtDutyCycle.do_update, "changed", 4],
+            "mission_time": [self.txtMissionTime.do_update, "changed", 5],
         }
         self._lst_widgets = [
             self.cmbActiveEnviron,
@@ -1192,9 +1230,8 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         self.__do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def do_load_environment_active(self, environments: List[str]) -> None:
         """Load the active environments RAMSTKComboBox().
@@ -1219,14 +1256,14 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbActiveEnviron.do_update(0, signal='changed')
-        self.cmbDormantEnviron.do_update(0, signal='changed')
+        self.cmbActiveEnviron.do_update(0, signal="changed")
+        self.cmbDormantEnviron.do_update(0, signal="changed")
 
         # ----- ENTRIES
-        self.txtActiveTemp.do_update('', signal='changed')
-        self.txtDormantTemp.do_update('', signal='changed')
-        self.txtDutyCycle.do_update('', signal='changed')
-        self.txtMissionTime.do_update('', signal='changed')
+        self.txtActiveTemp.do_update("", signal="changed")
+        self.txtDormantTemp.do_update("", signal="changed")
+        self.txtDutyCycle.do_update("", signal="changed")
+        self.txtMissionTime.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -1236,28 +1273,29 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- COMBOBOXES
-        self.cmbActiveEnviron.do_update(int(
-            attributes['environment_active_id']),
-                                        signal='changed')  # noqa
-        self.cmbDormantEnviron.do_update(int(
-            attributes['environment_dormant_id']),
-                                         signal='changed')  # noqa
+        self.cmbActiveEnviron.do_update(
+            int(attributes["environment_active_id"]), signal="changed"
+        )  # noqa
+        self.cmbDormantEnviron.do_update(
+            int(attributes["environment_dormant_id"]), signal="changed"
+        )  # noqa
 
         # ----- ENTRIES
-        self.txtActiveTemp.do_update(self.fmt.format(
-            attributes['temperature_active']),
-                                     signal='changed')  # noqa
-        self.txtDormantTemp.do_update(self.fmt.format(
-            attributes['temperature_dormant']),
-                                      signal='changed')  # noqa
-        self.txtDutyCycle.do_update(self.fmt.format(attributes['duty_cycle']),
-                                    signal='changed')
-        self.txtMissionTime.do_update(self.fmt.format(
-            attributes['mission_time']),
-                                      signal='changed')  # noqa
+        self.txtActiveTemp.do_update(
+            self.fmt.format(attributes["temperature_active"]), signal="changed"
+        )  # noqa
+        self.txtDormantTemp.do_update(
+            self.fmt.format(attributes["temperature_dormant"]), signal="changed"
+        )  # noqa
+        self.txtDutyCycle.do_update(
+            self.fmt.format(attributes["duty_cycle"]), signal="changed"
+        )
+        self.txtMissionTime.do_update(
+            self.fmt.format(attributes["mission_time"]), signal="changed"
+        )  # noqa
 
     def __do_set_callbacks(self) -> None:
         """Set the callback methods and functions for the panel widgets.
@@ -1266,32 +1304,28 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- COMBOBOXES
-        self.cmbActiveEnviron.dic_handler_id[
-            'changed'] = self.cmbActiveEnviron.connect(
-                'changed',
-                super().on_changed_combo, 0, 'wvw_editing_hardware')
+        self.cmbActiveEnviron.dic_handler_id["changed"] = self.cmbActiveEnviron.connect(
+            "changed", super().on_changed_combo, 0, "wvw_editing_hardware"
+        )
         self.cmbDormantEnviron.dic_handler_id[
-            'changed'] = self.cmbDormantEnviron.connect(
-                'changed',
-                super().on_changed_combo, 1, 'wvw_editing_hardware')
+            "changed"
+        ] = self.cmbDormantEnviron.connect(
+            "changed", super().on_changed_combo, 1, "wvw_editing_hardware"
+        )
 
         # ----- ENTRIES
-        self.txtActiveTemp.dic_handler_id[
-            'changed'] = self.txtActiveTemp.connect('changed',
-                                                    super().on_changed_entry,
-                                                    2, 'wvw_editing_hardware')
-        self.txtDormantTemp.dic_handler_id[
-            'changed'] = self.txtDormantTemp.connect('changed',
-                                                     super().on_changed_entry,
-                                                     3, 'wvw_editing_hardware')
-        self.txtDutyCycle.dic_handler_id[
-            'changed'] = self.txtDutyCycle.connect('changed',
-                                                   super().on_changed_entry, 4,
-                                                   'wvw_editing_hardware')
-        self.txtMissionTime.dic_handler_id[
-            'changed'] = self.txtMissionTime.connect('changed',
-                                                     super().on_changed_entry,
-                                                     5, 'wvw_editing_hardware')
+        self.txtActiveTemp.dic_handler_id["changed"] = self.txtActiveTemp.connect(
+            "changed", super().on_changed_entry, 2, "wvw_editing_hardware"
+        )
+        self.txtDormantTemp.dic_handler_id["changed"] = self.txtDormantTemp.connect(
+            "changed", super().on_changed_entry, 3, "wvw_editing_hardware"
+        )
+        self.txtDutyCycle.dic_handler_id["changed"] = self.txtDutyCycle.connect(
+            "changed", super().on_changed_entry, 4, "wvw_editing_hardware"
+        )
+        self.txtMissionTime.dic_handler_id["changed"] = self.txtMissionTime.connect(
+            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
+        )
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1299,33 +1333,35 @@ class EnvironmentalInputPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # _____ COMBOBOXES
         self.cmbActiveEnviron.do_set_properties(
-            tooltip=_("The operating environment for the hardware item."),
-            width=200)
+            tooltip=_("The operating environment for the hardware item."), width=200
+        )
         self.cmbDormantEnviron.do_set_properties(
-            tooltip=_("The storage environment for the hardware item."),
-            width=200)
+            tooltip=_("The storage environment for the hardware item."), width=200
+        )
 
         # ----- ENTRIES
         self.txtActiveTemp.do_set_properties(
             tooltip=_("The ambient temperature in the operating environment."),
-            width=125)
+            width=125,
+        )
         self.txtDormantTemp.do_set_properties(
-            tooltip=_("The ambient temperature in the storage environment."),
-            width=125)
+            tooltip=_("The ambient temperature in the storage environment."), width=125
+        )
         self.txtMissionTime.do_set_properties(
-            tooltip=_("The mission time of the selected hardware item."),
-            width=125)
+            tooltip=_("The mission time of the selected hardware item."), width=125
+        )
         self.txtDutyCycle.do_set_properties(
-            tooltip=_("The duty cycle of the selected hardware item."),
-            width=125)
+            tooltip=_("The duty cycle of the selected hardware item."), width=125
+        )
 
 
 class ReliabilityResultsPanel(RAMSTKPanel):
     """Panel to display reliability results for the selected Hardware item."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Reliability Results panel."""
         super().__init__()
@@ -1391,9 +1427,8 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -1402,24 +1437,24 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- ENTRIES
-        self.txtActiveHt.do_update('', signal='changed')
-        self.txtActiveHtVar.do_update('', signal='changed')
-        self.txtDormantHt.do_update('', signal='changed')
-        self.txtDormantHtVar.do_update('', signal='changed')
-        self.txtSoftwareHt.do_update('', signal='changed')
-        self.txtPercentHt.do_update('', signal='changed')
-        self.txtLogisticsHt.do_update('', signal='changed')
-        self.txtLogisticsHtVar.do_update('', signal='changed')
-        self.txtLogisticsMTBF.do_update('', signal='changed')
-        self.txtLogisticsMTBFVar.do_update('', signal='changed')
-        self.txtLogisticsRt.do_update('', signal='changed')
-        self.txtLogisticsRtVar.do_update('', signal='changed')
-        self.txtMissionHt.do_update('', signal='changed')
-        self.txtMissionHtVar.do_update('', signal='changed')
-        self.txtMissionMTBF.do_update('', signal='changed')
-        self.txtMissionMTBFVar.do_update('', signal='changed')
-        self.txtMissionRt.do_update('', signal='changed')
-        self.txtMissionRtVar.do_update('', signal='changed')
+        self.txtActiveHt.do_update("", signal="changed")
+        self.txtActiveHtVar.do_update("", signal="changed")
+        self.txtDormantHt.do_update("", signal="changed")
+        self.txtDormantHtVar.do_update("", signal="changed")
+        self.txtSoftwareHt.do_update("", signal="changed")
+        self.txtPercentHt.do_update("", signal="changed")
+        self.txtLogisticsHt.do_update("", signal="changed")
+        self.txtLogisticsHtVar.do_update("", signal="changed")
+        self.txtLogisticsMTBF.do_update("", signal="changed")
+        self.txtLogisticsMTBFVar.do_update("", signal="changed")
+        self.txtLogisticsRt.do_update("", signal="changed")
+        self.txtLogisticsRtVar.do_update("", signal="changed")
+        self.txtMissionHt.do_update("", signal="changed")
+        self.txtMissionHtVar.do_update("", signal="changed")
+        self.txtMissionMTBF.do_update("", signal="changed")
+        self.txtMissionMTBFVar.do_update("", signal="changed")
+        self.txtMissionRt.do_update("", signal="changed")
+        self.txtMissionRtVar.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -1429,63 +1464,66 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- ENTRIES
-        self.txtActiveHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_active'])),
-                                   signal='changed')  # noqa
-        self.txtActiveHtVar.do_update(str(
-            self.fmt.format(attributes['hr_active_variance'])),
-                                      signal='changed')  # noqa
-        self.txtDormantHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_dormant'])),
-                                    signal='changed')  # noqa
-        self.txtDormantHtVar.do_update(str(
-            self.fmt.format(attributes['hr_dormant_variance'])),
-                                       signal='changed')  # noqa
-        self.txtLogisticsHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_logistics'])),
-                                      signal='changed')  # noqa
-        self.txtLogisticsHtVar.do_update(str(
-            self.fmt.format(attributes['hr_logistics_variance'])),
-                                         signal='changed')  # noqa
-        self.txtLogisticsMTBF.do_update(str(
-            self.fmt.format(attributes['mtbf_logistics'])),
-                                        signal='changed')  # noqa
-        self.txtLogisticsMTBFVar.do_update(str(
-            self.fmt.format(attributes['mtbf_logistics_variance'])),
-                                           signal='changed')  # noqa
-        self.txtLogisticsRt.do_update(str(
-            self.fmt.format(attributes['reliability_logistics'])),
-                                      signal='changed')  # noqa
-        self.txtLogisticsRtVar.do_update(str(
-            self.fmt.format(attributes['reliability_log_variance'])),
-                                         signal='changed')  # noqa
-        self.txtMissionHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_mission'])),
-                                    signal='changed')  # noqa
-        self.txtMissionHtVar.do_update(str(
-            self.fmt.format(attributes['hr_mission_variance'])),
-                                       signal='changed')  # noqa
-        self.txtMissionMTBF.do_update(str(
-            self.fmt.format(attributes['mtbf_mission'])),
-                                      signal='changed')  # noqa
-        self.txtMissionMTBFVar.do_update(str(
-            self.fmt.format(attributes['mtbf_mission_variance'])),
-                                         signal='changed')  # noqa
-        self.txtMissionRt.do_update(str(
-            self.fmt.format(attributes['reliability_mission'])),
-                                    signal='changed')  # noqa
-        self.txtMissionRtVar.do_update(str(
-            self.fmt.format(attributes['reliability_miss_variance'])),
-                                       signal='changed')  # noqa
-        self.txtPercentHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_percent'])),
-                                    signal='changed')  # noqa
-        self.txtSoftwareHt.do_update(str(
-            self.fmt.format(attributes['hazard_rate_software'])),
-                                     signal='changed')  # noqa
+        self.txtActiveHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_active"])), signal="changed"
+        )  # noqa
+        self.txtActiveHtVar.do_update(
+            str(self.fmt.format(attributes["hr_active_variance"])), signal="changed"
+        )  # noqa
+        self.txtDormantHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_dormant"])), signal="changed"
+        )  # noqa
+        self.txtDormantHtVar.do_update(
+            str(self.fmt.format(attributes["hr_dormant_variance"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_logistics"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsHtVar.do_update(
+            str(self.fmt.format(attributes["hr_logistics_variance"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsMTBF.do_update(
+            str(self.fmt.format(attributes["mtbf_logistics"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsMTBFVar.do_update(
+            str(self.fmt.format(attributes["mtbf_logistics_variance"])),
+            signal="changed",
+        )  # noqa
+        self.txtLogisticsRt.do_update(
+            str(self.fmt.format(attributes["reliability_logistics"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsRtVar.do_update(
+            str(self.fmt.format(attributes["reliability_log_variance"])),
+            signal="changed",
+        )  # noqa
+        self.txtMissionHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_mission"])), signal="changed"
+        )  # noqa
+        self.txtMissionHtVar.do_update(
+            str(self.fmt.format(attributes["hr_mission_variance"])), signal="changed"
+        )  # noqa
+        self.txtMissionMTBF.do_update(
+            str(self.fmt.format(attributes["mtbf_mission"])), signal="changed"
+        )  # noqa
+        self.txtMissionMTBFVar.do_update(
+            str(self.fmt.format(attributes["mtbf_mission_variance"])), signal="changed"
+        )  # noqa
+        self.txtMissionRt.do_update(
+            str(self.fmt.format(attributes["reliability_mission"])), signal="changed"
+        )  # noqa
+        self.txtMissionRtVar.do_update(
+            str(self.fmt.format(attributes["reliability_miss_variance"])),
+            signal="changed",
+        )  # noqa
+        self.txtPercentHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_percent"])), signal="changed"
+        )  # noqa
+        self.txtSoftwareHt.do_update(
+            str(self.fmt.format(attributes["hazard_rate_software"])), signal="changed"
+        )  # noqa
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1493,86 +1531,139 @@ class ReliabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # ----- ENTRIES
-        self.txtActiveHt.do_set_properties(tooltip=_(
-            "Displays the active failure intensity for the selected "
-            "hardware item."),
-                                           width=125)  # noqa
-        self.txtActiveHtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the active failure intensity "
-            "for the selected hardware item."),
-                                              width=125)  # noqa
-        self.txtDormantHt.do_set_properties(tooltip=_(
-            "Displays the dormant failure intensity for the "
-            "selected hardware item."),
-                                            width=125)  # noqa
-        self.txtDormantHtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the dormant failure intensity "
-            "for the selected hardware item."),
-                                               width=125)  # noqa
-        self.txtLogisticsHt.do_set_properties(tooltip=_(
-            "Displays the logistics failure intensity for the "
-            "selected hardware item.  This is the sum of the "
-            "active, dormant, and software hazard rates."),
-                                              width=125)  # noqa
-        self.txtLogisticsHtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the logistics failure "
-            "intensity for the selected hardware item."),
-                                                 width=125)  # noqa
-        self.txtLogisticsMTBF.do_set_properties(tooltip=_(
-            "Displays the logistics mean time between failure "
-            "(MTBF) for the selected hardware item."),
-                                                width=125)  # noqa
-        self.txtLogisticsMTBFVar.do_set_properties(tooltip=_(
-            "Displays the variance on the logistics MTBF for the "
-            "selected hardware item."),
-                                                   width=125)  # noqa
-        self.txtLogisticsRt.do_set_properties(tooltip=_(
-            "Displays the logistics reliability for the selected "
-            "hardware item."),
-                                              width=125)  # noqa
-        self.txtLogisticsRtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the logistics reliability "
-            "for the selected hardware item."),
-                                                 width=125)  # noqa
-        self.txtMissionHt.do_set_properties(tooltip=_(
-            "Displays the mission failure intensity for the "
-            "selected hardware item."),
-                                            width=125)  # noqa
-        self.txtMissionHtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the mission failure "
-            "intensity for the selected hardware item."),
-                                               width=125)  # noqa
-        self.txtMissionMTBF.do_set_properties(tooltip=_(
-            "Displays the mission mean time between failure (MTBF) "
-            "for the selected hardware item."),
-                                              width=125)  # noqa
-        self.txtMissionMTBFVar.do_set_properties(tooltip=_(
-            "Displays the variance on the mission MTBF for the "
-            "selected hardware item."),
-                                                 width=125)  # noqa
-        self.txtMissionRt.do_set_properties(tooltip=_(
-            "Displays the mission reliability for the selected "
-            "hardware item."),
-                                            width=125)  # noqa
-        self.txtMissionRtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the mission reliability for "
-            "the selected hardware item."),
-                                               width=125)  # noqa
-        self.txtPercentHt.do_set_properties(tooltip=_(
-            "Displays the percentage of the system failure "
-            "intensity the selected hardware item represents."),
-                                            width=125)  # noqa
-        self.txtSoftwareHt.do_set_properties(tooltip=_(
-            "Displays the software failure intensity for the "
-            "selected hardware item."),
-                                             width=125)  # noqa
+        self.txtActiveHt.do_set_properties(
+            tooltip=_(
+                "Displays the active failure intensity for the selected "
+                "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtActiveHtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the active failure intensity "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtDormantHt.do_set_properties(
+            tooltip=_(
+                "Displays the dormant failure intensity for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtDormantHtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the dormant failure intensity "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsHt.do_set_properties(
+            tooltip=_(
+                "Displays the logistics failure intensity for the "
+                "selected hardware item.  This is the sum of the "
+                "active, dormant, and software hazard rates."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsHtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the logistics failure "
+                "intensity for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsMTBF.do_set_properties(
+            tooltip=_(
+                "Displays the logistics mean time between failure "
+                "(MTBF) for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsMTBFVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the logistics MTBF for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsRt.do_set_properties(
+            tooltip=_(
+                "Displays the logistics reliability for the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsRtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the logistics reliability "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionHt.do_set_properties(
+            tooltip=_(
+                "Displays the mission failure intensity for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionHtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the mission failure "
+                "intensity for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionMTBF.do_set_properties(
+            tooltip=_(
+                "Displays the mission mean time between failure (MTBF) "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionMTBFVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the mission MTBF for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionRt.do_set_properties(
+            tooltip=_(
+                "Displays the mission reliability for the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionRtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the mission reliability for "
+                "the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtPercentHt.do_set_properties(
+            tooltip=_(
+                "Displays the percentage of the system failure "
+                "intensity the selected hardware item represents."
+            ),
+            width=125,
+        )  # noqa
+        self.txtSoftwareHt.do_set_properties(
+            tooltip=_(
+                "Displays the software failure intensity for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
 
 
 class AvailabilityResultsPanel(RAMSTKPanel):
     """Panel to display availability results for the selected Hardware item."""
+
     def __init__(self) -> None:
         """Initialize an instance of the Availability Results panel."""
         super().__init__()
@@ -1624,11 +1715,10 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         super().do_make_panel_fixed()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.on_edit, 'mvw_editing_hardware')
+        pub.subscribe(self.on_edit, "mvw_editing_hardware")
 
-        pub.subscribe(self._do_clear_panel, 'request_clear_workviews')
-        pub.subscribe(self._do_load_panel,
-                      'succeed_get_all_hardware_attributes')
+        pub.subscribe(self._do_clear_panel, "request_clear_workviews")
+        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
 
     def _do_clear_panel(self) -> None:
         """Clear the contents of the panel widgets.
@@ -1637,14 +1727,14 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         :rtype: None
         """
         # ----- ENTRIES
-        self.txtTotalCost.do_update('', signal='changed')
-        self.txtCostFailure.do_update('', signal='changed')
-        self.txtCostHour.do_update('', signal='changed')
-        self.txtPartCount.do_update('', signal='changed')
-        self.txtLogisticsAt.do_update('', signal='changed')
-        self.txtLogisticsAtVar.do_update('', signal='changed')
-        self.txtMissionAt.do_update('', signal='changed')
-        self.txtMissionAtVar.do_update('', signal='changed')
+        self.txtTotalCost.do_update("", signal="changed")
+        self.txtCostFailure.do_update("", signal="changed")
+        self.txtCostHour.do_update("", signal="changed")
+        self.txtPartCount.do_update("", signal="changed")
+        self.txtLogisticsAt.do_update("", signal="changed")
+        self.txtLogisticsAtVar.do_update("", signal="changed")
+        self.txtMissionAt.do_update("", signal="changed")
+        self.txtMissionAtVar.do_update("", signal="changed")
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load data into the Hardware General Data page widgets.
@@ -1654,33 +1744,33 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
+        self._record_id = attributes["hardware_id"]
 
         # ----- ENTRIES
-        self.txtLogisticsAt.do_update(str(
-            self.fmt.format(attributes['availability_logistics'])),
-                                      signal='changed')  # noqa
-        self.txtLogisticsAtVar.do_update(str(
-            self.fmt.format(attributes['avail_log_variance'])),
-                                         signal='changed')  # noqa
-        self.txtMissionAt.do_update(str(
-            self.fmt.format(attributes['availability_mission'])),
-                                    signal='changed')  # noqa
-        self.txtMissionAtVar.do_update(str(
-            self.fmt.format(attributes['avail_mis_variance'])),
-                                       signal='changed')  # noqa
-        self.txtTotalCost.do_update(str(
-            locale.currency(attributes['total_cost'])),
-                                    signal='changed')  # noqa
-        self.txtCostFailure.do_update(str(
-            locale.currency(attributes['cost_failure'])),
-                                      signal='changed')  # noqa
-        self.txtCostHour.do_update(str(locale.currency(
-            attributes['cost_hour'])),
-                                   signal='changed')  # noqa
-        self.txtPartCount.do_update(str('{0:d}'.format(
-            attributes['total_part_count'])),
-                                    signal='changed')  # noqa
+        self.txtLogisticsAt.do_update(
+            str(self.fmt.format(attributes["availability_logistics"])), signal="changed"
+        )  # noqa
+        self.txtLogisticsAtVar.do_update(
+            str(self.fmt.format(attributes["avail_log_variance"])), signal="changed"
+        )  # noqa
+        self.txtMissionAt.do_update(
+            str(self.fmt.format(attributes["availability_mission"])), signal="changed"
+        )  # noqa
+        self.txtMissionAtVar.do_update(
+            str(self.fmt.format(attributes["avail_mis_variance"])), signal="changed"
+        )  # noqa
+        self.txtTotalCost.do_update(
+            str(locale.currency(attributes["total_cost"])), signal="changed"
+        )  # noqa
+        self.txtCostFailure.do_update(
+            str(locale.currency(attributes["cost_failure"])), signal="changed"
+        )  # noqa
+        self.txtCostHour.do_update(
+            str(locale.currency(attributes["cost_hour"])), signal="changed"
+        )  # noqa
+        self.txtPartCount.do_update(
+            str("{0:d}".format(attributes["total_part_count"])), signal="changed"
+        )  # noqa
 
     def __do_set_properties(self) -> None:
         """Set the properties of the panel widgets.
@@ -1688,58 +1778,87 @@ class AvailabilityResultsPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         # ----- ENTRIES
-        self.txtCostFailure.do_set_properties(tooltip=_(
-            "Displays the cost per failure of the selected "
-            "hardware item."),
-                                              width=125)  # noqa
-        self.txtCostHour.do_set_properties(tooltip=_(
-            "Displays the failure cost per operating hour for the "
-            "selected hardware item."),
-                                           width=125)  # noqa
-        self.txtLogisticsAt.do_set_properties(tooltip=_(
-            "Displays the logistics availability for the selected "
-            "hardware item."),
-                                              width=125)  # noqa
-        self.txtLogisticsAtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the logistics availability "
-            "for the selected hardware item."),
-                                                 width=125)  # noqa
-        self.txtMCMT.do_set_properties(tooltip=_(
-            "Displays the mean corrective maintenance time (MCMT) "
-            "for the selected hardware item."),
-                                       width=125)  # noqa
-        self.txtMissionAt.do_set_properties(tooltip=_(
-            "Displays the mission availability for the selected "
-            "hardware item."),
-                                            width=125)  # noqa
-        self.txtMissionAtVar.do_set_properties(tooltip=_(
-            "Displays the variance on the mission availability for "
-            "the selected hardware item."),
-                                               width=125)  # noqa
-        self.txtMMT.do_set_properties(tooltip=_(
-            "Displays the mean maintenance time (MMT) for the "
-            "selected hardware item.  This includes preventive and "
-            "corrective maintenance."),
-                                      width=125)  # noqa
-        self.txtMPMT.do_set_properties(tooltip=_(
-            "Displays the mean preventive maintenance time (MPMT) "
-            "for the selected hardware item."),
-                                       width=125)  # noqa
-        self.txtMTTR.do_set_properties(tooltip=_(
-            "Displays the mean time to repair (MTTR) for the "
-            "selected hardware item."),
-                                       width=125)  # noqa
-        self.txtPartCount.do_set_properties(tooltip=_(
-            "Displays the total part count for the selected "
-            "hardware item."),
-                                            width=125)  # noqa
-        self.txtTotalCost.do_set_properties(tooltip=_(
-            "Displays the total cost of the selected hardware "
-            "item."),
-                                            width=125)  # noqa
+        self.txtCostFailure.do_set_properties(
+            tooltip=_(
+                "Displays the cost per failure of the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtCostHour.do_set_properties(
+            tooltip=_(
+                "Displays the failure cost per operating hour for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsAt.do_set_properties(
+            tooltip=_(
+                "Displays the logistics availability for the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtLogisticsAtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the logistics availability "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMCMT.do_set_properties(
+            tooltip=_(
+                "Displays the mean corrective maintenance time (MCMT) "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionAt.do_set_properties(
+            tooltip=_(
+                "Displays the mission availability for the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMissionAtVar.do_set_properties(
+            tooltip=_(
+                "Displays the variance on the mission availability for "
+                "the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMMT.do_set_properties(
+            tooltip=_(
+                "Displays the mean maintenance time (MMT) for the "
+                "selected hardware item.  This includes preventive and "
+                "corrective maintenance."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMPMT.do_set_properties(
+            tooltip=_(
+                "Displays the mean preventive maintenance time (MPMT) "
+                "for the selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtMTTR.do_set_properties(
+            tooltip=_(
+                "Displays the mean time to repair (MTTR) for the "
+                "selected hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtPartCount.do_set_properties(
+            tooltip=_(
+                "Displays the total part count for the selected " "hardware item."
+            ),
+            width=125,
+        )  # noqa
+        self.txtTotalCost.do_set_properties(
+            tooltip=_("Displays the total cost of the selected hardware " "item."),
+            width=125,
+        )  # noqa
 
 
 class GeneralData(RAMSTKWorkView):
@@ -1763,15 +1882,15 @@ class GeneralData(RAMSTKWorkView):
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
     """
+
     # Define private dict class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'hardware'
+    _module: str = "hardware"
     _tablabel: str = _("General\nData")
-    _tabtooltip: str = _(
-        "Displays general information for the selected Hardware")
+    _tabtooltip: str = _("Displays general information for the selected Hardware")
 
     # Define public dictionary class attributes.
 
@@ -1779,8 +1898,9 @@ class GeneralData(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Hardware Work View general data page.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -1792,9 +1912,9 @@ class GeneralData(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['comp_ref_des'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/rollup.png')
+        self._dic_icons["comp_ref_des"] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/rollup.png"
+        )
 
         # Initialize private list attributes.
 
@@ -1815,9 +1935,9 @@ class GeneralData(RAMSTKWorkView):
             super().do_request_update_all,
         ]
         self._lst_icons = [
-            'comp_ref_des',
-            'save',
-            'save-all',
+            "comp_ref_des",
+            "save",
+            "save-all",
         ]
         self._lst_mnu_labels = [
             _("Comp. Ref. Des."),
@@ -1825,8 +1945,10 @@ class GeneralData(RAMSTKWorkView):
             _("Save All"),
         ]
         self._lst_tooltips = [
-            _("Creates the composite reference designator for the "
-              "selected hardware item."),
+            _(
+                "Creates the composite reference designator for the "
+                "selected hardware item."
+            ),
             _("Save changes to the currently selected hardware item."),
             _("Save changes to all hardware items."),
         ]
@@ -1834,7 +1956,7 @@ class GeneralData(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_hardware')
+        pub.subscribe(self._do_set_record_id, "selected_hardware")
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """Send request to create the composite reference designator.
@@ -1844,7 +1966,7 @@ class GeneralData(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage('request_make_comp_ref_des', node_id=self._record_id)
+        pub.sendMessage("request_make_comp_ref_des", node_id=self._record_id)
         super().do_set_cursor_active()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -1855,8 +1977,8 @@ class GeneralData(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._parent_id = attributes['parent_id']
+        self._record_id = attributes["hardware_id"]
+        self._parent_id = attributes["parent_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware General Data tab.
@@ -1868,14 +1990,17 @@ class GeneralData(RAMSTKWorkView):
 
         self._pnlGeneralData.fmt = self.fmt
         self._pnlGeneralData.dicSubcategories = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES
+        )
         self._pnlGeneralData.do_load_categories(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES
+        )
         _hpaned.pack1(self._pnlGeneralData, True, True)
 
         self._pnlLogistics.do_load_cost_types()
         self._pnlLogistics.do_load_manufacturers(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS
+        )
         _vpaned_right.pack1(self._pnlLogistics, True, True)
 
         _vpaned_right.pack2(self._pnlMiscellaneous, True, True)
@@ -1913,16 +2038,18 @@ class AssessmentInputs(RAMSTKWorkView):
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
     """
+
     # Define private dict attributes.
 
     # Define private list attributes.
     _lst_title: List[str] = [_("Operating Stresses")]
 
     # Define private scalar class attributes.
-    _module: str = 'hardware'
+    _module: str = "hardware"
     _tablabel: str = _("Assessment\nInputs")
-    _tabtooltip: str = _("Displays reliability assessment inputs "
-                         "for the selected hardware item.")
+    _tabtooltip: str = _(
+        "Displays reliability assessment inputs " "for the selected hardware item."
+    )
 
     # Define public dictionary class attributes.
 
@@ -1930,8 +2057,9 @@ class AssessmentInputs(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize an instance of the Hardware assessment input view.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
@@ -1960,13 +2088,15 @@ class AssessmentInputs(RAMSTKWorkView):
             super().do_request_update_all,
         ]
         self._lst_icons = [
-            'calculate',
-            'save',
-            'save-all',
+            "calculate",
+            "save",
+            "save-all",
         ]
         self._lst_tooltips = [
-            _("Calculate the currently selected hardware item and all of "
-              "it's children."),
+            _(
+                "Calculate the currently selected hardware item and all of "
+                "it's children."
+            ),
             _("Save changes to the currently selected hardware item."),
             _("Save changes to all hardware items."),
         ]
@@ -1993,11 +2123,10 @@ class AssessmentInputs(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active,
-                      'succeed_calculate_hardware')
+        pub.subscribe(super().do_set_cursor_active, "succeed_calculate_hardware")
 
-        pub.subscribe(self._do_pack_component_panel, 'selected_hardware')
-        pub.subscribe(self._do_set_record_id, 'selected_hardware')
+        pub.subscribe(self._do_pack_component_panel, "selected_hardware")
+        pub.subscribe(self._do_set_record_id, "selected_hardware")
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Pack panel used to display component-specific input attributes.
@@ -2014,9 +2143,8 @@ class AssessmentInputs(RAMSTKWorkView):
             self._vpnLeft.remove(self._vpnLeft.get_child2())
 
         # Retrieve the appropriate component-specific view.
-        if attributes['category_id'] > 0:
-            _panel: RAMSTKPanel = self._dic_component_panels[
-                attributes['category_id']]
+        if attributes["category_id"] > 0:
+            _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
             _panel.fmt = self.fmt
             self._vpnLeft.pack2(_panel, True, True)
             self.show_all()
@@ -2033,7 +2161,7 @@ class AssessmentInputs(RAMSTKWorkView):
         try:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                'request_calculate_hardware',
+                "request_calculate_hardware",
                 node_id=self._record_id,
             )
         except KeyError as _error:
@@ -2047,8 +2175,8 @@ class AssessmentInputs(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._parent_id = attributes['parent_id']
+        self._record_id = attributes["hardware_id"]
+        self._parent_id = attributes["parent_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Input tab.
@@ -2060,8 +2188,7 @@ class AssessmentInputs(RAMSTKWorkView):
 
         # Top left quadrant.
         self._pnlAssessmentInput.fmt = self.fmt
-        self._pnlAssessmentInput.do_load_hr_distributions(
-            RAMSTK_HR_DISTRIBUTIONS)
+        self._pnlAssessmentInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
         self._pnlAssessmentInput.do_load_hr_methods(RAMSTK_HR_MODELS)
         self._pnlAssessmentInput.do_load_hr_types(RAMSTK_HR_TYPES)
         self._vpnLeft.pack1(self._pnlAssessmentInput, True, True)
@@ -2069,9 +2196,11 @@ class AssessmentInputs(RAMSTKWorkView):
         # Top right quadrant.
         self._pnlEnvironmentalInput.fmt = self.fmt
         self._pnlEnvironmentalInput.do_load_environment_active(
-            RAMSTK_ACTIVE_ENVIRONMENTS)
+            RAMSTK_ACTIVE_ENVIRONMENTS
+        )
         self._pnlEnvironmentalInput.do_load_environment_dormant(
-            RAMSTK_DORMANT_ENVIRONMENTS)
+            RAMSTK_DORMANT_ENVIRONMENTS
+        )
         self._vpnRight.pack1(self._pnlEnvironmentalInput, True, True)
 
         # Bottom right quadrant.
@@ -2111,11 +2240,13 @@ class AssessmentResults(RAMSTKWorkView):
     _lst_title = [_("Assessment Model Results"), _("Stress Results")]
 
     # Define private scalar class attributes.
-    _module: str = 'hardware'
+    _module: str = "hardware"
     _tablabel: str = _("Assessment\nResults")
-    _tabtooltip: str = _("Displays reliability, maintainability, "
-                         "and availability assessment results for "
-                         "the selected Hardware item.")
+    _tabtooltip: str = _(
+        "Displays reliability, maintainability, "
+        "and availability assessment results for "
+        "the selected Hardware item."
+    )
 
     # Define public dictionary class attributes.
 
@@ -2123,8 +2254,9 @@ class AssessmentResults(RAMSTKWorkView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize an instance of the Hardware assessment output view.
 
         :param configuration: the RAMSTK User Configuration class instance.
@@ -2153,9 +2285,9 @@ class AssessmentResults(RAMSTKWorkView):
             super().do_request_update_all,
         ]
         self._lst_icons = [
-            'calculate',
-            'save',
-            'save-all',
+            "calculate",
+            "save",
+            "save-all",
         ]
         self._lst_tooltips = [
             _("Calculate the currently selected Hardware item."),
@@ -2169,8 +2301,7 @@ class AssessmentResults(RAMSTKWorkView):
 
         self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
         self._pnlReliabilityResults: RAMSTKPanel = ReliabilityResultsPanel()
-        self._pnlStressResults: RAMSTKStressResultPanel = \
-            RAMSTKStressResultPanel()
+        self._pnlStressResults: RAMSTKStressResultPanel = RAMSTKStressResultPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -2186,8 +2317,8 @@ class AssessmentResults(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_pack_component_panel, 'selected_hardware')
-        pub.subscribe(self._do_set_record_id, 'selected_hardware')
+        pub.subscribe(self._do_pack_component_panel, "selected_hardware")
+        pub.subscribe(self._do_set_record_id, "selected_hardware")
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the results specific to hardware components.
@@ -2203,9 +2334,8 @@ class AssessmentResults(RAMSTKWorkView):
             self._vpnLeft.remove(self._vpnLeft.get_child2())
 
         # Retrieve the appropriate component-specific view.
-        if attributes['category_id'] > 0:
-            _panel: RAMSTKPanel = self._dic_component_results[
-                attributes['category_id']]
+        if attributes["category_id"] > 0:
+            _panel: RAMSTKPanel = self._dic_component_results[attributes["category_id"]]
             _panel.fmt = self.fmt
             self._vpnLeft.pack2(_panel, True, True)
             self.show_all()
@@ -2223,7 +2353,7 @@ class AssessmentResults(RAMSTKWorkView):
         try:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                'request_calculate_hardware',
+                "request_calculate_hardware",
                 node_id=self._record_id,
             )
         except KeyError as _error:
@@ -2237,8 +2367,8 @@ class AssessmentResults(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['hardware_id']
-        self._parent_id = attributes['parent_id']
+        self._record_id = attributes["hardware_id"]
+        self._parent_id = attributes["parent_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Results tab.

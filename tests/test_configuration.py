@@ -22,25 +22,37 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
-    RAMSTK_ACTIVE_ENVIRONMENTS, RAMSTK_ALLOCATION_MODELS,
-    RAMSTK_CONTROL_TYPES, RAMSTK_COST_TYPES, RAMSTK_CRITICALITY,
-    RAMSTK_DORMANT_ENVIRONMENTS, RAMSTK_FAILURE_PROBABILITY,
-    RAMSTK_HR_DISTRIBUTIONS, RAMSTK_HR_MODELS, RAMSTK_HR_TYPES,
-    RAMSTK_LIFECYCLE, RAMSTK_MTTR_TYPES, RAMSTK_S_DIST, RAMSTK_SW_APPLICATION,
-    RAMSTK_SW_DEV_ENVIRONMENTS, RAMSTK_SW_DEV_PHASES, RAMSTK_SW_LEVELS,
-    RAMSTK_SW_TEST_METHODS, RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+    RAMSTK_ACTIVE_ENVIRONMENTS,
+    RAMSTK_ALLOCATION_MODELS,
+    RAMSTK_CONTROL_TYPES,
+    RAMSTK_COST_TYPES,
+    RAMSTK_CRITICALITY,
+    RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_FAILURE_PROBABILITY,
+    RAMSTK_HR_DISTRIBUTIONS,
+    RAMSTK_HR_MODELS,
+    RAMSTK_HR_TYPES,
+    RAMSTK_LIFECYCLE,
+    RAMSTK_MTTR_TYPES,
+    RAMSTK_S_DIST,
+    RAMSTK_SW_APPLICATION,
+    RAMSTK_SW_DEV_ENVIRONMENTS,
+    RAMSTK_SW_DEV_PHASES,
+    RAMSTK_SW_LEVELS,
+    RAMSTK_SW_TEST_METHODS,
+    RAMSTKSiteConfiguration,
+    RAMSTKUserConfiguration,
 )
 
 try:
-    VIRTUAL_ENV = glob.glob(os.environ['VIRTUAL_ENV'])[0]
+    VIRTUAL_ENV = glob.glob(os.environ["VIRTUAL_ENV"])[0]
 except KeyError:
-    if sys.platform == 'Linux' or sys.platform == 'linux':
-        VIRTUAL_ENV = os.getenv('HOME') + '/.local'
-    elif sys.platform == 'Windows' or sys.platform == 'windows':
-        VIRTUAL_ENV = os.getenv('TEMP')
+    if sys.platform == "Linux" or sys.platform == "linux":
+        VIRTUAL_ENV = os.getenv("HOME") + "/.local"
+    elif sys.platform == "Windows" or sys.platform == "windows":
+        VIRTUAL_ENV = os.getenv("TEMP")
     else:
-        print(("The {0:s} system platform is not "
-               "supported.").format(sys.platform))
+        print(("The {0:s} system platform is not " "supported.").format(sys.platform))
         sys.exit(1)
 
 _ = gettext.gettext
@@ -105,7 +117,8 @@ def test_static_variables():
             _(
                 "Could result in death, permanent total disability, loss "
                 "exceeding $1M, or irreversible severe environmental damage "
-                "that violates law or regulation.", ),
+                "that violates law or regulation.",
+            ),
             "I",
             4,
         ],
@@ -116,7 +129,8 @@ def test_static_variables():
                 "occupational illness that may result in hospitalization of "
                 "at least three personnel, loss exceeding $200K but less than "
                 "$1M, or reversible environmental damage causing a violation "
-                "of law or regulation.", ),
+                "of law or regulation.",
+            ),
             "II",
             3,
         ],
@@ -127,7 +141,8 @@ def test_static_variables():
                 "one or more lost work days(s), loss exceeding $10K but less "
                 "than $200K, or mitigatible environmental damage without "
                 "violation of law or regulation where restoration activities "
-                "can be accomplished.", ),
+                "can be accomplished.",
+            ),
             "III",
             2,
         ],
@@ -136,9 +151,11 @@ def test_static_variables():
             _(
                 "Could result in injury or illness not resulting in a lost "
                 "work day, loss exceeding $2K but less than $10K, or minimal "
-                "environmental damage not violating law or regulation.", ),
-            "IV", 1
-        ]
+                "environmental damage not violating law or regulation.",
+            ),
+            "IV",
+            1,
+        ],
     ]
     assert RAMSTK_FAILURE_PROBABILITY == [
         [_("Level E - Extremely Unlikely"), 1],
@@ -178,7 +195,8 @@ def test_static_variables():
             _("Code Reviews"),
             _(
                 "Code review is a systematic examination (often known as peer "
-                "review) of computer source code.", ),
+                "review) of computer source code.",
+            ),
         ],
         [_("Error/Anomaly Detection"), _("")],
         [_("Structure Analysis"), _("")],
@@ -205,77 +223,91 @@ def test_static_variables():
     ]
 
 
-@pytest.mark.usefixtures('make_shibboly', 'make_config_dir',
-                         'make_home_config_dir')
-class TestCreateConfiguration():
+@pytest.mark.usefixtures("make_shibboly", "test_config_dir", "make_home_config_dir")
+class TestCreateConfiguration:
     """Class for testing the site configuration module."""
+
     def on_create_site_configuration(self):
-        print(
-            "\033[36m\nsucceed_create_site_configuration topic was broadcast.")
+        print("\033[36m\nsucceed_create_site_configuration topic was broadcast.")
 
     def on_fail_site_configuration_no_config_file(self, error_message):
-        assert error_message == ("Failed to write site configuration file "
-                                 "/biboly/RAMSTK/RAMSTK.toml.")
-        print("\033[35m\nfail_create_site_configuration topic was "
-              "broadcast.")
+        assert error_message == (
+            "Failed to write site configuration file " "/biboly/RAMSTK/RAMSTK.toml."
+        )
+        print("\033[35m\nfail_create_site_configuration topic was " "broadcast.")
 
     def on_create_user_configuration(self):
-        print(
-            "\033[36m\nsucceed_create_user_configuration topic was broadcast.")
+        print("\033[36m\nsucceed_create_user_configuration topic was broadcast.")
 
     def on_fail_user_configuration_no_conf_file(self, error_message):
-        assert error_message == ('User configuration file None is not a file.')
+        assert error_message == ("User configuration file None is not a file.")
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "configuration file.")
+            "configuration file."
+        )
 
     def on_fail_create_user_configuration(self, error_message):
-        assert error_message == ('User\'s configuration directory '
-                                 '/opt/.config/RAMSTK does not exist and '
-                                 'could not be created when attempting to '
-                                 'create a new user configuration file.')
+        assert error_message == (
+            "User's configuration directory "
+            "/opt/.config/RAMSTK does not exist and "
+            "could not be created when attempting to "
+            "create a new user configuration file."
+        )
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "configuration directory.")
+            "configuration directory."
+        )
 
     def on_fail_create_data_dir(self, error_message):
-        assert error_message == ('User\'s data directory '
-                                 '/opt/.config/RAMSTK/layouts does not '
-                                 'exist and could not be created when '
-                                 'attempting to create a new user '
-                                 'configuration file.')
+        assert error_message == (
+            "User's data directory "
+            "/opt/.config/RAMSTK/layouts does not "
+            "exist and could not be created when "
+            "attempting to create a new user "
+            "configuration file."
+        )
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "data directory.")
+            "data directory."
+        )
 
     def on_fail_create_icon_dir(self, error_message):
-        assert error_message == ('User\'s icon directory '
-                                 '/opt/.config/RAMSTK/icons does not '
-                                 'exist and could not be created when '
-                                 'attempting to create a new user '
-                                 'configuration file.')
+        assert error_message == (
+            "User's icon directory "
+            "/opt/.config/RAMSTK/icons does not "
+            "exist and could not be created when "
+            "attempting to create a new user "
+            "configuration file."
+        )
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "icon directory.")
+            "icon directory."
+        )
 
     def on_fail_create_log_dir(self, error_message):
-        assert error_message == ('User\'s log directory '
-                                 '/opt/.config/RAMSTK/logs does not exist '
-                                 'and could not be created when '
-                                 'attempting to create a new user '
-                                 'configuration file.')
+        assert error_message == (
+            "User's log directory "
+            "/opt/.config/RAMSTK/logs does not exist "
+            "and could not be created when "
+            "attempting to create a new user "
+            "configuration file."
+        )
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "log directory.")
+            "log directory."
+        )
 
     def on_fail_create_program_dir(self, error_message):
-        assert error_message == ('Program directory /opt/analyses/ramstk does '
-                                 'not exist and could not be created when '
-                                 'attempting to create a new user '
-                                 'configuration file.')
+        assert error_message == (
+            "Program directory /opt/analyses/ramstk does "
+            "not exist and could not be created when "
+            "attempting to create a new user "
+            "configuration file."
+        )
         print(
             "\033[35m\nfail_create_user_configuration topic was broadcast; no "
-            "program directory.")
+            "program directory."
+        )
 
     @pytest.mark.unit
     def test_initialize_site_configuration(self):
@@ -286,13 +318,13 @@ class TestCreateConfiguration():
 
         assert isinstance(DUT, RAMSTKSiteConfiguration)
         assert DUT.RAMSTK_COM_INFO == {}
-        assert DUT.RAMSTK_COM_BACKEND == ''
+        assert DUT.RAMSTK_COM_BACKEND == ""
 
         # If testing RAMSTK that was installed by `pip install -e .`, then you
         # won't be testing files installed in the VIRTUAL_ENV.  Since the
         # RAMSTK files will not be in the VIRTUAL_ENV, sys will not have the
         # real_prefix attribute.  In this case, skip these tests.
-        if hasattr(sys, 'real_prefix'):
+        if hasattr(sys, "real_prefix"):
             if sys.platform == "linux" or sys.platform == "linux2":
                 assert DUT.RAMSTK_SITE_DIR == VIRTUAL_ENV + "/share/RAMSTK"
             elif sys.platform == "win32":
@@ -310,24 +342,24 @@ class TestCreateConfiguration():
         assert DUT.RAMSTK_COLORS == {}
         assert DUT.RAMSTK_FORMAT_FILE == {}
         assert DUT.RAMSTK_PAGE_NUMBER == {
-            0: 'revision',
-            1: 'function',
-            2: 'requirement',
-            3: 'hardware',
-            4: 'validation'
+            0: "revision",
+            1: "function",
+            2: "requirement",
+            3: "hardware",
+            4: "validation",
         }
         assert DUT.RAMSTK_PROG_INFO == {
-            "dialect": '',
-            "host": '',
-            "port": '',
-            "database": '',
-            "user": '',
-            "password": ''
+            "dialect": "",
+            "host": "",
+            "port": "",
+            "database": "",
+            "user": "",
+            "password": "",
         }
         assert DUT.RAMSTK_TABPOS == {
             "listbook": "top",
             "modulebook": "bottom",
-            "workbook": "bottom"
+            "workbook": "bottom",
         }
         assert DUT.RAMSTK_RISK_POINTS == [4, 10]
         assert DUT.RAMSTK_MODE == ""
@@ -349,14 +381,13 @@ class TestCreateConfiguration():
         if sys.platform == "linux" or sys.platform == "linux2":
             assert DUT.RAMSTK_OS == "Linux"
             assert DUT.RAMSTK_HOME_DIR == os.environ["HOME"]
-            if hasattr(sys, 'real_prefix'):
+            if hasattr(sys, "real_prefix"):
                 assert DUT.RAMSTK_CONF_DIR == DUT._INSTALL_PREFIX + "/share/RAMSTK"
         elif sys.platform == "win32":
             assert DUT.RAMSTK_OS == "Windows"
             assert DUT.RAMSTK_HOME_DIR == os.environ["USERPROFILE"]
-            if hasattr(sys, 'real_prefix'):
-                assert DUT.RAMSTK_CONF_DIR == os.environ[
-                    "PYTHONPATH"] + "/RAMSTK"
+            if hasattr(sys, "real_prefix"):
+                assert DUT.RAMSTK_CONF_DIR == os.environ["PYTHONPATH"] + "/RAMSTK"
 
         assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + "/layouts"
         assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + "/icons"
@@ -365,8 +396,7 @@ class TestCreateConfiguration():
 
         assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_CONF_DIR + "/RAMSTK.toml"
         assert DUT.RAMSTK_USER_LOG == DUT.RAMSTK_LOG_DIR + "/ramstk_run.log"
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
-                                         + "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_import.log")
         assert DUT.RAMSTK_ACTION_CATEGORY == {}
         assert DUT.RAMSTK_ACTION_STATUS == {}
         assert DUT.RAMSTK_AFFINITY_GROUPS == {}
@@ -399,193 +429,199 @@ class TestCreateConfiguration():
     def test_create_site_configuration(self):
         """do_create_site_configuration() should broadcast the succcess message
         on success."""
-        pub.subscribe(self.on_create_site_configuration,
-                      'succeed_create_site_configuration')
+        pub.subscribe(
+            self.on_create_site_configuration, "succeed_create_site_configuration"
+        )
 
         DUT = RAMSTKSiteConfiguration()
 
-        DUT.RAMSTK_SITE_DIR = VIRTUAL_ENV + '/share/RAMSTK'
-        DUT.RAMSTK_SITE_CONF = DUT.RAMSTK_SITE_DIR + '/RAMSTK.toml'
+        DUT.RAMSTK_SITE_DIR = VIRTUAL_ENV + "/share/RAMSTK"
+        DUT.RAMSTK_SITE_CONF = DUT.RAMSTK_SITE_DIR + "/RAMSTK.toml"
 
         assert DUT.do_create_site_configuration() is None
 
-        pub.unsubscribe(self.on_create_site_configuration,
-                        'succeed_create_site_configuration')
+        pub.unsubscribe(
+            self.on_create_site_configuration, "succeed_create_site_configuration"
+        )
 
     @pytest.mark.unit
     def test_create_site_configuration_no_config_file(self):
         """do_create_site_configuration() should broadcast the fail message on
         success."""
-        pub.subscribe(self.on_fail_site_configuration_no_config_file,
-                      'fail_create_site_configuration')
+        pub.subscribe(
+            self.on_fail_site_configuration_no_config_file,
+            "fail_create_site_configuration",
+        )
 
         DUT = RAMSTKSiteConfiguration()
 
-        DUT.RAMSTK_SITE_DIR = '/biboly/RAMSTK'
-        DUT.RAMSTK_SITE_CONF = DUT.RAMSTK_SITE_DIR + '/RAMSTK.toml'
+        DUT.RAMSTK_SITE_DIR = "/biboly/RAMSTK"
+        DUT.RAMSTK_SITE_CONF = DUT.RAMSTK_SITE_DIR + "/RAMSTK.toml"
 
         assert DUT.do_create_site_configuration() is None
 
-        pub.unsubscribe(self.on_fail_site_configuration_no_config_file,
-                        'fail_create_site_configuration')
+        pub.unsubscribe(
+            self.on_fail_site_configuration_no_config_file,
+            "fail_create_site_configuration",
+        )
 
     @pytest.mark.unit
     def test_do_create_user_configuration(self, make_home_config_dir):
         """do_create_user_configuration() should return None on success."""
-        pub.subscribe(self.on_create_user_configuration,
-                      'succeed_create_user_configuration')
+        pub.subscribe(
+            self.on_create_user_configuration, "succeed_create_user_configuration"
+        )
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
-        DUT.RAMSTK_PROG_CONF = VIRTUAL_ENV + '/RAMSTK.toml'
+        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
+        DUT.RAMSTK_PROG_CONF = VIRTUAL_ENV + "/RAMSTK.toml"
 
         assert DUT.do_create_user_configuration() is None
-        assert os.path.isdir(make_home_config_dir + '/icons')
-        assert os.path.isdir(make_home_config_dir + '/layouts')
-        assert os.path.isdir(make_home_config_dir + '/logs')
-        assert os.path.isdir(make_home_config_dir + '/icons/16x16')
-        assert os.path.isdir(make_home_config_dir + '/icons/32x32')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/allocation.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/fmea.toml')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/failure_definition.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/function.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/hardware.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/hazops.toml')
+        assert os.path.isdir(make_home_config_dir + "/icons")
+        assert os.path.isdir(make_home_config_dir + "/layouts")
+        assert os.path.isdir(make_home_config_dir + "/logs")
+        assert os.path.isdir(make_home_config_dir + "/icons/16x16")
+        assert os.path.isdir(make_home_config_dir + "/icons/32x32")
+        assert os.path.isfile(make_home_config_dir + "/layouts/allocation.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/fmea.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/failure_definition.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/function.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/hardware.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/hazops.toml")
         # assert os.path.isfile(make_home_config_dir + '/layouts/incident.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/pof.toml')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/requirement.toml')
-        assert os.path.isfile(make_home_config_dir + '/layouts/revision.toml')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/similar_item.toml')
+        assert os.path.isfile(make_home_config_dir + "/layouts/pof.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/requirement.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/revision.toml")
+        assert os.path.isfile(make_home_config_dir + "/layouts/similar_item.toml")
         # assert os.path.isfile(make_home_config_dir + '/layouts/software.toml')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/stakeholder.toml')
+        assert os.path.isfile(make_home_config_dir + "/layouts/stakeholder.toml")
         # assert os.path.isfile(make_home_config_dir + '/layouts/testing.toml')
-        assert os.path.isfile(make_home_config_dir
-                              + '/layouts/validation.toml')
+        assert os.path.isfile(make_home_config_dir + "/layouts/validation.toml")
 
-        pub.unsubscribe(self.on_create_user_configuration,
-                        'succeed_create_user_configuration')
+        pub.unsubscribe(
+            self.on_create_user_configuration, "succeed_create_user_configuration"
+        )
 
     @pytest.mark.unit
     def test_do_create_user_configuration_no_conf_file(self):
         """do_create_user_configuration() should return None on success."""
-        pub.subscribe(self.on_fail_user_configuration_no_conf_file,
-                      'fail_create_user_configuration')
+        pub.subscribe(
+            self.on_fail_user_configuration_no_conf_file,
+            "fail_create_user_configuration",
+        )
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
+        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
         DUT.RAMSTK_PROG_CONF = None
         DUT.do_create_user_configuration()
 
-        pub.unsubscribe(self.on_fail_user_configuration_no_conf_file,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(
+            self.on_fail_user_configuration_no_conf_file,
+            "fail_create_user_configuration",
+        )
 
     @pytest.mark.unit
     def test_do_make_configuration_dir(self):
         """_do_make_configuration_dir() should create a configuration directory
         and set the RAMSTK_PROG_CONF file os.path."""
-        _temp_dir = VIRTUAL_ENV + '/tmp/' + tempfile.mkdtemp()
+        _temp_dir = VIRTUAL_ENV + "/tmp/" + tempfile.mkdtemp()
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
         DUT.RAMSTK_HOME_DIR = _temp_dir
 
         assert DUT._do_make_configuration_dir() is None
-        assert DUT.RAMSTK_CONF_DIR == _temp_dir + '/.config/RAMSTK'
-        assert DUT.RAMSTK_PROG_CONF == _temp_dir + '/.config/RAMSTK/RAMSTK.toml'
+        assert DUT.RAMSTK_CONF_DIR == _temp_dir + "/.config/RAMSTK"
+        assert DUT.RAMSTK_PROG_CONF == _temp_dir + "/.config/RAMSTK/RAMSTK.toml"
 
         shutil.rmtree(_temp_dir)
 
     @pytest.mark.unit
     def test_do_create_user_configuration_unwritable_user_config_dir(self):
         """do_create_user_configuration() should return None on success."""
-        pub.subscribe(self.on_fail_create_user_configuration,
-                      'fail_create_user_configuration')
+        pub.subscribe(
+            self.on_fail_create_user_configuration, "fail_create_user_configuration"
+        )
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_HOME_DIR = '/opt'
+        DUT.RAMSTK_HOME_DIR = "/opt"
 
         assert DUT._do_make_configuration_dir() is None
 
-        pub.unsubscribe(self.on_fail_create_user_configuration,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(
+            self.on_fail_create_user_configuration, "fail_create_user_configuration"
+        )
 
     @pytest.mark.unit
     def test_do_create_user_configuration_no_user_data_dir(self):
         """_do_make_data_dir() should return None on success."""
-        pub.subscribe(self.on_fail_create_data_dir,
-                      'fail_create_user_configuration')
+        pub.subscribe(self.on_fail_create_data_dir, "fail_create_user_configuration")
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_CONF_DIR = '/opt/.config/RAMSTK'
+        DUT.RAMSTK_CONF_DIR = "/opt/.config/RAMSTK"
 
         assert DUT._do_make_data_dir() is None
 
-        pub.unsubscribe(self.on_fail_create_data_dir,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(self.on_fail_create_data_dir, "fail_create_user_configuration")
 
     @pytest.mark.unit
     def test_do_create_user_configuration_no_user_icon_dir(self):
         """_do_make_icon_dir() should return None on success."""
-        pub.subscribe(self.on_fail_create_icon_dir,
-                      'fail_create_user_configuration')
+        pub.subscribe(self.on_fail_create_icon_dir, "fail_create_user_configuration")
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_CONF_DIR = '/opt/.config/RAMSTK'
+        DUT.RAMSTK_CONF_DIR = "/opt/.config/RAMSTK"
 
         assert DUT._do_make_icon_dir() is None
 
-        pub.unsubscribe(self.on_fail_create_icon_dir,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(self.on_fail_create_icon_dir, "fail_create_user_configuration")
 
     @pytest.mark.unit
     def test_do_create_user_configuration_no_user_log_dir(self):
         """_do_make_log_dir() should return None on success."""
-        pub.subscribe(self.on_fail_create_log_dir,
-                      'fail_create_user_configuration')
+        pub.subscribe(self.on_fail_create_log_dir, "fail_create_user_configuration")
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_CONF_DIR = '/opt/.config/RAMSTK'
+        DUT.RAMSTK_CONF_DIR = "/opt/.config/RAMSTK"
 
         assert DUT._do_make_log_dir() is None
 
-        pub.unsubscribe(self.on_fail_create_log_dir,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(self.on_fail_create_log_dir, "fail_create_user_configuration")
 
     @pytest.mark.unit
     def test_do_create_user_configuration_no_user_program_dir(self):
         """_do_make_prog_dir() should return None on success."""
-        pub.subscribe(self.on_fail_create_program_dir,
-                      'fail_create_user_configuration')
+        pub.subscribe(self.on_fail_create_program_dir, "fail_create_user_configuration")
 
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_PROG_DIR = '/opt/analyses/ramstk'
+        DUT.RAMSTK_PROG_DIR = "/opt/analyses/ramstk"
 
         assert DUT._do_make_program_dir() is None
 
-        pub.unsubscribe(self.on_fail_create_program_dir,
-                        'fail_create_user_configuration')
+        pub.unsubscribe(
+            self.on_fail_create_program_dir, "fail_create_user_configuration"
+        )
 
 
-@pytest.mark.usefixtures('test_toml_site_configuration',
-                         'test_toml_user_configuration', 'make_shibboly',
-                         'make_config_dir')
-class TestGetterSetter():
+@pytest.mark.usefixtures(
+    "test_toml_site_configuration",
+    "test_toml_user_configuration",
+    "make_shibboly",
+    "test_config_dir",
+)
+class TestGetterSetter:
     """Class for testing that the site configuration module can be read."""
+
     def on_fail_get_site_configuration(self, error_message):
         assert error_message == (
-            "Failed to read Site configuration file "
-            "{0:s}/share/RAMSTK/BigSite.toml.").format(VIRTUAL_ENV)
+            "Failed to read Site configuration file " "{0:s}/share/RAMSTK/BigSite.toml."
+        ).format(VIRTUAL_ENV)
         print("\033[35m\nfail_get_site_configuration topic was broadcast.")
 
     def on_succeed_set_site_configuration(self, configuration):
@@ -595,7 +631,8 @@ class TestGetterSetter():
     def on_fail_get_user_configuration(self, error_message):
         assert error_message == (
             "Failed to read User configuration file "
-            "{0:s}/tmp/.config/RAMSTK/BigUser.toml.").format(VIRTUAL_ENV)
+            "{0:s}/tmp/.config/RAMSTK/BigUser.toml."
+        ).format(VIRTUAL_ENV)
         print("\033[35m\nfail_get_user_configuration topic was broadcast.")
 
     @pytest.mark.unit
@@ -603,32 +640,35 @@ class TestGetterSetter():
         """get_site_configuration() should broadcast the succcess message on
         success."""
         DUT = RAMSTKSiteConfiguration()
-        DUT.RAMSTK_SITE_CONF = VIRTUAL_ENV + '/share/RAMSTK/Site.toml'
+        DUT.RAMSTK_SITE_CONF = VIRTUAL_ENV + "/share/RAMSTK/Site.toml"
 
         assert DUT.get_site_configuration() is None
-        assert DUT.RAMSTK_COM_BACKEND == 'sqlite'
-        assert DUT.RAMSTK_COM_INFO["dialect"] == 'sqlite'
-        assert DUT.RAMSTK_COM_INFO["host"] == 'localhost'
-        assert DUT.RAMSTK_COM_INFO["port"] == '3306'
+        assert DUT.RAMSTK_COM_BACKEND == "sqlite"
+        assert DUT.RAMSTK_COM_INFO["dialect"] == "sqlite"
+        assert DUT.RAMSTK_COM_INFO["host"] == "localhost"
+        assert DUT.RAMSTK_COM_INFO["port"] == "3306"
         assert DUT.RAMSTK_COM_INFO["database"] == (
-            VIRTUAL_ENV + '/share/RAMSTK/ramstk_common.ramstk')
-        assert DUT.RAMSTK_COM_INFO["user"] == 'johnny.tester'
-        assert DUT.RAMSTK_COM_INFO["password"] == 'clear.text.password'
+            VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk"
+        )
+        assert DUT.RAMSTK_COM_INFO["user"] == "johnny.tester"
+        assert DUT.RAMSTK_COM_INFO["password"] == "clear.text.password"
 
     @pytest.mark.unit
     def test_get_site_configuration_no_conf_file(self):
         """get_site_configuration() should broadcase the fail message when
         there is no configuration file."""
-        pub.subscribe(self.on_fail_get_site_configuration,
-                      'fail_get_site_configuration')
+        pub.subscribe(
+            self.on_fail_get_site_configuration, "fail_get_site_configuration"
+        )
 
         DUT = RAMSTKSiteConfiguration()
         DUT.RAMSTK_SITE_CONF = VIRTUAL_ENV + "/share/RAMSTK/BigSite.toml"
 
         assert DUT.get_site_configuration() is None
 
-        pub.unsubscribe(self.on_fail_get_site_configuration,
-                        'fail_get_site_configuration')
+        pub.unsubscribe(
+            self.on_fail_get_site_configuration, "fail_get_site_configuration"
+        )
 
     @pytest.mark.unit
     def test_set_site_directories(self):
@@ -637,7 +677,7 @@ class TestGetterSetter():
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
         assert DUT.set_site_directories() is None
-        assert DUT.RAMSTK_SITE_DIR == DUT._INSTALL_PREFIX + '/share/RAMSTK'
+        assert DUT.RAMSTK_SITE_DIR == DUT._INSTALL_PREFIX + "/share/RAMSTK"
         assert DUT.RAMSTK_SITE_CONF == DUT.RAMSTK_SITE_DIR + "/Site.toml"
 
     @pytest.mark.unit
@@ -647,12 +687,12 @@ class TestGetterSetter():
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
-        os.makedirs(_temp_dir + '/share/RAMSTK')
+        os.makedirs(_temp_dir + "/share/RAMSTK")
 
         assert DUT.set_site_directories() is None
-        assert os.path.isfile(_temp_dir + '/share/RAMSTK/Site.toml')
-        assert DUT.RAMSTK_SITE_DIR == _temp_dir + '/share/RAMSTK'
-        assert DUT.RAMSTK_SITE_CONF == _temp_dir + '/share/RAMSTK/Site.toml'
+        assert os.path.isfile(_temp_dir + "/share/RAMSTK/Site.toml")
+        assert DUT.RAMSTK_SITE_DIR == _temp_dir + "/share/RAMSTK"
+        assert DUT.RAMSTK_SITE_CONF == _temp_dir + "/share/RAMSTK/Site.toml"
 
         shutil.rmtree(_temp_dir)
 
@@ -663,30 +703,30 @@ class TestGetterSetter():
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
-        os.makedirs(_temp_dir + '/share/RAMSTK')
+        os.makedirs(_temp_dir + "/share/RAMSTK")
 
-        DUT.RAMSTK_SITE_CONF = _temp_dir + '/share/RAMSTK/Site.toml'
+        DUT.RAMSTK_SITE_CONF = _temp_dir + "/share/RAMSTK/Site.toml"
         DUT.RAMSTK_COM_INFO = {
-            'dialect': 'mine',
-            'host': 'here',
-            'port': 'Taylor Fladgate',
-            'database': 'the one',
-            'user': 'me',
-            'password': 'you'
+            "dialect": "mine",
+            "host": "here",
+            "port": "Taylor Fladgate",
+            "database": "the one",
+            "user": "me",
+            "password": "you",
         }
 
         assert DUT.set_site_configuration() is None
-        assert os.path.isfile(_temp_dir + '/share/RAMSTK/Site.toml')
+        assert os.path.isfile(_temp_dir + "/share/RAMSTK/Site.toml")
 
-        _config = toml.load(_temp_dir + '/share/RAMSTK/Site.toml')
+        _config = toml.load(_temp_dir + "/share/RAMSTK/Site.toml")
 
-        assert _config['title'] == 'RAMSTK Site Configuration'
-        assert _config['backend']['dialect'] == 'mine'
-        assert _config['backend']['host'] == 'here'
-        assert _config['backend']['port'] == 'Taylor Fladgate'
-        assert _config['backend']['database'] == 'the one'
-        assert _config['backend']['user'] == 'me'
-        assert _config['backend']['password'] == 'you'
+        assert _config["title"] == "RAMSTK Site Configuration"
+        assert _config["backend"]["dialect"] == "mine"
+        assert _config["backend"]["host"] == "here"
+        assert _config["backend"]["port"] == "Taylor Fladgate"
+        assert _config["backend"]["database"] == "the one"
+        assert _config["backend"]["user"] == "me"
+        assert _config["backend"]["password"] == "you"
 
         shutil.rmtree(_temp_dir)
 
@@ -697,45 +737,45 @@ class TestGetterSetter():
 
         assert DUT.get_user_configuration() is None
         assert DUT.RAMSTK_COLORS == {
-            'allocationbg': '#FFFFFF',
-            'allocationfg': '#000000',
-            'failure_definitionbg': '#FFFFFF',
-            'failure_definitionfg': '#000000',
-            'fmeabg': '#FFFFFF',
-            'fmeafg': '#000000',
-            'functionbg': '#FFFFFF',
-            'functionfg': '#000000',
-            'hardwarebg': '#FFFFFF',
-            'hardwarefg': '#000000',
-            'hazardbg': '#FFFFFF',
-            'hazardfg': '#000000',
-            'pofbg': '#FFFFFF',
-            'poffg': '#000000',
-            'requirementbg': '#FFFFFF',
-            'requirementfg': '#000000',
-            'revisionbg': '#FFFFFF',
-            'revisionfg': '#000000',
-            'similar_itembg': '#FFFFFF',
-            'similar_itemfg': '#000000',
-            'stakeholderbg': '#FFFFFF',
-            'stakeholderfg': '#000000',
-            'validationbg': '#FFFFFF',
-            'validationfg': '#000000'
+            "allocationbg": "#FFFFFF",
+            "allocationfg": "#000000",
+            "failure_definitionbg": "#FFFFFF",
+            "failure_definitionfg": "#000000",
+            "fmeabg": "#FFFFFF",
+            "fmeafg": "#000000",
+            "functionbg": "#FFFFFF",
+            "functionfg": "#000000",
+            "hardwarebg": "#FFFFFF",
+            "hardwarefg": "#000000",
+            "hazardbg": "#FFFFFF",
+            "hazardfg": "#000000",
+            "pofbg": "#FFFFFF",
+            "poffg": "#000000",
+            "requirementbg": "#FFFFFF",
+            "requirementfg": "#000000",
+            "revisionbg": "#FFFFFF",
+            "revisionfg": "#000000",
+            "similar_itembg": "#FFFFFF",
+            "similar_itemfg": "#000000",
+            "stakeholderbg": "#FFFFFF",
+            "stakeholderfg": "#000000",
+            "validationbg": "#FFFFFF",
+            "validationfg": "#000000",
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
-            'allocation': 'allocation.toml',
-            'failure_definitions': 'failure_definition.toml',
-            'fmea': 'fmea.toml',
-            'function': 'function.toml',
-            'hardware': 'hardware.toml',
-            'hazard': 'hazops.toml',
-            'pof': 'pof.toml',
-            'requirement': 'requirement.toml',
-            'revision': 'revision.toml',
-            'similar_item': 'similar_item.toml',
-            'stakeholders': 'stakeholder.toml',
-            'usage_profile': 'usage_profile.toml',
-            'validation': 'validation.toml',
+            "allocation": "allocation.toml",
+            "failure_definitions": "failure_definition.toml",
+            "fmea": "fmea.toml",
+            "function": "function.toml",
+            "hardware": "hardware.toml",
+            "hazard": "hazops.toml",
+            "pof": "pof.toml",
+            "requirement": "requirement.toml",
+            "revision": "revision.toml",
+            "similar_item": "similar_item.toml",
+            "stakeholders": "stakeholder.toml",
+            "usage_profile": "usage_profile.toml",
+            "validation": "validation.toml",
         }
         assert DUT.RAMSTK_STRESS_LIMITS == {
             1: [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
@@ -747,98 +787,98 @@ class TestGetterSetter():
             7: [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             8: [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
             9: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            10: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0]
+            10: [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
         }
-        assert DUT.RAMSTK_BACKEND == 'sqlite'
-        assert DUT.RAMSTK_PROG_INFO["dialect"] == 'sqlite'
-        assert DUT.RAMSTK_PROG_INFO["host"] == 'localhost'
-        assert DUT.RAMSTK_PROG_INFO["port"] == '3306'
-        assert DUT.RAMSTK_PROG_INFO["database"] == ''
-        assert DUT.RAMSTK_PROG_INFO["user"] == ''
-        assert DUT.RAMSTK_PROG_INFO["password"] == ''
-        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + '/layouts'
-        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + '/icons'
-        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/logs'
-        assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + '/analyses/ramstk'
-        assert DUT.RAMSTK_REPORT_SIZE == 'letter'
+        assert DUT.RAMSTK_BACKEND == "sqlite"
+        assert DUT.RAMSTK_PROG_INFO["dialect"] == "sqlite"
+        assert DUT.RAMSTK_PROG_INFO["host"] == "localhost"
+        assert DUT.RAMSTK_PROG_INFO["port"] == "3306"
+        assert DUT.RAMSTK_PROG_INFO["database"] == ""
+        assert DUT.RAMSTK_PROG_INFO["user"] == ""
+        assert DUT.RAMSTK_PROG_INFO["password"] == ""
+        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + "/layouts"
+        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + "/icons"
+        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + "/logs"
+        assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + "/analyses/ramstk"
+        assert DUT.RAMSTK_REPORT_SIZE == "letter"
         assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
         assert DUT.RAMSTK_DEC_PLACES == 6
         assert DUT.RAMSTK_MTIME == 100.0
-        assert DUT.RAMSTK_MODE_SOURCE == '1'
-        assert DUT.RAMSTK_TABPOS["listbook"] == 'bottom'
-        assert DUT.RAMSTK_TABPOS["modulebook"] == 'top'
-        assert DUT.RAMSTK_TABPOS["workbook"] == 'bottom'
+        assert DUT.RAMSTK_MODE_SOURCE == "1"
+        assert DUT.RAMSTK_TABPOS["listbook"] == "bottom"
+        assert DUT.RAMSTK_TABPOS["modulebook"] == "top"
+        assert DUT.RAMSTK_TABPOS["workbook"] == "bottom"
         assert DUT.RAMSTK_USER_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_run.log")
-        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR
-                                         + "/ramstk_import.log")
+        assert DUT.RAMSTK_IMPORT_LOG == (DUT.RAMSTK_LOG_DIR + "/ramstk_import.log")
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
         """get_user_configuration() should broadcase the fail message when
         there is no configuration file."""
-        pub.subscribe(self.on_fail_get_user_configuration,
-                      'fail_get_user_configuration')
+        pub.subscribe(
+            self.on_fail_get_user_configuration, "fail_get_user_configuration"
+        )
 
         DUT = RAMSTKUserConfiguration()
         DUT.RAMSTK_PROG_CONF = VIRTUAL_ENV + "/tmp/.config/RAMSTK/BigUser.toml"
 
         assert DUT.get_user_configuration() is None
 
-        pub.unsubscribe(self.on_fail_get_user_configuration,
-                        'fail_get_user_configuration')
+        pub.unsubscribe(
+            self.on_fail_get_user_configuration, "fail_get_user_configuration"
+        )
 
     @pytest.mark.skip
-    def test_get_user_configuration_no_log_dir(self,
-                                               test_toml_user_configuration):
+    def test_get_user_configuration_no_log_dir(self, test_toml_user_configuration):
         """get_user_configuration() should set the log files relative to the
         current directory when RAMSTK_LOG_DIR is an empty string."""
         print(test_toml_user_configuration.RAMSTK_PROG_CONF)
         DUT = test_toml_user_configuration
 
         assert DUT.get_user_configuration() is None
-        assert DUT.RAMSTK_USER_LOG == './ramstk_run.log'
-        assert DUT.RAMSTK_IMPORT_LOG == './ramstk_import.log'
+        assert DUT.RAMSTK_USER_LOG == "./ramstk_run.log"
+        assert DUT.RAMSTK_IMPORT_LOG == "./ramstk_import.log"
 
     @pytest.mark.unit
     def test_set_user_configuration(self):
         """set_user_configuration() should return None on success."""
         DUT = RAMSTKUserConfiguration()
-        DUT.RAMSTK_PROG_CONF = VIRTUAL_ENV + '/tmp/.config/RAMSTK/RAMSTK.toml'
+        DUT.RAMSTK_PROG_CONF = VIRTUAL_ENV + "/tmp/.config/RAMSTK/RAMSTK.toml"
 
         # Create a default user configuration file and then read it.
         DUT.do_create_user_configuration()
         DUT.get_user_configuration()
 
-        DUT.RAMSTK_REPORT_SIZE = 'A4'
+        DUT.RAMSTK_REPORT_SIZE = "A4"
         DUT.RAMSTK_HR_MULTIPLIER = 1000000.0
         DUT.RAMSTK_MTIME = 24.0
         DUT.RAMSTK_DEC_PLACES = 4
-        DUT.RAMSTK_BACKEND = 'mysql'
+        DUT.RAMSTK_BACKEND = "mysql"
         DUT.RAMSTK_PROG_INFO = {
-            'dialect': 'mysql',
-            'host': 'treebeard',
-            'port': '3306',
-            'database': 'test',
-            'user': 'me',
-            'password': 'big.password'
+            "dialect": "mysql",
+            "host": "treebeard",
+            "port": "3306",
+            "database": "test",
+            "user": "me",
+            "password": "big.password",
         }
 
         assert DUT.set_user_configuration() is None
 
         DUT.get_user_configuration()
 
-        assert DUT.RAMSTK_REPORT_SIZE == 'A4'
+        assert DUT.RAMSTK_REPORT_SIZE == "A4"
         assert DUT.RAMSTK_HR_MULTIPLIER == 1000000.0
         assert DUT.RAMSTK_MTIME == 24.0
         assert DUT.RAMSTK_DEC_PLACES == 4
-        assert DUT.RAMSTK_BACKEND == 'mysql'
+        assert DUT.RAMSTK_BACKEND == "mysql"
         assert DUT.RAMSTK_PROG_INFO == {
-            'dialect': 'mysql',
-            'host': 'treebeard',
-            'port': '3306',
-            'database': 'test',
-            'user': 'me',
-            'password': 'big.password'
+            "dialect": "mysql",
+            "host": "treebeard",
+            "port": "3306",
+            "database": "test",
+            "user": "me",
+            "password": "big.password",
         }
 
     @pytest.mark.unit
@@ -846,16 +886,18 @@ class TestGetterSetter():
         """set_user_variables() should return None on success when
         configuration directory structure exists in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
-        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/tmp'
+        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
 
         assert DUT.set_user_directories() is None
 
-        assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK'
-        assert DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_HOME_DIR + '/.config/RAMSTK/RAMSTK.toml'
-        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + '/layouts'
-        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + '/icons'
-        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/logs'
-        assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + '/analyses/ramstk'
+        assert DUT.RAMSTK_CONF_DIR == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK"
+        assert (
+            DUT.RAMSTK_PROG_CONF == DUT.RAMSTK_HOME_DIR + "/.config/RAMSTK/RAMSTK.toml"
+        )
+        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + "/layouts"
+        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + "/icons"
+        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + "/logs"
+        assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR + "/analyses/ramstk"
 
     @pytest.mark.unit
     def test_set_user_directories_no_home(self):
@@ -863,15 +905,15 @@ class TestGetterSetter():
         configuration directory structure does NOT exist in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
-        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + '/home'
+        DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/home"
 
         assert DUT.set_user_directories() is None
 
-        assert DUT.RAMSTK_CONF_DIR == VIRTUAL_ENV + '/share/RAMSTK'
-        assert DUT.RAMSTK_PROG_CONF == VIRTUAL_ENV + '/share/RAMSTK/RAMSTK.toml'
-        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + '/layouts'
-        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + '/icons'
-        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + '/logs'
+        assert DUT.RAMSTK_CONF_DIR == VIRTUAL_ENV + "/share/RAMSTK"
+        assert DUT.RAMSTK_PROG_CONF == VIRTUAL_ENV + "/share/RAMSTK/RAMSTK.toml"
+        assert DUT.RAMSTK_DATA_DIR == DUT.RAMSTK_CONF_DIR + "/layouts"
+        assert DUT.RAMSTK_ICON_DIR == DUT.RAMSTK_CONF_DIR + "/icons"
+        assert DUT.RAMSTK_LOG_DIR == DUT.RAMSTK_CONF_DIR + "/logs"
         assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR
 
     @pytest.mark.unit
@@ -885,8 +927,8 @@ class TestGetterSetter():
 
         assert DUT.set_user_directories() is None
 
-        assert DUT.RAMSTK_CONF_DIR == VIRTUAL_ENV + '/share/RAMSTK'
-        assert DUT.RAMSTK_DATA_DIR == VIRTUAL_ENV + '/share/RAMSTK/layouts'
-        assert DUT.RAMSTK_ICON_DIR == VIRTUAL_ENV + '/share/RAMSTK/icons'
-        assert DUT.RAMSTK_LOG_DIR == VIRTUAL_ENV + '/share/RAMSTK/logs'
+        assert DUT.RAMSTK_CONF_DIR == VIRTUAL_ENV + "/share/RAMSTK"
+        assert DUT.RAMSTK_DATA_DIR == VIRTUAL_ENV + "/share/RAMSTK/layouts"
+        assert DUT.RAMSTK_ICON_DIR == VIRTUAL_ENV + "/share/RAMSTK/icons"
+        assert DUT.RAMSTK_LOG_DIR == VIRTUAL_ENV + "/share/RAMSTK/logs"
         assert DUT.RAMSTK_PROG_DIR == DUT.RAMSTK_HOME_DIR

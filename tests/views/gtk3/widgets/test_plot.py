@@ -17,8 +17,9 @@ from matplotlib.figure import Figure
 from ramstk.views.gtk3.widgets import RAMSTKPlot
 
 
-class TestRAMSTKPlot():
+class TestRAMSTKPlot:
     """Test class for the RAMSTKPlot."""
+
     @pytest.mark.gui
     def test_create_plot(self):
         """__init__() should create a RAMSTKPlot."""
@@ -36,14 +37,14 @@ class TestRAMSTKPlot():
         DUT = RAMSTKPlot()
 
         _x_values = [
-            matplotlib.dates.datestr2num('20190701'),
-            matplotlib.dates.datestr2num('20190715'),
-            matplotlib.dates.datestr2num('20190801'),
-            matplotlib.dates.datestr2num('20190815')
+            matplotlib.dates.datestr2num("20190701"),
+            matplotlib.dates.datestr2num("20190715"),
+            matplotlib.dates.datestr2num("20190801"),
+            matplotlib.dates.datestr2num("20190815"),
         ]
         _y_values = [100.0, 90.0, 75.0, 50.0]
 
-        assert DUT.do_load_plot(_x_values, _y_values, plot_type='date') is None
+        assert DUT.do_load_plot(_x_values, _y_values, plot_type="date") is None
         assert DUT._lst_min == [0.0, 50.0]
         assert DUT._lst_max == [100.0]
 
@@ -55,8 +56,10 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9, 1.3, 3.2, 3.4, 2.6]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        assert DUT.do_load_plot(
-            _x_values, _y_values, plot_type='histogram', marker='r') is None
+        assert (
+            DUT.do_load_plot(_x_values, _y_values, plot_type="histogram", marker="r")
+            is None
+        )
         assert DUT._lst_min == [0.0, 2.0]
         assert DUT._lst_max == [4.0]
 
@@ -68,8 +71,10 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        assert DUT.do_load_plot(
-            _x_values, _y_values, plot_type='scatter', marker='bo') is None
+        assert (
+            DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
+            is None
+        )
         assert DUT._lst_min == [0.0, 1.0]
         assert DUT._lst_max == [4.0]
 
@@ -81,8 +86,10 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        assert DUT.do_load_plot(
-            _x_values, _y_values, plot_type='scatter', marker='r-') is None
+        assert (
+            DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="r-")
+            is None
+        )
         assert DUT._lst_min == [0.0, 1.0]
         assert DUT._lst_max == [4.0]
 
@@ -94,10 +101,7 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
         _x_values = [2.3, 3.2, 4.8, 5.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
@@ -112,20 +116,15 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
-        _label = DUT.do_make_labels("Test Plot x-Label",
-                                    x_pos=1.5,
-                                    y_pos=2.5,
-                                    fontsize=16,
-                                    fontweight='bold')
+        _label = DUT.do_make_labels(
+            "Test Plot x-Label", x_pos=1.5, y_pos=2.5, fontsize=16, fontweight="bold"
+        )
 
         assert isinstance(_label, matplotlib.text.Text)
         assert _label.get_fontsize() == 16
-        assert _label.get_fontweight() == 'bold'
+        assert _label.get_fontweight() == "bold"
 
     @pytest.mark.gui
     def test_do_make_y_labels(self):
@@ -135,21 +134,20 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
-        _label = DUT.do_make_labels("Test Plot y-Label",
-                                    x_pos=1.5,
-                                    y_pos=2.5,
-                                    set_x=False,
-                                    fontsize=16,
-                                    fontweight='bold')
+        _label = DUT.do_make_labels(
+            "Test Plot y-Label",
+            x_pos=1.5,
+            y_pos=2.5,
+            set_x=False,
+            fontsize=16,
+            fontweight="bold",
+        )
 
         assert isinstance(_label, matplotlib.text.Text)
         assert _label.get_fontsize() == 16
-        assert _label.get_fontweight() == 'bold'
+        assert _label.get_fontweight() == "bold"
 
     @pytest.mark.gui
     def test_do_make_legend(self):
@@ -159,10 +157,7 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
         assert DUT.do_make_legend(("This", "is", "legend", "text")) is None
 
@@ -174,19 +169,21 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
-        assert DUT.do_make_legend(("This", "is", "legend", "text"),
-                                  fontsize='medium',
-                                  frameon=True,
-                                  location='lower left',
-                                  ncol=2,
-                                  shadow=False,
-                                  title="Test Title",
-                                  lwd=0.25) is None
+        assert (
+            DUT.do_make_legend(
+                ("This", "is", "legend", "text"),
+                fontsize="medium",
+                frameon=True,
+                location="lower left",
+                ncol=2,
+                shadow=False,
+                title="Test Title",
+                lwd=0.25,
+            )
+            is None
+        )
 
     @pytest.mark.gui
     def test_do_make_title(self):
@@ -196,15 +193,12 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
         _title = DUT.do_make_title("This is a Test Title")
 
         assert isinstance(_title, matplotlib.text.Text)
         assert _title.get_fontsize() == 16
-        assert _title.get_fontweight() == 'bold'
+        assert _title.get_fontweight() == "bold"
 
     @pytest.mark.gui
     def test_do_make_title_with_kwargs(self):
@@ -214,14 +208,11 @@ class TestRAMSTKPlot():
         _x_values = [1.4, 1.2, 2.8, 4.9]
         _y_values = [1.0, 2.0, 3.0, 4.0]
 
-        DUT.do_load_plot(_x_values,
-                         _y_values,
-                         plot_type='scatter',
-                         marker='bo')
+        DUT.do_load_plot(_x_values, _y_values, plot_type="scatter", marker="bo")
 
-        _title = DUT.do_make_title("This is a Test Title",
-                                   fontsize=8,
-                                   fontweight="medium")
+        _title = DUT.do_make_title(
+            "This is a Test Title", fontsize=8, fontweight="medium"
+        )
         assert isinstance(_title, matplotlib.text.Text)
         assert _title.get_fontsize() == 8
-        assert _title.get_fontweight() == 'medium'
+        assert _title.get_fontweight() == "medium"

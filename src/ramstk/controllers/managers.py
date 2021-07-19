@@ -3,8 +3,8 @@
 #       ramstk.controllers.manager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hardware Controller Package analysis manager."""
+# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Hardware Controller Package managers."""
 
 # Standard Library Imports
 import inspect
@@ -18,6 +18,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
+from ramstk.exceptions import DataAccessError
 
 
 class RAMSTKAnalysisManager:
@@ -40,8 +41,9 @@ class RAMSTKAnalysisManager:
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 **kwargs: Dict[str, Any]) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, **kwargs: Dict[str, Any]
+    ) -> None:
         """Initialize an instance of the hardware analysis manager.
 
         :param configuration: the RAMSTKUserConfiguration instance associated
@@ -96,7 +98,7 @@ class RAMSTKDataManager:
 
     # Define private scalar class attributes.
     _root = 0
-    _tag = ''
+    _tag = ""
 
     # Define public dictionary class attributes.
 
@@ -133,12 +135,10 @@ class RAMSTKDataManager:
         self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_connect, 'succeed_connect_program_database')
-        pub.subscribe(self.do_update_all, 'request_save_project')
-        pub.subscribe(self.do_set_tree,
-                      'succeed_calculate_{0}'.format(self._tag))
-
-        pub.subscribe(self._on_select_revision, 'selected_revision')
+        pub.subscribe(self.do_connect, "succeed_connect_program_database")
+        pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
+        pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
+        pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -183,22 +183,22 @@ class RAMSTKDataManager:
         """
         try:
             pub.sendMessage(
-                'succeed_get_{0}_attributes'.format(table),
-                attributes=self.do_select(node_id,
-                                          table=table).get_attributes(),
+                "succeed_get_{0}_attributes".format(table),
+                attributes=self.do_select(node_id, table=table).get_attributes(),
             )
         except AttributeError:
-            _method_name = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
-            _error_msg = ('{0}: No attributes found for record ID {1} in '
-                          '{2} table.'.format(_method_name, node_id, table))
+            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg = (
+                "{0}: No attributes found for record ID {1} in "
+                "{2} table.".format(_method_name, node_id, table)
+            )
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             pub.sendMessage(
-                'fail_get_{0}_attributes'.format(table),
+                "fail_get_{0}_attributes".format(table),
                 error_message=_error_msg,
             )
 
@@ -216,22 +216,22 @@ class RAMSTKDataManager:
         try:
             _entity = self.tree.get_node(node_id).data[table]
         except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
-            _method_name = inspect.currentframe(  # type: ignore
-            ).f_code.co_name
+            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                '{2}: No data package for node ID {0} in module {1}.'.format(
-                    node_id, table, _method_name))
+                "{2}: No data package for node ID {0} in module {1}.".format(
+                    node_id, table, _method_name
+                )
+            )
             pub.sendMessage(
-                'do_log_debug',
-                logger_name='DEBUG',
+                "do_log_debug",
+                logger_name="DEBUG",
                 message=_error_msg,
             )
             _entity = None
 
         return _entity
 
-    def do_set_attributes(self, node_id: List, package: Dict[str,
-                                                             Any]) -> None:
+    def do_set_attributes(self, node_id: List, package: Dict[str, Any]) -> None:
         """Set the attributes of the record associated with node ID.
 
         :param node_id: the ID of the record in the RAMSTK Program database
@@ -244,17 +244,16 @@ class RAMSTKDataManager:
 
         for _table in self._pkey:
             try:
-                _attributes = self.do_select(node_id[0],
-                                             table=_table).get_attributes()
+                _attributes = self.do_select(node_id[0], table=_table).get_attributes()
             except (AttributeError, KeyError):
-                _method_name = inspect.currentframe(  # type: ignore
-                ).f_code.co_name
+                _method_name = inspect.currentframe().f_code.co_name  # type: ignore
                 _error_msg: str = (
-                    '{2}: No data package for node ID {0} in module {'
-                    '1}.'.format(node_id[0], _table, _method_name))
+                    "{2}: No data package for node ID {0} in module "
+                    "{1}.".format(node_id[0], _table, _method_name)
+                )
                 pub.sendMessage(
-                    'do_log_debug',
-                    logger_name='DEBUG',
+                    "do_log_debug",
+                    logger_name="DEBUG",
                     message=_error_msg,
                 )
                 _attributes = {}
@@ -268,8 +267,7 @@ class RAMSTKDataManager:
             if _key in _attributes:
                 _attributes[_key] = _value
 
-                self.do_select(node_id[0],
-                               table=_table).set_attributes(_attributes)
+                self.do_select(node_id[0], table=_table).set_attributes(_attributes)
 
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore
@@ -286,7 +284,71 @@ class RAMSTKDataManager:
         """
         self.tree = tree
 
+    def do_update(self, node_id: int, table: str) -> None:
+        """Update record associated with node ID in RAMSTK Program database.
+
+        :param node_id: the node ID of the record to save.
+        :param table: the table in the database to update.
+        :return: None
+        :rtype: None
+        """
+        _fail_topic = "fail_update_{}".format(table)
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
+        try:
+            self.dao.do_update(self.tree.get_node(node_id).data[table])
+            pub.sendMessage(
+                "succeed_update_{}".format(table),
+                tree=self.tree,
+            )
+        except AttributeError:
+            _error_msg: str = (
+                "{1}: Attempted to save non-existent {2} with {2} ID {0}."
+            ).format(str(node_id), _method_name, table.replace("_", " "))
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                _fail_topic,
+                error_message=_error_msg,
+            )
+        except KeyError:
+            _error_msg = ("{1}: No data package found for {2} ID {0}.").format(
+                str(node_id), _method_name, table.replace("_", " ")
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                _fail_topic,
+                error_message=_error_msg,
+            )
+        except (DataAccessError, TypeError):
+            if node_id != 0:
+                _error_msg = (
+                    "{1}: The value for one or more attributes for "
+                    "{2} ID {0} was the wrong type."
+                ).format(str(node_id), _method_name, table.replace("_", " "))
+            else:
+                _error_msg = ("{1}: Attempting to update the root node {0}.").format(
+                    str(node_id), _method_name
+                )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                _fail_topic,
+                error_message=_error_msg,
+            )
+
     # noinspection PyUnresolvedReferences
+    # pylint: disable=no-value-for-parameter
     def do_update_all(self) -> None:
         """Update all MODULE data table records in the RAMSTK Program database.
 
@@ -294,9 +356,9 @@ class RAMSTKDataManager:
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            self.do_update(_node.identifier)  # type: ignore
-        pub.sendMessage('succeed_update_all')
+            try:
+                self.do_update(_node.identifier, table=self._tag[:-1])  # type: ignore
+            except TypeError:
+                self.do_update(_node.identifier)  # type: ignore
 
-    def _on_select_revision(self, attributes: Dict[str, Any]) -> None:
-        """Set the revision ID for the data manager."""
-        self._revision_id = attributes['revision_id']
+        pub.sendMessage("succeed_update_all")

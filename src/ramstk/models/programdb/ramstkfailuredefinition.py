@@ -23,31 +23,28 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
     This table shares a Many-to-One relationship with ramstk_revision.
     """
 
-    __defaults__ = {'definition': 'Failure Definition'}
-    __tablename__ = 'ramstk_failure_definition'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"definition": "Failure Definition"}
+    __tablename__ = "ramstk_failure_definition"
+    __table_args__ = {"extend_existing": True}
 
     revision_id = Column(
-        'fld_revision_id',
+        "fld_revision_id",
         Integer,
-        ForeignKey('ramstk_revision.fld_revision_id'),
+        ForeignKey("ramstk_revision.fld_revision_id"),
         nullable=False,
     )
     definition_id = Column(
-        'fld_definition_id',
+        "fld_definition_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
 
-    definition = Column('fld_definition',
-                        String,
-                        default=__defaults__['definition'])
+    definition = Column("fld_definition", String, default=__defaults__["definition"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship(  # type: ignore
-        'RAMSTKRevision', back_populates='failures')
+    revision = relationship("RAMSTKRevision", back_populates="failures")  # type: ignore
 
     def get_attributes(self):
         """Retrieve current values of the RAMSTKFailureDefinition attributes.
@@ -56,9 +53,9 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: (int, int, str)
         """
         _attributes = {
-            'revision_id': self.revision_id,
-            'definition_id': self.definition_id,
-            'definition': self.definition,
+            "revision_id": self.revision_id,
+            "definition_id": self.definition_id,
+            "definition": self.definition,
         }
 
         return _attributes

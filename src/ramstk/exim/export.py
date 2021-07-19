@@ -13,6 +13,7 @@ from typing import Any, Dict
 # Third Party Imports
 # noinspection PyPackageRequirements
 import pandas as pd
+
 # noinspection PyPackageRequirements
 from openpyxl import load_workbook
 from pubsub import pub
@@ -21,6 +22,7 @@ from treelib import Tree
 
 class Export:
     """Contains the methods for exporting data from a program database."""
+
     def __init__(self) -> None:
         """Initialize an Export module instance."""
         # Initialize private dictionary attributes.
@@ -38,11 +40,11 @@ class Export:
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_data, 'succeed_get_functions_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_requirements_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_hardwares_tree')
-        pub.subscribe(self._do_load_data, 'succeed_get_validations_tree')
-        pub.subscribe(self._do_export, 'request_export_data')
+        pub.subscribe(self._do_load_data, "succeed_get_functions_tree")
+        pub.subscribe(self._do_load_data, "succeed_get_requirements_tree")
+        pub.subscribe(self._do_load_data, "succeed_get_hardwares_tree")
+        pub.subscribe(self._do_load_data, "succeed_get_validations_tree")
+        pub.subscribe(self._do_export, "request_export_data")
 
     def _do_export(self, file_type: str, file_name: str) -> None:
         """Export selected RAMSTK module data to external file.
@@ -57,12 +59,12 @@ class Export:
         :return: None
         :rtype: None
         """
-        if file_type == 'csv':
-            self._do_export_to_delimited_text(file_name, separator=';')
-        elif file_type == 'excel':
+        if file_type == "csv":
+            self._do_export_to_delimited_text(file_name, separator=";")
+        elif file_type == "excel":
             self._do_export_to_excel(file_name)
-        elif file_type == 'text':
-            self._do_export_to_delimited_text(file_name, separator=' ')
+        elif file_type == "text":
+            self._do_export_to_delimited_text(file_name, separator=" ")
 
     def _do_export_to_delimited_text(self, file_name: str, separator: str):
         """Export RAMSTK project data to a delimited text file.
@@ -89,13 +91,14 @@ class Export:
 
         for _key in self._dic_output_data:
             self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
-            if _extension == '.xls':
+            if _extension == ".xls":
                 # xlwt can't write each module to a separate sheet so we'll
                 # have to make a separate workbook for each work stream module.
-                _writer = pd.ExcelWriter('{0:s}_{1:s}.xls'.format(_file, _key),
-                                         engine='xlwt')
-            elif _extension in ['.xlsx', '.xlsm']:
-                _writer = pd.ExcelWriter(file_name, engine='openpyxl')
+                _writer = pd.ExcelWriter(
+                    "{0:s}_{1:s}.xls".format(_file, _key), engine="xlwt"
+                )
+            elif _extension in [".xlsx", ".xlsm"]:
+                _writer = pd.ExcelWriter(file_name, engine="openpyxl")
                 # Set the writer workbook if it already exists, otherwise
                 # just continue.  This allows each work stream module to be
                 # written to it's own worksheet.  If the workbook doesn't
@@ -106,11 +109,9 @@ class Export:
                 except FileNotFoundError:
                     pass
             else:
-                file_name = _file + '.xls'
-                _writer = pd.ExcelWriter(file_name, engine='xlwt')
-            self._df_output_data.to_excel(_writer,
-                                          '{0:s}'.format(_key),
-                                          index=True)
+                file_name = _file + ".xls"
+                _writer = pd.ExcelWriter(file_name, engine="xlwt")
+            self._df_output_data.to_excel(_writer, "{0:s}".format(_key), index=True)
             _writer.save()
 
             _writer.close()
@@ -129,7 +130,8 @@ class Export:
         for _node in tree.all_nodes()[1:]:
             _tag = _node.tag
             try:
-                self._dic_output_data[_module][
-                    _node.identifier] = _node.data[_tag].get_attributes()
+                self._dic_output_data[_module][_node.identifier] = _node.data[
+                    _tag
+                ].get_attributes()
             except (KeyError, TypeError):
                 pass

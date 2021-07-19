@@ -21,37 +21,37 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
     """
 
     __defaults__ = {
-        'user_lname': 'Last Name',
-        'user_fname': 'First Name',
-        'user_email': 'EMail',
-        'user_phone': '867.5309',
-        'user_group_id': '0'
+        "user_lname": "Last Name",
+        "user_fname": "First Name",
+        "user_email": "EMail",
+        "user_phone": "867.5309",
+        "user_group_id": "0",
     }
-    __tablename__ = 'ramstk_user'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "ramstk_user"
+    __table_args__ = {"extend_existing": True}
 
     user_id = Column(
-        'fld_user_id',
+        "fld_user_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    user_lname = Column('fld_user_lname',
-                        String(256),
-                        default=__defaults__['user_lname'])
-    user_fname = Column('fld_user_fname',
-                        String(256),
-                        default=__defaults__['user_fname'])
-    user_email = Column('fld_user_email',
-                        String(256),
-                        default=__defaults__['user_email'])
-    user_phone = Column('fld_user_phone',
-                        String(256),
-                        default=__defaults__['user_phone'])
-    user_group_id = Column('fld_user_group_id',
-                           String(256),
-                           default=__defaults__['user_group_id'])
+    user_lname = Column(
+        "fld_user_lname", String(256), default=__defaults__["user_lname"]
+    )
+    user_fname = Column(
+        "fld_user_fname", String(256), default=__defaults__["user_fname"]
+    )
+    user_email = Column(
+        "fld_user_email", String(256), default=__defaults__["user_email"]
+    )
+    user_phone = Column(
+        "fld_user_phone", String(256), default=__defaults__["user_phone"]
+    )
+    user_group_id = Column(
+        "fld_user_group_id", String(256), default=__defaults__["user_group_id"]
+    )
 
     def get_attributes(self):
         """Retrieve the current values of the RAMSTKUser data model attributes.
@@ -61,12 +61,12 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'user_id': self.user_id,
-            'user_lname': self.user_lname,
-            'user_fname': self.user_fname,
-            'user_email': self.user_email,
-            'user_phone': self.user_phone,
-            'user_group_id': self.user_group_id,
+            "user_id": self.user_id,
+            "user_lname": self.user_lname,
+            "user_fname": self.user_fname,
+            "user_email": self.user_email,
+            "user_phone": self.user_phone,
+            "user_group_id": self.user_group_id,
         }
 
         return _attributes

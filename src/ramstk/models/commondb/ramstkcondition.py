@@ -17,26 +17,23 @@ from ramstk.models import RAMSTKBaseTable
 class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent ramstk_condition in RAMSTK Common database."""
 
-    __defaults__ = {
-        'description': 'Condition Description',
-        'condition_type': ''
-    }
-    __tablename__ = 'ramstk_condition'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "Condition Description", "condition_type": ""}
+    __tablename__ = "ramstk_condition"
+    __table_args__ = {"extend_existing": True}
 
     condition_id = Column(
-        'fld_condition_id',
+        "fld_condition_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    condition_type = Column('fld_condition_type',
-                            String(256),
-                            default=__defaults__['condition_type'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    condition_type = Column(
+        "fld_condition_type", String(256), default=__defaults__["condition_type"]
+    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKCondition data model attributes.
@@ -45,9 +42,9 @@ class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'condition_id': self.condition_id,
-            'description': self.description,
-            'condition_type': self.condition_type,
+            "condition_id": self.condition_id,
+            "description": self.description,
+            "condition_type": self.condition_type,
         }
 
         return _attributes

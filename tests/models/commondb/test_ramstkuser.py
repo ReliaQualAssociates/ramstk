@@ -15,17 +15,18 @@ import pytest
 from ramstk.models.commondb import RAMSTKUser
 
 ATTRIBUTES = {
-    'user_lname': 'Tester',
-    'user_fname': 'Johnny',
-    'user_email': 'tester.johnny@reliaqual.com',
-    'user_phone': '+1.269.867.5309',
-    'user_group_id': '1'
+    "user_lname": "Tester",
+    "user_fname": "Johnny",
+    "user_email": "tester.johnny@reliaqual.com",
+    "user_phone": "+1.269.867.5309",
+    "user_group_id": "1",
 }
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKUser():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKUser:
     """Class for testing the RAMSTKUser model."""
+
     @pytest.mark.integration
     def test_ramstkuser_create(self, test_common_dao):
         """ __init__() should create an RAMSTKUser model. """
@@ -34,13 +35,13 @@ class TestRAMSTKUser():
         assert isinstance(DUT, RAMSTKUser)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_user'
+        assert DUT.__tablename__ == "ramstk_user"
         assert DUT.user_id == 1
-        assert DUT.user_lname == 'Tester'
-        assert DUT.user_fname == 'Johnny'
-        assert DUT.user_email == 'tester.johnny@reliaqual.com'
-        assert DUT.user_phone == '+1.269.867.5309'
-        assert DUT.user_group_id == '1'
+        assert DUT.user_lname == "Tester"
+        assert DUT.user_fname == "Johnny"
+        assert DUT.user_email == "tester.johnny@reliaqual.com"
+        assert DUT.user_phone == "+1.269.867.5309"
+        assert DUT.user_group_id == "1"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -49,11 +50,11 @@ class TestRAMSTKUser():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['user_lname'] == 'Tester'
-        assert _attributes['user_fname'] == 'Johnny'
-        assert _attributes['user_email'] == 'tester.johnny@reliaqual.com'
-        assert _attributes['user_phone'] == '+1.269.867.5309'
-        assert _attributes['user_group_id'] == '1'
+        assert _attributes["user_lname"] == "Tester"
+        assert _attributes["user_fname"] == "Johnny"
+        assert _attributes["user_email"] == "tester.johnny@reliaqual.com"
+        assert _attributes["user_phone"] == "+1.269.867.5309"
+        assert _attributes["user_group_id"] == "1"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -67,10 +68,10 @@ class TestRAMSTKUser():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKUser).first()
 
-        ATTRIBUTES['user_lname'] = None
+        ATTRIBUTES["user_lname"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['user_lname'] == 'Last Name'
+        assert DUT.get_attributes()["user_lname"] == "Last Name"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -78,4 +79,4 @@ class TestRAMSTKUser():
         DUT = test_common_dao.session.query(RAMSTKUser).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -17,9 +17,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
-)
+from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView, RAMSTKPanel
 
 # RAMSTK Local Imports
 from . import ATTRIBUTE_KEYS
@@ -33,7 +31,7 @@ class RevisionPanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = 'revisions'
+    _module = "revisions"
 
     # Define public dictionary class attributes.
 
@@ -48,33 +46,33 @@ class RevisionPanel(RAMSTKPanel):
         # Initialize private dictionary class attributes.
         self._dic_attribute_keys: Dict[int, List[str]] = ATTRIBUTE_KEYS
         self._dic_attribute_updater = {
-            'revision_id': [None, 'edited', 0],
-            'availability_logistics': [None, 'edited', 1],
-            'availability_mission': [None, 'edited', 2],
-            'cost': [None, 'edited', 3],
-            'cost_per_failure': [None, 'edited', 4],
-            'cost_per_hour': [None, 'edited', 5],
-            'hazard_rate_active': [None, 'edited', 6],
-            'hazard_rate_dormant': [None, 'edited', 7],
-            'hazard_rate_logistics': [None, 'edited', 8],
-            'hazard_rate_mission': [None, 'edited', 9],
-            'hazard_rate_software': [None, 'edited', 10],
-            'mmt': [None, 'edited', 11],
-            'mcmt': [None, 'edited', 12],
-            'mpmt': [None, 'edited', 13],
-            'mtbf_logistics': [None, 'edited', 14],
-            'mtbf_mission': [None, 'edited', 15],
-            'mttr': [None, 'edited', 16],
-            'name': [None, 'edited', 17],
-            'reliability_logistics': [None, 'edited', 18],
-            'reliability_mission': [None, 'edited', 19],
-            'remarks': [None, 'edited', 20],
-            'n_parts': [None, 'edited', 21],
-            'revision_code': [None, 'edited', 22],
-            'program_time': [None, 'edited', 23],
-            'program_time_sd': [None, 'edited', 24],
-            'program_cost': [None, 'edited', 25],
-            'program_cost_sd': [None, 'edited', 26],
+            "revision_id": [None, "edited", 0],
+            "availability_logistics": [None, "edited", 1],
+            "availability_mission": [None, "edited", 2],
+            "cost": [None, "edited", 3],
+            "cost_per_failure": [None, "edited", 4],
+            "cost_per_hour": [None, "edited", 5],
+            "hazard_rate_active": [None, "edited", 6],
+            "hazard_rate_dormant": [None, "edited", 7],
+            "hazard_rate_logistics": [None, "edited", 8],
+            "hazard_rate_mission": [None, "edited", 9],
+            "hazard_rate_software": [None, "edited", 10],
+            "mmt": [None, "edited", 11],
+            "mcmt": [None, "edited", 12],
+            "mpmt": [None, "edited", 13],
+            "mtbf_logistics": [None, "edited", 14],
+            "mtbf_mission": [None, "edited", 15],
+            "mttr": [None, "edited", 16],
+            "name": [None, "edited", 17],
+            "reliability_logistics": [None, "edited", 18],
+            "reliability_mission": [None, "edited", 19],
+            "remarks": [None, "edited", 20],
+            "n_parts": [None, "edited", 21],
+            "revision_code": [None, "edited", 22],
+            "program_time": [None, "edited", 23],
+            "program_time_sd": [None, "edited", 24],
+            "program_cost": [None, "edited", 25],
+            "program_cost_sd": [None, "edited", 26],
         }
 
         # Initialize private list class attributes.
@@ -93,11 +91,11 @@ class RevisionPanel(RAMSTKPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_tree, 'succeed_retrieve_revisions')
-        pub.subscribe(super().do_refresh_tree, 'wvw_editing_revision')
-        pub.subscribe(super().on_delete, 'succeed_delete_revision')
+        pub.subscribe(super().do_load_tree, "succeed_retrieve_revisions")
+        pub.subscribe(super().do_refresh_tree, "wvw_editing_revision")
+        pub.subscribe(super().on_delete, "succeed_delete_revision")
 
-        pub.subscribe(self._on_module_switch, 'mvwSwitchedPage')
+        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
 
     def do_set_callbacks(self) -> None:
         """Set callbacks for the Revision module view.
@@ -105,9 +103,9 @@ class RevisionPanel(RAMSTKPanel):
         :return: None
         """
         super().do_set_callbacks()
-        super().do_set_cell_callbacks('mvw_editing_revision', [0, 1, 2])
+        super().do_set_cell_callbacks("mvw_editing_revision", [0, 1, 2])
 
-    def _on_module_switch(self, module: str = '') -> None:
+    def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
@@ -115,13 +113,12 @@ class RevisionPanel(RAMSTKPanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == 'revision' and _row is not None:
+        if module == "revision" and _row is not None:
             _code = _model.get_value(_row, self._lst_col_order[5])
             _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Revision {0:s}: {1:s}").format(
-                str(_code), str(_name))
+            _title = _("Analyzing Revision {0:s}: {1:s}").format(str(_code), str(_name))
 
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage("request_set_title", title=_title)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Revision package Module View RAMSTKTreeView().
@@ -135,20 +132,21 @@ class RevisionPanel(RAMSTKPanel):
         _attributes = super().on_row_change(selection)
 
         if _attributes:
-            self._record_id = _attributes['revision_id']
+            self._record_id = _attributes["revision_id"]
 
             _title = _("Analyzing Revision {0:s}: {1:s}").format(
-                str(_attributes['revision_code']), str(_attributes['name']))
+                str(_attributes["revision_code"]), str(_attributes["name"])
+            )
 
-            pub.sendMessage('selected_revision', attributes=_attributes)
-            pub.sendMessage('request_set_title', title=_title)
+            pub.sendMessage("selected_revision", attributes=_attributes)
+            pub.sendMessage("request_set_title", title=_title)
 
     def __do_set_properties(self) -> None:
         """Set common properties of the ModuleView and widgets.
 
         :return: None
         """
-        super().do_set_properties(**{'bold': True, 'title': self._title})
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of revisions."))
 
@@ -174,10 +172,11 @@ class ModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = 'revision'
-    _tablabel: str = 'Revision'
-    _tabtooltip: str = _("Displays the list of Revisions for the open RAMSTK "
-                         "Project.")
+    _module: str = "revision"
+    _tablabel: str = "Revision"
+    _tabtooltip: str = _(
+        "Displays the list of Revisions for the open RAMSTK " "Project."
+    )
 
     # Define public dictionary class attributes.
 
@@ -185,8 +184,9 @@ class ModuleView(RAMSTKModuleView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, configuration: RAMSTKUserConfiguration,
-                 logger: RAMSTKLogManager) -> None:
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
         """Initialize the Revision Module View.
 
         :param configuration: the RAMSTK Configuration class instance.
@@ -195,9 +195,9 @@ class ModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + '/32x32/revision.png')
+        self._dic_icons["tab"] = (
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/revision.png"
+        )
 
         # Initialize private list attributes.
         self._lst_mnu_labels = [
@@ -225,8 +225,8 @@ class ModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, 'selected_revision')
-        pub.subscribe(self._on_insert_revision, 'succeed_insert_revision')
+        pub.subscribe(self._do_set_record_id, "selected_revision")
+        pub.subscribe(self._on_insert_revision, "succeed_insert_revision")
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRevision table.
@@ -234,19 +234,19 @@ class ModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent(
-        ).get_parent()
-        _prompt = _("You are about to delete Revision {0:d} and all "
-                    "data associated with it.  Is this really what "
-                    "you want to do?").format(self._revision_id)
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
+        _prompt = _(
+            "You are about to delete Revision {0:d} and all "
+            "data associated with it.  Is this really what "
+            "you want to do?"
+        ).format(self._revision_id)
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type('question')
+        _dialog.do_set_message_type("question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage('request_delete_revision',
-                            node_id=self._revision_id)
+            pub.sendMessage("request_delete_revision", node_id=self._revision_id)
 
         _dialog.do_destroy()
 
@@ -257,11 +257,9 @@ class ModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes['revision_id']
+        self._record_id = attributes["revision_id"]
 
-    def _on_insert_revision(self,
-                            node_id: int = 0,
-                            tree: treelib.Tree = '') -> None:
+    def _on_insert_revision(self, node_id: int = 0, tree: treelib.Tree = "") -> None:
         """Add row to module view for newly added revision.
 
         :param node_id: the ID of the newly added revision.
@@ -269,7 +267,7 @@ class ModuleView(RAMSTKModuleView):
             data.
         :return: None
         """
-        _data = tree.get_node(node_id).data['revision'].get_attributes()
+        _data = tree.get_node(node_id).data["revision"].get_attributes()
         self._pnlPanel.on_insert(_data)
 
     def __make_ui(self) -> None:
@@ -282,6 +280,7 @@ class ModuleView(RAMSTKModuleView):
         self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
         self._pnlPanel.tvwTreeView.dic_handler_id[
-            'button-press'] = self._pnlPanel.tvwTreeView.connect(
-                "button_press_event",
-                super().on_button_press)
+            "button-press"
+        ] = self._pnlPanel.tvwTreeView.connect(
+            "button_press_event", super().on_button_press
+        )

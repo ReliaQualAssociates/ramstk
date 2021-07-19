@@ -17,19 +17,19 @@ from sympy import symbols, sympify  # type: ignore
 from ramstk.exceptions import OutOfRangeError
 
 PROBABILITY = {
-    'Level E - Extremely Unlikely': 1,
-    'Level D - Remote': 2,
-    'Level C - Occasional': 3,
-    'Level B - Reasonably Probable': 4,
-    'Level A - Frequent': 5
+    "Level E - Extremely Unlikely": 1,
+    "Level D - Remote": 2,
+    "Level C - Occasional": 3,
+    "Level B - Reasonably Probable": 4,
+    "Level A - Frequent": 5,
 }
 SEVERITY = {
-    'Insignificant': 1,
-    'Slight': 2,
-    'Low': 3,
-    'Medium': 4,
-    'High': 5,
-    'Major': 6
+    "Insignificant": 1,
+    "Slight": 2,
+    "Low": 3,
+    "Medium": 4,
+    "High": 5,
+    "Major": 6,
 }
 
 
@@ -48,10 +48,13 @@ def calculate_hri(probability: str, severity: str) -> int:
     try:
         return PROBABILITY[probability] * SEVERITY[severity]
     except KeyError as _error:
-        raise OutOfRangeError(("calculate_hri() was passed an unknown hazard "
-                               "probability ({0:s}) or severity ({1:s}) "
-                               "description.").format(probability,
-                                                      severity)) from _error
+        raise OutOfRangeError(
+            (
+                "calculate_hri() was passed an unknown hazard "
+                "probability ({0:s}) or severity ({1:s}) "
+                "description."
+            ).format(probability, severity)
+        ) from _error
 
 
 def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
@@ -72,86 +75,91 @@ def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
     :return: fha; the functional hazards assessment dict with updated results.
     :rtype: dict
     """
-    (uf1, uf2, uf3, ui1, ui2, ui3, res1, res2, res3, res4,
-     res5) = symbols('uf1 uf2 uf3 ui1 ui2 ui3 res1 res2 res3 res4 res5')
+    (uf1, uf2, uf3, ui1, ui2, ui3, res1, res2, res3, res4, res5) = symbols(
+        "uf1 uf2 uf3 ui1 ui2 ui3 res1 res2 res3 res4 res5"
+    )
 
     # pylint: disable=eval-used
-    fha['res1'] = sympify(fha['equation1']).evalf(
+    fha["res1"] = sympify(fha["equation1"]).evalf(
         subs={
-            uf1: fha['uf1'],
-            uf2: fha['uf2'],
-            uf3: fha['uf3'],
-            ui1: fha['ui1'],
-            ui2: fha['ui2'],
-            ui3: fha['ui3'],
-            res1: fha['res1'],
-            res2: fha['res2'],
-            res3: fha['res3'],
-            res4: fha['res4'],
-            res5: fha['res5']
-        })
-    fha['res2'] = sympify(fha['equation2']).evalf(
+            uf1: fha["uf1"],
+            uf2: fha["uf2"],
+            uf3: fha["uf3"],
+            ui1: fha["ui1"],
+            ui2: fha["ui2"],
+            ui3: fha["ui3"],
+            res1: fha["res1"],
+            res2: fha["res2"],
+            res3: fha["res3"],
+            res4: fha["res4"],
+            res5: fha["res5"],
+        }
+    )
+    fha["res2"] = sympify(fha["equation2"]).evalf(
         subs={
-            uf1: fha['uf1'],
-            uf2: fha['uf2'],
-            uf3: fha['uf3'],
-            ui1: fha['ui1'],
-            ui2: fha['ui2'],
-            ui3: fha['ui3'],
-            res1: fha['res1'],
-            res2: fha['res2'],
-            res3: fha['res3'],
-            res4: fha['res4'],
-            res5: fha['res5']
-        })
-    fha['res3'] = sympify(fha['equation3']).evalf(
+            uf1: fha["uf1"],
+            uf2: fha["uf2"],
+            uf3: fha["uf3"],
+            ui1: fha["ui1"],
+            ui2: fha["ui2"],
+            ui3: fha["ui3"],
+            res1: fha["res1"],
+            res2: fha["res2"],
+            res3: fha["res3"],
+            res4: fha["res4"],
+            res5: fha["res5"],
+        }
+    )
+    fha["res3"] = sympify(fha["equation3"]).evalf(
         subs={
-            uf1: fha['uf1'],
-            uf2: fha['uf2'],
-            uf3: fha['uf3'],
-            ui1: fha['ui1'],
-            ui2: fha['ui2'],
-            ui3: fha['ui3'],
-            res1: fha['res1'],
-            res2: fha['res2'],
-            res3: fha['res3'],
-            res4: fha['res4'],
-            res5: fha['res5']
-        })
-    fha['res4'] = sympify(fha['equation4']).evalf(
+            uf1: fha["uf1"],
+            uf2: fha["uf2"],
+            uf3: fha["uf3"],
+            ui1: fha["ui1"],
+            ui2: fha["ui2"],
+            ui3: fha["ui3"],
+            res1: fha["res1"],
+            res2: fha["res2"],
+            res3: fha["res3"],
+            res4: fha["res4"],
+            res5: fha["res5"],
+        }
+    )
+    fha["res4"] = sympify(fha["equation4"]).evalf(
         subs={
-            uf1: fha['uf1'],
-            uf2: fha['uf2'],
-            uf3: fha['uf3'],
-            ui1: fha['ui1'],
-            ui2: fha['ui2'],
-            ui3: fha['ui3'],
-            res1: fha['res1'],
-            res2: fha['res2'],
-            res3: fha['res3'],
-            res4: fha['res4'],
-            res5: fha['res5']
-        })
-    fha['res5'] = sympify(fha['equation5']).evalf(
+            uf1: fha["uf1"],
+            uf2: fha["uf2"],
+            uf3: fha["uf3"],
+            ui1: fha["ui1"],
+            ui2: fha["ui2"],
+            ui3: fha["ui3"],
+            res1: fha["res1"],
+            res2: fha["res2"],
+            res3: fha["res3"],
+            res4: fha["res4"],
+            res5: fha["res5"],
+        }
+    )
+    fha["res5"] = sympify(fha["equation5"]).evalf(
         subs={
-            uf1: fha['uf1'],
-            uf2: fha['uf2'],
-            uf3: fha['uf3'],
-            ui1: fha['ui1'],
-            ui2: fha['ui2'],
-            ui3: fha['ui3'],
-            res1: fha['res1'],
-            res2: fha['res2'],
-            res3: fha['res3'],
-            res4: fha['res4'],
-            res5: fha['res5']
-        })
+            uf1: fha["uf1"],
+            uf2: fha["uf2"],
+            uf3: fha["uf3"],
+            ui1: fha["ui1"],
+            ui2: fha["ui2"],
+            ui3: fha["ui3"],
+            res1: fha["res1"],
+            res2: fha["res2"],
+            res3: fha["res3"],
+            res4: fha["res4"],
+            res5: fha["res5"],
+        }
+    )
 
     return fha
 
 
-def set_user_defined_floats(fha: Dict[str, Any],
-                            floats: List[float]) -> Dict[str, Any]:
+def set_user_defined_floats(fha: Dict[str, Any], floats: List[float]) -> Dict[str, Any]:
     """Set the user-defined float values for the user-defined calculations.
 
     :param fha: the functional hazard assessment dict.
@@ -160,7 +168,7 @@ def set_user_defined_floats(fha: Dict[str, Any],
         values.
     :rtype: dict
     """
-    _key = ''
+    _key = ""
     for _idx in [0, 1, 2]:
         try:
             _key = list(fha.keys())[_idx]
@@ -171,8 +179,7 @@ def set_user_defined_floats(fha: Dict[str, Any],
     return fha
 
 
-def set_user_defined_ints(fha: Dict[str, Any],
-                          ints: List[int]) -> Dict[str, Any]:
+def set_user_defined_ints(fha: Dict[str, Any], ints: List[int]) -> Dict[str, Any]:
     """Set the user-defined integer values for the user-defined calculations.
 
     :param fha: the functional hazard assessment dict.
@@ -181,7 +188,7 @@ def set_user_defined_ints(fha: Dict[str, Any],
         values.
     :rtype: dict
     """
-    _key = ''
+    _key = ""
     for _idx in [3, 4, 5]:
         try:
             _key = list(fha.keys())[_idx]
@@ -192,8 +199,9 @@ def set_user_defined_ints(fha: Dict[str, Any],
     return fha
 
 
-def set_user_defined_functions(fha: Dict[str, Any],
-                               functions: List[str]) -> Dict[str, Any]:
+def set_user_defined_functions(
+    fha: Dict[str, Any], functions: List[str]
+) -> Dict[str, Any]:
     """Set the user-defined functions for the user-defined calculations.
 
     .. note:: by default we set the function equal to 0.0.  This prevents Sympy
@@ -204,22 +212,23 @@ def set_user_defined_functions(fha: Dict[str, Any],
     :return: fha; the functional hazard assessment dict with updated functions.
     :rtype: dict
     """
-    _key = ''
+    _key = ""
     for _idx in [6, 7, 8, 9, 10]:
         try:
             _key = list(fha.keys())[_idx]
-            if str(functions[_idx - 6]) == '':
-                fha[_key] = '0.0'
+            if str(functions[_idx - 6]) == "":
+                fha[_key] = "0.0"
             else:
                 fha[_key] = str(functions[_idx - 6])
         except IndexError:
-            fha[_key] = '0.0'
+            fha[_key] = "0.0"
 
     return fha
 
 
-def set_user_defined_results(fha: Dict[str, Any],
-                             results: List[float]) -> Dict[str, Any]:
+def set_user_defined_results(
+    fha: Dict[str, Any], results: List[float]
+) -> Dict[str, Any]:
     """Set the user-defined results for the user-defined calculations.
 
     This allows the use of the results fields to be manually set to float
@@ -231,7 +240,7 @@ def set_user_defined_results(fha: Dict[str, Any],
     :return: fha; the functional hazard assessment dict with updated results.
     :rtype: dict
     """
-    _key = ''
+    _key = ""
     for _idx in [11, 12, 13, 14, 15]:
         try:
             _key = list(fha.keys())[_idx]

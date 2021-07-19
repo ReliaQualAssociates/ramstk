@@ -25,10 +25,10 @@ class RAMSTKBaseBook(Gtk.Notebook):
     RAMSTK_SITE_CONFIGURATION = None
 
     dic_tab_position = {
-        'left': Gtk.PositionType.LEFT,
-        'right': Gtk.PositionType.RIGHT,
-        'top': Gtk.PositionType.TOP,
-        'bottom': Gtk.PositionType.BOTTOM
+        "left": Gtk.PositionType.LEFT,
+        "right": Gtk.PositionType.RIGHT,
+        "top": Gtk.PositionType.TOP,
+        "bottom": Gtk.PositionType.BOTTOM,
     }
 
     def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
@@ -45,7 +45,7 @@ class RAMSTKBaseBook(Gtk.Notebook):
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_handler_id = {'': 0}
+        self.dic_handler_id = {"": 0}
 
         # Initialize public list attributes.
 
@@ -63,7 +63,8 @@ class RAMSTKBaseBook(Gtk.Notebook):
         """
         try:
             _tab_position = self.dic_tab_position[
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS[book].lower()]
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_TABPOS[book].lower()
+            ]
         except KeyError:
-            _tab_position = self.dic_tab_position['bottom']
+            _tab_position = self.dic_tab_position["bottom"]
         self.set_tab_pos(_tab_position)

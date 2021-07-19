@@ -33,15 +33,18 @@ def calculate_rpn(sod):
     :raise: OutOfRangeError if one of the inputs falls outside the range
         [1, 10].
     """
-    if not 0 < sod['rpn_severity'] < 11:
+    if not 0 < sod["rpn_severity"] < 11:
         raise OutOfRangeError(("RPN severity is outside the range [1, 10]."))
-    if not 0 < sod['rpn_occurrence'] < 11:
+    if not 0 < sod["rpn_occurrence"] < 11:
         raise OutOfRangeError(("RPN occurrence is outside the range [1, 10]."))
-    if not 0 < sod['rpn_detection'] < 11:
+    if not 0 < sod["rpn_detection"] < 11:
         raise OutOfRangeError(("RPN detection is outside the range [1, 10]."))
 
-    _rpn = (int(sod['rpn_severity']) * int(sod['rpn_occurrence'])
-            * int(sod['rpn_detection']))
+    _rpn = (
+        int(sod["rpn_severity"])
+        * int(sod["rpn_occurrence"])
+        * int(sod["rpn_detection"])
+    )
 
     return _rpn
 
@@ -63,12 +66,20 @@ def calculate_mode_hazard_rate(item_hr, mode_ratio):
         ratio outside [0.0, 1.0].
     """
     if item_hr < 0.0:
-        raise OutOfRangeError(("calculate_mode_hazard_rate() was passed a "
-                               "negative value for the item hazard rate."))
+        raise OutOfRangeError(
+            (
+                "calculate_mode_hazard_rate() was passed a "
+                "negative value for the item hazard rate."
+            )
+        )
     if not 0.0 <= mode_ratio <= 1.0:
-        raise OutOfRangeError(("calculate_mode_hazard_rate() was passed a "
-                               "failure mode ratio outside the range of "
-                               "[0.0, 1.0]."))
+        raise OutOfRangeError(
+            (
+                "calculate_mode_hazard_rate() was passed a "
+                "failure mode ratio outside the range of "
+                "[0.0, 1.0]."
+            )
+        )
 
     return item_hr * mode_ratio
 
@@ -91,12 +102,20 @@ def calculate_mode_criticality(mode_hr, mode_op_time, eff_prob):
         effect probability outside [0.0, 1.0].
     """
     if mode_op_time < 0.0:
-        raise OutOfRangeError(("calculate_mode_criticality() was passed a "
-                               "negative value for failure mode operating "
-                               "time."))
+        raise OutOfRangeError(
+            (
+                "calculate_mode_criticality() was passed a "
+                "negative value for failure mode operating "
+                "time."
+            )
+        )
     if not 0.0 <= eff_prob <= 1.0:
-        raise OutOfRangeError(("calculate_mode_criticality() was passed a "
-                               "failure effect probability outside the range "
-                               "of [0.0, 1.0]."))
+        raise OutOfRangeError(
+            (
+                "calculate_mode_criticality() was passed a "
+                "failure effect probability outside the range "
+                "of [0.0, 1.0]."
+            )
+        )
 
     return mode_hr * mode_op_time * eff_prob

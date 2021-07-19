@@ -25,8 +25,12 @@ class ImportProject(Gtk.Assistant):
 
     RAMSTK_USER_CONFIGURATION = RAMSTKUserConfiguration()
 
-    def __init__(self, __button: Gtk.ToolButton,
-                 configuration: RAMSTKUserConfiguration, parent: object):
+    def __init__(
+        self,
+        __button: Gtk.ToolButton,
+        configuration: RAMSTKUserConfiguration,
+        parent: object,
+    ):
         """Initialize an instance of the Import Assistant.
 
         :param __button: the Gtk.ToolButton() that launched an instance of this
@@ -44,8 +48,9 @@ class ImportProject(Gtk.Assistant):
         # Initialize private scalar variables.
         self.cmbSelectModule: RAMSTKComboBox = RAMSTKComboBox()
         self._filechooser: Gtk.FileChooserButton = Gtk.FileChooserButton(
-            action=Gtk.FileChooserAction.OPEN)
-        self._module: str = ''
+            action=Gtk.FileChooserAction.OPEN
+        )
+        self._module: str = ""
         self.tvwFieldMap: Gtk.TreeView = Gtk.TreeView()
 
         # Initialize public dict variables.
@@ -60,11 +65,12 @@ class ImportProject(Gtk.Assistant):
         self.__do_load_combobox()
         self.__do_set_callbacks()
 
-        pub.subscribe(self._do_load_db_fields, 'succeed_read_db_fields')
-        pub.subscribe(self._do_load_import_fields, 'succeed_read_import_file')
+        pub.subscribe(self._do_load_db_fields, "succeed_read_db_fields")
+        pub.subscribe(self._do_load_import_fields, "succeed_read_import_file")
 
-    def _do_edit_cell(self, __cell: Gtk.CellRenderer, path: str, new_text: str,
-                      model: Gtk.TreeModel) -> None:
+    def _do_edit_cell(
+        self, __cell: Gtk.CellRenderer, path: str, new_text: str, model: Gtk.TreeModel
+    ) -> None:
         """Handle Gtk.CellRenderer() edits.
 
         :param __cell: the Gtk.CellRenderer() that was edited.
@@ -80,10 +86,12 @@ class ImportProject(Gtk.Assistant):
         _db_field = model[path][0]
         model[path][1] = new_text
 
-        pub.sendMessage('request_map_to_field',
-                        module=self._module,
-                        import_field=new_text,
-                        format_field=_db_field)
+        pub.sendMessage(
+            "request_map_to_field",
+            module=self._module,
+            import_field=new_text,
+            format_field=_db_field,
+        )
 
         self.set_page_complete(_page, True)
 
@@ -98,7 +106,7 @@ class ImportProject(Gtk.Assistant):
         _model.clear()
 
         for _field in db_fields:
-            _model.append(None, [_field, ''])
+            _model.append(None, [_field, ""])
 
     def _do_load_import_fields(self, import_fields: List[str]) -> None:
         """Load the Rosetta stone with the import file field names.
@@ -109,9 +117,9 @@ class ImportProject(Gtk.Assistant):
         :rtype: None
         """
         _cell = self.tvwFieldMap.get_column(1).get_cells()[0]
-        _cellmodel = _cell.get_property('model')
+        _cellmodel = _cell.get_property("model")
         _cellmodel.clear()
-        _cellmodel.append([''])
+        _cellmodel.append([""])
 
         # pylint: disable=unused-variable
         for __, _field in enumerate(import_fields):
@@ -134,7 +142,7 @@ class ImportProject(Gtk.Assistant):
         :rtype: None
         """
         pub.sendMessage(
-            'request_import',
+            "request_import",
             module=self._module,
         )
 
@@ -145,24 +153,24 @@ class ImportProject(Gtk.Assistant):
         :return: None
         :rtype: None
         """
-        _file_type = ''
+        _file_type = ""
         _page = self.get_nth_page(1)
 
         _file = filechooser.get_filename()
         # pylint: disable=unused-variable
         __, _extension = os.path.splitext(_file)
 
-        if _extension == '.csv':
-            _file_type = 'csv'
-        elif _extension == '.txt':
-            _file_type = 'text'
-        elif _extension in ['.xls', '.xlsx', '.xlsm']:
-            _file_type = 'excel'
+        if _extension == ".csv":
+            _file_type = "csv"
+        elif _extension == ".txt":
+            _file_type = "text"
+        elif _extension in [".xls", ".xlsx", ".xlsm"]:
+            _file_type = "excel"
 
         if _file is not None:
-            pub.sendMessage('request_read_import_file',
-                            file_type=_file_type,
-                            file_name=_file)
+            pub.sendMessage(
+                "request_read_import_file", file_type=_file_type, file_name=_file
+            )
 
         self.set_page_complete(_page, True)
 
@@ -176,7 +184,7 @@ class ImportProject(Gtk.Assistant):
         self._module = combo.get_value()
 
         pub.sendMessage(
-            'request_db_fields',
+            "request_db_fields",
             module=self._module,
         )
 
@@ -186,10 +194,15 @@ class ImportProject(Gtk.Assistant):
         :return: None
         :rtype: None
         """
-        self.cmbSelectModule.do_load_combo([[""], [_("Function")],
-                                            [_("Requirement")],
-                                            [_("Hardware")],
-                                            [_("Validation")]])
+        self.cmbSelectModule.do_load_combo(
+            [
+                [""],
+                [_("Function")],
+                [_("Requirement")],
+                [_("Hardware")],
+                [_("Validation")],
+            ]
+        )
         self.cmbSelectModule.set_active(1)
 
     def __do_set_callbacks(self) -> None:
@@ -198,17 +211,17 @@ class ImportProject(Gtk.Assistant):
         :return: None
         :rtype: None
         """
-        self.connect('cancel', self._do_quit)
-        self.connect('close', self._do_quit)
-        self.connect('apply', self._do_request_import)
+        self.connect("cancel", self._do_quit)
+        self.connect("close", self._do_quit)
+        self.connect("apply", self._do_request_import)
 
         # ----- COMBOBOX
-        self.cmbSelectModule.dic_handler_id[
-            'changed'] = self.cmbSelectModule.connect('changed',
-                                                      self._on_combo_changed)
+        self.cmbSelectModule.dic_handler_id["changed"] = self.cmbSelectModule.connect(
+            "changed", self._on_combo_changed
+        )
 
         # ----- FILECHOOSER
-        self._filechooser.connect('selection_changed', self._do_select_file)
+        self._filechooser.connect("selection_changed", self._do_select_file)
 
     def __do_set_properties(self) -> None:
         """Set the properties of the Import Assistant and widgets.
@@ -216,23 +229,24 @@ class ImportProject(Gtk.Assistant):
         :return: None
         :rtype: None
         """
-        self.set_property('title', _("RAMSTK Import Assistant"))
+        self.set_property("title", _("RAMSTK Import Assistant"))
         self.resize(800, 400)
         self.move(200, 100)
 
         # ----- FILECHOOSER
         _filefilter = Gtk.FileFilter()
         _filefilter.set_name(_("Delimited Text Files"))
-        _filefilter.add_pattern('*.csv')
-        _filefilter.add_pattern('*.txt')
+        _filefilter.add_pattern("*.csv")
+        _filefilter.add_pattern("*.txt")
         self._filechooser.add_filter(_filefilter)
 
         _filefilter = Gtk.FileFilter()
         _filefilter.set_name(_("Excel Files"))
-        _filefilter.add_pattern('*.xls*')
+        _filefilter.add_pattern("*.xls*")
         self._filechooser.add_filter(_filefilter)
         self._filechooser.set_current_folder(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR
+        )
 
     def __make_confirm_page(self):
         """Make the Import Assistant confirmation page.
@@ -243,9 +257,12 @@ class ImportProject(Gtk.Assistant):
         _page: Gtk.Fixed = Gtk.Fixed()
 
         _label: RAMSTKLabel = RAMSTKLabel(
-            _("RAMSTK is all set and ready to import your "
-              "data.  Press 'Apply' to import or 'Cancel' "
-              "to abort the import."))
+            _(
+                "RAMSTK is all set and ready to import your "
+                "data.  Press 'Apply' to import or 'Cancel' "
+                "to abort the import."
+            )
+        )
         _label.do_set_properties(height=300, width=400, wrap=True)
 
         _page.put(_label, 25, 5)
@@ -263,9 +280,9 @@ class ImportProject(Gtk.Assistant):
 
         _label = RAMSTKLabel(_("Select the RAMSTK module to import:"))
         _page.put(_label, 5, 5)
-        _page.put(self.cmbSelectModule, _label.get_attribute('width') + 10, 5)
+        _page.put(self.cmbSelectModule, _label.get_attribute("width") + 10, 5)
 
-        _page.put(self._filechooser, _label.get_attribute('width') + 10, 65)
+        _page.put(self._filechooser, _label.get_attribute("width") + 10, 65)
 
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
@@ -280,11 +297,14 @@ class ImportProject(Gtk.Assistant):
         _page: Gtk.Fixed = Gtk.Fixed()
 
         _label = RAMSTKLabel(
-            _("This is the RAMSTK Import Assistant.  It "
-              "will guide you through the process of "
-              "importing RAMSTK Program module data from "
-              "an external file.  Press 'Forward' to continue "
-              "or 'Cancel' to quit."))
+            _(
+                "This is the RAMSTK Import Assistant.  It "
+                "will guide you through the process of "
+                "importing RAMSTK Program module data from "
+                "an external file.  Press 'Forward' to continue "
+                "or 'Cancel' to quit."
+            )
+        )
         _label.do_set_properties(height=300, width=400, wrap=True)
 
         _page.put(_label, 25, 5)
@@ -315,8 +335,8 @@ class ImportProject(Gtk.Assistant):
         _column.set_widget(_label)
 
         _cell = Gtk.CellRendererText()
-        _cell.set_property('foreground', '#000000')
-        _cell.set_property('cell-background', 'light gray')
+        _cell.set_property("foreground", "#000000")
+        _cell.set_property("cell-background", "light gray")
         _column.pack_start(_cell, True)
         _column.set_attributes(_cell, text=0)
         _column.set_visible(True)
@@ -330,12 +350,12 @@ class ImportProject(Gtk.Assistant):
         _cell = Gtk.CellRendererCombo()
         _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
         _cellmodel.append([""])
-        _cell.set_property('editable', True)
-        _cell.set_property('foreground', '#FFFFFF')
-        _cell.set_property('has-entry', False)
-        _cell.set_property('model', _cellmodel)
-        _cell.set_property('text-column', 0)
-        _cell.connect('edited', self._do_edit_cell, _model)
+        _cell.set_property("editable", True)
+        _cell.set_property("foreground", "#FFFFFF")
+        _cell.set_property("has-entry", False)
+        _cell.set_property("model", _cellmodel)
+        _cell.set_property("text-column", 0)
+        _cell.connect("edited", self._do_edit_cell, _model)
         _column.pack_start(_cell, True)
         _column.set_attributes(_cell, text=1)
         _column.set_visible(True)
@@ -345,8 +365,7 @@ class ImportProject(Gtk.Assistant):
 
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
-        self.set_page_title(
-            _page, _("Map Input File Fields to RAMSTK Database Fields"))
+        self.set_page_title(_page, _("Map Input File Fields to RAMSTK Database Fields"))
 
     def __make_ui(self):
         """Build the user interface.

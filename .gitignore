@@ -1,7 +1,6 @@
 # Generic files to ignore
 *~
 *.fuse*
-*.lock
 *.DS_Store
 *.out
 .Rhistory
@@ -23,6 +22,7 @@ build/
 dist/
 .mypy_cache/
 .pytest_cache/
+.venv/
 target/
 *.egg*
 *.pyc

@@ -19,34 +19,35 @@ from ramstk.models import RAMSTKBaseTable
 class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent ramstk_subcategory in the RAMSTK Common database."""
 
-    __defaults__ = {'description': 'Subcategory Description'}
-    __tablename__ = 'ramstk_subcategory'
-    __table_args__ = {'extend_existing': True}
+    __defaults__ = {"description": "Subcategory Description"}
+    __tablename__ = "ramstk_subcategory"
+    __table_args__ = {"extend_existing": True}
 
     category_id = Column(
-        'fld_category_id',
+        "fld_category_id",
         Integer,
-        ForeignKey('ramstk_category.fld_category_id'),
+        ForeignKey("ramstk_category.fld_category_id"),
         nullable=False,
     )
     subcategory_id = Column(
-        'fld_subcategory_id',
+        "fld_subcategory_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     category = relationship(  # type: ignore
-        'RAMSTKCategory', back_populates='subcategory')
+        "RAMSTKCategory", back_populates="subcategory"
+    )
     mode = relationship(  # type: ignore
-        'RAMSTKFailureMode',
-        back_populates='subcategory',
-        cascade='delete',
+        "RAMSTKFailureMode",
+        back_populates="subcategory",
+        cascade="delete",
     )
 
     def get_attributes(self):
@@ -56,9 +57,9 @@ class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'category_id': self.category_id,
-            'subcategory_id': self.subcategory_id,
-            'description': self.description,
+            "category_id": self.category_id,
+            "subcategory_id": self.subcategory_id,
+            "description": self.description,
         }
 
         return _attributes

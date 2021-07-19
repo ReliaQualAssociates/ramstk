@@ -10,13 +10,22 @@
 from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = [
-    0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,
-    0.21, 2.3
+    0.01,
+    0.02,
+    0.06,
+    0.05,
+    0.11,
+    0.09,
+    0.12,
+    0.15,
+    0.18,
+    0.18,
+    0.009,
+    0.1,
+    0.21,
+    2.3,
 ]
-PI_E = [
-    1.0, 2.0, 8.0, 5.0, 11.0, 9.0, 12.0, 15.0, 18.0, 16.0, 0.9, 10.0, 21.0,
-    230.0
-]
+PI_E = [1.0, 2.0, 8.0, 5.0, 11.0, 9.0, 12.0, 15.0, 18.0, 16.0, 0.9, 10.0, 21.0, 230.0]
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -29,8 +38,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(
-        attributes['environment_active_id'])  # type: ignore
+    return get_part_count_lambda_b(attributes["environment_active_id"])  # type: ignore
 
 
 def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
@@ -43,9 +51,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         with updated values.
     :rtype: dict
     """
-    attributes['hazard_rate_active'] = (
-        0.010 * attributes['piE']  # type: ignore
-    )
+    attributes["hazard_rate_active"] = 0.010 * attributes["piE"]  # type: ignore
 
     return attributes
 

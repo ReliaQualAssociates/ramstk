@@ -42,8 +42,8 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         # The natural size = default size and the requested size = minimum size
         _attributes = {
-            'height': self.get_preferred_height()[1],
-            'width': self.get_preferred_width()[1]
+            "height": self.get_preferred_height()[1],
+            "width": self.get_preferred_width()[1],
         }
 
         return _attributes[attribute]
@@ -69,12 +69,12 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _bold = kwargs.get('bold', True)
-        _justify = kwargs.get('justify', Gtk.Justification.LEFT)
-        _wrap = kwargs.get('wrap', False)
+        _bold = kwargs.get("bold", True)
+        _justify = kwargs.get("justify", Gtk.Justification.LEFT)
+        _wrap = kwargs.get("wrap", False)
 
-        self.set_property('wrap', _wrap)
-        self.set_property('justify', _justify)
+        self.set_property("wrap", _wrap)
+        self.set_property("justify", _justify)
         if _justify == Gtk.Justification.CENTER:
             self.set_xalign(0.5)
             self.set_yalign(0.5)
@@ -86,14 +86,14 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
             self.set_yalign(0.5)
 
         if _bold:
-            _text = self.get_property('label')
-            _text = '<b>' + _text + '</b>'
+            _text = self.get_property("label")
+            _text = "<b>" + _text + "</b>"
             self.set_markup(_text)
 
 
 def do_make_label_group(
-        text: List[str], **kwargs: Dict[str,
-                                        Any]) -> Tuple[int, List[RAMSTKLabel]]:
+    text: List[str], **kwargs: Dict[str, Any]
+) -> Tuple[int, List[RAMSTKLabel]]:
     """Make and place a group of labels.
 
     The width of each label is set using a natural request.  This ensures the
@@ -109,9 +109,9 @@ def do_make_label_group(
         RAMSTKLabel() instances.
     :rtype: tuple of (integer, list of RAMSTKLabel())
     """
-    _bold = kwargs.get('bold', True)
-    _justify = kwargs.get('justify', Gtk.Justification.RIGHT)
-    _wrap = kwargs.get('wrap', True)
+    _bold = kwargs.get("bold", True)
+    _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
+    _wrap = kwargs.get("wrap", True)
 
     _lst_labels = []
     _max_x = 0
@@ -121,13 +121,11 @@ def do_make_label_group(
     # pylint: disable=unused-variable
     for __, _label_text in enumerate(text):
         _label = RAMSTKLabel(_label_text)
-        _label.do_set_properties(bold=_bold,
-                                 height=-1,
-                                 justify=_justify,
-                                 width=-1,
-                                 wrap=_wrap)
+        _label.do_set_properties(
+            bold=_bold, height=-1, justify=_justify, width=-1, wrap=_wrap
+        )
         _label.set_width_chars(_char_width)
-        _max_x = max(_max_x, _label.get_attribute('width'))
+        _max_x = max(_max_x, _label.get_attribute("width"))
         _lst_labels.append(_label)
 
     return _max_x, _lst_labels

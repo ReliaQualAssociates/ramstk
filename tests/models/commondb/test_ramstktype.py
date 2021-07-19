@@ -14,16 +14,13 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.models.commondb import RAMSTKType
 
-ATTRIBUTES = {
-    'code': 'PLN',
-    'description': 'Planning',
-    'type_type': 'incident'
-}
+ATTRIBUTES = {"code": "PLN", "description": "Planning", "type_type": "incident"}
 
 
-@pytest.mark.usefixtures('test_common_dao')
-class TestRAMSTKType():
+@pytest.mark.usefixtures("test_common_dao")
+class TestRAMSTKType:
     """Class for testing the RAMSTKType model."""
+
     @pytest.mark.integration
     def test_ramstktype_create(self, test_common_dao):
         """ __init__() should create an RAMSTKType model. """
@@ -32,11 +29,11 @@ class TestRAMSTKType():
         assert isinstance(DUT, RAMSTKType)
 
         # Verify class attributes are properly initialized.
-        assert DUT.__tablename__ == 'ramstk_type'
+        assert DUT.__tablename__ == "ramstk_type"
         assert DUT.type_id == 1
-        assert DUT.code == 'PLN'
-        assert DUT.description == 'Planning'
-        assert DUT.type_type == 'incident'
+        assert DUT.code == "PLN"
+        assert DUT.description == "Planning"
+        assert DUT.type_type == "incident"
 
     @pytest.mark.integration
     def test_get_attributes(self, test_common_dao):
@@ -45,9 +42,9 @@ class TestRAMSTKType():
 
         _attributes = DUT.get_attributes()
 
-        assert _attributes['code'] == 'PLN'
-        assert _attributes['description'] == 'Planning'
-        assert _attributes['type_type'] == 'incident'
+        assert _attributes["code"] == "PLN"
+        assert _attributes["description"] == "Planning"
+        assert _attributes["type_type"] == "incident"
 
     @pytest.mark.integration
     def test_set_attributes(self, test_common_dao):
@@ -61,10 +58,10 @@ class TestRAMSTKType():
         """set_attributes() should set an attribute to it's default value when the attribute is passed with a None value."""
         DUT = test_common_dao.session.query(RAMSTKType).first()
 
-        ATTRIBUTES['description'] = None
+        ATTRIBUTES["description"] = None
 
         assert DUT.set_attributes(ATTRIBUTES) is None
-        assert DUT.get_attributes()['description'] == 'Type Description'
+        assert DUT.get_attributes()["description"] == "Type Description"
 
     @pytest.mark.integration
     def test_set_attributes_unknown_attributes(self, test_common_dao):
@@ -72,4 +69,4 @@ class TestRAMSTKType():
         DUT = test_common_dao.session.query(RAMSTKType).first()
 
         with pytest.raises(AttributeError):
-            DUT.set_attributes({'shibboly-bibbly-boo': 0.9998})
+            DUT.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -19,27 +19,27 @@ class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseTable):
     """Class to represent ramstk_measurement in the RAMSTK Common database."""
 
     __defaults__ = {
-        'code': 'Measurement Code',
-        'description': 'Measurement Description',
-        'measurement_type': 'unknown'
+        "code": "Measurement Code",
+        "description": "Measurement Description",
+        "measurement_type": "unknown",
     }
-    __tablename__ = 'ramstk_measurement'
-    __table_args__ = {'extend_existing': True}
+    __tablename__ = "ramstk_measurement"
+    __table_args__ = {"extend_existing": True}
 
     measurement_id = Column(
-        'fld_measurement_id',
+        "fld_measurement_id",
         Integer,
         primary_key=True,
         autoincrement=True,
         nullable=False,
     )
-    code = Column('fld_code', String(128), default=__defaults__['code'])
-    description = Column('fld_description',
-                         String(512),
-                         default=__defaults__['description'])
-    measurement_type = Column('fld_type',
-                              String(128),
-                              default=__defaults__['measurement_type'])
+    code = Column("fld_code", String(128), default=__defaults__["code"])
+    description = Column(
+        "fld_description", String(512), default=__defaults__["description"]
+    )
+    measurement_type = Column(
+        "fld_type", String(128), default=__defaults__["measurement_type"]
+    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKMeasurement data model attributes.
@@ -48,10 +48,10 @@ class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseTable):
         :rtype: dict
         """
         _attributes = {
-            'measurement_id': self.measurement_id,
-            'code': self.code,
-            'description': self.description,
-            'measurement_type': self.measurement_type,
+            "measurement_id": self.measurement_id,
+            "code": self.code,
+            "description": self.description,
+            "measurement_type": self.measurement_type,
         }
 
         return _attributes

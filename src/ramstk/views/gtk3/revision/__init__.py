@@ -8,9 +8,9 @@
 """The RAMSTK GTK3 revision package."""
 
 ATTRIBUTE_KEYS = {
-    0: ['name', 'string'],
-    1: ['remarks', 'string'],
-    2: ['revision_code', 'string'],
+    0: ["name", "string"],
+    1: ["remarks", "string"],
+    2: ["revision_code", "string"],
 }
 
 # RAMSTK Local Imports
