@@ -6,7 +6,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing revision module algorithms and models."""
 
 # Third Party Imports
@@ -123,12 +123,12 @@ class TestCreateControllers:
         assert isinstance(DUT, dmRevision)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "revisions"
+        assert DUT._tag == "revision"
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, "request_retrieve_revisions")
         assert pub.isSubscribed(DUT.do_update, "request_update_revision")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_revisions")
+        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_revision")
         assert pub.isSubscribed(
             DUT.do_get_attributes, "request_get_revision_attributes"
         )
