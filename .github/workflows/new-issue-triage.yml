@@ -2,9 +2,7 @@ name: Move New Issues into Triage
 
 on:
   issues:
-    types: [assigned]
-  pull_request:
-    types: [assigned]
+    types: [opened]
 
 jobs:
   assign_issues_to_project:
