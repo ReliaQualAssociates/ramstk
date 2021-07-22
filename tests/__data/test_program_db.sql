@@ -807,6 +807,7 @@ CREATE TABLE ramstk_cause (
 INSERT INTO "ramstk_cause" VALUES(1,1,4,1,1,'Test Failure Cause #1 for Mechanism ID 1',0,2,1,0,8,5);
 INSERT INTO "ramstk_cause" VALUES(1,1,5,2,2,'Test Failure Cause #1 for Mechanism ID 2',0,4,3,0,4,3);
 INSERT INTO "ramstk_cause" VALUES(1,1,6,3,3,'Test Failure Cause #1 for Mechanism ID 3',0,3,3,0,6,4);
+INSERT INTO "ramstk_cause" VALUES(1,1,6,3,4,'Test Failure Cause #2 for Mechanism ID 3',0,6,3,0,6,4);
 CREATE TABLE ramstk_control (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,

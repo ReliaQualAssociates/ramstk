@@ -311,7 +311,7 @@ class TestGetterSetter:
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(4).data["mechanism"].rpn_detection == 4
-        print("\033[36m\nsucceed_get_allocation_tree topic was broadcast")
+        print("\033[36m\nsucceed_get_mechanism_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):

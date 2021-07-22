@@ -480,7 +480,7 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     def on_succeed_insert_cause(self, node_id, tree):
-        assert node_id == "6.3.4"
+        assert node_id == "6.3.5"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
@@ -606,10 +606,10 @@ class TestInsertMethods:
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
         DUT._do_insert_cause("6.3")
 
-        assert isinstance(DUT.tree.get_node("6.3.4").data["cause"], RAMSTKCause)
-        assert DUT.tree.get_node("6.3.4").data["cause"].cause_id == 4
+        assert isinstance(DUT.tree.get_node("6.3.5").data["cause"], RAMSTKCause)
+        assert DUT.tree.get_node("6.3.5").data["cause"].cause_id == 5
         assert (
-            DUT.tree.get_node("6.3.4").data["cause"].description == "New Failure Cause"
+            DUT.tree.get_node("6.3.5").data["cause"].description == "New Failure Cause"
         )
 
         pub.unsubscribe(self.on_succeed_insert_cause, "succeed_insert_cause")
