@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     data models.
     """
 
-    _tag = "test_methods"
+    _tag = "test_method"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -114,9 +114,9 @@ class DataManager(RAMSTKDataManager):
                 tag="test_method",
                 identifier=_test_method.test_id,
                 parent=self._root,
-                data={"test_method": _test_method},
+                data={self._tag: _test_method},
             )
-            self.last_id = _test_method.test_id
+            self.last_id = self.dao.get_last_id("ramstk_test_method", "fld_test_id")
 
         pub.sendMessage(
             "succeed_retrieve_test_methods",
@@ -179,7 +179,7 @@ class DataManager(RAMSTKDataManager):
                 tag="test_method",
                 identifier=_test_method.test_id,
                 parent=self._root,
-                data={"test_method": _test_method},
+                data={self._tag: _test_method},
             )
 
             self.last_id = max(self.last_id, _test_method.test_id)

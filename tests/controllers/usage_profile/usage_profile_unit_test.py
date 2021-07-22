@@ -53,7 +53,7 @@ class TestCreateControllers:
         """__init__() should return a Revision data manager."""
         assert isinstance(test_datamanager, dmUsageProfile)
         assert isinstance(test_datamanager.tree, Tree)
-        # assert isinstance(test_datamanager.dao, BaseDatabase)
+        assert isinstance(test_datamanager.dao, BaseDatabase)
         assert test_datamanager._tag == "usage_profiles"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
