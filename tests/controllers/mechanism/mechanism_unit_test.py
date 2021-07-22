@@ -19,7 +19,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmMechanism
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKMechanism
 
 
