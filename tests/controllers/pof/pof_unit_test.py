@@ -49,7 +49,6 @@ def test_datamanager():
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
         """__init__() should return a PoF data manager."""

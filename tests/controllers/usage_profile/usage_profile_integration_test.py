@@ -18,8 +18,6 @@ from treelib import Tree
 from ramstk.controllers import dmEnvironment, dmMission, dmMissionPhase, dmUsageProfile
 from ramstk.models.programdb import RAMSTKEnvironment, RAMSTKMission, RAMSTKMissionPhase
 
-test_environment = dmEnvironment()
-
 
 @pytest.fixture(scope="class")
 def test_mission(test_program_dao):

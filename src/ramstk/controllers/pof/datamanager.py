@@ -134,7 +134,8 @@ class DataManager(RAMSTKDataManager):
                 data={self._tag: _mechanism},
             )
 
-            self._do_load_oploads(_mechanism.mechanism_id)
+            if self._opload_tree.depth() > 0:
+                self._do_load_oploads(_mechanism.mechanism_id)
 
     def _do_load_oploads(self, mechanism_id: int) -> None:
         """Load the operating loads into the tree for the passed mechanism ID.
@@ -155,8 +156,10 @@ class DataManager(RAMSTKDataManager):
                     data={self._tag: _opload},
                 )
 
-                self._do_load_opstress(_opload.load_id, _node_id)
-                self._do_load_test_method(_opload.load_id, _node_id)
+                if self._opstress_tree.depth() > 0:
+                    self._do_load_opstress(_opload.load_id, _node_id)
+                if self._test_method_tree.depth() > 0:
+                    self._do_load_test_method(_opload.load_id, _node_id)
 
     def _do_load_opstress(self, load_id: int, parent_id: str) -> None:
         """Load the operating stresses into the tree for the passed load ID.
@@ -217,8 +220,8 @@ class DataManager(RAMSTKDataManager):
 
         _function = {
             "mechanisms": self.do_set_mechanism_tree,
-            "oploads": self.do_set_opload_tree,
-            "opstresss": self.do_set_opstress_tree,
+            "opload": self.do_set_opload_tree,
+            "opstress": self.do_set_opstress_tree,
             "test_method": self.do_set_test_method_tree,
         }[_module]
 
