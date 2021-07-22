@@ -37,6 +37,8 @@ TEMPDIR = tempfile.gettempdir()
 
 try:
     VIRTUAL_ENV = glob.glob(os.environ["VIRTUAL_ENV"])[0]
+except IndexError:
+    VIRTUAL_ENV = os.environ["VIRTUAL_ENV"]
 except KeyError:
     if platform.system() == "Linux":
         VIRTUAL_ENV = os.getenv("HOME") + "/.local"

@@ -93,7 +93,7 @@ class TestCreateControllers:
         assert isinstance(DUT, dmOpStress)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "opstresss"
+        assert DUT._tag == "opstress"
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert DUT._parent_id == 0
