@@ -100,11 +100,7 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        if (
-            self._mission_tree.depth() > 0
-            and self._mission_phase_tree.depth() > 0
-            and self._environment_tree.depth() > 0
-        ):
+        if self._mission_tree.depth() > 0:
             self._do_load_missions()
 
             pub.sendMessage(
@@ -149,7 +145,8 @@ class DataManager(RAMSTKDataManager):
                 data={"usage_profile": _mission},
             )
 
-            self._do_load_mission_phases(_mission.mission_id)
+            if self._mission_phase_tree.depth() > 0:
+                self._do_load_mission_phases(_mission.mission_id)
 
     def _do_load_mission_phases(self, mission_id: int) -> None:
         """Load the mission phases into the tree for the passed mission ID.
@@ -170,7 +167,8 @@ class DataManager(RAMSTKDataManager):
                     data={"usage_profile": _mission_phase},
                 )
 
-                self._do_load_environments(_mission_phase.phase_id, _node_id)
+                if self._environment_tree.depth() > 0:
+                    self._do_load_environments(_mission_phase.phase_id, _node_id)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

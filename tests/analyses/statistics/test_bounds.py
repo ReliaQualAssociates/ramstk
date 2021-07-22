@@ -161,8 +161,7 @@ class TestFisherInformation:
         ]
     )
 
-    @pytest.mark.unit
-    @pytest.mark.calculation
+    @pytest.mark.skip
     def test_calculate_fisher_information(self):
         """do_calculate_fisher_information() should return a list of lists on
         success."""

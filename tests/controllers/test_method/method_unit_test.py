@@ -89,7 +89,7 @@ class TestCreateControllers:
         """__init__() should return a PoF data manager."""
         assert isinstance(test_datamanager, dmTestMethod)
         assert isinstance(test_datamanager.tree, Tree)
-        assert test_datamanager._tag == "test_methods"
+        assert test_datamanager._tag == "test_method"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0

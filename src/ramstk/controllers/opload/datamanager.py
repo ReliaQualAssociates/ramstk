@@ -26,7 +26,7 @@ class DataManager(RAMSTKDataManager):
     This class manages the OpLoad data from the RAMSTKOpLoad data model.
     """
 
-    _tag = "oploads"
+    _tag = "opload"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -109,9 +109,9 @@ class DataManager(RAMSTKDataManager):
                 tag="opload",
                 identifier=_opload.load_id,
                 parent=self._root,
-                data={"opload": _opload},
+                data={self._tag: _opload},
             )
-            self.last_id = _opload.load_id
+            self.last_id = self.dao.get_last_id("ramstk_op_load", "fld_load_id")
 
         pub.sendMessage(
             "succeed_retrieve_oploads",
@@ -172,9 +172,8 @@ class DataManager(RAMSTKDataManager):
                 tag="opload",
                 identifier=_opload.load_id,
                 parent=self._root,
-                data={"opload": _opload},
+                data={self._tag: _opload},
             )
-
             self.last_id = max(self.last_id, _opload.load_id)
 
             pub.sendMessage(

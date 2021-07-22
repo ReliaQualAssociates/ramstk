@@ -147,7 +147,7 @@ class DataManager(RAMSTKDataManager):
                 tag=_revision.name,
                 identifier=_revision.revision_id,
                 parent=self._root,
-                data={"revision": _revision},
+                data={self._tag: _revision},
             )
             self.last_id = _revision.revision_id
             pub.sendMessage(
