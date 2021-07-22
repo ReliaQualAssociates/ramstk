@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     model.
     """
 
-    _tag = "opstresss"
+    _tag = "opstress"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -114,9 +114,9 @@ class DataManager(RAMSTKDataManager):
                 tag="opstress",
                 identifier=_opstress.stress_id,
                 parent=self._root,
-                data={"opstress": _opstress},
+                data={self._tag: _opstress},
             )
-            self.last_id = _opstress.stress_id
+            self.last_id = self.dao.get_last_id("ramstk_op_stress", "fld_stress_id")
 
         pub.sendMessage(
             "succeed_retrieve_opstresss",
@@ -178,9 +178,8 @@ class DataManager(RAMSTKDataManager):
                 tag="opstress",
                 identifier=_opstress.stress_id,
                 parent=self._root,
-                data={"opstress": _opstress},
+                data={self._tag: _opstress},
             )
-
             self.last_id = max(self.last_id, _opstress.stress_id)
 
             pub.sendMessage(
