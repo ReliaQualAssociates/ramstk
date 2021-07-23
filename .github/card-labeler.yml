@@ -1,0 +1,14 @@
+Working:
+  In Progress:
+    - "inprogress"
+  Done:
+    - "closed"
+Backlog:
+  Needs Triage:
+    - "globalbacklog"
+  Low Priority:
+    - "low"
+  Normal Priority:
+    - "normal"
+  High Priority:
+    - "high"
