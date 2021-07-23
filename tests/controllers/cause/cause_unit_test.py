@@ -6,7 +6,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright since 2007 Doyle "weibulguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing failure Cause algorithms and models."""
 
 # Third Party Imports

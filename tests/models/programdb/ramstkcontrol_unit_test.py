@@ -87,14 +87,14 @@ class TestRAMSTKControl:
         assert _attributes["description"] == "Test FMEA Prevention Control"
         assert _attributes["type_id"] == "Prevention"
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_set_attributes(self, mock_program_dao):
         """should return None on success."""
         DUT = mock_program_dao.do_select_all(RAMSTKControl)[0]
 
         assert DUT.set_attributes(ATTRIBUTES) is None
         assert DUT.description == "Test FMEA Control #1 for test cause #3."
-        assert DUT.type_id == "Prevention"
+        assert DUT.type_id == "Detection"
 
     @pytest.mark.unit
     def test_set_attributes_none_value(self, mock_program_dao):
