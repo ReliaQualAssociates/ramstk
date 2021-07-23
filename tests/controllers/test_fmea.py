@@ -224,7 +224,7 @@ class TestSelectMethods:
         _control = DUT.do_select("4.1.1.1.c", table="control")
 
         assert isinstance(_control, RAMSTKControl)
-        assert _control.description == "Test FMEA Control #1 for Cause ID 4"
+        assert _control.description == "Test FMEA Control #1 for Cause ID 1"
         assert _control.type_id == ""
 
     @pytest.mark.integration
@@ -493,7 +493,7 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     def on_succeed_insert_control(self, node_id, tree):
-        assert node_id == "6.3.3.4.c"
+        assert node_id == "6.3.3.5.c"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
@@ -638,9 +638,9 @@ class TestInsertMethods:
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
         DUT._do_insert_control("6.3.3")
 
-        assert isinstance(DUT.tree.get_node("6.3.3.4.c").data["control"], RAMSTKControl)
-        assert DUT.tree.get_node("6.3.3.4.c").data["control"].control_id == 4
-        assert DUT.tree.get_node("6.3.3.4.c").data["control"].description == (
+        assert isinstance(DUT.tree.get_node("6.3.3.5.c").data["control"], RAMSTKControl)
+        assert DUT.tree.get_node("6.3.3.5.c").data["control"].control_id == 5
+        assert DUT.tree.get_node("6.3.3.5.c").data["control"].description == (
             "New Control"
         )
 
@@ -725,7 +725,7 @@ class TestGetterSetter:
     def on_succeed_get_control_attrs(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes["control_id"] == 1
-        assert attributes["description"] == ("Test FMEA Control #1 for Cause " "ID 4")
+        assert attributes["description"] == ("Test FMEA Control #1 for Cause ID 1")
         print("\033[36m\nsucceed_get_control_attributes topic was broadcast.")
 
     def on_succeed_get_action_attrs(self, attributes):

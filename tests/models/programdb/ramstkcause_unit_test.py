@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.programdb.test_ramstkcause.py is part of The RAMSTK
-#       Project
+#       tests.models.programdb.ramstkcause_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -97,7 +96,7 @@ class TestRAMSTKCause:
 
     @pytest.mark.unit
     def test_get_attributes(self, mock_program_dao):
-        """should return a dict of attribute values."""
+        """should return a dict of attribute key:value pairs."""
         DUT = mock_program_dao.do_select_all(RAMSTKCause)[0]
 
         _attributes = DUT.get_attributes()
@@ -130,8 +129,7 @@ class TestRAMSTKCause:
 
     @pytest.mark.unit
     def test_set_attributes_none_value(self, mock_program_dao):
-        """should set an attribute to it's default value when passed a None
-        value."""
+        """should set an attribute to it's default value when passed a None value."""
         DUT = mock_program_dao.do_select_all(RAMSTKCause)[0]
 
         ATTRIBUTES["description"] = None

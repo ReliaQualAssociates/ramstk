@@ -820,9 +820,10 @@ CREATE TABLE ramstk_control (
     PRIMARY KEY (fld_control_id),
     FOREIGN KEY(fld_cause_id) REFERENCES ramstk_cause (fld_cause_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_control" VALUES(1,1,4,1,1,1,'Test FMEA Control #1 for Cause ID 4','');
-INSERT INTO "ramstk_control" VALUES(1,1,5,2,2,2,'Test FMEA Control #1 for Cause ID 5','');
-INSERT INTO "ramstk_control" VALUES(1,1,6,3,3,3,'Test FMEA Control #1 for Cause ID 6','');
+INSERT INTO "ramstk_control" VALUES(1,1,4,1,1,1,'Test FMEA Control #1 for Cause ID 1','');
+INSERT INTO "ramstk_control" VALUES(1,1,5,2,2,2,'Test FMEA Control #1 for Cause ID 2','');
+INSERT INTO "ramstk_control" VALUES(1,1,6,3,3,3,'Test FMEA Control #1 for Cause ID 3','Detection');
+INSERT INTO "ramstk_control" VALUES(1,1,6,3,3,4,'Test FMEA Control #2 for Cause ID 3','Prevention');
 CREATE TABLE ramstk_action (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
