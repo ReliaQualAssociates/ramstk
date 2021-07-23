@@ -56,8 +56,7 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKCause instances on success."""
+        """should return a Tree() object populated with RAMSTKCause instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
         test_datamanager.do_select_all(
@@ -98,7 +97,7 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_datamanager):
-        """should send the fail message if the mode ID does not exist."""
+        """should send the fail message if the mechanism ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_cause")
 
         _parent_id = test_datamanager._parent_id
@@ -134,8 +133,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib Tree
-        when successfully deleting a test method."""
+        """should remove the deleted record from the records tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_cause")
 
         pub.sendMessage("request_delete_cause", node_id=3)
@@ -146,8 +144,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
-        """_do_delete() should send the fail message when attempting to delete
-        a node ID that doesn't exist in the tree."""
+        """should send the fail message when node ID doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_cause")
 
         pub.sendMessage("request_delete_cause", node_id=300)
@@ -156,9 +153,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """should send the fail message when node doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_cause")
 
         test_datamanager.tree.remove_node(4)
@@ -203,7 +198,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
-        """do_update() should return a zero error code on success."""
+        """should update record in database and records tree."""
         pub.subscribe(self.on_succeed_update, "succeed_update_cause")
 
         test_datamanager.tree.get_node(3).data[
@@ -216,7 +211,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
-        """do_update_all() should broadcast the succeed message on success."""
+        """should update all records in database and records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
         test_datamanager.tree.get_node(3).data[
@@ -244,8 +239,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """should send fail message if attribute has wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_cause")
 
         _cause = test_datamanager.do_select(3, table="cause")
@@ -256,8 +250,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """should send fail message when attempting to update root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_cause"
         )
@@ -272,8 +265,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update() should return a non-zero error code when passed a PoF ID
-        that doesn't exist."""
+        """should send fail message when node ID does not exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_cause")
 
         pub.sendMessage("request_update_cause", node_id=100, table="cause")
@@ -282,8 +274,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a FMEA
-        ID that has no data package."""
+        """should send fail message when node ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_cause")
 
         test_datamanager.tree.get_node(3).data.pop("cause")
@@ -315,8 +306,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
-        """do_get_attributes() should return a dict of mode attributes on
-        success."""
+        """should return a dict of attribute key:value pairs."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
         test_datamanager.do_get_attributes(node_id=3, table="cause")
@@ -325,7 +315,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self):
-        """should return the failure Cause records tree."""
+        """should return the data manager records tree."""
         pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_cause_tree")
 
         pub.sendMessage("request_get_cause_tree")
@@ -334,8 +324,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should return None when successfully setting
-        operating load attributes."""
+        """should set the value of the requested attribute."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_cause_tree")
 
         pub.sendMessage(
