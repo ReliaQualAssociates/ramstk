@@ -49,7 +49,7 @@ ICONS16		= $(shell ls ./data/icons/16x16)
 ICONS32		= $(shell ls ./data/icons/32x32)
 
 # Argument lists for tools.
-DOCFORMATTER_ARGS	= --in-place
+DOCFORMATTER_ARGS	= --in-place --wrap-summaries 87 --wrap-descriptions 81
 ISORT_ARGS	= --settings-file ./pyproject.toml --atomic
 MYPY_ARGS	= --config-file ./setup.cfg
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
