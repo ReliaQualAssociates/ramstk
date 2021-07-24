@@ -11,6 +11,7 @@
 from ramstk.controllers.managers import RAMSTKAnalysisManager, RAMSTKDataManager
 
 # RAMSTK Local Imports
+from .action.datamanager import DataManager as dmAction
 from .allocation.analysismanager import AnalysisManager as amAllocation
 from .allocation.datamanager import DataManager as dmAllocation
 from .cause.datamanager import DataManager as dmCause
