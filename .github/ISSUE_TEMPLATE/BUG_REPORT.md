@@ -2,8 +2,8 @@
 name: Bug Report
 about: Create a bug report to help us improve RAMSTK.
 labels:
-  - status:newissue
-  - type:bug
+  - globalbacklog
+  - bug
 
 ---
 
