@@ -6,20 +6,24 @@
 
 ## Describe the purpose of this pull request.
 
+
 ## Describe how this was implemented.
 
-## Describe any particular area(s) reviewers should focus on  .
+
+## Describe any particular area(s) reviewers should focus on.
+
 
 ## Provide any other pertinent information.
 <!-- Provide any other information that is import to this PR such as
 screenshots if this impacts the GUI. -->
+
 
 ## Pull Request Checklist
 
 - Code Style
   - [ ] Code is following code style guidelines.
 
-- Stastic Checks
+- Static Checks
   - [ ] Failing static checks are only applicable to code outside the scope of
    this PR.
 
