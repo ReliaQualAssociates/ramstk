@@ -114,10 +114,7 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_cause topic was broadcast when deleting "
-            "a failure mode."
-        )
+        print("\033[36m\nsucceed_delete_cause topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (

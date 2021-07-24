@@ -364,7 +364,7 @@ class TestGetterSetter:
         )
         print("\033[36m\nfail_create_requirement_code topic was broadcast")
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
         """_do_get_attributes() should return a dict of requirement attributes
         on success."""
@@ -380,7 +380,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_requirement_attributes"
         )
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_on_get_data_manager_tree(self, test_datamanager):
         """on_get_tree() should return the requirement treelib Tree."""
         pub.subscribe(

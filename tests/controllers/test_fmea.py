@@ -506,7 +506,7 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_control topic was broadcast.")
 
     def on_succeed_insert_action(self, node_id, tree):
-        assert node_id == "6.3.3.4.a"
+        assert node_id == "6.3.3.5.a"
         assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_insert_action topic was broadcast.")
 
@@ -672,9 +672,9 @@ class TestInsertMethods:
         DUT.do_select_all({"revision_id": 1, "hardware_id": 1})
         DUT._do_insert_action("6.3.3")
 
-        assert isinstance(DUT.tree.get_node("6.3.3.4.a").data["action"], RAMSTKAction)
-        assert DUT.tree.get_node("6.3.3.4.a").data["action"].action_id == 4
-        assert DUT.tree.get_node("6.3.3.4.a").data["action"].action_recommended == (
+        assert isinstance(DUT.tree.get_node("6.3.3.5.a").data["action"], RAMSTKAction)
+        assert DUT.tree.get_node("6.3.3.5.a").data["action"].action_id == 5
+        assert DUT.tree.get_node("6.3.3.5.a").data["action"].action_recommended == (
             "Recommended Action"
         )
 

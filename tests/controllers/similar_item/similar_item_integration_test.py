@@ -75,7 +75,7 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["similar_item"], RAMSTKSimilarItem)
         print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should clear nodes from an existing allocation
         tree."""
