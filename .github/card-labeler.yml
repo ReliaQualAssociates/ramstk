@@ -1,17 +1,17 @@
 Working:
   In Progress:
-    - "inprogress"
+    - "status: inprogress"
   Done:
-    - "closed"
+    - "status: closed"
 Backlog:
   Needs Triage:
-    - "globalbacklog"
+    - "status: backlog"
   Low Priority:
-    - "globalbacklog"
-    - "low"
+    - "status: backlog"
+    - "priority: low"
   Normal Priority:
-    - "globalbacklog"
-    - "normal"
+    - "status: backlog"
+    - "priority: normal"
   High Priority:
-    - "globalbacklog"
-    - "high"
+    - "status: backlog"
+    - "priority: high"

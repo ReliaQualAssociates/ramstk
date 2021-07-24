@@ -1,0 +1,333 @@
+name: PR Push Workflows
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  bump_version_files:
+    name: Bump Version Files
+    if: startsWith(github.head_ref, 'bump_version_files') == false && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Get PR labels
+        id: check_pr_labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get previous tag
+        id: previoustag
+        run: |
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
+
+      - name: Get next semantic version
+        id: nexttag
+        uses: WyriHaximus/github-action-next-semvers@v1
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Check for new patch version
+        if: contains(steps.check_pr_labels.outputs.labels, ' patch ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.patch }}" >> $GITHUB_ENV
+          echo "do_bump=1" >> $GITHUB_ENV
+          echo "do_release=0" >> $GITHUB_ENV
+
+      - name: Check for new minor version
+        if: contains(steps.check_pr_labels.outputs.labels, ' minor ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.minor }}" >> $GITHUB_ENV
+          echo "do_bump=1" >> $GITHUB_ENV
+          echo "do_release=1" >> $GITHUB_ENV
+
+      - name: Check for new major version
+        if: contains(steps.check_pr_labels.outputs.labels, ' major ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.major }}" >> $GITHUB_ENV
+          echo "do_bump=1" >> $GITHUB_ENV
+          echo "do_release=1" >> $GITHUB_ENV
+
+      - name: Check if VERSION has already been updated
+        if: ${{ env.do_bump == 1 }}
+        run: |
+          file_ver=$(cat VERSION)
+          if [ $file_ver == ${{ env.RAMSTK_NEXT_VER }} ]; then echo "do_bump=0" >> $GITHUB_ENV; fi
+
+      - name: Update VERSION and pyproject.toml file
+        if: ${{ env.do_bump == 1 }}
+        run: |
+          echo "${{ env.RAMSTK_NEXT_VER }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ env.RAMSTK_NEXT_VER }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Cut pull request to merge updated version files
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Bump version files
+          title: "chore: bump version files"
+          body: Bump VERSION and pyproject.toml to next version.
+          branch: bump_version_files/${{ github.head_ref }}
+
+  create_new_milestone:
+    name: Create New Milestone
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: check_pr_labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get previous tag
+        id: previoustag
+        run: |
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
+
+      - name: Get next semantic version
+        id: nexttag
+        uses: WyriHaximus/github-action-next-semvers@v1
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: See results
+        run: |
+          echo ${{ steps.previoustag.outputs.tag }}
+          echo ${{ steps.check_pr_labels.outputs.labels }}
+          echo ${{ steps.nexttag.outputs.v_major }}
+          echo ${{ steps.nexttag.outputs.v_minor }}
+          echo ${{ steps.nexttag.outputs.v_patch }}
+
+      - name: Check for new minor version
+        if: contains(steps.check_pr_labels.outputs.labels, ' minor ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.minor }}" >> $GITHUB_ENV
+          echo "do_milestone=1" >> $GITHUB_ENV
+
+      - name: Check for new major version
+        if: contains(steps.check_pr_labels.outputs.labels, ' major ')
+        run: |
+          echo "RAMSTK_NEXT_VER=${{ steps.nexttag.outputs.major }}" >> $GITHUB_ENV
+          echo "do_milestone=1" >> $GITHUB_ENV
+
+      - name: Create new release milestone
+        if: ${{ env.do_milestone == 1 }}
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "v${{ env.RAMSTK_NEXT_VER }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bandit:
+    name: Check for Security Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run bandit against repository
+        uses: jpetrucciani/bandit-check@master
+        with:
+          path: 'src/ramstk'
+
+  format-check:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code format with black, isort, and docformatter
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: true
+          use-yapf: false
+          use-isort: true
+          use-docformatter: true
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: false
+          use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
+          extra-black-options: ""
+          extra-yapf-options: ""
+          extra-isort-options: "--settings-file ./pyproject.toml"
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
+          extra-pylint-options: ""
+          extra-flake8-options: ""
+
+  style-check:
+    name: Check Code Styling
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code style with pycodestyle and pydocstyle
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-yapf: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: true
+          use-pydocstyle: true
+          use-mypy: false
+          use-pylint: false
+          use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
+          extra-black-options: ""
+          extra-yapf-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: "--config=./setup.cfg --count"
+          extra-pydocstyle-options: "--count"
+          extra-mypy-options: ""
+          extra-pylint-options: ""
+
+  type-check:
+    name: Check Code Type Hinting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check code type hinting with mypy
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-yapf: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: true
+          use-pylint: false
+          use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
+          extra-black-options: ""
+          extra-yapf-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: "--config-file ./setup.cfg"
+          extra-pylint-options: ""
+          extra-flake8-options: ""
+
+  lint-check:
+    name: Check Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Lint code with pylint
+        uses: weibullguy/python-lint-plus@master
+        with:
+          python-root-list: "src/ramstk"
+          use-black: false
+          use-yapf: false
+          use-isort: false
+          use-docformatter: false
+          use-pycodestyle: false
+          use-pydocstyle: false
+          use-mypy: false
+          use-pylint: true
+          use-flake8: false
+          use-mccabe: false
+          use-radon: false
+          use-rstcheck: false
+          use-check-manifest: false
+          use-pyroma: false
+          extra-black-options: ""
+          extra-yapf-options: ""
+          extra-isort-options: ""
+          extra-docformatter-options: ""
+          extra-pycodestyle-options: ""
+          extra-pydocstyle-options: ""
+          extra-mypy-options: ""
+          extra-pylint-options: "-j0 --rcfile=./pyproject.toml --dummy-variables-rgx='__'"
+          extra-flake8-options: ""
+
+  test_suite:
+    name: RAMSTK Test Suite
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [3.6, 3.7, 3.8]
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update and install system packages
+        run: |
+          echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Create a virtual environment
+        run: |
+          python -mvenv $VIRTUAL_ENV
+
+      - name: Install RAMSTK dependencies and test with coverage
+        run: |
+          source $VIRTUAL_ENV/bin/activate
+          pip install -U pip setuptools>12.0 urllib3 poetry
+          make depends
+          make PREFIX=$VIRTUAL_ENV install
+          xvfb-run --auto-servernum make coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1
+        with:
+          files: ./cobertura.xml
+          flags: ${{ matrix.python }}
+
+      - name: Create Coveralls report
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel: true
+
+  upload_coveralls:
+    name: Upload Coverage Results to Coveralls
+    needs: test_suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload report to Coveralls
+        uses: AndreMiras/coveralls-python-action@develop
+        with:
+          parallel-finished: true

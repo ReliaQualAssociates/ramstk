@@ -7,33 +7,34 @@ template: |
 categories:
   - title: 'Bug Fixes'
     labels:
-      - 'fix'
-      - 'bug'
+      - 'type: fix'
+      - 'bump: patch'
   - title: 'Features'
     labels:
-      - 'feature'
-      - 'minor'
+      - 'type: feature'
+      - 'bump: minor'
   - title: 'Maintenance'
     labels:
-      - 'quality'
-      - 'enhancement'
+      - 'type: build'
+      - 'type: ci'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
   major:
     labels:
-      - 'major'
+      - 'bump: major'
   minor:
     labels:
-      - 'minor'
+      - 'bump: minor'
   patch:
     labels:
-      - 'patch'
+      - 'bump: patch'
   default: patch
 exclude-labels:
-  - 'chore'
+  - 'type: chore'
   - 'dependencies'
-  - 'docs'
+  - 'type: docs'
   - 'duplicate'
   - 'invalid'
-  - 'test'
+  - 'wontfix'
+  - 'type: test'

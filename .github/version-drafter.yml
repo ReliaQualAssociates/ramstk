@@ -1,3 +1,3 @@
-major-labels: ['major']
-minor-labels: ['minor','feature']
-patch-labels: ['patch','bug','enhancement']
+major-labels: ['bump: major']
+minor-labels: ['bump: minor','type: feature']
+patch-labels: ['bump: patch','type: fix']
