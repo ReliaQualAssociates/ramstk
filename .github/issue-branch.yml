@@ -1,22 +1,22 @@
 branchName: short
 branches:
-  - label: build
+  - label: 'type: build'
     prefix: build/
-  - label: chore
+  - label: 'type: chore'
     prefix: chore/
-  - label: ci
+  - label: 'type: ci'
     prefix: ci/
-  - label: docs
+  - label: 'type: docs'
     prefix: docs/
-  - label: feature
+  - label: 'type: feature'
     prefix: feature/
-  - label: fix
+  - label: 'type: fix'
     prefix: fix/
-  - label: refactor
+  - label: 'type: refactor'
     prefix: refactor/
-  - label: style
+  - label: 'type: style'
     prefix: style/
-  - label: test
+  - label: 'type: test'
     prefix: test/
   - label: '*'
     skip: true
