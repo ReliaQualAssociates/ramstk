@@ -8,4 +8,4 @@ labels:
 
 **Describe the chore that needs to be addressed.**
 
-[ ] This issue is an epic issue which subsumes the following:
+- [ ] This issue is an epic issue which subsumes the following:

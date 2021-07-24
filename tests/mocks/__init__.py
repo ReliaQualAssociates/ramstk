@@ -14,6 +14,7 @@ isort:skip_file
 
 # RAMSTK Local Imports
 from .mock_tables import MockRAMSTKBaseTable
+from .mock_ramstkaction import MockRAMSTKAction
 from .mock_ramstkallocation import MockRAMSTKAllocation
 from .mock_ramstkcause import MockRAMSTKCause
 from .mock_ramstkcontrol import MockRAMSTKControl
