@@ -9,4 +9,4 @@ labels:
 
 **Describe the test that is missing or needs to be fixed.**
 
-[ ] This issue is an epic issue which subsumes the following:
+- [ ] This issue is an epic issue which subsumes the following:
