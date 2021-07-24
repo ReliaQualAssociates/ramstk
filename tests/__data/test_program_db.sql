@@ -847,6 +847,7 @@ CREATE TABLE ramstk_action (
 INSERT INTO "ramstk_action" VALUES(1,1,4,1,1,1,'Test FMEA Recommended Action #1 for Cause ID 1.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(1,1,5,2,2,2,'Test FMEA Recommended Action #1 for Cause ID 2.','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 INSERT INTO "ramstk_action" VALUES(1,1,6,3,3,3,'Test FMEA Recommended Action #1 for Cause ID 3','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
+INSERT INTO "ramstk_action" VALUES(1,1,6,3,3,4,'Test FMEA Recommended Action #2 for Cause ID 3','','','2019-08-20','',X'',0,'2019-08-20',0,'2019-08-20');
 
 CREATE TABLE ramstk_op_load (
     fld_revision_id INTEGER NOT NULL,
