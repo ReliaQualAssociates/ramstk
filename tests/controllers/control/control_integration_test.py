@@ -126,10 +126,7 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_control topic was broadcast when deleting "
-            "a failure mode."
-        )
+        print("\033[36m\nsucceed_delete_control topic was broadcast")
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
@@ -302,8 +299,8 @@ class TestGetterSetter:
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes["control_id"] == 3
-        assert attributes["description"] == "System Test Failure Mode #2"
-        print("\033[36m\nsucceed_get_mode_attributes topic was broadcast.")
+        assert attributes["description"] == "Test FMEA Control #1 for Cause ID 3"
+        print("\033[36m\nsucceed_get_control_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
@@ -319,11 +316,13 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
         """should return a dict of attribute key:value pairs."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
+        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_control_attributes")
 
         test_datamanager.do_get_attributes(node_id=3, table="control")
 
-        pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
+        pub.unsubscribe(
+            self.on_succeed_get_attributes, "succeed_get_control_attributes"
+        )
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self):
