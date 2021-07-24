@@ -7,8 +7,11 @@ Backlog:
   Needs Triage:
     - "globalbacklog"
   Low Priority:
+    - "globalbacklog"
     - "low"
   Normal Priority:
+    - "globalbacklog"
     - "normal"
   High Priority:
+    - "globalbacklog"
     - "high"
