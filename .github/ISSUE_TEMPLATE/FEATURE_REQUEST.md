@@ -2,8 +2,8 @@
 name: Feature Request
 about: If you'd like to make a suggestion please fill out the form below.
 labels:
-  - status:newissue
-  - type:enhancement
+  - globalbacklog
+  - feature
 
 ---
 
@@ -22,3 +22,5 @@ labels:
 **Additional Comments**
 
 > Add any other context about the feature request here.
+
+[ ] This issue is an epic issue which subsumes the following:
