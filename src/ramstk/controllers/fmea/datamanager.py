@@ -3,7 +3,7 @@
 #       ramstk.controllers.fmea.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Model."""
 
 # Standard Library Imports
@@ -259,7 +259,7 @@ class DataManager(RAMSTKDataManager):
 
         _function = {
             "mode": self.do_set_mode_tree,
-            "mechanisms": self.do_set_mechanism_tree,
+            "mechanism": self.do_set_mechanism_tree,
             "cause": self.do_set_cause_tree,
             "control": self.do_set_control_tree,
             "action": self.do_set_action_tree,
