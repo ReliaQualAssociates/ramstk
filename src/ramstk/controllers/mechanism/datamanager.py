@@ -21,14 +21,9 @@ from ramstk.models.programdb import RAMSTKMechanism
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Mechanism data manager.
+    """Contain the attributes and methods of the Mechanism data manager."""
 
-    This class manages the Mechanism data from the RAMSTKMode,
-    RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod
-    data models.
-    """
-
-    _tag = "mechanisms"
+    _tag = "mechanism"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:

@@ -92,7 +92,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmMechanism)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "mechanisms"
+        assert test_datamanager._tag == "mechanism"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0

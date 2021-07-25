@@ -219,7 +219,7 @@ class DataManager(RAMSTKDataManager):
         _module: str = tree.get_node(0).tag
 
         _function = {
-            "mechanisms": self.do_set_mechanism_tree,
+            "mechanism": self.do_set_mechanism_tree,
             "opload": self.do_set_opload_tree,
             "opstress": self.do_set_opstress_tree,
             "test_method": self.do_set_test_method_tree,
