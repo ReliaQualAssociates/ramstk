@@ -23,7 +23,7 @@ from ramstk.models.programdb import RAMSTKMode
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Mode data manager."""
 
-    _tag = "modes"
+    _tag = "mode"
     _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -88,10 +88,10 @@ class DataManager(RAMSTKDataManager):
             value=[self._revision_id, self._parent_id],
         ):
             self.tree.create_node(
-                tag="mode",
+                tag=self._tag,
                 identifier=_mode.mode_id,
                 parent=self._root,
-                data={"mode": _mode},
+                data={self._tag: _mode},
             )
             self.last_id = _mode.mode_id
 
