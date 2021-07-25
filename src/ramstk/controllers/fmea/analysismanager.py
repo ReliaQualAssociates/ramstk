@@ -8,7 +8,6 @@
 """FMEA Controller Package analysis manager."""
 
 # Standard Library Imports
-from collections import defaultdict
 from typing import Any, Dict
 
 # Third Party Imports
@@ -47,42 +46,10 @@ class AnalysisManager(RAMSTKAnalysisManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_get_tree, "succeed_retrieve_hardware_fmea")
+        pub.subscribe(super().on_get_tree, "succeed_retrieve_fmea")
         pub.subscribe(super().on_get_tree, "succeed_get_fmea_tree")
 
-        pub.subscribe(self._do_calculate_criticality, "request_calculate_criticality")
         pub.subscribe(self._do_calculate_rpn, "request_calculate_rpn")
-
-    def _do_calculate_criticality(self, item_hr: float) -> None:
-        """Calculate MIL-STD-1629A, Task 102 criticality of a hardware item.
-
-        :param item_hr: the hazard rate of the hardware item the criticality is
-            being calculated for.
-        :return: None
-        :rtype: None
-        """
-        _item_criticality: Dict[str, float] = defaultdict(float)
-        for _mode in self._tree.children(0):
-            _mode.data[
-                "mode"
-            ].mode_hazard_rate = criticality.calculate_mode_hazard_rate(
-                item_hr, _mode.data["mode"].mode_ratio
-            )
-            _mode.data[
-                "mode"
-            ].mode_criticality = criticality.calculate_mode_criticality(
-                _mode.data["mode"].mode_hazard_rate,
-                _mode.data["mode"].mode_op_time,
-                _mode.data["mode"].effect_probability,
-            )
-            _item_criticality[_mode.data["mode"].severity_class] += _mode.data[
-                "mode"
-            ].mode_criticality
-
-        pub.sendMessage(
-            "succeed_calculate_fmea_criticality",
-            item_criticality=_item_criticality,
-        )
 
     def _do_calculate_rpn(self, method: str = "mechanism") -> None:
         """Calculate the risk priority number (RPN) of a hardware item's modes.
