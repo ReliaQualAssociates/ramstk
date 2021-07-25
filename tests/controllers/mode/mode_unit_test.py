@@ -254,7 +254,7 @@ class TestDeleteMethods:
 
 @pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
 class TestAnalysisMethods:
-    """Class for failure mode analysis method tests."""
+    """Class for failure mode analysis manager method tests."""
 
     @pytest.mark.unit
     def test_do_calculate_criticality(self, test_analysismanager, test_datamanager):
