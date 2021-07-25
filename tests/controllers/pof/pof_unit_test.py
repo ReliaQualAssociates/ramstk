@@ -23,7 +23,6 @@ def test_datamanager():
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmPoF()
-    # dut.do_connect(mock_program_dao)
 
     yield dut
 

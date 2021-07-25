@@ -127,7 +127,7 @@ class TestCreateControllers:
         assert isinstance(DUT, dmMode)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "modes"
+        assert DUT._tag == "mode"
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert DUT._parent_id == 0
@@ -136,7 +136,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(DUT.do_get_tree, "request_get_mode_tree")
         assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
         assert pub.isSubscribed(DUT.do_update, "request_update_mode")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_modes")
+        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_mode")
         assert pub.isSubscribed(DUT._do_delete, "request_delete_mode")
         assert pub.isSubscribed(DUT._do_insert_mode, "request_insert_mode")
 
