@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.pof_integration_test.py is part of The RAMSTK Project
+#       tests.controllers.pof.pof_integration_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -152,6 +152,10 @@ def test_datamanager(test_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_opload")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_opstress")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_test_method")
     pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_opload_tree, "succeed_retrieve_oploads")
     pub.unsubscribe(dut.do_set_opstress_tree, "succeed_retrieve_opstresss")
@@ -160,10 +164,6 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_opload_tree, "succeed_delete_opload")
     pub.unsubscribe(dut.do_set_opstress_tree, "succeed_delete_opstress")
     pub.unsubscribe(dut.do_set_test_method_tree, "succeed_delete_test_method")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_opload")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_opstress")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_test_method")
 
     # Delete the device under test.
     del dut

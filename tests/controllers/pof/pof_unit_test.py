@@ -27,6 +27,10 @@ def test_datamanager():
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_opload")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_opstress")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_test_method")
     pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_opload_tree, "succeed_retrieve_oploads")
     pub.unsubscribe(dut.do_set_opstress_tree, "succeed_retrieve_opstresss")
@@ -35,10 +39,6 @@ def test_datamanager():
     pub.unsubscribe(dut.do_set_opload_tree, "succeed_delete_opload")
     pub.unsubscribe(dut.do_set_opstress_tree, "succeed_delete_opstress")
     pub.unsubscribe(dut.do_set_test_method_tree, "succeed_delete_test_method")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_opload")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_opstress")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_test_method")
 
     # Delete the device under test.
     del dut
@@ -57,6 +57,12 @@ class TestCreateControllers:
         assert test_datamanager._tag == "pof"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_mechanism")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_opload")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_opstress")
+        assert pub.isSubscribed(
+            test_datamanager.on_insert, "succeed_insert_test_method"
+        )
         assert pub.isSubscribed(
             test_datamanager.do_set_mechanism_tree, "succeed_retrieve_mechanisms"
         )
@@ -80,10 +86,4 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(
             test_datamanager.do_set_test_method_tree, "succeed_delete_test_method"
-        )
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_mechanism")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_opload")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_opstress")
-        assert pub.isSubscribed(
-            test_datamanager._on_insert, "succeed_insert_test_method"
         )
