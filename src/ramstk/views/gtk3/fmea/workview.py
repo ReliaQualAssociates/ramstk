@@ -128,7 +128,7 @@ class MethodPanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_clear_panel, "request_clear_workviews")
-        pub.subscribe(self._do_load_panel, "succeed_calculate_fmea_criticality")
+        pub.subscribe(self._do_load_panel, "succeed_calculate_mode_criticality")
 
     def _do_clear_panel(self) -> None:
         """Clear the widgets on the panel.
@@ -567,7 +567,7 @@ class FMEAPanel(RAMSTKPanel):
             "Effect, Next",
             "Effect, End",
             "Detection Method",
-            "Other " "Indications",
+            "Other Indications",
             "Isolation Method",
             "Design Provision",
             "Operator Actions",
@@ -584,7 +584,7 @@ class FMEAPanel(RAMSTKPanel):
             "RPN Occurrence",
             "RPN Detection",
             0,
-            "Action " "Category",
+            "Action Category",
             "Action Owner",
             "Action Due Date",
             "Action Status",
@@ -640,7 +640,7 @@ class FMEAPanel(RAMSTKPanel):
         pub.subscribe(super().do_load_panel, "succeed_delete_fmea")
 
         # pub.subscribe(self._do_load_panel,
-        #              'succeed_calculate_fmea_criticality')
+        #              'succeed_calculate_mode_criticality')
         pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
 
     def do_load_combobox(self) -> None:
@@ -1033,8 +1033,8 @@ class FMEAPanel(RAMSTKPanel):
         try:
             # noinspection PyUnresolvedReferences
             self._lst_fmea_data[3] = self._dic_mission_phases[
-                entity.mission_phase
-            ]  # type: ignore
+                entity.mission_phase  # type: ignore
+            ]
         except (AttributeError, KeyError):
             self._lst_fmea_data[3] = ""
 
@@ -1047,12 +1047,12 @@ class FMEAPanel(RAMSTKPanel):
         """
         # noinspection PyUnresolvedReferences
         _occurrence = str(
-            self.dic_occurrence[entity.rpn_occurrence]["name"]
-        )  # type: ignore
+            self.dic_occurrence[entity.rpn_occurrence]["name"]  # type: ignore
+        )
         # noinspection PyUnresolvedReferences
         _detection = str(
-            self.dic_detection[entity.rpn_detection]["name"]
-        )  # type: ignore
+            self.dic_detection[entity.rpn_detection]["name"]  # type: ignore
+        )
         # noinspection PyUnresolvedReferences
         _occurrence_new = str(
             self.dic_occurrence[entity.rpn_occurrence_new]["name"]  # type: ignore
