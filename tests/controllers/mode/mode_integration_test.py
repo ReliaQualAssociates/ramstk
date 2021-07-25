@@ -5,7 +5,7 @@
 #       tests.controllers.mode.mode_integration_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing failure mode integrations."""
 
 # Third Party Imports
@@ -14,8 +14,25 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmMode
+from ramstk.controllers import amMode, dmMode
 from ramstk.models.programdb import RAMSTKMode
+
+
+@pytest.fixture(scope="class")
+def test_analysismanager(test_toml_user_configuration):
+    """Get a analysis manager instance for each test function."""
+    # Create the device under test (dut) and connect to the configuration.
+    dut = amMode(test_toml_user_configuration)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_modes")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_mode_tree")
+    pub.unsubscribe(dut._do_calculate_criticality, "request_calculate_criticality")
+
+    # Delete the device under test.
+    del dut
 
 
 @pytest.fixture(scope="class")
@@ -53,8 +70,7 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should clear out an existing tree and build a new
-        one when called on a populated Mission Phase data manager."""
+        """should clear records tree and then repopulate it."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -93,9 +109,7 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_datamanager):
-        """do_insert() should send the success message with the ID of the newly
-        inserted node and the data manager's tree after successfully inserting
-        a new mode."""
+        """should add new record to records tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
         pub.sendMessage("request_insert_mode")
@@ -104,8 +118,7 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_datamanager):
-        """_do_insert_mechanism() should send the fail message if attempting to
-        add an operating load to a non-existent mechanism ID."""
+        """should send fail message when adding record to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
         _parent_id = test_datamanager._parent_id
@@ -117,8 +130,7 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_datamanager):
-        """_do_insert_mode() should send the fail message if attempting to add
-        a mode to a non-existent Revision ID."""
+        """should send fail message when adding record to a non-existent revision."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 
         test_datamanager._revision_id = 4
@@ -150,8 +162,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib Tree
-        when successfully deleting a test method."""
+        """should remove record from records tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mode")
 
         test_datamanager._do_delete(4)
@@ -160,8 +171,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to delete
-        a node ID that doesn't exist in the tree."""
+        """should send fail message when node ID doesn't exist in records tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mode")
 
         test_datamanager._do_delete(300)
@@ -170,9 +180,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """should send fail message when no data package exists for node ID."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
         test_datamanager.tree.remove_node(5)
@@ -219,7 +227,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
-        """do_update() should return a zero error code on success."""
+        """should update the requested record."""
         pub.subscribe(self.on_succeed_update, "succeed_update_mode")
 
         test_datamanager.tree.get_node(4).data["mode"].description = "Test failure mode"
@@ -233,7 +241,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
-        """do_update_all() should broadcast the succeed message on success."""
+        """should all records in records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
         pub.sendMessage("request_update_all_modes")
@@ -242,8 +250,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        mode ID that doesn't exist."""
+        """should send fail message when attribute has the wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mode")
 
         _mode = test_datamanager.do_select(4, table="mode")
@@ -255,8 +262,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        mode ID that doesn't exist."""
+        """should send fail message when attempting to update root node."""
         pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "fail_update_mode")
 
         _mode = test_datamanager.do_select(4, table="mode")
@@ -270,8 +276,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a mode ID
-        that doesn't exist."""
+        """should fail message when passed a mode ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mode")
 
         pub.sendMessage("request_update_mode", node_id=100, table="mode")
@@ -280,8 +285,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a mode ID that
-        has no data package."""
+        """should send fail message when mode ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mode")
 
         test_datamanager.tree.get_node(4).data.pop("mode")
@@ -314,8 +318,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
-        """do_get_attributes() should return a dict of mode attributes on
-        success."""
+        """should return a dict of mode key:value attribute pairs."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
         pub.sendMessage("request_get_mode_attributes", node_id=2, table="mode")
@@ -324,7 +327,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_on_get_data_manager_tree(self, test_datamanager):
-        """on_get_tree() should return the PoF treelib Tree."""
+        """should return the records tree."""
         pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_mode_tree")
 
         pub.sendMessage("request_get_mode_tree")
@@ -333,8 +336,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should return None when successfully setting
-        operating load attributes."""
+        """should set requested attribute."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mode_tree")
 
         pub.sendMessage(
@@ -343,4 +345,44 @@ class TestGetterSetter:
             package={"description": "Jared Kushner"},
         )
 
+        assert (
+            test_datamanager.tree.get_node(4).data["mode"].description
+            == "Jared Kushner"
+        )
+
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mode_tree")
+
+
+@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+class TestAnalysisMethods:
+    """Class for failure Mode analysis manager methods tests."""
+
+    def on_succeed_calculate_criticality(self, item_criticality):
+        assert isinstance(item_criticality, dict)
+        assert item_criticality == {
+            "I": 2.3529e-05,
+            "III": 1.2259632000000001e-05,
+        }
+        print("\033[36m\nsucceed_calculate_mode_criticality topic was broadcast.")
+
+    @pytest.mark.integration
+    def test_do_calculate_agree_allocation(
+        self, test_analysismanager, test_datamanager
+    ):
+        """should send item criticality."""
+        pub.subscribe(
+            self.on_succeed_calculate_criticality, "succeed_calculate_mode_criticality"
+        )
+
+        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        test_analysismanager._tree.get_node(4).data["mode"].mode_ratio = 0.428
+        test_analysismanager._tree.get_node(4).data["mode"].mode_op_time = 4.2
+        test_analysismanager._tree.get_node(4).data["mode"].effect_probability = 1.0
+        test_analysismanager._tree.get_node(4).data["mode"].severity_class = "III"
+
+        pub.sendMessage("request_calculate_criticality", item_hr=0.00000682)
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_criticality, "succeed_calculate_mode_criticality"
+        )

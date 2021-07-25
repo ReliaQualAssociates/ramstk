@@ -1,4 +1,4 @@
-name: Create Issue Branch
+name: Assigned Issue Workflow
 on:
   issues:
     types: [assigned]
@@ -6,6 +6,15 @@ on:
     types: [created]
 
 jobs:
+  assign_issues_to_working:
+    name: Move Assigned Issue to Working
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/create-project-card-action@v1
+        with:
+          PROJECT: Working
+          COLUMN: In Progress
+
   create_issue_branch_job:
     runs-on: ubuntu-latest
     steps:
@@ -14,11 +23,6 @@ jobs:
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          branchName: short
-          autoCloseIssue: true
-          openDraftPR: true
-          copyIssueAssigneeToPR: true
       - name: Add PR Link to Issue
         uses: mshick/add-pr-comment@master
         if: steps.create_issue_branch.outputs.branchName != ''
