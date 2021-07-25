@@ -1,12 +1,12 @@
-name: Move New Issues into Triage
+name: Open Issue Workflow
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  assign_issues_to_project:
-    name: Assign New Issue to Project
+  assign_issues_to_backlog:
+    name: Assign New Issue to Backlog
     runs-on: ubuntu-latest
     steps:
       - uses: technote-space/create-project-card-action@v1

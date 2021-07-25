@@ -1,4 +1,4 @@
-name: Pull Request Chores
+name: PR Open Workflow
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ jobs:
     name: Label Pull Request
     runs-on: ubuntu-latest
     steps:
-      - name: Apply labels to PR
+      - name: Apply Labels to PR
         uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

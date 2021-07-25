@@ -1,4 +1,4 @@
-name: PR Push Workflows
+name: PR Push Workflow
 
 on:
   pull_request:
