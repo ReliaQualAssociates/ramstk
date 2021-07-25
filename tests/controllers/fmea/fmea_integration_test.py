@@ -14,7 +14,15 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmAction, dmCause, dmControl, dmFMEA, dmMechanism, dmMode
+from ramstk.controllers import (
+    amFMEA,
+    dmAction,
+    dmCause,
+    dmControl,
+    dmFMEA,
+    dmMechanism,
+    dmMode,
+)
 from ramstk.models.programdb import (
     RAMSTKAction,
     RAMSTKCause,
@@ -162,6 +170,23 @@ def test_action(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_action")
     pub.unsubscribe(dut._do_insert_action, "request_insert_action")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="function")
+def test_analysismanager(test_toml_user_configuration):
+    """Get a analysis manager instance for each test function."""
+    # Create the device under test (dut) and connect to the configuration.
+    dut = amFMEA(test_toml_user_configuration)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_fmea")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_fmea_tree")
+    pub.unsubscribe(dut._do_calculate_rpn, "request_calculate_rpn")
 
     # Delete the device under test.
     del dut
@@ -629,3 +654,78 @@ class TestDeleteMethods:
         assert not test_datamanager.tree.contains("6")
 
         pub.unsubscribe(self.on_succeed_delete_mode, "succeed_retrieve_fmea")
+
+
+@pytest.mark.usefixtures(
+    "test_analysismanager",
+    "test_datamanager",
+    "test_mode",
+    "test_mechanism",
+    "test_cause",
+    "test_control",
+    "test_action",
+)
+class TestAnalysisMethods:
+    """Class for FMEA analysis manager method tests."""
+
+    def on_succeed_calculate_rpn_mechanism(self, tree: Tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node("6.3").data["fmea"].rpn == 240
+        assert tree.get_node("6.3").data["fmea"].rpn_new == 45
+        print(
+            "\033[36m\nsucceed_calculate_rpn topic was broadcast after calculating "
+            "mechanism RPN."
+        )
+
+    def on_succeed_calculate_rpn_cause(self, tree: Tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node("6.3").data["fmea"].rpn == 240
+        assert tree.get_node("6.3").data["fmea"].rpn_new == 45
+        print(
+            "\033[36m\nsucceed_calculate_rpn topic was broadcast after calculating "
+            "cause RPN."
+        )
+
+    @pytest.mark.integration
+    def test_do_calculate_rpn_mechanism(self, test_analysismanager, test_datamanager):
+        """should calculate the mechanism RPN."""
+        pub.subscribe(self.on_succeed_calculate_rpn_mechanism, "succeed_calculate_rpn")
+
+        test_datamanager.on_select_all()
+
+        test_analysismanager._tree.get_node("6").data["fmea"].rpn_severity = 5
+        test_analysismanager._tree.get_node("6").data["fmea"].rpn_severity_new = 5
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_occurrence = 8
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_occurrence_new = 3
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_detection = 6
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_detection_new = 3
+
+        pub.sendMessage("request_calculate_rpn")
+
+        assert test_analysismanager._tree.get_node("6.3").data["fmea"].rpn == 240
+        assert test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_new == 45
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_rpn_mechanism, "succeed_calculate_rpn"
+        )
+
+    @pytest.mark.skip
+    def test_do_calculate_rpn_cause(self, test_analysismanager, test_datamanager):
+        """should calculate the failure cause RPN."""
+        pub.subscribe(self.on_succeed_calculate_rpn_cause, "succeed_calculate_rpn")
+
+        test_datamanager.on_select_all()
+
+        test_analysismanager._tree.get_node("6").data["fmea"].rpn_severity = 5
+        test_analysismanager._tree.get_node("6").data["fmea"].rpn_severity_new = 5
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_occurrence = 8
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_occurrence_new = 3
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_detection = 6
+        test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_detection_new = 3
+
+        pub.sendMessage("request_calculate_rpn", method="cause")
+
+        assert test_analysismanager._tree.get_node("6.3").data["fmea"].rpn == 240
+        assert test_analysismanager._tree.get_node("6.3").data["fmea"].rpn_new == 45
+
+        pub.unsubscribe(self.on_succeed_calculate_rpn_cause, "succeed_calculate_rpn")
