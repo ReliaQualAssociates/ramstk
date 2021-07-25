@@ -6,16 +6,8 @@ on:
     types: [created]
 
 jobs:
-  assign_issues_to_working:
-    name: Move Assigned Issue to Working
-    runs-on: ubuntu-latest
-    steps:
-      - uses: technote-space/create-project-card-action@v1
-        with:
-          PROJECT: Working
-          COLUMN: In Progress
-
   create_issue_branch_job:
+    name: Create Branch for Issue
     runs-on: ubuntu-latest
     steps:
       - name: Create Issue Branch
