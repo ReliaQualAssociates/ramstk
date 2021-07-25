@@ -56,7 +56,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_cause_tree, "succeed_delete_cause")
         pub.subscribe(self.do_set_control_tree, "succeed_delete_control")
         pub.subscribe(self.do_set_action_tree, "succeed_delete_action")
-
         pub.subscribe(self._on_insert, "succeed_insert_mode")
         pub.subscribe(self._on_insert, "succeed_insert_mechanism")
         pub.subscribe(self._on_insert, "succeed_insert_cause")
