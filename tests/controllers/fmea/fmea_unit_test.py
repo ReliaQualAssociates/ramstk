@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.pof.pof_unit_test.py is part of The RAMSTK Project
+#       tests.controllers.fmea.fmea_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -14,8 +14,26 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFMEA
+from ramstk import RAMSTKUserConfiguration
+from ramstk.controllers import amFMEA, dmFMEA
 from ramstk.db.base import BaseDatabase
+
+
+@pytest.fixture(scope="function")
+def test_analysismanager(test_toml_user_configuration):
+    """Get a analysis manager instance for each test function."""
+    # Create the device under test (dut) and connect to the configuration.
+    dut = amFMEA(test_toml_user_configuration)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_fmea")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_fmea_tree")
+    pub.unsubscribe(dut._do_calculate_rpn, "request_calculate_rpn")
+
+    # Delete the device under test.
+    del dut
 
 
 @pytest.fixture(scope="function")
@@ -101,3 +119,24 @@ class TestCreateControllers:
         assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_cause")
         assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_control")
         assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_action")
+
+    @pytest.mark.unit
+    def test_analysis_manager_create(self, test_analysismanager):
+        """should return a FMEA analysis manager instance."""
+        assert isinstance(test_analysismanager, amFMEA)
+        assert isinstance(
+            test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
+        )
+        assert isinstance(test_analysismanager._attributes, dict)
+        assert isinstance(test_analysismanager._tree, Tree)
+        assert test_analysismanager._attributes == {}
+        assert pub.isSubscribed(
+            test_analysismanager.on_get_tree, "succeed_retrieve_fmea"
+        )
+        assert pub.isSubscribed(
+            test_analysismanager.on_get_tree, "succeed_get_fmea_tree"
+        )
+        assert pub.isSubscribed(
+            test_analysismanager._do_calculate_rpn,
+            "request_calculate_rpn",
+        )
