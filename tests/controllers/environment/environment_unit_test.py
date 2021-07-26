@@ -109,7 +109,7 @@ class TestCreateControllers:
         """__init__() should return an Environment data manager."""
         assert isinstance(test_datamanager, dmEnvironment)
         assert isinstance(test_datamanager.tree, Tree)
-        assert test_datamanager._tag == "environments"
+        assert test_datamanager._tag == "environment"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
@@ -123,7 +123,7 @@ class TestCreateControllers:
             test_datamanager.do_update, "request_update_environment"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_environments"
+            test_datamanager.do_update_all, "request_update_all_environment"
         )
         assert pub.isSubscribed(
             test_datamanager._do_delete, "request_delete_environment"
