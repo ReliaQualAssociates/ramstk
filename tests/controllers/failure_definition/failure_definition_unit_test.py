@@ -78,7 +78,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmFailureDefinition)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "failure_definitions"
+        assert test_datamanager._tag == "failure_definition"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
@@ -90,7 +90,7 @@ class TestCreateControllers:
             test_datamanager.do_update, "request_update_failure_definition"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_failure_definitions"
+            test_datamanager.do_update_all, "request_update_all_failure_definition"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_failure_definition_tree"
