@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
         self._dic_insert_function = {
             "missions": self.do_set_mission_tree,
             "mission_phases": self.do_set_mission_phase_tree,
-            "environments": self.do_set_environment_tree,
+            "environment": self.do_set_environment_tree,
         }
 
         # Initialize private list attributes.
