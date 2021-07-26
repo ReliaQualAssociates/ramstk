@@ -27,6 +27,12 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_insert_function = {
+            "mechanism": self.do_set_mechanism_tree,
+            "opload": self.do_set_opload_tree,
+            "opstress": self.do_set_opstress_tree,
+            "test_method": self.do_set_test_method_tree,
+        }
 
         # Initialize private list attributes.
 
@@ -43,6 +49,11 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().on_insert, "succeed_insert_mechanism")
+        pub.subscribe(super().on_insert, "succeed_insert_opload")
+        pub.subscribe(super().on_insert, "succeed_insert_opstress")
+        pub.subscribe(super().on_insert, "succeed_insert_test_method")
+
         pub.subscribe(self.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
         pub.subscribe(self.do_set_opload_tree, "succeed_retrieve_oploads")
         pub.subscribe(self.do_set_opstress_tree, "succeed_retrieve_opstresss")
@@ -51,11 +62,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_set_opload_tree, "succeed_delete_opload")
         pub.subscribe(self.do_set_opstress_tree, "succeed_delete_opstress")
         pub.subscribe(self.do_set_test_method_tree, "succeed_delete_test_method")
-
-        pub.subscribe(self._on_insert, "succeed_insert_mechanism")
-        pub.subscribe(self._on_insert, "succeed_insert_opload")
-        pub.subscribe(self._on_insert, "succeed_insert_opstress")
-        pub.subscribe(self._on_insert, "succeed_insert_test_method")
 
     def do_set_mechanism_tree(self, tree: Tree) -> None:
         """Set the failure mechanism treelib Tree().
@@ -200,30 +206,3 @@ class DataManager(RAMSTKDataManager):
                     parent=parent_id,
                     data={self._tag: _test_method},
                 )
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _on_insert(self, tree: Tree, node_id: int) -> None:
-        """Wrap _do_set_<module>_tree() on insert.
-
-        succeed_insert_<module> messages have node_id in the broadcast data
-        so this method is needed to wrap the _do_set_tree() method.
-
-        :param tree: the treelib Tree() passed by the calling message.
-        :param node_id: the node ID of the element that was inserted.
-            Unused in this method but required for compatibility with the
-            'succeed_insert_<module>' message data.
-        :return: None
-        :rtype: None
-        """
-        _module: str = tree.get_node(0).tag
-
-        _function = {
-            "mechanism": self.do_set_mechanism_tree,
-            "opload": self.do_set_opload_tree,
-            "opstress": self.do_set_opstress_tree,
-            "test_method": self.do_set_test_method_tree,
-        }[_module]
-
-        # noinspection PyArgumentList
-        _function(tree)

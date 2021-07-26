@@ -202,6 +202,11 @@ def test_datamanager(test_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mode")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_cause")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_control")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_action")
     pub.unsubscribe(dut.do_set_mode_tree, "succeed_retrieve_modes")
     pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_cause_tree, "succeed_retrieve_causes")
@@ -212,11 +217,6 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_cause_tree, "succeed_delete_cause")
     pub.unsubscribe(dut.do_set_control_tree, "succeed_delete_control")
     pub.unsubscribe(dut.do_set_action_tree, "succeed_delete_action")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mode")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_cause")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_control")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_action")
 
     # Delete the device under test.
     del dut

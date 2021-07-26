@@ -45,6 +45,11 @@ def test_datamanager():
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mode")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_cause")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_control")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_action")
     pub.unsubscribe(dut.do_set_mode_tree, "succeed_retrieve_modes")
     pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_cause_tree, "succeed_retrieve_causes")
@@ -55,11 +60,6 @@ def test_datamanager():
     pub.unsubscribe(dut.do_set_cause_tree, "succeed_delete_cause")
     pub.unsubscribe(dut.do_set_control_tree, "succeed_delete_control")
     pub.unsubscribe(dut.do_set_action_tree, "succeed_delete_action")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mode")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_cause")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_control")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_action")
 
     # Delete the device under test.
     del dut
@@ -84,6 +84,11 @@ class TestCreateControllers:
         assert isinstance(test_datamanager._control_tree, Tree)
         assert isinstance(test_datamanager._action_tree, Tree)
 
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_mode")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_mechanism")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_cause")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_control")
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_action")
         assert pub.isSubscribed(
             test_datamanager.do_set_mode_tree, "succeed_retrieve_modes"
         )
@@ -114,11 +119,6 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_set_action_tree, "succeed_delete_action"
         )
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_mode")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_mechanism")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_cause")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_control")
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_action")
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_analysismanager):

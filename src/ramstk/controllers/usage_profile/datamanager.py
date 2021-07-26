@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.usage_profile.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.usage_profile.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Usage Profile Package Data Controller."""
 
 # Standard Library Imports
@@ -28,10 +27,15 @@ class DataManager(RAMSTKDataManager):
     _tag = "usage_profiles"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a RAMSTKFailureDefinition, data manager instance."""
+        """Initialize a usage profile data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._dic_insert_function = {
+            "missions": self.do_set_mission_tree,
+            "mission_phases": self.do_set_mission_phase_tree,
+            "environments": self.do_set_environment_tree,
+        }
 
         # Initialize private list attributes.
 
@@ -47,16 +51,16 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().on_insert, "succeed_insert_environment")
+        pub.subscribe(super().on_insert, "succeed_insert_mission")
+        pub.subscribe(super().on_insert, "succeed_insert_mission_phase")
+
         pub.subscribe(self.do_set_environment_tree, "succeed_retrieve_environments")
         pub.subscribe(self.do_set_mission_tree, "succeed_retrieve_missions")
         pub.subscribe(self.do_set_mission_phase_tree, "succeed_retrieve_mission_phases")
         pub.subscribe(self.do_set_environment_tree, "succeed_delete_environment")
         pub.subscribe(self.do_set_mission_tree, "succeed_delete_mission")
         pub.subscribe(self.do_set_mission_phase_tree, "succeed_delete_mission_phase")
-
-        pub.subscribe(self._on_insert, "succeed_insert_environment")
-        pub.subscribe(self._on_insert, "succeed_insert_mission")
-        pub.subscribe(self._on_insert, "succeed_insert_mission_phase")
 
     def do_set_environment_tree(self, tree: Tree) -> None:
         """Set the environment treelib Tree().
@@ -169,29 +173,3 @@ class DataManager(RAMSTKDataManager):
 
                 if self._environment_tree.depth() > 0:
                     self._do_load_environments(_mission_phase.phase_id, _node_id)
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _on_insert(self, node_id: int, tree: Tree) -> None:
-        """Wrap do_set_<module>_tree() methods on insert.
-
-        succeed_insert_<module> messages have node_id in the broadcast data
-        so this method is needed to wrap the do_set_<module>_tree() methods.
-
-        :param node_id: the node ID of the element that was inserted.
-            Unused in this method but required for compatibility with the
-            'succeed_insert_<module>' message data.
-        :param tree: the treelib Tree() passed by the calling message.
-        :return: None
-        :rtype: None
-        """
-        _module: str = tree.get_node(0).tag
-
-        _function = {
-            "missions": self.do_set_mission_tree,
-            "mission_phases": self.do_set_mission_phase_tree,
-            "environments": self.do_set_environment_tree,
-        }[_module]
-
-        # noinspection PyArgumentList
-        _function(tree)

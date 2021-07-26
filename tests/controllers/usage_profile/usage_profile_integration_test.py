@@ -6,7 +6,7 @@
 #       part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing Usage Profile integrations."""
 
 # Third Party Imports
@@ -101,15 +101,15 @@ def test_datamanager(test_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_environment")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mission")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mission_phase")
     pub.unsubscribe(dut.do_set_environment_tree, "succeed_retrieve_environments")
     pub.unsubscribe(dut.do_set_mission_tree, "succeed_retrieve_missions")
     pub.unsubscribe(dut.do_set_mission_phase_tree, "succeed_retrieve_mission_phases")
     pub.unsubscribe(dut.do_set_environment_tree, "succeed_delete_environment")
     pub.unsubscribe(dut.do_set_mission_tree, "succeed_delete_mission")
     pub.unsubscribe(dut.do_set_mission_phase_tree, "succeed_delete_mission_phase")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_environment")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mission")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mission_phase")
 
     # Delete the device under test.
     del dut

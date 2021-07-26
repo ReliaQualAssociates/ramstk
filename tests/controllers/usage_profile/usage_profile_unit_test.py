@@ -6,7 +6,7 @@
 #       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing Usage Profile module algorithms and models."""
 
 # Third Party Imports
@@ -30,15 +30,15 @@ def test_datamanager():
     yield dut
 
     # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_environment")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mission")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_mission_phase")
     pub.unsubscribe(dut.do_set_environment_tree, "succeed_retrieve_environments")
     pub.unsubscribe(dut.do_set_mission_tree, "succeed_retrieve_missions")
     pub.unsubscribe(dut.do_set_mission_phase_tree, "succeed_retrieve_mission_phases")
     pub.unsubscribe(dut.do_set_environment_tree, "succeed_delete_environment")
     pub.unsubscribe(dut.do_set_mission_tree, "succeed_delete_mission")
     pub.unsubscribe(dut.do_set_mission_phase_tree, "succeed_delete_mission_phase")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_environment")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mission")
-    pub.unsubscribe(dut._on_insert, "succeed_insert_mission_phase")
 
     # Delete the device under test.
     del dut
@@ -58,6 +58,13 @@ class TestCreateControllers:
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
+            test_datamanager.on_insert, "succeed_insert_environment"
+        )
+        assert pub.isSubscribed(test_datamanager.on_insert, "succeed_insert_mission")
+        assert pub.isSubscribed(
+            test_datamanager.on_insert, "succeed_insert_mission_phase"
+        )
+        assert pub.isSubscribed(
             test_datamanager.do_set_environment_tree, "succeed_retrieve_environments"
         )
         assert pub.isSubscribed(
@@ -75,11 +82,4 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(
             test_datamanager.do_set_mission_phase_tree, "succeed_delete_mission_phase"
-        )
-        assert pub.isSubscribed(
-            test_datamanager._on_insert, "succeed_insert_environment"
-        )
-        assert pub.isSubscribed(test_datamanager._on_insert, "succeed_insert_mission")
-        assert pub.isSubscribed(
-            test_datamanager._on_insert, "succeed_insert_mission_phase"
         )
