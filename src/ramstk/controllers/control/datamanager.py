@@ -63,21 +63,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_control")
 
         pub.subscribe(self.do_select_all, "selected_cause")
-        pub.subscribe(self.do_get_tree, "request_get_control_tree")
 
         pub.subscribe(self._do_delete, "request_delete_control")
         pub.subscribe(self._do_insert_control, "request_insert_control")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the FMEA Control treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_control_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the FMEA Control data from the RAMSTK Program database.
