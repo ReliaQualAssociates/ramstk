@@ -1,31 +1,25 @@
 branchName: short
+openDraftPR: false
+copyIssueLabelsToPR: true
+openPR: false
 branches:
   - label: 'type: build'
     prefix: build/
-    skip: true
   - label: 'type: chore'
     prefix: chore/
-    skip: true
   - label: 'type: ci'
     prefix: ci/
-    skip: true
   - label: 'type: docs'
     prefix: docs/
-    skip: true
   - label: 'type: feature'
     prefix: feature/
-    skip: true
   - label: 'type: fix'
     prefix: fix/
-    skip: true
   - label: 'type: refactor'
     prefix: refactor/
-    skip: true
   - label: 'type: style'
     prefix: style/
-    skip: true
   - label: 'type: test'
     prefix: test/
-    skip: true
   - label: '*'
     skip: true
