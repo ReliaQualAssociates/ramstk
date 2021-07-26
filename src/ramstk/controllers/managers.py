@@ -137,6 +137,7 @@ class RAMSTKDataManager:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
+        pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
         pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_save_project")
@@ -202,6 +203,17 @@ class RAMSTKDataManager:
                 "fail_get_{0}_attributes".format(table),
                 error_message=_error_msg,
             )
+
+    def do_get_tree(self) -> None:
+        """Retrieve the records tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            "succeed_get_{}_tree".format(self._tag),
+            tree=self.tree,
+        )
 
     def do_select(self, node_id: Any, table: str) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
