@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.failure_definition.unit_test.py is part of
+#       tests.controllers.failure_definition.failure_definition.unit_test.py is part of
 #       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing failure definition module algorithms and models."""
 
 # Third Party Imports
@@ -59,9 +59,9 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_failure_definitions")
+    pub.unsubscribe(dut._do_delete, "request_delete_failure_definition")
     pub.unsubscribe(
-        dut._do_insert_failure_definition, "request_insert_failure_definitions"
+        dut._do_insert_failure_definition, "request_insert_failure_definition"
     )
 
     # Delete the device under test.
@@ -78,7 +78,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmFailureDefinition)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "failure_definitions"
+        assert test_datamanager._tag == "failure_definition"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
@@ -90,7 +90,7 @@ class TestCreateControllers:
             test_datamanager.do_update, "request_update_failure_definition"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_failure_definitions"
+            test_datamanager.do_update_all, "request_update_all_failure_definition"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_failure_definition_tree"
@@ -103,11 +103,11 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "lvw_editing_failure_definition"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_delete, "request_delete_failure_definitions"
+            test_datamanager._do_delete, "request_delete_failure_definition"
         )
         assert pub.isSubscribed(
             test_datamanager._do_insert_failure_definition,
-            "request_insert_failure_definitions",
+            "request_insert_failure_definition",
         )
 
 
