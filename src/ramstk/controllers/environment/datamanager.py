@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Environment Package Data Model."""
 
 # Standard Library Imports
@@ -22,12 +22,9 @@ from ramstk.models.programdb import RAMSTKEnvironment
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Environment data manager.
+    """Contain the attributes and methods of the Environment data manager."""
 
-    This class manages the data from the RAMSKTEnvironment data models.
-    """
-
-    _tag = "environments"
+    _tag = "environment"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize an Environment data manager instance."""
@@ -55,21 +52,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_environment")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_environment_tree")
 
         pub.subscribe(self._do_delete, "request_delete_environment")
         pub.subscribe(self._do_insert_environment, "request_insert_environment")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the revision treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_environment_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve the Environment data from the RAMSTK Program database.
