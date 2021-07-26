@@ -6,7 +6,7 @@
 #       is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing failure definition module integrations."""
 
 # Third Party Imports
@@ -36,9 +36,9 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_failure_definitions")
+    pub.unsubscribe(dut._do_delete, "request_delete_failure_definition")
     pub.unsubscribe(
-        dut._do_insert_failure_definition, "request_insert_failure_definitions"
+        dut._do_insert_failure_definition, "request_insert_failure_definition"
     )
 
     # Delete the device under test.
@@ -55,7 +55,7 @@ class TestSelectMethods:
             tree.get_node(1).data["failure_definition"],
             RAMSTKFailureDefinition,
         )
-        print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_failure_definition topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
@@ -91,14 +91,21 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self):
+    def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new failure definition."""
         pub.subscribe(
             self.on_succeed_insert_sibling, "succeed_insert_failure_definition"
         )
 
-        pub.sendMessage("request_insert_failure_definition")
+        assert test_datamanager.tree.get_node(3) is None
+
+        pub.sendMessage("request_insert_failure_definition", parent_id=0)
+
+        assert isinstance(
+            test_datamanager.tree.get_node(3).data["failure_definition"],
+            RAMSTKFailureDefinition,
+        )
 
         pub.unsubscribe(
             self.on_succeed_insert_sibling, "succeed_insert_failure_definition"
@@ -129,14 +136,13 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent failure " "definition ID 10."
+            "_do_delete: Attempted to delete non-existent failure definition ID 10."
         )
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent failure definition record "
-            "with failure definition ID 2."
+            "_do_delete: Attempted to delete non-existent failure definition ID 2."
         )
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
@@ -151,12 +157,14 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_failure_definition")
 
     @pytest.mark.integration
-    def test_do_delete_non_existent_id(self):
+    def test_do_delete_non_existent_id(self, test_datamanager):
         """_do_delete_failure_definition() should send the fail message when
         attempting to delete a non-existent failure definition."""
         pub.subscribe(
             self.on_fail_delete_non_existent_id, "fail_delete_failure_definition"
         )
+
+        assert test_datamanager.tree.get_node(10) is None
 
         pub.sendMessage("request_delete_failure_definition", node_id=10)
 

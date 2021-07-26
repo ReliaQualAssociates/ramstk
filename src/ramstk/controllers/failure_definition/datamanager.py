@@ -61,9 +61,9 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_failure_definitions")
+        pub.subscribe(self._do_delete, "request_delete_failure_definition")
         pub.subscribe(
-            self._do_insert_failure_definition, "request_insert_failure_definitions"
+            self._do_insert_failure_definition, "request_insert_failure_definition"
         )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -86,10 +86,10 @@ class DataManager(RAMSTKDataManager):
         ):
 
             self.tree.create_node(
-                tag="definition",
+                tag=self._tag,
                 identifier=_failure_definition.definition_id,
                 parent=self._root,
-                data={"failure_definition": _failure_definition},
+                data={self._tag: _failure_definition},
             )
 
         self.last_id = max(self.tree.nodes.keys())
@@ -152,10 +152,10 @@ class DataManager(RAMSTKDataManager):
             self.last_id = _failure_definition.definition_id
 
             self.tree.create_node(
-                tag="definition",
+                tag=self._tag,
                 identifier=self.last_id,
                 parent=self._root,
-                data={"failure_definition": _failure_definition},
+                data={self._tag: _failure_definition},
             )
 
             pub.sendMessage(
