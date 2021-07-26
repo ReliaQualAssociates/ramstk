@@ -32,10 +32,10 @@ class TestExport:
 
         DUT = Export()
 
-        pub.sendMessage("request_get_functions_tree")
+        pub.sendMessage("request_get_function_tree")
 
         assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["functions"], dict)
+        assert isinstance(DUT._dic_output_data["function"], dict)
 
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):

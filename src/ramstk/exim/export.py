@@ -40,7 +40,7 @@ class Export:
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_data, "succeed_get_functions_tree")
+        pub.subscribe(self._do_load_data, "succeed_get_function_tree")
         pub.subscribe(self._do_load_data, "succeed_get_requirements_tree")
         pub.subscribe(self._do_load_data, "succeed_get_hardwares_tree")
         pub.subscribe(self._do_load_data, "succeed_get_validations_tree")
