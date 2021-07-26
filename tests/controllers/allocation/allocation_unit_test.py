@@ -168,7 +168,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmAllocation)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "allocations"
+        assert test_datamanager._tag == "allocation"
         assert test_datamanager._root == 0
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_allocation_attributes"
@@ -180,7 +180,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "wvw_editing_allocation"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_allocations"
+            test_datamanager.do_update_all, "request_update_all_allocation"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_allocation_tree"

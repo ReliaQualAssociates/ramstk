@@ -5,7 +5,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Allocation Package Data Model."""
 
 # Standard Library Imports
@@ -25,7 +25,7 @@ from ramstk.models.programdb import RAMSTKAllocation
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Allocation data manager."""
 
-    _tag: str = "allocations"
+    _tag: str = "allocation"
     _root: int = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
@@ -54,23 +54,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_tree, "succeed_calculate_allocation")
         pub.subscribe(super().do_update, "request_update_allocation")
 
-        pub.subscribe(self.do_get_tree, "request_get_allocation_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_set_all_attributes, "succeed_calculate_allocation_goals")
 
         pub.subscribe(self._do_delete, "request_delete_hardware")
         pub.subscribe(self._do_insert_allocation, "request_insert_allocation")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the allocation treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_allocation_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve the Allocation BoM data from the RAMSTK Program database.
