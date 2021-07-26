@@ -60,21 +60,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_cause")
 
         pub.subscribe(self.do_select_all, "selected_mechanism")
-        pub.subscribe(self.do_get_tree, "request_get_cause_tree")
 
         pub.subscribe(self._do_delete, "request_delete_cause")
         pub.subscribe(self._do_insert_cause, "request_insert_cause")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the Cause treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_cause_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Cause data from the RAMSTK Program database.
