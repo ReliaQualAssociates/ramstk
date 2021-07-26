@@ -127,13 +127,13 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmHazards)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "hazards"
+        assert test_datamanager._tag == "hazard"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(test_datamanager.do_select_all, "selected_function")
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_hazard")
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_hazards"
+            test_datamanager.do_update_all, "request_update_all_hazard"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_hazard_attributes"
