@@ -6,7 +6,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing function module algorithms and models."""
 
 # Third Party Imports
@@ -96,7 +96,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_function")
     pub.unsubscribe(dut.do_update, "request_update_function")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_functions_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_function")
     pub.unsubscribe(dut._do_insert_function, "request_insert_function")
 
@@ -114,19 +114,19 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmFunction)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "functions"
+        assert test_datamanager._tag == "function"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_function")
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_functions"
+            test_datamanager.do_update_all, "request_update_all_function"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_function_attributes"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_get_tree, "request_get_functions_tree"
+            test_datamanager.do_get_tree, "request_get_function_tree"
         )
         assert pub.isSubscribed(
             test_datamanager.do_set_attributes, "request_set_function_attributes"

@@ -35,7 +35,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_function")
     pub.unsubscribe(dut.do_update, "request_update_function")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_functions_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_function")
     pub.unsubscribe(dut._do_insert_function, "request_insert_function")
 

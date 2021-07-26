@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.function.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.function.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Function Package Data Model."""
 
 # Standard Library Imports
@@ -29,7 +28,7 @@ class DataManager(RAMSTKDataManager):
     """
 
     # Define private scalar class attributes.
-    _tag = "functions"
+    _tag = "function"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Function data manager instance."""
@@ -55,21 +54,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_function")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_functions_tree")
 
         pub.subscribe(self._do_delete, "request_delete_function")
         pub.subscribe(self._do_insert_function, "request_insert_function")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the function treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_functions_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Function data from the RAMSTK Program database.
@@ -91,10 +78,10 @@ class DataManager(RAMSTKDataManager):
         ):
 
             self.tree.create_node(
-                tag="function",
+                tag=self._tag,
                 identifier=_function.function_id,
                 parent=_function.parent_id,
-                data={"function": _function},
+                data={self._tag: _function},
             )
 
         self.last_id = max(self.tree.nodes.keys())
@@ -161,10 +148,10 @@ class DataManager(RAMSTKDataManager):
             self.last_id = _function.function_id
 
             self.tree.create_node(
-                tag="function",
+                tag=self._tag,
                 identifier=_function.function_id,
                 parent=_function.parent_id,
-                data={"function": _function},
+                data={self._tag: _function},
             )
 
             pub.sendMessage(
