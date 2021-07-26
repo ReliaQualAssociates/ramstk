@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.failure_definition.datamanager.py is part of The
-#       RAMSTK Project
+#       ramstk.controllers.failure_definition.datamanager.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition Package Data Model."""
 
 # Standard Library Imports
@@ -28,7 +28,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKFailureDefinition data models.
     """
 
-    _tag = "failure_definitions"
+    _tag = "failure_definition"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Failure Definition data manager instance."""
@@ -59,21 +59,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "lvw_editing_failure_definition")
         pub.subscribe(super().do_update, "request_update_failure_definition")
 
-        pub.subscribe(self.do_get_tree, "request_get_failure_definition_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
 
         pub.subscribe(self._do_delete, "request_delete_failure_definitions")
         pub.subscribe(
             self._do_insert_failure_definition, "request_insert_failure_definitions"
         )
-
-    def do_get_tree(self) -> None:
-        """Retrieve the failure definition treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage("succeed_get_failure_definition_tree", tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Failure Definitions from the RAMSTK Program database.
