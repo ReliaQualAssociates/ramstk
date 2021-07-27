@@ -3,7 +3,7 @@
 #       ramstk.controllers.requirement.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Requirement Package Data Model."""
 
 # Standard Library Imports
@@ -21,18 +21,14 @@ from ramstk.models.programdb import RAMSTKRequirement
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Requirement data manager.
-
-    This class manages the requirement data from the RAMSTKRequirement
-    and RAMSTKStakeholder data models.
-    """
+    """Contain the attributes and methods of the Requirement data manager."""
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = "requirements"
+    _tag = "requirement"
 
     # Define public dictionary class attributes.
 
@@ -68,7 +64,6 @@ class DataManager(RAMSTKDataManager):
         )
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_requirements_tree")
         pub.subscribe(self.do_create_code, "request_create_requirement_code")
 
         pub.subscribe(self._do_delete, "request_delete_requirement")
@@ -102,17 +97,6 @@ class DataManager(RAMSTKDataManager):
                         "{1}: No data package found for " "requirement ID {0:s}."
                     ).format(str(node_id), _method_name),
                 )
-
-    def do_get_tree(self) -> None:
-        """Retrieve the requirement treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_requirements_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
