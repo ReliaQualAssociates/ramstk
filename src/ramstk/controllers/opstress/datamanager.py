@@ -3,7 +3,7 @@
 #       ramstk.controllers.opstress.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Operating Load Package Data Controller."""
 
 # Standard Library Imports
@@ -66,21 +66,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_opstress")
 
         pub.subscribe(self.do_select_all, "selected_load")
-        pub.subscribe(self.do_get_tree, "request_get_opstress_tree")
 
         pub.subscribe(self._do_delete, "request_delete_opstress")
         pub.subscribe(self._do_insert_opstress, "request_insert_opstress")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the OpStress treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_opstress_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the OpStress data from the RAMSTK Program database.
