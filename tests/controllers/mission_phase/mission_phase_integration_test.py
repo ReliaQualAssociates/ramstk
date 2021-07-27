@@ -77,12 +77,12 @@ class TestInsertMethods:
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id)=(4) is not present "
-            'in table "ramstk_revision".'
+            "Database returned:\n\tKey (fld_mission_id)=(10) is not present "
+            'in table "ramstk_mission".'
         )
         print("\033[35m\nfail_insert_mission_phase topic was broadcast")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_insert_sibling(self, test_datamanager):
         """do_insert() should send the success message with the ID of the newly
         inserted node and the data manager's tree after successfully inserting
@@ -93,14 +93,13 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
 
-    @pytest.mark.skip
-    def test_do_insert_no_revision(self, test_datamanager):
+    @pytest.mark.integration
+    def test_do_insert_no_parent(self, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new mission phase."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission_phase")
 
-        test_datamanager._revision_id = 4
-        pub.sendMessage("request_insert_mission_phase", mission_id=1)
+        pub.sendMessage("request_insert_mission_phase", mission_id=10)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission_phase")
 
