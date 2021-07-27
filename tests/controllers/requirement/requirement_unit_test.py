@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.requirement.requirement_unit_test.py is part of The
-#       RAMSTK Project
+#       tests.controllers.requirement.requirement_unit_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Requirement module algorithms and models."""
 
 # Standard Library Imports
@@ -154,7 +154,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_requirement")
     pub.unsubscribe(dut.do_create_all_codes, "request_create_all_requirement_codes")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_requirements_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
     pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
     pub.unsubscribe(dut._do_delete, "request_delete_requirement")
     pub.unsubscribe(dut._do_insert_requirement, "request_insert_requirement")
@@ -174,16 +174,16 @@ class TestCreateControllers:
         assert isinstance(DUT, dmRequirement)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "requirements"
+        assert DUT._tag == "requirement"
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
         assert pub.isSubscribed(DUT.do_update, "request_update_requirement")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_requirements")
+        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_requirement")
         assert pub.isSubscribed(
             DUT.do_get_attributes, "request_get_requirement_attributes"
         )
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_requirements_tree")
+        assert pub.isSubscribed(DUT.do_get_tree, "request_get_requirement_tree")
         assert pub.isSubscribed(
             DUT.do_set_attributes, "request_set_requirement_attributes"
         )
@@ -202,7 +202,7 @@ class TestCreateControllers:
         pub.unsubscribe(DUT.do_update, "request_update_requirement")
         pub.unsubscribe(DUT.do_create_all_codes, "request_create_all_requirement_codes")
         pub.unsubscribe(DUT.do_select_all, "selected_revision")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_requirements_tree")
+        pub.unsubscribe(DUT.do_get_tree, "request_get_requirement_tree")
         pub.unsubscribe(DUT.do_create_code, "request_create_requirement_code")
         pub.unsubscribe(DUT._do_delete, "request_delete_requirement")
         pub.unsubscribe(DUT._do_insert_requirement, "request_insert_requirement")

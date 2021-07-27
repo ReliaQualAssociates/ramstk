@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.requirement.requirement_integration_test.py is part
-#       of The RAMSTK Project
+#       tests.controllers.requirement.requirement_integration_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Requirement module integrations."""
 
 # Standard Library Imports
@@ -40,7 +40,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_requirement")
     pub.unsubscribe(dut.do_create_all_codes, "request_create_all_requirement_codes")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_requirements_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
     pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
     pub.unsubscribe(dut._do_delete, "request_delete_requirement")
     pub.unsubscribe(dut._do_insert_requirement, "request_insert_requirement")
@@ -76,22 +76,22 @@ class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 4
+        assert node_id == 5
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(4).data["requirement"], RAMSTKRequirement)
-        assert tree.get_node(4).data["requirement"].parent_id == 0
-        assert tree.get_node(4).data["requirement"].requirement_id == 4
-        assert tree.get_node(4).data["requirement"].description == "New Requirement"
+        assert isinstance(tree.get_node(5).data["requirement"], RAMSTKRequirement)
+        assert tree.get_node(5).data["requirement"].parent_id == 0
+        assert tree.get_node(5).data["requirement"].requirement_id == 5
+        assert tree.get_node(5).data["requirement"].description == "New Requirement"
 
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
     def on_succeed_insert_child(self, node_id, tree):
-        assert node_id == 5
+        assert node_id == 6
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(5).data["requirement"], RAMSTKRequirement)
-        assert tree.get_node(5).data["requirement"].parent_id == 1
-        assert tree.get_node(5).data["requirement"].requirement_id == 5
-        assert tree.get_node(5).data["requirement"].description == "New Requirement"
+        assert isinstance(tree.get_node(6).data["requirement"], RAMSTKRequirement)
+        assert tree.get_node(6).data["requirement"].parent_id == 1
+        assert tree.get_node(6).data["requirement"].requirement_id == 6
+        assert tree.get_node(6).data["requirement"].description == "New Requirement"
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
     def on_fail_insert_no_parent(self, error_message):
@@ -177,7 +177,7 @@ class TestDeleteMethods:
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_requirement")
 
-        pub.sendMessage("request_delete_requirement", node_id=test_datamanager.last_id)
+        pub.sendMessage("request_delete_requirement", node_id=1)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_requirement")
 
@@ -387,7 +387,7 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_requirements_tree"
         )
 
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_requirements_tree"

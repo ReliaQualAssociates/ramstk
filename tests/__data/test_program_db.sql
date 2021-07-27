@@ -259,6 +259,7 @@ CREATE TABLE ramstk_requirement (
 INSERT INTO "ramstk_requirement" VALUES(1,1,0,'','',0,'',0,0,'REL-0001','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 INSERT INTO "ramstk_requirement" VALUES(1,2,0,'','',0,'',0,0,'FUN-0002','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 INSERT INTO "ramstk_requirement" VALUES(1,3,0,'','',0,'',0,0,'PRF-0003','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
+INSERT INTO "ramstk_requirement" VALUES(1,4,0,'','',0,'',1,0,'REL-0002','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 CREATE TABLE ramstk_stakeholder (
     fld_revision_id INTEGER,
     fld_stakeholder_id INTEGER NOT NULL,
