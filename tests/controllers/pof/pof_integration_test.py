@@ -306,6 +306,16 @@ class TestSelectMethods:
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
+    @pytest.mark.integration
+    def test_on_select_all_empty_base_tree(
+        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+    ):
+        """should return an empty records tree if the base tree is empty."""
+        test_datamanager._mechanism_tree = Tree()
+
+        assert test_datamanager.on_select_all() is None
+        assert test_datamanager.tree.depth() == 0
+
 
 @pytest.mark.usefixtures(
     "test_datamanager", "test_mechanism", "test_opload", "test_opstress", "test_method"
