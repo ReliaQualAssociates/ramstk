@@ -3,7 +3,7 @@
 #       ramstk.controllers.mechanism.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Mechanism Package Data Controller."""
 
 # Standard Library Imports
@@ -24,7 +24,6 @@ class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Mechanism data manager."""
 
     _tag = "mechanism"
-    _root = 0
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Mechanism data manager instance."""
@@ -53,21 +52,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_mechanism")
 
         pub.subscribe(self.do_select_all, "selected_mode")
-        pub.subscribe(self.do_get_tree, "request_get_mechanism_tree")
 
         pub.subscribe(self._do_delete, "request_delete_mechanism")
         pub.subscribe(self._do_insert_mechanism, "request_insert_mechanism")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the Mechanism treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_mechanism_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Mechanism data from the RAMSTK Program database.
@@ -153,16 +140,16 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_mechanism)
 
             self.tree.create_node(
-                tag="mechanism",
+                tag=self._tag,
                 identifier=_mechanism.mechanism_id,
                 parent=self._root,
-                data={"mechanism": _mechanism},
+                data={self._tag: _mechanism},
             )
 
             self.last_id = max(self.last_id, _mechanism.mechanism_id)
 
             pub.sendMessage(
-                "succeed_insert_mechanism",
+                "succeed_insert_{}".format(self._tag),
                 node_id=_mechanism.mechanism_id,
                 tree=self.tree,
             )
@@ -173,6 +160,6 @@ class DataManager(RAMSTKDataManager):
                 message=_error.msg,
             )
             pub.sendMessage(
-                "fail_insert_mechanism",
+                "fail_insert_{}".format(self._tag),
                 error_message=_error.msg,
             )
