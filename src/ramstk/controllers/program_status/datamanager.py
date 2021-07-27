@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.program_status.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.program_status.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Program Status Package Data Model."""
 
 # Standard Library Imports
@@ -58,22 +57,10 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_program_status")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_program_status_tree")
 
         pub.subscribe(self._do_delete, "request_delete_program_status")
         pub.subscribe(self._do_insert_program_status, "request_insert_program_status")
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the program status treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_program_status_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Program Status data from the RAMSTK Program database.
