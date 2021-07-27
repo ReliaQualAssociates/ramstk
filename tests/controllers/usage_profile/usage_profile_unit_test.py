@@ -25,7 +25,6 @@ def test_datamanager():
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmUsageProfile()
-    # dut.do_connect(mock_program_dao)
 
     yield dut
 
@@ -54,7 +53,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmUsageProfile)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, BaseDatabase)
-        assert test_datamanager._tag == "usage_profiles"
+        assert test_datamanager._tag == "usage_profile"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(

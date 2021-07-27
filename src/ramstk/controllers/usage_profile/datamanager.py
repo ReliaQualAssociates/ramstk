@@ -24,7 +24,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKMissionPhase, and RAMSKTEnvironment data models.
     """
 
-    _tag = "usage_profiles"
+    _tag = "usage_profile"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a usage profile data manager instance."""
