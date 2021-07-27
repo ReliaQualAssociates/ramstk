@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Mission Package Data Model."""
 
 # Standard Library Imports
@@ -22,13 +22,9 @@ from ramstk.models.programdb import RAMSTKMission
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Mission data manager.
+    """Contain the attributes and methods of the Mission data manager."""
 
-    This class manages the usage profile data from the RAMSTKMission
-    data models.
-    """
-
-    _tag = "missions"
+    _tag = "mission"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a RAMSTKFailureDefinition, data manager instance."""
@@ -56,21 +52,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_mission")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_mission_tree")
 
         pub.subscribe(self._do_delete, "request_delete_mission")
         pub.subscribe(self._do_insert_mission, "request_insert_mission")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the mission treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_mission_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve the Mission data from the RAMSTK Program database.
