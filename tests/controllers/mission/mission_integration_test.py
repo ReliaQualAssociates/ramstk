@@ -217,7 +217,7 @@ class TestUpdateMethods:
         _mission1.name = "Big test mission"
         _mission2.name = "Big test mission 2"
 
-        pub.sendMessage("request_update_all_missions")
+        pub.sendMessage("request_update_all_mission")
 
         _mission1 = test_datamanager.do_select(1, table="mission")
         _mission2 = test_datamanager.do_select(2, table="mission")
