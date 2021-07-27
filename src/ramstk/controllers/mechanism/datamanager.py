@@ -140,16 +140,16 @@ class DataManager(RAMSTKDataManager):
             self.dao.do_insert(_mechanism)
 
             self.tree.create_node(
-                tag="mechanism",
+                tag=self._tag,
                 identifier=_mechanism.mechanism_id,
                 parent=self._root,
-                data={"mechanism": _mechanism},
+                data={self._tag: _mechanism},
             )
 
             self.last_id = max(self.last_id, _mechanism.mechanism_id)
 
             pub.sendMessage(
-                "succeed_insert_mechanism",
+                "succeed_insert_{}".format(self._tag),
                 node_id=_mechanism.mechanism_id,
                 tree=self.tree,
             )
@@ -160,6 +160,6 @@ class DataManager(RAMSTKDataManager):
                 message=_error.msg,
             )
             pub.sendMessage(
-                "fail_insert_mechanism",
+                "fail_insert_{}".format(self._tag),
                 error_message=_error.msg,
             )
