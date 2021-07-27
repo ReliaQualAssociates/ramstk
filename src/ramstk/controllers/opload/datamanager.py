@@ -3,7 +3,7 @@
 #       ramstk.controllers.opload.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Operating Load Package Data Controller."""
 
 # Standard Library Imports
@@ -63,27 +63,14 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_opload")
 
         pub.subscribe(self.do_select_all, "selected_mechanism")
-        pub.subscribe(self.do_get_tree, "request_get_opload_tree")
 
         pub.subscribe(self._do_delete, "request_delete_opload")
         pub.subscribe(self._do_insert_opload, "request_insert_opload")
 
-    def do_get_tree(self) -> None:
-        """Retrieve the OpLoad treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_opload_tree",
-            tree=self.tree,
-        )
-
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the OpLoad data from the RAMSTK Program database.
 
-        :param attributes: the attributes dict for the selected
-            failure mode.
+        :param attributes: the attributes dict for the selected failure mode.
         :return: None
         :rtype: None
         """
