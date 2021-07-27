@@ -24,7 +24,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKMissionPhase, and RAMSKTEnvironment data models.
     """
 
-    _tag = "usage_profiles"
+    _tag = "usage_profile"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a usage profile data manager instance."""
@@ -33,7 +33,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private dictionary attributes.
         self._dic_insert_function = {
             "mission": self.do_set_mission_tree,
-            "mission_phases": self.do_set_mission_phase_tree,
+            "mission_phase": self.do_set_mission_phase_tree,
             "environment": self.do_set_environment_tree,
         }
 
