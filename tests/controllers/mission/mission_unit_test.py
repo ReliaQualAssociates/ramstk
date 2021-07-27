@@ -6,7 +6,7 @@
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Mission module algorithms and models."""
 
 # Third Party Imports
@@ -82,14 +82,14 @@ class TestCreateControllers:
         assert isinstance(DUT, dmMission)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "missions"
+        assert DUT._tag == "mission"
         assert DUT._root == 0
         assert DUT._revision_id == 0
         assert pub.isSubscribed(DUT.do_get_attributes, "request_get_mission_attributes")
         assert pub.isSubscribed(DUT.do_get_tree, "request_get_mission_tree")
         assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
         assert pub.isSubscribed(DUT.do_update, "request_update_mission")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_missions")
+        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_mission")
         assert pub.isSubscribed(DUT._do_delete, "request_delete_mission")
         assert pub.isSubscribed(DUT._do_insert_mission, "request_insert_mission")
 
