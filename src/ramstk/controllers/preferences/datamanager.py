@@ -1,11 +1,10 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.preferences.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.preferences.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Preferences Package Data Model."""
 
 # Standard Library Imports
@@ -32,8 +31,7 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = "preferences"
-    _root = 0
+    _tag = "preference"
 
     # Define public dict class attributes.
 
@@ -65,17 +63,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "request_set_preference_attributes")
         pub.subscribe(super().do_update, "request_update_preference")
 
-        pub.subscribe(self.do_get_tree, "request_get_preferences_tree")
-
         pub.subscribe(self._do_select_all, "succeed_connect_program_database")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the Preferences treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage("succeed_get_preferences_tree", tree=self.tree)
 
     def _do_select_all(self, dao: BaseDatabase) -> None:
         """Retrieve all the Options data from the RAMSTK Program database.

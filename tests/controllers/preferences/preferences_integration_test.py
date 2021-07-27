@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.preferences.preferences_integration_test.py is part
-#       of The RAMSTK Project
+#       tests.controllers.preferences.preferences_integration_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Preferences integrations."""
 
 # Standard Library Imports
@@ -35,7 +35,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_attributes, "request_get_preference_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_preference_attributes")
     pub.unsubscribe(dut.do_update, "request_update_preference")
-    pub.unsubscribe(dut.do_get_tree, "request_get_preferences_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_preference_tree")
     pub.unsubscribe(dut._do_select_all, "succeed_connect_program_database")
 
     # Delete the device under test.
@@ -243,7 +243,7 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_preferences_tree"
         )
 
-        pub.sendMessage("request_get_preferences_tree")
+        pub.sendMessage("request_get_preference_tree")
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_preferences_tree"
