@@ -3,7 +3,7 @@
 #       ramstk.controllers.mode.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Mode Package Data Controller."""
 
 # Standard Library Imports
@@ -52,21 +52,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_mode")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_mode_tree")
 
         pub.subscribe(self._do_delete, "request_delete_mode")
         pub.subscribe(self._do_insert_mode, "request_insert_mode")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the Mode treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_mode_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Mode data from the RAMSTK Program database.
