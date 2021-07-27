@@ -18,18 +18,14 @@ from ramstk.models.commondb import RAMSTKSiteInfo
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Options data manager.
-
-    This class manages the admin-configurable options and data from the
-    Site database.
-    """
+    """Contain the attributes and methods of the Option data manager."""
 
     # Define private dict class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = "options"
+    _tag = "option"
     _root = 0
 
     # Define public dict class attributes.
@@ -62,16 +58,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_get_attributes, "request_get_option_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_option_attributes")
         pub.subscribe(super().do_update, "request_update_option")
-
-        pub.subscribe(self.do_get_tree, "request_get_options_tree")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the Options treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage("succeed_get_options_tree", tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Options data from the RAMSTK Program database.

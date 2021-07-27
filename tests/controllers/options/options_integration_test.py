@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.options.options_integration_test.py is part of The
-#       RAMSTK Project
+#       tests.controllers.options.options_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Options module integrations."""
 
 # Third Party Imports
@@ -33,7 +33,7 @@ def test_datamanager(test_common_dao):
     pub.unsubscribe(dut.do_get_attributes, "request_get_option_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_option_attributes")
     pub.unsubscribe(dut.do_update, "request_update_option")
-    pub.unsubscribe(dut.do_get_tree, "request_get_options_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_option_tree")
 
     # Delete the device under test.
     del dut
