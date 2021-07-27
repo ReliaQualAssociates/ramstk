@@ -2,11 +2,10 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.options.options_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.controllers.options.options_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Options module algorithms and models."""
 
 # Standard Library Imports
@@ -69,7 +68,7 @@ def test_datamanager(mock_common_dao):
     pub.unsubscribe(dut.do_get_attributes, "request_get_option_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_option_attributes")
     pub.unsubscribe(dut.do_update, "request_update_option")
-    pub.unsubscribe(dut.do_get_tree, "request_get_options_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_option_tree")
 
     # Delete the device under test.
     del dut
@@ -89,20 +88,20 @@ class TestCreateControllers:
         assert DUT._pkey == {
             "siteinfo": ["site_id"],
         }
-        assert DUT._tag == "options"
+        assert DUT._tag == "option"
         assert DUT._root == 0
         assert DUT._site_id == 0
 
         assert pub.isSubscribed(DUT.do_update, "request_update_option")
         assert pub.isSubscribed(DUT.do_get_attributes, "request_get_option_attributes")
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_options_tree")
+        assert pub.isSubscribed(DUT.do_get_tree, "request_get_option_tree")
         assert pub.isSubscribed(DUT.do_set_attributes, "request_set_option_attributes")
 
         # Unsubscribe from pypubsub topics.
         pub.unsubscribe(DUT.do_get_attributes, "request_get_option_attributes")
         pub.unsubscribe(DUT.do_set_attributes, "request_set_option_attributes")
         pub.unsubscribe(DUT.do_update, "request_update_option")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_options_tree")
+        pub.unsubscribe(DUT.do_get_tree, "request_get_option_tree")
 
 
 @pytest.mark.usefixtures("test_datamanager")
