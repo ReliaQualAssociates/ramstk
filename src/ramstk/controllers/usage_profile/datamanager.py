@@ -33,7 +33,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private dictionary attributes.
         self._dic_insert_function = {
             "mission": self.do_set_mission_tree,
-            "mission_phases": self.do_set_mission_phase_tree,
+            "mission_phase": self.do_set_mission_phase_tree,
             "environment": self.do_set_environment_tree,
         }
 
