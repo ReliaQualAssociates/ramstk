@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.hazards.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.hazards.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hazards Package Data Model."""
 
 # Standard Library Imports
@@ -22,13 +21,9 @@ from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Hazard data manager.
+    """Contain the attributes and methods of the Hazard data manager."""
 
-    This class manages the hazard data from the RAMSTKHazardAnalysis and
-    RAMSTKHazardAnalysis data models.
-    """
-
-    _tag = "hazards"
+    _tag = "hazard"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Hazard data manager instance."""
@@ -53,20 +48,11 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "wvw_editing_hazard")
         pub.subscribe(super().do_update, "request_update_hazard")
 
-        pub.subscribe(self.do_get_tree, "request_get_hazard_tree")
         pub.subscribe(self.do_select_all, "selected_function")
         pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
         pub.subscribe(self._do_delete, "request_delete_hazard")
         pub.subscribe(self._do_insert_hazard, "request_insert_hazard")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the hazard treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage("succeed_get_hazard_tree", tree=self.tree)
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hazard data from the RAMSTK Program database.
@@ -138,7 +124,7 @@ class DataManager(RAMSTKDataManager):
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = (
-                "{1}: Attempted to delete non-existent hazard " "ID {0}."
+                "{1}: Attempted to delete non-existent hazard ID {0}."
             ).format(str(node_id), _method_name)
             pub.sendMessage(
                 "do_log_debug",

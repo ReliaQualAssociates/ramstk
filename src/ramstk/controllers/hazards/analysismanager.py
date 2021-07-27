@@ -77,7 +77,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
             "request_get_hazard_tree",
         )
         pub.sendMessage(
-            "succeed_calculate_hazard",
+            "succeed_calculate_fha",
             node_id=node_id,
         )
 
