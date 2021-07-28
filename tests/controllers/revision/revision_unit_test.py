@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.revision.revision_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.controllers.revision.revision_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
