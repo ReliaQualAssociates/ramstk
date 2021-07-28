@@ -3,7 +3,7 @@
 #       ramstk.controllers.stakeholder.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Model."""
 
 # Standard Library Imports
@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     and RAMSTKStakeholder data models.
     """
 
-    _tag = "stakeholders"
+    _tag = "stakeholder"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Stakeholder data manager instance."""
@@ -50,24 +50,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_get_attributes, "request_get_stakeholder_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_stakeholder_attributes")
         pub.subscribe(super().do_set_attributes, "lvw_editing_stakeholder")
-        pub.subscribe(super().do_update, "request_update_stakeholders")
+        pub.subscribe(super().do_update, "request_update_stakeholder")
 
-        pub.subscribe(self.do_get_tree, "request_get_stakeholder_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
 
         pub.subscribe(self._do_delete, "request_delete_stakeholder")
         pub.subscribe(self._do_insert_stakeholder, "request_insert_stakeholder")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the stakeholder treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_stakeholder_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Stakeholder data from the RAMSTK Program database.
@@ -124,7 +112,7 @@ class DataManager(RAMSTKDataManager):
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                "{1}: Attempted to delete non-existent stakeholder input ID " "{0}."
+                "{1}: Attempted to delete non-existent stakeholder input ID {0}."
             ).format(str(node_id), _method_name)
             pub.sendMessage(
                 "do_log_debug",

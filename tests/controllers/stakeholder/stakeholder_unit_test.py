@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.stakeholder.stakeholder_unit_test.py is part of The
-#       RAMSTK Project
+#       tests.controllers.stakeholder.stakeholder_unit_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Stakeholder module algorithms and models."""
 
 # Third Party Imports
@@ -100,7 +100,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_attributes, "request_get_stakeholder_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_stakeholder_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_stakeholder")
-    pub.unsubscribe(dut.do_update, "request_update_stakeholders")
+    pub.unsubscribe(dut.do_update, "request_update_stakeholder")
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut._do_delete, "request_delete_stakeholder")
@@ -119,15 +119,15 @@ class TestCreateControllers:
         """__init__() should return a Stakeholder data manager."""
         assert isinstance(test_datamanager, dmStakeholder)
         assert isinstance(test_datamanager.tree, Tree)
-        assert test_datamanager._tag == "stakeholders"
+        assert test_datamanager._tag == "stakeholder"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
-            test_datamanager.do_update, "request_update_stakeholders"
+            test_datamanager.do_update, "request_update_stakeholder"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_stakeholders"
+            test_datamanager.do_update_all, "request_update_all_stakeholder"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_stakeholder_attributes"
