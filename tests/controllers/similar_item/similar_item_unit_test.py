@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.similar_item.similar_item_unit_test.py is part of
-#       The RAMSTK Project
+#       tests.controllers.similar_item.similar_item_unit_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Similar Item module algorithms and models."""
 
 # Third Party Imports
@@ -261,7 +261,7 @@ class TestCreateControllers:
         """__init__() should return a Hardware data manager."""
         assert isinstance(test_datamanager, dmSimilarItem)
         assert isinstance(test_datamanager.tree, Tree)
-        assert test_datamanager._tag == "similar_items"
+        assert test_datamanager._tag == "similar_item"
         assert test_datamanager._root == 0
         assert test_datamanager._pkey == {
             "similar_item": ["revision_id", "hardware_id"]
@@ -279,7 +279,7 @@ class TestCreateControllers:
             test_datamanager.do_set_tree, "succeed_calculate_similar_item"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_similar_items"
+            test_datamanager.do_update_all, "request_update_all_similar_item"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_similar_item_tree"
