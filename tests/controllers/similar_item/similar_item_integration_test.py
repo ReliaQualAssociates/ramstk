@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.similar_item.similar_item_itegration_test.py is part
-#       of The RAMSTK Project
+#       tests.controllers.similar_item.similar_item_integration_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Similar Item module integrations."""
 
 # Third Party Imports
@@ -180,9 +180,9 @@ class TestDeleteMethods:
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_similar_item")
 
-        pub.sendMessage("request_delete_hardware", node_id=test_datamanager.last_id)
+        pub.sendMessage("request_delete_hardware", node_id=3)
 
-        assert test_datamanager.last_id == 6
+        assert test_datamanager.tree.get_node(3) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_similar_item")
 

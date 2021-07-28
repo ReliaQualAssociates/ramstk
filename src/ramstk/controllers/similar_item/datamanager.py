@@ -1,11 +1,10 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.similar_item.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.similar_item.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Similar Item Package Data Model."""
 
 # Standard Library Imports
@@ -25,8 +24,7 @@ from ramstk.models.programdb import RAMSTKSimilarItem
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Similar Item data manager."""
 
-    _tag = "similar_items"
-    _root = 0
+    _tag = "similar_item"
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Hardware data manager instance."""
@@ -54,22 +52,10 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_tree, "succeed_calculate_similar_item")
         pub.subscribe(super().do_update, "request_update_similar_item")
 
-        pub.subscribe(self.do_get_tree, "request_get_similar_item_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
 
         pub.subscribe(self._do_delete, "request_delete_hardware")
         pub.subscribe(self._do_insert_similar_item, "request_insert_similar_item")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the hardware treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_similar_item_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Similar Item data from the RAMSTK Program database.
@@ -89,7 +75,6 @@ class DataManager(RAMSTKDataManager):
             value=[self._revision_id],
             order=RAMSTKSimilarItem.parent_id,
         ):
-
             self.tree.create_node(
                 tag="similar_item",
                 identifier=_similar_item.hardware_id,
