@@ -397,7 +397,7 @@ class TestGetterSetter:
             tree.get_node(1).data["similar_item"].change_description_1
             == "Testing set name from moduleview."
         )
-        print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
+        print("\033[36m\nsucceed_get_similar_item_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self):
@@ -464,6 +464,30 @@ class TestGetterSetter:
 class TestAnalysisMethods:
     """Class for similar item analysis methods test suite."""
 
+    def on_succeed_calculate_topic_633(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1).data["similar_item"].change_factor_1 == 0.8
+        assert tree.get_node(1).data["similar_item"].change_factor_2 == 1.4
+        assert tree.get_node(1).data["similar_item"].change_factor_3 == 1.0
+        assert tree.get_node(1).data["similar_item"].result_1 == pytest.approx(
+            0.0005607143
+        )
+        print(
+            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for Topic 633."
+        )
+
+    def on_succeed_calculate_user_defined(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1).data["similar_item"].change_factor_1 == 0.85
+        assert tree.get_node(1).data["similar_item"].change_factor_2 == 1.2
+        assert tree.get_node(1).data["similar_item"].result_1 == pytest.approx(
+            0.0062934
+        )
+        print(
+            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for User "
+            "Defined."
+        )
+
     @pytest.mark.integration
     def test_on_select_hardware(self, test_analysismanager, test_datamanager):
         """_on_select_hardware() should assign the node hazard rate to the
@@ -518,3 +542,66 @@ class TestAnalysisMethods:
         assert test_analysismanager._dic_hardware_hrs[1] == 0.00032
         assert test_analysismanager._dic_hardware_hrs[2] == 0.00018
         assert test_analysismanager._dic_hardware_hrs[3] == 0.00014
+
+    @pytest.mark.integration
+    def test_do_calculate_similar_item_topic_633(self, test_analysismanager):
+
+        _node = test_analysismanager._tree.get_node(1)
+
+        test_analysismanager._dic_hardware_hrs = {1: 0.000628}
+
+        _node.data["similar_item"].similar_item_method_id = 1
+        _node.data["similar_item"].environment_from_id = 2
+        _node.data["similar_item"].environment_to_id = 3
+        _node.data["similar_item"].quality_from_id = 1
+        _node.data["similar_item"].quality_to_id = 2
+        _node.data["similar_item"].temperature_from = 55.0
+        _node.data["similar_item"].temperature_to = 65.0
+
+        pub.subscribe(
+            self.on_succeed_calculate_topic_633, "succeed_calculate_similar_item"
+        )
+
+        pub.sendMessage("request_calculate_similar_item", node_id=1)
+
+        assert _node.data["similar_item"].change_factor_1 == 0.8
+        assert _node.data["similar_item"].change_factor_2 == 1.4
+        assert _node.data["similar_item"].change_factor_3 == 1.0
+        assert _node.data["similar_item"].result_1 == pytest.approx(0.0005607143)
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_topic_633, "succeed_calculate_similar_item"
+        )
+
+    @pytest.mark.integration
+    def test_do_calculate_similar_item_topic_633(self, test_analysismanager):
+
+        _node = test_analysismanager._tree.get_node(1)
+
+        test_analysismanager._dic_hardware_hrs = {1: 0.00617}
+
+        _node.data["similar_item"].similar_item_method_id = 2
+        _node.data[
+            "similar_item"
+        ].change_description_1 = "Test change description for factor #1."
+        _node.data["similar_item"].change_factor_1 = 0.85
+        _node.data["similar_item"].change_factor_2 = 1.2
+        _node.data["similar_item"].function_1 = "pi1*pi2*hr"
+        _node.data["similar_item"].function_2 = "0"
+        _node.data["similar_item"].function_3 = "0"
+        _node.data["similar_item"].function_4 = "0"
+        _node.data["similar_item"].function_5 = "0"
+
+        pub.subscribe(
+            self.on_succeed_calculate_user_defined, "succeed_calculate_similar_item"
+        )
+
+        pub.sendMessage("request_calculate_similar_item", node_id=1)
+
+        assert _node.data["similar_item"].change_factor_1 == 0.85
+        assert _node.data["similar_item"].change_factor_2 == 1.2
+        assert _node.data["similar_item"].result_1 == pytest.approx(0.0062934)
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_user_defined, "succeed_calculate_similar_item"
+        )
