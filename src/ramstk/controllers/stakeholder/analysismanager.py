@@ -74,14 +74,22 @@ class AnalysisManager(RAMSTKAnalysisManager):
         self._do_calculate_improvement()
 
         pub.sendMessage(
-            "succeed_calculate_stakeholder",
-            node_id=node_id,
+            "request_set_stakeholder_attributes",
+            node_id=[
+                node_id,
+            ],
             package={"improvement": self._attributes["improvement"]},
         )
         pub.sendMessage(
-            "succeed_calculate_stakeholder",
-            node_id=node_id,
+            "request_set_stakeholder_attributes",
+            node_id=[
+                node_id,
+            ],
             package={"overall_weight": self._attributes["overall_weight"]},
+        )
+        pub.sendMessage(
+            "succeed_calculate_stakeholder",
+            tree=self._tree,
         )
 
     def _do_calculate_improvement(self) -> None:

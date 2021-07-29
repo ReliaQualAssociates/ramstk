@@ -574,7 +574,7 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_similar_item_topic_633(self, test_analysismanager):
+    def test_do_calculate_similar_item_user_defined(self, test_analysismanager):
 
         _node = test_analysismanager._tree.get_node(1)
 
