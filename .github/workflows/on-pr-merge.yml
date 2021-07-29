@@ -204,3 +204,13 @@ jobs:
           AUTO_P: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  label_pr:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Label PR on Merge
+        uses: abhijithvijayan/label-pr-on-merge-bot@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          merged_label: 'endgame: merged'
