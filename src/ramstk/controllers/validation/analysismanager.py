@@ -5,7 +5,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Controller Package analysis manager."""
 
 # Standard Library Imports
@@ -61,7 +61,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(
             super().on_get_all_attributes, "succeed_get_all_validation_attributes"
         )
-        pub.subscribe(super().on_get_tree, "succeed_get_validations_tree")
+        pub.subscribe(super().on_get_tree, "succeed_get_validation_tree")
 
         pub.subscribe(self.do_calculate_plan, "request_calculate_plan")
 

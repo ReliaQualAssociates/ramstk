@@ -3,7 +3,7 @@
 #       ramstk.exim.export.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Export module."""
 
 # Standard Library Imports
@@ -43,7 +43,7 @@ class Export:
         pub.subscribe(self._do_load_data, "succeed_get_function_tree")
         pub.subscribe(self._do_load_data, "succeed_get_requirement_tree")
         pub.subscribe(self._do_load_data, "succeed_get_hardwares_tree")
-        pub.subscribe(self._do_load_data, "succeed_get_validations_tree")
+        pub.subscribe(self._do_load_data, "succeed_get_validation_tree")
         pub.subscribe(self._do_export, "request_export_data")
 
     def _do_export(self, file_type: str, file_name: str) -> None:

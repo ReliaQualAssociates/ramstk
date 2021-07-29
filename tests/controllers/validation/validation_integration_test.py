@@ -6,7 +6,7 @@
 #       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module integrations."""
 
 # Standard Library Imports
@@ -32,7 +32,7 @@ def test_analysismanager(test_toml_user_configuration):
 
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_all_validation_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_validations_tree")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_validation_tree")
     pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
     pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
     pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
@@ -61,7 +61,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_validation")
     pub.unsubscribe(dut.do_update, "request_update_validation")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_validations_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_validation")
     pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
 
