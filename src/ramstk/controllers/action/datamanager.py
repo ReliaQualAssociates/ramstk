@@ -67,11 +67,6 @@ class DataManager(RAMSTKDataManager):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_action_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_action_attributes")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_action")
-        pub.subscribe(super().do_update, "request_update_action")
-
         pub.subscribe(self.do_select_all, "selected_cause")
 
         pub.subscribe(self._do_insert_action, "request_insert_action")

@@ -148,6 +148,7 @@ class RAMSTKDataManager:
         pub.subscribe(
             self.do_set_attributes, "request_set_{}_attributes".format(self._tag)
         )
+        pub.subscribe(self.do_set_attributes, "wvw_editing_{}".format(self._tag))
         pub.subscribe(self.do_update, "request_update_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_save_project")
