@@ -10,7 +10,7 @@
 """Test class for testing Program Status module integrations."""
 
 # Standard Library Imports
-from datetime import date
+from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
@@ -301,7 +301,7 @@ class TestGetterSetter:
         assert isinstance(attributes, dict)
         assert attributes["status_id"] == 1
         assert attributes["cost_remaining"] == 0.0
-        assert attributes["date_status"] == date(2019, 7, 21)
+        assert attributes["date_status"] == date.today() - timedelta(days=30)
         assert attributes["time_remaining"] == 0.0
         print("\033[36m\nsucceed_get_program_status_attributes topic was " "broadcast.")
 
