@@ -67,7 +67,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "wvw_editing_component")
         pub.subscribe(super().do_set_attributes, "mvw_editing_hardware")
         pub.subscribe(super().do_set_attributes, "wvw_editing_hardware")
-        pub.subscribe(super().do_update_all, "request_update_all_hardware")
 
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_set_all_attributes, "succeed_predict_reliability")
