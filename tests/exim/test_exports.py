@@ -62,10 +62,10 @@ class TestExport:
 
         DUT = Export()
 
-        pub.sendMessage("request_get_hardwares_tree")
+        pub.sendMessage("request_get_hardware_tree")
 
         assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["hardwares"], dict)
+        assert isinstance(DUT._dic_output_data["hardware"], dict)
 
     @pytest.mark.unit
     def test_do_load_output_validation(self, test_program_dao):
