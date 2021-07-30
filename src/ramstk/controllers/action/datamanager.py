@@ -26,8 +26,9 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _db_tablename = "ramstk_action"
     _id_col = "fld_action_id"
-    _table = "ramstk_action"
+    _select_msg = "selected_cause"
     _tag = "action"
 
     # Define public dictionary class attributes.
@@ -41,75 +42,29 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {
-            "action": [
-                "revision_id",
-                "hardware_id",
-                "mode_id",
-                "mechanism_id",
-                "cause_id",
-                "action_id",
-            ],
+        self._fkey = {
+            "revision_id": 0,
+            "hardware_id": 0,
+            "mode_id": 0,
+            "mechanism_id": 0,
+            "cause_id": 0,
         }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._hardware_id: int = 0
-        self._mode_id: int = 0
-        self._mechanism_id: int = 0
-        self._cause_id: int = 0
+        self._record = RAMSTKAction
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.last_id = 0
+        self.pkey: str = "action_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_select_all, "selected_cause")
-
         pub.subscribe(self._do_insert_action, "request_insert_action")
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the FMEA Action data from the RAMSTK Program database.
-
-        :param attributes: the attributes dict for the selected failure action.
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        self._revision_id = attributes["revision_id"]
-        self._hardware_id = attributes["hardware_id"]
-        self._mode_id = attributes["mode_id"]
-        self._mechanism_id = attributes["mechanism_id"]
-        self._parent_id = attributes["cause_id"]
-
-        for _action in self.dao.do_select_all(
-            RAMSTKAction,
-            key=["revision_id", "hardware_id", "mode_id", "mechanism_id", "cause_id"],
-            value=[
-                self._revision_id,
-                self._hardware_id,
-                self._mode_id,
-                self._mechanism_id,
-                self._parent_id,
-            ],
-        ):
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_action.action_id,
-                parent=self._root,
-                data={self._tag: _action},
-            )
-            self.last_id = self.dao.get_last_id("ramstk_action", "fld_action_id")
-
-        pub.sendMessage(
-            "succeed_retrieve_actions",
-            tree=self.tree,
-        )
 
     def _do_insert_action(self) -> None:
         """Add a failure Action record.

@@ -98,10 +98,11 @@ class RAMSTKDataManager:
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _id_col = ""
-    _root = 0
-    _table = ""
-    _tag = ""
+    _db_tablename: str = ""
+    _id_col: str = ""
+    _select_msg: str = ""
+    _root: int = 0
+    _tag: str = ""
 
     # Define public dictionary class attributes.
 
@@ -114,6 +115,7 @@ class RAMSTKDataManager:
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
+        self._fkey: Dict[str, int] = {}
         self._pkey: Dict[str, List[str]] = {}
         self._dic_insert_function: Dict[str, object] = {}
 
@@ -121,6 +123,7 @@ class RAMSTKDataManager:
 
         # Initialize private scalar attributes.
         self._parent_id: int = 0
+        self._record: object = None
         self._revision_id: int = 0
 
         # Initialize public dictionary attributes.
@@ -130,6 +133,7 @@ class RAMSTKDataManager:
         # Initialize public scalar attributes.
         self.dao: BaseDatabase = BaseDatabase()
         self.last_id: int = 0
+        self.pkey: str = ""
         self.tree: treelib.Tree = treelib.Tree()
 
         # Add the root to the Tree().  This is necessary to allow multiple
@@ -145,6 +149,7 @@ class RAMSTKDataManager:
             self.do_get_attributes, "request_get_{}_attributes".format(self._tag)
         )
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
+        pub.subscribe(self.do_select_all, self._select_msg)
         pub.subscribe(
             self.do_set_attributes, "request_set_{}_attributes".format(self._tag)
         )
@@ -187,7 +192,7 @@ class RAMSTKDataManager:
             self.dao.do_delete(_record)
 
             self.tree.remove_node(node_id)
-            self.last_id = self.dao.get_last_id(self._table, self._id_col)
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._id_col)
 
             pub.sendMessage(
                 "succeed_delete_{}".format(self._tag),
@@ -282,6 +287,38 @@ class RAMSTKDataManager:
             _entity = None
 
         return _entity
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the FMEA Action data from the RAMSTK Program database.
+
+        :param attributes: the attributes dict for the selected failure action.
+        :return: None
+        :rtype: None
+        """
+        for _node in self.tree.children(self.tree.root):
+            self.tree.remove_node(_node.identifier)
+
+        for _key in self._fkey:
+            self._fkey[_key] = attributes[_key]
+
+        for _record in self.dao.do_select_all(
+            self._record,
+            key=list(self._fkey.keys()),
+            value=list(self._fkey.values()),
+        ):
+            _identifier = _record.get_attributes()[self.pkey]
+            self.tree.create_node(
+                tag=self._tag,
+                identifier=_identifier,
+                parent=self._root,
+                data={self._tag: _record},
+            )
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._id_col)
+
+        pub.sendMessage(
+            "succeed_retrieve_{}s".format(self._tag),
+            tree=self.tree,
+        )
 
     def do_set_attributes(self, node_id: List, package: Dict[str, Any]) -> None:
         """Set the attributes of the record associated with node ID.
