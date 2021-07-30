@@ -130,15 +130,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_action topic was broadcast")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Action ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Action ID 300.")
         print("\033[35m\nfail_delete_action topic was broadcast")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Action ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Action ID 4.")
         print("\033[35m\nfail_delete_action topic was broadcast")
 
     @pytest.mark.integration

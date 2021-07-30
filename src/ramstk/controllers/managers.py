@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 # noinspection PyPackageRequirements
 import treelib
 from pubsub import pub
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -97,7 +98,9 @@ class RAMSTKDataManager:
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _id_col = ""
     _root = 0
+    _table = ""
     _tag = ""
 
     # Define public dictionary class attributes.
@@ -137,10 +140,18 @@ class RAMSTKDataManager:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
+        pub.subscribe(self._do_delete, "request_delete_{}".format(self._tag))
+        pub.subscribe(
+            self.do_get_attributes, "request_get_{}_attributes".format(self._tag)
+        )
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
-        pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
+        pub.subscribe(
+            self.do_set_attributes, "request_set_{}_attributes".format(self._tag)
+        )
+        pub.subscribe(self.do_update, "request_update_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_save_project")
+        pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -162,16 +173,43 @@ class RAMSTKDataManager:
             # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
-    def do_delete(self, node_id: int, table: str) -> None:
+    def _do_delete(self, node_id: int) -> None:
         """Remove a RAMSTK data table record.
 
         :param node_id: the node ID to be removed from the RAMSTK Program
             database.
-        :param table: the key in the module's treelib Tree() data package
-            for the RAMSTK data table to remove the record from.
         :return: None
         :rtype: None
         """
+        try:
+            _record = self.do_select(node_id, self._tag)
+            self.dao.do_delete(_record)
+
+            self.tree.remove_node(node_id)
+            self.last_id = self.dao.get_last_id(self._table, self._id_col)
+
+            pub.sendMessage(
+                "succeed_delete_{}".format(self._tag),
+                tree=self.tree,
+            )
+
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _error_msg: str = ("Attempted to delete non-existent {1} ID {0}.").format(
+                str(node_id), self._tag.title()
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_delete_{}".format(self._tag),
+                error_message=_error_msg,
+            )
+
+    # Deprecated.  See issue #567.
+    def do_delete(self, node_id, table):
+        "Deprecated method for datamanagers."
         return self.dao.do_delete(self.do_select(node_id, table))
 
     def do_get_attributes(self, node_id: int, table: str) -> None:
