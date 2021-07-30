@@ -6,7 +6,7 @@
 #       The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module integrations."""
 
 # Standard Library Imports
@@ -32,7 +32,7 @@ def test_analysismanager(test_toml_user_configuration):
 
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_all_validation_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_validations_tree")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_validation_tree")
     pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
     pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
     pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
@@ -61,7 +61,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_validation")
     pub.unsubscribe(dut.do_update, "request_update_validation")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_validations_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_validation")
     pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
 
@@ -230,7 +230,7 @@ class TestUpdateMethods:
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_stakeholder topic was broadcast")
+        print("\033[35m\nfail_update_validation topic was broadcast")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
@@ -404,11 +404,15 @@ class TestGetterSetter:
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_validations_tree")
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures(
+    "test_analysismanager", "test_datamanager", "test_programstatus"
+)
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     def on_succeed_calculate_plan(self, attributes):
+        print(attributes["plan"])
+        print(date.today() - timedelta(days=10))
         assert attributes["plan"].loc[
             pd.to_datetime(date.today() - timedelta(days=10)), "lower"
         ] == pytest.approx(50.0004502)
@@ -441,11 +445,10 @@ class TestAnalysisMethods:
         )
         print("\033[36m\nsucceed_calculate_verification_plan topic was broadcast")
 
-    @pytest.mark.skip
-    def test_do_select_actuals(self, test_analysismanager):
-        """_do_select_actuals() should return a pandas DataFrame() containing
-        actual plan status."""
-        pub.sendMessage("request_get_validations_tree")
+    @pytest.mark.integration
+    def test_do_select_actual_status(self, test_analysismanager):
+        """should return a pandas DataFrame() containing actual plan status."""
+        pub.sendMessage("request_get_validation_tree")
         pub.sendMessage(
             "succeed_calculate_all_validation_tasks",
             cost_remaining=212.32,

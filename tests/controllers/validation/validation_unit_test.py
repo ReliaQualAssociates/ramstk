@@ -6,7 +6,7 @@
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module algorithms and models."""
 
 # Standard Library Imports
@@ -141,7 +141,7 @@ def test_analysismanager(test_toml_user_configuration):
 
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_all_validation_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_validations_tree")
+    pub.unsubscribe(dut.on_get_tree, "succeed_get_validation_tree")
     pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
     pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
     pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
@@ -169,7 +169,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_validation")
     pub.unsubscribe(dut.do_update, "request_update_validation")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_validations_tree")
+    pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_validation")
     pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
 
@@ -186,19 +186,19 @@ class TestCreateControllers:
         """__init__() should return a Validation data manager."""
         assert isinstance(test_datamanager, dmValidation)
         assert isinstance(test_datamanager.tree, Tree)
-        assert test_datamanager._tag == "validations"
+        assert test_datamanager._tag == "validation"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_validation")
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_validations"
+            test_datamanager.do_update_all, "request_update_all_validation"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_validation_attributes"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_get_tree, "request_get_validations_tree"
+            test_datamanager.do_get_tree, "request_get_validation_tree"
         )
         assert pub.isSubscribed(
             test_datamanager.do_set_attributes, "request_set_validation_attributes"
@@ -227,7 +227,7 @@ class TestCreateControllers:
             "succeed_get_all_validation_attributes",
         )
         assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_get_validations_tree"
+            test_analysismanager.on_get_tree, "succeed_get_validation_tree"
         )
         assert pub.isSubscribed(
             test_analysismanager._on_get_status_tree, "succeed_retrieve_program_status"
@@ -451,3 +451,22 @@ class TestAnalysisMethods:
         assert test_analysismanager._tree.get_node(2).data[
             "validation"
         ].cost_variance == pytest.approx(195069.44444444)
+
+    @pytest.mark.unit
+    def test_do_select_assessment_targets(self, test_analysismanager, test_datamanager):
+        """should return a pandas DataFrame() containing assessment target values."""
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_tree()
+
+        _targets = test_analysismanager._do_select_assessment_targets()
+
+        assert isinstance(_targets, pd.DataFrame)
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "lower"] == 10.0
+        )
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "mean"] == 20.0
+        )
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "upper"] == 30.0
+        )

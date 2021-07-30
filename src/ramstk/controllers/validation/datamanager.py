@@ -4,7 +4,7 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Validation Package Data Model."""
 
 # Standard Library Imports
@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     RAMSKTProgramStatus data models.
     """
 
-    _tag: str = "validations"
+    _tag: str = "validation"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Validation data manager instance."""
@@ -55,21 +55,9 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_update, "request_update_validation")
 
         pub.subscribe(self.do_select_all, "selected_revision")
-        pub.subscribe(self.do_get_tree, "request_get_validations_tree")
 
         pub.subscribe(self._do_delete, "request_delete_validation")
         pub.subscribe(self._do_insert_validation, "request_insert_validation")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the validation treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_validations_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Validation BoM data from the RAMSTK Program database.

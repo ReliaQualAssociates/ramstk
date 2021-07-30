@@ -120,9 +120,9 @@ CREATE TABLE ramstk_program_status (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id),
     UNIQUE (fld_date_status)
 );
-INSERT INTO "ramstk_program_status" VALUES(1,1,0.0,'2019-07-21',0.0);
-INSERT INTO "ramstk_program_status" VALUES(1,2,0.0,'2019-07-22',0.0);
-INSERT INTO "ramstk_program_status" VALUES(1,3,0.0,'2019-07-23',0.0);
+INSERT INTO "ramstk_program_status" VALUES(1,1,0.0,CURRENT_DATE-30,0.0);
+INSERT INTO "ramstk_program_status" VALUES(1,2,0.0,CURRENT_DATE-20,0.0);
+INSERT INTO "ramstk_program_status" VALUES(1,3,0.0,CURRENT_DATE-10,0.0);
 
 CREATE TABLE ramstk_function (
     fld_revision_id INTEGER,
