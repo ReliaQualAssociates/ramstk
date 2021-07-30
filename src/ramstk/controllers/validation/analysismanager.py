@@ -257,6 +257,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         :rtype: :class:`pandas.DataFrame`
         """
         _dic_actual = {}
+
         for _node in self._status_tree.all_nodes()[1:]:
             _dic_actual[pd.to_datetime(_node.data["program_status"].date_status)] = [
                 _node.data["program_status"].cost_remaining,

@@ -451,3 +451,22 @@ class TestAnalysisMethods:
         assert test_analysismanager._tree.get_node(2).data[
             "validation"
         ].cost_variance == pytest.approx(195069.44444444)
+
+    @pytest.mark.unit
+    def test_do_select_assessment_targets(self, test_analysismanager, test_datamanager):
+        """should return a pandas DataFrame() containing assessment target values."""
+        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_get_tree()
+
+        _targets = test_analysismanager._do_select_assessment_targets()
+
+        assert isinstance(_targets, pd.DataFrame)
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "lower"] == 10.0
+        )
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "mean"] == 20.0
+        )
+        assert (
+            _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "upper"] == 30.0
+        )
