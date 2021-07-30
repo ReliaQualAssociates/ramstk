@@ -4,7 +4,7 @@
 #       ramstk.controllers.hardware.hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Package Data Model."""
 
 # Standard Library Imports
@@ -35,8 +35,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKDesignElectric, and RAMSTKDesignMechanic data models.
     """
 
-    _tag: str = "hardwares"
-    _root: int = 0
+    _tag: str = "hardware"
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Hardware data manager instance."""
@@ -68,9 +67,7 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "wvw_editing_component")
         pub.subscribe(super().do_set_attributes, "mvw_editing_hardware")
         pub.subscribe(super().do_set_attributes, "wvw_editing_hardware")
-        pub.subscribe(super().do_update_all, "request_update_all_hardwares")
 
-        pub.subscribe(self.do_get_tree, "request_get_hardwares_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_set_all_attributes, "succeed_predict_reliability")
         pub.subscribe(self.do_update, "request_update_hardware")
@@ -81,17 +78,6 @@ class DataManager(RAMSTKDataManager):
         )
         pub.subscribe(self._do_insert_hardware, "request_insert_hardware")
         pub.subscribe(self._do_make_composite_ref_des, "request_make_comp_ref_des")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the hardware treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_hardwares_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hardware BoM data from the RAMSTK Program database.
@@ -162,6 +148,8 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
         try:
             self.dao.do_update(self.tree.get_node(node_id).data["hardware"])
             self.dao.do_update(self.tree.get_node(node_id).data["design_electric"])
@@ -189,7 +177,6 @@ class DataManager(RAMSTKDataManager):
                 error_message=_error_msg,
             )
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = ("{1}: No data package found for hardware ID " "{0}.").format(
                 str(node_id), _method_name
             )
@@ -204,9 +191,6 @@ class DataManager(RAMSTKDataManager):
             )
         except TypeError:
             if node_id != 0:
-                _method_name: str = (
-                    inspect.currentframe().f_code.co_name  # type: ignore
-                )
                 _error_msg = (
                     "{1}: The value for one or more attributes for "
                     "hardware ID {0} was the wrong type."
