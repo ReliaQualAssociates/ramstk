@@ -100,7 +100,7 @@ class RAMSTKDataManager:
     # Define private scalar class attributes.
     _db_tablename: str = ""
     _id_col: str = ""
-    _select_msg: str = ""
+    _select_msg: str = "selected_revision"
     _root: int = 0
     _tag: str = ""
 
@@ -149,6 +149,7 @@ class RAMSTKDataManager:
             self.do_get_attributes, "request_get_{}_attributes".format(self._tag)
         )
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
+        pub.subscribe(self.do_insert, "request_insert_{}".format(self._tag))
         pub.subscribe(self.do_select_all, self._select_msg)
         pub.subscribe(
             self.do_set_attributes, "request_set_{}_attributes".format(self._tag)
@@ -180,7 +181,7 @@ class RAMSTKDataManager:
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
     def _do_delete(self, node_id: int) -> None:
-        """Remove a RAMSTK data table record.
+        """Remove a record from the database and records tree.
 
         :param node_id: the node ID to be removed from the RAMSTK Program
             database.
@@ -259,6 +260,42 @@ class RAMSTKDataManager:
             tree=self.tree,
         )
 
+    def do_insert(self, attributes: Dict[str, Any]) -> None:
+        """Add a record to the database and records tree.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            _record = self.new_record(attributes)
+            _identifier = attributes[self.pkey]
+
+            self.dao.do_insert(_record)
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._id_col)
+
+            self.tree.create_node(
+                tag=self._tag,
+                identifier=_identifier,
+                parent=self._root,
+                data={self._tag: _record},
+            )
+
+            pub.sendMessage(
+                "succeed_insert_{}".format(self._tag),
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_{}".format(self._tag),
+                error_message=_error.msg,
+            )
+
     def do_select(self, node_id: Any, table: str) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
 
@@ -271,12 +308,12 @@ class RAMSTKDataManager:
             this manager.
         """
         try:
-            _entity = self.tree.get_node(node_id).data[table]
+            _entity = self.tree.get_node(node_id).data[self._tag]
         except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 "{2}: No data package for node ID {0} in module {1}.".format(
-                    node_id, table, _method_name
+                    node_id, self._tag, _method_name
                 )
             )
             pub.sendMessage(

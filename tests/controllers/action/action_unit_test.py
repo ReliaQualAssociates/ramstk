@@ -70,7 +70,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
     pub.unsubscribe(dut._do_delete, "request_delete_action")
-    pub.unsubscribe(dut._do_insert_action, "request_insert_action")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
 
     # Delete the device under test.
     del dut
@@ -104,9 +104,7 @@ class TestCreateActionlers:
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_action")
         assert pub.isSubscribed(test_datamanager.do_get_tree, "request_get_action_tree")
         assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_action")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_action, "request_insert_action"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_action")
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -153,22 +151,6 @@ class TestSelectMethods:
         assert _action.type_id == "Detection"
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """should raise a KeyError when an unknown table name is requested."""
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
-            }
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """should return None when a non-existent action ID is requested."""
         test_datamanager.do_select_all(
@@ -191,16 +173,16 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_datamanager):
         """should add a record to the record tree and update last_id."""
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
-            }
-        )
-        test_datamanager._do_insert_action()
+        _attributes = {
+            "revision_id": 1,
+            "hardware_id": 1,
+            "mode_id": 6,
+            "mechanism_id": 3,
+            "cause_id": 3,
+            "action_id": 1,
+        }
+        test_datamanager.do_select_all(_attributes)
+        test_datamanager.do_insert(_attributes)
 
         assert test_datamanager.last_id == 3
         assert isinstance(
