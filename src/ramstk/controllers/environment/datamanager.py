@@ -1,19 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.environment.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.environment.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Environment Package Data Model."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -24,7 +21,20 @@ from ramstk.models.programdb import RAMSTKEnvironment
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Environment data manager."""
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_environment_id"
+    _db_tablename = "ramstk_environment"
     _tag = "environment"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize an Environment data manager instance."""
@@ -53,7 +63,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_environment")
         pub.subscribe(self._do_insert_environment, "request_insert_environment")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -84,38 +93,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_environments",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove an environment element.
-
-        :param node_id: the environment ID to remove.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, "environment")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_environment",
-                tree=self.tree,
-            )
-        except (DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent environment ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_environment",
-                error_message=_error_msg,
-            )
 
     def _do_insert_environment(self, phase_id: int) -> None:
         """Add a new environment for phase ID.

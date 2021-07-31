@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.environment.environment_unit_test.py is part of The
-#       RAMSTK Project
+#       tests.controllers.environment.environment_unit_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Environment module algorithms and models."""
 
 # Third Party Imports
@@ -93,7 +93,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_environment")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_environment")
+    pub.unsubscribe(dut.do_delete, "request_delete_environment")
     pub.unsubscribe(dut._do_insert_environment, "request_insert_environment")
 
     # Delete the device under test.
@@ -126,7 +126,7 @@ class TestCreateControllers:
             test_datamanager.do_update_all, "request_update_all_environment"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_delete, "request_delete_environment"
+            test_datamanager.do_delete, "request_delete_environment"
         )
         assert pub.isSubscribed(
             test_datamanager._do_insert_environment, "request_insert_environment"
@@ -166,15 +166,6 @@ class TestSelectMethods:
         assert _environment.environment_id == 1
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
@@ -208,7 +199,7 @@ class TestDeleteMethods:
         """should remove the deleted record from record tree and update the last_id."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
         _last_id = test_datamanager.last_id
-        test_datamanager._do_delete(_last_id)
+        test_datamanager.do_delete(_last_id)
 
         assert test_datamanager.last_id == 2
         assert test_datamanager.tree.get_node(_last_id) is None
