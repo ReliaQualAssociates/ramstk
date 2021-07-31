@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.allocation.allocation_integration_test.py is part of
-#       The RAMSTK Project
+#       tests.controllers.allocation.allocation_integration_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Allocation module integrations."""
 
 # Third Party Imports

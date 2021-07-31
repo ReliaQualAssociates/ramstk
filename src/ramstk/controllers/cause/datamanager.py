@@ -7,12 +7,10 @@
 """Failure Cause Package Data Controller."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -23,8 +21,21 @@ from ramstk.models.programdb import RAMSTKCause
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Cause data manager."""
 
-    _tag = "cause"
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_cause_id"
+    _db_tablename = "ramstk_cause"
     _root = 0
+    _tag = "cause"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Cause data manager instance."""
@@ -61,7 +72,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_mechanism")
 
-        pub.subscribe(self._do_delete, "request_delete_cause")
         pub.subscribe(self._do_insert_cause, "request_insert_cause")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -101,41 +111,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_causes",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a failure Cause record.
-
-        :param node_id: the node (Cause record) ID to be removed from the RAMSTK Program
-            database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-
-            super().do_delete(node_id, _table)
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_cause",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent Cause ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_cause",
-                error_message=_error_msg,
-            )
 
     def _do_insert_cause(self) -> None:
         """Add a failure Cause record.
