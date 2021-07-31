@@ -69,7 +69,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_control")
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_control_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_control")
+    pub.unsubscribe(dut.do_delete, "request_delete_control")
     pub.unsubscribe(dut._do_insert_control, "request_insert_control")
 
     # Delete the device under test.
@@ -105,7 +105,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_control_tree"
         )
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_control")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_control")
         assert pub.isSubscribed(
             test_datamanager._do_insert_control, "request_insert_control"
         )
@@ -153,22 +153,6 @@ class TestSelectMethods:
         assert isinstance(_control, MockRAMSTKControl)
         assert _control.description == "Test FMEA Control #1 for Cause ID #3."
         assert _control.type_id == "Detection"
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """should raise a KeyError when an unknown table name is requested."""
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
-            }
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -226,7 +210,7 @@ class TestDeleteMethods:
                 "cause_id": 3,
             }
         )
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(2) is None
