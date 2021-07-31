@@ -186,7 +186,7 @@ class RAMSTKDataManager:
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             _error_msg: str = ("Attempted to delete non-existent {1} ID {0}.").format(
-                str(node_id), self._tag.title()
+                str(node_id), self._tag.replace("_", " ").title()
             )
             pub.sendMessage(
                 "do_log_debug",

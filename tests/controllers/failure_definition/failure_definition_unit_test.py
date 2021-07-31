@@ -59,7 +59,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_failure_definition")
+    pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
     pub.unsubscribe(
         dut._do_insert_failure_definition, "request_insert_failure_definition"
     )
@@ -103,7 +103,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "lvw_editing_failure_definition"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_delete, "request_delete_failure_definition"
+            test_datamanager.do_delete, "request_delete_failure_definition"
         )
         assert pub.isSubscribed(
             test_datamanager._do_insert_failure_definition,
@@ -139,15 +139,6 @@ class TestSelectMethods:
         assert _failure_definition.definition == "Mock Failure Definition 1"
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
@@ -181,7 +172,7 @@ class TestDeleteMethods:
         """should remove record from record tree and update last_id."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
         _last_id = test_datamanager.last_id
-        test_datamanager._do_delete(node_id=test_datamanager.last_id)
+        test_datamanager.do_delete(node_id=test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(_last_id) is None

@@ -13,7 +13,6 @@ from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -28,7 +27,20 @@ class DataManager(RAMSTKDataManager):
     RAMSTKFailureDefinition data models.
     """
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_definition_id"
+    _db_tablename = "ramstk_failure_definition"
     _tag = "failure_definition"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Failure Definition data manager instance."""
@@ -61,7 +73,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_failure_definition")
         pub.subscribe(
             self._do_insert_failure_definition, "request_insert_failure_definition"
         )
@@ -98,38 +109,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_failure_definitions",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a failure definition.
-
-        :param node_id: the failure definition ID to remove.
-        :return: None
-        """
-        try:
-            super().do_delete(node_id, "failure_definition")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_failure_definition",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent failure "
-                "definition ID {0}.".format(str(node_id), _method_name)
-            )
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_failure_definition",
-                error_message=_error_msg,
-            )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.failure_definition.failure_definition_integration_test.py
-#       is part of The RAMSTK Project
+#       tests.controllers.failure_definition.failure_definition_integration_test.py is
+#       part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -36,7 +36,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_failure_definition")
+    pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
     pub.unsubscribe(
         dut._do_insert_failure_definition, "request_insert_failure_definition"
     )
@@ -136,13 +136,13 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent failure definition ID 10."
+            "Attempted to delete non-existent Failure Definition ID 10."
         )
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent failure definition ID 2."
+            "Attempted to delete non-existent Failure Definition ID 2."
         )
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
