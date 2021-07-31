@@ -64,7 +64,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_allocation_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
-    pub.unsubscribe(dut._do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut._do_insert_allocation, "request_insert_allocation")
 
     # Delete the device under test.
@@ -177,17 +177,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_allocation topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent allocation record "
-            "with hardware ID 300."
-        )
-        print("\033[36m\nfail_delete_allocation topic was broadcast.")
+        assert error_message == ("Attempted to delete non-existent Allocation ID 300.")
+        print("\033[35m\nfail_delete_allocation topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent allocation record "
-            "with hardware ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Allocation ID 2.")
         print("\033[35m\nfail_delete_allocation topic was broadcast.")
 
     @pytest.mark.integration
@@ -196,7 +190,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_succeed_delete, "succeed_delete_allocation")
 
         _last_id = test_datamanager.last_id
-        pub.sendMessage("request_delete_hardware", node_id=test_datamanager.last_id)
+        pub.sendMessage("request_delete_allocation", node_id=_last_id)
 
         assert test_datamanager.last_id == 6
         assert test_datamanager.tree.get_node(_last_id) is None
@@ -208,7 +202,7 @@ class TestDeleteMethods:
         """should send the fail message when the allocation ID does not exist."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
-        pub.sendMessage("request_delete_hardware", node_id=300)
+        pub.sendMessage("request_delete_allocation", node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
@@ -218,7 +212,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
 
         test_datamanager.tree.remove_node(2)
-        pub.sendMessage("request_delete_hardware", node_id=2)
+        pub.sendMessage("request_delete_allocation", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
 

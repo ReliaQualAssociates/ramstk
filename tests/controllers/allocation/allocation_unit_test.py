@@ -151,7 +151,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_allocation_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
-    pub.unsubscribe(dut._do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut._do_insert_allocation, "request_insert_allocation")
 
     # Delete the device under test.
@@ -168,7 +168,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmAllocation)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._tag == "allocations"
+        assert test_datamanager._tag == "allocation"
         assert test_datamanager._root == 0
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_allocation_attributes"
@@ -180,7 +180,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "wvw_editing_allocation"
         )
         assert pub.isSubscribed(
-            test_datamanager.do_update_all, "request_update_all_allocations"
+            test_datamanager.do_update_all, "request_update_all_allocation"
         )
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_allocation_tree"
@@ -190,7 +190,7 @@ class TestCreateControllers:
             test_datamanager.do_set_all_attributes, "succeed_calculate_allocation_goals"
         )
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_allocation")
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_hardware")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_allocation")
         assert pub.isSubscribed(
             test_datamanager._do_insert_allocation, "request_insert_allocation"
         )
@@ -267,14 +267,6 @@ class TestSelectMethods:
         assert _allocation.parent_id == 0
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """should raise a KeyError when an unknown table name is requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """should return None when a non-existent Allocation ID is requested."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -310,7 +302,7 @@ class TestDeleteMethods:
         """should remove the record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
         _last_id = test_datamanager.last_id
-        test_datamanager._do_delete(node_id=_last_id)
+        test_datamanager.do_delete(node_id=_last_id)
 
         assert test_datamanager.last_id == 2
         assert test_datamanager.tree.get_node(_last_id) is None
