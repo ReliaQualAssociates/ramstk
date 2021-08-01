@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.mission_phase.mission_phase_integration_test.py is part
-#       of The RAMSTK Project
+#       tests.controllers.mission_phase.mission_phase_integration_test.py is part of the
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -36,7 +36,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission_phase")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission_phase")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
     pub.unsubscribe(dut._do_insert_mission_phase, "request_insert_mission_phase")
 
     # Delete the device under test.
@@ -114,14 +114,12 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent mission phase ID " "10."
+            "Attempted to delete non-existent Mission Phase ID " "10."
         )
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent mission phase ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Mission Phase ID 2.")
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
     @pytest.mark.integration
@@ -130,7 +128,7 @@ class TestDeleteMethods:
         success message."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mission_phase")
 
-        test_datamanager._do_delete(1)
+        pub.sendMessage("request_delete_mission_phase", node_id=1)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mission_phase")
 
@@ -140,7 +138,7 @@ class TestDeleteMethods:
         attempting to delete a non-existent mission phase ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission_phase")
 
-        test_datamanager._do_delete(10)
+        pub.sendMessage("request_delete_mission_phase", node_id=10)
 
         pub.unsubscribe(
             self.on_fail_delete_non_existent_id, "fail_delete_mission_phase"
@@ -154,7 +152,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission_phase")
 
         test_datamanager.tree.remove_node(2)
-        test_datamanager._do_delete(2)
+        pub.sendMessage("request_delete_mission_phase", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission_phase")
 
