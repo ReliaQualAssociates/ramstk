@@ -3,7 +3,7 @@
 #       ramstk.controllers.options.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Options Package Data Model."""
 
 # Standard Library Imports
@@ -25,8 +25,9 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _db_id_colname = "fld_site_id"
+    _db_tablename = "ramstk_site_info"
     _tag = "option"
-    _root = 0
 
     # Define public dict class attributes.
 
@@ -40,7 +41,7 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._pkey: Dict[str, List[str]] = {
-            "siteinfo": ["site_id"],
+            "option": ["site_id"],
         }
 
         # Initialize private list attributes.
@@ -81,10 +82,10 @@ class DataManager(RAMSTKDataManager):
         ):
 
             self.tree.create_node(
-                tag="siteinfo",
+                tag="option",
                 identifier=_option.site_id,
                 parent=self._root,
-                data={"siteinfo": _option},
+                data={"option": _option},
             )
 
         pub.sendMessage(

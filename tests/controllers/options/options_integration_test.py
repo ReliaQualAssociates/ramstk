@@ -45,7 +45,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["siteinfo"], RAMSTKSiteInfo)
+        assert isinstance(tree.get_node(1).data["option"], RAMSTKSiteInfo)
         # There should be a root node with no data package and a node with
         # the one RAMSTKSiteInfo record.
         assert len(tree.all_nodes()) == 2
@@ -67,8 +67,8 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["siteinfo"].hardware_enabled == 0
-        assert tree.get_node(1).data["siteinfo"].vandv_enabled == 0
+        assert tree.get_node(1).data["option"].hardware_enabled == 0
+        assert tree.get_node(1).data["option"].vandv_enabled == 0
         print("\033[36m\nsucceed_update_siteinfo topic was broadcast")
 
     def on_succeed_update_all(self):
@@ -101,21 +101,21 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_siteinfo")
 
-        test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled = 0
-        test_datamanager.tree.get_node(1).data["siteinfo"].vandv_enabled = 0
-        test_datamanager.do_update(1, table="siteinfo")
+        test_datamanager.tree.get_node(1).data["option"].hardware_enabled = 0
+        test_datamanager.tree.get_node(1).data["option"].vandv_enabled = 0
+        test_datamanager.do_update(1, table="option")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_siteinfo")
 
-        assert test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled == 0
-        assert test_datamanager.tree.get_node(1).data["siteinfo"].vandv_enabled == 0
+        assert test_datamanager.tree.get_node(1).data["option"].hardware_enabled == 0
+        assert test_datamanager.tree.get_node(1).data["option"].vandv_enabled == 0
 
-        test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled = 1
-        test_datamanager.tree.get_node(1).data["siteinfo"].vandv_enabled = 1
-        test_datamanager.do_update(1, table="siteinfo")
+        test_datamanager.tree.get_node(1).data["option"].hardware_enabled = 1
+        test_datamanager.tree.get_node(1).data["option"].vandv_enabled = 1
+        test_datamanager.do_update(1, table="option")
 
-        assert test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled == 1
-        assert test_datamanager.tree.get_node(1).data["siteinfo"].vandv_enabled == 1
+        assert test_datamanager.tree.get_node(1).data["option"].hardware_enabled == 1
+        assert test_datamanager.tree.get_node(1).data["option"].vandv_enabled == 1
 
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
@@ -131,8 +131,8 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
 
-        test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled = "Hi ya"
-        test_datamanager.do_update(1, table="siteinfo")
+        test_datamanager.tree.get_node(1).data["option"].hardware_enabled = "Hi ya"
+        test_datamanager.do_update(1, table="option")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
 
@@ -143,8 +143,8 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_siteinfo"
         )
 
-        test_datamanager.tree.get_node(1).data["siteinfo"].hardware_enabled = "Hey bud"
-        test_datamanager.do_update(0, table="siteinfo")
+        test_datamanager.tree.get_node(1).data["option"].hardware_enabled = "Hey bud"
+        test_datamanager.do_update(0, table="option")
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_siteinfo"
@@ -157,7 +157,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
 
         test_datamanager.do_select_all({"site_id": 1})
-        test_datamanager.do_update("skullduggery", table="siteinfo")
+        test_datamanager.do_update("skullduggery", table="option")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
 
@@ -167,8 +167,8 @@ class TestUpdateMethods:
         Options ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
 
-        test_datamanager.tree.get_node(1).data.pop("siteinfo")
-        test_datamanager.do_update(1, table="siteinfo")
+        test_datamanager.tree.get_node(1).data.pop("option")
+        test_datamanager.do_update(1, table="option")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
 
@@ -199,13 +199,13 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["siteinfo"], RAMSTKSiteInfo)
+        assert isinstance(tree.get_node(1).data["option"], RAMSTKSiteInfo)
         print("\033[36m\nsucceed_get_options_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["siteinfo"].function_enabled == 1
-        assert tree.get_node(1).data["siteinfo"].requirement_enabled == 1
+        assert tree.get_node(1).data["option"].function_enabled == 1
+        assert tree.get_node(1).data["option"].requirement_enabled == 1
         print("\033[36m\nsucceed_get_options_tree topic was broadcast")
 
     @pytest.mark.integration
@@ -214,7 +214,7 @@ class TestGetterSetter:
         attributes on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes")
 
-        pub.sendMessage("request_get_option_attributes", node_id=1, table="siteinfo")
+        pub.sendMessage("request_get_option_attributes", node_id=1, table="option")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes"
