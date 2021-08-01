@@ -9,6 +9,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing FMEA Action algorithms and models."""
 
+# Standard Library Imports
+from datetime import date
+
 # Third Party Imports
 import pytest
 
@@ -53,6 +56,28 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 6,
+        "mechanism_id": 3,
+        "cause_id": 3,
+        "action_id": 1,
+        "action_recommended": "Test FMEA Action #1 for Cause ID #3.",
+        "action_category": "",
+        "action_owner": "weibullguy",
+        "action_due_date": date.today(),
+        "action_status": "Closed",
+        "action_taken": "Basically just screwed around",
+        "action_approved": 1,
+        "action_approve_date": date.today(),
+        "action_closed": 1,
+        "action_close_date": date.today(),
+    }
+
+
 @pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
@@ -69,7 +94,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_action")
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
-    pub.unsubscribe(dut._do_insert_action, "request_insert_action")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
 
     # Delete the device under test.
     del dut
@@ -85,6 +110,8 @@ class TestCreateActionlers:
         assert isinstance(test_datamanager, dmAction)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._db_id_colname == "fld_action_id"
+        assert test_datamanager._db_tablename == "ramstk_action"
         assert test_datamanager._tag == "action"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -103,9 +130,7 @@ class TestCreateActionlers:
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_action")
         assert pub.isSubscribed(test_datamanager.do_get_tree, "request_get_action_tree")
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_action")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_action, "request_insert_action"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_action")
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -167,23 +192,15 @@ class TestSelectMethods:
         assert test_datamanager.do_select(100, table="action") is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
-            }
-        )
-        test_datamanager._do_insert_action()
+        test_datamanager.do_select_all(test_attributes)
+        test_datamanager.do_insert(test_attributes)
 
         assert test_datamanager.last_id == 3
         assert isinstance(

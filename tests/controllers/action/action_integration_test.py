@@ -9,6 +9,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing FMEA Action integrations."""
 
+# Standard Library Imports
+from datetime import date
+
 # Third Party Imports
 import pytest
 from pubsub import pub
@@ -17,6 +20,28 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import dmAction
 from ramstk.models.programdb import RAMSTKAction
+
+
+@pytest.fixture
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 6,
+        "mechanism_id": 3,
+        "cause_id": 3,
+        "action_id": 1,
+        "action_recommended": "Test FMEA Action #1 for Cause ID #3.",
+        "action_category": "",
+        "action_owner": "weibullguy",
+        "action_due_date": date.today(),
+        "action_status": "Closed",
+        "action_taken": "Basically just screwed around",
+        "action_approved": 1,
+        "action_approve_date": date.today(),
+        "action_closed": 1,
+        "action_close_date": date.today(),
+    }
 
 
 @pytest.fixture(scope="class")
@@ -45,7 +70,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_action")
-    pub.unsubscribe(dut._do_insert_action, "request_insert_action")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
 
     # Delete the device under test.
     del dut
@@ -79,7 +104,7 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_action")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -98,24 +123,24 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_action topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_action")
 
-        pub.sendMessage("request_insert_action")
+        pub.sendMessage("request_insert_action", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_action")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send the fail message if the parent ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_action")
 
         _parent_id = test_datamanager._parent_id
         test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_action")
+        pub.sendMessage("request_insert_action", attributes=test_attributes)
         test_datamanager._parent_id = _parent_id
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_action")
