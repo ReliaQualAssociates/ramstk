@@ -74,7 +74,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mechanism")
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mechanism")
+    pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
 
     # Delete the device under test.
@@ -111,7 +111,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_mechanism_tree"
         )
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_mechanism")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mechanism")
         assert pub.isSubscribed(
             test_datamanager._do_insert_mechanism, "request_insert_mechanism"
         )
@@ -149,17 +149,6 @@ class TestSelectMethods:
         assert isinstance(_mechanism, MockRAMSTKMechanism)
         assert _mechanism.pof_include == 1
         assert _mechanism.rpn_detection_new == 10
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -200,7 +189,7 @@ class TestDeleteMethods:
         test_datamanager.do_select_all(
             {"revision_id": 1, "hardware_id": 1, "mode_id": 6}
         )
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
-        assert test_datamanager.last_id == 3
+        assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(2) is None
