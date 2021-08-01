@@ -2,11 +2,10 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.cause.cause_integration_test.py is part of The RAMSTK
-#       Project
+#       tests.controllers.cause.cause_integration_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing failure Cause integrations."""
 
 # Third Party Imports
@@ -38,7 +37,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_cause")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_cause")
+    pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut._do_insert_cause, "request_insert_cause")
 
     # Delete the device under test.
@@ -117,15 +116,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_cause topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Cause ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Cause ID 300.")
         print("\033[35m\nfail_delete_cause topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Cause ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Cause ID 4.")
         print("\033[35m\nfail_delete_cause topic was broadcast.")
 
     @pytest.mark.integration

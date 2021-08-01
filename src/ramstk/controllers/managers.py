@@ -3,7 +3,7 @@
 #       ramstk.controllers.manager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Hardware Controller Package managers."""
 
 # Standard Library Imports
@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 # noinspection PyPackageRequirements
 import treelib
 from pubsub import pub
+from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
@@ -97,6 +98,8 @@ class RAMSTKDataManager:
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _db_id_colname = ""
+    _db_tablename = ""
     _root = 0
     _tag = ""
 
@@ -137,6 +140,7 @@ class RAMSTKDataManager:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
+        pub.subscribe(self.do_delete, "request_delete_{}".format(self._tag))
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
         pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
@@ -162,17 +166,41 @@ class RAMSTKDataManager:
             # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
-    def do_delete(self, node_id: int, table: str) -> None:
-        """Remove a RAMSTK data table record.
+    def do_delete(self, node_id: int) -> None:
+        """Remove a record from the Program database and records tree.
 
-        :param node_id: the node ID to be removed from the RAMSTK Program
-            database.
-        :param table: the key in the module's treelib Tree() data package
-            for the RAMSTK data table to remove the record from.
+        :param node_id: the ID of the record to delete.
         :return: None
         :rtype: None
         """
-        return self.dao.do_delete(self.do_select(node_id, table))
+        try:
+            for _node in self.tree.children(node_id):
+                _record = self.do_select(_node.identifier, self._db_tablename)
+                self.dao.do_delete(_record)
+
+            _record = self.do_select(node_id, self._db_tablename)
+            self.dao.do_delete(_record)
+
+            self.tree.remove_node(node_id)
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+            pub.sendMessage(
+                "succeed_delete_{}".format(self._tag),
+                tree=self.tree,
+            )
+        except (AttributeError, DataAccessError, NodeIDAbsentError):
+            _error_msg: str = ("Attempted to delete non-existent {1} ID {0}.").format(
+                str(node_id), self._tag.replace("_", " ").title()
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_delete_{}".format(self._tag),
+                error_message=_error_msg,
+            )
 
     def do_get_attributes(self, node_id: int, table: str) -> None:
         """Retrieve the RAMSTK data table attributes for node ID.
@@ -227,12 +255,12 @@ class RAMSTKDataManager:
             this manager.
         """
         try:
-            _entity = self.tree.get_node(node_id).data[table]
+            _entity = self.tree.get_node(node_id).data[self._tag]
         except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 "{2}: No data package for node ID {0} in module {1}.".format(
-                    node_id, table, _method_name
+                    node_id, self._tag, _method_name
                 )
             )
             pub.sendMessage(

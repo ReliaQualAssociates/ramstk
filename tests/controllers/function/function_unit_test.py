@@ -97,7 +97,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_function")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_function")
+    pub.unsubscribe(dut.do_delete, "request_delete_function")
     pub.unsubscribe(dut._do_insert_function, "request_insert_function")
 
     # Delete the device under test.
@@ -131,7 +131,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_set_attributes, "request_set_function_attributes"
         )
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_function")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_function")
         assert pub.isSubscribed(
             test_datamanager._do_insert_function, "request_insert_function"
         )
@@ -168,14 +168,6 @@ class TestSelectMethods:
         assert isinstance(_function, MockRAMSTKFunction)
         assert _function.availability_logistics == 1.0
         assert _function.name == "Function Name"
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """should raise a KeyError when an unknown table name is requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -226,17 +218,7 @@ class TestDeleteMethods:
         """should remove a record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
         _last_id = test_datamanager.last_id
-        test_datamanager._do_delete(test_datamanager.last_id)
+        test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(_last_id) is None
-
-    @pytest.mark.unit
-    def test_do_delete_with_child(self, test_datamanager):
-        """should remove a record and children from record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_delete(1)
-
-        assert test_datamanager.last_id == 0
-        assert test_datamanager.tree.get_node(2) is None
-        assert test_datamanager.tree.get_node(1) is None

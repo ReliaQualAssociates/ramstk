@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.cause.cause_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.controllers.cause.cause_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -76,7 +75,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_cause")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_cause")
+    pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut._do_insert_cause, "request_insert_cause")
 
     # Delete the device under test.
@@ -108,7 +107,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(test_datamanager.do_set_attributes, "wvw_editing_cause")
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_cause")
         assert pub.isSubscribed(test_datamanager.do_get_tree, "request_get_cause_tree")
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_cause")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_cause")
         assert pub.isSubscribed(
             test_datamanager._do_insert_cause, "request_insert_cause"
         )
@@ -152,17 +151,6 @@ class TestSelectMethods:
         assert _cause.rpn_occurrence == 4
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 3}
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent cause ID is
         requested."""
@@ -199,7 +187,7 @@ class TestDeleteMethods:
         test_datamanager.do_select_all(
             {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 3}
         )
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(2) is None

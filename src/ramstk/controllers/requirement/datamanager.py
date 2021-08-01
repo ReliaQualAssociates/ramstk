@@ -28,6 +28,8 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _db_id_colname = "fld_requirement_id"
+    _db_tablename = "ramstk_requirement"
     _tag = "requirement"
 
     # Define public dictionary class attributes.
@@ -66,7 +68,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_create_code, "request_create_requirement_code")
 
-        pub.subscribe(self._do_delete, "request_delete_requirement")
         pub.subscribe(self._do_insert_requirement, "request_insert_requirement")
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
@@ -130,43 +131,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_requirements",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a requirement.
-
-        :param node_id: the node (requirement) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            # Delete the children (if any), then the parent node that was
-            # passed.
-            for _child in self.tree.children(node_id):
-                super().do_delete(_child.identifier, "requirement")
-            super().do_delete(node_id, "requirement")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_requirement",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent requirement ID {" "0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_requirement",
-                error_message=_error_msg,
-            )
 
     def _do_insert_requirement(self, parent_id: int = 0) -> None:
         """Add a new requirement.

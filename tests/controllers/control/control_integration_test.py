@@ -44,7 +44,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_control")
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_control_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_control")
+    pub.unsubscribe(dut.do_delete, "request_delete_control")
     pub.unsubscribe(dut._do_insert_control, "request_insert_control")
 
     # Delete the device under test.
@@ -129,15 +129,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_control topic was broadcast")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Control ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Control ID 300.")
         print("\033[35m\nfail_delete_control topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Control ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Control ID 4.")
         print("\033[35m\nfail_delete_control topic was broadcast.")
 
     @pytest.mark.integration

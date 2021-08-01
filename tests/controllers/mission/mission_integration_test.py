@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.mission.mission_integration_test.py is part
-#       of The RAMSTK Project
+#       tests.controllers.mission.mission_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Mission module integrations."""
 
 # Third Party Imports
@@ -36,7 +36,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission")
     pub.unsubscribe(dut._do_insert_mission, "request_insert_mission")
 
     # Delete the device under test.
@@ -116,15 +116,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_mission topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent mission ID 10."
-        )
+        assert error_message == ("Attempted to delete non-existent Mission ID 10.")
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent mission ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Mission ID 2.")
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
     @pytest.mark.integration
@@ -133,7 +129,7 @@ class TestDeleteMethods:
         successfully deleting a mission."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mission")
 
-        test_datamanager._do_delete(1)
+        pub.sendMessage("request_delete_mission", node_id=1)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mission")
 
@@ -143,7 +139,7 @@ class TestDeleteMethods:
         to delete a non-existent mission ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
 
-        test_datamanager._do_delete(10)
+        pub.sendMessage("request_delete_mission", node_id=10)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
 
@@ -155,7 +151,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
 
         test_datamanager.tree.remove_node(2)
-        test_datamanager._do_delete(2)
+        pub.sendMessage("request_delete_mission", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
 

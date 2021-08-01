@@ -36,7 +36,7 @@ def test_mission(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission")
     pub.unsubscribe(dut._do_insert_mission, "request_insert_mission")
 
     # Delete the device under test.
@@ -60,7 +60,7 @@ def test_phase(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission_phase")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission_phase")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
     pub.unsubscribe(dut._do_insert_mission_phase, "request_insert_mission_phase")
 
     # Delete the device under test.
@@ -84,7 +84,7 @@ def test_environment(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_environment")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_environment")
+    pub.unsubscribe(dut.do_delete, "request_delete_environment")
     pub.unsubscribe(dut._do_insert_environment, "request_insert_environment")
 
     # Delete the device under test.

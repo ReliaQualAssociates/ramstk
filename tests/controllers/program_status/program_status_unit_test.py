@@ -66,7 +66,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_program_status")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_program_status")
+    pub.unsubscribe(dut.do_delete, "request_delete_program_status")
     pub.unsubscribe(dut._do_insert_program_status, "request_insert_program_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
@@ -74,45 +74,40 @@ def test_datamanager(mock_program_dao):
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self):
+    def test_data_manager_create(self, test_datamanager):
         """__init__() should return a Validation data manager."""
-        DUT = dmProgramStatus()
-
-        assert isinstance(DUT, dmProgramStatus)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "program_status"
-        assert DUT._root == 0
-        assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
-        assert pub.isSubscribed(DUT.do_update, "request_update_program_status")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_program_status")
+        assert isinstance(test_datamanager, dmProgramStatus)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._tag == "program_status"
+        assert test_datamanager._root == 0
+        assert test_datamanager._revision_id == 0
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
-            DUT.do_get_attributes, "request_get_program_status_attributes"
+            test_datamanager.do_update, "request_update_program_status"
         )
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_program_status_tree")
         assert pub.isSubscribed(
-            DUT.do_set_attributes, "request_set_program_status_attributes"
+            test_datamanager.do_update_all, "request_update_all_program_status"
         )
-        assert pub.isSubscribed(DUT._do_delete, "request_delete_program_status")
         assert pub.isSubscribed(
-            DUT._do_insert_program_status, "request_insert_program_status"
+            test_datamanager.do_get_attributes, "request_get_program_status_attributes"
         )
-
-        # Unsubscribe from pypubsub topics.
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_program_status_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_program_status_attributes")
-        pub.unsubscribe(DUT.do_update, "request_update_program_status")
-        pub.unsubscribe(DUT.do_select_all, "selected_revision")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_program_status_tree")
-        pub.unsubscribe(DUT._do_delete, "request_delete_program_status")
-        pub.unsubscribe(DUT._do_insert_program_status, "request_insert_program_status")
-        pub.unsubscribe(
-            DUT._do_set_attributes, "succeed_calculate_all_validation_tasks"
+        assert pub.isSubscribed(
+            test_datamanager.do_get_tree, "request_get_program_status_tree"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_set_attributes, "request_set_program_status_attributes"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_delete, "request_delete_program_status"
+        )
+        assert pub.isSubscribed(
+            test_datamanager._do_insert_program_status, "request_insert_program_status"
         )
 
 
@@ -143,15 +138,6 @@ class TestSelectMethods:
         assert isinstance(_status, MockRAMSTKProgramStatus)
         assert _status.cost_remaining == 212.32
         assert _status.time_remaining == 112.5
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -188,7 +174,7 @@ class TestDeleteMethods:
     def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
         assert test_datamanager.tree.get_node(2) is None
 

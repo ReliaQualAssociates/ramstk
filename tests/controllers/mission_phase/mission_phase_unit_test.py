@@ -79,47 +79,45 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission_phase")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission_phase")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
     pub.unsubscribe(dut._do_insert_mission_phase, "request_insert_mission_phase")
 
     # Delete the device under test.
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
     @pytest.mark.unit
-    def test_data_manager(self):
+    def test_data_manager(self, test_datamanager):
         """__init__() should return an MissionPhase data manager."""
-        DUT = dmMissionPhase()
-
-        assert isinstance(DUT, dmMissionPhase)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "mission_phase"
-        assert DUT._root == 0
-        assert DUT._revision_id == 0
+        assert isinstance(test_datamanager, dmMissionPhase)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._tag == "mission_phase"
+        assert test_datamanager._root == 0
+        assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
-            DUT.do_get_attributes, "request_get_mission_phase_attributes"
+            test_datamanager.do_get_attributes, "request_get_mission_phase_attributes"
         )
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_mission_phase_tree")
-        assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
-        assert pub.isSubscribed(DUT.do_update, "request_update_mission_phase")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_mission_phase")
-        assert pub.isSubscribed(DUT._do_delete, "request_delete_mission_phase")
         assert pub.isSubscribed(
-            DUT._do_insert_mission_phase, "request_insert_mission_phase"
+            test_datamanager.do_get_tree, "request_get_mission_phase_tree"
         )
-
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_mission_phase_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_mission_phase_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "lvw_editing_mission_phase")
-        pub.unsubscribe(DUT.do_update, "request_update_mission_phase")
-        pub.unsubscribe(DUT.do_select_all, "selected_revision")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_mission_phase_tree")
-        pub.unsubscribe(DUT._do_delete, "request_delete_mission_phase")
-        pub.unsubscribe(DUT._do_insert_mission_phase, "request_insert_mission_phase")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
+        assert pub.isSubscribed(
+            test_datamanager.do_update, "request_update_mission_phase"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_update_all, "request_update_all_mission_phase"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_delete, "request_delete_mission_phase"
+        )
+        assert pub.isSubscribed(
+            test_datamanager._do_insert_mission_phase, "request_insert_mission_phase"
+        )
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -151,15 +149,6 @@ class TestSelectMethods:
 
         assert isinstance(_mission_phase, MockRAMSTKMissionPhase)
         assert _mission_phase.phase_id == 1
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -195,6 +184,6 @@ class TestDeleteMethods:
     def test_do_delete(self, test_datamanager):
         """_do_delete() should remove the passed mission phase ID."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_delete(1)
+        test_datamanager.do_delete(1)
 
         assert test_datamanager.tree.get_node(1) is None

@@ -59,7 +59,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_similar_item")
     pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
     pub.unsubscribe(dut._do_insert_similar_item, "request_insert_similar_item")
 
     # Delete the device under test.
@@ -77,8 +77,7 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should clear nodes from an existing allocation
-        tree."""
+        """do_select_all() should clear nodes from an existing allocation tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1})
@@ -118,8 +117,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_sibling(self):
-        """do_insert() should send the success message after successfully
-        inserting a new sibling hardware assembly."""
+        """do_insert() should send the success message after successfully inserting a
+        new sibling hardware assembly."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
 
         pub.sendMessage("request_insert_similar_item", hardware_id=4, parent_id=1)
@@ -128,8 +127,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_datamanager):
-        """_do_insert_function() should send the fail message if attempting to
-        add a function to a non-existent parent ID."""
+        """_do_insert_function() should send the fail message if attempting to add a
+        function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
         _revision_id = test_datamanager._revision_id
@@ -143,8 +142,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_hardware(self):
-        """_do_insert_function() should send the fail message if attempting to
-        add a function to a non-existent parent ID."""
+        """_do_insert_function() should send the fail message if attempting to add a
+        function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
 
         pub.sendMessage("request_insert_similar_item", hardware_id=15, parent_id=0)
@@ -162,25 +161,20 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent similar item "
-            "record with hardware ID 300."
+            "Attempted to delete non-existent Similar Item ID 300."
         )
         print("\033[35m\nfail_delete_similar_item topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent similar item record "
-            "with hardware ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Similar Item ID 2.")
         print("\033[35m\nfail_delete_similar_item topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
+        """_do_delete() should send the success message with the treelib Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_similar_item")
 
-        pub.sendMessage("request_delete_hardware", node_id=3)
+        pub.sendMessage("request_delete_similar_item", node_id=3)
 
         assert test_datamanager.tree.get_node(3) is None
 
@@ -191,19 +185,18 @@ class TestDeleteMethods:
         """_do_delete() should send the fail message."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_similar_item")
 
-        pub.sendMessage("request_delete_hardware", node_id=300)
+        pub.sendMessage("request_delete_similar_item", node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_similar_item")
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
 
         test_datamanager.tree.remove_node(2)
-        pub.sendMessage("request_delete_hardware", node_id=2)
+        pub.sendMessage("request_delete_similar_item", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
 
@@ -273,8 +266,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
         _similar_item = test_datamanager.do_select(1, table="similar_item")
@@ -286,8 +279,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
         )
@@ -303,8 +296,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update() should return a non-zero error code when passed a
-        Allocation ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Allocation ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
         pub.sendMessage(
@@ -315,8 +308,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a Hazard
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Hazard ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 
         test_datamanager.tree.get_node(1).data.pop("similar_item")
@@ -417,8 +410,7 @@ class TestGetterSetter:
 
     @pytest.mark.skip
     def test_on_get_attributes(self, mock_program_dao, test_toml_user_configuration):
-        """_get_all_attributes() should update the attributes dict on
-        success."""
+        """_get_all_attributes() should update the attributes dict on success."""
         DUT = amSimilarItem(test_toml_user_configuration)
 
         DATAMGR = dmSimilarItem()
@@ -434,8 +426,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_on_get_data_manager_tree(self):
-        """_on_get_tree() should assign the data manager's tree to the _tree
-        attribute in response to the succeed_get_hardware_tree message."""
+        """_on_get_tree() should assign the data manager's tree to the _tree attribute
+        in response to the succeed_get_hardware_tree message."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_similar_item_tree"
         )
@@ -473,7 +465,8 @@ class TestAnalysisMethods:
             0.0005607143
         )
         print(
-            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for Topic 633."
+            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for "
+            "Topic 633."
         )
 
     def on_succeed_calculate_user_defined(self, tree):

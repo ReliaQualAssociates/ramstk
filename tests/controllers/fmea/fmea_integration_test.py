@@ -49,7 +49,7 @@ def test_mode(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mode")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mode")
+    pub.unsubscribe(dut.do_delete, "request_delete_mode")
     pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
 
     # Delete the device under test.
@@ -73,7 +73,7 @@ def test_mechanism(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mechanism")
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mechanism")
+    pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
 
     # Delete the device under test.
@@ -104,7 +104,7 @@ def test_cause(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_cause")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_cause")
+    pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut._do_insert_cause, "request_insert_cause")
 
     # Delete the device under test.
@@ -136,7 +136,7 @@ def test_control(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_control")
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_control_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_control")
+    pub.unsubscribe(dut.do_delete, "request_delete_control")
     pub.unsubscribe(dut._do_insert_control, "request_insert_control")
 
     # Delete the device under test.
@@ -168,7 +168,7 @@ def test_action(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_action")
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_action")
+    pub.unsubscribe(dut.do_delete, "request_delete_action")
     pub.unsubscribe(dut._do_insert_action, "request_insert_action")
 
     # Delete the device under test.

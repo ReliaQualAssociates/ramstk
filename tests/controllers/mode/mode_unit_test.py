@@ -126,7 +126,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mode")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mode")
+    pub.unsubscribe(dut.do_delete, "request_delete_mode")
     pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
 
     # Delete the device under test.
@@ -157,7 +157,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_update_all, "request_update_all_mode"
         )
-        assert pub.isSubscribed(test_datamanager._do_delete, "request_delete_mode")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mode")
         assert pub.isSubscribed(test_datamanager._do_insert_mode, "request_insert_mode")
 
     @pytest.mark.unit
@@ -208,14 +208,6 @@ class TestSelectMethods:
         assert _mode.description == "Test Failure Mode #1"
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """should raise a KeyError when an unknown table name is requested."""
-        test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """should return None when a non-existent Mode ID is requested."""
         test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
@@ -247,7 +239,7 @@ class TestDeleteMethods:
     def test_do_delete(self, test_datamanager):
         """should remove deleted mode from the records tree and update last_id."""
         test_datamanager.do_select_all({"revision_id": 1, "hardware_id": 1})
-        test_datamanager._do_delete(4)
+        test_datamanager.do_delete(4)
 
         assert test_datamanager.tree.get_node(4) is None
 

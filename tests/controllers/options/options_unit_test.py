@@ -86,7 +86,7 @@ class TestCreateControllers:
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
         assert DUT._pkey == {
-            "siteinfo": ["site_id"],
+            "option": ["site_id"],
         }
         assert DUT._tag == "option"
         assert DUT._root == 0
@@ -116,7 +116,7 @@ class TestSelectMethods:
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
-            test_datamanager.tree.get_node(1).data["siteinfo"], MockRAMSTKSiteInfo
+            test_datamanager.tree.get_node(1).data["option"], MockRAMSTKSiteInfo
         )
         # There should be a root node with no data package and a node with
         # the one RAMSTKSiteInfo record.
@@ -128,7 +128,7 @@ class TestSelectMethods:
         success."""
         test_datamanager.do_select_all({"site_id": 1})
 
-        _options = test_datamanager.do_select(1, table="siteinfo")
+        _options = test_datamanager.do_select(1, table="option")
 
         assert isinstance(_options, MockRAMSTKSiteInfo)
         assert _options.site_id == 1
@@ -154,18 +154,9 @@ class TestSelectMethods:
         assert _options.fta_enabled == 0
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all({"site_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Options ID is
         requested."""
         test_datamanager.do_select_all({"site_id": 1})
 
-        assert test_datamanager.do_select(100, table="siteinfo") is None
+        assert test_datamanager.do_select(100, table="option") is None

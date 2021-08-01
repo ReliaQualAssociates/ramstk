@@ -7,12 +7,10 @@
 """Test Method Package Data Controller."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -21,14 +19,22 @@ from ramstk.models.programdb import RAMSTKTestMethod
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Test Method data manager.
+    """Contain the attributes and methods of the Test Method data manager."""
 
-    This class manages the Test Method data from the RAMSTKTestMethod
-    data models.
-    """
+    # Define private dictionary class attributes.
 
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_test_id"
+    _db_tablename = "ramstk_test_method"
     _tag = "test_method"
-    _root = 0
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Test Method data manager instance."""
@@ -67,7 +73,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_load")
 
-        pub.subscribe(self._do_delete, "request_delete_test_method")
         pub.subscribe(self._do_insert_test_method, "request_insert_test_method")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -110,39 +115,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_test_methods",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a Test Method element.
-
-        :param node_id: the node (Test Method element) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, "test_method")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_test_method",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent Test Method ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_test_method",
-                error_message=_error_msg,
-            )
 
     def _do_insert_test_method(self, parent_id: int) -> None:
         """Add a failure Test Method.

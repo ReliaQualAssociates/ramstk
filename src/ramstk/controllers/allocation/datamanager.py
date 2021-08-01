@@ -1,11 +1,10 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.allocation.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.allocation.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Allocation Package Data Model."""
 
 # Standard Library Imports
@@ -25,8 +24,21 @@ from ramstk.models.programdb import RAMSTKAllocation
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Allocation data manager."""
 
-    _tag: str = "allocations"
-    _root: int = 0
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_hardware_id"
+    _db_tablename = "ramstk_allocation"
+    _root = 0
+    _tag = "allocation"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Allocation data manager instance."""
@@ -54,23 +66,10 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_tree, "succeed_calculate_allocation")
         pub.subscribe(super().do_update, "request_update_allocation")
 
-        pub.subscribe(self.do_get_tree, "request_get_allocation_tree")
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_set_all_attributes, "succeed_calculate_allocation_goals")
 
-        pub.subscribe(self._do_delete, "request_delete_hardware")
         pub.subscribe(self._do_insert_allocation, "request_insert_allocation")
-
-    def do_get_tree(self) -> None:
-        """Retrieve the allocation treelib Tree.
-
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage(
-            "succeed_get_allocation_tree",
-            tree=self.tree,
-        )
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve the Allocation BoM data from the RAMSTK Program database.
@@ -120,44 +119,6 @@ class DataManager(RAMSTKDataManager):
             super().do_set_attributes(
                 node_id=[attributes["hardware_id"], -1],
                 package={_key: attributes[_key]},
-            )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove an Allocation record.
-
-        :param node_id: the node (hardware) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            # Delete the children (if any), then the parent node that was
-            # passed.
-            for _child in self.tree.children(node_id):
-                super().do_delete(_child.identifier, "allocation")
-            super().do_delete(node_id, "allocation")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_allocation",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent allocation record "
-                "with hardware ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_allocation",
-                error_message=_error_msg,
             )
 
     def _do_insert_allocation(self, hardware_id: int, parent_id: int = 0) -> None:

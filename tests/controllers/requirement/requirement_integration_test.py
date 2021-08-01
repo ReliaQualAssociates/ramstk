@@ -42,7 +42,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
     pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
-    pub.unsubscribe(dut._do_delete, "request_delete_requirement")
+    pub.unsubscribe(dut.do_delete, "request_delete_requirement")
     pub.unsubscribe(dut._do_insert_requirement, "request_insert_requirement")
 
     # Delete the device under test.
@@ -160,15 +160,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_requirement topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent requirement ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Requirement ID 300.")
         print("\033[35m\nfail_delete_requirement topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent requirement ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Requirement ID 2.")
         print("\033[35m\nfail_delete_requirement topic was broadcast.")
 
     @pytest.mark.integration

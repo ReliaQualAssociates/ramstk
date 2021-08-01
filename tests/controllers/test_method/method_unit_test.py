@@ -72,7 +72,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_test_method")
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_test_method")
+    pub.unsubscribe(dut.do_delete, "request_delete_test_method")
     pub.unsubscribe(dut._do_insert_test_method, "request_insert_test_method")
 
     # Delete the device under test.
@@ -83,7 +83,6 @@ def test_datamanager(mock_program_dao):
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
         """__init__() should return a PoF data manager."""
@@ -111,7 +110,7 @@ class TestCreateControllers:
             test_datamanager.do_get_tree, "request_get_test_method_tree"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_delete, "request_delete_test_method"
+            test_datamanager.do_delete, "request_delete_test_method"
         )
         assert pub.isSubscribed(
             test_datamanager._do_insert_test_method, "request_insert_test_method"
@@ -122,7 +121,6 @@ class TestCreateControllers:
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
@@ -142,11 +140,9 @@ class TestSelectMethods:
             test_datamanager.tree.get_node(1).data["test_method"], MockRAMSTKTestMethod
         )
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select(self, test_datamanager):
-        """do_select() should return an instance of the RAMSTKTestMethod on
-        success."""
+        """do_select() should return an instance of the RAMSTKTestMethod on success."""
         test_datamanager.do_select_all(
             {
                 "revision_id": 1,
@@ -163,25 +159,6 @@ class TestSelectMethods:
         assert _test_method.description == "Test Test Method #2"
         assert _test_method.boundary_conditions == "Sands"
 
-    @pytest.mark.pof
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 1,
-                "mechanism_id": 1,
-                "load_id": 1,
-            }
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent test_method ID is
@@ -203,11 +180,10 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_datamanager):
-        """_do_insert_test_method() should send the success message after
-        successfully inserting an operating load."""
+        """_do_insert_test_method() should send the success message after successfully
+        inserting an operating load."""
         test_datamanager.do_select_all(
             {
                 "revision_id": 1,
@@ -230,11 +206,10 @@ class TestInsertMethods:
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib Tree
-        when successfully deleting a test method."""
+        """_do_delete() should send the success message with the treelib Tree when
+        successfully deleting a test method."""
         test_datamanager.do_select_all(
             {
                 "revision_id": 1,
@@ -244,6 +219,6 @@ class TestDeleteMethods:
                 "load_id": 1,
             }
         )
-        test_datamanager._do_delete(test_datamanager.last_id)
+        test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1

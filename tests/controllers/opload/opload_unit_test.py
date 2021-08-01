@@ -70,55 +70,50 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_opload")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_opload")
+    pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut._do_insert_opload, "request_insert_opload")
 
     # Delete the device under test.
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
-    def test_data_manager_create(self):
+    def test_data_manager_create(self, test_datamanager):
         """__init__() should return a PoF data manager."""
-        DUT = dmOpLoad()
-
-        assert isinstance(DUT, dmOpLoad)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "opload"
-        assert DUT._root == 0
-        assert DUT._revision_id == 0
-        assert DUT._parent_id == 0
-        assert DUT.last_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, "selected_mechanism")
-        assert pub.isSubscribed(DUT.do_get_attributes, "request_get_opload_attributes")
-        assert pub.isSubscribed(DUT.do_set_attributes, "request_set_opload_attributes")
-        assert pub.isSubscribed(DUT.do_set_attributes, "wvw_editing_opload")
-        assert pub.isSubscribed(DUT.do_update, "request_update_opload")
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_opload_tree")
-        assert pub.isSubscribed(DUT._do_delete, "request_delete_opload")
-        assert pub.isSubscribed(DUT._do_insert_opload, "request_insert_opload")
-
-        # Unsubscribe from pypubsub topics.
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_opload_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_opload_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "wvw_editing_opload")
-        pub.unsubscribe(DUT.do_update, "request_update_opload")
-        pub.unsubscribe(DUT.do_select_all, "selected_mechanism")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_opload_tree")
-        pub.unsubscribe(DUT._do_delete, "request_delete_opload")
-        pub.unsubscribe(DUT._do_insert_opload, "request_insert_opload")
+        assert isinstance(test_datamanager, dmOpLoad)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._tag == "opload"
+        assert test_datamanager._root == 0
+        assert test_datamanager._revision_id == 0
+        assert test_datamanager._parent_id == 0
+        assert test_datamanager.last_id == 0
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mechanism")
+        assert pub.isSubscribed(
+            test_datamanager.do_get_attributes, "request_get_opload_attributes"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_set_attributes, "request_set_opload_attributes"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_set_attributes, "wvw_editing_opload"
+        )
+        assert pub.isSubscribed(test_datamanager.do_update, "request_update_opload")
+        assert pub.isSubscribed(test_datamanager.do_get_tree, "request_get_opload_tree")
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_opload")
+        assert pub.isSubscribed(
+            test_datamanager._do_insert_opload, "request_insert_opload"
+        )
 
 
 @pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
@@ -131,7 +126,6 @@ class TestSelectMethods:
             test_datamanager.tree.get_node(1).data["opload"], MockRAMSTKOpLoad
         )
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKOpLoad on
@@ -146,19 +140,6 @@ class TestSelectMethods:
         assert _opload.description == "Test Operating Load #2"
         assert _opload.priority_id == 0
 
-    @pytest.mark.pof
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 2}
-        )
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(2, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent opload ID is
@@ -174,7 +155,6 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_datamanager):
         """_do_insert_opload() should send the success message after
@@ -194,11 +174,10 @@ class TestInsertMethods:
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
-    @pytest.mark.pof
     @pytest.mark.unit
     def test_do_delete(self, test_datamanager):
         """_do_delete() should send the success message with the treelib Tree
         when successfully deleting a test method."""
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
         assert test_datamanager.tree.get_node(2) is None

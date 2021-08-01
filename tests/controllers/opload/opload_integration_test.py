@@ -38,7 +38,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_opload")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_opload")
+    pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut._do_insert_opload, "request_insert_opload")
 
     # Delete the device under test.
@@ -146,15 +146,11 @@ class TestDeleteMethods:
         )
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent OpLoad ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Opload ID 300.")
         print("\033[35m\nfail_delete_opload topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent OpLoad ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Opload ID 4.")
         print("\033[35m\nfail_delete_opload topic was broadcast.")
 
     @pytest.mark.pof
@@ -164,7 +160,7 @@ class TestDeleteMethods:
         when successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_opload")
 
-        test_datamanager._do_delete(3)
+        pub.sendMessage("request_delete_opload", node_id=3)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_opload")
 
@@ -175,7 +171,7 @@ class TestDeleteMethods:
         a node ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_opload")
 
-        test_datamanager._do_delete(300)
+        pub.sendMessage("request_delete_opload", node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_opload")
 
@@ -188,7 +184,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_opload")
 
         test_datamanager.tree.remove_node(4)
-        test_datamanager._do_delete(4)
+        pub.sendMessage("request_delete_opload", node_id=4)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_opload")
 

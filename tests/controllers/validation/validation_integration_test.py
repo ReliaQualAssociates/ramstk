@@ -62,7 +62,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_validation")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_validation")
+    pub.unsubscribe(dut.do_delete, "request_delete_validation")
     pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
 
     # Delete the device under test.
@@ -83,7 +83,7 @@ def test_programstatus(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_program_status")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_program_status")
+    pub.unsubscribe(dut.do_delete, "request_delete_program_status")
     pub.unsubscribe(dut._do_insert_program_status, "request_insert_program_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
@@ -162,15 +162,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_validation topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent validation task " "ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Validation ID 300.")
         print("\033[35m\nfail_delete_validation topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent validation task " "ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Validation ID 2.")
         print("\033[35m\nfail_delete_validation topic was broadcast.")
 
     @pytest.mark.integration

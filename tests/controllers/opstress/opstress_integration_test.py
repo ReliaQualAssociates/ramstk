@@ -44,7 +44,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_opstress")
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_opstress")
+    pub.unsubscribe(dut.do_delete, "request_delete_opstress")
     pub.unsubscribe(dut._do_insert_opstress, "request_insert_opstress")
 
     # Delete the device under test.
@@ -60,7 +60,6 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["opstress"], RAMSTKOpStress)
         print("\033[36m\nsucceed_retrieve_opstress topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
@@ -98,7 +97,6 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_datamanager):
         """should send success message, add record to record tree and update last_id."""
@@ -110,7 +108,6 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_datamanager):
         """should send the fail message when load ID does not exist."""
@@ -138,18 +135,13 @@ class TestDeleteMethods:
         )
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent OpStress ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Opstress ID 300.")
         print("\033[35m\nfail_delete_opstress topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent OpStress ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Opstress ID 4.")
         print("\033[35m\nfail_delete_opstress topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
         """should remove the record from the record tree and update last_id."""
@@ -162,7 +154,6 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_opstress")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
         """should send the fail message when stress ID does not exist."""
@@ -172,14 +163,13 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_opstress")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
         """should send the fail message record does not exist in record tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_opstress")
 
         test_datamanager.tree.remove_node(4)
-        test_datamanager._do_delete(4)
+        pub.sendMessage("request_delete_opstress", node_id=4)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_opstress")
 
@@ -220,7 +210,6 @@ class TestUpdateMethods:
         assert error_message == ("do_update: No data package found for opstress ID 3.")
         print("\033[35m\nfail_update_opstress topic was broadcast")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
         """do_update() should return a zero error code on success."""
@@ -237,7 +226,6 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_opstress")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
         """do_update_all() should broadcast the succeed message on success."""
@@ -247,7 +235,6 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
@@ -261,7 +248,6 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_opstress")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a
@@ -323,7 +309,6 @@ class TestGetterSetter:
         )
         print("\033[36m\nsucceed_get_opstress_tree topic was broadcast")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
         """do_get_attributes() should return a dict of mode attributes on
@@ -336,7 +321,6 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_opstress_attributes"
         )
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self, test_datamanager):
         """on_get_tree() should return the PoF treelib Tree."""
@@ -350,7 +334,6 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_opstress_tree"
         )
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
         """do_set_attributes() should return None when successfully setting

@@ -7,12 +7,10 @@
 """Mode Package Data Controller."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -23,8 +21,20 @@ from ramstk.models.programdb import RAMSTKMode
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Mode data manager."""
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_mode_id"
+    _db_tablename = "ramstk_mode"
     _tag = "mode"
-    _root = 0
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a Mode data manager instance."""
@@ -53,7 +63,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_mode")
         pub.subscribe(self._do_insert_mode, "request_insert_mode")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -87,41 +96,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_modes",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a Mode element.
-
-        :param node_id: the node (Mode element) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _table = list(self.tree.get_node(node_id).data.keys())[0]
-
-            super().do_delete(node_id, _table)
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_mode",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent mode ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_mode",
-                error_message=_error_msg,
-            )
 
     def _do_insert_mode(self) -> None:
         """Add a new failure mode.
