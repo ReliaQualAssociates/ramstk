@@ -7,12 +7,10 @@
 """Operating Load Package Data Controller."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -26,8 +24,20 @@ class DataManager(RAMSTKDataManager):
     This class manages the OpLoad data from the RAMSTKOpLoad data model.
     """
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_load_id"
+    _db_tablename = "ramstk_opload"
     _tag = "opload"
-    _root = 0
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a OpLoad data manager instance."""
@@ -64,7 +74,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_mechanism")
 
-        pub.subscribe(self._do_delete, "request_delete_opload")
         pub.subscribe(self._do_insert_opload, "request_insert_opload")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -104,38 +113,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_oploads",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a OpLoad element.
-
-        :param node_id: the node (OpLoad element) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, "opload")
-
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage(
-                "succeed_delete_opload",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent OpLoad ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_opload",
-                error_message=_error_msg,
-            )
 
     def _do_insert_opload(self, parent_id: int) -> None:
         """Add a failure OpLoad.
