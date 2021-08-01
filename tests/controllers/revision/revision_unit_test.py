@@ -104,49 +104,46 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
     pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
-    pub.unsubscribe(dut._do_delete, "request_delete_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_revision")
     pub.unsubscribe(dut._do_insert_revision, "request_insert_revision")
 
     # Delete the device under test.
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self):
+    def test_data_manager_create(self, test_datamanager):
         """__init__() should return a Revision data manager."""
-        DUT = dmRevision()
-
-        assert isinstance(DUT, dmRevision)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "revision"
-        assert DUT._root == 0
-        assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_select_all, "request_retrieve_revisions")
-        assert pub.isSubscribed(DUT.do_update, "request_update_revision")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_revision")
+        assert isinstance(test_datamanager, dmRevision)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._tag == "revision"
+        assert test_datamanager._root == 0
+        assert test_datamanager._revision_id == 0
         assert pub.isSubscribed(
-            DUT.do_get_attributes, "request_get_revision_attributes"
+            test_datamanager.do_select_all, "request_retrieve_revisions"
         )
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_revision_tree")
+        assert pub.isSubscribed(test_datamanager.do_update, "request_update_revision")
         assert pub.isSubscribed(
-            DUT.do_set_attributes, "request_set_revision_attributes"
+            test_datamanager.do_update_all, "request_update_all_revision"
         )
-        assert pub.isSubscribed(DUT._do_delete, "request_delete_revision")
-        assert pub.isSubscribed(DUT._do_insert_revision, "request_insert_revision")
-
-        # Unsubscribe from pypubsub topics.
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_revision_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_revision_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "wvw_editing_revision")
-        pub.unsubscribe(DUT.do_update, "request_update_revision")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_revision_tree")
-        pub.unsubscribe(DUT.do_select_all, "request_retrieve_revisions")
-        pub.unsubscribe(DUT._do_delete, "request_delete_revision")
-        pub.unsubscribe(DUT._do_insert_revision, "request_insert_revision")
+        assert pub.isSubscribed(
+            test_datamanager.do_get_attributes, "request_get_revision_attributes"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_get_tree, "request_get_revision_tree"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_set_attributes, "request_set_revision_attributes"
+        )
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_revision")
+        assert pub.isSubscribed(
+            test_datamanager._do_insert_revision, "request_insert_revision"
+        )
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -184,15 +181,6 @@ class TestSelectMethods:
         test_datamanager.do_select_all()
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all()
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
@@ -228,7 +216,7 @@ class TestDeleteMethods:
         """_do_delete() should send the success message with the treelib
         Tree."""
         test_datamanager.do_select_all()
-        test_datamanager._do_delete(2)
+        test_datamanager.do_delete(2)
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(2) is None
