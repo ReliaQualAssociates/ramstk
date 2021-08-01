@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.function.function_integration_test.py is part of The
-#       RAMSTK Project
+#       tests.controllers.function.function_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing function module integrations."""
 
 # Third Party Imports
@@ -36,7 +36,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_function")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_function")
+    pub.unsubscribe(dut.do_delete, "request_delete_function")
     pub.unsubscribe(dut._do_insert_function, "request_insert_function")
 
     # Delete the device under test.
@@ -150,15 +150,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_function topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent function ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Function ID 300.")
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent function ID 2."
-        )
+        assert error_message == ("Attempted to delete non-existent Function ID 2.")
         print("\033[35m\nfail_delete_function topic was broadcast.")
 
     @pytest.mark.integration
@@ -171,6 +167,19 @@ class TestDeleteMethods:
 
         assert test_datamanager.last_id == 2
         assert test_datamanager.tree.get_node(_last_id) is None
+
+        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_function")
+
+    @pytest.mark.integration
+    def test_do_delete_with_child(self, test_datamanager):
+        """should remove a record and children from record tree and update last_id."""
+        pub.subscribe(self.on_succeed_delete, "succeed_delete_function")
+
+        pub.sendMessage("request_delete_function", node_id=1)
+
+        assert test_datamanager.last_id == 0
+        assert test_datamanager.tree.get_node(2) is None
+        assert test_datamanager.tree.get_node(1) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_function")
 
@@ -189,7 +198,6 @@ class TestDeleteMethods:
         a node that doesn't exist from the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_function")
 
-        test_datamanager.tree.remove_node(2)
         pub.sendMessage("request_delete_function", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_function")

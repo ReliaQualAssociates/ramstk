@@ -174,6 +174,10 @@ class RAMSTKDataManager:
         :rtype: None
         """
         try:
+            for _node in self.tree.children(node_id):
+                _record = self.do_select(_node.identifier, self._db_tablename)
+                self.dao.do_delete(_record)
+
             _record = self.do_select(node_id, self._db_tablename)
             self.dao.do_delete(_record)
 
