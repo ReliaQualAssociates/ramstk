@@ -18,6 +18,18 @@ from ramstk.controllers import dmCause
 from ramstk.models.programdb import RAMSTKCause
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 6,
+        "mechanism_id": 3,
+        "cause_id": 3,
+        "description": "Test Failure Cause #1 for Mechanism ID 3",
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -38,13 +50,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
-    pub.unsubscribe(dut._do_insert_cause, "request_insert_cause")
+    pub.unsubscribe(dut.do_insert, "request_insert_cause")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -54,18 +66,16 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_cause topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should return a Tree() object populated with RAMSTKCause instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
-        test_datamanager.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 1, "mechanism_id": 3}
-        )
+        test_datamanager.do_select_all(test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -76,32 +86,28 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_mechanism_id)=(100) is not present in table "
-            '"ramstk_mechanism".'
-        )
+        assert error_message == ("Parent node '100' is not in the tree")
         print("\033[35m\nfail_insert_cause topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_cause")
 
-        pub.sendMessage("request_insert_cause")
+        pub.sendMessage("request_insert_cause", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_cause")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send the fail message if the mechanism ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_cause")
 
         _parent_id = test_datamanager._parent_id
         test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_cause")
+        pub.sendMessage("request_insert_cause", attributes=test_attributes)
         test_datamanager._parent_id = _parent_id
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_cause")
