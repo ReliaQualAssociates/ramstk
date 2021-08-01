@@ -22,8 +22,8 @@ from ramstk.models.programdb import RAMSTKProgramInfo
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Options data manager.
 
-    This class manages the user-configurable Preferences and Options
-    data from the Site and Program databases.
+    This class manages the user-configurable Preferences and Options data from
+    the Site and Program databases.
     """
 
     # Define private dict class attributes.
@@ -31,6 +31,8 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _db_id_colname = "fld_revision_id"
+    _db_tablename = "ramstk_program_info"
     _tag = "preference"
 
     # Define public dict class attributes.
@@ -45,7 +47,7 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._pkey: Dict[str, List[str]] = {
-            "programinfo": ["revision_id"],
+            "preference": ["revision_id"],
         }
 
         # Initialize private list attributes.
@@ -81,10 +83,10 @@ class DataManager(RAMSTKDataManager):
         # noinspection PyUnresolvedReferences
         for _preference in self.dao.do_select_all(RAMSTKProgramInfo):
             self.tree.create_node(
-                tag="programinfo",
+                tag="preference",
                 identifier=1,
                 parent=self._root,
-                data={"programinfo": _preference},
+                data={"preference": _preference},
             )
 
         pub.sendMessage(

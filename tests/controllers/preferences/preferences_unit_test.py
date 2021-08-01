@@ -78,39 +78,35 @@ def test_datamanager(mock_program_dao):
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self):
+    def test_data_manager_create(self, test_datamanager):
         """__init__() should return a Options data manager."""
-        DUT = dmPreferences()
-
-        assert isinstance(DUT, dmPreferences)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._pkey == {
-            "programinfo": ["revision_id"],
+        assert isinstance(test_datamanager, dmPreferences)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, BaseDatabase)
+        assert test_datamanager._pkey == {
+            "preference": ["revision_id"],
         }
-        assert DUT._tag == "preference"
-        assert DUT._root == 0
+        assert test_datamanager._tag == "preference"
+        assert test_datamanager._root == 0
 
-        assert pub.isSubscribed(DUT._do_select_all, "succeed_connect_program_database")
-        assert pub.isSubscribed(DUT.do_update, "request_update_preference")
         assert pub.isSubscribed(
-            DUT.do_get_attributes, "request_get_preference_attributes"
+            test_datamanager._do_select_all, "succeed_connect_program_database"
         )
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_preference_tree")
+        assert pub.isSubscribed(test_datamanager.do_update, "request_update_preference")
         assert pub.isSubscribed(
-            DUT.do_set_attributes, "request_set_preference_attributes"
+            test_datamanager.do_get_attributes, "request_get_preference_attributes"
         )
-
-        # Unsubscribe from pypubsub topics.
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_preference_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_preference_attributes")
-        pub.unsubscribe(DUT.do_update, "request_update_preference")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_preference_tree")
-        pub.unsubscribe(DUT._do_select_all, "succeed_connect_program_database")
+        assert pub.isSubscribed(
+            test_datamanager.do_get_tree, "request_get_preference_tree"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_set_attributes, "request_set_preference_attributes"
+        )
 
 
 @pytest.mark.usefixtures("mock_program_dao", "test_datamanager")
@@ -124,7 +120,7 @@ class TestSelectMethods:
         test_datamanager._do_select_all(mock_program_dao)
 
         assert isinstance(
-            test_datamanager.tree.get_node(1).data["programinfo"], MockRAMSTKProgramInfo
+            test_datamanager.tree.get_node(1).data["preference"], MockRAMSTKProgramInfo
         )
 
     @pytest.mark.unit
@@ -133,7 +129,7 @@ class TestSelectMethods:
         success."""
         test_datamanager._do_select_all(mock_program_dao)
 
-        _preferences = test_datamanager.do_select(1, table="programinfo")
+        _preferences = test_datamanager.do_select(1, table="preference")
 
         assert isinstance(_preferences, MockRAMSTKProgramInfo)
         assert _preferences.function_active == 1
@@ -159,18 +155,9 @@ class TestSelectMethods:
         assert _preferences.last_saved_by == ""
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, mock_program_dao, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager._do_select_all(mock_program_dao)
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, mock_program_dao, test_datamanager):
         """do_select() should return None when a non-existent Options ID is
         requested."""
         test_datamanager._do_select_all(mock_program_dao)
 
-        assert test_datamanager.do_select(100, table="programinfo") is None
+        assert test_datamanager.do_select(100, table="preference") is None

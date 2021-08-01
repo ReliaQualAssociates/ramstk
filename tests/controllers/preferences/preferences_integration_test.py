@@ -48,7 +48,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
         # There should be a root node with no data package and a node with
         # the one RAMSTKProgramInfo record.
         assert len(tree.all_nodes()) == 2
@@ -104,27 +104,23 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_preferences")
 
-        test_datamanager.tree.get_node(1).data["programinfo"].hardware_active = 0
-        test_datamanager.tree.get_node(1).data["programinfo"].vandv_active = 0
+        test_datamanager.tree.get_node(1).data["preference"].hardware_active = 0
+        test_datamanager.tree.get_node(1).data["preference"].vandv_active = 0
 
-        pub.sendMessage("request_update_preference", node_id=1, table="programinfo")
+        pub.sendMessage("request_update_preference", node_id=1, table="preference")
 
-        assert (
-            test_datamanager.tree.get_node(1).data["programinfo"].hardware_active == 0
-        )
-        assert test_datamanager.tree.get_node(1).data["programinfo"].vandv_active == 0
+        assert test_datamanager.tree.get_node(1).data["preference"].hardware_active == 0
+        assert test_datamanager.tree.get_node(1).data["preference"].vandv_active == 0
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_preferences")
 
-        test_datamanager.tree.get_node(1).data["programinfo"].hardware_active = 1
-        test_datamanager.tree.get_node(1).data["programinfo"].vandv_active = 1
+        test_datamanager.tree.get_node(1).data["preference"].hardware_active = 1
+        test_datamanager.tree.get_node(1).data["preference"].vandv_active = 1
 
-        pub.sendMessage("request_update_preference", node_id=1, table="programinfo")
+        pub.sendMessage("request_update_preference", node_id=1, table="preference")
 
-        assert (
-            test_datamanager.tree.get_node(1).data["programinfo"].hardware_active == 1
-        )
-        assert test_datamanager.tree.get_node(1).data["programinfo"].vandv_active == 1
+        assert test_datamanager.tree.get_node(1).data["preference"].hardware_active == 1
+        assert test_datamanager.tree.get_node(1).data["preference"].vandv_active == 1
 
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
@@ -140,8 +136,8 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
-        test_datamanager.tree.get_node(1).data["programinfo"].hardware_active = {0: 1}
-        pub.sendMessage("request_update_preference", node_id=1, table="programinfo")
+        test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
+        pub.sendMessage("request_update_preference", node_id=1, table="preference")
 
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
@@ -150,9 +146,9 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
-        test_datamanager.tree.get_node(1).data["programinfo"].hardware_active = {0: 1}
+        test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
 
-        pub.sendMessage("request_update_preference", node_id=1, table="programinfo")
+        pub.sendMessage("request_update_preference", node_id=1, table="preference")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
@@ -163,7 +159,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
 
         pub.sendMessage(
-            "request_update_preference", node_id="skullduggery", table="programinfo"
+            "request_update_preference", node_id="skullduggery", table="preference"
         )
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
@@ -174,9 +170,9 @@ class TestUpdateMethods:
         Options ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
 
-        test_datamanager.tree.get_node(1).data.pop("programinfo")
+        test_datamanager.tree.get_node(1).data.pop("preference")
 
-        pub.sendMessage("request_update_preference", node_id=1, table="programinfo")
+        pub.sendMessage("request_update_preference", node_id=1, table="preference")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
 
@@ -212,12 +208,12 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["programinfo"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
         print("\033[36m\nsucceed_get_preferences_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["programinfo"].function_active == 0
+        assert tree.get_node(1).data["preference"].function_active == 0
         print("\033[36m\nsucceed_get_options_tree topic was broadcast")
 
     @pytest.mark.integration
@@ -229,7 +225,7 @@ class TestGetterSetter:
         )
 
         pub.sendMessage(
-            "request_get_preference_attributes", node_id=1, table="programinfo"
+            "request_get_preference_attributes", node_id=1, table="preference"
         )
 
         pub.unsubscribe(
@@ -268,4 +264,4 @@ class TestGetterSetter:
             node_id=[1],
             package={"function_active": 1},
         )
-        assert test_datamanager.do_select(1, table="programinfo").function_active == 1
+        assert test_datamanager.do_select(1, table="preference").function_active == 1
