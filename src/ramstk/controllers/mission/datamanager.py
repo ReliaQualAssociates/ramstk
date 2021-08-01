@@ -8,12 +8,10 @@
 """Mission Package Data Model."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -24,7 +22,20 @@ from ramstk.models.programdb import RAMSTKMission
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Mission data manager."""
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_mission_id"
+    _db_tablename = "ramstk_mission"
     _tag = "mission"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a RAMSTKFailureDefinition, data manager instance."""
@@ -53,7 +64,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_mission")
         pub.subscribe(self._do_insert_mission, "request_insert_mission")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -83,37 +93,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_missions",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a usage profile element.
-
-        :param node_id: the usage profile element ID to remove.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, "mission")
-
-            self.tree.remove_node(node_id)
-
-            pub.sendMessage(
-                "succeed_delete_mission",
-                tree=self.tree,
-            )
-        except (DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent mission ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_mission",
-                error_message=_error_msg,
-            )
 
     def _do_insert_mission(self) -> None:
         """Add a new mission for revision ID.

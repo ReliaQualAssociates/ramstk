@@ -64,43 +64,41 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mission")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mission")
+    pub.unsubscribe(dut.do_delete, "request_delete_mission")
     pub.unsubscribe(dut._do_insert_mission, "request_insert_mission")
 
     # Delete the device under test.
     del dut
 
 
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
     """Class for controller initialization test suite."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self):
+    def test_data_manager_create(self, test_datamanager):
         """__init__() should return an Mission data manager."""
-        DUT = dmMission()
-
-        assert isinstance(DUT, dmMission)
-        assert isinstance(DUT.tree, Tree)
-        assert isinstance(DUT.dao, BaseDatabase)
-        assert DUT._tag == "mission"
-        assert DUT._root == 0
-        assert DUT._revision_id == 0
-        assert pub.isSubscribed(DUT.do_get_attributes, "request_get_mission_attributes")
-        assert pub.isSubscribed(DUT.do_get_tree, "request_get_mission_tree")
-        assert pub.isSubscribed(DUT.do_select_all, "selected_revision")
-        assert pub.isSubscribed(DUT.do_update, "request_update_mission")
-        assert pub.isSubscribed(DUT.do_update_all, "request_update_all_mission")
-        assert pub.isSubscribed(DUT._do_delete, "request_delete_mission")
-        assert pub.isSubscribed(DUT._do_insert_mission, "request_insert_mission")
-
-        pub.unsubscribe(DUT.do_get_attributes, "request_get_mission_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "request_set_mission_attributes")
-        pub.unsubscribe(DUT.do_set_attributes, "lvw_editing_usage_profile")
-        pub.unsubscribe(DUT.do_update, "request_update_mission")
-        pub.unsubscribe(DUT.do_select_all, "selected_revision")
-        pub.unsubscribe(DUT.do_get_tree, "request_get_mission_tree")
-        pub.unsubscribe(DUT._do_delete, "request_delete_mission")
-        pub.unsubscribe(DUT._do_insert_mission, "request_insert_mission")
+        assert isinstance(test_datamanager, dmMission)
+        assert isinstance(test_datamanager.tree, Tree)
+        assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._tag == "mission"
+        assert test_datamanager._root == 0
+        assert test_datamanager._revision_id == 0
+        assert pub.isSubscribed(
+            test_datamanager.do_get_attributes, "request_get_mission_attributes"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_get_tree, "request_get_mission_tree"
+        )
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
+        assert pub.isSubscribed(test_datamanager.do_update, "request_update_mission")
+        assert pub.isSubscribed(
+            test_datamanager.do_update_all, "request_update_all_mission"
+        )
+        assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mission")
+        assert pub.isSubscribed(
+            test_datamanager._do_insert_mission, "request_insert_mission"
+        )
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -129,15 +127,6 @@ class TestSelectMethods:
 
         assert isinstance(_mission, MockRAMSTKMission)
         assert _mission.mission_id == 1
-
-    @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
@@ -174,6 +163,6 @@ class TestDeleteMethods:
         """_do_delete_mission() should send the success message after
         successfully deleting a mission."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_delete(1)
+        test_datamanager.do_delete(1)
 
         assert test_datamanager.tree.get_node(1) is None
