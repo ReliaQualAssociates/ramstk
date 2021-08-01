@@ -262,7 +262,7 @@ class RAMSTKDataManager:
             self.tree.create_node(
                 tag=self._tag,
                 identifier=_identifier,
-                parent=self._root,
+                parent=self._parent_id,
                 data={self._tag: _record},
             )
 
@@ -280,6 +280,16 @@ class RAMSTKDataManager:
             pub.sendMessage(
                 "fail_insert_{}".format(self._tag),
                 error_message=_error.msg,
+            )
+        except NodeIDAbsentError as _error:
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=str(_error),
+            )
+            pub.sendMessage(
+                "fail_insert_{}".format(self._tag),
+                error_message=str(_error),
             )
 
     def do_select(self, node_id: Any, table: str) -> Any:
