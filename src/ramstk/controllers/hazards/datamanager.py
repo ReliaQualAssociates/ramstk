@@ -7,12 +7,10 @@
 """Hazards Package Data Model."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -23,7 +21,20 @@ from ramstk.models.programdb import RAMSTKHazardAnalysis
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the Hazard data manager."""
 
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_hazard_id"
+    _db_tablename = "ramstk_hazard_analysis"
     _tag = "hazard"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Hazard data manager instance."""
@@ -51,7 +62,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, "selected_function")
         pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
-        pub.subscribe(self._do_delete, "request_delete_hazard")
         pub.subscribe(self._do_insert_hazard, "request_insert_hazard")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -101,39 +111,6 @@ class DataManager(RAMSTKDataManager):
         for _key in attributes:
             super().do_set_attributes(
                 node_id=[attributes["hazard_id"], ""], package={_key: attributes[_key]}
-            )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a hazard.
-
-        :param node_id: the node (hazard) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        """
-        try:
-            super().do_delete(node_id, "hazard")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_hazard",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = (
-                "{1}: Attempted to delete non-existent hazard ID {0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_hazard",
-                error_message=_error_msg,
             )
 
     def _do_insert_hazard(self, parent_id: int = 0) -> None:

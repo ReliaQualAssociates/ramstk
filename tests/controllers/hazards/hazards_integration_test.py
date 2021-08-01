@@ -54,7 +54,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
     pub.unsubscribe(dut.do_select_all, "selected_function")
     pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
-    pub.unsubscribe(dut._do_delete, "request_delete_hazard")
+    pub.unsubscribe(dut.do_delete, "request_delete_hazard")
     pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
 
     # Delete the device under test.
@@ -150,15 +150,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_hazard topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent hazard ID 10."
-        )
+        assert error_message == ("Attempted to delete non-existent Hazard ID 10.")
         print("\033[35m\nfail_delete_hazard topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent hazard ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Hazard ID 4.")
         print("\033[35m\nfail_delete_hazard topic was broadcast.")
 
     @pytest.mark.integration
