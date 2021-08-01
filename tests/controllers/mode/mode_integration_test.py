@@ -52,7 +52,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mode")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mode")
+    pub.unsubscribe(dut.do_delete, "request_delete_mode")
     pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
 
     # Delete the device under test.
@@ -149,15 +149,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_mode topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent mode ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Mode ID 300.")
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent mode ID 5."
-        )
+        assert error_message == ("Attempted to delete non-existent Mode ID 5.")
         print("\033[35m\nfail_delete_mode topic was broadcast.")
 
     @pytest.mark.integration
@@ -165,7 +161,7 @@ class TestDeleteMethods:
         """should remove record from records tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mode")
 
-        test_datamanager._do_delete(4)
+        pub.sendMessage("request_delete_mode", node_id=4)
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mode")
 
@@ -174,7 +170,7 @@ class TestDeleteMethods:
         """should send fail message when node ID doesn't exist in records tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mode")
 
-        test_datamanager._do_delete(300)
+        pub.sendMessage("request_delete_mode", node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mode")
 
@@ -184,7 +180,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
         test_datamanager.tree.remove_node(5)
-        test_datamanager._do_delete(5)
+        pub.sendMessage("request_delete_mode", node_id=5)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
