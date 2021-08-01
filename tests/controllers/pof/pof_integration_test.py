@@ -40,7 +40,7 @@ def test_mechanism(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_mechanism")
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_mechanism")
+    pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
 
     # Delete the device under test.
@@ -71,7 +71,7 @@ def test_opload(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_opload")
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_opload")
+    pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut._do_insert_opload, "request_insert_opload")
 
     # Delete the device under test.
@@ -103,7 +103,7 @@ def test_opstress(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_opstress")
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_opstress")
+    pub.unsubscribe(dut.do_delete, "request_delete_opstress")
     pub.unsubscribe(dut._do_insert_opstress, "request_insert_opstress")
 
     # Delete the device under test.
@@ -135,7 +135,7 @@ def test_method(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_test_method")
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_test_method")
+    pub.unsubscribe(dut.do_delete, "request_delete_test_method")
     pub.unsubscribe(dut._do_insert_test_method, "request_insert_test_method")
 
     # Delete the device under test.
