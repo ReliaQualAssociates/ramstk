@@ -7,7 +7,6 @@
 """Program Status Package Data Model."""
 
 # Standard Library Imports
-import inspect
 from datetime import date
 from typing import Any, Dict, List
 
@@ -21,13 +20,22 @@ from ramstk.models.programdb import RAMSTKProgramStatus
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Program Status data manager.
+    """Contain the attributes and methods of the Program Status data manager."""
 
-    This class manages the validation data from the RAMSTKProgram Status
-    and RAMSKTProgramStatus data models.
-    """
+    # Define private dictionary class attributes.
 
-    _tag: str = "program_status"
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_status_id"
+    _db_tablename = "ramstk_program_status"
+    _tag = "program_status"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Program Status data manager instance."""
@@ -58,7 +66,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_program_status")
         pub.subscribe(self._do_insert_program_status, "request_insert_program_status")
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
@@ -96,40 +103,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_program_status",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a Program Status task.
-
-        :param node_id: the node (validation) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        :raises: NodeIDAbsentError if the record is deleted from the
-            database but there is no corresponding node in the tree.  This
-            condition shouldn't happen, so it should be dealt with using the
-            logger and a user dialog.
-        """
-        try:
-            super().do_delete(node_id, "program_status")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage("succeed_delete_program_status", tree=self.tree)
-        except (AttributeError, DataAccessError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent program status ID " "{0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_program_status",
-                error_message=_error_msg,
-            )
 
     def _do_insert_program_status(self) -> None:
         """Add a new program status record.

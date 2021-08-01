@@ -38,7 +38,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_program_status")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_program_status")
+    pub.unsubscribe(dut.do_delete, "request_delete_program_status")
     pub.unsubscribe(dut._do_insert_program_status, "request_insert_program_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
@@ -121,13 +121,13 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent program status ID " "300."
+            "Attempted to delete non-existent Program Status ID 300."
         )
         print("\033[35m\nfail_delete_program_status topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
         assert error_message == (
-            "_do_delete: Attempted to delete non-existent program status ID 1."
+            "Attempted to delete non-existent Program Status ID 1."
         )
         print("\033[35m\nfail_delete_program_status topic was broadcast.")
 
@@ -137,7 +137,11 @@ class TestDeleteMethods:
         Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_program_status")
 
-        test_datamanager._do_delete(test_datamanager.last_id)
+        assert test_datamanager.last_id == 3
+
+        pub.sendMessage(
+            "request_delete_program_status", node_id=test_datamanager.last_id
+        )
 
         assert test_datamanager.last_id == 2
 
@@ -149,7 +153,7 @@ class TestDeleteMethods:
         a record that doesn't exist in the database."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_program_status")
 
-        test_datamanager._do_delete(300)
+        pub.sendMessage("request_delete_program_status", node_id=300)
 
         pub.unsubscribe(
             self.on_fail_delete_non_existent_id, "fail_delete_program_status"
@@ -163,7 +167,7 @@ class TestDeleteMethods:
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
 
         test_datamanager.tree.remove_node(1)
-        test_datamanager._do_delete(1)
+        pub.sendMessage("request_delete_program_status", node_id=1)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
 
