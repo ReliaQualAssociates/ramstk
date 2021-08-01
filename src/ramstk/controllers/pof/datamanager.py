@@ -20,7 +20,18 @@ from ramstk.controllers import RAMSTKDataManager
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the PoF data manager."""
 
+    # Define private dict class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
     _tag = "pof"
+
+    # Define public dict class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a PoF data manager instance."""

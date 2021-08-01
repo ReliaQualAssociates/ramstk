@@ -500,7 +500,7 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_succeed_delete_opstress, "succeed_retrieve_pof")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_delete_opload(self, test_datamanager):
         """should remove the deleted opload record from the records tree."""
         assert test_datamanager.tree.contains("3")
