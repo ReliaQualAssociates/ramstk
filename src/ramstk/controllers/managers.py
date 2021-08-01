@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -131,6 +131,7 @@ class RAMSTKDataManager:
         self.dao: BaseDatabase = BaseDatabase()
         self.last_id: int = 0
         self.tree: treelib.Tree = treelib.Tree()
+        self.do_get_new_record: Callable[[Dict[str, Any]], object]
 
         # Add the root to the Tree().  This is necessary to allow multiple
         # entries at the top level as there can only be one root in a treelib
@@ -142,6 +143,7 @@ class RAMSTKDataManager:
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
         pub.subscribe(self.do_delete, "request_delete_{}".format(self._tag))
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
+        pub.subscribe(self.do_insert, "request_insert_{}".format(self._tag))
         pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_save_project")
@@ -243,6 +245,43 @@ class RAMSTKDataManager:
             tree=self.tree,
         )
 
+    def do_insert(self, attributes: Dict[str, Any]) -> None:
+        """Add a new record to the RAMSTK program database and records tree.
+
+        :param attributes: the attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _record = self.do_get_new_record(attributes)
+            _identifier = self.last_id + 1
+
+            self.dao.do_insert(_record)
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+            self.tree.create_node(
+                tag=self._tag,
+                identifier=_identifier,
+                parent=self._root,
+                data={self._tag: _record},
+            )
+
+            pub.sendMessage(
+                "succeed_insert_{}".format(self._tag),
+                node_id=_identifier,
+                tree=self.tree,
+            )
+        except DataAccessError as _error:
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error.msg,
+            )
+            pub.sendMessage(
+                "fail_insert_{}".format(self._tag),
+                error_message=_error.msg,
+            )
+
     def do_select(self, node_id: Any, table: str) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
 
@@ -283,7 +322,8 @@ class RAMSTKDataManager:
         """
         [[_key, _value]] = package.items()
 
-        for _table in self._pkey:
+        for _item in self._pkey.items():
+            _table = _item[0]
             try:
                 _attributes = self.do_select(node_id[0], table=_table).get_attributes()
             except (AttributeError, KeyError):
