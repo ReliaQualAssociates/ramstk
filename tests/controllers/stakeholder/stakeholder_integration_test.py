@@ -52,7 +52,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_stakeholder")
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_stakeholder")
+    pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
     pub.unsubscribe(dut._do_insert_stakeholder, "request_insert_stakeholder")
 
     # Delete the device under test.
@@ -133,15 +133,11 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_stakeholder topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent stakeholder input ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Stakeholder ID 300.")
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent stakeholder input ID 1."
-        )
+        assert error_message == ("Attempted to delete non-existent Stakeholder ID 1.")
         print("\033[35m\nfail_delete_stakeholder topic was broadcast.")
 
     @pytest.mark.integration

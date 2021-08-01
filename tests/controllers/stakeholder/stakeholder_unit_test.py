@@ -103,7 +103,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_stakeholder")
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut._do_delete, "request_delete_stakeholder")
+    pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
     pub.unsubscribe(dut._do_insert_stakeholder, "request_insert_stakeholder")
 
     # Delete the device under test.
@@ -139,7 +139,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "request_set_stakeholder_attributes"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_delete, "request_delete_stakeholder"
+            test_datamanager.do_delete, "request_delete_stakeholder"
         )
         assert pub.isSubscribed(
             test_datamanager._do_insert_stakeholder, "request_insert_stakeholder"
@@ -204,15 +204,6 @@ class TestSelectMethods:
         assert _stakeholder.priority == 1
 
     @pytest.mark.unit
-    def test_do_select_unknown_table(self, test_datamanager):
-        """do_select() should raise a KeyError when an unknown table name is
-        requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-
-        with pytest.raises(KeyError):
-            test_datamanager.do_select(1, table="scibbidy-bibbidy-doo")
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Stakeholder ID is
         requested."""
@@ -262,7 +253,7 @@ class TestDeleteMethods:
         """_do_delete() should send the success message with the treelib
         Tree."""
         test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_delete(test_datamanager.last_id)
+        test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1
 
