@@ -8,7 +8,6 @@
 """Validation Package Data Model."""
 
 # Standard Library Imports
-import inspect
 from typing import Any, Dict
 
 # Third Party Imports
@@ -21,13 +20,22 @@ from ramstk.models.programdb import RAMSTKValidation
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Validation data manager.
+    """Contain the attributes and methods of the Validation data manager."""
 
-    This class manages the validation data from the RAMSTKValidation and
-    RAMSKTProgramStatus data models.
-    """
+    # Define private dictionary class attributes.
 
-    _tag: str = "validation"
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _db_id_colname = "fld_validation_id"
+    _db_tablename = "ramstk_validation"
+    _tag = "validation"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a Validation data manager instance."""
@@ -56,7 +64,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_delete, "request_delete_validation")
         pub.subscribe(self._do_insert_validation, "request_insert_validation")
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
@@ -91,43 +98,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_validations",
             tree=self.tree,
         )
-
-    def _do_delete(self, node_id: int) -> None:
-        """Remove a Validation task.
-
-        :param node_id: the node (validation) ID to be removed from the
-            RAMSTK Program database.
-        :return: None
-        :rtype: None
-        :raises: NodeIDAbsentError if the record is deleted from the
-            database but there is no corresponding node in the tree.  This
-            condition shouldn't happen, so it should be dealt with using the
-            logger and a user dialog.
-        """
-        try:
-            super().do_delete(node_id, "validation")
-
-            self.tree.remove_node(node_id)
-            self.last_id = max(self.tree.nodes.keys())
-
-            pub.sendMessage(
-                "succeed_delete_validation",
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to delete non-existent validation task ID " "{0}."
-            ).format(str(node_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_delete_validation",
-                error_message=_error_msg,
-            )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
