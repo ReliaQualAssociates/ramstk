@@ -44,7 +44,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_test_method")
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
-    pub.unsubscribe(dut._do_delete, "request_delete_test_method")
+    pub.unsubscribe(dut.do_delete, "request_delete_test_method")
     pub.unsubscribe(dut._do_insert_test_method, "request_insert_test_method")
 
     # Delete the device under test.
@@ -59,7 +59,6 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["test_method"], RAMSTKTestMethod)
         print("\033[36m\nsucceed_retrieve_test_method topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self):
         """do_select_all() should return a Tree() object populated with
@@ -98,22 +97,20 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_sibling(self):
-        """_do_insert_test_method() should send the success message after
-        successfully inserting an operating load."""
+        """_do_insert_test_method() should send the success message after successfully
+        inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
         pub.sendMessage("request_insert_test_method", parent_id=3)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_datamanager):
-        """_do_insert_test_method() should send the fail message if attempting
-        to add an operating load to a non-existent test_method ID."""
+        """_do_insert_test_method() should send the fail message if attempting to add
+        an operating load to a non-existent test_method ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 
         test_datamanager._parent_id = 100
@@ -131,22 +128,17 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_test_method topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Test Method ID 300."
-        )
+        assert error_message == ("Attempted to delete non-existent Test Method ID 300.")
         print("\033[35m\nfail_delete_test_method topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "_do_delete: Attempted to delete non-existent Test Method ID 4."
-        )
+        assert error_message == ("Attempted to delete non-existent Test Method ID 4.")
         print("\033[35m\nfail_delete_test_method topic was broadcast.")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib Tree
-        when successfully deleting a test method."""
+        """_do_delete() should send the success message with the treelib Tree when
+        successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
         pub.sendMessage("request_delete_test_method", node_id=3)
@@ -155,23 +147,20 @@ class TestDeleteMethods:
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
-        """_do_delete() should send the fail message when attempting to delete
-        a node ID that doesn't exist in the tree."""
+        """_do_delete() should send the fail message when attempting to delete a node
+        ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_test_method")
 
         pub.sendMessage("request_delete_test_method", node_id=300)
 
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_test_method")
 
         test_datamanager.tree.remove_node(4)
@@ -221,7 +210,6 @@ class TestUpdateMethods:
         )
         print("\033[35m\nfail_update_test_method topic was broadcast")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
         """do_update() should return a zero error code on success."""
@@ -237,7 +225,6 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
         """do_update_all() should broadcast the succeed message on success."""
@@ -247,11 +234,10 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
         _test_method = test_datamanager.do_select(3, table="test_method")
@@ -261,7 +247,6 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
         """do_update() should return a non-zero error code when passed the root node
@@ -279,7 +264,6 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
         )
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """do_update() should return a non-zero error code when passed a Test Method ID
@@ -290,11 +274,10 @@ class TestUpdateMethods:
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_test_method")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a FMEA
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a FMEA ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 
         test_datamanager.tree.get_node(4).data.pop("test_method")
@@ -325,11 +308,9 @@ class TestGetterSetter:
         )
         print("\033[36m\nsucceed_get_test_method_tree topic was broadcast")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_get_attributes(self):
-        """do_get_attributes() should return a dict of mode attributes on
-        success."""
+        """do_get_attributes() should return a dict of mode attributes on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
         pub.sendMessage(
@@ -338,7 +319,6 @@ class TestGetterSetter:
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self):
         """on_get_tree() should return the PoF treelib Tree."""
@@ -352,11 +332,10 @@ class TestGetterSetter:
             self.on_succeed_get_data_manager_tree, "succeed_get_test_method_tree"
         )
 
-    @pytest.mark.pof
     @pytest.mark.integration
     def test_do_set_attributes(self):
-        """do_set_attributes() should return None when successfully setting
-        operating load attributes."""
+        """do_set_attributes() should return None when successfully setting operating
+        load attributes."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_test_method_tree")
 
         pub.sendMessage(
