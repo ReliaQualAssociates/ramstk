@@ -7,16 +7,13 @@
 """Function Package Data Model."""
 
 # Standard Library Imports
-import inspect
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKFunction
 
 
@@ -47,11 +44,13 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {"revision_id": 0}
         self._pkey = {"function": ["revision_id", "function_id"]}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKFunction] = RAMSTKFunction
 
         # Initialize public dictionary attributes.
 
@@ -67,7 +66,29 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_insert_function, "request_insert_function")
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["parent_id"]
+
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.function_id = self.last_id + 1
+        _new_record.parent_id = attributes["parent_id"]
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Function data from the RAMSTK Program database.
@@ -76,7 +97,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes["revision_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -84,7 +105,7 @@ class DataManager(RAMSTKDataManager):
         for _function in self.dao.do_select_all(
             RAMSTKFunction,
             key=["revision_id"],
-            value=[self._revision_id],
+            value=[self._fkey["revision_id"]],
             order=RAMSTKFunction.function_id,
         ):
 
@@ -101,68 +122,3 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_functions",
             tree=self.tree,
         )
-
-    def _do_insert_function(self, parent_id: int = 0) -> None:
-        """Add a new function as child of the parent ID function.
-
-        :param parent_id: the parent (function) ID of the function to
-            insert the child.  Default is to add a top-level function.
-        :return: None
-        :rtype: None
-        """
-        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-
-        try:
-            _last_id = self.dao.get_last_id("ramstk_function", "function_id")
-
-            _function = RAMSTKFunction()
-            _function.revision_id = self._revision_id
-            _function.function_id = _last_id + 1
-            _function.name = "New Function"
-            _function.parent_id = parent_id
-
-            self.dao.do_insert(_function)
-
-            self.last_id = _function.function_id
-
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_function.function_id,
-                parent=_function.parent_id,
-                data={self._tag: _function},
-            )
-
-            pub.sendMessage(
-                "succeed_insert_function",
-                node_id=self.last_id,
-                tree=self.tree,
-            )
-        except NodeIDAbsentError:
-            _error_msg: str = (
-                "{1}: Attempted to insert child function under "
-                "non-existent function ID {0}."
-            ).format(str(parent_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_function",
-                error_message=_error_msg,
-            )
-        except DataAccessError:
-            _error_msg = (
-                "{1}: A database error occurred when attempting to "
-                "add a child function to parent function ID "
-                "{0}."
-            ).format(str(parent_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_function",
-                error_message=_error_msg,
-            )

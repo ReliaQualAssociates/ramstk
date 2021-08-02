@@ -19,7 +19,7 @@ from ramstk.controllers import amAllocation, dmAllocation
 from ramstk.models.programdb import RAMSTKAllocation
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def test_attributes():
     yield {
         "revision_id": 1,
