@@ -119,6 +119,8 @@ class TestCreateControllers:
         """__init__() should return an Environment data manager."""
         assert isinstance(test_datamanager, dmEnvironment)
         assert isinstance(test_datamanager.tree, Tree)
+        assert test_datamanager._db_id_colname == "fld_environment_id"
+        assert test_datamanager._db_tablename == "ramstk_environment"
         assert test_datamanager._tag == "environment"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
