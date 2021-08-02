@@ -114,6 +114,7 @@ class RAMSTKDataManager:
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
+        self._fkey: Dict[str, int] = {}
         self._pkey: Dict[str, List[str]] = {}
         self._dic_insert_function: Dict[str, object] = {}
 
@@ -191,7 +192,7 @@ class RAMSTKDataManager:
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _error_msg: str = ("Attempted to delete non-existent {1} ID {0}.").format(
+            _error_msg: str = "Attempted to delete non-existent {1} ID {0}.".format(
                 str(node_id), self._tag.replace("_", " ").title()
             )
             pub.sendMessage(
@@ -406,7 +407,7 @@ class RAMSTKDataManager:
                 error_message=_error_msg,
             )
         except KeyError:
-            _error_msg = ("{1}: No data package found for {2} ID {0}.").format(
+            _error_msg = "{1}: No data package found for {2} ID {0}.".format(
                 str(node_id), _method_name, table.replace("_", " ")
             )
             pub.sendMessage(
@@ -425,7 +426,7 @@ class RAMSTKDataManager:
                     "{2} ID {0} was the wrong type."
                 ).format(str(node_id), _method_name, table.replace("_", " "))
             else:
-                _error_msg = ("{1}: Attempting to update the root node {0}.").format(
+                _error_msg = "{1}: Attempting to update the root node {0}.".format(
                     str(node_id), _method_name
                 )
             pub.sendMessage(

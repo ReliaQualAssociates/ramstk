@@ -5,7 +5,7 @@
 #       tests.controllers.test_function.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Function algorithms and models."""
 
 # Third Party Imports
@@ -77,6 +77,15 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "function_id": 1,
+        "hazard_id": 1,
+    }
+
+
+@pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
     """Get an analysis manager instance for each test function."""
     # Create the device under test (dut) and connect to the user configuration.
@@ -111,7 +120,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_function")
     pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
     pub.unsubscribe(dut.do_delete, "request_delete_hazard")
-    pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
+    pub.unsubscribe(dut.do_insert, "request_insert_hazard")
 
     # Delete the device under test.
     del dut
@@ -127,6 +136,8 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmHazards)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._db_id_colname == "fld_hazard_id"
+        assert test_datamanager._db_tablename == "ramstk_hazard_analysis"
         assert test_datamanager._tag == "hazard"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -143,14 +154,11 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "request_set_hazard_attributes"
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_hazard")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_hazard, "request_insert_hazard"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_hazard")
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_analysismanager):
-        """__init__() should create an instance of the function analysis
-        manager."""
+        """__init__() should create an instance of the function analysis manager."""
         assert isinstance(test_analysismanager, amHazards)
         assert isinstance(
             test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
@@ -169,24 +177,23 @@ class TestCreateControllers:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
+    def test_do_select_all(self, test_attributes, test_datamanager):
         """should return a record tree populated with RAMSTKHazardAnalysis records."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(1).data["hazard"], MockRAMSTKHazardAnalysis
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
-        """do_select() should return an instance of the RAMSTKFunction on
-        success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+    def test_do_select(self, test_attributes, test_datamanager):
+        """do_select() should return an instance of the RAMSTKFunction on success."""
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         _hazard = test_datamanager.do_select(1, table="hazard")
 
@@ -195,24 +202,24 @@ class TestSelectMethods:
         assert _hazard.assembly_probability == "Level A - Frequent"
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Function ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert test_datamanager.do_select(100, table="hazard") is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
-        """_do_insert_hazard() should send the success message after
-        successfully inserting a new hazard."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
-        test_datamanager._do_insert_hazard(parent_id=1)
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+        """_do_insert_hazard() should send the success message after successfully
+        inserting a new hazard."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(2).data["hazard"], RAMSTKHazardAnalysis
@@ -222,29 +229,31 @@ class TestInsertMethods:
         assert test_datamanager.tree.get_node(2).data["hazard"].hazard_id == 2
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """should remove the record from the record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(1)
 
         assert test_datamanager.last_id == 0
         assert test_datamanager.tree.get_node(1) is None
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_hri(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_hri(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_hri() should calculate the hazard risk index hazard
         analysis."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         _attributes = test_datamanager.do_select(1, "hazard").get_attributes()
 
         test_analysismanager.on_get_all_attributes(_attributes)
@@ -256,10 +265,12 @@ class TestAnalysisMethods:
         assert test_analysismanager._attributes["system_hri_f"] == 12
 
     @pytest.mark.unit
-    def test_do_calculate_user_defined(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_user_defined(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_user_defined() should calculate the user-defined hazard
         analysis."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         _attributes = test_datamanager.do_select(1, "hazard").get_attributes()
 
         test_analysismanager.on_get_all_attributes(_attributes)

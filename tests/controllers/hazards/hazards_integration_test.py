@@ -6,7 +6,7 @@
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hazards module algorithms and models."""
 
 # Third Party Imports
@@ -17,6 +17,15 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.controllers import amHazards, dmHazards
 from ramstk.models.programdb import RAMSTKHazardAnalysis
+
+
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "function_id": 1,
+        "hazard_id": 1,
+    }
 
 
 @pytest.fixture(scope="class")
@@ -55,32 +64,32 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_function")
     pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
     pub.unsubscribe(dut.do_delete, "request_delete_hazard")
-    pub.unsubscribe(dut._do_insert_hazard, "request_insert_hazard")
+    pub.unsubscribe(dut.do_insert, "request_insert_hazard")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
         print("\033[36m\nsucceed_retrieve_hazards topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should clear nodes from an existing Hazards tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "function_id": 2})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -101,42 +110,48 @@ class TestInsertMethods:
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
-            "_do_insert_hazard: A database error "
-            "occurred when attempting to add a child "
-            "function to parent function ID 1."
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_revision_id)=(40) is not present in table "
+            '"ramstk_revision".'
         )
         print("\033[35m\nfail_insert_hazard topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_hazard")
 
-        pub.sendMessage("request_insert_hazard", parent_id=1)
+        assert test_datamanager.tree.get_node(5) is None
+
+        pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_hazard")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """_do_insert_hazard() should send the fail message when attempting to
         add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_hazard")
 
-        pub.sendMessage("request_insert_hazard", parent_id=10)
+        assert test_datamanager.tree.get_node(7) is None
+
+        test_datamanager._fkey["function_id"] = 10
+        pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_hazard")
 
     @pytest.mark.integration
-    def test_insert_no_revision(self, test_datamanager):
+    def test_insert_no_revision(self, test_attributes, test_datamanager):
         """_do_insert_hazard() should send the fail message when attempting to
         add a hazard to a non-existent function ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
-        test_datamanager.revision_id = 40
-        pub.sendMessage("request_insert_hazard", parent_id=1)
-        test_datamanager.revision_id = 1
+        assert test_datamanager.tree.get_node(7) is None
+
+        test_datamanager._fkey["revision_id"] = 40
+        pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
