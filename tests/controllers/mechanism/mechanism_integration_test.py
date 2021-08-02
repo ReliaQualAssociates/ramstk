@@ -19,6 +19,16 @@ from ramstk.controllers import dmMechanism
 from ramstk.models.programdb import RAMSTKMechanism
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 6,
+        "mechanism_id": 3,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -37,7 +47,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
-    pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
 
     # Delete the device under test.
     del dut
@@ -65,7 +75,7 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -84,25 +94,23 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_mechanism topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the recrod tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mechanism")
 
-        pub.sendMessage("request_insert_mechanism")
+        pub.sendMessage("request_insert_mechanism", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mechanism")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send the fail message if the mode ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mechanism")
 
-        _parent_id = test_datamanager._parent_id
-        test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_mechanism")
-        test_datamanager._parent_id = _parent_id
+        test_datamanager._fkey["mode_id"] = 100
+        pub.sendMessage("request_insert_mechanism", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mechanism")
 

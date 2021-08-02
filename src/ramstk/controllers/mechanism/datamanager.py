@@ -7,14 +7,13 @@
 """Failure Mechanism Package Data Controller."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKMechanism
 
 
@@ -41,6 +40,11 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            "revision_id": 0,
+            "hardware_id": 0,
+            "mode_id": 0,
+        }
         self._pkey = {
             "mechanism": ["revision_id", "hardware_id", "mode_id", "mechanism_id"],
         }
@@ -48,7 +52,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._hardware_id: int = 0
+        self._record: Type[RAMSTKMechanism] = RAMSTKMechanism
 
         # Initialize public dictionary attributes.
 
@@ -64,7 +68,28 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_mode")
 
-        pub.subscribe(self._do_insert_mechanism, "request_insert_mechanism")
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.hardware_id = self._fkey["hardware_id"]
+        _new_record.mode_id = self._fkey["mode_id"]
+        _new_record.mechanism_id = self.last_id + 1
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Mechanism data from the RAMSTK Program database.
@@ -77,19 +102,23 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        self._revision_id = attributes["revision_id"]
-        self._hardware_id = attributes["hardware_id"]
-        self._parent_id = attributes["mode_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
+        self._fkey["hardware_id"] = attributes["hardware_id"]
+        self._fkey["mode_id"] = attributes["mode_id"]
 
         for _mechanism in self.dao.do_select_all(
             RAMSTKMechanism,
             key=["revision_id", "hardware_id", "mode_id"],
-            value=[self._revision_id, self._hardware_id, self._parent_id],
+            value=[
+                self._fkey["revision_id"],
+                self._fkey["hardware_id"],
+                self._fkey["mode_id"],
+            ],
         ):
             self.tree.create_node(
                 tag="mechanism",
                 identifier=_mechanism.mechanism_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={"mechanism": _mechanism},
             )
             self.last_id = _mechanism.mechanism_id
@@ -98,43 +127,3 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_mechanisms",
             tree=self.tree,
         )
-
-    def _do_insert_mechanism(self) -> None:
-        """Add a failure Mechanism.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _mechanism = RAMSTKMechanism()
-            _mechanism.revision_id = self._revision_id
-            _mechanism.hardware_id = self._hardware_id
-            _mechanism.mode_id = self._parent_id
-            _mechanism.mechanism_id = self.last_id + 1
-
-            self.dao.do_insert(_mechanism)
-
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_mechanism.mechanism_id,
-                parent=self._root,
-                data={self._tag: _mechanism},
-            )
-
-            self.last_id = max(self.last_id, _mechanism.mechanism_id)
-
-            pub.sendMessage(
-                "succeed_insert_{}".format(self._tag),
-                node_id=_mechanism.mechanism_id,
-                tree=self.tree,
-            )
-        except DataAccessError as _error:
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error.msg,
-            )
-            pub.sendMessage(
-                "fail_insert_{}".format(self._tag),
-                error_message=_error.msg,
-            )

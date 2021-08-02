@@ -19,7 +19,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk import RAMSTKUserConfiguration
 from ramstk.controllers import amHazards, dmHazards
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 
