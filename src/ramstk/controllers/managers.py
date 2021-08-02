@@ -292,7 +292,7 @@ class RAMSTKDataManager:
                 error_message=str(_error),
             )
 
-    def do_select(self, node_id: Any, table: str) -> Any:
+    def do_select(self, node_id: Any, table: str = "") -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
 
         :param node_id: the Node ID of the data package to retrieve.

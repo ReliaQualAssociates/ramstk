@@ -78,6 +78,16 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "phase_id": 1,
+        "environment_id": 1,
+        "name": "Condition Name",
+    }
+
+
+@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -94,7 +104,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_environment")
-    pub.unsubscribe(dut._do_insert_environment, "request_insert_environment")
+    pub.unsubscribe(dut.do_insert, "request_insert_environment")
 
     # Delete the device under test.
     del dut
@@ -129,20 +139,19 @@ class TestCreateControllers:
             test_datamanager.do_delete, "request_delete_environment"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_insert_environment, "request_insert_environment"
+            test_datamanager.do_insert, "request_insert_environment"
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_datamanager", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKMission, RAMSTKMissionPhase, and RAMSTKEnvironment instances on
-        success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+    def test_do_select_all(self, test_attributes, test_datamanager):
+        """do_select_all() should return a Tree() object populated with RAMSTKMission,
+        RAMSTKMissionPhase, and RAMSTKEnvironment instances on success."""
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(1).data["environment"], MockRAMSTKEnvironment
@@ -155,34 +164,33 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
-        """do_select() should return the RAMSTKEnvironment instance on
-        success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+    def test_do_select(self, test_attributes, test_datamanager):
+        """do_select() should return the RAMSTKEnvironment instance on success."""
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _environment = test_datamanager.do_select(1, table="environment")
+        _environment = test_datamanager.do_select(1)
 
         assert isinstance(_environment, MockRAMSTKEnvironment)
         assert _environment.environment_id == 1
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="environment") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add the new record to the record tree and update the last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_environment(1)
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert test_datamanager.last_id == 4
         assert isinstance(
@@ -190,14 +198,14 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """should remove the deleted record from record tree and update the last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         _last_id = test_datamanager.last_id
         test_datamanager.do_delete(_last_id)
 
