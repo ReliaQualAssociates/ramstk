@@ -59,7 +59,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey: str = "hardware_id"
+        self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_allocation_attributes")

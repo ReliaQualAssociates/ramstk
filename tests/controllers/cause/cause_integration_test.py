@@ -62,7 +62,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["cause"], RAMSTKCause)
+        assert isinstance(tree.get_node(3).data["cause"], RAMSTKCause)
         print("\033[36m\nsucceed_retrieve_cause topic was broadcast.")
 
     @pytest.mark.integration
@@ -70,7 +70,7 @@ class TestSelectMethods:
         """should return a Tree() object populated with RAMSTKCause instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
-        test_datamanager.do_select_all(test_attributes)
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
