@@ -80,7 +80,7 @@ class DataManager(RAMSTKDataManager):
 
         _new_record = self._record()
         _new_record.revision_id = self._fkey["revision_id"]
-        _new_record.parent_id = self._parent_id
+        _new_record.parent_id = attributes["parent_id"]
         _new_record.hardware_id = attributes["hardware_id"]
 
         for _key in self._fkey.items():

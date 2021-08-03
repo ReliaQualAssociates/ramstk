@@ -65,7 +65,7 @@ class AnalysisManager(RAMSTKAnalysisManager):
         pub.subscribe(
             self._do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
         )
-        pub.subscribe(self._on_get_hardware_attributes, "succeed_get_hardwares_tree")
+        pub.subscribe(self._on_get_hardware_attributes, "succeed_get_hardware_tree")
 
     def _do_calculate_similar_item(self, node_id: int) -> None:
         """Perform a similar item calculates for currently selected item.

@@ -19,6 +19,15 @@ from ramstk.controllers import amSimilarItem, dmSimilarItem
 from ramstk.models.programdb import RAMSTKHardware, RAMSTKReliability, RAMSTKSimilarItem
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 4,
+        "parent_id": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
@@ -35,7 +44,7 @@ def test_analysismanager(test_toml_user_configuration):
     pub.unsubscribe(
         dut._do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
     )
-    pub.unsubscribe(dut._on_get_hardware_attributes, "succeed_get_hardwares_tree")
+    pub.unsubscribe(dut._on_get_hardware_attributes, "succeed_get_hardware_tree")
 
     # Delete the device under test.
     del dut
@@ -60,13 +69,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
-    pub.unsubscribe(dut._do_insert_similar_item, "request_insert_similar_item")
+    pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -76,16 +85,16 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should clear nodes from an existing allocation tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -116,37 +125,41 @@ class TestInsertMethods:
         )
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self):
+    def test_do_insert_sibling(self, test_attributes):
         """do_insert() should send the success message after successfully inserting a
         new sibling hardware assembly."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
 
-        pub.sendMessage("request_insert_similar_item", hardware_id=4, parent_id=1)
+        pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to add a
         function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
         _revision_id = test_datamanager._revision_id
 
-        test_datamanager._revision_id = 40
-        pub.sendMessage("request_insert_similar_item", hardware_id=8, parent_id=0)
+        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 0
+        pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
-        test_datamanager._revision_id = _revision_id
+        test_datamanager._fkey["revision_id"] = 1
 
     @pytest.mark.integration
-    def test_do_insert_no_hardware(self):
+    def test_do_insert_no_hardware(self, test_attributes):
         """_do_insert_function() should send the fail message if attempting to add a
         function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
 
-        pub.sendMessage("request_insert_similar_item", hardware_id=15, parent_id=0)
+        test_attributes["hardware_id"] = 15
+        test_attributes["parent_id"] = 0
+        pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
 
@@ -244,7 +257,7 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_similar_item")
 
-        _similar_item = test_datamanager.do_select(1, table="similar_item")
+        _similar_item = test_datamanager.do_select(1)
         _similar_item.change_description_1 = "This is a description of the change."
         pub.sendMessage("request_update_similar_item", node_id=2, table="similar_item")
 
@@ -270,7 +283,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
-        _similar_item = test_datamanager.do_select(1, table="similar_item")
+        _similar_item = test_datamanager.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
         pub.sendMessage("request_update_similar_item", node_id=1, table="similar_item")
@@ -285,7 +298,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
         )
 
-        _similar_item = test_datamanager.do_select(1, table="similar_item")
+        _similar_item = test_datamanager.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
         pub.sendMessage("request_update_similar_item", node_id=0, table="similar_item")
@@ -486,7 +499,7 @@ class TestAnalysisMethods:
         """_on_select_hardware() should assign the node hazard rate to the
         _node_hazard_rate attribute."""
         _tree = Tree()
-        _tree.create_node(tag="hardwares", identifier=0, parent=None)
+        _tree.create_node(tag="hardware", identifier=0, parent=None)
 
         _hardware = RAMSTKHardware()
         _hardware.hardware_id = 1
@@ -530,7 +543,7 @@ class TestAnalysisMethods:
             },
         )
 
-        pub.sendMessage("succeed_get_hardwares_tree", tree=_tree)
+        pub.sendMessage("succeed_get_hardware_tree", tree=_tree)
 
         assert test_analysismanager._dic_hardware_hrs[1] == 0.00032
         assert test_analysismanager._dic_hardware_hrs[2] == 0.00018

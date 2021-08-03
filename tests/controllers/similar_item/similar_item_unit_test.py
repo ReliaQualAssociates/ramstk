@@ -207,6 +207,15 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 4,
+        "parent_id": 1,
+    }
+
+
+@pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
     dut = amSimilarItem(test_toml_user_configuration)
@@ -222,7 +231,7 @@ def test_analysismanager(test_toml_user_configuration):
     pub.unsubscribe(
         dut._do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
     )
-    pub.unsubscribe(dut._on_get_hardware_attributes, "succeed_get_hardwares_tree")
+    pub.unsubscribe(dut._on_get_hardware_attributes, "succeed_get_hardware_tree")
 
     # Delete the device under test.
     del dut
@@ -246,7 +255,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
-    pub.unsubscribe(dut._do_insert_similar_item, "request_insert_similar_item")
+    pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
 
     # Delete the device under test.
     del dut
@@ -261,6 +270,8 @@ class TestCreateControllers:
         """__init__() should return a Hardware data manager."""
         assert isinstance(test_datamanager, dmSimilarItem)
         assert isinstance(test_datamanager.tree, Tree)
+        assert test_datamanager._db_id_colname == "fld_hardware_id"
+        assert test_datamanager._db_tablename == "ramstk_similar_item"
         assert test_datamanager._tag == "similar_item"
         assert test_datamanager._root == 0
         assert test_datamanager._pkey == {
@@ -292,7 +303,7 @@ class TestCreateControllers:
             test_datamanager.do_delete, "request_delete_similar_item"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_insert_similar_item, "request_insert_similar_item"
+            test_datamanager.do_insert, "request_insert_similar_item"
         )
 
     @pytest.mark.unit
@@ -330,19 +341,19 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(
             test_analysismanager._on_get_hardware_attributes,
-            "succeed_get_hardwares_tree",
+            "succeed_get_hardware_tree",
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
+    def test_do_select_all(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKSimilarItem instances on success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -351,36 +362,37 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
+    def test_do_select(self, test_attributes, test_datamanager):
         """do_select() should return an instance of the RAMSTKSimilarItem on
         success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _similar_item = test_datamanager.do_select(1, table="similar_item")
+        _similar_item = test_datamanager.do_select(1)
 
         assert isinstance(_similar_item, MockRAMSTKSimilarItem)
         assert _similar_item.change_description_1 == ""
         assert _similar_item.temperature_from == 30.0
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Hardware ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="hardware") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new sibling hardware assembly."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_similar_item(hardware_id=4, parent_id=1)
+        test_datamanager.do_select_all(attributes=test_attributes)
+
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -391,29 +403,31 @@ class TestInsertMethods:
         assert test_datamanager.tree.get_node(4).data["similar_item"].parent_id == 1
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 2
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for similar item methods test suite."""
 
     @pytest.mark.unit
-    def test_do_calculate_topic_633(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_topic_633(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_goal() should calculate the Topic 6.3.3 similar
         item."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         _node = test_analysismanager._tree.get_node(1)
 
@@ -438,9 +452,11 @@ class TestAnalysisMethods:
         assert _node.data["similar_item"].result_1 == pytest.approx(0.0005607143)
 
     @pytest.mark.unit
-    def test_do_calculate_user_defined(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_user_defined(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_goal() should calculate the Topic 644 similar item."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         _node = test_analysismanager._tree.get_node(1)
 
@@ -468,9 +484,11 @@ class TestAnalysisMethods:
         assert _node.data["similar_item"].result_1 == pytest.approx(0.0062934)
 
     @pytest.mark.unit
-    def test_do_calculate_no_method(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_no_method(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_goal() should calculate the Topic 644 similar item."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         _node = test_analysismanager._tree.get_node(1)
 
@@ -489,11 +507,11 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_roll_up_change_descriptions(
-        self, test_analysismanager, test_datamanager
+        self, test_analysismanager, test_attributes, test_datamanager
     ):
         """do_roll_up_change_descriptions() should combine all child change
         descriptions into a single change description for the parent."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         _node = test_analysismanager._tree.get_node(2)
         _node.data[
