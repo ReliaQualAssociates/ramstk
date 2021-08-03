@@ -37,7 +37,7 @@ def test_mission(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mission")
-    pub.unsubscribe(dut._do_insert_mission, "request_insert_mission")
+    pub.unsubscribe(dut.do_insert, "request_insert_mission")
 
     # Delete the device under test.
     del dut
@@ -49,7 +49,7 @@ def test_phase(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = dmMissionPhase()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
 
     yield dut
 
@@ -61,7 +61,7 @@ def test_phase(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
-    pub.unsubscribe(dut._do_insert_mission_phase, "request_insert_mission_phase")
+    pub.unsubscribe(dut.do_insert, "request_insert_mission_phase")
 
     # Delete the device under test.
     del dut
@@ -73,7 +73,7 @@ def test_environment(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = dmEnvironment()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
     yield dut
 
@@ -85,7 +85,7 @@ def test_environment(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_environment")
-    pub.unsubscribe(dut._do_insert_environment, "request_insert_environment")
+    pub.unsubscribe(dut.do_insert, "request_insert_environment")
 
     # Delete the device under test.
     del dut
@@ -140,8 +140,8 @@ class TestSelectMethods:
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert isinstance(
             test_datamanager.tree.get_node("1").data["usage_profile"], RAMSTKMission
@@ -185,8 +185,8 @@ class TestSelectMethods:
     ):
         """should clear existing nodes from the records tree and then re-populate."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert isinstance(
             test_datamanager.tree.get_node("1").data["usage_profile"], RAMSTKMission
@@ -230,12 +230,12 @@ class TestInsertMethods:
 
     def on_succeed_insert_mission_phase(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("4.4")
+        assert tree.contains("1.4")
         print("\033[36m\nsucceed_insert_mission_phase topic was broadcast.")
 
     def on_succeed_insert_environment(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("3.3.4")
+        assert tree.contains("1.1.4")
         print("\033[36m\nsucceed_insert_environment topic was broadcast.")
 
     @pytest.mark.integration
@@ -244,14 +244,16 @@ class TestInsertMethods:
     ):
         """should add a new mission record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert not test_datamanager.tree.contains("4")
 
         pub.subscribe(self.on_succeed_insert_mission, "succeed_retrieve_usage_profile")
 
-        pub.sendMessage("request_insert_mission")
+        pub.sendMessage(
+            "request_insert_mission", attributes={"revision_id": 1, "mission_id": 1}
+        )
 
         pub.unsubscribe(
             self.on_succeed_insert_mission, "succeed_retrieve_usage_profile"
@@ -263,16 +265,25 @@ class TestInsertMethods:
     ):
         """should add a new mission phase record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
-        assert not test_datamanager.tree.contains("4.4")
+        assert not test_datamanager.tree.contains("1.4")
 
         pub.subscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
         )
 
-        pub.sendMessage("request_insert_mission_phase", mission_id=4)
+        pub.sendMessage(
+            "request_insert_mission_phase",
+            attributes={
+                "revision_id": 1,
+                "mission_id": 1,
+                "phase_id": 1,
+            },
+        )
+
+        assert test_datamanager.tree.contains("1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
@@ -284,16 +295,26 @@ class TestInsertMethods:
     ):
         """should add a new environment record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
-        assert not test_datamanager.tree.contains("3.3.4")
+        assert not test_datamanager.tree.contains("1.1.4")
 
         pub.subscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
         )
 
-        pub.sendMessage("request_insert_environment", phase_id=3)
+        pub.sendMessage(
+            "request_insert_environment",
+            attributes={
+                "revision_id": 1,
+                "phase_id": 1,
+                "environment_id": 1,
+                "name": "Condition Name",
+            },
+        )
+
+        assert test_datamanager.tree.contains("1.1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
@@ -342,8 +363,8 @@ class TestDeleteMethods:
     ):
         """should remove the deleted records from the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert test_datamanager.tree.contains("1.1.1")
         assert test_datamanager.tree.contains("1.1")
@@ -361,10 +382,11 @@ class TestDeleteMethods:
     def test_do_delete_mission_phase(
         self, test_datamanager, test_mission, test_phase, test_environment
     ):
-        """should remove deleted phase and environment records from the records tree."""
+        """should remove deleted phase and environment records from the records
+        tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert test_datamanager.tree.contains("2.2.2")
         assert test_datamanager.tree.contains("2.2")
@@ -386,8 +408,8 @@ class TestDeleteMethods:
     ):
         """should remove deleted environment record from the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
         assert test_datamanager.tree.contains("3.3.3")
         assert test_datamanager.tree.contains("3.3")

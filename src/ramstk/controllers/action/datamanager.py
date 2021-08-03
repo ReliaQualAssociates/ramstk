@@ -137,7 +137,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.create_node(
                 tag=self._tag,
                 identifier=_action.action_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={self._tag: _action},
             )
             self.last_id = self.dao.get_last_id("ramstk_action", "fld_action_id")

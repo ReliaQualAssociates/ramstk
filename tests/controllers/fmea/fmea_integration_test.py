@@ -50,7 +50,7 @@ def test_mode(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mode")
-    pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
+    pub.unsubscribe(dut.do_insert, "request_insert_mode")
 
     # Delete the device under test.
     del dut
@@ -74,7 +74,7 @@ def test_mechanism(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
-    pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
 
     # Delete the device under test.
     del dut
@@ -105,7 +105,7 @@ def test_cause(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
-    pub.unsubscribe(dut._do_insert_cause, "request_insert_cause")
+    pub.unsubscribe(dut.do_insert, "request_insert_cause")
 
     # Delete the device under test.
     del dut
@@ -137,7 +137,7 @@ def test_control(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_control_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_control")
-    pub.unsubscribe(dut._do_insert_control, "request_insert_control")
+    pub.unsubscribe(dut.do_insert, "request_insert_control")
 
     # Delete the device under test.
     del dut
@@ -169,7 +169,7 @@ def test_action(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_cause")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_action")
-    pub.unsubscribe(dut._do_insert_action, "request_insert_action")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
 
     # Delete the device under test.
     del dut
@@ -438,7 +438,14 @@ class TestInsertMethods:
 
         pub.subscribe(self.on_succeed_insert_mode, "succeed_retrieve_fmea")
 
-        pub.sendMessage("request_insert_mode")
+        pub.sendMessage(
+            "request_insert_mode",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 1,
+            },
+        )
 
         assert test_datamanager.tree.contains("7")
 
@@ -451,7 +458,15 @@ class TestInsertMethods:
 
         pub.subscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_fmea")
 
-        pub.sendMessage("request_insert_mechanism")
+        pub.sendMessage(
+            "request_insert_mechanism",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 3,
+            },
+        )
 
         assert test_datamanager.tree.contains("6.5")
 
@@ -464,7 +479,17 @@ class TestInsertMethods:
 
         pub.subscribe(self.on_succeed_insert_cause, "succeed_retrieve_fmea")
 
-        pub.sendMessage("request_insert_cause")
+        pub.sendMessage(
+            "request_insert_cause",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 3,
+                "cause_id": 3,
+                "description": "Test Failure Cause #1 for Mechanism ID 3",
+            },
+        )
 
         assert test_datamanager.tree.contains("6.3.5")
 
@@ -477,7 +502,17 @@ class TestInsertMethods:
 
         pub.subscribe(self.on_succeed_insert_control, "succeed_retrieve_fmea")
 
-        pub.sendMessage("request_insert_control")
+        pub.sendMessage(
+            "request_insert_control",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 3,
+                "cause_id": 3,
+                "control_id": 3,
+            },
+        )
 
         assert test_datamanager.tree.contains("6.3.3.5c")
 
@@ -490,7 +525,17 @@ class TestInsertMethods:
 
         pub.subscribe(self.on_succeed_insert_test_action, "succeed_retrieve_fmea")
 
-        pub.sendMessage("request_insert_action")
+        pub.sendMessage(
+            "request_insert_action",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 3,
+                "cause_id": 3,
+                "action_id": 1,
+            },
+        )
 
         assert test_datamanager.tree.contains("6.3.3.5a")
 

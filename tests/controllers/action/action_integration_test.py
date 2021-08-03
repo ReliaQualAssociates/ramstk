@@ -76,7 +76,7 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -87,19 +87,11 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_action topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should return a Tree() object populated with RAMSTKAction instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_action")
 
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 1,
-                "mechanism_id": 3,
-                "cause_id": 3,
-            }
-        )
+        test_datamanager.do_select_all(test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_action")
 
@@ -138,10 +130,8 @@ class TestInsertMethods:
         """should send the fail message if the parent ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_action")
 
-        _parent_id = test_datamanager._parent_id
-        test_datamanager._parent_id = 100
+        test_datamanager._fkey["cause_id"] = 100
         pub.sendMessage("request_insert_action", attributes=test_attributes)
-        test_datamanager._parent_id = _parent_id
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_action")
 
@@ -204,7 +194,10 @@ class TestUpdateMethods:
         print("\033[36m\nsucceed_update_action topic was broadcast")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
+        print(
+            "\033[36m\nsucceed_update_all topic was broadcast when updating all "
+            "Actions"
+        )
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
@@ -215,7 +208,7 @@ class TestUpdateMethods:
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print("\033[35m\nfail_update_action topic was broadcast")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
@@ -279,7 +272,7 @@ class TestUpdateMethods:
         """should send fail message if attribute has wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_action")
 
-        _action = test_datamanager.do_select(3, table="action")
+        _action = test_datamanager.do_select(3)
         _action.action_approved = {1: 2}
         pub.sendMessage("request_update_action", node_id=3, table="action")
 
@@ -292,7 +285,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_action"
         )
 
-        _action = test_datamanager.do_select(4, table="action")
+        _action = test_datamanager.do_select(4)
         _action.action_closed = {1: 2}
         pub.sendMessage("request_update_action", node_id=0, table="action")
 

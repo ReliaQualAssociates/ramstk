@@ -21,7 +21,10 @@ from ramstk.models.programdb import RAMSTKMission
 
 @pytest.fixture(scope="function")
 def test_attributes():
-    yield {"revision_id": 1, "mission_id": 1}
+    yield {
+        "revision_id": 1,
+        "mission_id": 1,
+    }
 
 
 @pytest.fixture(scope="class")
@@ -61,8 +64,8 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
-        """do_select_all() should clear out an existing tree and build a new
-        one when called on a populated Mission data manager."""
+        """do_select_all() should clear out an existing tree and build a new one when
+        called on a populated Mission data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
 
         test_datamanager.do_select_all(attributes=test_attributes)
@@ -91,8 +94,8 @@ class TestInsertMethods:
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """do_insert() should send the success message with the ID of the newly
-        inserted node and the data manager's tree after successfully inserting
-        a new mission."""
+        inserted node and the data manager's tree after successfully inserting a new
+        mission."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission")
 
         test_datamanager.do_insert(attributes=test_attributes)
@@ -101,8 +104,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_attributes, test_datamanager):
-        """do_insert() should send the fail message attempting to insert a new
-        mission for an non-existent revision ID."""
+        """do_insert() should send the fail message attempting to insert a new mission
+        for an non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
 
         test_datamanager._fkey["revision_id"] = 4
@@ -130,8 +133,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete_mission() should send the success message after
-        successfully deleting a mission."""
+        """_do_delete_mission() should send the success message after successfully
+        deleting a mission."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mission")
 
         pub.sendMessage("request_delete_mission", node_id=1)
@@ -140,8 +143,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_datamanager):
-        """_do_delete_mission() should send the sfail message when attempting
-        to delete a non-existent mission ID."""
+        """_do_delete_mission() should send the sfail message when attempting to delete
+        a non-existent mission ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
 
         pub.sendMessage("request_delete_mission", node_id=10)
@@ -150,9 +153,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
 
         test_datamanager.tree.remove_node(2)
@@ -230,8 +232,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
         _mission = test_datamanager.do_select(1, table="mission")
@@ -243,8 +245,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when
-        attempting to save a non-existent ID."""
+        """do_update_usage_profile() should broadcast the fail message when attempting
+        to save a non-existent ID."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
         )
@@ -260,8 +262,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when
-        attempting to save a non-existent ID."""
+        """do_update_usage_profile() should broadcast the fail message when attempting
+        to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
 
         test_datamanager.do_update(10, table="mission")
@@ -270,8 +272,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when
-        attempting to save a non-existent ID."""
+        """do_update_usage_profile() should broadcast the fail message when attempting
+        to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mission")
 
         test_datamanager.tree.get_node(1).data.pop("mission")
