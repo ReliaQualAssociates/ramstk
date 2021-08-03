@@ -356,6 +356,11 @@ class RAMSTKDataManager:
             key=[_item[0] for _item in self._fkey.items()],
             value=[_item[1] for _item in self._fkey.items()],
         ):
+            try:
+                self._parent_id = _record.get_attributes()["parent_id"]
+            except KeyError:
+                self._parent_id = 0
+
             self.tree.create_node(
                 tag=self._tag,
                 identifier=_record.get_attributes()[self.pkey],
