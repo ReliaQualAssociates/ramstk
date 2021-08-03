@@ -248,6 +248,16 @@ class BaseDatabase:
         try:
             self.session.add(record)
             self.session.commit()
+        except AttributeError as _error:
+            # This exception is raised when there is no database connection.
+            _error_message = (
+                "dao.do_insert: No database connected when attempting to add a record."
+            )
+            pub.sendMessage(
+                "fail_insert_record",
+                error_message=_error_message,
+            )
+            raise DataAccessError(_error_message) from _error
         except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
@@ -266,7 +276,6 @@ class BaseDatabase:
             # to send to the client.  Error codes are defined in the
             # errorcodes.py file in the psycopg2 code base.
             self.session.rollback()
-            # print(_error.orig.pgerror)
             _error_message = (
                 "do_insert: Database error when attempting to add a record.  "
                 "Database returned:\n\t{0:s}".format(

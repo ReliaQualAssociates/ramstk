@@ -19,6 +19,18 @@ from ramstk.controllers import dmTestMethod
 from ramstk.models.programdb import RAMSTKTestMethod
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 1,
+        "mechanism_id": 1,
+        "load_id": 1,
+        "test_id": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -45,12 +57,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_test_method")
-    pub.unsubscribe(dut._do_insert_test_method, "request_insert_test_method")
+    pub.unsubscribe(dut.do_insert, "request_insert_test_method")
 
     # Delete the device under test.
     del dut
 
 
+@pytest.mark.usefixtures("test_attributes")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -60,26 +73,20 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_test_method topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self):
+    def test_do_select_all_populated_tree(self, test_attributes):
         """do_select_all() should return a Tree() object populated with
         RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
         pub.sendMessage(
             "selected_load",
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 1,
-                "mechanism_id": 1,
-                "load_id": 1,
-            },
+            attributes=test_attributes,
         )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -98,23 +105,24 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_test_method() should send the success message after successfully
         inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
-        pub.sendMessage("request_insert_test_method", parent_id=3)
+        test_datamanager._fkey["load_id"] = 3
+        pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """_do_insert_test_method() should send the fail message if attempting to add
         an operating load to a non-existent test_method ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 
-        test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_test_method", parent_id=100)
+        test_datamanager._fkey["load_id"] = 100
+        pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 

@@ -19,6 +19,16 @@ from ramstk.controllers import dmFunction
 from ramstk.models.programdb import RAMSTKFunction
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "function_id": 1,
+        "parent_id": 0,
+        "name": "New Function",
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -37,13 +47,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_function")
-    pub.unsubscribe(dut._do_insert_function, "request_insert_function")
+    pub.unsubscribe(dut.do_insert, "request_insert_function")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -53,16 +63,16 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should clear and then populate the record tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -79,64 +89,72 @@ class TestInsertMethods:
         assert node_id == 5
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["function"], RAMSTKFunction)
-        assert tree.get_node(5).data["function"].parent_id == 2
+        assert tree.get_node(5).data["function"].parent_id == 0
         assert tree.get_node(5).data["function"].function_id == 5
         assert tree.get_node(5).data["function"].name == "New Function"
-
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "_do_insert_function: Attempted to insert "
-            "child function under non-existent function ID 40."
-        )
+        assert error_message == ("Parent node '40' is not in the tree")
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
-            "_do_insert_function: A database error occurred when attempting to add a "
-            "child function to parent function ID 1."
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_revision_id)=(40) is not present in table "
+            '"ramstk_revision".'
         )
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_function")
 
-        pub.sendMessage("request_insert_function", parent_id=0)
+        assert test_datamanager.tree.get_node(4) is None
+
+        pub.sendMessage("request_insert_function", attributes=test_attributes)
+
         assert test_datamanager.last_id == 4
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_function")
 
     @pytest.mark.integration
-    def test_do_insert_child(self, test_datamanager):
+    def test_do_insert_child(self, test_attributes, test_datamanager):
         """should add a record under parent to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_child, "succeed_insert_function")
 
-        pub.sendMessage("request_insert_function", parent_id=2)
+        assert test_datamanager.tree.get_node(5) is None
+
+        pub.sendMessage("request_insert_function", attributes=test_attributes)
+
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_child, "succeed_insert_function")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self):
-        """_do_insert_function() should send the fail message if attempting to
-        add a function to a non-existent parent ID."""
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
+        """_do_insert_function() should send the fail message if attempting to add a
+        function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_function")
 
-        pub.sendMessage("request_insert_function", parent_id=40)
+        assert test_datamanager.tree.get_node(7) is None
+
+        test_attributes["parent_id"] = 40
+        pub.sendMessage("request_insert_function", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_function")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """should send the fail message when the revision ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_function")
 
-        test_datamanager._revision_id = 40
-        pub.sendMessage("request_insert_function", parent_id=1)
-        test_datamanager._revision_id = 1
+        assert test_datamanager.tree.get_node(7) is None
+
+        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["parent_id"] = 1
+        pub.sendMessage("request_insert_function", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_function")
 
@@ -194,8 +212,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_function")
 
         pub.sendMessage("request_delete_function", node_id=2)
@@ -273,8 +291,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Function ID
+        that has no data package."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_function")
 
         test_datamanager.tree.get_node(1).data["function"].name = {1: 1.56}
@@ -284,8 +302,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Function ID
+        that has no data package."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_function"
         )
@@ -299,8 +317,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Function ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_function")
 
         pub.sendMessage("request_update_function", node_id=100, table="function")
@@ -309,8 +327,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Function ID
+        that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_function")
 
         test_datamanager.tree.get_node(1).data.pop("function")

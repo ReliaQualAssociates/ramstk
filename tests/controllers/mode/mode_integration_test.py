@@ -18,6 +18,15 @@ from ramstk.controllers import amMode, dmMode
 from ramstk.models.programdb import RAMSTKMode
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_analysismanager(test_toml_user_configuration):
     """Get a analysis manager instance for each test function."""
@@ -41,7 +50,13 @@ def test_datamanager(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = dmMode()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(
+        attributes={
+            "revision_id": 1,
+            "hardware_id": 1,
+            "mode_id": 1,
+        }
+    )
 
     yield dut
 
@@ -53,13 +68,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mode")
-    pub.unsubscribe(dut._do_insert_mode, "request_insert_mode")
+    pub.unsubscribe(dut.do_insert, "request_insert_mode")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -69,16 +84,16 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_mode topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should clear records tree and then repopulate it."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -108,33 +123,44 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_mode topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add new record to records tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
-        pub.sendMessage("request_insert_mode")
+        assert test_datamanager.tree.get_node(7) is None
+
+        pub.sendMessage("request_insert_mode", attributes=test_attributes)
+
+        assert isinstance(test_datamanager.tree.get_node(7).data["mode"], RAMSTKMode)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mode")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send fail message when adding record to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
-        _parent_id = test_datamanager._parent_id
-        test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_mode")
-        test_datamanager._parent_id = _parent_id
+        assert test_datamanager.tree.get_node(8) is None
+
+        test_datamanager._fkey["hardware_id"] = 100
+        pub.sendMessage("request_insert_mode", attributes=test_attributes)
+        test_datamanager._fkey["hardware_id"] = 1
+
+        assert test_datamanager.tree.get_node(8) is None
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    @pytest.mark.skip
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """should send fail message when adding record to a non-existent revision."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 
-        test_datamanager._revision_id = 4
-        pub.sendMessage("request_insert_mode")
+        assert test_datamanager.tree.get_node(8) is None
+
+        test_datamanager._fkey["revision_id"] = 4
+        pub.sendMessage("request_insert_mode", attributes=test_attributes)
+
+        assert test_datamanager.tree.get_node(8) is None
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 

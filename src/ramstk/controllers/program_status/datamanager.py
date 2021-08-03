@@ -8,14 +8,13 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKProgramStatus
 
 
@@ -42,12 +41,16 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            "revision_id": 0,
+        }
         self._dic_status: Dict[Any, List[float]] = {}
         self._pkey = {"program_status": ["revision_id", "status_id"]}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKProgramStatus] = RAMSTKProgramStatus
 
         # Initialize public dictionary attributes.
 
@@ -66,8 +69,30 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
 
-        pub.subscribe(self._do_insert_program_status, "request_insert_program_status")
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
+
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.status_id = self.last_id + 1
+        _new_record.date_status = date.today()
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+        self._dic_status[_new_record.date_status] = _new_record.status_id
+
+        return _new_record
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all Program Status data from the RAMSTK Program database.
@@ -76,7 +101,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes["revision_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -84,7 +109,7 @@ class DataManager(RAMSTKDataManager):
         for _status in self.dao.do_select_all(
             RAMSTKProgramStatus,
             key=["revision_id"],
-            value=[self._revision_id],
+            value=[self._fkey["revision_id"]],
             order=RAMSTKProgramStatus.date_status,
         ):
 
@@ -93,7 +118,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.create_node(
                 tag="program_status",
                 identifier=_status.status_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={"program_status": _status},
             )
 
@@ -103,49 +128,6 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_program_status",
             tree=self.tree,
         )
-
-    def _do_insert_program_status(self) -> None:
-        """Add a new program status record.
-
-        :return: None
-        :rtype: None
-        """
-        _last_id = self.dao.get_last_id("ramstk_program_status", "status_id")
-        try:
-            _status = RAMSTKProgramStatus()
-            _status.revision_id = self._revision_id
-            _status.status_id = _last_id + 1
-            _status.date_status = date.today()
-
-            self.dao.do_insert(_status)
-
-            self.last_id = _status.status_id
-
-            self._dic_status[_status.date_status] = _status.status_id
-
-            self.tree.create_node(
-                tag="program_status",
-                identifier=_status.status_id,
-                parent=self._root,
-                data={"program_status": _status},
-            )
-
-            pub.sendMessage(
-                "succeed_insert_program_status",
-                node_id=self.last_id,
-                tree=self.tree,
-            )
-
-        except DataAccessError as _error:
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error.msg,
-            )
-            pub.sendMessage(
-                "fail_insert_program_status",
-                error_message=_error.msg,
-            )
 
     def _do_set_attributes(self, cost_remaining, time_remaining) -> None:
         """Set the program remaining cost and time.
@@ -158,7 +140,15 @@ class DataManager(RAMSTKDataManager):
         try:
             _node_id = self._dic_status[date.today()]
         except KeyError:
-            self._do_insert_program_status()
+            self.do_insert(
+                attributes={
+                    "revision_id": self._fkey["revision_id"],
+                    "status_id": -1,
+                    "date_status": date.today(),
+                    "cost_remaining": cost_remaining,
+                    "time_remaining": time_remaining,
+                }
+            )
             _node_id = self.last_id
 
         self.tree.get_node(_node_id).data[

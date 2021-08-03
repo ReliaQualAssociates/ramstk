@@ -82,6 +82,16 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "function_id": 1,
+        "parent_id": 0,
+        "name": "New Function",
+    }
+
+
+@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -98,7 +108,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_function")
-    pub.unsubscribe(dut._do_insert_function, "request_insert_function")
+    pub.unsubscribe(dut.do_insert, "request_insert_function")
 
     # Delete the device under test.
     del dut
@@ -114,6 +124,8 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmFunction)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._db_id_colname == "fld_function_id"
+        assert test_datamanager._db_tablename == "ramstk_function"
         assert test_datamanager._tag == "function"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -132,12 +144,10 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "request_set_function_attributes"
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_function")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_function, "request_insert_function"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_function")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -147,9 +157,9 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
+    def test_do_select_all(self, test_attributes, test_datamanager):
         """should return record tree populated with RAMSTKFunction records."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(1).data["function"], MockRAMSTKFunction
@@ -159,33 +169,33 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
+    def test_do_select(self, test_attributes, test_datamanager):
         """should return the RAMSTKFunction record for the requested Function ID."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _function = test_datamanager.do_select(1, table="function")
+        _function = test_datamanager.do_select(1)
 
         assert isinstance(_function, MockRAMSTKFunction)
         assert _function.availability_logistics == 1.0
         assert _function.name == "Function Name"
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """should return None when a non-existent Function ID is requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="function") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_function()
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert test_datamanager.last_id == 3
         assert isinstance(
@@ -195,10 +205,12 @@ class TestInsertMethods:
         assert test_datamanager.tree.get_node(3).data["function"].name == "New Function"
 
     @pytest.mark.unit
-    def test_do_insert_child(self, test_datamanager):
+    def test_do_insert_child(self, test_attributes, test_datamanager):
         """should add a record to the record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_function(parent_id=2)
+        test_datamanager.do_select_all(attributes=test_attributes)
+
+        test_attributes["parent_id"] = 2
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert test_datamanager.last_id == 3
         assert isinstance(
@@ -209,14 +221,14 @@ class TestInsertMethods:
         assert test_datamanager.tree.get_node(3).data["function"].parent_id == 2
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """should remove a record from the record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         _last_id = test_datamanager.last_id
         test_datamanager.do_delete(test_datamanager.last_id)
 

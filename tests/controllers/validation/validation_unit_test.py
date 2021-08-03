@@ -133,6 +133,15 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "validation_id": 1,
+        "name": "New Validation Task",
+    }
+
+
+@pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
     dut = amValidation(test_toml_user_configuration)
@@ -171,7 +180,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_validation")
-    pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
+    pub.unsubscribe(dut.do_insert, "request_insert_validation")
 
     # Delete the device under test.
     del dut
@@ -186,6 +195,8 @@ class TestCreateControllers:
         """__init__() should return a Validation data manager."""
         assert isinstance(test_datamanager, dmValidation)
         assert isinstance(test_datamanager.tree, Tree)
+        assert test_datamanager._db_id_colname == "fld_validation_id"
+        assert test_datamanager._db_tablename == "ramstk_validation"
         assert test_datamanager._tag == "validation"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -204,9 +215,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "request_set_validation_attributes"
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_validation")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_validation, "request_insert_validation"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_validation")
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_analysismanager):
@@ -242,15 +251,15 @@ class TestCreateControllers:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
+    def test_do_select_all(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKValidation instances on success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -258,36 +267,36 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
+    def test_do_select(self, test_attributes, test_datamanager):
         """do_select() should return an instance of the RAMSTKValidation on
         success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _validation = test_datamanager.do_select(1, table="validation")
+        _validation = test_datamanager.do_select(1)
 
         assert isinstance(_validation, MockRAMSTKValidation)
         assert _validation.acceptable_maximum == 30.0
         assert _validation.name == "PRF-0001"
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Validation ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="validation") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_validation() should send the success message after
         successfully inserting a validation task."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_validation(parent_id=0)
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -300,32 +309,34 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 2
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_task(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_task(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_task() should calculate the validation task time and
         cost."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_get_tree()
 
-        _validation = test_datamanager.do_select(1, "validation")
+        _validation = test_datamanager.do_select(1)
         _validation.time_minimum = 10.0
         _validation.time_average = 20.0
         _validation.time_maximum = 40.0
@@ -364,13 +375,15 @@ class TestAnalysisMethods:
         ].cost_variance == pytest.approx(195069.44444444)
 
     @pytest.mark.unit
-    def test_do_calculate_all_tasks(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_all_tasks(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """_do_calculate_all_tasks() should calculate the validation tasks time
         and cost."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_get_tree()
 
-        _validation = test_datamanager.do_select(1, "validation")
+        _validation = test_datamanager.do_select(1)
         _validation.time_minimum = 10.0
         _validation.time_average = 20.0
         _validation.time_maximum = 40.0
@@ -379,7 +392,7 @@ class TestAnalysisMethods:
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
         test_datamanager.do_update(1, table="validation")
-        _validation = test_datamanager.do_select(2, "validation")
+        _validation = test_datamanager.do_select(2)
         _validation.time_minimum = 30.0
         _validation.time_average = 60.0
         _validation.time_maximum = 80.0
@@ -442,9 +455,11 @@ class TestAnalysisMethods:
         ].cost_variance == pytest.approx(195069.44444444)
 
     @pytest.mark.unit
-    def test_do_select_assessment_targets(self, test_analysismanager, test_datamanager):
+    def test_do_select_assessment_targets(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """should return a pandas DataFrame() containing assessment target values."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_get_tree()
 
         _targets = test_analysismanager._do_select_assessment_targets()

@@ -19,6 +19,34 @@ from ramstk.controllers import amAllocation, dmAllocation
 from ramstk.models.programdb import RAMSTKAllocation
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "availability_alloc": 0.0,
+        "env_factor": 1,
+        "goal_measure_id": 1,
+        "hazard_rate_alloc": 0.0,
+        "hazard_rate_goal": 0.0,
+        "included": 1,
+        "int_factor": 1,
+        "allocation_method_id": 1,
+        "mission_time": 100.0,
+        "mtbf_alloc": 0.0,
+        "mtbf_goal": 0.0,
+        "n_sub_systems": 1,
+        "n_sub_elements": 1,
+        "parent_id": 7,
+        "percent_weight_factor": 0.0,
+        "reliability_alloc": 1.0,
+        "reliability_goal": 0.999,
+        "op_time_factor": 1,
+        "soa_factor": 1,
+        "weight_factor": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_analysismanager(test_toml_user_configuration):
     """Get an analysis manager instance for each test class."""
@@ -65,7 +93,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
-    pub.unsubscribe(dut._do_insert_allocation, "request_insert_allocation")
+    pub.unsubscribe(dut.do_insert, "request_insert_allocation")
 
     # Delete the device under test.
     del dut
@@ -82,8 +110,7 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select_all() should clear nodes from an existing allocation
-        tree."""
+        """do_select_all() should clear nodes from an existing allocation tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -91,24 +118,21 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+        assert node_id == 6
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(node_id).data["allocation"], RAMSTKAllocation)
         assert tree.get_node(node_id).data["allocation"].revision_id == 1
-        assert tree.get_node(node_id).data["allocation"].hardware_id == 8
-        assert tree.get_node(node_id).data["allocation"].parent_id == 7
+        assert tree.get_node(node_id).data["allocation"].hardware_id == 6
+        assert tree.get_node(node_id).data["allocation"].parent_id == 2
         print("\033[36m\nsucceed_insert_allocation topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "_do_insert_allocation: Attempted to insert child "
-            "allocation under non-existent allocation ID 10."
-        )
+        assert error_message == ("Parent node '9' is not in the tree")
         print("\033[35m\nfail_insert_allocation topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -130,40 +154,66 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_allocation topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should send the success message after adding a new allocation record."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
 
-        pub.sendMessage("request_insert_allocation", hardware_id=8, parent_id=7)
+        assert test_datamanager.tree.get_node(6) is None
+
+        test_attributes["hardware_id"] = 6
+        test_attributes["parent_id"] = 2
+        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
+        test_attributes["hardware_id"] = 1
+        test_attributes["parent_id"] = 0
+
+        assert isinstance(
+            test_datamanager.tree.get_node(6).data["allocation"], RAMSTKAllocation
+        )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send the fail message when the parent ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
 
-        pub.sendMessage("request_insert_allocation", hardware_id=3, parent_id=10)
+        assert test_datamanager.tree.get_node(7) is None
+
+        test_attributes["hardware_id"] = 7
+        test_attributes["parent_id"] = 9
+        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
+        test_attributes["hardware_id"] = 1
+        test_attributes["parent_id"] = 0
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """should send the fail message when the revision ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
 
-        test_datamanager._revision_id = 40
-        pub.sendMessage("request_insert_allocation", hardware_id=4, parent_id=1)
-        test_datamanager._revision_id = 1
+        assert test_datamanager.tree.get_node(8) is None
+
+        test_attributes["revision_id"] = 40
+        test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 1
+        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
+        test_attributes["revision_id"] = 1
+        test_attributes["hardware_id"] = 1
+        test_attributes["parent_id"] = 0
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
 
     @pytest.mark.integration
-    def test_do_insert_no_hardware(self):
+    def test_do_insert_no_hardware(self, test_attributes, test_datamanager):
         """should send the fail message when the hardware ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
 
-        pub.sendMessage("request_insert_allocation", hardware_id=9, parent_id=1)
+        assert test_datamanager.tree.get_node(9) is None
+
+        test_attributes["hardware_id"] = 9
+        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
+        test_attributes["hardware_id"] = 1
 
         pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
 
@@ -192,7 +242,7 @@ class TestDeleteMethods:
         _last_id = test_datamanager.last_id
         pub.sendMessage("request_delete_allocation", node_id=_last_id)
 
-        assert test_datamanager.last_id == 6
+        assert test_datamanager.last_id == 4
         assert test_datamanager.tree.get_node(_last_id) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_allocation")
@@ -298,8 +348,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
         _allocation = test_datamanager.do_select(1, table="allocation")
@@ -310,8 +360,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
         )
@@ -326,8 +376,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update() should return a non-zero error code when passed a
-        Allocation ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Allocation ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
         pub.sendMessage("request_update_allocation", node_id=100, table="allocation")
@@ -336,8 +386,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a Hazard
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Hazard ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 
         test_datamanager.tree.get_node(1).data.pop("allocation")
@@ -402,8 +452,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_on_get_attributes(self, test_analysismanager, test_datamanager):
-        """_get_all_attributes() should update the attributes dict on
-        success."""
+        """_get_all_attributes() should update the attributes dict on success."""
         test_datamanager.do_get_attributes(node_id=2, table="allocation")
 
         assert test_analysismanager._attributes["hardware_id"] == 2
@@ -411,8 +460,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_on_get_tree_data_manager(self):
-        """_on_get_tree() should assign the data manager's tree to the _tree
-        attribute in response to the succeed_get_allocation_tree message."""
+        """_on_get_tree() should assign the data manager's tree to the _tree attribute
+        in response to the succeed_get_allocation_tree message."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
         )
@@ -505,8 +554,8 @@ class TestAnalysisMethods:
     def test_do_calculate_agree_allocation(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_allocation() should apportion the node ID reliability
-        goal using the AGREE method."""
+        """do_calculate_allocation() should apportion the node ID reliability goal
+        using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -530,8 +579,8 @@ class TestAnalysisMethods:
     def test_do_calculate_arinc_allocation(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_allocation() should apportion the node ID reliability
-        goal using the ARINC method."""
+        """do_calculate_allocation() should apportion the node ID reliability goal
+        using the ARINC method."""
         pub.subscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -557,9 +606,8 @@ class TestAnalysisMethods:
     def test_do_calculate_arinc_allocation_zero_system_hazard_rate(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_allocation() should send an error message when
-        attempting to allocate an assembly with a zero hazard rate using the
-        ARINC method."""
+        """do_calculate_allocation() should send an error message when attempting to
+        allocate an assembly with a zero hazard rate using the ARINC method."""
         pub.subscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -588,8 +636,8 @@ class TestAnalysisMethods:
     def test_do_calculate_equal_allocation(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_allocation() should apportion the node ID reliability
-        goal using the equal apportionment method."""
+        """do_calculate_allocation() should apportion the node ID reliability goal
+        using the equal apportionment method."""
         pub.subscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
@@ -607,8 +655,8 @@ class TestAnalysisMethods:
 
     @pytest.mark.integration
     def test_do_calculate_foo_allocation(self, test_analysismanager, test_datamanager):
-        """do_calculate_allocation() should apportion the node ID reliability
-        goal using the feasibility of objectives method."""
+        """do_calculate_allocation() should apportion the node ID reliability goal
+        using the feasibility of objectives method."""
         pub.subscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})

@@ -72,6 +72,14 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "stakeholder_id": 1,
+    }
+
+
+@pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
     dut = amStakeholder(test_toml_user_configuration)
@@ -104,7 +112,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
-    pub.unsubscribe(dut._do_insert_stakeholder, "request_insert_stakeholder")
+    pub.unsubscribe(dut.do_insert, "request_insert_stakeholder")
 
     # Delete the device under test.
     del dut
@@ -119,6 +127,8 @@ class TestCreateControllers:
         """__init__() should return a Stakeholder data manager."""
         assert isinstance(test_datamanager, dmStakeholder)
         assert isinstance(test_datamanager.tree, Tree)
+        assert test_datamanager._db_id_colname == "fld_stakeholder_id"
+        assert test_datamanager._db_tablename == "ramstk_stakeholder"
         assert test_datamanager._tag == "stakeholder"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -142,7 +152,7 @@ class TestCreateControllers:
             test_datamanager.do_delete, "request_delete_stakeholder"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_insert_stakeholder, "request_insert_stakeholder"
+            test_datamanager.do_insert, "request_insert_stakeholder"
         )
 
     @pytest.mark.unit
@@ -169,7 +179,7 @@ class TestCreateControllers:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -180,10 +190,10 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_stakeholders topic was broadcast.")
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
+    def test_do_select_all(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKStakeholder instances on success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.tree.get_node(1).data, dict)
@@ -192,27 +202,27 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
+    def test_do_select(self, test_attributes, test_datamanager):
         """do_select() should return an instance of the RAMSTKStakeholder on
         success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _stakeholder = test_datamanager.do_select(1, table="stakeholder")
+        _stakeholder = test_datamanager.do_select(1)
 
         assert isinstance(_stakeholder, MockRAMSTKStakeholder)
         assert _stakeholder.description == "Stakeholder Input"
         assert _stakeholder.priority == 1
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Stakeholder ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="stakeholder") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -227,11 +237,11 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_stakeholder topic was broadcast")
 
     @pytest.mark.unit
-    def test_do_insert(self, test_datamanager):
+    def test_do_insert(self, test_attributes, test_datamanager):
         """_do_insert_stakeholder() should send the success message after
         successfully inserting a new top-level stakeholder."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_stakeholder()
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -244,32 +254,34 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_attributes, test_datamanager):
         """_do_delete() should send the success message with the treelib
         Tree."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_improvement(self, test_analysismanager, test_datamanager):
+    def test_do_calculate_improvement(
+        self, test_analysismanager, test_attributes, test_datamanager
+    ):
         """do_calculate_stakeholder() should calculate the improvement factor
         and overall weight of a stakeholder input."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_get_tree()
 
-        _stakeholder = test_datamanager.do_select(1, "stakeholder")
+        _stakeholder = test_datamanager.do_select(1)
         _stakeholder.planned_rank = 3
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4

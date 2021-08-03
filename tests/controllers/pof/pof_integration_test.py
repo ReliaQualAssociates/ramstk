@@ -41,7 +41,7 @@ def test_mechanism(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mode")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
-    pub.unsubscribe(dut._do_insert_mechanism, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
 
     # Delete the device under test.
     del dut
@@ -72,7 +72,7 @@ def test_opload(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_mechanism")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opload")
-    pub.unsubscribe(dut._do_insert_opload, "request_insert_opload")
+    pub.unsubscribe(dut.do_insert, "request_insert_opload")
 
     # Delete the device under test.
     del dut
@@ -104,7 +104,7 @@ def test_opstress(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opstress")
-    pub.unsubscribe(dut._do_insert_opstress, "request_insert_opstress")
+    pub.unsubscribe(dut.do_insert, "request_insert_opstress")
 
     # Delete the device under test.
     del dut
@@ -136,7 +136,7 @@ def test_method(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_test_method")
-    pub.unsubscribe(dut._do_insert_test_method, "request_insert_test_method")
+    pub.unsubscribe(dut.do_insert, "request_insert_test_method")
 
     # Delete the device under test.
     del dut
@@ -188,8 +188,8 @@ class TestSelectMethods:
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
         """on_select_all() should return a Tree() object populated with
-        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod
-        instances on success."""
+        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances
+        on success."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
         test_mechanism.do_select_all(
@@ -242,8 +242,8 @@ class TestSelectMethods:
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
         """on_select_all() should return a Tree() object populated with
-        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod
-        instances on success."""
+        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances
+        on success."""
         test_mechanism.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
         )
@@ -335,41 +335,58 @@ class TestInsertMethods:
 
     def on_succeed_insert_opstress(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("5.5.5s")
+        assert tree.contains("3.3.5s")
         print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
 
     def on_succeed_insert_test_method(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("5.5.5t")
+        assert tree.contains("3.3.5t")
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_insert_mechanism(
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opload() should send the success message after
-        successfully inserting an operating load."""
+        """_do_insert_opload() should send the success message after successfully
+        inserting an operating load."""
         assert not test_datamanager.tree.contains("5")
 
         pub.subscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_pof")
 
-        pub.sendMessage("request_insert_mechanism")
+        pub.sendMessage(
+            "request_insert_mechanism",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+                "mechanism_id": 3,
+            },
+        )
 
         assert test_datamanager.tree.contains("5")
 
         pub.unsubscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_pof")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_insert_opload(
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opload() should send the success message after
-        successfully inserting an operating load."""
+        """_do_insert_opload() should send the success message after successfully
+        inserting an operating load."""
         assert not test_datamanager.tree.contains("5.5")
 
         pub.subscribe(self.on_succeed_insert_opload, "succeed_retrieve_pof")
 
-        pub.sendMessage("request_insert_opload", parent_id=5)
+        pub.sendMessage(
+            "request_insert_opload",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 1,
+                "mechanism_id": 5,
+                "load_id": 5,
+            },
+        )
 
         assert test_datamanager.tree.contains("5.5")
 
@@ -379,15 +396,25 @@ class TestInsertMethods:
     def test_do_insert_opstress(
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opstress() should send the success message after
-        successfully inserting an operating stress."""
-        assert not test_datamanager.tree.contains("5.5.5s")
+        """_do_insert_opstress() should send the success message after successfully
+        inserting an operating stress."""
+        assert not test_datamanager.tree.contains("3.3.5s")
 
         pub.subscribe(self.on_succeed_insert_opstress, "succeed_retrieve_pof")
 
-        pub.sendMessage("request_insert_opstress", parent_id=5)
+        pub.sendMessage(
+            "request_insert_opstress",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 1,
+                "mechanism_id": 3,
+                "load_id": 3,
+                "stress_id": 4,
+            },
+        )
 
-        assert test_datamanager.tree.contains("5.5.5s")
+        assert test_datamanager.tree.contains("3.3.5s")
 
         pub.unsubscribe(self.on_succeed_insert_opstress, "succeed_retrieve_pof")
 
@@ -395,15 +422,25 @@ class TestInsertMethods:
     def test_do_insert_test_method(
         self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_testmethod() should send the success message after
-        successfully inserting a test method."""
-        assert not test_datamanager.tree.contains("5.5.5t")
+        """_do_insert_testmethod() should send the success message after successfully
+        inserting a test method."""
+        assert not test_datamanager.tree.contains("3.3.5t")
 
         pub.subscribe(self.on_succeed_insert_test_method, "succeed_retrieve_pof")
 
-        pub.sendMessage("request_insert_test_method", parent_id=5)
+        pub.sendMessage(
+            "request_insert_test_method",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 1,
+                "mechanism_id": 3,
+                "load_id": 3,
+                "test_id": 4,
+            },
+        )
 
-        assert test_datamanager.tree.contains("5.5.5t")
+        assert test_datamanager.tree.contains("3.3.5t")
 
         pub.unsubscribe(self.on_succeed_insert_test_method, "succeed_retrieve_pof")
 

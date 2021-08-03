@@ -52,7 +52,7 @@ class TestExport:
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data["requirement"], dict)
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_load_output_hardware(self, test_program_dao):
         """do_load_output() should return None when loading Hardware for
         export."""

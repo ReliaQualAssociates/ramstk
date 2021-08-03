@@ -14,7 +14,6 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKCause
 
 
@@ -28,7 +27,6 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_cause_id"
     _db_tablename = "ramstk_cause"
-    _root = 0
     _tag = "cause"
 
     # Define public dictionary class attributes.
@@ -42,6 +40,12 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            "revision_id": 0,
+            "hardware_id": 0,
+            "mode_id": 0,
+            "mechanism_id": 0,
+        }
         self._pkey = {
             "cause": [
                 "revision_id",
@@ -55,8 +59,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._hardware_id: int = 0
-        self._mode_id: int = 0
+        self._record: RAMSTKCause = RAMSTKCause
 
         # Initialize public dictionary attributes.
 
@@ -72,7 +75,30 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_mechanism")
 
-        pub.subscribe(self._do_insert_cause, "request_insert_cause")
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.hardware_id = attributes["hardware_id"]
+        _new_record.mode_id = attributes["mode_id"]
+        _new_record.mechanism_id = attributes["mechanism_id"]
+        _new_record.cause_id = self.last_id + 1
+        _new_record.parent_id = attributes["mechanism_id"]
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Cause data from the RAMSTK Program database.
@@ -84,25 +110,25 @@ class DataManager(RAMSTKDataManager):
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
 
-        self._revision_id = attributes["revision_id"]
-        self._hardware_id = attributes["hardware_id"]
-        self._mode_id = attributes["mode_id"]
-        self._parent_id = attributes["mechanism_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
+        self._fkey["hardware_id"] = attributes["hardware_id"]
+        self._fkey["mode_id"] = attributes["mode_id"]
+        self._fkey["mechanism_id"] = attributes["mechanism_id"]
 
         for _cause in self.dao.do_select_all(
             RAMSTKCause,
             key=["revision_id", "hardware_id", "mode_id", "mechanism_id"],
             value=[
-                self._revision_id,
-                self._hardware_id,
-                self._mode_id,
-                self._parent_id,
+                self._fkey["revision_id"],
+                self._fkey["hardware_id"],
+                self._fkey["mode_id"],
+                self._fkey["mechanism_id"],
             ],
         ):
             self.tree.create_node(
                 tag=self._tag,
                 identifier=_cause.cause_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={self._tag: _cause},
             )
             self.last_id = self.dao.get_last_id("ramstk_cause", "fld_cause_id")
@@ -111,44 +137,3 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_causes",
             tree=self.tree,
         )
-
-    def _do_insert_cause(self) -> None:
-        """Add a failure Cause record.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _cause = RAMSTKCause()
-            _cause.revision_id = self._revision_id
-            _cause.hardware_id = self._hardware_id
-            _cause.mode_id = self._mode_id
-            _cause.mechanism_id = self._parent_id
-            _cause.cause_id = self.last_id + 1
-
-            self.dao.do_insert(_cause)
-
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_cause.cause_id,
-                parent=self._root,
-                data={self._tag: _cause},
-            )
-
-            self.last_id = self.dao.get_last_id("ramstk_cause", "fld_cause_id")
-
-            pub.sendMessage(
-                "succeed_insert_cause",
-                node_id=_cause.cause_id,
-                tree=self.tree,
-            )
-        except DataAccessError as _error:
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error.msg,
-            )
-            pub.sendMessage(
-                "fail_insert_cause",
-                error_message=_error.msg,
-            )

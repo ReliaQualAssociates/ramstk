@@ -7,14 +7,13 @@
 """Hazards Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKHazardAnalysis
 
 
@@ -41,11 +40,16 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            "revision_id": 0,
+            "function_id": 0,
+        }
         self._pkey = {"hazard": ["revision_id", "function_id", "hazard_id"]}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKHazardAnalysis] = RAMSTKHazardAnalysis
 
         # Initialize public dictionary attributes.
 
@@ -62,7 +66,27 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(self.do_select_all, "selected_function")
         pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
-        pub.subscribe(self._do_insert_hazard, "request_insert_hazard")
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.function_id = self._fkey["function_id"]
+        _new_record.hazard_id = self.last_id + 1
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
 
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Hazard data from the RAMSTK Program database.
@@ -71,8 +95,8 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes["revision_id"]
-        _function_id = attributes["function_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
+        self._fkey["function_id"] = attributes["function_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -80,14 +104,14 @@ class DataManager(RAMSTKDataManager):
         for _hazard in self.dao.do_select_all(
             RAMSTKHazardAnalysis,
             key=["revision_id", "function_id"],
-            value=[self._revision_id, _function_id],
+            value=[self._fkey["revision_id"], self._fkey["function_id"]],
             order=RAMSTKHazardAnalysis.hazard_id,
         ):
 
             self.tree.create_node(
                 tag="hazard",
                 identifier=_hazard.hazard_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={"hazard": _hazard},
             )
 
@@ -111,46 +135,4 @@ class DataManager(RAMSTKDataManager):
         for _key in attributes:
             super().do_set_attributes(
                 node_id=[attributes["hazard_id"], ""], package={_key: attributes[_key]}
-            )
-
-    def _do_insert_hazard(self, parent_id: int = 0) -> None:
-        """Add a new hazard to parent (function) ID.
-
-        :param parent_id: the parent (function) ID to associate the new hazard
-            with.
-        :return: None
-        :rtype: None
-        """
-        _last_id = self.dao.get_last_id("ramstk_hazard_analysis", "hazard_id")
-        try:
-            _hazard = RAMSTKHazardAnalysis()
-            _hazard.revision_id = self._revision_id
-            _hazard.function_id = parent_id
-            _hazard.hazard_id = _last_id + 1
-
-            self.dao.do_insert(_hazard)
-
-            self.tree.create_node(
-                tag="hazard",
-                identifier=_hazard.hazard_id,
-                parent=self._root,
-                data={"hazard": _hazard},
-            )
-
-            self.last_id = _hazard.hazard_id
-
-            pub.sendMessage(
-                "succeed_insert_hazard",
-                node_id=self.last_id,
-                tree=self.tree,
-            )
-        except DataAccessError as _error:
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error.msg,
-            )
-            pub.sendMessage(
-                "fail_insert_hazard",
-                error_message=_error.msg,
             )

@@ -107,6 +107,34 @@ def mock_program_dao(monkeypatch):
     yield DAO
 
 
+@pytest.fixture
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "availability_alloc": 0.0,
+        "env_factor": 1,
+        "goal_measure_id": 1,
+        "hazard_rate_alloc": 0.0,
+        "hazard_rate_goal": 0.0,
+        "included": 1,
+        "int_factor": 1,
+        "allocation_method_id": 1,
+        "mission_time": 100.0,
+        "mtbf_alloc": 0.0,
+        "mtbf_goal": 0.0,
+        "n_sub_systems": 1,
+        "n_sub_elements": 1,
+        "parent_id": 1,
+        "percent_weight_factor": 0.0,
+        "reliability_alloc": 1.0,
+        "reliability_goal": 0.999,
+        "op_time_factor": 1,
+        "soa_factor": 1,
+        "weight_factor": 1,
+    }
+
+
 @pytest.fixture(scope="function")
 def test_analysismanager(test_toml_user_configuration):
     """Get an analysis manager instance for each test function."""
@@ -152,7 +180,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
-    pub.unsubscribe(dut._do_insert_allocation, "request_insert_allocation")
+    pub.unsubscribe(dut.do_insert, "request_insert_allocation")
 
     # Delete the device under test.
     del dut
@@ -191,14 +219,11 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_allocation")
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_allocation")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_allocation, "request_insert_allocation"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_allocation")
 
     @pytest.mark.unit
     def test_analysis_manager_create(self, test_analysismanager):
-        """__init__() should create an instance of the allocation analysis
-        manager."""
+        """__init__() should create an instance of the allocation analysis manager."""
         assert isinstance(test_analysismanager, amAllocation)
         assert isinstance(
             test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
@@ -274,15 +299,16 @@ class TestSelectMethods:
         assert test_datamanager.do_select(100, table="allocation") is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should add new record to record tree and update last_id."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_datamanager._do_insert_allocation(hardware_id=4, parent_id=1)
+        test_attributes["hardware_id"] = 4
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert test_datamanager.last_id == 4
         assert isinstance(
@@ -316,8 +342,8 @@ class TestAnalysisMethods:
     def test_do_calculate_goals_reliability_specified(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_goal() should calculate the equivalent h(t) and MTBF
-        goals from a specified reliability goal."""
+        """do_calculate_goal() should calculate the equivalent h(t) and MTBF goals from
+        a specified reliability goal."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
@@ -342,8 +368,8 @@ class TestAnalysisMethods:
     def test_do_calculate_goals_hazard_rate_specified(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_goal() should calculate the equivalent MTBF and R(t)
-        goals from a specified hazard rate goal."""
+        """do_calculate_goal() should calculate the equivalent MTBF and R(t) goals from
+        a specified hazard rate goal."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
@@ -367,8 +393,8 @@ class TestAnalysisMethods:
     def test_do_calculate_goals_mtbf_specified(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_goal() should calculate the equivalent h(t) and R(t)
-        goals from a specified MTBF goal."""
+        """do_calculate_goal() should calculate the equivalent h(t) and R(t) goals from
+        a specified MTBF goal."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         test_analysismanager._tree.get_node(1).data["allocation"].hardware_id = 1
@@ -390,8 +416,8 @@ class TestAnalysisMethods:
     def test_do_calculate_no_allocation_method(
         self, test_analysismanager, test_datamanager
     ):
-        """do_calculate_allocation() should apportion the node ID reliability
-        goal using the feasibility of objectives method."""
+        """do_calculate_allocation() should apportion the node ID reliability goal
+        using the feasibility of objectives method."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         test_analysismanager._tree.get_node(1).data[
@@ -423,8 +449,8 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_on_select_hardware_system(self, test_analysismanager, test_datamanager):
-        """_on_select_hardware() should assign the node and system hazard rate
-        when the system node is selected."""
+        """_on_select_hardware() should assign the node and system hazard rate when the
+        system node is selected."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         test_analysismanager._on_get_hardware_attributes(
@@ -443,8 +469,7 @@ class TestAnalysisMethods:
     def test_do_get_allocation_goal(
         self, test_analysismanager, test_datamanager, method_id
     ):
-        """do_calculate_goal() should return the proper allocation goal
-        measure."""
+        """do_calculate_goal() should return the proper allocation goal measure."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
         test_datamanager.do_get_tree()
         test_datamanager.do_get_attributes(node_id=2, table="allocation")

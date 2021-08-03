@@ -1,22 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.revision.datamanager.py is part of The RAMSTK
-#       Project
+#       ramstk.controllers.revision.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Revision Package Data Model."""
 
 # Standard Library Imports
-import inspect
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKRevision
 
 
@@ -48,6 +45,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKRevision] = RAMSTKRevision
 
         # Initialize public dictionary attributes.
 
@@ -63,7 +61,25 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "request_retrieve_revisions")
 
-        pub.subscribe(self._do_insert_revision, "request_insert_revision")
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self.last_id + 1
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
 
     def do_select_all(self) -> None:
         """Retrieve all the Revision data from the RAMSTK Program database.
@@ -81,7 +97,7 @@ class DataManager(RAMSTKDataManager):
             self.tree.create_node(
                 tag=_revision.name,
                 identifier=_revision.revision_id,
-                parent=self._root,
+                parent=self._parent_id,
                 data={self._tag: _revision},
             )
 
@@ -91,51 +107,3 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_revisions",
             tree=self.tree,
         )
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def _do_insert_revision(self, parent_id: int = 0) -> None:
-        """Add a new revision.
-
-        :param parent_id: the ID of the parent entity.  Unused in this
-            method as revisions have no parent.  Included to keep method
-            generic and compatible with PyPubSub MDS.
-        :return: None
-        :rtype: None
-        :raise: AttributeError if not connected to a RAMSTK program database.
-        """
-        try:
-            _last_id = self.dao.get_last_id("ramstk_revision", "revision_id")
-            _revision = RAMSTKRevision()
-            _revision.revision_id = _last_id + 1
-            _revision.name = "New Revision"
-
-            self.dao.do_insert(_revision)
-
-            self.tree.create_node(
-                tag=_revision.name,
-                identifier=_revision.revision_id,
-                parent=self._root,
-                data={self._tag: _revision},
-            )
-            self.last_id = _revision.revision_id
-            pub.sendMessage(
-                "succeed_insert_revision",
-                node_id=self.last_id,
-                tree=self.tree,
-            )
-        except (AttributeError, DataAccessError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{0}: Failed to insert revision into program "
-                "database.".format(_method_name)
-            )
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_revision",
-                error_message=_error_msg,
-            )
