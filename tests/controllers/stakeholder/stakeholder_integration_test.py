@@ -19,6 +19,14 @@ from ramstk.controllers import amStakeholder, dmStakeholder
 from ramstk.models.programdb import RAMSTKStakeholder
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "stakeholder_id": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
@@ -53,13 +61,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
-    pub.unsubscribe(dut._do_insert_stakeholder, "request_insert_stakeholder")
+    pub.unsubscribe(dut.do_insert, "request_insert_stakeholder")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -70,17 +78,17 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_stakeholders topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all(1) should clear a populate Tree when selecting a new
         set of stakeholder records."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -103,23 +111,23 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_stakeholder topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_stakeholder() should send the success message after
         successfully inserting a new top-level stakeholder."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
 
-        pub.sendMessage("request_insert_stakeholder")
+        pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
 
-        test_datamanager._revision_id = 40
-        pub.sendMessage("request_insert_stakeholder")
+        test_datamanager._fkey["revision_id"] = 40
+        pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
 
@@ -217,7 +225,7 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_stakeholders")
 
-        _stakeholder = test_datamanager.do_select(1, table="stakeholder")
+        _stakeholder = test_datamanager.do_select(1)
         _stakeholder.description = "Test Stakeholder"
         pub.sendMessage("request_update_stakeholder", node_id=1, table="stakeholder")
 
@@ -238,7 +246,7 @@ class TestUpdateMethods:
         more attribute values is the wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_stakeholders")
 
-        _stakeholder = test_datamanager.do_select(1, table="stakeholder")
+        _stakeholder = test_datamanager.do_select(1)
         _stakeholder.user_float_1 = {1: 2}
         pub.sendMessage("request_update_stakeholder", node_id=1, table="stakeholder")
 
@@ -253,7 +261,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_stakeholder"
         )
 
-        _stakeholder = test_datamanager.do_select(1, table="stakeholder")
+        _stakeholder = test_datamanager.do_select(1)
         _stakeholder.user_float_1 = {1: 2}
 
         pub.sendMessage("request_update_stakeholder", node_id=0, table="stakeholder")
