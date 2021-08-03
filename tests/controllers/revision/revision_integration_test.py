@@ -19,6 +19,14 @@ from ramstk.controllers import dmRevision
 from ramstk.models.programdb import RAMSTKRevision
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "name": "New Revision",
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     dut = dmRevision()
@@ -35,7 +43,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
     pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
     pub.unsubscribe(dut.do_delete, "request_delete_revision")
-    pub.unsubscribe(dut._do_insert_revision, "request_insert_revision")
+    pub.unsubscribe(dut.do_insert, "request_insert_revision")
 
     # Delete the device under test.
     del dut
@@ -62,7 +70,7 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_revisions")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -77,28 +85,28 @@ class TestInsertMethods:
 
     def on_fail_insert_no_database(self, error_message):
         assert error_message == (
-            "_do_insert_revision: Failed to insert " "revision into program database."
+            "dao.do_insert: No database connected when attempting to add a record."
         )
         print("\033[35m\nfail_insert_revision topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_revision")
 
-        pub.sendMessage("request_insert_revision", parent_id=0)
+        pub.sendMessage("request_insert_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_revision")
 
     @pytest.mark.integration
-    def test_do_insert_no_database(self):
+    def test_do_insert_no_database(self, test_attributes):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         pub.subscribe(self.on_fail_insert_no_database, "fail_insert_revision")
 
         DUT = dmRevision()
-        DUT._do_insert_revision()
+        DUT.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_database, "fail_insert_revision")
 

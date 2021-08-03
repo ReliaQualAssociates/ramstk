@@ -90,6 +90,14 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "name": "New Revision",
+    }
+
+
+@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Test fixture for Function data manager."""
     dut = dmRevision()
@@ -105,7 +113,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
     pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
     pub.unsubscribe(dut.do_delete, "request_delete_revision")
-    pub.unsubscribe(dut._do_insert_revision, "request_insert_revision")
+    pub.unsubscribe(dut.do_insert, "request_insert_revision")
 
     # Delete the device under test.
     del dut
@@ -121,6 +129,8 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmRevision)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._db_id_colname == "fld_revision_id"
+        assert test_datamanager._db_tablename == "ramstk_revision"
         assert test_datamanager._tag == "revision"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -141,9 +151,7 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "request_set_revision_attributes"
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_revision")
-        assert pub.isSubscribed(
-            test_datamanager._do_insert_revision, "request_insert_revision"
-        )
+        assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_revision")
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -167,7 +175,7 @@ class TestSelectMethods:
         success."""
         test_datamanager.do_select_all()
 
-        _revision = test_datamanager.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1)
 
         assert isinstance(_revision, MockRAMSTKRevision)
         assert _revision.availability_logistics == 0.9986
@@ -186,19 +194,19 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all()
 
-        assert test_datamanager.do_select(100, table="revision") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_revision() should send the success message after
         successfully inserting a new revision."""
         test_datamanager.do_select_all()
-        test_datamanager._do_insert_revision()
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(3).data["revision"], RAMSTKRevision

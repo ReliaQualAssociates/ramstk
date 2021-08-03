@@ -248,6 +248,16 @@ class BaseDatabase:
         try:
             self.session.add(record)
             self.session.commit()
+        except AttributeError as _error:
+            # This exception is raised when there is no database connection.
+            _error_message = (
+                "dao.do_insert: No database connected when attempting to add a record."
+            )
+            pub.sendMessage(
+                "fail_insert_record",
+                error_message=_error_message,
+            )
+            raise DataAccessError(_error_message) from _error
         except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
