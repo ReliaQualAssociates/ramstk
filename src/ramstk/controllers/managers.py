@@ -370,7 +370,7 @@ class RAMSTKDataManager:
             self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
         pub.sendMessage(
-            "succeed_retrieve_{}".format(self._tag),
+            "succeed_retrieve_{}s".format(self._tag),
             tree=self.tree,
         )
 
