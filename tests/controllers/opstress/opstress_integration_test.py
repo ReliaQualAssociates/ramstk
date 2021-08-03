@@ -19,6 +19,18 @@ from ramstk.controllers import dmOpStress
 from ramstk.models.programdb import RAMSTKOpStress
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "mode_id": 6,
+        "mechanism_id": 3,
+        "load_id": 3,
+        "stress_id": 3,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -45,13 +57,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_load")
     pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opstress")
-    pub.unsubscribe(dut._do_insert_opstress, "request_insert_opstress")
+    pub.unsubscribe(dut.do_insert, "request_insert_opstress")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -61,25 +73,17 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_opstress topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKOpStress instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_opstress")
 
-        test_datamanager.do_select_all(
-            {
-                "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 1,
-                "load_id": 1,
-            }
-        )
+        test_datamanager.do_select_all(test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opstress")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -98,25 +102,23 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """should send success message, add record to record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
-        pub.sendMessage("request_insert_opstress", parent_id=3)
+        pub.sendMessage("request_insert_opstress", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """should send the fail message when load ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_opstress")
 
-        _parent_id = test_datamanager._parent_id
-        test_datamanager._parent_id = 100
-        pub.sendMessage("request_insert_opstress", parent_id=100)
-        test_datamanager._parent_id = _parent_id
+        test_datamanager._fkey["load_id"] = 100
+        pub.sendMessage("request_insert_opstress", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
 
