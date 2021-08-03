@@ -138,6 +138,16 @@ def mock_program_dao(monkeypatch):
 
 
 @pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "requirement_id": 1,
+        "description": "New Requirement",
+        "parent_id": 0,
+    }
+
+
+@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -157,7 +167,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
     pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
     pub.unsubscribe(dut.do_delete, "request_delete_requirement")
-    pub.unsubscribe(dut._do_insert_requirement, "request_insert_requirement")
+    pub.unsubscribe(dut.do_insert, "request_insert_requirement")
 
     # Delete the device under test.
     del dut
@@ -173,6 +183,8 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmRequirement)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
+        assert test_datamanager._db_id_colname == "fld_requirement_id"
+        assert test_datamanager._db_tablename == "ramstk_requirement"
         assert test_datamanager._tag == "requirement"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -202,19 +214,19 @@ class TestCreateControllers:
             test_datamanager.do_delete, "request_delete_requirement"
         )
         assert pub.isSubscribed(
-            test_datamanager._do_insert_requirement, "request_insert_requirement"
+            test_datamanager.do_insert, "request_insert_requirement"
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_datamanager):
-        """do_select_all() should return a Tree object populated with
-        RAMSTKRequirement instances on success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+    def test_do_select_all(self, test_attributes, test_datamanager):
+        """do_select_all() should return a Tree object populated with RAMSTKRequirement
+        instances on success."""
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.tree.get_node(1).data, dict)
@@ -223,36 +235,36 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_datamanager):
+    def test_do_select(self, test_attributes, test_datamanager):
         """do_select() should return an instance of the RAMSTKRequirement on
         success."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        _requirement = test_datamanager.do_select(1, table="requirement")
+        _requirement = test_datamanager.do_select(1)
 
         assert isinstance(_requirement, MockRAMSTKRequirement)
         assert _requirement.description == ""
         assert _requirement.priority == 0
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_datamanager):
+    def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
         """do_select() should return None when a non-existent Requirement ID is
         requested."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="requirement") is None
+        assert test_datamanager.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_datamanager):
-        """do_insert() should send the success message after successfully
-        inserting a new top-level requirement."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_requirement(parent_id=0)
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+        """do_insert() should send the success message after successfully inserting a
+        new top-level requirement."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -265,11 +277,13 @@ class TestInsertMethods:
         )
 
     @pytest.mark.unit
-    def test_do_insert_child(self, test_datamanager):
-        """do_insert() should send the success message after successfully
-        inserting a new child requirement."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
-        test_datamanager._do_insert_requirement(parent_id=1)
+    def test_do_insert_child(self, test_attributes, test_datamanager):
+        """do_insert() should send the success message after successfully inserting a
+        new child requirement."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+
+        test_attributes["parent_id"] = 1
+        test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
@@ -283,15 +297,14 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+    def test_do_delete(self, test_attributes, test_datamanager):
+        """_do_delete() should send the success message with the treelib Tree."""
+        test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1

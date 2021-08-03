@@ -8,15 +8,13 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
-from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.exceptions import DataAccessError
 from ramstk.models.programdb import RAMSTKRequirement
 
 
@@ -43,11 +41,15 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            "revision_id": 0,
+        }
         self._pkey = {"requirement": ["revision_id", "requirement_id"]}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKRequirement] = RAMSTKRequirement
 
         # Initialize public dictionary attributes.
 
@@ -67,8 +69,6 @@ class DataManager(RAMSTKDataManager):
 
         pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_create_code, "request_create_requirement_code")
-
-        pub.subscribe(self._do_insert_requirement, "request_insert_requirement")
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
         """Request to create the requirement code.
@@ -99,6 +99,28 @@ class DataManager(RAMSTKDataManager):
                     ).format(str(node_id), _method_name),
                 )
 
+    def do_get_new_record(  # pylint: disable=method-hidden
+        self, attributes: Dict[str, Any]
+    ) -> object:
+        """Gets a new record instance with attributes set.
+
+        :param attributes: the dict of attribute values to assign to the new record.
+        :return: None
+        :rtype: None
+        """
+        _new_record = self._record()
+        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.requirement_id = self.last_id + 1
+        _new_record.parent_id = attributes["parent_id"]
+
+        for _key in self._fkey.items():
+            attributes.pop(_key[0])
+        attributes.pop(self._db_id_colname.replace("fld_", ""))
+
+        _new_record.set_attributes(attributes)
+
+        return _new_record
+
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the Requirement data from the RAMSTK Program database.
 
@@ -106,7 +128,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        self._revision_id = attributes["revision_id"]
+        self._fkey["revision_id"] = attributes["revision_id"]
 
         for _node in self.tree.children(self.tree.root):
             self.tree.remove_node(_node.identifier)
@@ -114,7 +136,7 @@ class DataManager(RAMSTKDataManager):
         for _requirement in self.dao.do_select_all(
             RAMSTKRequirement,
             key=["revision_id"],
-            value=[self._revision_id],
+            value=[self._fkey["revision_id"]],
             order=RAMSTKRequirement.requirement_id,
         ):
 
@@ -131,59 +153,3 @@ class DataManager(RAMSTKDataManager):
             "succeed_retrieve_requirements",
             tree=self.tree,
         )
-
-    def _do_insert_requirement(self, parent_id: int = 0) -> None:
-        """Add a new requirement.
-
-        :param parent_id: the parent (requirement) ID the new requirement
-            will be a child (derived) of.
-        :return: None
-        :rtype: None
-        """
-        try:
-            _requirement = RAMSTKRequirement()
-            _requirement.revision_id = self._revision_id
-            _requirement.requirement_id = self.last_id + 1
-            _requirement.parent_id = parent_id
-            _requirement.description = "New Requirement"
-
-            self.dao.do_insert(_requirement)
-
-            self.last_id = _requirement.requirement_id
-            self.tree.create_node(
-                tag="requirement",
-                identifier=self.last_id,
-                parent=parent_id,
-                data={"requirement": _requirement},
-            )
-
-            pub.sendMessage(
-                "succeed_insert_requirement",
-                node_id=self.last_id,
-                tree=self.tree,
-            )
-        except NodeIDAbsentError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                "{1}: Attempted to insert child requirement under "
-                "non-existent requirement ID {0}."
-            ).format(str(parent_id), _method_name)
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_insert_requirement",
-                error_message=_error_msg,
-            )
-        except DataAccessError as _error:
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error.msg,
-            )
-            pub.sendMessage(
-                "fail_insert_requirement",
-                error_message=_error.msg,
-            )

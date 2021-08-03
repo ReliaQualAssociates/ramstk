@@ -22,6 +22,16 @@ from ramstk.controllers import dmRequirement
 from ramstk.models.programdb import RAMSTKRequirement
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "requirement_id": 1,
+        "description": "New Requirement",
+        "parent_id": 0,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -43,13 +53,13 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
     pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
     pub.unsubscribe(dut.do_delete, "request_delete_requirement")
-    pub.unsubscribe(dut._do_insert_requirement, "request_insert_requirement")
+    pub.unsubscribe(dut.do_insert, "request_insert_requirement")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -61,17 +71,17 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_requirements topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should clear the existing Tree when a new group of
         requirements is selected."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_requirements")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_requirements")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -110,43 +120,46 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_requirement topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new top-level requirement."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
 
-        pub.sendMessage("request_insert_requirement", parent_id=0)
+        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
 
     @pytest.mark.integration
-    def test_do_insert_child(self, test_datamanager):
+    def test_do_insert_child(self, test_attributes, test_datamanager):
         """do_insert() should send the success message after successfully
         inserting a new child requirement."""
         pub.subscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
 
-        pub.sendMessage("request_insert_requirement", parent_id=1)
+        test_attributes["parent_id"] = 1
+        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """do_insert() should send the fail message attempting to add a child
         to a non-existent requirement."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_requirement")
 
-        pub.sendMessage("request_insert_requirement", parent_id=32)
+        test_attributes["parent_id"] = 32
+        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_requirement")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """_do_insert_requirement() should send the success message after
         successfully inserting a n operating stress."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_requirement")
 
-        test_datamanager._revision_id = 10
-        pub.sendMessage("request_insert_requirement", parent_id=1)
+        test_datamanager._fkey["revision_id"] = 10
+        test_attributes["parent_id"] = 1
+        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_requirement")
 
