@@ -22,6 +22,14 @@ from ramstk.controllers import dmProgramStatus
 from ramstk.models.programdb import RAMSTKProgramStatus
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "status_id": 1,
+    }
+
+
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
@@ -39,14 +47,14 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_program_status")
-    pub.unsubscribe(dut._do_insert_program_status, "request_insert_program_status")
+    pub.unsubscribe(dut.do_insert, "request_insert_program_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -56,17 +64,17 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_program_status topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKValidation instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_program_status")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_program_status")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -88,23 +96,23 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_program_status topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_datamanager):
         """_do_insert_validation() should send the success message after
         successfully inserting a validation task."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
 
-        pub.sendMessage("request_insert_program_status")
+        pub.sendMessage("request_insert_program_status", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
 
     @pytest.mark.integration
-    def test_do_insert_duplicate_date(self, test_datamanager):
+    def test_do_insert_duplicate_date(self, test_attributes, test_datamanager):
         """_do_insert_program_status() should send the fail message if
         attempting to add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_duplicate_date, "fail_insert_program_status")
 
-        test_datamanager._revision_id = 30
-        pub.sendMessage("request_insert_program_status")
+        test_datamanager._fkey["revision_id"] = 30
+        pub.sendMessage("request_insert_program_status", attributes=test_attributes)
 
         pub.unsubscribe(
             self.on_fail_insert_duplicate_date, "fail_insert_program_status"
