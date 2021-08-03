@@ -23,6 +23,15 @@ from ramstk.controllers import amValidation, dmProgramStatus, dmValidation
 from ramstk.models.programdb import RAMSTKValidation
 
 
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "validation_id": 1,
+        "name": "New Validation Task",
+    }
+
+
 @pytest.fixture(scope="class")
 def test_analysismanager(test_toml_user_configuration):
     # Create the device under test (dut) and connect to the configuration.
@@ -63,7 +72,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_validation")
-    pub.unsubscribe(dut._do_insert_validation, "request_insert_validation")
+    pub.unsubscribe(dut.do_insert, "request_insert_validation")
 
     # Delete the device under test.
     del dut
@@ -84,14 +93,14 @@ def test_programstatus(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_program_status")
-    pub.unsubscribe(dut._do_insert_program_status, "request_insert_program_status")
+    pub.unsubscribe(dut.do_insert, "request_insert_program_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -101,17 +110,17 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKValidation instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
@@ -132,23 +141,23 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_validation topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self):
+    def test_do_insert_sibling(self, test_attributes):
         """_do_insert_validation() should send the success message after
         successfully inserting a validation task."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
-        pub.sendMessage("request_insert_validation", parent_id=0)
+        pub.sendMessage("request_insert_validation", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """_do_insert_function() should send the fail message if attempting to
         add a function to a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
-        test_datamanager._revision_id = 30
-        pub.sendMessage("request_insert_validation", parent_id=0)
+        test_datamanager._fkey["revision_id"] = 30
+        pub.sendMessage("request_insert_validation", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
@@ -407,8 +416,6 @@ class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     def on_succeed_calculate_plan(self, attributes):
-        print(attributes["plan"])
-        print(date.today() - timedelta(days=10))
         assert attributes["plan"].loc[
             pd.to_datetime(date.today() - timedelta(days=10)), "lower"
         ] == pytest.approx(50.0004502)
