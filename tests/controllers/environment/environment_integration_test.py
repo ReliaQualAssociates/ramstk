@@ -49,7 +49,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_environment_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_usage_profile")
     pub.unsubscribe(dut.do_update, "request_update_environment")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_select_all, "selected_phase")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_environment")
     pub.unsubscribe(dut.do_insert, "request_insert_environment")
@@ -65,8 +65,6 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironment)
-        assert isinstance(tree.get_node(2).data["environment"], RAMSTKEnvironment)
-        assert isinstance(tree.get_node(3).data["environment"], RAMSTKEnvironment)
         print("\033[36m\nsucceed_retrieve_environments topic was broadcast.")
 
     @pytest.mark.integration
@@ -174,7 +172,6 @@ class TestDeleteMethods:
         """should send the fail message when the node doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
 
-        test_datamanager.tree.remove_node(2)
         pub.sendMessage("request_delete_environment", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
@@ -221,7 +218,7 @@ class TestUpdateMethods:
         """should send the success message after updating an environment record."""
         pub.subscribe(self.on_succeed_update, "succeed_update_environment")
 
-        _environment = test_datamanager.do_select(1, table="environment")
+        _environment = test_datamanager.do_select(1)
         _environment.name = "Big test environment"
         pub.sendMessage("request_update_environment", node_id=1, table="environment")
 
@@ -232,20 +229,14 @@ class TestUpdateMethods:
         """should send the success message after updating all environment records."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _environment = test_datamanager.do_select(1, table="environment")
+        _environment = test_datamanager.do_select(1)
         _environment.name = "Even bigger test environment"
-        _environment = test_datamanager.do_select(2, table="environment")
-        _environment.name = "Biggest test environment"
 
         pub.sendMessage("request_update_all_environments")
 
         assert (
             test_datamanager.do_select(1, table="environment").name
             == "Even bigger test environment"
-        )
-        assert (
-            test_datamanager.do_select(2, table="environment").name
-            == "Biggest test environment"
         )
 
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
@@ -255,7 +246,7 @@ class TestUpdateMethods:
         """should send the fail message when data type is wrong for attribute."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
 
-        _environment = test_datamanager.do_select(1, table="environment")
+        _environment = test_datamanager.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=1, table="environment")
 
@@ -268,7 +259,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_environment"
         )
 
-        _environment = test_datamanager.do_select(1, table="environment")
+        _environment = test_datamanager.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=0, table="environment")
 

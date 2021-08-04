@@ -101,7 +101,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_environment_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_usage_profile")
     pub.unsubscribe(dut.do_update, "request_update_environment")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_select_all, "selected_phase")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_environment")
     pub.unsubscribe(dut.do_insert, "request_insert_environment")
@@ -130,7 +130,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_environment_tree"
         )
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_phase")
         assert pub.isSubscribed(
             test_datamanager.do_update, "request_update_environment"
         )

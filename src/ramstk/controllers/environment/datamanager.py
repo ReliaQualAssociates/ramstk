@@ -7,7 +7,7 @@
 """Environment Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
@@ -27,6 +27,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_environment_id"
     _db_tablename = "ramstk_environment"
+    _select_msg = "selected_phase"
     _tag = "environment"
 
     # Define public dictionary class attributes.
@@ -51,21 +52,20 @@ class DataManager(RAMSTKDataManager):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._record: RAMSTKEnvironment = RAMSTKEnvironment
+        self._record: Type[RAMSTKEnvironment] = RAMSTKEnvironment
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "environment_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_environment_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_environment_attributes")
         pub.subscribe(super().do_set_attributes, "lvw_editing_usage_profile")
         pub.subscribe(super().do_update, "request_update_environment")
-
-        pub.subscribe(self.do_select_all, "selected_revision")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -83,38 +83,8 @@ class DataManager(RAMSTKDataManager):
 
         for _key in self._fkey.items():
             attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
+        attributes.pop(self.pkey)
 
         _new_record.set_attributes(attributes)
 
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve the Environment data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        self._fkey["revision_id"] = attributes["revision_id"]
-        self._fkey["phase_id"] = attributes["phase_id"]
-
-        for _environment in self.dao.do_select_all(
-            RAMSTKEnvironment, key=["revision_id"], value=[self._fkey["revision_id"]]
-        ):
-            self.tree.create_node(
-                tag="environment",
-                identifier=_environment.environment_id,
-                parent=self._parent_id,
-                data={"environment": _environment},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_environments",
-            tree=self.tree,
-        )
