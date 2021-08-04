@@ -252,7 +252,7 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mechanism")
 
-        _mechanism = test_datamanager.do_select(3, table="mechanism")
+        _mechanism = test_datamanager.do_select(3)
         _mechanism.rpn_detection = {1: 2}
         pub.sendMessage("request_update_mechanism", node_id=3, table="mechanism")
 
@@ -266,7 +266,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mechanism"
         )
 
-        _mechanism = test_datamanager.do_select(4, table="mechanism")
+        _mechanism = test_datamanager.do_select(4)
         _mechanism.rpn_detection_new = {1: 2}
         pub.sendMessage("request_update_mechanism", node_id=0, table="mechanism")
 
@@ -352,6 +352,6 @@ class TestGetterSetter:
             package={"rpn_detection": 4},
         )
 
-        assert test_datamanager.do_select(4, table="mechanism").rpn_detection == 4
+        assert test_datamanager.do_select(4).rpn_detection == 4
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mechanism_tree")
