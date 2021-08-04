@@ -31,6 +31,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_phase_id"
     _db_tablename = "ramstk_mission_phase"
+    _select_msg = "selected_mission"
     _tag = "mission_phase"
 
     # Define public dictionary class attributes.
@@ -62,14 +63,13 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "phase_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_mission_phase_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_mission_phase_attributes")
         pub.subscribe(super().do_set_attributes, "lvw_editing_mission_phase")
         pub.subscribe(super().do_update, "request_update_mission_phase")
-
-        pub.subscribe(self.do_select_all, "selected_revision")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -92,32 +92,3 @@ class DataManager(RAMSTKDataManager):
         _new_record.set_attributes(attributes)
 
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve the Usage Profile data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-        self._fkey["mission_id"] = attributes["mission_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _phase in self.dao.do_select_all(
-            RAMSTKMissionPhase, key=["revision_id"], value=[self._fkey["revision_id"]]
-        ):
-            self.tree.create_node(
-                tag="mission_phase",
-                identifier=_phase.phase_id,
-                parent=self._parent_id,
-                data={"mission_phase": _phase},
-            )
-            self.last_id = _phase.phase_id
-
-        pub.sendMessage(
-            "succeed_retrieve_mission_phases",
-            tree=self.tree,
-        )

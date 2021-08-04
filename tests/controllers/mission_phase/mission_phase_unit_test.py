@@ -84,7 +84,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_mission_phase_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission_phase")
     pub.unsubscribe(dut.do_update, "request_update_mission_phase")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_select_all, "selected_mission")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
     pub.unsubscribe(dut.do_insert, "request_insert_mission_phase")
@@ -114,7 +114,7 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_mission_phase_tree"
         )
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mission")
         assert pub.isSubscribed(
             test_datamanager.do_update, "request_update_mission_phase"
         )
