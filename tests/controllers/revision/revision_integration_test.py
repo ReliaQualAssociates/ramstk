@@ -31,7 +31,11 @@ def test_attributes():
 def test_datamanager(test_program_dao):
     dut = dmRevision()
     dut.do_connect(test_program_dao)
-    dut.do_select_all()
+    dut.do_select_all(
+        attributes={
+            None: None,
+        }
+    )
 
     yield dut
 
@@ -55,17 +59,22 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
+        print(tree.all_nodes())
         assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(tree.get_node(1).data["revision"], RAMSTKRevision)
         print("\033[36m\nsucceed_retrieve_revision topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select() should clear any existing tree when selecting
-        revisions."""
+        """do_select() should clear any existing tree when selecting revisions."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_revisions")
 
-        test_datamanager.do_select_all()
+        pub.sendMessage(
+            "request_retrieve_revisions",
+            attributes={
+                None: None,
+            },
+        )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_revisions")
 
@@ -91,8 +100,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """_do_insert_revision() should send the success message after
-        successfully inserting a new revision."""
+        """_do_insert_revision() should send the success message after successfully
+        inserting a new revision."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_revision")
 
         pub.sendMessage("request_insert_revision", attributes=test_attributes)
@@ -101,8 +110,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_no_database(self, test_attributes):
-        """_do_insert_revision() should send the success message after
-        successfully inserting a new revision."""
+        """_do_insert_revision() should send the success message after successfully
+        inserting a new revision."""
         pub.subscribe(self.on_fail_insert_no_database, "fail_insert_revision")
 
         DUT = dmRevision()
@@ -129,8 +138,7 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
+        """_do_delete() should send the success message with the treelib Tree."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_revision")
 
         pub.sendMessage("request_delete_revision", node_id=2)
@@ -139,8 +147,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to delete
-        a non-existent revision."""
+        """_do_delete() should send the fail message when attempting to delete a non-
+        existent revision."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_revision")
 
         pub.sendMessage("request_delete_revision", node_id=300)
@@ -149,9 +157,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_revision")
 
         test_datamanager.tree.remove_node(1)
@@ -196,8 +203,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
-        """do_update() should send the succeed_update_revision message on
-        success."""
+        """do_update() should send the succeed_update_revision message on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_revision")
 
         _revision = test_datamanager.do_select(1, table="revision")
@@ -209,8 +215,7 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
-        """do_update() should send the succeed_update_revision message on
-        success."""
+        """do_update() should send the succeed_update_revision message on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
         _revision = test_datamanager.do_select(1, table="revision")
@@ -226,9 +231,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should send the fail_update_revision message when passed
-        a revision ID that that has a wrong data type for one or more
-        attributes."""
+        """do_update() should send the fail_update_revision message when passed a
+        revision ID that that has a wrong data type for one or more attributes."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_revision")
 
         test_datamanager.tree.get_node(1).data["revision"].cost = None
@@ -238,8 +242,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should end the fail_update_revision message when passed
-        a revision ID that has no data package."""
+        """do_update() should end the fail_update_revision message when passed a
+        revision ID that has no data package."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_revision"
         )
@@ -252,8 +256,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        revision ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a revision ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_revision")
 
         pub.sendMessage("request_update_revision", node_id=100, table="revision")
@@ -262,8 +266,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a Function ID
+        that has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_revision")
 
         test_datamanager.tree.get_node(1).data.pop("revision")

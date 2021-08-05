@@ -27,6 +27,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_revision_id"
     _db_tablename = "ramstk_revision"
+    _select_msg = "request_retrieve_revisions"
     _tag = "revision"
 
     # Define public dictionary class attributes.
@@ -40,6 +41,9 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
+        self._fkey = {
+            None: None,
+        }
         self._pkey = {"revision": ["revision_id"]}
 
         # Initialize private list attributes.
@@ -52,14 +56,13 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "revision_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_revision_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_revision_attributes")
         pub.subscribe(super().do_set_attributes, "wvw_editing_revision")
         pub.subscribe(super().do_update, "request_update_revision")
-
-        pub.subscribe(self.do_select_all, "request_retrieve_revisions")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -73,37 +76,7 @@ class DataManager(RAMSTKDataManager):
         _new_record = self._record()
         _new_record.revision_id = self.last_id + 1
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
-
+        attributes.pop(self.pkey)
         _new_record.set_attributes(attributes)
 
         return _new_record
-
-    def do_select_all(self) -> None:
-        """Retrieve all the Revision data from the RAMSTK Program database.
-
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _revision in self.dao.do_select_all(
-            RAMSTKRevision, key=None, value=None, order=RAMSTKRevision.revision_id
-        ):
-
-            self.tree.create_node(
-                tag=_revision.name,
-                identifier=_revision.revision_id,
-                parent=self._parent_id,
-                data={self._tag: _revision},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_revisions",
-            tree=self.tree,
-        )

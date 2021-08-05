@@ -102,6 +102,11 @@ def test_datamanager(mock_program_dao):
     """Test fixture for Function data manager."""
     dut = dmRevision()
     dut.do_connect(mock_program_dao)
+    dut.do_select_all(
+        attributes={
+            None: None,
+        }
+    )
 
     yield dut
 
@@ -160,10 +165,8 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select_all(self, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKRevision instances on success."""
-        test_datamanager.do_select_all()
-
+        """do_select_all() should return a Tree() object populated with RAMSTKRevision
+        instances on success."""
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(
             test_datamanager.tree.get_node(1).data["revision"], MockRAMSTKRevision
@@ -171,10 +174,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, test_datamanager):
-        """do_select() should return an instance of the RAMSTKRevision on
-        success."""
-        test_datamanager.do_select_all()
-
+        """do_select() should return an instance of the RAMSTKRevision on success."""
         _revision = test_datamanager.do_select(1)
 
         assert isinstance(_revision, MockRAMSTKRevision)
@@ -182,18 +182,9 @@ class TestSelectMethods:
         assert _revision.name == "Original Revision"
 
     @pytest.mark.unit
-    def test_do_select_all_populated_tree(self, test_datamanager):
-        """do_select() should clear any existing tree when selecting
-        revisions."""
-        test_datamanager.do_select_all()
-        test_datamanager.do_select_all()
-
-    @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Revision ID is
         requested."""
-        test_datamanager.do_select_all()
-
         assert test_datamanager.do_select(100) is None
 
 
@@ -203,9 +194,8 @@ class TestInsertMethods:
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """_do_insert_revision() should send the success message after
-        successfully inserting a new revision."""
-        test_datamanager.do_select_all()
+        """_do_insert_revision() should send the success message after successfully
+        inserting a new revision."""
         test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(
@@ -221,9 +211,7 @@ class TestDeleteMethods:
 
     @pytest.mark.unit
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
-        test_datamanager.do_select_all()
+        """_do_delete() should send the success message with the treelib Tree."""
         test_datamanager.do_delete(2)
 
         assert test_datamanager.last_id == 1

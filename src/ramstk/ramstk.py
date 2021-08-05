@@ -127,7 +127,9 @@ class RAMSTKProgramManager:
         try:
             self.program_dao.do_connect(database)
             pub.sendMessage("succeed_connect_program_database", dao=self.program_dao)
-            pub.sendMessage("request_retrieve_revisions")
+            pub.sendMessage(
+                "request_retrieve_revisions", attributes={"revision_id", None}
+            )
         except NoSuchModuleError:
             _error_msg = (
                 "RAMSTK does not currently support database dialect "
@@ -159,7 +161,7 @@ class RAMSTKProgramManager:
             self.program_dao.do_disconnect()
             pub.sendMessage("succeed_disconnect_program_database")
         except AttributeError:
-            _error_msg = "Not currently connected to a database.  Nothing to " "close."
+            _error_msg = "Not currently connected to a database.  Nothing to close."
             pub.sendMessage(
                 "fail_disconnect_program_database", error_message=_error_msg
             )
