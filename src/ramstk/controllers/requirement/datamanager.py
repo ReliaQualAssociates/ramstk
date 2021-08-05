@@ -28,6 +28,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_requirement_id"
     _db_tablename = "ramstk_requirement"
+    _select_msg = "selected_revision"
     _tag = "requirement"
 
     # Define public dictionary class attributes.
@@ -56,6 +57,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "requirement_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_requirement_attributes")
@@ -67,7 +69,6 @@ class DataManager(RAMSTKDataManager):
             super().do_create_all_codes, "request_create_all_requirement_codes"
         )
 
-        pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_create_code, "request_create_requirement_code")
 
     def do_create_code(self, node_id: int, prefix: str) -> None:
@@ -115,41 +116,8 @@ class DataManager(RAMSTKDataManager):
 
         for _key in self._fkey.items():
             attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
+        attributes.pop(self.pkey)
 
         _new_record.set_attributes(attributes)
 
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Requirement data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _requirement in self.dao.do_select_all(
-            RAMSTKRequirement,
-            key=["revision_id"],
-            value=[self._fkey["revision_id"]],
-            order=RAMSTKRequirement.requirement_id,
-        ):
-
-            self.tree.create_node(
-                tag="requirement",
-                identifier=_requirement.requirement_id,
-                parent=_requirement.parent_id,
-                data={"requirement": _requirement},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_requirements",
-            tree=self.tree,
-        )
