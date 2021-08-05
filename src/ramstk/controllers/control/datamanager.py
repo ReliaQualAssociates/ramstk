@@ -27,7 +27,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_control_id"
     _db_tablename = "ramstk_control"
-    _select_msg = "selected_cause"
+    _select_msg = "selected_revision"
     _tag = "control"
 
     # Define public dictionary class attributes.
@@ -41,13 +41,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-            "hardware_id": 0,
-            "mode_id": 0,
-            "mechanism_id": 0,
-            "cause_id": 0,
-        }
         self._pkey = {
             "control": [
                 "revision_id",
@@ -60,6 +53,14 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "hardware_id",
+            "mode_id",
+            "mechanism_id",
+            "cause_id",
+            "control_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKControl] = RAMSTKControl
@@ -87,18 +88,12 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.hardware_id = attributes["hardware_id"]
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
         _new_record.cause_id = attributes["cause_id"]
         _new_record.control_id = self.last_id + 1
         _new_record.parent_id = attributes["cause_id"]
-
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self.pkey)
-
-        _new_record.set_attributes(attributes)
 
         return _new_record
