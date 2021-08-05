@@ -133,6 +133,7 @@ class RAMSTKDataManager:
         self._dic_insert_function: Dict[str, object] = {}
 
         # Initialize private list attributes.
+        self._lst_id_columns: List[str] = []
 
         # Initialize private scalar attributes.
         self._parent_id: int = 0
@@ -272,6 +273,9 @@ class RAMSTKDataManager:
         """
         try:
             _record = self.do_get_new_record(attributes)
+            for _id in self._lst_id_columns:
+                attributes.pop(_id)
+            _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1
 
             self.dao.do_insert(_record)
@@ -348,13 +352,16 @@ class RAMSTKDataManager:
         """
         self.tree = do_clear_tree(self.tree)
 
-        for _item in self._fkey.items():
-            self._fkey[_item[0]] = attributes[_item[0]]
+        self._revision_id = attributes["revision_id"]
 
         for _record in self.dao.do_select_all(
             self._record,
-            key=[_item[0] for _item in self._fkey.items()],
-            value=[_item[1] for _item in self._fkey.items()],
+            key=[
+                "revision_id",
+            ],
+            value=[
+                self._revision_id,
+            ],
         ):
             try:
                 self._parent_id = _record.get_attributes()["parent_id"]
