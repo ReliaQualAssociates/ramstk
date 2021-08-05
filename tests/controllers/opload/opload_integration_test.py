@@ -37,7 +37,12 @@ def test_datamanager(test_program_dao):
     dut = dmOpLoad()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
-        attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 4}
+        attributes={
+            "revision_id": 1,
+            "hardware_id": 1,
+            "mode_id": 6,
+            "mechanism_id": 4,
+        }
     )
 
     yield dut
@@ -89,7 +94,7 @@ class TestInsertMethods:
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_mechanism_id)=(100) is not present in table "
+            "returned:\n\tKey (fld_mechanism_id)=(30) is not present in table "
             '"ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
@@ -111,7 +116,7 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opload")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """_do_insert_opload() should send the fail message if attempting to add an
         operating load to a non-existent opload ID."""

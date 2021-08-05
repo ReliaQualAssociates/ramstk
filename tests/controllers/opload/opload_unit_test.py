@@ -99,7 +99,7 @@ class TestCreateControllers:
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
         assert test_datamanager._db_id_colname == "fld_load_id"
-        assert test_datamanager._db_tablename == "ramstk_opload"
+        assert test_datamanager._db_tablename == "ramstk_op_load"
         assert test_datamanager._tag == "opload"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
@@ -152,7 +152,7 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="opload") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
