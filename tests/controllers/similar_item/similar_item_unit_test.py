@@ -421,7 +421,7 @@ class TestDeleteMethods:
 class TestAnalysisMethods:
     """Class for similar item methods test suite."""
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_calculate_topic_633(
         self, test_analysismanager, test_attributes, test_datamanager
     ):
@@ -451,7 +451,7 @@ class TestAnalysisMethods:
         assert _node.data["similar_item"].change_factor_3 == 1.0
         assert _node.data["similar_item"].result_1 == pytest.approx(0.0005607143)
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_calculate_user_defined(
         self, test_analysismanager, test_attributes, test_datamanager
     ):
@@ -483,7 +483,7 @@ class TestAnalysisMethods:
         assert _node.data["similar_item"].change_factor_2 == 1.2
         assert _node.data["similar_item"].result_1 == pytest.approx(0.0062934)
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_calculate_no_method(
         self, test_analysismanager, test_attributes, test_datamanager
     ):
@@ -505,7 +505,7 @@ class TestAnalysisMethods:
         assert _node.data["similar_item"].change_factor_2 == 1.0
         assert _node.data["similar_item"].result_1 == 0.0
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_roll_up_change_descriptions(
         self, test_analysismanager, test_attributes, test_datamanager
     ):
