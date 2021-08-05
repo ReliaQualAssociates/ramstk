@@ -97,7 +97,7 @@ class DataManager(RAMSTKDataManager):
 
         for _key in self._fkey.items():
             attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
+        attributes.pop(self.pkey)
 
         _new_record.set_attributes(attributes)
 
