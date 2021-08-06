@@ -20,8 +20,9 @@ from ramstk.controllers import RAMSTKDataManager
 class DataManager(RAMSTKDataManager):
     """Contain the attributes and methods of the FMEA data manager."""
 
-    _tag = "fmea"
     _root = 0
+    _select_msg = "None"
+    _tag = "fmea"
 
     # pylint: disable=unused-argument
     def __init__(self, **kwargs: Dict[str, Any]) -> None:

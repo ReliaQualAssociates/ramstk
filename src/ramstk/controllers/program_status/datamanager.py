@@ -28,6 +28,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_status_id"
     _db_tablename = "ramstk_program_status"
+    _select_msg = "selected_revision"
     _tag = "program_status"
 
     # Define public dictionary class attributes.
@@ -41,13 +42,14 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._dic_status: Dict[Any, List[float]] = {}
         self._pkey = {"program_status": ["revision_id", "status_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "status_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKProgramStatus] = RAMSTKProgramStatus
@@ -57,6 +59,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "status_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -66,8 +69,6 @@ class DataManager(RAMSTKDataManager):
             super().do_set_attributes, "request_set_program_status_attributes"
         )
         pub.subscribe(super().do_update, "request_update_program_status")
-
-        pub.subscribe(self.do_select_all, "selected_revision")
 
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
@@ -81,53 +82,13 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.status_id = self.last_id + 1
         _new_record.date_status = date.today()
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
-
-        _new_record.set_attributes(attributes)
         self._dic_status[_new_record.date_status] = _new_record.status_id
 
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all Program Status data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _status in self.dao.do_select_all(
-            RAMSTKProgramStatus,
-            key=["revision_id"],
-            value=[self._fkey["revision_id"]],
-            order=RAMSTKProgramStatus.date_status,
-        ):
-
-            self._dic_status[_status.date_status] = _status.status_id
-
-            self.tree.create_node(
-                tag="program_status",
-                identifier=_status.status_id,
-                parent=self._parent_id,
-                data={"program_status": _status},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_program_status",
-            tree=self.tree,
-        )
 
     def _do_set_attributes(self, cost_remaining, time_remaining) -> None:
         """Set the program remaining cost and time.
@@ -142,7 +103,7 @@ class DataManager(RAMSTKDataManager):
         except KeyError:
             self.do_insert(
                 attributes={
-                    "revision_id": self._fkey["revision_id"],
+                    "revision_id": self._revision_id,
                     "status_id": -1,
                     "date_status": date.today(),
                     "cost_remaining": cost_remaining,

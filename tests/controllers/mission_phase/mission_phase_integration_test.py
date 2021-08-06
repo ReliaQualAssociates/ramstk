@@ -59,7 +59,6 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["mission_phase"], RAMSTKMissionPhase)
-        assert isinstance(tree.get_node(2).data["mission_phase"], RAMSTKMissionPhase)
         print("\033[36m\nsucceed_retrieve_mission_phases topic was broadcast.")
 
     @pytest.mark.integration
@@ -68,7 +67,7 @@ class TestSelectMethods:
         one when called on a populated Mission Phase data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
@@ -161,7 +160,6 @@ class TestDeleteMethods:
         database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission_phase")
 
-        test_datamanager.tree.remove_node(2)
         pub.sendMessage("request_delete_mission_phase", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission_phase")
@@ -224,10 +222,8 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _mission_phase1 = test_datamanager.do_select(1, table="mission_phase")
-        _mission_phase2 = test_datamanager.do_select(2, table="mission_phase")
+        _mission_phase1 = test_datamanager.do_select(1)
         _mission_phase1.name = "Big test mission phase"
-        _mission_phase2.name = "Big test mission phase 2"
 
         pub.sendMessage("request_update_all_mission_phases")
 
@@ -239,7 +235,7 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission_phase")
 
-        _mission_phase = test_datamanager.do_select(1, table="mission_phase")
+        _mission_phase = test_datamanager.do_select(1)
         _mission_phase.name = {1: 2}
 
         pub.sendMessage(
@@ -258,7 +254,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission_phase"
         )
 
-        _mission_phase = test_datamanager.do_select(1, table="mission_phase")
+        _mission_phase = test_datamanager.do_select(1)
         _mission_phase.name = {1: 2}
 
         pub.sendMessage(

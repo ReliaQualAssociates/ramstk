@@ -79,7 +79,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_control_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_control")
     pub.unsubscribe(dut.do_update, "request_update_control")
-    pub.unsubscribe(dut.do_select_all, "selected_cause")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_control_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_control")
     pub.unsubscribe(dut.do_insert, "request_insert_control")
@@ -105,7 +105,7 @@ class TestCreateControllers:
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0
         assert test_datamanager.last_id == 0
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_cause")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_control_attributes"
         )

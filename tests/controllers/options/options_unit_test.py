@@ -85,12 +85,14 @@ class TestCreateControllers:
         assert isinstance(DUT, dmOptions)
         assert isinstance(DUT.tree, Tree)
         assert isinstance(DUT.dao, BaseDatabase)
+        assert DUT._lst_id_columns == [
+            "site_id",
+        ]
         assert DUT._pkey == {
             "option": ["site_id"],
         }
         assert DUT._tag == "option"
         assert DUT._root == 0
-        assert DUT._site_id == 0
 
         assert pub.isSubscribed(DUT.do_update, "request_update_option")
         assert pub.isSubscribed(DUT.do_get_attributes, "request_get_option_attributes")
@@ -124,11 +126,10 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, test_datamanager):
-        """do_select() should return an instance of the RAMSTKSiteInfo on
-        success."""
+        """do_select() should return an instance of the RAMSTKSiteInfo on success."""
         test_datamanager.do_select_all({"site_id": 1})
 
-        _options = test_datamanager.do_select(1, table="option")
+        _options = test_datamanager.do_select(1)
 
         assert isinstance(_options, MockRAMSTKSiteInfo)
         assert _options.site_id == 1
@@ -159,4 +160,4 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all({"site_id": 1})
 
-        assert test_datamanager.do_select(100, table="option") is None
+        assert test_datamanager.do_select(100) is None

@@ -79,7 +79,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_opload_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_opload")
     pub.unsubscribe(dut.do_update, "request_update_opload")
-    pub.unsubscribe(dut.do_select_all, "selected_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut.do_insert, "request_insert_opload")
@@ -99,13 +99,13 @@ class TestCreateControllers:
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
         assert test_datamanager._db_id_colname == "fld_load_id"
-        assert test_datamanager._db_tablename == "ramstk_opload"
+        assert test_datamanager._db_tablename == "ramstk_op_load"
         assert test_datamanager._tag == "opload"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0
         assert test_datamanager.last_id == 0
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mechanism")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_opload_attributes"
         )
@@ -152,7 +152,7 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="opload") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

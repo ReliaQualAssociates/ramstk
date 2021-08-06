@@ -54,7 +54,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_test_method_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_test_method")
     pub.unsubscribe(dut.do_update, "request_update_test_method")
-    pub.unsubscribe(dut.do_select_all, "selected_load")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_test_method")
     pub.unsubscribe(dut.do_insert, "request_insert_test_method")
@@ -79,7 +79,7 @@ class TestSelectMethods:
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
         pub.sendMessage(
-            "selected_load",
+            "selected_revision",
             attributes=test_attributes,
         )
 
@@ -132,7 +132,7 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1) is None
+        assert tree.get_node(3) is None
         print("\033[36m\nsucceed_delete_test_method topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
@@ -248,7 +248,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
-        _test_method = test_datamanager.do_select(3, table="test_method")
+        _test_method = test_datamanager.do_select(3)
         _test_method.boundary_conditions = {1: 2}
 
         pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
@@ -263,7 +263,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
         )
 
-        _test_method = test_datamanager.do_select(4, table="test_method")
+        _test_method = test_datamanager.do_select(4)
         _test_method.boundary_conditions = {1: 2}
 
         pub.sendMessage("request_update_test_method", node_id=0, table="test_method")

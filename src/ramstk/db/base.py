@@ -258,6 +258,9 @@ class BaseDatabase:
                 error_message=_error_message,
             )
             raise DataAccessError(_error_message) from _error
+        except exc.InternalError as _error:
+            print("postgresql error: {}".format(_error.orig.pgcode))
+            self.session.rollback()
         except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
@@ -321,7 +324,7 @@ class BaseDatabase:
         _all: bool = kwargs.get("_all", True)
 
         _filters = {}
-        if _keys is not None:
+        if _keys[0] is not None:
             for _idx, _key in enumerate(_keys):
                 _filters[_key] = _values[_idx]
 

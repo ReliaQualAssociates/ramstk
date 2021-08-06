@@ -73,7 +73,7 @@ class TestSelectMethods:
             self.on_succeed_select_all, "succeed_retrieve_failure_definitions"
         )
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(
             self.on_succeed_select_all, "succeed_retrieve_failure_definitions"
@@ -92,8 +92,9 @@ class TestInsertMethods:
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
-            "_do_insert_failure_definition: Attempting to add failure "
-            "definition to non-existent revision 40."
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_revision_id)=(40) is not present in table "
+            '"ramstk_revision".'
         )
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
@@ -237,7 +238,7 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_failure_definition")
 
-        _failure_definition = test_datamanager.do_select(1, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(1)
         _failure_definition.definition = "Big test definition"
         pub.sendMessage(
             "request_update_failure_definition", node_id=1, table="failure_definition"
@@ -250,17 +251,17 @@ class TestUpdateMethods:
         """do_update_all failure_definition() should return None on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _failure_definition = test_datamanager.do_select(1, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(1)
         _failure_definition.definition = "Big test definition #1"
-        _failure_definition = test_datamanager.do_select(2, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(2)
         _failure_definition.definition = "Big test definition #2"
 
         pub.sendMessage("request_update_all_failure_definitions")
 
-        _failure_definition = test_datamanager.do_select(1, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(1)
         assert _failure_definition.definition == "Big test definition #1"
 
-        _failure_definition = test_datamanager.do_select(2, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(2)
         assert _failure_definition.definition == "Big test definition #2"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")

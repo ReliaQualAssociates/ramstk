@@ -37,7 +37,12 @@ def test_datamanager(test_program_dao):
     dut = dmOpLoad()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
-        attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 4}
+        attributes={
+            "revision_id": 1,
+            "hardware_id": 1,
+            "mode_id": 6,
+            "mechanism_id": 4,
+        }
     )
 
     yield dut
@@ -47,7 +52,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_opload_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_opload")
     pub.unsubscribe(dut.do_update, "request_update_opload")
-    pub.unsubscribe(dut.do_select_all, "selected_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut.do_insert, "request_insert_opload")
@@ -71,7 +76,7 @@ class TestSelectMethods:
         instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
@@ -89,7 +94,7 @@ class TestInsertMethods:
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_mechanism_id)=(100) is not present in table "
+            "returned:\n\tKey (fld_mechanism_id)=(30) is not present in table "
             '"ramstk_mechanism".'
         )
         print("\033[35m\nfail_insert_opload topic was broadcast.")
@@ -111,7 +116,7 @@ class TestInsertMethods:
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_opload")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_insert_no_parent(self, test_attributes, test_datamanager):
         """_do_insert_opload() should send the fail message if attempting to add an
         operating load to a non-existent opload ID."""
@@ -119,7 +124,7 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(6) is None
 
-        test_datamanager._fkey["mechanism_id"] = 30
+        test_attributes["mechanism_id"] = 30
         pub.sendMessage("request_insert_opload", attributes=test_attributes)
 
         assert test_datamanager.tree.get_node(6) is None
@@ -247,7 +252,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
-        _opload = test_datamanager.do_select(4, table="opload")
+        _opload = test_datamanager.do_select(4)
         _opload.priority_id = {1: 2}
 
         pub.sendMessage("request_update_opload", node_id=4, table="opload")
@@ -262,7 +267,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opload"
         )
 
-        _opload = test_datamanager.do_select(4, table="opload")
+        _opload = test_datamanager.do_select(4)
         _opload.priority_id = {1: 2}
 
         pub.sendMessage("request_update_opload", node_id=0, table="opload")

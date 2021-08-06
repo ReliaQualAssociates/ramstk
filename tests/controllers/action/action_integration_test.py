@@ -67,7 +67,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_action_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_action")
     pub.unsubscribe(dut.do_update, "request_update_action")
-    pub.unsubscribe(dut.do_select_all, "selected_cause")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_action")
     pub.unsubscribe(dut.do_insert, "request_insert_action")
@@ -91,7 +91,7 @@ class TestSelectMethods:
         """should return a Tree() object populated with RAMSTKAction instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_action")
 
-        test_datamanager.do_select_all(test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_action")
 

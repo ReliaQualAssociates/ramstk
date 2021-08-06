@@ -27,6 +27,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mission_id"
     _db_tablename = "ramstk_mission"
+    _select_msg = "selected_revision"
     _tag = "mission"
 
     # Define public dictionary class attributes.
@@ -40,12 +41,15 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {"revision_id": 0}
         self._pkey = {
             "mission": ["revision_id", "mission_id"],
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "mission_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKMission] = RAMSTKMission
@@ -55,14 +59,13 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "mission_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_mission_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_mission_attributes")
         pub.subscribe(super().do_set_attributes, "lvw_editing_usage_profile")
         pub.subscribe(super().do_update, "request_update_mission")
-
-        pub.subscribe(self.do_select_all, "selected_revision")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -74,41 +77,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.mission_id = self.last_id + 1
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
-
-        _new_record.set_attributes(attributes)
-
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve the Mission data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _mission in self.dao.do_select_all(
-            RAMSTKMission, key=["revision_id"], value=[self._fkey["revision_id"]]
-        ):
-            self.tree.create_node(
-                tag="mission",
-                identifier=_mission.mission_id,
-                parent=self._parent_id,
-                data={"mission": _mission},
-            )
-            self.last_id = _mission.mission_id
-
-        pub.sendMessage(
-            "succeed_retrieve_missions",
-            tree=self.tree,
-        )

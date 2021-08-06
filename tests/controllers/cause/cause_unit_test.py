@@ -85,7 +85,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_cause_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_cause")
     pub.unsubscribe(dut.do_update, "request_update_cause")
-    pub.unsubscribe(dut.do_select_all, "selected_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut.do_insert, "request_insert_cause")
@@ -111,7 +111,7 @@ class TestCreateControllers:
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0
         assert test_datamanager.last_id == 0
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mechanism")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_cause_attributes"
         )
@@ -146,7 +146,7 @@ class TestSelectMethods:
         """do_select() should return an instance of the RAMSTKCause on success."""
         test_datamanager.do_select_all(test_attributes)
 
-        _cause = test_datamanager.do_select(1, table="cause")
+        _cause = test_datamanager.do_select(1)
 
         assert isinstance(_cause, MockRAMSTKCause)
         assert _cause.description == "Test Failure Cause #1 for Mechanism ID 3"
@@ -162,7 +162,7 @@ class TestSelectMethods:
         """do_select() should return None when a non-existent cause ID is requested."""
         test_datamanager.do_select_all(test_attributes)
 
-        assert test_datamanager.do_select(100, table="cause") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

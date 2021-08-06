@@ -8,14 +8,13 @@
 """Preferences Package Data Model."""
 
 # Standard Library Imports
-from typing import Dict, List
+from typing import Dict, List, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
-from ramstk.db.base import BaseDatabase
 from ramstk.models.programdb import RAMSTKProgramInfo
 
 
@@ -33,6 +32,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_revision_id"
     _db_tablename = "ramstk_program_info"
+    _select_msg = "request_program_preferences"
     _tag = "preference"
 
     # Define public dict class attributes.
@@ -51,45 +51,21 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+        ]
 
         # Initialize private scalar attributes.
+        self._record: Type[RAMSTKProgramInfo] = RAMSTKProgramInfo
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "revision_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_preference_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_preference_attributes")
         pub.subscribe(super().do_update, "request_update_preference")
-
-        pub.subscribe(self._do_select_all, "succeed_connect_program_database")
-
-    def _do_select_all(self, dao: BaseDatabase) -> None:
-        """Retrieve all the Options data from the RAMSTK Program database.
-
-        :param dao: the RAMSTK option attributes for the
-            selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self.dao = dao
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        # noinspection PyUnresolvedReferences
-        for _preference in self.dao.do_select_all(RAMSTKProgramInfo):
-            self.tree.create_node(
-                tag="preference",
-                identifier=1,
-                parent=self._root,
-                data={"preference": _preference},
-            )
-
-        pub.sendMessage(
-            "succeed_retrieve_preferences",
-            tree=self.tree,
-        )

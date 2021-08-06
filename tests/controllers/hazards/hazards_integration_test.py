@@ -61,7 +61,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
     pub.unsubscribe(dut.do_update, "request_update_hazard")
     pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
     pub.unsubscribe(dut.do_delete, "request_delete_hazard")
     pub.unsubscribe(dut.do_insert, "request_insert_hazard")
@@ -84,7 +84,7 @@ class TestSelectMethods:
         """do_select_all() should clear nodes from an existing Hazards tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 

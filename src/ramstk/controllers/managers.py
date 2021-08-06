@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Type
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -20,6 +20,19 @@ from treelib.exceptions import NodeIDAbsentError
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
+
+
+def do_clear_tree(tree: treelib.Tree) -> treelib.Tree:
+    """Clear all nodes from a tree except the root node.
+
+    :param tree: the treelib.Tree to clear.
+    :return: the original tree with all child nodes removed.
+    :rtype: treelib.Tree
+    """
+    for _node in tree.children(tree.root):
+        tree.remove_node(_node.identifier)
+
+    return tree
 
 
 class RAMSTKAnalysisManager:
@@ -98,10 +111,11 @@ class RAMSTKDataManager:
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = ""
-    _db_tablename = ""
-    _root = 0
-    _tag = ""
+    _db_id_colname: str = ""
+    _db_tablename: str = ""
+    _root: int = 0
+    _select_msg: str = "selected_revision"
+    _tag: str = ""
 
     # Define public dictionary class attributes.
 
@@ -119,9 +133,11 @@ class RAMSTKDataManager:
         self._dic_insert_function: Dict[str, object] = {}
 
         # Initialize private list attributes.
+        self._lst_id_columns: List[str] = []
 
         # Initialize private scalar attributes.
         self._parent_id: int = 0
+        self._record: Type[object]
         self._revision_id: int = 0
 
         # Initialize public dictionary attributes.
@@ -131,6 +147,7 @@ class RAMSTKDataManager:
         # Initialize public scalar attributes.
         self.dao: BaseDatabase = BaseDatabase()
         self.last_id: int = 0
+        self.pkey: str = ""
         self.tree: treelib.Tree = treelib.Tree()
         self.do_get_new_record: Callable[[Dict[str, Any]], object]
 
@@ -145,6 +162,7 @@ class RAMSTKDataManager:
         pub.subscribe(self.do_delete, "request_delete_{}".format(self._tag))
         pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
         pub.subscribe(self.do_insert, "request_insert_{}".format(self._tag))
+        pub.subscribe(self.do_select_all, self._select_msg)
         pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_save_project")
@@ -255,6 +273,9 @@ class RAMSTKDataManager:
         """
         try:
             _record = self.do_get_new_record(attributes)
+            for _id in self._lst_id_columns:
+                attributes.pop(_id)
+            _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1
 
             self.dao.do_insert(_record)
@@ -321,6 +342,50 @@ class RAMSTKDataManager:
             _entity = None
 
         return _entity
+
+    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+        """Retrieve all the records from the RAMSTK Program database.
+
+        :param attributes: the attributes dict for the selected failure action.
+        :return: None
+        :rtype: None
+        """
+        self.tree = do_clear_tree(self.tree)
+
+        try:
+            self._revision_id = attributes["revision_id"]
+        except KeyError:
+            try:
+                self._revision_id = attributes["site_id"]
+            except KeyError:
+                self._revision_id = 0
+
+        for _record in self.dao.do_select_all(
+            self._record,
+            key=[
+                self._lst_id_columns[0],
+            ],
+            value=[
+                self._revision_id,
+            ],
+        ):
+            try:
+                self._parent_id = _record.get_attributes()["parent_id"]
+            except KeyError:
+                self._parent_id = 0
+
+            self.tree.create_node(
+                tag=self._tag,
+                identifier=_record.get_attributes()[self.pkey],
+                parent=self._parent_id,
+                data={self._tag: _record},
+            )
+            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+        pub.sendMessage(
+            "succeed_retrieve_{}s".format(self._tag),
+            tree=self.tree,
+        )
 
     def do_set_attributes(self, node_id: List, package: Dict[str, Any]) -> None:
         """Set the attributes of the record associated with node ID.

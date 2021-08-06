@@ -24,6 +24,7 @@ class DataManager(RAMSTKDataManager):
     RAMSTKMissionPhase, and RAMSKTEnvironment data models.
     """
 
+    _select_msg = "None"
     _tag = "usage_profile"
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:

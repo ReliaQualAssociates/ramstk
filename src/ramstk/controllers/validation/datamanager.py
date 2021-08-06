@@ -27,6 +27,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_validation_id"
     _db_tablename = "ramstk_validation"
+    _select_msg = "selected_revision"
     _tag = "validation"
 
     # Define public dictionary class attributes.
@@ -40,13 +41,14 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._dic_status: Dict[Any, float] = {}
         self._pkey = {"validation": ["revision_id", "validation_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "validation_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKValidation] = RAMSTKValidation
@@ -56,6 +58,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "validation_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_validation_attributes")
@@ -63,8 +66,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "mvw_editing_validation")
         pub.subscribe(super().do_set_attributes, "wvw_editing_validation")
         pub.subscribe(super().do_update, "request_update_validation")
-
-        pub.subscribe(self.do_select_all, "selected_revision")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -76,47 +77,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.validation_id = self.last_id + 1
         _new_record.name = "New Validation Task"
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
-
-        _new_record.set_attributes(attributes)
-
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all Validation BoM data from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Requirement.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _validation in self.dao.do_select_all(
-            RAMSTKValidation,
-            key=["revision_id"],
-            value=[self._fkey["revision_id"]],
-            order=RAMSTKValidation.validation_id,
-        ):
-
-            self.tree.create_node(
-                tag="validation",
-                identifier=_validation.validation_id,
-                parent=self._root,
-                data={"validation": _validation},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_validations",
-            tree=self.tree,
-        )

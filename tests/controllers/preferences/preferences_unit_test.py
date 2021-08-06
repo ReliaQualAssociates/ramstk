@@ -64,6 +64,7 @@ def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = dmPreferences()
+    dut.do_connect(mock_program_dao)
 
     yield dut
 
@@ -72,7 +73,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_preference_attributes")
     pub.unsubscribe(dut.do_update, "request_update_preference")
     pub.unsubscribe(dut.do_get_tree, "request_get_preference_tree")
-    pub.unsubscribe(dut._do_select_all, "succeed_connect_program_database")
+    pub.unsubscribe(dut.do_select_all, "request_program_preferences")
 
     # Delete the device under test.
     del dut
@@ -87,7 +88,7 @@ class TestCreateControllers:
         """__init__() should return a Options data manager."""
         assert isinstance(test_datamanager, dmPreferences)
         assert isinstance(test_datamanager.tree, Tree)
-        assert isinstance(test_datamanager.dao, BaseDatabase)
+        assert isinstance(test_datamanager.dao, MockDAO)
         assert test_datamanager._pkey == {
             "preference": ["revision_id"],
         }
@@ -95,7 +96,7 @@ class TestCreateControllers:
         assert test_datamanager._root == 0
 
         assert pub.isSubscribed(
-            test_datamanager._do_select_all, "succeed_connect_program_database"
+            test_datamanager.do_select_all, "request_program_preferences"
         )
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_preference")
         assert pub.isSubscribed(
@@ -109,27 +110,35 @@ class TestCreateControllers:
         )
 
 
-@pytest.mark.usefixtures("mock_program_dao", "test_datamanager")
+@pytest.mark.usefixtures("test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, mock_program_dao, test_datamanager):
+    def test_do_select_all(self, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKProgramInfo and RAMSTKSiteInfo instances on success."""
-        test_datamanager._do_select_all(mock_program_dao)
+        test_datamanager.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
         assert isinstance(
             test_datamanager.tree.get_node(1).data["preference"], MockRAMSTKProgramInfo
         )
 
     @pytest.mark.unit
-    def test_do_select(self, mock_program_dao, test_datamanager):
+    def test_do_select(self, test_datamanager):
         """do_select() should return an instance of the RAMSTKProgramInfo on
         success."""
-        test_datamanager._do_select_all(mock_program_dao)
+        test_datamanager.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
-        _preferences = test_datamanager.do_select(1, table="preference")
+        _preferences = test_datamanager.do_select(1)
 
         assert isinstance(_preferences, MockRAMSTKProgramInfo)
         assert _preferences.function_active == 1
@@ -155,9 +164,13 @@ class TestSelectMethods:
         assert _preferences.last_saved_by == ""
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, mock_program_dao, test_datamanager):
+    def test_do_select_non_existent_id(self, test_datamanager):
         """do_select() should return None when a non-existent Options ID is
         requested."""
-        test_datamanager._do_select_all(mock_program_dao)
+        test_datamanager.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
-        assert test_datamanager.do_select(100, table="preference") is None
+        assert test_datamanager.do_select(100) is None

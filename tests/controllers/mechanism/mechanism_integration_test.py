@@ -44,7 +44,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_mechanism_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mechanism")
     pub.unsubscribe(dut.do_update, "request_update_mechanism")
-    pub.unsubscribe(dut.do_select_all, "selected_mode")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
@@ -53,7 +53,7 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -63,14 +63,12 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_mechanism topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMechanism instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
-        test_datamanager.do_select_all(
-            {"revision_id": 1, "hardware_id": 1, "mode_id": 1}
-        )
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
@@ -252,7 +250,7 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mechanism")
 
-        _mechanism = test_datamanager.do_select(3, table="mechanism")
+        _mechanism = test_datamanager.do_select(3)
         _mechanism.rpn_detection = {1: 2}
         pub.sendMessage("request_update_mechanism", node_id=3, table="mechanism")
 
@@ -266,7 +264,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mechanism"
         )
 
-        _mechanism = test_datamanager.do_select(4, table="mechanism")
+        _mechanism = test_datamanager.do_select(4)
         _mechanism.rpn_detection_new = {1: 2}
         pub.sendMessage("request_update_mechanism", node_id=0, table="mechanism")
 
@@ -352,6 +350,6 @@ class TestGetterSetter:
             package={"rpn_detection": 4},
         )
 
-        assert test_datamanager.do_select(4, table="mechanism").rpn_detection == 4
+        assert test_datamanager.do_select(4).rpn_detection == 4
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mechanism_tree")

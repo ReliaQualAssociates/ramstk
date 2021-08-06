@@ -8,7 +8,7 @@
 """Failure Definition Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Type
 
 # Third Party Imports
 from pubsub import pub
@@ -32,6 +32,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_definition_id"
     _db_tablename = "ramstk_failure_definition"
+    _select_msg = "selected_revision"
     _tag = "failure_definition"
 
     # Define public dictionary class attributes.
@@ -45,22 +46,25 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {"revision_id": 0}
-
         self._pkey: Dict[str, List[str]] = {
             "failure_definition": ["revision_id", "definition_id"]
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "definition_id",
+        ]
 
         # Initialize private scalar attributes.
-        self._record: RAMSTKFailureDefinition = RAMSTKFailureDefinition
+        self._record: Type[RAMSTKFailureDefinition] = RAMSTKFailureDefinition
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "definition_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -72,8 +76,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_attributes, "lvw_editing_failure_definition")
         pub.subscribe(super().do_update, "request_update_failure_definition")
 
-        pub.subscribe(self.do_select_all, "selected_revision")
-
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
     ) -> object:
@@ -84,46 +86,7 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.definition_id = self.last_id + 1
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self._db_id_colname.replace("fld_", ""))
-
-        _new_record.set_attributes(attributes)
-
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all Failure Definitions from the RAMSTK Program database.
-
-        :param attributes: the attributes for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _failure_definition in self.dao.do_select_all(
-            RAMSTKFailureDefinition,
-            key=["revision_id"],
-            value=[self._fkey["revision_id"]],
-            order=RAMSTKFailureDefinition.definition_id,
-        ):
-
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_failure_definition.definition_id,
-                parent=self._parent_id,
-                data={self._tag: _failure_definition},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_failure_definitions",
-            tree=self.tree,
-        )

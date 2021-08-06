@@ -37,7 +37,7 @@ def mock_program_dao(monkeypatch):
     _mechanism_1.revision_id = 1
     _mechanism_1.hardware_id = 1
     _mechanism_1.mode_id = 6
-    _mechanism_1.mechanism_id = 3
+    _mechanism_1.mechanism_id = 1
     _mechanism_1.description = "Test Failure Mechanism #1"
     _mechanism_1.rpn = 100
     _mechanism_1.rpn_new = 100
@@ -51,7 +51,7 @@ def mock_program_dao(monkeypatch):
     _mechanism_2.revision_id = 1
     _mechanism_2.hardware_id = 1
     _mechanism_2.mode_id = 6
-    _mechanism_2.mechanism_id = 4
+    _mechanism_2.mechanism_id = 2
     _mechanism_2.description = "Test Failure Mechanism #2"
     _mechanism_2.rpn = 100
     _mechanism_2.rpn_new = 100
@@ -84,7 +84,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_mechanism_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mechanism")
     pub.unsubscribe(dut.do_update, "request_update_mechanism")
-    pub.unsubscribe(dut.do_select_all, "selected_mode")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
@@ -110,7 +110,7 @@ class TestCreateControllers:
         assert test_datamanager._revision_id == 0
         assert test_datamanager._parent_id == 0
         assert test_datamanager.last_id == 0
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mode")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_mechanism_attributes"
         )
@@ -121,7 +121,6 @@ class TestCreateControllers:
             test_datamanager.do_set_attributes, "wvw_editing_mechanism"
         )
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_mechanism")
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_mode")
         assert pub.isSubscribed(
             test_datamanager.do_get_tree, "request_get_mechanism_tree"
         )
@@ -140,10 +139,10 @@ class TestSelectMethods:
         test_datamanager.do_select_all(test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(3).data["mechanism"], MockRAMSTKMechanism
+            test_datamanager.tree.get_node(1).data["mechanism"], MockRAMSTKMechanism
         )
         assert isinstance(
-            test_datamanager.tree.get_node(4).data["mechanism"], MockRAMSTKMechanism
+            test_datamanager.tree.get_node(2).data["mechanism"], MockRAMSTKMechanism
         )
 
     @pytest.mark.unit
@@ -151,7 +150,7 @@ class TestSelectMethods:
         """do_select() should return an instance of the RAMSTKMechanism on success."""
         test_datamanager.do_select_all(test_attributes)
 
-        _mechanism = test_datamanager.do_select(3)
+        _mechanism = test_datamanager.do_select(1)
 
         assert isinstance(_mechanism, MockRAMSTKMechanism)
         assert _mechanism.pof_include == 1
@@ -175,12 +174,12 @@ class TestInsertMethods:
         """should add a record to the record tree and update last_id."""
         test_datamanager.do_select_all(test_attributes)
 
-        assert test_datamanager.tree.get_node(5) is None
+        assert test_datamanager.tree.get_node(3) is None
 
         test_datamanager.do_insert(attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(5).data["mechanism"], RAMSTKMechanism
+            test_datamanager.tree.get_node(3).data["mechanism"], RAMSTKMechanism
         )
 
 

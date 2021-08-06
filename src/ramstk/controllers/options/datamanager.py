@@ -7,7 +7,7 @@
 """Options Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Dict, List, Type
 
 # Third Party Imports
 from pubsub import pub
@@ -45,50 +45,21 @@ class DataManager(RAMSTKDataManager):
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "site_id",
+        ]
 
         # Initialize private scalar attributes.
-        self._site_id: int = 0
+        self._record: Type[RAMSTKSiteInfo] = RAMSTKSiteInfo
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "site_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_option_attributes")
         pub.subscribe(super().do_set_attributes, "request_set_option_attributes")
         pub.subscribe(super().do_update, "request_update_option")
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve all the Options data from the RAMSTK Program database.
-
-        :param attributes: the RAMSTK option attributes for the
-            selected Site.
-        :return: None
-        :rtype: None
-        """
-        self._site_id = attributes["site_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        # noinspection PyUnresolvedReferences
-        for _option in self.dao.do_select_all(
-            RAMSTKSiteInfo,
-            key=["site_id"],
-            value=[self._site_id],
-            order=RAMSTKSiteInfo.site_id,
-        ):
-
-            self.tree.create_node(
-                tag="option",
-                identifier=_option.site_id,
-                parent=self._root,
-                data={"option": _option},
-            )
-
-        pub.sendMessage(
-            "succeed_retrieve_options",
-            tree=self.tree,
-        )

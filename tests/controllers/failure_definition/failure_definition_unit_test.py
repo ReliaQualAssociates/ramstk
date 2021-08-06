@@ -142,7 +142,7 @@ class TestSelectMethods:
         success."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        _failure_definition = test_datamanager.do_select(1, table="failure_definition")
+        _failure_definition = test_datamanager.do_select(1)
 
         assert isinstance(_failure_definition, MockRAMSTKFailureDefinition)
         assert _failure_definition.definition == "Mock Failure Definition 1"
@@ -153,7 +153,7 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="failure_definition") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

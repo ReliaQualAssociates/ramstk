@@ -27,7 +27,12 @@ def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = dmPreferences()
-    dut._do_select_all(test_program_dao)
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(
+        {
+            "revision_id": 1,
+        }
+    )
 
     yield dut
 
@@ -36,7 +41,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_preference_attributes")
     pub.unsubscribe(dut.do_update, "request_update_preference")
     pub.unsubscribe(dut.do_get_tree, "request_get_preference_tree")
-    pub.unsubscribe(dut._do_select_all, "succeed_connect_program_database")
+    pub.unsubscribe(dut.do_select_all, "request_program_preferences")
 
     # Delete the device under test.
     del dut
@@ -59,7 +64,12 @@ class TestSelectMethods:
         """do_select_all() should clear nodes from an existing Options tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
 
-        pub.sendMessage("succeed_connect_program_database", dao=test_program_dao)
+        pub.sendMessage(
+            "request_program_preferences",
+            attributes={
+                "revision_id": 1,
+            },
+        )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_preferences")
 
@@ -154,8 +164,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Options ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Options ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
 
         pub.sendMessage(
@@ -166,8 +176,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Options ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Options ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
 
         test_datamanager.tree.get_node(1).data.pop("preference")
@@ -218,8 +228,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
-        """do_get_attributes() should return a dict of program information
-        attributes on success."""
+        """do_get_attributes() should return a dict of program information attributes
+        on success."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_programinfo_attributes"
         )
@@ -247,8 +257,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should return None when successfully setting
-        program information attributes."""
+        """do_set_attributes() should return None when successfully setting program
+        information attributes."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_preferences_tree")
 
         pub.sendMessage(

@@ -67,7 +67,7 @@ class TestSelectMethods:
         """should clear and then populate the record tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
 
@@ -271,9 +271,9 @@ class TestUpdateMethods:
         """do_update_all() should update all the functions in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _function = test_datamanager.do_select(1, table="function")
+        _function = test_datamanager.do_select(1)
         _function.name = "Big test function #1"
-        _function = test_datamanager.do_select(2, table="function")
+        _function = test_datamanager.do_select(2)
         _function.name = "Big test function #2"
 
         pub.sendMessage("request_update_all_functions")

@@ -550,7 +550,7 @@ class TestAnalysisMethods:
         )
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_agree_allocation(
         self, test_analysismanager, test_datamanager
     ):
@@ -575,7 +575,7 @@ class TestAnalysisMethods:
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_arinc_allocation(
         self, test_analysismanager, test_datamanager
     ):
@@ -632,7 +632,7 @@ class TestAnalysisMethods:
 
         pub.unsubscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_equal_allocation(
         self, test_analysismanager, test_datamanager
     ):
@@ -653,7 +653,7 @@ class TestAnalysisMethods:
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_foo_allocation(self, test_analysismanager, test_datamanager):
         """do_calculate_allocation() should apportion the node ID reliability goal
         using the feasibility of objectives method."""

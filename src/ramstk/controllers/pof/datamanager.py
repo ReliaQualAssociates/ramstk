@@ -25,6 +25,7 @@ class DataManager(RAMSTKDataManager):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _select_msg = "None"
     _tag = "pof"
 
     # Define public dict class attributes.

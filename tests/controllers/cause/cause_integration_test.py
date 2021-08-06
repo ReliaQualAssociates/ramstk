@@ -47,7 +47,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_cause_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_cause")
     pub.unsubscribe(dut.do_update, "request_update_cause")
-    pub.unsubscribe(dut.do_select_all, "selected_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut.do_insert, "request_insert_cause")
@@ -62,7 +62,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["cause"], RAMSTKCause)
+        assert isinstance(tree.get_node(3).data["cause"], RAMSTKCause)
         print("\033[36m\nsucceed_retrieve_cause topic was broadcast.")
 
     @pytest.mark.integration
@@ -70,7 +70,7 @@ class TestSelectMethods:
         """should return a Tree() object populated with RAMSTKCause instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
-        test_datamanager.do_select_all(test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
@@ -240,7 +240,7 @@ class TestUpdateMethods:
         """should send fail message if attribute has wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_cause")
 
-        _cause = test_datamanager.do_select(3, table="cause")
+        _cause = test_datamanager.do_select(3)
         _cause.rpn_detection = {1: 2}
         pub.sendMessage("request_update_cause", node_id=3, table="cause")
 
@@ -253,7 +253,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_cause"
         )
 
-        _cause = test_datamanager.do_select(4, table="cause")
+        _cause = test_datamanager.do_select(4)
         _cause.rpn_detection_new = {1: 2}
         pub.sendMessage("request_update_cause", node_id=0, table="cause")
 
@@ -331,6 +331,6 @@ class TestGetterSetter:
             package={"rpn_detection": 4},
         )
 
-        assert test_datamanager.do_select(4, table="cause").rpn_detection == 4
+        assert test_datamanager.do_select(4).rpn_detection == 4
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_cause_tree")

@@ -8,7 +8,7 @@
 """Allocation Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
@@ -28,6 +28,7 @@ class DataManager(RAMSTKDataManager):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_allocation"
+    _select_msg = "selected_revision"
     _tag = "allocation"
 
     # Define public dictionary class attributes.
@@ -41,21 +42,25 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {"revision_id": 0, "hardware_id": 0}
         self._pkey = {
             "allocation": ["revision_id", "hardware_id"],
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "hardware_id",
+        ]
 
         # Initialize private scalar attributes.
-        self._record: RAMSTKAllocation = RAMSTKAllocation
+        self._record: Type[RAMSTKAllocation] = RAMSTKAllocation
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_allocation_attributes")
@@ -64,7 +69,6 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().do_set_tree, "succeed_calculate_allocation")
         pub.subscribe(super().do_update, "request_update_allocation")
 
-        pub.subscribe(self.do_select_all, "selected_revision")
         pub.subscribe(self.do_set_all_attributes, "succeed_calculate_allocation_goals")
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -79,50 +83,11 @@ class DataManager(RAMSTKDataManager):
         self._parent_id = attributes["parent_id"]
 
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.parent_id = attributes["parent_id"]
         _new_record.hardware_id = attributes["hardware_id"]
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-
-        _new_record.set_attributes(attributes)
-
         return _new_record
-
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
-        """Retrieve the Allocation BoM data from the RAMSTK Program database.
-
-        :param attributes: the attributes dict for the selected Revision.
-        :return: None
-        :rtype: None
-        """
-        self._fkey["revision_id"] = attributes["revision_id"]
-        self._fkey["hardware_id"] = attributes["hardware_id"]
-
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        for _allocation in self.dao.do_select_all(
-            RAMSTKAllocation,
-            key=["revision_id"],
-            value=[self._fkey["revision_id"]],
-            order=RAMSTKAllocation.parent_id,
-        ):
-
-            self.tree.create_node(
-                tag="allocation",
-                identifier=_allocation.hardware_id,
-                parent=_allocation.parent_id,
-                data={"allocation": _allocation},
-            )
-
-        self.last_id = max(self.tree.nodes.keys())
-
-        pub.sendMessage(
-            "succeed_retrieve_allocation",
-            tree=self.tree,
-        )
 
     def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes of the record associated with the Module ID.

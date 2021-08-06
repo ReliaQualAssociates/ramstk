@@ -549,7 +549,7 @@ class TestAnalysisMethods:
         assert test_analysismanager._dic_hardware_hrs[2] == 0.00018
         assert test_analysismanager._dic_hardware_hrs[3] == 0.00014
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_similar_item_topic_633(self, test_analysismanager):
 
         _node = test_analysismanager._tree.get_node(1)
@@ -579,7 +579,7 @@ class TestAnalysisMethods:
             self.on_succeed_calculate_topic_633, "succeed_calculate_similar_item"
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_similar_item_user_defined(self, test_analysismanager):
 
         _node = test_analysismanager._tree.get_node(1)
