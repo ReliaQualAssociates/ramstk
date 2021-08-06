@@ -126,7 +126,7 @@ class TestInsertMethods:
         add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
 
-        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["revision_id"] = 40
         pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")

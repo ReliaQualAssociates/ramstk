@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKStakeholder
@@ -41,7 +38,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {"stakeholder": ["revision_id", "stakeholder_id"]}
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -60,10 +56,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "stakeholder_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_stakeholder_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_stakeholder_attributes")
-        pub.subscribe(super().do_set_attributes, "lvw_editing_stakeholder")
-        pub.subscribe(super().do_update, "request_update_stakeholder")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

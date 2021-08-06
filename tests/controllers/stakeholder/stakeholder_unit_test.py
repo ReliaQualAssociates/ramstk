@@ -286,7 +286,7 @@ class TestAnalysisMethods:
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4
         _stakeholder.user_float_1 = 2.6
-        test_datamanager.do_update(1, table="stakeholder")
+        test_datamanager.do_update(1)
         test_datamanager.do_get_attributes(node_id=1, table="stakeholder")
 
         test_analysismanager.do_calculate_stakeholder(1)
