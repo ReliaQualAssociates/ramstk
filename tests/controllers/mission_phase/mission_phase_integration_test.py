@@ -43,7 +43,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_mission_phase_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission_phase")
     pub.unsubscribe(dut.do_update, "request_update_mission_phase")
-    pub.unsubscribe(dut.do_select_all, "selected_mission")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
     pub.unsubscribe(dut.do_insert, "request_insert_mission_phase")
@@ -67,7 +67,7 @@ class TestSelectMethods:
         one when called on a populated Mission Phase data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
