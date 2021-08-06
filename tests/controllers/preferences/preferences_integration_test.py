@@ -274,4 +274,4 @@ class TestGetterSetter:
             node_id=[1],
             package={"function_active": 1},
         )
-        assert test_datamanager.do_select(1, table="preference").function_active == 1
+        assert test_datamanager.do_select(1).function_active == 1
