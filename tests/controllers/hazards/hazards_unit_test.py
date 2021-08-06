@@ -116,7 +116,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
     pub.unsubscribe(dut.do_update, "request_update_hazard")
     pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
     pub.unsubscribe(dut.do_delete, "request_delete_hazard")
     pub.unsubscribe(dut.do_insert, "request_insert_hazard")
@@ -140,7 +140,7 @@ class TestCreateControllers:
         assert test_datamanager._tag == "hazard"
         assert test_datamanager._root == 0
         assert test_datamanager._revision_id == 0
-        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_function")
+        assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_hazard")
         assert pub.isSubscribed(
             test_datamanager.do_update_all, "request_update_all_hazard"
@@ -194,7 +194,7 @@ class TestSelectMethods:
         """do_select() should return an instance of the RAMSTKFunction on success."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        _hazard = test_datamanager.do_select(1, table="hazard")
+        _hazard = test_datamanager.do_select(1)
 
         assert isinstance(_hazard, MockRAMSTKHazardAnalysis)
         assert _hazard.assembly_hri_f == 4
@@ -206,7 +206,7 @@ class TestSelectMethods:
         requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="hazard") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
@@ -253,7 +253,7 @@ class TestAnalysisMethods:
         """do_calculate_hri() should calculate the hazard risk index hazard
         analysis."""
         test_datamanager.do_select_all(attributes=test_attributes)
-        _attributes = test_datamanager.do_select(1, "hazard").get_attributes()
+        _attributes = test_datamanager.do_select(1).get_attributes()
 
         test_analysismanager.on_get_all_attributes(_attributes)
         test_analysismanager._do_calculate_hri()
@@ -270,7 +270,7 @@ class TestAnalysisMethods:
         """do_calculate_user_defined() should calculate the user-defined hazard
         analysis."""
         test_datamanager.do_select_all(attributes=test_attributes)
-        _attributes = test_datamanager.do_select(1, "hazard").get_attributes()
+        _attributes = test_datamanager.do_select(1).get_attributes()
 
         test_analysismanager.on_get_all_attributes(_attributes)
         test_analysismanager._do_calculate_user_defined()
