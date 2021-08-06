@@ -156,7 +156,7 @@ class TestInsertMethods:
         add a function to a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
-        test_datamanager._fkey["revision_id"] = 30
+        test_attributes["revision_id"] = 30
         pub.sendMessage("request_insert_validation", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
@@ -255,7 +255,7 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_validation")
 
-        _validation = test_datamanager.do_select(1, "validation")
+        _validation = test_datamanager.do_select(1)
         _validation.name = "Test Validation"
         _validation.time_maximum = 10.5
         pub.sendMessage("request_update_validation", node_id=1, table="validation")
@@ -267,21 +267,15 @@ class TestUpdateMethods:
         """do_update_all() should update all the functions in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _validation = test_datamanager.do_select(1, table="validation")
+        _validation = test_datamanager.do_select(1)
         _validation.description = "Big test validation #1"
-        _validation = test_datamanager.do_select(2, table="validation")
+        _validation = test_datamanager.do_select(2)
         _validation.description = "Big test validation #2"
 
         pub.sendMessage("request_update_all_validations")
 
-        assert (
-            test_datamanager.do_select(1, table="validation").description
-            == "Big test validation #1"
-        )
-        assert (
-            test_datamanager.do_select(2, table="validation").description
-            == "Big test validation #2"
-        )
+        assert test_datamanager.do_select(1).description == "Big test validation #1"
+        assert test_datamanager.do_select(2).description == "Big test validation #2"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
@@ -291,7 +285,7 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_validation")
 
-        _validation = test_datamanager.do_select(1, table="validation")
+        _validation = test_datamanager.do_select(1)
         _validation.time_mean = {1: 2}
         pub.sendMessage("request_update_validation", node_id=1, table="validation")
 
@@ -305,7 +299,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_validation"
         )
 
-        _validation = test_datamanager.do_select(1, table="validation")
+        _validation = test_datamanager.do_select(1)
         _validation.time_mean = {1: 2}
         pub.sendMessage("request_update_validation", node_id=0, table="validation")
 
@@ -476,7 +470,7 @@ class TestAnalysisMethods:
         )
 
         test_datamanager.do_get_tree()
-        _validation = test_datamanager.do_select(1, "validation")
+        _validation = test_datamanager.do_select(1)
         _validation.time_minimum = 10.0
         _validation.time_average = 20.0
         _validation.time_maximum = 40.0
@@ -486,7 +480,7 @@ class TestAnalysisMethods:
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
         test_datamanager.do_update(1, table="validation")
-        _validation = test_datamanager.do_select(2, "validation")
+        _validation = test_datamanager.do_select(2)
         _validation.time_minimum = 15.0
         _validation.time_average = 32.0
         _validation.time_maximum = 60.0
