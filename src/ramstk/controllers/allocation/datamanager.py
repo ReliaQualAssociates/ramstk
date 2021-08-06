@@ -42,9 +42,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {
-            "allocation": ["revision_id", "hardware_id"],
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -63,11 +60,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_allocation_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_allocation_attributes")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_allocation")
         pub.subscribe(super().do_set_tree, "succeed_calculate_allocation")
-        pub.subscribe(super().do_update, "request_update_allocation")
 
         pub.subscribe(self.do_set_all_attributes, "succeed_calculate_allocation_goals")
 

@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKValidation
@@ -42,7 +39,6 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._dic_status: Dict[Any, float] = {}
-        self._pkey = {"validation": ["revision_id", "validation_id"]}
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -61,11 +57,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "validation_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_validation_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_validation_attributes")
-        pub.subscribe(super().do_set_attributes, "mvw_editing_validation")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_validation")
-        pub.subscribe(super().do_update, "request_update_validation")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

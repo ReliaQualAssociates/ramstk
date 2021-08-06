@@ -43,7 +43,6 @@ class DataManager(RAMSTKDataManager):
 
         # Initialize private dictionary attributes.
         self._dic_status: Dict[Any, List[float]] = {}
-        self._pkey = {"program_status": ["revision_id", "status_id"]}
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -62,14 +61,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "status_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_get_attributes, "request_get_program_status_attributes"
-        )
-        pub.subscribe(
-            super().do_set_attributes, "request_set_program_status_attributes"
-        )
-        pub.subscribe(super().do_update, "request_update_program_status")
-
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
     def do_get_new_record(  # pylint: disable=method-hidden

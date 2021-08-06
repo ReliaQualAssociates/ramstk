@@ -170,7 +170,7 @@ class TestSelectMethods:
             }
         )
 
-        _action = test_datamanager.do_select(1, table="action")
+        _action = test_datamanager.do_select(1)
 
         assert isinstance(_action, MockRAMSTKAction)
         assert _action.description == "Test FMEA Action #1 for Cause ID #3."
@@ -189,7 +189,7 @@ class TestSelectMethods:
             }
         )
 
-        assert test_datamanager.do_select(100, table="action") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

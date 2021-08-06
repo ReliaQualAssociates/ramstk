@@ -40,7 +40,7 @@ def test_datamanager(test_program_dao):
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.do_get_attributes, "request_get_mission_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_mission_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_usage_profile")
+    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission")
     pub.unsubscribe(dut.do_update, "request_update_mission")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
@@ -108,7 +108,7 @@ class TestInsertMethods:
         for an non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
 
-        test_datamanager._fkey["revision_id"] = 4
+        test_attributes["revision_id"] = 4
         test_datamanager.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
@@ -202,7 +202,7 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_mission")
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = "Big test mission"
 
         test_datamanager.do_update(1, table="mission")
@@ -215,15 +215,15 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _mission1 = test_datamanager.do_select(1, table="mission")
-        _mission2 = test_datamanager.do_select(2, table="mission")
+        _mission1 = test_datamanager.do_select(1)
+        _mission2 = test_datamanager.do_select(2)
         _mission1.name = "Big test mission"
         _mission2.name = "Big test mission 2"
 
         pub.sendMessage("request_update_all_mission")
 
-        _mission1 = test_datamanager.do_select(1, table="mission")
-        _mission2 = test_datamanager.do_select(2, table="mission")
+        _mission1 = test_datamanager.do_select(1)
+        _mission2 = test_datamanager.do_select(2)
 
         assert _mission1.name == "Big test mission"
         assert _mission2.name == "Big test mission 2"
@@ -236,7 +236,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = {1: 2}
 
         test_datamanager.do_update(1, table="mission")
@@ -251,7 +251,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
         )
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = {1: 2}
 
         test_datamanager.do_update(0, table="mission")

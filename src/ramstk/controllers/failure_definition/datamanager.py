@@ -8,10 +8,7 @@
 """Failure Definition Package Data Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Type
-
-# Third Party Imports
-from pubsub import pub
+from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -46,9 +43,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey: Dict[str, List[str]] = {
-            "failure_definition": ["revision_id", "definition_id"]
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -67,14 +61,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "definition_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_get_attributes, "request_get_failure_definition_attributes"
-        )
-        pub.subscribe(
-            super().do_set_attributes, "request_set_failure_definition_attributes"
-        )
-        pub.subscribe(super().do_set_attributes, "lvw_editing_failure_definition")
-        pub.subscribe(super().do_update, "request_update_failure_definition")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

@@ -157,7 +157,7 @@ class TestInsertMethods:
         successfully inserting a n operating stress."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_requirement")
 
-        test_datamanager._fkey["revision_id"] = 10
+        test_attributes["revision_id"] = 10
         test_attributes["parent_id"] = 1
         pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
@@ -254,7 +254,7 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_requirement")
 
-        _requirement = test_datamanager.do_select(1, table="requirement")
+        _requirement = test_datamanager.do_select(1)
         _requirement.description = "Test Requirement"
 
         pub.sendMessage("request_update_requirement", node_id=1, table="requirement")
@@ -266,21 +266,15 @@ class TestUpdateMethods:
         """do_update_all() should update all the functions in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _requirement = test_datamanager.do_select(1, table="requirement")
+        _requirement = test_datamanager.do_select(1)
         _requirement.description = "Big test requirement #1"
-        _requirement = test_datamanager.do_select(2, table="requirement")
+        _requirement = test_datamanager.do_select(2)
         _requirement.description = "Big test requirement #2"
 
         pub.sendMessage("request_update_all_requirements")
 
-        assert (
-            test_datamanager.do_select(1, table="requirement").description
-            == "Big test requirement #1"
-        )
-        assert (
-            test_datamanager.do_select(2, table="requirement").description
-            == "Big test requirement #2"
-        )
+        assert test_datamanager.do_select(1).description == "Big test requirement #1"
+        assert test_datamanager.do_select(2).description == "Big test requirement #2"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
@@ -290,7 +284,7 @@ class TestUpdateMethods:
         Requirement ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_requirement")
 
-        _requirement = test_datamanager.do_select(1, table="requirement")
+        _requirement = test_datamanager.do_select(1)
         _requirement.priority = {1: 2}
 
         pub.sendMessage("request_update_requirement", node_id=1, table="requirement")
@@ -305,7 +299,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_requirement"
         )
 
-        _requirement = test_datamanager.do_select(1, table="requirement")
+        _requirement = test_datamanager.do_select(1)
         _requirement.priority = {1: 2}
 
         pub.sendMessage("request_update_requirement", node_id=0, table="requirement")

@@ -285,7 +285,7 @@ class TestSelectMethods:
         """should return a RAMSTKAllocation record."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        _allocation = test_datamanager.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1)
 
         assert isinstance(_allocation, MockRAMSTKAllocation)
         assert _allocation.included == 1
@@ -296,7 +296,7 @@ class TestSelectMethods:
         """should return None when a non-existent Allocation ID is requested."""
         test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
-        assert test_datamanager.do_select(100, table="allocation") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

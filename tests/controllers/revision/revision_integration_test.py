@@ -205,7 +205,7 @@ class TestUpdateMethods:
         """do_update() should send the succeed_update_revision message on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_revision")
 
-        _revision = test_datamanager.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1)
         _revision.name = "Test Revision"
 
         pub.sendMessage("request_update_revision", node_id=1, table="revision")
@@ -217,14 +217,12 @@ class TestUpdateMethods:
         """do_update() should send the succeed_update_revision message on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _revision = test_datamanager.do_select(1, table="revision")
+        _revision = test_datamanager.do_select(1)
         _revision.name = "Big test revision"
 
         pub.sendMessage("request_update_all_revisions")
 
-        assert (
-            test_datamanager.do_select(1, table="revision").name == "Big test revision"
-        )
+        assert test_datamanager.do_select(1).name == "Big test revision"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 

@@ -247,7 +247,7 @@ class TestUpdateMethods:
         """should send fail message if attribute has wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_control")
 
-        _control = test_datamanager.do_select(3, table="control")
+        _control = test_datamanager.do_select(3)
         _control.rpn_detection = {1: 2}
         pub.sendMessage("request_update_control", node_id=3, table="control")
 
@@ -260,7 +260,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_control"
         )
 
-        _control = test_datamanager.do_select(4, table="control")
+        _control = test_datamanager.do_select(4)
         _control.rpn_detection_new = {1: 2}
         pub.sendMessage("request_update_control", node_id=0, table="control")
 
@@ -342,6 +342,6 @@ class TestGetterSetter:
             package={"type_id": "Detection"},
         )
 
-        assert test_datamanager.do_select(4, table="control").type_id == "Detection"
+        assert test_datamanager.do_select(4).type_id == "Detection"
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_control_tree")

@@ -89,9 +89,6 @@ class TestCreateControllers:
         assert isinstance(test_datamanager, dmPreferences)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
-        assert test_datamanager._pkey == {
-            "preference": ["revision_id"],
-        }
         assert test_datamanager._tag == "preference"
         assert test_datamanager._root == 0
 

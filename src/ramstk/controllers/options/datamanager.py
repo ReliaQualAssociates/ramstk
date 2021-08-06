@@ -7,10 +7,7 @@
 """Options Package Data Model."""
 
 # Standard Library Imports
-from typing import Dict, List, Type
-
-# Third Party Imports
-from pubsub import pub
+from typing import Type
 
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
@@ -40,9 +37,6 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey: Dict[str, List[str]] = {
-            "option": ["site_id"],
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -60,6 +54,3 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "site_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_option_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_option_attributes")
-        pub.subscribe(super().do_update, "request_update_option")

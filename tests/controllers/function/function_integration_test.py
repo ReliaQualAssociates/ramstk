@@ -152,7 +152,7 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(7) is None
 
-        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["revision_id"] = 40
         test_attributes["parent_id"] = 1
         pub.sendMessage("request_insert_function", attributes=test_attributes)
 

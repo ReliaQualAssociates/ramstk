@@ -107,7 +107,7 @@ class TestInsertMethods:
         """should send the fail message if the mode ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_mechanism")
 
-        test_datamanager._fkey["mode_id"] = 100
+        test_attributes["mode_id"] = 100
         pub.sendMessage("request_insert_mechanism", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mechanism")

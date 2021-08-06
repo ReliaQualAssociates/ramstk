@@ -111,7 +111,7 @@ class TestInsertMethods:
         attempting to add a function to a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_duplicate_date, "fail_insert_program_status")
 
-        test_datamanager._fkey["revision_id"] = 30
+        test_attributes["revision_id"] = 30
         pub.sendMessage("request_insert_program_status", attributes=test_attributes)
 
         pub.unsubscribe(
@@ -249,7 +249,7 @@ class TestUpdateMethods:
         ID that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_program_status")
 
-        _status = test_datamanager.do_select(1, table="program_status")
+        _status = test_datamanager.do_select(1)
         _status.time_remaining = {1: 2}
 
         pub.sendMessage(
@@ -268,7 +268,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_program_status"
         )
 
-        _status = test_datamanager.do_select(1, table="program_status")
+        _status = test_datamanager.do_select(1)
         _status.time_remaining = {1: 2}
 
         pub.sendMessage(
