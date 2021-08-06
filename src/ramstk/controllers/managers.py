@@ -204,10 +204,10 @@ class RAMSTKDataManager:
         """
         try:
             for _node in self.tree.children(node_id):
-                _record = self.do_select(_node.identifier, self._db_tablename)
+                _record = self.do_select(_node.identifier)
                 self.dao.do_delete(_record)
 
-            _record = self.do_select(node_id, self._db_tablename)
+            _record = self.do_select(node_id)
             self.dao.do_delete(_record)
 
             self.tree.remove_node(node_id)
@@ -322,12 +322,10 @@ class RAMSTKDataManager:
                 error_message=str(_error),
             )
 
-    def do_select(self, node_id: Any, table: str = "") -> Any:
+    def do_select(self, node_id: Any) -> Any:
         """Retrieve the RAMSTK data table record for the Node ID passed.
 
         :param node_id: the Node ID of the data package to retrieve.
-        :param table: the name of the RAMSTK data table to retrieve the
-            attributes from.
         :return: the instance of the RAMSTK<MODULE> data table that was
             requested or None if the requested Node ID does not exist.
         :raise: KeyError if passed the name of a table that isn't managed by
@@ -447,7 +445,7 @@ class RAMSTKDataManager:
         """
         self.tree = tree
 
-    def do_update(self, node_id: int, table: str) -> None:
+    def do_update(self, node_id: int, table: str = "") -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node ID of the record to save.
@@ -455,19 +453,19 @@ class RAMSTKDataManager:
         :return: None
         :rtype: None
         """
-        _fail_topic = "fail_update_{}".format(table)
+        _fail_topic = "fail_update_{}".format(self._tag)
         _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
 
         try:
-            self.dao.do_update(self.tree.get_node(node_id).data[table])
+            self.dao.do_update(self.tree.get_node(node_id).data[self._tag])
             pub.sendMessage(
-                "succeed_update_{}".format(table),
+                "succeed_update_{}".format(self._tag),
                 tree=self.tree,
             )
         except AttributeError:
             _error_msg: str = (
                 "{1}: Attempted to save non-existent {2} with {2} ID {0}."
-            ).format(str(node_id), _method_name, table.replace("_", " "))
+            ).format(str(node_id), _method_name, self._tag.replace("_", " "))
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -479,7 +477,7 @@ class RAMSTKDataManager:
             )
         except KeyError:
             _error_msg = "{1}: No data package found for {2} ID {0}.".format(
-                str(node_id), _method_name, table.replace("_", " ")
+                str(node_id), _method_name, self._tag.replace("_", " ")
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -495,7 +493,7 @@ class RAMSTKDataManager:
                 _error_msg = (
                     "{1}: The value for one or more attributes for "
                     "{2} ID {0} was the wrong type."
-                ).format(str(node_id), _method_name, table.replace("_", " "))
+                ).format(str(node_id), _method_name, self._tag.replace("_", " "))
             else:
                 _error_msg = "{1}: Attempting to update the root node {0}.".format(
                     str(node_id), _method_name

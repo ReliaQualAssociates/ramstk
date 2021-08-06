@@ -212,7 +212,7 @@ class TestSelectMethods:
         """should return an instance of the RAMSTKMode."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        _mode = test_datamanager.do_select(1, table="mode")
+        _mode = test_datamanager.do_select(1)
 
         assert isinstance(_mode, MockRAMSTKMode)
         assert _mode.effect_probability == 0.8
@@ -223,7 +223,7 @@ class TestSelectMethods:
         """should return None when a non-existent Mode ID is requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        assert test_datamanager.do_select(100, table="mode") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

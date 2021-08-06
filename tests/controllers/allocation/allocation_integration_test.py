@@ -310,7 +310,7 @@ class TestUpdateMethods:
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_allocation")
 
-        _allocation = test_datamanager.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2)
         _allocation.percent_weight_factor = 0.9832
         _allocation.mtbf_goal = 12000
         pub.sendMessage("request_update_allocation", node_id=2, table="allocation")
@@ -322,13 +322,13 @@ class TestUpdateMethods:
         """do_update_all() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _allocation = test_datamanager.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1)
         _allocation.percent_weight_factor = 0.9832
-        _allocation = test_datamanager.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = 12000
-        _allocation = test_datamanager.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2)
         _allocation.percent_weight_factor = 0.9961
-        _allocation = test_datamanager.do_select(2, table="allocation")
+        _allocation = test_datamanager.do_select(2)
         _allocation.mtbf_goal = 18500
 
         pub.sendMessage("request_update_all_allocation")

@@ -144,7 +144,7 @@ class TestSelectMethods:
         """should return an instance of the RAMSTKControl on success."""
         test_datamanager.do_select_all(test_attributes)
 
-        _control = test_datamanager.do_select(1, table="control")
+        _control = test_datamanager.do_select(1)
 
         assert isinstance(_control, MockRAMSTKControl)
         assert _control.description == "Test FMEA Control #1 for Cause ID #3."
@@ -155,7 +155,7 @@ class TestSelectMethods:
         """should return None when a non-existent control ID is requested."""
         test_datamanager.do_select_all(test_attributes)
 
-        assert test_datamanager.do_select(100, table="control") is None
+        assert test_datamanager.do_select(100) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
