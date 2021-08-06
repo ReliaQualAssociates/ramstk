@@ -42,9 +42,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {
-            "similar_item": ["revision_id", "hardware_id"],
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -63,11 +60,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_similar_item_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_similar_item_attributes")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_similar_item")
         pub.subscribe(super().do_set_tree, "succeed_calculate_similar_item")
-        pub.subscribe(super().do_update, "request_update_similar_item")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

@@ -142,14 +142,14 @@ class TestInsertMethods:
 
         _revision_id = test_datamanager._revision_id
 
-        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["revision_id"] = 40
         test_attributes["hardware_id"] = 8
         test_attributes["parent_id"] = 0
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
-        test_datamanager._fkey["revision_id"] = 1
+        test_attributes["revision_id"] = 1
 
     @pytest.mark.integration
     def test_do_insert_no_hardware(self, test_attributes):
@@ -262,7 +262,7 @@ class TestUpdateMethods:
         pub.sendMessage("request_update_similar_item", node_id=2, table="similar_item")
 
         assert (
-            test_datamanager.do_select(1, table="similar_item").change_description_1
+            test_datamanager.do_select(1).change_description_1
             == "This is a description of the change."
         )
 

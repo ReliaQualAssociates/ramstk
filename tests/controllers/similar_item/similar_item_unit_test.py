@@ -274,9 +274,6 @@ class TestCreateControllers:
         assert test_datamanager._db_tablename == "ramstk_similar_item"
         assert test_datamanager._tag == "similar_item"
         assert test_datamanager._root == 0
-        assert test_datamanager._pkey == {
-            "similar_item": ["revision_id", "hardware_id"]
-        }
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_similar_item_attributes"
         )
