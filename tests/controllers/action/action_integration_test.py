@@ -345,7 +345,7 @@ class TestGetterSetter:
         """should return a dict of attribute key:value pairs."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_action_attributes")
 
-        test_datamanager.do_get_attributes(node_id=3, table="action")
+        test_datamanager.do_get_attributes(node_id=3)
 
         assert (
             test_datamanager.tree.get_node(3).data["action"].action_recommended
@@ -377,7 +377,7 @@ class TestGetterSetter:
         )
 
         assert (
-            test_datamanager.do_select(4, table="action").action_owner
+            test_datamanager.do_select(4).action_owner
             == "John Jacob Jingleheimer Schmidt"
         )
 

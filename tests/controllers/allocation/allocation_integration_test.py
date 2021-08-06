@@ -352,7 +352,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
-        _allocation = test_datamanager.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
         pub.sendMessage("request_update_allocation", node_id=1, table="allocation")
 
@@ -366,7 +366,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
         )
 
-        _allocation = test_datamanager.do_select(1, table="allocation")
+        _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
         pub.sendMessage("request_update_allocation", node_id=0, table="allocation")
 

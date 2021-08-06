@@ -202,7 +202,7 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_mission")
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = "Big test mission"
 
         test_datamanager.do_update(1, table="mission")
@@ -215,15 +215,15 @@ class TestUpdateMethods:
         success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _mission1 = test_datamanager.do_select(1, table="mission")
-        _mission2 = test_datamanager.do_select(2, table="mission")
+        _mission1 = test_datamanager.do_select(1)
+        _mission2 = test_datamanager.do_select(2)
         _mission1.name = "Big test mission"
         _mission2.name = "Big test mission 2"
 
         pub.sendMessage("request_update_all_mission")
 
-        _mission1 = test_datamanager.do_select(1, table="mission")
-        _mission2 = test_datamanager.do_select(2, table="mission")
+        _mission1 = test_datamanager.do_select(1)
+        _mission2 = test_datamanager.do_select(2)
 
         assert _mission1.name == "Big test mission"
         assert _mission2.name == "Big test mission 2"
@@ -236,7 +236,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = {1: 2}
 
         test_datamanager.do_update(1, table="mission")
@@ -251,7 +251,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
         )
 
-        _mission = test_datamanager.do_select(1, table="mission")
+        _mission = test_datamanager.do_select(1)
         _mission.name = {1: 2}
 
         test_datamanager.do_update(0, table="mission")
