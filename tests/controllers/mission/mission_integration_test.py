@@ -40,7 +40,7 @@ def test_datamanager(test_program_dao):
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.do_get_attributes, "request_get_mission_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_mission_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_usage_profile")
+    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission")
     pub.unsubscribe(dut.do_update, "request_update_mission")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
@@ -108,7 +108,7 @@ class TestInsertMethods:
         for an non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
 
-        test_datamanager._fkey["revision_id"] = 4
+        test_attributes["revision_id"] = 4
         test_datamanager.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
