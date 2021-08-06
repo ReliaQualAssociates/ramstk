@@ -54,7 +54,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_opstress_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_opstress")
     pub.unsubscribe(dut.do_update, "request_update_opstress")
-    pub.unsubscribe(dut.do_select_all, "selected_load")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opstress")
     pub.unsubscribe(dut.do_insert, "request_insert_opstress")
@@ -74,11 +74,11 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKOpStress instances on success."""
+        """do_select_all() should return a Tree() object populated with RAMSTKOpStress
+        instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_opstress")
 
-        test_datamanager.do_select_all(test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opstress")
 
@@ -103,7 +103,8 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """should send success message, add record to record tree and update last_id."""
+        """should send success message, add record to record tree and update
+        last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_opstress")
 
         pub.sendMessage("request_insert_opstress", attributes=test_attributes)
@@ -117,7 +118,7 @@ class TestInsertMethods:
         """should send the fail message when load ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_opstress")
 
-        test_datamanager._fkey["load_id"] = 100
+        test_attributes["load_id"] = 100
         pub.sendMessage("request_insert_opstress", attributes=test_attributes)
 
         assert test_datamanager.last_id == 5
@@ -239,11 +240,11 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_opstress")
 
-        _opstress = test_datamanager.do_select(3, table="opstress")
+        _opstress = test_datamanager.do_select(3)
         _opstress.measurable_parameter = {1: 2}
 
         pub.sendMessage("request_update_opstress", node_id=3, table="opstress")
@@ -252,13 +253,13 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opstress"
         )
 
-        _opstress = test_datamanager.do_select(3, table="opstress")
+        _opstress = test_datamanager.do_select(3)
         _opstress.measurable_parameter = {1: 2}
 
         pub.sendMessage("request_update_opstress", node_id=0, table="opstress")
@@ -279,8 +280,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a FMEA
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a FMEA ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_opstress")
 
         test_datamanager.tree.get_node(3).data.pop("opstress")
@@ -313,8 +314,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
-        """do_get_attributes() should return a dict of mode attributes on
-        success."""
+        """do_get_attributes() should return a dict of mode attributes on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_opstress_attributes")
 
         pub.sendMessage("request_get_opstress_attributes", node_id=3, table="opstress")
@@ -338,8 +338,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should return None when successfully setting
-        operating load attributes."""
+        """do_set_attributes() should return None when successfully setting operating
+        load attributes."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_opstress_tree")
 
         pub.sendMessage(
