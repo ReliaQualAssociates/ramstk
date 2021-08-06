@@ -49,7 +49,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_environment_attributes")
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_usage_profile")
     pub.unsubscribe(dut.do_update, "request_update_environment")
-    pub.unsubscribe(dut.do_select_all, "selected_phase")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_environment")
     pub.unsubscribe(dut.do_insert, "request_insert_environment")
@@ -72,7 +72,7 @@ class TestSelectMethods:
         """should send success message with record tree as MDS."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
 
@@ -234,10 +234,7 @@ class TestUpdateMethods:
 
         pub.sendMessage("request_update_all_environments")
 
-        assert (
-            test_datamanager.do_select(1, table="environment").name
-            == "Even bigger test environment"
-        )
+        assert test_datamanager.do_select(1).name == "Even bigger test environment"
 
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
