@@ -42,12 +42,13 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._pkey = {"requirement": ["revision_id", "requirement_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "requirement_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKRequirement] = RAMSTKRequirement
@@ -110,14 +111,8 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.requirement_id = self.last_id + 1
         _new_record.parent_id = attributes["parent_id"]
-
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self.pkey)
-
-        _new_record.set_attributes(attributes)
 
         return _new_record
