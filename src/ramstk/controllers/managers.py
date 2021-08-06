@@ -170,6 +170,10 @@ class RAMSTKDataManager:
         pub.subscribe(self.do_set_attributes, "lvw_editing_{}".format(self._tag))
         pub.subscribe(self.do_set_attributes, "mvw_editing_{}".format(self._tag))
         pub.subscribe(self.do_set_attributes, "wvw_editing_{}".format(self._tag))
+        pub.subscribe(
+            self.do_set_attributes_all,
+            "request_set_all_{}_attributes".format(self._tag),
+        )
         pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
         pub.subscribe(self.do_update, "request_update_{}".format(self._tag))
         pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
@@ -432,6 +436,20 @@ class RAMSTKDataManager:
 
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore
+
+    def do_set_attributes_all(self, attributes: Dict[str, Any]) -> None:
+        """Set all the attributes of the record associated with the Module ID.
+
+        :param attributes: the aggregate attributes dict for the allocation
+            item.
+        :return: None
+        :rtype: None
+        """
+        for _key in attributes:
+            self.do_set_attributes(
+                node_id=[attributes[self.pkey]],
+                package={_key: attributes[_key]},
+            )
 
     def do_set_tree(self, tree: treelib.Tree) -> None:
         """Set the MODULE treelib Tree().
