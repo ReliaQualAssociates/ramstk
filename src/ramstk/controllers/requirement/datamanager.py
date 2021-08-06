@@ -42,7 +42,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {"requirement": ["revision_id", "requirement_id"]}
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -61,11 +60,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "requirement_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_requirement_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_requirement_attributes")
-        pub.subscribe(super().do_set_attributes, "mvw_editing_requirement")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_requirement")
-        pub.subscribe(super().do_update, "request_update_requirement")
         pub.subscribe(
             super().do_create_all_codes, "request_create_all_requirement_codes"
         )
