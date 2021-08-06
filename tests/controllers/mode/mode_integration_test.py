@@ -111,16 +111,16 @@ class TestInsertMethods:
             "returned:\n\tKey (fld_hardware_id)=(100) is not present in table "
             '"ramstk_hardware".'
         )
-        print("\033[35m\nfail_insert_mode topic was broadcast.")
+        print("\033[35m\nfail_insert_mode topic was broadcast on no parent.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a "
-            "record.  Database returned:\n\tKey (fld_revision_id, "
-            "fld_hardware_id)=(4, 100) is not present in table "
-            '"ramstk_hardware".'
+            "record.  Database returned:\n\tKey (fld_revision_id)=(4) is not present "
+            "in table "
+            '"ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_mode topic was broadcast.")
+        print("\033[35m\nfail_insert_mode topic was broadcast on no revision.")
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
@@ -142,22 +142,22 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(8) is None
 
-        test_datamanager._fkey["hardware_id"] = 100
+        test_attributes["hardware_id"] = 100
         pub.sendMessage("request_insert_mode", attributes=test_attributes)
-        test_datamanager._fkey["hardware_id"] = 1
+        test_attributes["hardware_id"] = 1
 
         assert test_datamanager.tree.get_node(8) is None
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_mode")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_insert_no_revision(self, test_attributes, test_datamanager):
         """should send fail message when adding record to a non-existent revision."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mode")
 
         assert test_datamanager.tree.get_node(8) is None
 
-        test_datamanager._fkey["revision_id"] = 4
+        test_attributes["revision_id"] = 4
         pub.sendMessage("request_insert_mode", attributes=test_attributes)
 
         assert test_datamanager.tree.get_node(8) is None
@@ -275,7 +275,7 @@ class TestUpdateMethods:
         """should send fail message when attribute has the wrong data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mode")
 
-        _mode = test_datamanager.do_select(4, table="mode")
+        _mode = test_datamanager.do_select(4)
         _mode.mode_criticality = {1: 2}
 
         pub.sendMessage("request_update_mode", node_id=4, table="mode")
@@ -287,7 +287,7 @@ class TestUpdateMethods:
         """should send fail message when attempting to update root node."""
         pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "fail_update_mode")
 
-        _mode = test_datamanager.do_select(4, table="mode")
+        _mode = test_datamanager.do_select(4)
         _mode.mode_criticality = {1: 2}
 
         pub.sendMessage("request_update_mode", node_id=0, table="mode")
