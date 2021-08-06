@@ -110,7 +110,7 @@ class TestInsertMethods:
         inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
-        test_datamanager._fkey["load_id"] = 3
+        test_attributes["load_id"] = 3
         pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
@@ -121,7 +121,7 @@ class TestInsertMethods:
         an operating load to a non-existent test_method ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 
-        test_datamanager._fkey["load_id"] = 100
+        test_attributes["load_id"] = 100
         pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
