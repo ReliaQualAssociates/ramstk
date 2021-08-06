@@ -42,13 +42,14 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._dic_status: Dict[Any, List[float]] = {}
         self._pkey = {"program_status": ["revision_id", "status_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "status_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKProgramStatus] = RAMSTKProgramStatus
@@ -81,15 +82,10 @@ class DataManager(RAMSTKDataManager):
         :rtype: None
         """
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.status_id = self.last_id + 1
         _new_record.date_status = date.today()
 
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self.pkey)
-
-        _new_record.set_attributes(attributes)
         self._dic_status[_new_record.date_status] = _new_record.status_id
 
         return _new_record
@@ -107,7 +103,7 @@ class DataManager(RAMSTKDataManager):
         except KeyError:
             self.do_insert(
                 attributes={
-                    "revision_id": self._fkey["revision_id"],
+                    "revision_id": self._revision_id,
                     "status_id": -1,
                     "date_status": date.today(),
                     "cost_remaining": cost_remaining,
