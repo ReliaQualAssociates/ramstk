@@ -70,7 +70,7 @@ class DataManager(RAMSTKDataManager):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey: str = "action_id"
+        self.pkey = "action_id"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_get_attributes, "request_get_action_attributes")
