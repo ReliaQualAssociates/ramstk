@@ -178,7 +178,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_allocation")
     pub.unsubscribe(dut.do_get_tree, "request_get_allocation_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_set_all_attributes, "succeed_calculate_allocation_goals")
+    pub.unsubscribe(dut.do_set_attributes_all, "succeed_calculate_allocation_goals")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
 
@@ -215,7 +215,7 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_select_all, "selected_revision")
         assert pub.isSubscribed(
-            test_datamanager.do_set_all_attributes, "succeed_calculate_allocation_goals"
+            test_datamanager.do_set_attributes_all, "succeed_calculate_allocation_goals"
         )
         assert pub.isSubscribed(test_datamanager.do_update, "request_update_allocation")
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_allocation")

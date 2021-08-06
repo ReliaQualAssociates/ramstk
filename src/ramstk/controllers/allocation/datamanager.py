@@ -60,9 +60,10 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(
+            super().do_set_attributes_all, "succeed_calculate_allocation_goals"
+        )
         pub.subscribe(super().do_set_tree, "succeed_calculate_allocation")
-
-        pub.subscribe(self.do_set_all_attributes, "succeed_calculate_allocation_goals")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -81,20 +82,3 @@ class DataManager(RAMSTKDataManager):
         _new_record.hardware_id = attributes["hardware_id"]
 
         return _new_record
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the record associated with the Module ID.
-
-        This is a helper function to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the allocation
-            item.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(
-                node_id=[attributes["hardware_id"], -1],
-                package={_key: attributes[_key]},
-            )
