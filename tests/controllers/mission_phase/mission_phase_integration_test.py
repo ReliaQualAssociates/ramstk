@@ -107,7 +107,7 @@ class TestInsertMethods:
         inserting a new mission phase."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission_phase")
 
-        test_datamanager._fkey["mission_id"] = 10
+        test_attributes["mission_id"] = 10
         pub.sendMessage("request_insert_mission_phase", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission_phase")

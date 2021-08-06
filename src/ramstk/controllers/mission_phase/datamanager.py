@@ -9,20 +9,13 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKMissionPhase
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Usage Profile data manager.
-
-    This class manages the usage profile data from the RAMSTKMissionPhase data
-    models.
-    """
+    """Contain the attributes and methods of the Usage Profile data manager."""
 
     # Define private dictionary class attributes.
 
@@ -45,9 +38,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {
-            "mission_phase": ["revision_id", "mission_id", "phase_id"],
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -67,10 +57,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "phase_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_mission_phase_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_mission_phase_attributes")
-        pub.subscribe(super().do_set_attributes, "lvw_editing_mission_phase")
-        pub.subscribe(super().do_update, "request_update_mission_phase")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
