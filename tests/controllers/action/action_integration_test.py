@@ -130,7 +130,7 @@ class TestInsertMethods:
         """should send the fail message if the parent ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_action")
 
-        test_datamanager._fkey["cause_id"] = 100
+        test_attributes["cause_id"] = 100
         pub.sendMessage("request_insert_action", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_action")
