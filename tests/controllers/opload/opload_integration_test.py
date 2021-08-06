@@ -52,7 +52,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_opload_attributes")
     pub.unsubscribe(dut.do_set_attributes, "wvw_editing_opload")
     pub.unsubscribe(dut.do_update, "request_update_opload")
-    pub.unsubscribe(dut.do_select_all, "selected_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_opload_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_opload")
     pub.unsubscribe(dut.do_insert, "request_insert_opload")
@@ -76,7 +76,7 @@ class TestSelectMethods:
         instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
 
@@ -124,7 +124,7 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(6) is None
 
-        test_datamanager._fkey["mechanism_id"] = 30
+        test_attributes["mechanism_id"] = 30
         pub.sendMessage("request_insert_opload", attributes=test_attributes)
 
         assert test_datamanager.tree.get_node(6) is None
@@ -252,7 +252,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
-        _opload = test_datamanager.do_select(4, table="opload")
+        _opload = test_datamanager.do_select(4)
         _opload.priority_id = {1: 2}
 
         pub.sendMessage("request_update_opload", node_id=4, table="opload")
@@ -267,7 +267,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opload"
         )
 
-        _opload = test_datamanager.do_select(4, table="opload")
+        _opload = test_datamanager.do_select(4)
         _opload.priority_id = {1: 2}
 
         pub.sendMessage("request_update_opload", node_id=0, table="opload")

@@ -865,6 +865,7 @@ CREATE TABLE ramstk_op_load (
     fld_damage_model VARCHAR(512),
     fld_priority_id INTEGER,
     PRIMARY KEY (fld_load_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_op_load" VALUES(1,1,4,1,1,'Test Operating Load','',0);
@@ -883,6 +884,7 @@ CREATE TABLE ramstk_op_stress (
     fld_measurable_parameter VARCHAR(512),
     fld_remarks VARCHAR,
     PRIMARY KEY (fld_stress_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_op_stress" VALUES(1,1,4,1,1,1,'Test Operating Stress','','','');
@@ -900,6 +902,7 @@ CREATE TABLE ramstk_test_method (
     fld_boundary_conditions VARCHAR(512),
     fld_remarks VARCHAR,
     PRIMARY KEY (fld_test_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method','','');
