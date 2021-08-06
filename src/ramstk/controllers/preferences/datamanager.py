@@ -46,14 +46,14 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._pkey: Dict[str, List[str]] = {
             "preference": ["revision_id"],
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKProgramInfo] = RAMSTKProgramInfo
