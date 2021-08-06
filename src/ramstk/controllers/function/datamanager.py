@@ -18,11 +18,7 @@ from ramstk.models.programdb import RAMSTKFunction
 
 
 class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Function data manager.
-
-    This class manages the function data from the RAMSTKFunction and
-    RAMSTKHazardAnalysis data models.
-    """
+    """Contain the attributes and methods of the Function data manager."""
 
     # Define private dictionary class attributes.
 
@@ -45,12 +41,13 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "revision_id": 0,
-        }
         self._pkey = {"function": ["revision_id", "function_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "revision_id",
+            "function_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKFunction] = RAMSTKFunction
@@ -80,14 +77,8 @@ class DataManager(RAMSTKDataManager):
         self._parent_id = attributes["parent_id"]
 
         _new_record = self._record()
-        _new_record.revision_id = self._fkey["revision_id"]
+        _new_record.revision_id = attributes["revision_id"]
         _new_record.function_id = self.last_id + 1
         _new_record.parent_id = attributes["parent_id"]
-
-        for _key in self._fkey.items():
-            attributes.pop(_key[0])
-        attributes.pop(self.pkey)
-
-        _new_record.set_attributes(attributes)
 
         return _new_record
