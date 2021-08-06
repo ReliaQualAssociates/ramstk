@@ -117,7 +117,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_hazard")
     pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_set_all_attributes, "request_set_all_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes_all, "request_set_all_hazard_attributes")
     pub.unsubscribe(dut.do_delete, "request_delete_hazard")
     pub.unsubscribe(dut.do_insert, "request_insert_hazard")
 

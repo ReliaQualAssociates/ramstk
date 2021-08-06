@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKHazardAnalysis
@@ -60,7 +57,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hazard_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -77,18 +73,3 @@ class DataManager(RAMSTKDataManager):
         _new_record.hazard_id = self.last_id + 1
 
         return _new_record
-
-    def do_set_all_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set all the attributes of the selected hazard.
-
-        This is a helper method to set a group of attributes in a single
-        call.  Used mainly by the AnalysisManager.
-
-        :param attributes: the aggregate attributes dict for the hardware item.
-        :return: None
-        :rtype: None
-        """
-        for _key in attributes:
-            super().do_set_attributes(
-                node_id=[attributes["hazard_id"], ""], package={_key: attributes[_key]}
-            )
