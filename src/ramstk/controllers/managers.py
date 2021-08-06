@@ -352,12 +352,18 @@ class RAMSTKDataManager:
         """
         self.tree = do_clear_tree(self.tree)
 
-        self._revision_id = attributes["revision_id"]
+        try:
+            self._revision_id = attributes["revision_id"]
+        except KeyError:
+            try:
+                self._revision_id = attributes["site_id"]
+            except KeyError:
+                self._revision_id = 0
 
         for _record in self.dao.do_select_all(
             self._record,
             key=[
-                "revision_id",
+                self._lst_id_columns[0],
             ],
             value=[
                 self._revision_id,

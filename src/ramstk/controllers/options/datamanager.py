@@ -40,14 +40,14 @@ class DataManager(RAMSTKDataManager):
         RAMSTKDataManager.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            "site_id": 0,
-        }
         self._pkey: Dict[str, List[str]] = {
             "option": ["site_id"],
         }
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            "site_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKSiteInfo] = RAMSTKSiteInfo
