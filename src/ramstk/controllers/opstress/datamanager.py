@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKOpStress
@@ -41,16 +38,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {
-            "opstress": [
-                "revision_id",
-                "hardware_id",
-                "mode_id",
-                "mechanism_id",
-                "load_id",
-                "stress_id",
-            ],
-        }
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -73,10 +60,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "stress_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_opstress_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_opstress_attributes")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_opstress")
-        pub.subscribe(super().do_update, "request_update_opstress")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
