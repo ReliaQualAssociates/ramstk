@@ -137,7 +137,7 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(7) is None
 
-        test_datamanager._fkey["function_id"] = 10
+        test_attributes["function_id"] = 10
         pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_hazard")
@@ -150,7 +150,7 @@ class TestInsertMethods:
 
         assert test_datamanager.tree.get_node(7) is None
 
-        test_datamanager._fkey["revision_id"] = 40
+        test_attributes["revision_id"] = 40
         pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")

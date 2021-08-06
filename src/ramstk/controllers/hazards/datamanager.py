@@ -41,7 +41,6 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._pkey = {"hazard": ["revision_id", "function_id", "hazard_id"]}
 
         # Initialize private list attributes.
         self._lst_id_columns = [
@@ -61,11 +60,6 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hazard_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_get_attributes, "request_get_hazard_attributes")
-        pub.subscribe(super().do_set_attributes, "request_set_hazard_attributes")
-        pub.subscribe(super().do_set_attributes, "wvw_editing_hazard")
-        pub.subscribe(super().do_update, "request_update_hazard")
-
         pub.subscribe(self.do_set_all_attributes, "request_set_all_hazard_attributes")
 
     def do_get_new_record(  # pylint: disable=method-hidden
