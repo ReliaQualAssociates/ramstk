@@ -33,7 +33,7 @@ def test_datamanager(test_program_dao):
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
-            None: None,
+            "revision_id": None,
         }
     )
 
@@ -59,7 +59,6 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        print(tree.all_nodes())
         assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(tree.get_node(1).data["revision"], RAMSTKRevision)
         print("\033[36m\nsucceed_retrieve_revision topic was broadcast.")
@@ -72,7 +71,7 @@ class TestSelectMethods:
         pub.sendMessage(
             "request_retrieve_revisions",
             attributes={
-                None: None,
+                "revision_id": None,
             },
         )
 

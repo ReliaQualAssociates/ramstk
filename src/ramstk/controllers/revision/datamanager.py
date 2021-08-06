@@ -41,12 +41,13 @@ class DataManager(RAMSTKDataManager):
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._fkey = {
-            None: None,
-        }
         self._pkey = {"revision": ["revision_id"]}
 
         # Initialize private list attributes.
+        self._lst_id_columns = [
+            None,
+            "revision_id",
+        ]
 
         # Initialize private scalar attributes.
         self._record: Type[RAMSTKRevision] = RAMSTKRevision
@@ -76,7 +77,7 @@ class DataManager(RAMSTKDataManager):
         _new_record = self._record()
         _new_record.revision_id = self.last_id + 1
 
-        attributes.pop(self.pkey)
-        _new_record.set_attributes(attributes)
+        # We add this so the do_insert() method can pop it without raising a KeyError.
+        attributes[None] = "None"  # type: ignore
 
         return _new_record
