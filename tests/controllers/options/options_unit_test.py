@@ -88,9 +88,6 @@ class TestCreateControllers:
         assert DUT._lst_id_columns == [
             "site_id",
         ]
-        assert DUT._pkey == {
-            "option": ["site_id"],
-        }
         assert DUT._tag == "option"
         assert DUT._root == 0
 
