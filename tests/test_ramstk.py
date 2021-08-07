@@ -112,7 +112,7 @@ class TestProgramManager:
         assert DUT.dic_managers["allocation"] == {"analysis": None, "data": None}
         assert DUT.dic_managers["requirement"] == {"data": None}
         assert DUT.dic_managers["similar_item"] == {"analysis": None, "data": None}
-        assert DUT.dic_managers["stakeholder"] == {"analysis": None, "data": None}
+        assert DUT.dic_managers["stakeholder"] == {"data": None}
         assert DUT.dic_managers["hardware"] == {"analysis": None, "data": None}
         assert DUT.dic_managers["fmea"] == {"analysis": None, "data": None}
         assert DUT.dic_managers["options"] == {"data": None}

@@ -277,9 +277,9 @@ typecheck:
 maintain:
 	@echo -e "\n\t\033[1;32mChecking maintainability of $(SRCFILE) ...\033[0m\n"
 	$(PY) -m mccabe -m 10 $(SRCFILE)
-	$(RADON) mi -s $(SRCFILE)
 	$(RADON) hal $(SRCFILE)
 	$(RADON) cc -s $(SRCFILE)
+	$(RADON) mi -s $(SRCFILE)
 
 # This target is for use with IDE integration.
 security:

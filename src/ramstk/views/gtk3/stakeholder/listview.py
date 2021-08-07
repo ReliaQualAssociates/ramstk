@@ -97,7 +97,7 @@ class StakeholderPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_retrieve_stakeholders")
         pub.subscribe(super().do_load_panel, "succeed_insert_stakeholder")
-        pub.subscribe(super().do_refresh_tree, "succeed_calculate_stakeholder")
+        # pub.subscribe(super().do_refresh_tree, "succeed_calculate_stakeholder")
         pub.subscribe(super().do_refresh_tree, "wvw_editing_stakeholder")
         pub.subscribe(super().on_delete, "succeed_delete_stakeholder")
 
