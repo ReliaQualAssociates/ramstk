@@ -158,7 +158,7 @@ class TestDeleteMethods:
         assert error_message == ("Attempted to delete non-existent Hazard ID 10.")
         print("\033[35m\nfail_delete_hazard topic was broadcast on non-existent ID.")
 
-    def on_fail_delete_not_in_tree(self, error_message):
+    def on_fail_delete_no_data_package(self, error_message):
         assert error_message == ("Attempted to delete non-existent Hazard ID 4.")
         print("\033[35m\nfail_delete_hazard topic was broadcast on no data package.")
 
@@ -186,12 +186,12 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_no_data_package(self, test_datamanager):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_hazard")
+        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_hazard")
 
         test_datamanager.tree.get_node(4).data.pop("hazard")
         pub.sendMessage("request_delete_hazard", node_id=4)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_hazard")
+        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_hazard")
 
 
 @pytest.mark.usefixtures("test_datamanager")
@@ -245,6 +245,8 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
         """should update all records in the records tree."""
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+
         test_datamanager.tree.get_node(1).data[
             "hazard"
         ].potential_hazard = "Big test hazard"
@@ -255,6 +257,8 @@ class TestUpdateMethods:
             test_datamanager.tree.get_node(1).data["hazard"].potential_hazard
             == "Big test hazard"
         )
+
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
@@ -323,16 +327,14 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
         """should return the attributes dict."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hazards_attributes")
+        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hazard_attributes")
 
         test_datamanager.do_get_attributes(
             node_id=1,
             table="hazard",
         )
 
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_hazards_attributes"
-        )
+        pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_hazard_attributes")
 
     @pytest.mark.integration
     def test_on_get_tree(self):

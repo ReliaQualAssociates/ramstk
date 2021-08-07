@@ -83,7 +83,7 @@ class DataManager(RAMSTKDataManager):
     def do_calculate_fha(self, node_id: int) -> None:
         """Perform a hazards analysis calculation for currently selected item.
 
-        :param node_id: the node (hazard) ID to calculate.
+        :param node_id: the ID of the record to calculate.
         :return: None
         :rtype: None
         """
@@ -101,6 +101,7 @@ class DataManager(RAMSTKDataManager):
         This method calculates the assembly and system level HRI for both
         before and after mitigation actions.
 
+        :param node_id: the ID of the record to calculate.
         :return: None
         :rtype: None
         :raises: KeyError if one or more attribute keys is missing.
@@ -147,6 +148,7 @@ class DataManager(RAMSTKDataManager):
     def _do_calculate_user_defined(self, node_id: int) -> None:
         """Calculate the user-defined hazard analysis.
 
+        :param node_id: the ID of the record to calculate.
         :return: None
         :rtype: None
         """

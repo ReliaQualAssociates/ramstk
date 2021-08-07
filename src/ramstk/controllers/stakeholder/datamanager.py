@@ -9,7 +9,11 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
+from ramstk.analyses import improvementfactor
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKStakeholder
 
@@ -56,6 +60,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "stakeholder_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_calculate_stakeholder, "request_calculate_stakeholder")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -72,3 +77,47 @@ class DataManager(RAMSTKDataManager):
         _new_record.description = "New Stakeholder Input"
 
         return _new_record
+
+    def do_calculate_stakeholder(self, node_id: int) -> None:
+        """Calculate improvement factor and weight for currently selected item.
+
+        :param node_id: the ID of the record to calculate.
+        :return: None
+        :rtype: None
+        """
+        self._do_calculate_improvement(node_id)
+
+        pub.sendMessage(
+            "succeed_calculate_stakeholder2",
+            node_id=node_id,
+        )
+
+    def _do_calculate_improvement(self, node_id: int) -> None:
+        """Calculate improvement factor and weight for currently selected item.
+
+        :param node_id: the ID of the record to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data[self._tag]
+        _attributes = _record.get_attributes()
+
+        (_improvement, _overall_weight,) = improvementfactor.calculate_improvement(
+            _attributes["planned_rank"],
+            _attributes["customer_rank"],
+            _attributes["priority"],
+            user_float_1=_attributes["user_float_1"],
+            user_float_2=_attributes["user_float_2"],
+            user_float_3=_attributes["user_float_3"],
+            user_float_4=_attributes["user_float_4"],
+            user_float_5=_attributes["user_float_5"],
+        )
+
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"improvement": _improvement},
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"overall_weight": _overall_weight},
+        )

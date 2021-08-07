@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.test_function.py is part of The RAMSTK Project
+#       tests.controllers.hazards.hazards_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Function algorithms and models."""
+"""Test class for testing Hazard algorithms and models."""
 
 # Third Party Imports
 import pytest
@@ -193,6 +193,7 @@ class TestInsertMethods:
         test_datamanager.do_select_all(attributes=test_attributes)
         _new_record = test_datamanager.do_get_new_record(test_attributes)
 
+        assert isinstance(_new_record, RAMSTKHazardAnalysis)
         assert _new_record.revision_id == 1
         assert _new_record.function_id == 1
         assert _new_record.hazard_id == 2
