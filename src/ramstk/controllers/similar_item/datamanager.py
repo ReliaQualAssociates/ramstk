@@ -8,12 +8,14 @@
 """Similar Item Package Data Model."""
 
 # Standard Library Imports
+from collections import OrderedDict
 from typing import Any, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.analyses import similaritem
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKSimilarItem
 
@@ -50,6 +52,7 @@ class DataManager(RAMSTKDataManager):
         ]
 
         # Initialize private scalar attributes.
+        self._node_hazard_rate: float = 0.0
         self._record: Type[RAMSTKSimilarItem] = RAMSTKSimilarItem
 
         # Initialize public dictionary attributes.
@@ -60,7 +63,10 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_tree, "succeed_calculate_similar_item")
+        pub.subscribe(self.do_calculate_similar_item, "request_calculate_similar_item")
+        pub.subscribe(
+            self.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
+        )
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -79,3 +85,361 @@ class DataManager(RAMSTKDataManager):
         _new_record.parent_id = attributes["parent_id"]
 
         return _new_record
+
+    def do_calculate_similar_item(self, node_id: int) -> None:
+        """Perform a similar item calculation for record ID.
+
+        :param node_id: the node (similar item) ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _dic_method = {
+            1: self._do_calculate_topic_633,
+            2: self._do_calculate_user_defined,
+        }
+
+        _record = self.tree.get_node(node_id).data[self._tag]
+        try:
+            _method = _dic_method[_record.similar_item_method_id]
+            _method(node_id)
+
+            pub.sendMessage(
+                "succeed_calculate_similar_item",
+                tree=self.tree,
+            )
+        except KeyError:
+            _error_msg: str = (
+                "Failed to calculate similar item reliability for hardware ID {0}.  "
+                "Unknown similar item method ID {1} selected.".format(
+                    node_id, _record.similar_item_method_id
+                )
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_calculate_similar_item",
+                error_message=_error_msg,
+            )
+
+    def do_roll_up_change_descriptions(self, node_id: int) -> None:
+        """Concatenate child change descriptions for the node ID similar item.
+
+        :param node_id: the record ID of the parent to which the rolled-up
+            descriptions are assigned.
+        :return: None
+        :rtype: None
+        """
+        _change_description_1 = ""
+        _change_description_2 = ""
+        _change_description_3 = ""
+        _change_description_4 = ""
+        _change_description_5 = ""
+        _change_description_6 = ""
+        _change_description_7 = ""
+        _change_description_8 = ""
+        _change_description_9 = ""
+        _change_description_10 = ""
+
+        for _node in self.tree.children(node_id):
+            _change_description_1 += (
+                _node.data["similar_item"].change_description_1 + "\n\n"
+            )
+            _change_description_2 += (
+                _node.data["similar_item"].change_description_2 + "\n\n"
+            )
+            _change_description_3 += (
+                _node.data["similar_item"].change_description_3 + "\n\n"
+            )
+            _change_description_4 += (
+                _node.data["similar_item"].change_description_4 + "\n\n"
+            )
+            _change_description_5 += (
+                _node.data["similar_item"].change_description_5 + "\n\n"
+            )
+            _change_description_6 += (
+                _node.data["similar_item"].change_description_6 + "\n\n"
+            )
+            _change_description_7 += (
+                _node.data["similar_item"].change_description_7 + "\n\n"
+            )
+            _change_description_8 += (
+                _node.data["similar_item"].change_description_8 + "\n\n"
+            )
+            _change_description_9 += (
+                _node.data["similar_item"].change_description_9 + "\n\n"
+            )
+            _change_description_10 += (
+                _node.data["similar_item"].change_description_10 + "\n\n"
+            )
+
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_1": _change_description_1,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_2": _change_description_2,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_3": _change_description_3,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_4": _change_description_4,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_5": _change_description_5,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_6": _change_description_6,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_7": _change_description_7,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_8": _change_description_8,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_9": _change_description_9,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_description_10": _change_description_10,
+            },
+        )
+
+        pub.sendMessage(
+            "succeed_roll_up_change_descriptions",
+            tree=self.tree,
+        )
+
+    def _do_calculate_topic_633(self, node_id: int) -> None:
+        """Calculate the similar item hazard rate per topic 6.3.3.
+
+        .. note:: this analysis uses the adjustment factors from RAC/RiAC's The
+            Reliability Toolkit, Commercial Practices Edition, section 6.3.3.
+
+        :param node_id: the record ID to calculate similar item reliability.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data[self._tag]
+
+        _environment = {
+            "from": _record.environment_from_id,
+            "to": _record.environment_to_id,
+        }
+        _quality = {
+            "from": _record.quality_from_id,
+            "to": _record.quality_to_id,
+        }
+        _temperature = {
+            "from": _record.temperature_from,
+            "to": _record.temperature_to,
+        }
+
+        (
+            _record.change_factor_1,
+            _record.change_factor_2,
+            _record.change_factor_3,
+            _record.result_1,
+        ) = similaritem.calculate_topic_633(
+            _environment, _quality, _temperature, self._node_hazard_rate
+        )
+
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_factor_1": _record.change_factor_1,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_factor_2": _record.change_factor_2,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "change_factor_3": _record.change_factor_3,
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_1": _record.result_1,
+            },
+        )
+
+    def _do_calculate_user_defined(self, node_id: int) -> None:
+        """Calculate the user-defined similar item hazard rate.
+
+        :param node_id: the record ID to calculate similar item reliability.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data[self._tag]
+
+        _sia: Dict[str, Any] = OrderedDict(
+            {
+                _key: None
+                for _key in [
+                    "hr",
+                    "pi1",
+                    "pi2",
+                    "pi3",
+                    "pi3",
+                    "pi4",
+                    "pi5",
+                    "pi6",
+                    "pi7",
+                    "pi8",
+                    "pi9",
+                    "pi10",
+                    "uf1",
+                    "uf2",
+                    "uf3",
+                    "uf4",
+                    "uf5",
+                    "ui1",
+                    "ui2",
+                    "ui3",
+                    "ui4",
+                    "ui5",
+                    "equation1",
+                    "equation2",
+                    "equation3",
+                    "equation4",
+                    "equation5",
+                    "res1",
+                    "res2",
+                    "res3",
+                    "res4",
+                    "res5",
+                ]
+            }
+        )
+
+        _sia["hr"] = self._node_hazard_rate
+
+        _sia = similaritem.set_user_defined_change_factors(
+            _sia,
+            [
+                _record.change_factor_1,
+                _record.change_factor_2,
+                _record.change_factor_3,
+                _record.change_factor_4,
+                _record.change_factor_5,
+                _record.change_factor_6,
+                _record.change_factor_7,
+                _record.change_factor_8,
+                _record.change_factor_9,
+                _record.change_factor_10,
+            ],
+        )
+
+        _sia = similaritem.set_user_defined_floats(
+            _sia,
+            [
+                _record.user_float_1,
+                _record.user_float_2,
+                _record.user_float_3,
+                _record.user_float_4,
+                _record.user_float_5,
+            ],
+        )
+
+        _sia = similaritem.set_user_defined_ints(
+            _sia,
+            [
+                _record.user_int_1,
+                _record.user_int_2,
+                _record.user_int_3,
+                _record.user_int_4,
+                _record.user_int_5,
+            ],
+        )
+
+        _sia = similaritem.set_user_defined_functions(
+            _sia,
+            [
+                _record.function_1,
+                _record.function_2,
+                _record.function_3,
+                _record.function_4,
+                _record.function_5,
+            ],
+        )
+
+        _sia = similaritem.set_user_defined_results(
+            _sia,
+            [
+                _record.result_1,
+                _record.result_2,
+                _record.result_3,
+                _record.result_4,
+                _record.result_5,
+            ],
+        )
+
+        _sia = similaritem.calculate_user_defined(_sia)
+
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_1": _sia["res1"],
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_2": _sia["res2"],
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_3": _sia["res3"],
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_4": _sia["res4"],
+            },
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={
+                "result_5": _sia["res5"],
+            },
+        )
