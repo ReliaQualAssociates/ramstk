@@ -60,7 +60,7 @@ class RAMSTKProgramManager:
             "ffmea": {"analysis": None, "data": None},
             "requirement": {"data": None},
             "similar_item": {"analysis": None, "data": None},
-            "stakeholder": {"analysis": None, "data": None},
+            "stakeholder": {"data": None},
             "hardware": {"analysis": None, "data": None},
             "hazards": {"data": None},
             "fmea": {"analysis": None, "data": None},

@@ -25,7 +25,6 @@ from ramstk.controllers import (
     amFMEA,
     amHardware,
     amSimilarItem,
-    amStakeholder,
     amValidation,
     dmAllocation,
     dmFailureDefinition,
@@ -279,9 +278,6 @@ def the_one_ring() -> None:
         user_configuration
     )
     _program_mgr.dic_managers["similar_item"]["data"] = dmSimilarItem()
-    _program_mgr.dic_managers["stakeholder"]["analysis"] = amStakeholder(
-        user_configuration
-    )
     _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
     _program_mgr.dic_managers["hardware"]["analysis"] = amHardware(user_configuration)
     _program_mgr.dic_managers["hardware"]["data"] = dmHardware()
