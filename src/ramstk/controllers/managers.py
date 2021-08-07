@@ -337,7 +337,7 @@ class RAMSTKDataManager:
         """
         try:
             _entity = self.tree.get_node(node_id).data[self._tag]
-        except (AttributeError, treelib.tree.NodeIDAbsentError, TypeError):
+        except (AttributeError, KeyError, treelib.tree.NodeIDAbsentError, TypeError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 "{2}: No data package for node ID {0} in module {1}.".format(

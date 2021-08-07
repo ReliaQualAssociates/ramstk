@@ -4,12 +4,17 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hazards Package Data Model."""
+"""Hazards Package Table Model."""
 
 # Standard Library Imports
+from collections import OrderedDict
 from typing import Any, Dict, Type
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
+from ramstk.analyses import fha
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKHazardAnalysis
 
@@ -57,6 +62,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "hazard_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_calculate_fha, "request_calculate_fha")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -73,3 +79,163 @@ class DataManager(RAMSTKDataManager):
         _new_record.hazard_id = self.last_id + 1
 
         return _new_record
+
+    def do_calculate_fha(self, node_id: int) -> None:
+        """Perform a hazards analysis calculation for currently selected item.
+
+        :param node_id: the node (hazard) ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        self._do_calculate_hri(node_id)
+        self._do_calculate_user_defined(node_id)
+
+        pub.sendMessage(
+            "succeed_calculate_fha",
+            node_id=node_id,
+        )
+
+    def _do_calculate_hri(self, node_id: int) -> None:
+        """Calculate the hazard risk index (HRI).
+
+        This method calculates the assembly and system level HRI for both
+        before and after mitigation actions.
+
+        :return: None
+        :rtype: None
+        :raises: KeyError if one or more attribute keys is missing.
+        """
+        _record = self.tree.get_node(node_id).data[self._tag]
+        _attributes = _record.get_attributes()
+
+        _result = fha.calculate_hri(
+            _attributes["assembly_probability"],
+            _attributes["assembly_severity"],
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"assembly_hri": _result},
+        )
+
+        _result = fha.calculate_hri(
+            _attributes["system_probability"],
+            _attributes["system_severity"],
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"system_hri": _result},
+        )
+
+        _result = fha.calculate_hri(
+            _attributes["assembly_probability_f"],
+            _attributes["assembly_severity_f"],
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"assembly_hri_f": _result},
+        )
+
+        _result = fha.calculate_hri(
+            _attributes["system_probability_f"],
+            _attributes["system_severity_f"],
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"system_hri_f": _result},
+        )
+
+    def _do_calculate_user_defined(self, node_id: int) -> None:
+        """Calculate the user-defined hazard analysis.
+
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data[self._tag]
+        _attributes = _record.get_attributes()
+
+        _fha = OrderedDict(
+            {
+                _key: ""
+                for _key in [
+                    "uf1",
+                    "uf2",
+                    "uf3",
+                    "ui1",
+                    "ui2",
+                    "ui3",
+                    "equation1",
+                    "equation2",
+                    "equation3",
+                    "equation4",
+                    "equation5",
+                    "res1",
+                    "res2",
+                    "res3",
+                    "res4",
+                    "res5",
+                ]
+            }
+        )
+
+        _fha = fha.set_user_defined_floats(
+            _fha,
+            [
+                _attributes["user_float_1"],
+                _attributes["user_float_2"],
+                _attributes["user_float_3"],
+            ],
+        )
+
+        _fha = fha.set_user_defined_ints(
+            _fha,
+            [
+                _attributes["user_int_1"],
+                _attributes["user_int_2"],
+                _attributes["user_int_3"],
+            ],
+        )
+
+        _fha = fha.set_user_defined_functions(
+            _fha,
+            [
+                _attributes["function_1"],
+                _attributes["function_2"],
+                _attributes["function_3"],
+                _attributes["function_4"],
+                _attributes["function_5"],
+            ],
+        )
+
+        _fha = fha.set_user_defined_results(
+            _fha,
+            [
+                _attributes["result_1"],
+                _attributes["result_2"],
+                _attributes["result_3"],
+                _attributes["result_4"],
+                _attributes["result_5"],
+            ],
+        )
+
+        _fha = fha.calculate_user_defined(_fha)
+
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"result_1": float(_fha["res1"])},
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"result_2": float(_fha["res2"])},
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"result_3": float(_fha["res3"])},
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"result_4": float(_fha["res4"])},
+        )
+        self.do_set_attributes(
+            node_id=[node_id],
+            package={"result_5": float(_fha["res5"])},
+        )

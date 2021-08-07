@@ -3,7 +3,7 @@
 #       ramstk.ramstk.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK program manager."""
 
 # Standard Library Imports
@@ -62,7 +62,7 @@ class RAMSTKProgramManager:
             "similar_item": {"analysis": None, "data": None},
             "stakeholder": {"analysis": None, "data": None},
             "hardware": {"analysis": None, "data": None},
-            "hazards": {"analysis": None, "data": None},
+            "hazards": {"data": None},
             "fmea": {"analysis": None, "data": None},
             "pof": {"data": None},
             "program_status": {"data": None},

@@ -4,7 +4,7 @@
 #       ramstk.controllers.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK controllers package."""
 
 # RAMSTK Package Imports
@@ -23,7 +23,6 @@ from .fmea.datamanager import DataManager as dmFMEA
 from .function.datamanager import DataManager as dmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
-from .hazards.analysismanager import AnalysisManager as amHazards
 from .hazards.datamanager import DataManager as dmHazards
 from .mechanism.datamanager import DataManager as dmMechanism
 from .mission.datamanager import DataManager as dmMission
