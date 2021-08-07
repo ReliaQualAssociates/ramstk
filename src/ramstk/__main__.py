@@ -21,7 +21,6 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    amAllocation,
     amFMEA,
     amHardware,
     amSimilarItem,
@@ -266,9 +265,6 @@ def the_one_ring() -> None:
     )
 
     _program_mgr = RAMSTKProgramManager()
-    _program_mgr.dic_managers["allocation"]["analysis"] = amAllocation(
-        user_configuration
-    )
     _program_mgr.dic_managers["allocation"]["data"] = dmAllocation()
     _program_mgr.dic_managers["revision"]["data"] = dmRevision()
     _program_mgr.dic_managers["function"]["data"] = dmFunction()

@@ -67,6 +67,10 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
+    pub.unsubscribe(dut.do_calculate_allocation, "request_calculate_allocation")
+    pub.unsubscribe(
+        dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
+    )
 
     # Delete the device under test.
     del dut

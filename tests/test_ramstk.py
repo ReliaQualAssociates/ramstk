@@ -109,7 +109,7 @@ class TestProgramManager:
         assert isinstance(DUT.dic_managers, dict)
         assert DUT.dic_managers["revision"] == {"data": None}
         assert DUT.dic_managers["function"] == {"analysis": None, "data": None}
-        assert DUT.dic_managers["allocation"] == {"analysis": None, "data": None}
+        assert DUT.dic_managers["allocation"] == {"data": None}
         assert DUT.dic_managers["requirement"] == {"data": None}
         assert DUT.dic_managers["similar_item"] == {"analysis": None, "data": None}
         assert DUT.dic_managers["stakeholder"] == {"data": None}
