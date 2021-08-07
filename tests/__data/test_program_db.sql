@@ -154,8 +154,8 @@ INSERT INTO "ramstk_function" VALUES(1,1,1.0,1.0,0.0,'FUNC-0001',0.0,0.0,0,0.0,0
 INSERT INTO "ramstk_function" VALUES(1,2,1.0,1.0,0.0,'FUNC-0002',0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,'Function Name',1,'',0,0,0,0);
 INSERT INTO "ramstk_function" VALUES(1,3,1.0,1.0,0.0,'FUNC-0003',0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,'Function Name',0,'',0,0,0,0);
 CREATE TABLE ramstk_hazard_analysis (
-    fld_revision_id INTEGER,
-    fld_function_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
+    fld_function_id INTEGER NOT NULL,
     fld_hazard_id INTEGER NOT NULL,
     fld_potential_hazard VARCHAR(256),
     fld_potential_cause VARCHAR(512),
@@ -199,7 +199,7 @@ CREATE TABLE ramstk_hazard_analysis (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,1,'','','','Major','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,1,'','','','Major','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'uf1*uf2','res1/ui1','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',1.5,0.8,0.0,2,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,2,2,'','','','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,3,3,'','','','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Major','Level A - Frequent',20,'','Major','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,4,'','','','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
