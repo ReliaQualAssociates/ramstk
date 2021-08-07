@@ -47,7 +47,20 @@
 - [License](#-license)
 - [Similar Products](#similar-products)
 
-## 🎨 Features
+## Disclaimer
+
+RAMSTK attempts to use [Semantic Versioning](https://semver.org/) 2.0.0.  Per
+4, major version 0 is for initial development and anything may change at
+any time.  That is certainly the case for RAMSTK!  Because RAMSTK is a one
+developer show, there is no active develop branch at the moment.  This may
+change after release of 1.0.0.  Until then, tagged releases can be used, but
+the `latest` tag may not work and may not be backwards-compatible.  While major
+version is at 0, breaking changes will be reflected in bumps to the minor
+version number.  That is, version 0.15.0 is not compatible with version 0.14.0.
+Also at this time, patch versions will not be released.  This will change after
+version 1.0.0 is released.
+
+## 🎨&nbsp; Features
 
 RAMSTK is built on the concept of modules where a module is a collection of
  related information and/or analyses pertinent to system development.  The
@@ -81,7 +94,7 @@ RAMSTK is built on the concept of modules where a module is a collection of
   - Task cost
   - Overall validation plan time/cost estimates
 
-## 💾 Installing
+## 💾&nbsp; Installing
 
 These instructions will get RAMSTK up and running on your local machine
 . Note that the Makefile contains all the commands needed to install or work
@@ -177,7 +190,7 @@ $ pytest -m integration tests/modules/test_allocation.py
 $ pytest -m calculation tests/analyses/prediction
 ```
 
-## 🔨 Usage
+## 🔨&nbsp; Usage
 
 After installing RAMSTK, it can be launched from a terminal emulator:
 
@@ -195,17 +208,17 @@ RAMSTK installs a *.desktop file and can be found where ever applications in
 
 Documentation for RAMSTK can be found at [Read the Docs](https://ramstk.readthedocs.io/en/latest) You should check it out!
 
-## 💬 Contributing
+## 💬&nbsp; Contributing
 
 Please read [CONTRIBUTING.md](https://github.com/ReliaQualAssociates/ramstk/tree/develop/docs/CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 Also read [DEVELOPMENT_ENV.md](https://github.com/ReliaQualAssociates/ramstk/tree/develop/docs/DEVELOPMENT_ENV.md) for instructions on setting up a development environment to work on and test RAMSTK.
 
-## 🍞 Authors
+## 🍞&nbsp; Authors
 
 * **Doyle 'weibullguy' Rowland** - *Initial work* - [weibullguy](https://github.com/weibullguy)
 
-## 📜 License
+## 📜&nbsp; License
 This project is licensed under the BSD-3-Clause License - see the [LICENSE](https://github.com/ReliaQualAssociates/ramstk/blob/develop/LICENSE) file for details.
 
 RAMSTK is also registered with the United States Copyright Office under
