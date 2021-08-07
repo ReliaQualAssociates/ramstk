@@ -251,53 +251,32 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _record = self.tree.get_node(node_id).data[self._tag]
+        _attributes = self.tree.get_node(node_id).data[self._tag].get_attributes()
 
         _environment = {
-            "from": _record.environment_from_id,
-            "to": _record.environment_to_id,
+            "from": _attributes["environment_from_id"],
+            "to": _attributes["environment_to_id"],
         }
         _quality = {
-            "from": _record.quality_from_id,
-            "to": _record.quality_to_id,
+            "from": _attributes["quality_from_id"],
+            "to": _attributes["quality_to_id"],
         }
         _temperature = {
-            "from": _record.temperature_from,
-            "to": _record.temperature_to,
+            "from": _attributes["temperature_from"],
+            "to": _attributes["temperature_to"],
         }
 
         (
-            _record.change_factor_1,
-            _record.change_factor_2,
-            _record.change_factor_3,
-            _record.result_1,
+            _attributes["change_factor_1"],
+            _attributes["change_factor_2"],
+            _attributes["change_factor_3"],
+            _attributes["result_1"],
         ) = similaritem.calculate_topic_633(
             _environment, _quality, _temperature, self._node_hazard_rate
         )
 
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "change_factor_1": _record.change_factor_1,
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "change_factor_2": _record.change_factor_2,
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "change_factor_3": _record.change_factor_3,
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_1": _record.result_1,
-            },
+        self.do_set_attributes_all(
+            attributes=_attributes,
         )
 
     def _do_calculate_user_defined(self, node_id: int) -> None:
@@ -307,7 +286,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        _record = self.tree.get_node(node_id).data[self._tag]
+        _attributes = self.tree.get_node(node_id).data[self._tag].get_attributes()
 
         _sia: Dict[str, Any] = OrderedDict(
             {
@@ -354,92 +333,70 @@ class DataManager(RAMSTKDataManager):
         _sia = similaritem.set_user_defined_change_factors(
             _sia,
             [
-                _record.change_factor_1,
-                _record.change_factor_2,
-                _record.change_factor_3,
-                _record.change_factor_4,
-                _record.change_factor_5,
-                _record.change_factor_6,
-                _record.change_factor_7,
-                _record.change_factor_8,
-                _record.change_factor_9,
-                _record.change_factor_10,
+                _attributes["change_factor_1"],
+                _attributes["change_factor_2"],
+                _attributes["change_factor_3"],
+                _attributes["change_factor_4"],
+                _attributes["change_factor_5"],
+                _attributes["change_factor_6"],
+                _attributes["change_factor_7"],
+                _attributes["change_factor_8"],
+                _attributes["change_factor_9"],
+                _attributes["change_factor_10"],
             ],
         )
 
         _sia = similaritem.set_user_defined_floats(
             _sia,
             [
-                _record.user_float_1,
-                _record.user_float_2,
-                _record.user_float_3,
-                _record.user_float_4,
-                _record.user_float_5,
+                _attributes["user_float_1"],
+                _attributes["user_float_2"],
+                _attributes["user_float_3"],
+                _attributes["user_float_4"],
+                _attributes["user_float_5"],
             ],
         )
 
         _sia = similaritem.set_user_defined_ints(
             _sia,
             [
-                _record.user_int_1,
-                _record.user_int_2,
-                _record.user_int_3,
-                _record.user_int_4,
-                _record.user_int_5,
+                _attributes["user_int_1"],
+                _attributes["user_int_2"],
+                _attributes["user_int_3"],
+                _attributes["user_int_4"],
+                _attributes["user_int_5"],
             ],
         )
 
         _sia = similaritem.set_user_defined_functions(
             _sia,
             [
-                _record.function_1,
-                _record.function_2,
-                _record.function_3,
-                _record.function_4,
-                _record.function_5,
+                _attributes["function_1"],
+                _attributes["function_2"],
+                _attributes["function_3"],
+                _attributes["function_4"],
+                _attributes["function_5"],
             ],
         )
 
         _sia = similaritem.set_user_defined_results(
             _sia,
             [
-                _record.result_1,
-                _record.result_2,
-                _record.result_3,
-                _record.result_4,
-                _record.result_5,
+                _attributes["result_1"],
+                _attributes["result_2"],
+                _attributes["result_3"],
+                _attributes["result_4"],
+                _attributes["result_5"],
             ],
         )
 
         _sia = similaritem.calculate_user_defined(_sia)
+        _attributes["result_1"] = _sia["res1"]
+        _attributes["result_2"] = _sia["res2"]
+        _attributes["result_3"] = _sia["res3"]
+        _attributes["result_4"] = _sia["res4"]
+        _attributes["result_5"] = _sia["res5"]
 
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_1": _sia["res1"],
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_2": _sia["res2"],
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_3": _sia["res3"],
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_4": _sia["res4"],
-            },
-        )
-        self.do_set_attributes(
-            node_id=[node_id],
-            package={
-                "result_5": _sia["res5"],
-            },
+        self.do_set_attributes_all(
+            attributes=_attributes,
         )
