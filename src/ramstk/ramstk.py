@@ -53,7 +53,7 @@ class RAMSTKProgramManager:
 
         # Initialize public dictionary attributes.
         self.dic_managers: Dict[str, Dict[str, object]] = {
-            "allocation": {"analysis": None, "data": None},
+            "allocation": {"data": None},
             "revision": {"data": None},
             "failure_definition": {"data": None},
             "function": {"analysis": None, "data": None},

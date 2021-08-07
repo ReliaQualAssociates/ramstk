@@ -103,7 +103,7 @@ def test_datamanager(mock_program_dao):
 
 @pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
-    """Class for controller initialization test suite."""
+    """Class for testing controller initialization."""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
@@ -222,9 +222,11 @@ class TestDeleteMethods:
     def test_do_delete(self, test_attributes, test_datamanager):
         """should remove the record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
+        _last_id = test_datamanager.last_id
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 1
+        assert test_datamanager.tree.get_node(_last_id) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

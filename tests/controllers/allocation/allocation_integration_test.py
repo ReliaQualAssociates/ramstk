@@ -15,7 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import amAllocation, dmAllocation
+from ramstk.controllers import dmAllocation
 from ramstk.models.programdb import RAMSTKAllocation
 
 
@@ -48,32 +48,6 @@ def test_attributes():
 
 
 @pytest.fixture(scope="class")
-def test_analysismanager(test_toml_user_configuration):
-    """Get an analysis manager instance for each test class."""
-    # Create the device under test (dut) and connect to the configuration.
-    dut = amAllocation(test_toml_user_configuration)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_allocation_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_allocation_tree")
-    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_allocation")
-    pub.unsubscribe(dut.on_get_tree, "succeed_update_allocation")
-    pub.unsubscribe(dut._do_calculate_allocation, "request_allocate_reliability")
-    pub.unsubscribe(
-        dut._do_calculate_allocation_goals, "request_calculate_allocation_goals"
-    )
-    pub.unsubscribe(dut._do_calculate_allocation, "request_calculate_allocation")
-    pub.unsubscribe(
-        dut._on_get_hardware_attributes, "succeed_get_all_hardware_attributes"
-    )
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
@@ -91,15 +65,18 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_update, "request_update_allocation")
     pub.unsubscribe(dut.do_get_tree, "request_get_allocation_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_set_attributes_all, "succeed_calculate_allocation_goals")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
+    pub.unsubscribe(dut.do_calculate_allocation, "request_calculate_allocation")
+    pub.unsubscribe(
+        dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
+    )
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -109,11 +86,11 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """do_select_all() should clear nodes from an existing allocation tree."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
 
@@ -133,7 +110,7 @@ class TestInsertMethods:
 
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == ("Parent node '9' is not in the tree")
-        print("\033[35m\nfail_insert_allocation topic was broadcast.")
+        print("\033[35m\nfail_insert_allocation topic was broadcast on no parent.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
@@ -142,7 +119,7 @@ class TestInsertMethods:
             "(fld_revision_id)=(40) is not present in table "
             '"ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_allocation topic was broadcast.")
+        print("\033[35m\nfail_insert_allocation topic was broadcast on no revision.")
 
     def on_fail_insert_no_hardware(self, error_message):
         assert error_message == (
@@ -151,7 +128,7 @@ class TestInsertMethods:
             "(fld_hardware_id)=(9) is not present in table "
             '"ramstk_hardware".'
         )
-        print("\033[35m\nfail_insert_allocation topic was broadcast.")
+        print("\033[35m\nfail_insert_allocation topic was broadcast on no hardware.")
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
@@ -228,11 +205,16 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == ("Attempted to delete non-existent Allocation ID 300.")
-        print("\033[35m\nfail_delete_allocation topic was broadcast.")
+        print(
+            "\033[35m\nfail_delete_allocation topic was broadcast on non-existent "
+            "ID."
+        )
 
-    def on_fail_delete_not_in_tree(self, error_message):
+    def on_fail_delete_no_data_package(self, error_message):
         assert error_message == ("Attempted to delete non-existent Allocation ID 2.")
-        print("\033[35m\nfail_delete_allocation topic was broadcast.")
+        print(
+            "\033[35m\nfail_delete_allocation topic was broadcast on no data package."
+        )
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
@@ -257,17 +239,17 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_no_data_package(self, test_datamanager):
         """should send the fail message when the node doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
+        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_allocation")
 
-        test_datamanager.tree.remove_node(2)
+        test_datamanager.tree.get_node(1).data.pop("allocation")
         pub.sendMessage("request_delete_allocation", node_id=2)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_allocation")
+        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_allocation")
 
 
-@pytest.mark.usefixtures("test_datamanager", "test_program_dao")
+@pytest.mark.usefixtures("test_datamanager")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -286,24 +268,31 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for allocation "
             "ID 1 was the wrong type."
         )
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print(
+            "\033[35m\nfail_update_allocation topic was broadcast on wrong data "
+            "type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print("\033[35m\nfail_update_allocation topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent allocation with "
             "allocation ID 100."
         )
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print(
+            "\033[35m\nfail_update_allocation topic was broadcast on non-existent ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
             "do_update: No data package found for allocation ID 1."
         )
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print(
+            "\033[35m\nfail_update_allocation topic was broadcast on no data package."
+        )
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
@@ -451,14 +440,6 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_on_get_attributes(self, test_analysismanager, test_datamanager):
-        """_get_all_attributes() should update the attributes dict on success."""
-        test_datamanager.do_get_attributes(node_id=2, table="allocation")
-
-        assert test_analysismanager._attributes["hardware_id"] == 2
-        assert test_analysismanager._attributes["mtbf_alloc"] == 0.0
-
-    @pytest.mark.integration
     def test_on_get_tree_data_manager(self):
         """_on_get_tree() should assign the data manager's tree to the _tree attribute
         in response to the succeed_get_allocation_tree message."""
@@ -486,7 +467,7 @@ class TestGetterSetter:
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_allocation_tree")
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for allocation methods test suite."""
 
@@ -501,7 +482,7 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.59138779
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
+        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on AGREE.")
 
     def on_succeed_calculate_arinc(self, tree):
         assert isinstance(tree, Tree)
@@ -514,15 +495,7 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.9856513
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
-
-    def on_fail_calculate_arinc(self, error_message):
-        assert error_message == (
-            "_do_calculate_arinc_weight_factor: Failed "
-            "to allocate reliability for allocation "
-            "record ID 5.  System hazard rate was 0.0."
-        )
-        print("\033[35m\nfail_calculate_allocation topic was broadcast")
+        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on ARINC.")
 
     def on_succeed_calculate_equal(self, tree):
         assert isinstance(tree, Tree)
@@ -535,7 +508,7 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.995
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
+        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on equal.")
 
     def on_succeed_calculate_foo(self, tree):
         assert isinstance(tree, Tree)
@@ -548,130 +521,104 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.95125683
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast.")
+        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on FOO.")
 
-    @pytest.mark.skip
-    def test_do_calculate_agree_allocation(
-        self, test_analysismanager, test_datamanager
-    ):
-        """do_calculate_allocation() should apportion the node ID reliability goal
-        using the AGREE method."""
+    def on_fail_calculate_unknown_method(self, error_message):
+        assert error_message == (
+            "Failed to allocate reliability for hardware ID 1.  Unknown allocation "
+            "method ID 22 selected."
+        )
+        print(
+            "\033[35m\nsucceed_calculate_allocation topic was broadcast on unknown "
+            "method."
+        )
+
+    @pytest.mark.integration
+    def test_do_calculate_agree_allocation(self, test_attributes, test_datamanager):
+        """should apportion the record ID reliability goal using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].allocation_method_id = 2
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].reliability_goal = 0.717
-        test_analysismanager._tree.get_node(2).data["allocation"].duty_cycle = 90.0
-        test_analysismanager._tree.get_node(2).data["allocation"].mission_time = 100.0
-        test_analysismanager._tree.get_node(2).data["allocation"].n_sub_subsystems = 6
-        test_analysismanager._tree.get_node(2).data["allocation"].n_sub_elements = 2
-        test_analysismanager._tree.get_node(2).data["allocation"].weight_factor = 0.95
-        test_analysismanager._do_calculate_allocation(node_id=1)
+        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 2
+        test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.717
+        test_datamanager.tree.get_node(2).data["allocation"].duty_cycle = 90.0
+        test_datamanager.tree.get_node(2).data["allocation"].mission_time = 100.0
+        test_datamanager.tree.get_node(2).data["allocation"].n_sub_subsystems = 6
+        test_datamanager.tree.get_node(2).data["allocation"].n_sub_elements = 2
+        test_datamanager.tree.get_node(2).data["allocation"].weight_factor = 0.95
+
+        pub.sendMessage("request_calculate_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
-    @pytest.mark.skip
-    def test_do_calculate_arinc_allocation(
-        self, test_analysismanager, test_datamanager
-    ):
-        """do_calculate_allocation() should apportion the node ID reliability goal
-        using the ARINC method."""
+    @pytest.mark.integration
+    def test_do_calculate_arinc_allocation(self, test_attributes, test_datamanager):
+        """should apportion the record ID reliability goal using the ARINC method."""
         pub.subscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        test_analysismanager._node_hazard_rate = 0.000628
-        test_analysismanager._system_hazard_rate = 0.002681
+        test_datamanager._node_hazard_rate = 0.000628
+        test_datamanager._system_hazard_rate = 0.002681
 
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].allocation_method_id = 3
-        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 2
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].hazard_rate_goal = 0.000617
-        test_analysismanager._tree.get_node(2).data[
+        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 3
+        test_datamanager.tree.get_node(1).data["allocation"].goal_measure_id = 2
+        test_datamanager.tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
+        test_datamanager.tree.get_node(2).data[
             "allocation"
         ].hazard_rate_active = 0.000628
-        test_analysismanager._do_calculate_allocation(node_id=1)
+
+        pub.sendMessage("request_calculate_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
-    @pytest.mark.skip
-    def test_do_calculate_arinc_allocation_zero_system_hazard_rate(
-        self, test_analysismanager, test_datamanager
-    ):
-        """do_calculate_allocation() should send an error message when attempting to
-        allocate an assembly with a zero hazard rate using the ARINC method."""
-        pub.subscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
-
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-
-        test_analysismanager._node_hazard_rate = 0.000628
-        test_analysismanager._system_hazard_rate = 0.0
-
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].allocation_method_id = 3
-        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 2
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].hazard_rate_active = 0.0
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].hazard_rate_goal = 0.000617
-        test_analysismanager._tree.get_node(2).data[
-            "allocation"
-        ].hazard_rate_active = 0.000628
-        test_analysismanager._do_calculate_allocation(node_id=1)
-
-        pub.unsubscribe(self.on_fail_calculate_arinc, "fail_calculate_allocation")
-
-    @pytest.mark.skip
-    def test_do_calculate_equal_allocation(
-        self, test_analysismanager, test_datamanager
-    ):
-        """do_calculate_allocation() should apportion the node ID reliability goal
-        using the equal apportionment method."""
+    @pytest.mark.integration
+    def test_do_calculate_equal_allocation(self, test_attributes, test_datamanager):
+        """should apportion the record ID reliability goal using the equal method."""
         pub.subscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].allocation_method_id = 1
-        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].reliability_goal = 0.995
-        test_analysismanager._do_calculate_allocation(node_id=1)
+        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 1
+        test_datamanager.tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.995
+
+        pub.sendMessage("request_calculate_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
-    @pytest.mark.skip
-    def test_do_calculate_foo_allocation(self, test_analysismanager, test_datamanager):
-        """do_calculate_allocation() should apportion the node ID reliability goal
-        using the feasibility of objectives method."""
+    @pytest.mark.integration
+    def test_do_calculate_foo_allocation(self, test_attributes, test_datamanager):
+        """should apportion the record ID reliability goal using the FOO method."""
         pub.subscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
-        test_datamanager.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_datamanager.do_select_all(attributes=test_attributes)
 
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].allocation_method_id = 4
-        test_analysismanager._tree.get_node(1).data["allocation"].goal_measure_id = 1
-        test_analysismanager._tree.get_node(1).data[
-            "allocation"
-        ].hazard_rate_goal = 0.000617
-        test_analysismanager._tree.get_node(2).data["allocation"].env_factor = 6
-        test_analysismanager._tree.get_node(2).data["allocation"].soa_factor = 2
-        test_analysismanager._tree.get_node(2).data["allocation"].op_time_factor = 9
-        test_analysismanager._tree.get_node(2).data["allocation"].int_factor = 3
-        test_analysismanager._do_calculate_allocation(node_id=1)
+        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 4
+        test_datamanager.tree.get_node(1).data["allocation"].goal_measure_id = 1
+        test_datamanager.tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
+        test_datamanager.tree.get_node(2).data["allocation"].env_factor = 6
+        test_datamanager.tree.get_node(2).data["allocation"].soa_factor = 2
+        test_datamanager.tree.get_node(2).data["allocation"].op_time_factor = 9
+        test_datamanager.tree.get_node(2).data["allocation"].int_factor = 3
+
+        pub.sendMessage("request_calculate_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
+
+    @pytest.mark.integration
+    def test_do_calculate_unknown_method(self, test_attributes, test_datamanager):
+        """should send the fail message when unknown allocation method is specified."""
+        pub.subscribe(
+            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
+        )
+
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 22
+
+        pub.sendMessage("request_calculate_allocation", node_id=1)
+
+        pub.unsubscribe(
+            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
+        )
