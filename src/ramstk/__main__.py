@@ -4,7 +4,7 @@
 #       ramstk.__main__.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The main program for the RAMSTK application."""
 
 # Standard Library Imports
@@ -24,7 +24,6 @@ from ramstk.controllers import (
     amAllocation,
     amFMEA,
     amHardware,
-    amHazards,
     amSimilarItem,
     amStakeholder,
     amValidation,
@@ -274,7 +273,6 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["allocation"]["data"] = dmAllocation()
     _program_mgr.dic_managers["revision"]["data"] = dmRevision()
     _program_mgr.dic_managers["function"]["data"] = dmFunction()
-    _program_mgr.dic_managers["hazards"]["analysis"] = amHazards(user_configuration)
     _program_mgr.dic_managers["hazards"]["data"] = dmHazards()
     _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()
     _program_mgr.dic_managers["similar_item"]["analysis"] = amSimilarItem(
