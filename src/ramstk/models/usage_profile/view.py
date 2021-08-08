@@ -14,36 +14,54 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseView
 
 
-class DataManager(RAMSTKDataManager):
-    """Contain the attributes and methods of the Usage Profile data manager.
+class RAMSTKUsageProfileView(RAMSTKBaseView):
+    """Contain the attributes and methods of the Usage Profile view.
 
     This class manages the usage profile data from the RAMSTKMission,
     RAMSTKMissionPhase, and RAMSKTEnvironment data models.
     """
 
-    _select_msg = "None"
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _root = 0
     _tag = "usage_profile"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
         """Initialize a usage profile data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
-        self._dic_insert_function = {
-            "mission": self.do_set_mission_tree,
-            "mission_phase": self.do_set_mission_phase_tree,
-            "environment": self.do_set_environment_tree,
+        self._dic_load_functions = {
+            "mission": self._do_load_missions,
+            "mission_phase": self._do_load_mission_phases,
+            "environment": self._do_load_environments,
+        }
+        self._dic_trees = {
+            "mission": Tree(),
+            "mission_phase": Tree(),
+            "environment": Tree(),
         }
 
         # Initialize private list attributes.
+        self._lst_modules = [
+            "mission",
+            "mission_phase",
+            "environment",
+        ]
 
         # Initialize private scalar attributes.
-        self._environment_tree: Tree = Tree()
-        self._mission_tree: Tree = Tree()
-        self._mission_phase_tree: Tree = Tree()
 
         # Initialize public dictionary attributes.
 
@@ -55,63 +73,12 @@ class DataManager(RAMSTKDataManager):
         pub.subscribe(super().on_insert, "succeed_insert_environment")
         pub.subscribe(super().on_insert, "succeed_insert_mission")
         pub.subscribe(super().on_insert, "succeed_insert_mission_phase")
-
-        pub.subscribe(self.do_set_environment_tree, "succeed_retrieve_environments")
-        pub.subscribe(self.do_set_mission_tree, "succeed_retrieve_missions")
-        pub.subscribe(self.do_set_mission_phase_tree, "succeed_retrieve_mission_phases")
-        pub.subscribe(self.do_set_environment_tree, "succeed_delete_environment")
-        pub.subscribe(self.do_set_mission_tree, "succeed_delete_mission")
-        pub.subscribe(self.do_set_mission_phase_tree, "succeed_delete_mission_phase")
-
-    def do_set_environment_tree(self, tree: Tree) -> None:
-        """Set the environment treelib Tree().
-
-        :param tree: the environment package treelib Tree().
-        :return: None
-        :rtype: None
-        """
-        self._environment_tree = tree
-        self.on_select_all()
-
-    def do_set_mission_tree(self, tree: Tree) -> None:
-        """Set the mission treelib Tree().
-
-        :param tree: the mission package treelib Tree().
-        :return: None
-        :rtype: None
-        """
-        self._mission_tree = tree
-        self.on_select_all()
-
-    def do_set_mission_phase_tree(self, tree: Tree) -> None:
-        """Set the mission phase treelib Tree().
-
-        :param tree: the mission phase package treelib Tree().
-        :return: None
-        :rtype: None
-        """
-        self._mission_phase_tree = tree
-        self.on_select_all()
-
-    def on_select_all(self) -> None:
-        """Build the usage profile treelib Tree().
-
-        This method builds the hierarchical treelib Tree() from the individual
-        mission, mission phase, and environment trees.
-
-        :return: None
-        :rtype: None
-        """
-        for _node in self.tree.children(self.tree.root):
-            self.tree.remove_node(_node.identifier)
-
-        if self._mission_tree.depth() > 0:
-            self._do_load_missions()
-
-            pub.sendMessage(
-                "succeed_retrieve_usage_profile",
-                tree=self.tree,
-            )
+        pub.subscribe(super().do_set_tree, "succeed_retrieve_environments")
+        pub.subscribe(super().do_set_tree, "succeed_retrieve_missions")
+        pub.subscribe(super().do_set_tree, "succeed_retrieve_mission_phases")
+        pub.subscribe(super().do_set_tree, "succeed_delete_environment")
+        pub.subscribe(super().do_set_tree, "succeed_delete_mission")
+        pub.subscribe(super().do_set_tree, "succeed_delete_mission_phase")
 
     def _do_load_environments(self, phase_id: int, parent_id: str) -> None:
         """Load the environments into the tree for the passed phase ID.
@@ -121,7 +88,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        for _node in self._environment_tree.all_nodes()[1:]:
+        for _node in self._dic_trees["environment"].all_nodes()[1:]:
             _environment = _node.data["environment"]
             _node_id = "{}.{}".format(parent_id, _environment.environment_id)
 
@@ -139,7 +106,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        for _node in self._mission_tree.all_nodes()[1:]:
+        for _node in self._dic_trees["mission"].all_nodes()[1:]:
             _mission = _node.data["mission"]
             _node_id = "{}".format(_mission.mission_id)
 
@@ -150,8 +117,8 @@ class DataManager(RAMSTKDataManager):
                 data={"usage_profile": _mission},
             )
 
-            if self._mission_phase_tree.depth() > 0:
-                self._do_load_mission_phases(_mission.mission_id)
+            if self._dic_trees["mission_phase"].depth() > 0:
+                self._dic_load_functions["mission_phase"](_mission.mission_id)
 
     def _do_load_mission_phases(self, mission_id: int) -> None:
         """Load the mission phases into the tree for the passed mission ID.
@@ -160,7 +127,7 @@ class DataManager(RAMSTKDataManager):
         :return: None
         :rtype: None
         """
-        for _node in self._mission_phase_tree.all_nodes()[1:]:
+        for _node in self._dic_trees["mission_phase"].all_nodes()[1:]:
             _mission_phase = _node.data["mission_phase"]
             _node_id = "{}.{}".format(mission_id, _mission_phase.phase_id)
 
@@ -172,5 +139,8 @@ class DataManager(RAMSTKDataManager):
                     data={"usage_profile": _mission_phase},
                 )
 
-                if self._environment_tree.depth() > 0:
-                    self._do_load_environments(_mission_phase.phase_id, _node_id)
+                if self._dic_trees["environment"].depth() > 0:
+                    self._dic_load_functions["environment"](
+                        _mission_phase.phase_id,
+                        _node_id,
+                    )
