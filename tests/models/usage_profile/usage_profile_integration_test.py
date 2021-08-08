@@ -218,6 +218,16 @@ class TestSelectMethods:
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
+    @pytest.mark.integration
+    def test_on_select_all_empty_base_tree(
+        self, test_viewmodel, test_mission, test_phase, test_environment
+    ):
+        """should return an empty records tree if the base tree is empty."""
+        test_viewmodel._dic_trees["mission"] = Tree()
+
+        assert test_viewmodel.on_select_all() is None
+        assert test_viewmodel.tree.depth() == 0
+
 
 @pytest.mark.usefixtures(
     "test_viewmodel", "test_mission", "test_phase", "test_environment"
@@ -228,17 +238,23 @@ class TestInsertMethods:
     def on_succeed_insert_mission(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("4")
-        print("\033[36m\nsucceed_insert_mission topic was broadcast.")
+        print("\033[36m\nsucceed_insert_mission topic was broadcast on mission insert.")
 
     def on_succeed_insert_mission_phase(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("1.4")
-        print("\033[36m\nsucceed_insert_mission_phase topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_insert_mission_phase topic was broadcast on mission "
+            "phase insert."
+        )
 
     def on_succeed_insert_environment(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("1.1.4")
-        print("\033[36m\nsucceed_insert_environment topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_insert_environment topic was broadcast on "
+            "environment insert."
+        )
 
     @pytest.mark.integration
     def test_do_insert_mission(
@@ -335,8 +351,8 @@ class TestDeleteMethods:
         assert not tree.contains("1.1")
         assert not tree.contains("1")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast after "
-            "deleting mission."
+            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on mission "
+            "delete."
         )
 
     def on_succeed_delete_mission_phase(self, tree):
@@ -345,8 +361,8 @@ class TestDeleteMethods:
         assert not tree.contains("2.2")
         assert tree.contains("2")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast after "
-            "deleting mission phase."
+            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on mission "
+            "phase delete."
         )
 
     def on_succeed_delete_environment(self, tree):
@@ -355,15 +371,15 @@ class TestDeleteMethods:
         assert tree.contains("3.3")
         assert tree.contains("3")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast after "
-            "deleting environment."
+            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on "
+            "environment delete."
         )
 
     @pytest.mark.integration
     def test_do_delete_mission(
         self, test_viewmodel, test_mission, test_phase, test_environment
     ):
-        """should remove the deleted records from the records tree."""
+        """should remove deleted mission, phase, and environment from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
@@ -384,8 +400,7 @@ class TestDeleteMethods:
     def test_do_delete_mission_phase(
         self, test_viewmodel, test_mission, test_phase, test_environment
     ):
-        """should remove deleted phase and environment records from the records
-        tree."""
+        """should remove deleted phase and environment records from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})

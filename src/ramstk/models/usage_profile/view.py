@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Usage Profile Package Data Controller."""
+"""Usage Profile Package View Model."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -21,7 +21,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
     """Contain the attributes and methods of the Usage Profile view.
 
     This class manages the usage profile data from the RAMSTKMission,
-    RAMSTKMissionPhase, and RAMSKTEnvironment data models.
+    RAMSTKMissionPhase, and RAMSKTEnvironment table models.
     """
 
     # Define private dictionary class attributes.
@@ -39,7 +39,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a usage profile data manager instance."""
+        """Initialize a usage profile view model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -118,7 +118,9 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
             )
 
             if self._dic_trees["mission_phase"].depth() > 0:
-                self._dic_load_functions["mission_phase"](_mission.mission_id)
+                self._dic_load_functions["mission_phase"](  # type: ignore
+                    _mission.mission_id,
+                )
 
     def _do_load_mission_phases(self, mission_id: int) -> None:
         """Load the mission phases into the tree for the passed mission ID.
@@ -140,7 +142,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
                 )
 
                 if self._dic_trees["environment"].depth() > 0:
-                    self._dic_load_functions["environment"](
+                    self._dic_load_functions["environment"](  # type: ignore
                         _mission_phase.phase_id,
                         _node_id,
                     )
