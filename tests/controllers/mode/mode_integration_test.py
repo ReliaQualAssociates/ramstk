@@ -188,7 +188,7 @@ class TestDeleteMethods:
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")
 
-        test_datamanager.tree.remove_node(5)
+        test_datamanager.tree.get_node(5).data.pop("mode")
         pub.sendMessage("request_delete_mode", node_id=5)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mode")

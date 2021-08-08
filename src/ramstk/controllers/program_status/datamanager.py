@@ -11,6 +11,7 @@ from datetime import date
 from typing import Any, Dict, List, Type
 
 # Third Party Imports
+import pandas as pd
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -61,6 +62,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "status_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_get_actual_status, "request_get_actual_status")
         pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -80,6 +82,28 @@ class DataManager(RAMSTKDataManager):
         self._dic_status[_new_record.date_status] = _new_record.status_id
 
         return _new_record
+
+    def do_get_actual_status(self) -> None:
+        """Select the actual program status remaining time and cost.
+
+        :return: a pandas DataFrame() containing the actual status update
+            dates and the remaining time/cost.
+        :rtype: :class:`pandas.DataFrame`
+        """
+        _dic_actual = {}
+
+        for _node in self.tree.all_nodes()[1:]:
+            _dic_actual[pd.to_datetime(_node.data["program_status"].date_status)] = [
+                _node.data["program_status"].cost_remaining,
+                _node.data["program_status"].time_remaining,
+            ]
+
+        pub.sendMessage(
+            "succeed_get_actual_status",
+            status=pd.DataFrame(
+                _dic_actual.values(), index=_dic_actual.keys(), columns=["cost", "time"]
+            ).sort_index(),
+        )
 
     def _do_set_attributes(self, cost_remaining, time_remaining) -> None:
         """Set the program remaining cost and time.
