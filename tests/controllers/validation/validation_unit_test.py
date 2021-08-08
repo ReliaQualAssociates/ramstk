@@ -22,8 +22,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amValidation, dmValidation
+from ramstk.controllers import dmValidation
 from ramstk.models.programdb import RAMSTKValidation
 
 
@@ -142,27 +141,6 @@ def test_attributes():
 
 
 @pytest.fixture(scope="function")
-def test_analysismanager(test_toml_user_configuration):
-    # Create the device under test (dut) and connect to the configuration.
-    dut = amValidation(test_toml_user_configuration)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_all_validation_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_validation_tree")
-    pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
-    pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
-    pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
-    pub.unsubscribe(dut._do_request_status_tree, "succeed_retrieve_validations")
-    pub.unsubscribe(dut._on_get_status_tree, "succeed_retrieve_program_status")
-    pub.unsubscribe(dut._on_get_status_tree, "succeed_get_program_status_tree")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -181,18 +159,21 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_validation")
     pub.unsubscribe(dut.do_insert, "request_insert_validation")
+    pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
+    pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
+    pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
-    """Class for controller initialization test suite."""
+    """Class for testing controller initialization."""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
-        """__init__() should return a Validation data manager."""
+        """should return a table manager instance."""
         assert isinstance(test_datamanager, dmValidation)
         assert isinstance(test_datamanager.tree, Tree)
         assert test_datamanager._db_id_colname == "fld_validation_id"
@@ -216,49 +197,25 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_validation")
         assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_validation")
-
-    @pytest.mark.unit
-    def test_analysis_manager_create(self, test_analysismanager):
-        """__init__() should create an instance of the validation analysis
-        manager."""
-        assert isinstance(test_analysismanager, amValidation)
-        assert isinstance(
-            test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
-        )
-        assert isinstance(test_analysismanager._attributes, dict)
-        assert isinstance(test_analysismanager._tree, Tree)
-        assert isinstance(test_analysismanager._status_tree, Tree)
-        assert test_analysismanager._attributes == {}
         assert pub.isSubscribed(
-            test_analysismanager.on_get_all_attributes,
-            "succeed_get_all_validation_attributes",
+            test_datamanager.do_calculate_plan, "request_calculate_plan"
         )
         assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_get_validation_tree"
+            test_datamanager._do_calculate_task, "request_calculate_validation_task"
         )
         assert pub.isSubscribed(
-            test_analysismanager._on_get_status_tree, "succeed_retrieve_program_status"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._do_calculate_task, "request_calculate_validation_task"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._do_calculate_all_tasks,
+            test_datamanager._do_calculate_all_tasks,
             "request_calculate_validation_tasks",
-        )
-        assert pub.isSubscribed(
-            test_analysismanager.do_calculate_plan, "request_calculate_plan"
         )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+    """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
     def test_do_select_all(self, test_attributes, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKValidation instances on success."""
+        """should return a record tree populated with DB records."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
@@ -268,8 +225,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, test_attributes, test_datamanager):
-        """do_select() should return an instance of the RAMSTKValidation on
-        success."""
+        """should return the record for the passed record ID."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         _validation = test_datamanager.do_select(1)
@@ -280,8 +236,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
-        """do_select() should return None when a non-existent Validation ID is
-        requested."""
+        """should return None when a non-existent record ID is requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert test_datamanager.do_select(100) is None
@@ -289,12 +244,21 @@ class TestSelectMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+    """Class for testing the insert() method."""
+
+    @pytest.mark.unit
+    def test_do_get_new_record(self, test_attributes, test_datamanager):
+        """should return a new record instance with ID fields populated."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        _new_record = test_datamanager.do_get_new_record(test_attributes)
+
+        assert isinstance(_new_record, RAMSTKValidation)
+        assert _new_record.revision_id == 1
+        assert _new_record.validation_id == 4
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """_do_insert_validation() should send the success message after
-        successfully inserting a validation task."""
+        """should add a new record to the records tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_insert(attributes=test_attributes)
 
@@ -311,158 +275,27 @@ class TestInsertMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+    """Class for testing the delete() method."""
 
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
+        """should remove the record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 2
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_task(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """do_calculate_task() should calculate the validation task time and
-        cost."""
-        test_datamanager.do_select_all(attributes=test_attributes)
-        test_datamanager.do_get_tree()
-
-        _validation = test_datamanager.do_select(1)
-        _validation.time_minimum = 10.0
-        _validation.time_average = 20.0
-        _validation.time_maximum = 40.0
-        _validation.cost_minimum = 1850.0
-        _validation.cost_average = 2200.0
-        _validation.cost_maximum = 4500.0
-        _validation.confidence = 95.0
-        test_datamanager.do_update(1, table="validation")
-
-        test_analysismanager._do_calculate_task(node_id=1)
-
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_ll == pytest.approx(11.86684674)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_mean == pytest.approx(21.66666667)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_ul == pytest.approx(31.46648659)
-        assert (
-            test_analysismanager._tree.get_node(1).data["validation"].time_variance
-            == 25.0
-        )
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_ll == pytest.approx(1659.34924016)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_mean == pytest.approx(2525.0)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_ul == pytest.approx(3390.65075984)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_variance == pytest.approx(195069.44444444)
-
-    @pytest.mark.unit
-    def test_do_calculate_all_tasks(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """_do_calculate_all_tasks() should calculate the validation tasks time
-        and cost."""
-        test_datamanager.do_select_all(attributes=test_attributes)
-        test_datamanager.do_get_tree()
-
-        _validation = test_datamanager.do_select(1)
-        _validation.time_minimum = 10.0
-        _validation.time_average = 20.0
-        _validation.time_maximum = 40.0
-        _validation.cost_minimum = 1850.0
-        _validation.cost_average = 2200.0
-        _validation.cost_maximum = 4500.0
-        _validation.confidence = 95.0
-        test_datamanager.do_update(1, table="validation")
-        _validation = test_datamanager.do_select(2)
-        _validation.time_minimum = 30.0
-        _validation.time_average = 60.0
-        _validation.time_maximum = 80.0
-        _validation.cost_minimum = 850.0
-        _validation.cost_average = 1200.0
-        _validation.cost_maximum = 3500.0
-        _validation.confidence = 95.0
-        test_datamanager.do_update(2, table="validation")
-
-        test_analysismanager._do_calculate_all_tasks()
-
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_ll == pytest.approx(11.86684674)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_mean == pytest.approx(21.66666667)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].time_ul == pytest.approx(31.46648659)
-        assert (
-            test_analysismanager._tree.get_node(1).data["validation"].time_variance
-            == 25.0
-        )
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_ll == pytest.approx(1659.34924016)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_mean == pytest.approx(2525.0)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_ul == pytest.approx(3390.65075984)
-        assert test_analysismanager._tree.get_node(1).data[
-            "validation"
-        ].cost_variance == pytest.approx(195069.44444444)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].time_ll == pytest.approx(42.00030013)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].time_mean == pytest.approx(58.33333333)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].time_ul == pytest.approx(74.66636654)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].time_variance == pytest.approx(69.44444444)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].cost_ll == pytest.approx(659.34924016)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].cost_mean == pytest.approx(1525.0)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].cost_ul == pytest.approx(2390.65075984)
-        assert test_analysismanager._tree.get_node(2).data[
-            "validation"
-        ].cost_variance == pytest.approx(195069.44444444)
-
-    @pytest.mark.unit
-    def test_do_select_assessment_targets(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
+    def test_do_select_assessment_targets(self, test_attributes, test_datamanager):
         """should return a pandas DataFrame() containing assessment target values."""
         test_datamanager.do_select_all(attributes=test_attributes)
-        test_datamanager.do_get_tree()
 
-        _targets = test_analysismanager._do_select_assessment_targets()
+        _targets = test_datamanager._do_select_assessment_targets()
 
         assert isinstance(_targets, pd.DataFrame)
         assert (
@@ -474,3 +307,45 @@ class TestAnalysisMethods:
         assert (
             _targets.loc[pd.to_datetime(date.today() + timedelta(30)), "upper"] == 30.0
         )
+
+    @pytest.mark.unit
+    def test_do_calculate_task(self, test_attributes, test_datamanager):
+        """should calculate the validation task time and cost."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+
+        _validation = test_datamanager.do_select(1)
+        _validation.time_minimum = 10.0
+        _validation.time_average = 20.0
+        _validation.time_maximum = 40.0
+        _validation.cost_minimum = 1850.0
+        _validation.cost_average = 2200.0
+        _validation.cost_maximum = 4500.0
+        _validation.confidence = 95.0
+        test_datamanager.do_update(1, table="validation")
+
+        test_datamanager._do_calculate_task(node_id=1)
+
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].time_ll == pytest.approx(11.86684674)
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].time_mean == pytest.approx(21.66666667)
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].time_ul == pytest.approx(31.46648659)
+        assert (
+            test_datamanager.tree.get_node(1).data["validation"].time_variance == 25.0
+        )
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].cost_ll == pytest.approx(1659.34924016)
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].cost_mean == pytest.approx(2525.0)
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].cost_ul == pytest.approx(3390.65075984)
+        assert test_datamanager.tree.get_node(1).data[
+            "validation"
+        ].cost_variance == pytest.approx(195069.44444444)

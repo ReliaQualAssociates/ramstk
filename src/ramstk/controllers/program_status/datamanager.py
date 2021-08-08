@@ -98,12 +98,11 @@ class DataManager(RAMSTKDataManager):
                 _node.data["program_status"].time_remaining,
             ]
 
-        pub.sendMessage(
-            "succeed_get_actual_status",
-            status=pd.DataFrame(
-                _dic_actual.values(), index=_dic_actual.keys(), columns=["cost", "time"]
-            ).sort_index(),
-        )
+        _status = pd.DataFrame(
+            _dic_actual.values(), index=_dic_actual.keys(), columns=["cost", "time"]
+        ).sort_index()
+
+        pub.sendMessage("succeed_get_actual_status", status=_status)
 
     def _do_set_attributes(self, cost_remaining, time_remaining) -> None:
         """Set the program remaining cost and time.
@@ -127,11 +126,11 @@ class DataManager(RAMSTKDataManager):
             )
             _node_id = self.last_id
 
-        self.tree.get_node(_node_id).data[
-            "program_status"
-        ].cost_remaining = cost_remaining
-        self.tree.get_node(_node_id).data[
-            "program_status"
-        ].time_remaining = time_remaining
+        self.do_set_attributes(
+            node_id=[_node_id], package={"cost_remaining": cost_remaining}
+        )
+        self.do_set_attributes(
+            node_id=[_node_id], package={"time_remaining": time_remaining}
+        )
 
         self.do_update(_node_id, table="program_status")
