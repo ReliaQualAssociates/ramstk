@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.usage_profile.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.pof.view.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -21,7 +21,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
     """Contain the attributes and methods of the Physics of Failure (PoF) view.
 
     This class manages the usage profile data from the RAMSTKMechanism,
-    RAMSTKOpLoad, RAMSTKOpStress, and RAMSKTTestMethod0 table models.
+    RAMSTKOpLoad, RAMSTKOpStress, and RAMSKTTestMethod table models.
     """
 
     # Define private dictionary class attributes.
@@ -39,7 +39,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a usage profile view model instance."""
+        """Initialize a PoF view model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.

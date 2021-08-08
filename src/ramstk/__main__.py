@@ -21,16 +21,13 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    amFMEA,
     amHardware,
     dmAllocation,
     dmFailureDefinition,
-    dmFMEA,
     dmFunction,
     dmHardware,
     dmHazards,
     dmOptions,
-    dmPoF,
     dmPreferences,
     dmProgramStatus,
     dmRequirement,
@@ -43,7 +40,7 @@ from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models import RAMSTKUsageProfileView
+from ramstk.models import RAMSTKFMEAView, RAMSTKPoFView, RAMSTKUsageProfileView
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
 from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
@@ -273,9 +270,8 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["hardware"]["analysis"] = amHardware(user_configuration)
     _program_mgr.dic_managers["hardware"]["data"] = dmHardware()
     _program_mgr.dic_managers["failure_definition"]["data"] = dmFailureDefinition()
-    _program_mgr.dic_managers["fmea"]["analysis"] = amFMEA(user_configuration)
-    _program_mgr.dic_managers["fmea"]["data"] = dmFMEA()
-    _program_mgr.dic_managers["pof"]["data"] = dmPoF()
+    _program_mgr.dic_managers["fmea"]["data"] = RAMSTKFMEAView()
+    _program_mgr.dic_managers["pof"]["data"] = RAMSTKPoFView()
     _program_mgr.dic_managers["preferences"]["data"] = dmPreferences()
     _program_mgr.dic_managers["program_status"]["data"] = dmProgramStatus()
     _program_mgr.dic_managers["usage_profile"]["data"] = RAMSTKUsageProfileView()

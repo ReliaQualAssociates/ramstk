@@ -30,7 +30,6 @@ from .mode.datamanager import DataManager as dmMode
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions
-from .pof.datamanager import DataManager as dmPoF
 from .preferences.datamanager import DataManager as dmPreferences
 from .program_status.datamanager import DataManager as dmProgramStatus
 from .requirement.datamanager import DataManager as dmRequirement
