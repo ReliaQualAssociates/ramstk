@@ -9,5 +9,6 @@
 
 # RAMSTK Local Imports
 from .basemodel import RAMSTKBaseView
+from .pof.view import RAMSTKPoFView
 from .tables import RAMSTKBaseTable
 from .usage_profile.view import RAMSTKUsageProfileView

@@ -14,7 +14,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmMechanism, dmOpLoad, dmOpStress, dmPoF, dmTestMethod
+from ramstk.controllers import dmMechanism, dmOpLoad, dmOpStress, dmTestMethod
+from ramstk.models import RAMSTKPoFView
 from ramstk.models.programdb import (
     RAMSTKMechanism,
     RAMSTKOpLoad,
@@ -143,11 +144,10 @@ def test_method(test_program_dao):
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_viewmodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmPoF()
-    dut.do_connect(test_program_dao)
+    dut = RAMSTKPoFView()
 
     yield dut
 
@@ -156,24 +156,24 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.on_insert, "succeed_insert_opload")
     pub.unsubscribe(dut.on_insert, "succeed_insert_opstress")
     pub.unsubscribe(dut.on_insert, "succeed_insert_test_method")
-    pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_retrieve_mechanisms")
-    pub.unsubscribe(dut.do_set_opload_tree, "succeed_retrieve_oploads")
-    pub.unsubscribe(dut.do_set_opstress_tree, "succeed_retrieve_opstresss")
-    pub.unsubscribe(dut.do_set_test_method_tree, "succeed_retrieve_test_methods")
-    pub.unsubscribe(dut.do_set_mechanism_tree, "succeed_delete_mechanism")
-    pub.unsubscribe(dut.do_set_opload_tree, "succeed_delete_opload")
-    pub.unsubscribe(dut.do_set_opstress_tree, "succeed_delete_opstress")
-    pub.unsubscribe(dut.do_set_test_method_tree, "succeed_delete_test_method")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_oploads")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_opstresss")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_test_methods")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_opload")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_opstress")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_test_method")
 
     # Delete the device under test.
     del dut
 
 
 @pytest.mark.usefixtures(
-    "test_datamanager", "test_mechanism", "test_opload", "test_opstress", "test_method"
+    "test_viewmodel", "test_mechanism", "test_opload", "test_opstress", "test_method"
 )
 class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+    """Class for testing select_all() and select() methods."""
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
@@ -185,11 +185,9 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_on_select_all(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """on_select_all() should return a Tree() object populated with
-        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances
-        on success."""
+        """should return records tree of mechanisms, oploads, opstress, test methods."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
         test_mechanism.do_select_all(
@@ -223,27 +221,23 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_datamanager.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+        )
+        assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
+        assert isinstance(
+            test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
         )
         assert isinstance(
-            test_datamanager.tree.get_node("3.3").data["pof"], RAMSTKOpLoad
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
     @pytest.mark.integration
     def test_on_select_all_populated_tree(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """on_select_all() should return a Tree() object populated with
-        RAMSTKMechanism, RAMSTKOpLoad, RAMSTKOpStress, and RAMSTKTestMethod instances
-        on success."""
+        """should clear existing nodes from the records tree and then re-populate."""
         test_mechanism.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
         )
@@ -275,81 +269,85 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_datamanager.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+        )
+        assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
+        assert isinstance(
+            test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
         )
         assert isinstance(
-            test_datamanager.tree.get_node("3.3").data["pof"], RAMSTKOpLoad
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
-        test_datamanager.on_select_all()
+        test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_datamanager.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+        )
+        assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
+        assert isinstance(
+            test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
         )
         assert isinstance(
-            test_datamanager.tree.get_node("3.3").data["pof"], RAMSTKOpLoad
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress
-        )
-        assert isinstance(
-            test_datamanager.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
         """should return an empty records tree if the base tree is empty."""
-        test_datamanager._mechanism_tree = Tree()
+        test_viewmodel._dic_trees["mechanism"] = Tree()
 
-        assert test_datamanager.on_select_all() is None
-        assert test_datamanager.tree.depth() == 0
+        assert test_viewmodel.on_select_all() is None
+        assert test_viewmodel.tree.depth() == 0
 
 
 @pytest.mark.usefixtures(
-    "test_datamanager", "test_mechanism", "test_opload", "test_opstress", "test_method"
+    "test_viewmodel", "test_mechanism", "test_opload", "test_opstress", "test_method"
 )
 class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+    """Class for testing the insert() method."""
 
     def on_succeed_insert_mechanism(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("5")
-        print("\033[36m\nsucceed_insert_mechanism topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_insert_mechanism topic was broadcast on mechanism "
+            "insert."
+        )
 
     def on_succeed_insert_opload(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("5.5")
-        print("\033[36m\nsucceed_insert_opload topic was broadcast.")
+        print("\033[36m\nsucceed_insert_opload topic was broadcast on opload insert.")
 
     def on_succeed_insert_opstress(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("3.3.5s")
-        print("\033[36m\nsucceed_insert_opstress topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_insert_opstress topic was broadcast on opstress "
+            "insert."
+        )
 
     def on_succeed_insert_test_method(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains("3.3.5t")
-        print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
+        print(
+            "\033[36m\nsucceed_insert_test_method topic was broadcast on test "
+            "method insert."
+        )
 
     @pytest.mark.integration
     def test_do_insert_mechanism(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opload() should send the success message after successfully
-        inserting an operating load."""
-        assert not test_datamanager.tree.contains("5")
+        """should add a new mechanism record to the records tree."""
+        assert not test_viewmodel.tree.contains("5")
 
         pub.subscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_pof")
 
@@ -363,17 +361,16 @@ class TestInsertMethods:
             },
         )
 
-        assert test_datamanager.tree.contains("5")
+        assert test_viewmodel.tree.contains("5")
 
         pub.unsubscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_pof")
 
     @pytest.mark.skip
     def test_do_insert_opload(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opload() should send the success message after successfully
-        inserting an operating load."""
-        assert not test_datamanager.tree.contains("5.5")
+        """should add a new opload record to the records tree."""
+        assert not test_viewmodel.tree.contains("5.5")
 
         pub.subscribe(self.on_succeed_insert_opload, "succeed_retrieve_pof")
 
@@ -388,17 +385,16 @@ class TestInsertMethods:
             },
         )
 
-        assert test_datamanager.tree.contains("5.5")
+        assert test_viewmodel.tree.contains("5.5")
 
         pub.unsubscribe(self.on_succeed_insert_opload, "succeed_retrieve_pof")
 
     @pytest.mark.integration
     def test_do_insert_opstress(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_opstress() should send the success message after successfully
-        inserting an operating stress."""
-        assert not test_datamanager.tree.contains("3.3.5s")
+        """should add a new opstress record to the records tree."""
+        assert not test_viewmodel.tree.contains("3.3.5s")
 
         pub.subscribe(self.on_succeed_insert_opstress, "succeed_retrieve_pof")
 
@@ -414,17 +410,16 @@ class TestInsertMethods:
             },
         )
 
-        assert test_datamanager.tree.contains("3.3.5s")
+        assert test_viewmodel.tree.contains("3.3.5s")
 
         pub.unsubscribe(self.on_succeed_insert_opstress, "succeed_retrieve_pof")
 
     @pytest.mark.integration
     def test_do_insert_test_method(
-        self, test_datamanager, test_mechanism, test_opload, test_opstress, test_method
+        self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """_do_insert_testmethod() should send the success message after successfully
-        inserting a test method."""
-        assert not test_datamanager.tree.contains("3.3.5t")
+        """should add a new test method record to the records tree."""
+        assert not test_viewmodel.tree.contains("3.3.5t")
 
         pub.subscribe(self.on_succeed_insert_test_method, "succeed_retrieve_pof")
 
@@ -440,16 +435,16 @@ class TestInsertMethods:
             },
         )
 
-        assert test_datamanager.tree.contains("3.3.5t")
+        assert test_viewmodel.tree.contains("3.3.5t")
 
         pub.unsubscribe(self.on_succeed_insert_test_method, "succeed_retrieve_pof")
 
 
 @pytest.mark.usefixtures(
-    "test_datamanager", "test_mechanism", "test_opload", "test_opstress", "test_method"
+    "test_viewmodel", "test_mechanism", "test_opload", "test_opstress", "test_method"
 )
 class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+    """Class for testing the delete() method."""
 
     def on_succeed_delete_test_method(self, tree):
         assert isinstance(tree, Tree)
@@ -458,8 +453,7 @@ class TestDeleteMethods:
         assert tree.contains("3.3")
         assert tree.contains("3")
         print(
-            "\033[36m\nsucceed_retrieve_pof topic was broadcast after deleting "
-            "test method."
+            "\033[36m\nsucceed_retrieve_pof topic was broadcast on test method delete."
         )
 
     def on_succeed_delete_opstress(self, tree):
@@ -468,10 +462,7 @@ class TestDeleteMethods:
         assert not tree.contains("3.3.3s")
         assert tree.contains("3.3")
         assert tree.contains("3")
-        print(
-            "\033[36m\nsucceed_retrieve_pof topic was broadcast after deleting "
-            "operating stress."
-        )
+        print("\033[36m\nsucceed_retrieve_pof topic was broadcast on opstress delete.")
 
     def on_succeed_delete_opload(self, tree):
         assert isinstance(tree, Tree)
@@ -479,10 +470,7 @@ class TestDeleteMethods:
         assert not tree.contains("3.3.3s")
         assert not tree.contains("3.3")
         assert tree.contains("3")
-        print(
-            "\033[36m\nsucceed_retrieve_pof topic was broadcast after deleting "
-            "operating load."
-        )
+        print("\033[36m\nsucceed_retrieve_pof topic was broadcast on opload delete.")
 
     def on_succeed_delete_mechanism(self, tree):
         assert isinstance(tree, Tree)
@@ -490,81 +478,78 @@ class TestDeleteMethods:
         assert not tree.contains("3.3.3s")
         assert not tree.contains("3.3")
         assert not tree.contains("3")
-        print(
-            "\033[36m\nsucceed_retrieve_pof topic was broadcast after deleting "
-            "mechanism."
-        )
+        print("\033[36m\nsucceed_retrieve_pof topic was broadcast on mechanism delete.")
 
     @pytest.mark.integration
-    def test_do_delete_test_method(self, test_datamanager):
+    def test_do_delete_test_method(self, test_viewmodel):
         """should remove the deleted test method record from the records tree."""
-        assert test_datamanager.tree.contains("3")
-        assert test_datamanager.tree.contains("3.3")
-        assert test_datamanager.tree.contains("3.3.3s")
-        assert test_datamanager.tree.contains("3.3.3t")
-        assert test_datamanager.tree.contains("3.3.4t")
+        assert test_viewmodel.tree.contains("3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert test_viewmodel.tree.contains("3.3.3s")
+        assert test_viewmodel.tree.contains("3.3.3t")
+        assert test_viewmodel.tree.contains("3.3.4t")
 
         pub.subscribe(self.on_succeed_delete_test_method, "succeed_retrieve_pof")
 
         pub.sendMessage("request_delete_test_method", node_id=3)
 
-        assert test_datamanager.tree.contains("3")
-        assert test_datamanager.tree.contains("3.3")
-        assert test_datamanager.tree.contains("3.3.3s")
-        assert not test_datamanager.tree.contains("3.3.3t")
-        assert test_datamanager.tree.contains("3.3.4t")
+        assert test_viewmodel.tree.contains("3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert test_viewmodel.tree.contains("3.3.3s")
+        assert not test_viewmodel.tree.contains("3.3.3t")
+        assert test_viewmodel.tree.contains("3.3.4t")
 
         pub.unsubscribe(self.on_succeed_delete_test_method, "succeed_retrieve_pof")
 
     @pytest.mark.integration
-    def test_do_delete_opstress(self, test_datamanager):
-        """should remove the deleted opstress record from the records tree."""
-        assert test_datamanager.tree.contains("3")
-        assert test_datamanager.tree.contains("3.3")
-        assert test_datamanager.tree.contains("3.3.3s")
-        assert test_datamanager.tree.contains("3.3.4s")
-        assert test_datamanager.tree.contains("3.3.4t")
+    def test_do_delete_opstress(self, test_viewmodel):
+        """should remove deleted opstress and test method records from records tree."""
+        assert test_viewmodel.tree.contains("3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert test_viewmodel.tree.contains("3.3.3s")
+        assert test_viewmodel.tree.contains("3.3.4s")
+        assert test_viewmodel.tree.contains("3.3.4t")
 
         pub.subscribe(self.on_succeed_delete_opstress, "succeed_retrieve_pof")
 
         pub.sendMessage("request_delete_opstress", node_id=3)
 
-        assert test_datamanager.tree.contains("3")
-        assert test_datamanager.tree.contains("3.3")
-        assert not test_datamanager.tree.contains("3.3.3s")
-        assert test_datamanager.tree.contains("3.3.4s")
-        assert test_datamanager.tree.contains("3.3.4t")
+        assert test_viewmodel.tree.contains("3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert not test_viewmodel.tree.contains("3.3.3s")
+        assert test_viewmodel.tree.contains("3.3.4s")
+        assert test_viewmodel.tree.contains("3.3.4t")
 
         pub.unsubscribe(self.on_succeed_delete_opstress, "succeed_retrieve_pof")
 
-    @pytest.mark.skip
-    def test_do_delete_opload(self, test_datamanager):
+    @pytest.mark.integration
+    def test_do_delete_opload(self, test_viewmodel):
         """should remove the deleted opload record from the records tree."""
-        assert test_datamanager.tree.contains("3")
-        assert test_datamanager.tree.contains("3.3")
-        assert test_datamanager.tree.contains("3.3.4s")
-        assert test_datamanager.tree.contains("3.3.4t")
+        assert test_viewmodel.tree.contains("3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert test_viewmodel.tree.contains("3.3.4s")
+        assert test_viewmodel.tree.contains("3.3.4t")
 
         pub.subscribe(self.on_succeed_delete_opload, "succeed_retrieve_pof")
 
         pub.sendMessage("request_delete_opload", node_id=3)
 
-        assert test_datamanager.tree.contains("3")
-        assert not test_datamanager.tree.contains("3.3")
-        assert not test_datamanager.tree.contains("3.3.4s")
-        assert not test_datamanager.tree.contains("3.3.4t")
+        assert test_viewmodel.tree.contains("3")
+        assert not test_viewmodel.tree.contains("3.3")
+        assert not test_viewmodel.tree.contains("3.3.4s")
+        assert not test_viewmodel.tree.contains("3.3.4t")
 
         pub.unsubscribe(self.on_succeed_delete_opload, "succeed_retrieve_pof")
 
     @pytest.mark.integration
-    def test_do_delete_mechanism(self, test_datamanager):
-        """should remove the deleted opload record from the records tree."""
-        assert test_datamanager.tree.contains("3")
+    def test_do_delete_mechanism(self, test_viewmodel):
+        """should remove the deleted mechanism record from the records tree."""
+        assert test_viewmodel.tree.contains("3")
 
         pub.subscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_pof")
 
         pub.sendMessage("request_delete_mechanism", node_id=3)
 
-        assert not test_datamanager.tree.contains("3")
+        assert not test_viewmodel.tree.contains("3")
 
         pub.unsubscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_pof")

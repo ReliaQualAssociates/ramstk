@@ -7,7 +7,7 @@
 """Metaclasses for the Record, Table, and View models."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 # Third Party Imports
 import treelib
@@ -39,7 +39,7 @@ class RAMSTKBaseView:
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize a RAMSTK view model instance."""
         # Initialize private dictionary attributes.
-        self._dic_load_functions: Dict[str, object] = {}
+        self._dic_load_functions: Dict[str, Callable[..., object]] = {}
         self._dic_trees: Dict[str, treelib.Tree] = {}
 
         # Initialize private list attributes.
