@@ -23,7 +23,6 @@ from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguratio
 from ramstk.controllers import (
     amFMEA,
     amHardware,
-    amValidation,
     dmAllocation,
     dmFailureDefinition,
     dmFMEA,
@@ -280,9 +279,6 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["preferences"]["data"] = dmPreferences()
     _program_mgr.dic_managers["program_status"]["data"] = dmProgramStatus()
     _program_mgr.dic_managers["usage_profile"]["data"] = dmUsageProfile()
-    _program_mgr.dic_managers["validation"]["analysis"] = amValidation(
-        user_configuration
-    )
     _program_mgr.dic_managers["validation"]["data"] = dmValidation()
     _program_mgr.dic_managers["exim"]["export"] = Export()
     _program_mgr.dic_managers["exim"]["import"] = Import()
