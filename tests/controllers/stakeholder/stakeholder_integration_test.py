@@ -67,7 +67,7 @@ class TestSelectMethods:
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_stakeholders")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(
             test_datamanager.tree.get_node(1).data["stakeholder"], RAMSTKStakeholder

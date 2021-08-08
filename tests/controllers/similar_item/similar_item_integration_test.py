@@ -16,7 +16,7 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.controllers import dmSimilarItem
-from ramstk.models.programdb import RAMSTKHardware, RAMSTKReliability, RAMSTKSimilarItem
+from ramstk.models.programdb import RAMSTKSimilarItem
 
 
 @pytest.fixture(scope="function")
@@ -71,7 +71,7 @@ class TestSelectMethods:
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 

@@ -18,7 +18,6 @@ from .control.datamanager import DataManager as dmControl
 from .environment.datamanager import DataManager as dmEnvironment
 from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
-from .fmea.datamanager import DataManager as dmFMEA
 from .function.datamanager import DataManager as dmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
@@ -30,7 +29,6 @@ from .mode.datamanager import DataManager as dmMode
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions
-from .pof.datamanager import DataManager as dmPoF
 from .preferences.datamanager import DataManager as dmPreferences
 from .program_status.datamanager import DataManager as dmProgramStatus
 from .requirement.datamanager import DataManager as dmRequirement
@@ -38,5 +36,4 @@ from .revision.datamanager import DataManager as dmRevision
 from .similar_item.datamanager import DataManager as dmSimilarItem
 from .stakeholder.datamanager import DataManager as dmStakeholder
 from .test_method.datamanager import DataManager as dmTestMethod
-from .usage_profile.datamanager import DataManager as dmUsageProfile
 from .validation.datamanager import DataManager as dmValidation
