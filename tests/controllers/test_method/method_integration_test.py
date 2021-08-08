@@ -78,10 +78,7 @@ class TestSelectMethods:
         RAMSTKTestMethod instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
-        pub.sendMessage(
-            "selected_revision",
-            attributes=test_attributes,
-        )
+        test_datamanager.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
