@@ -1,0 +1,10 @@
+# Do not add WIP labels for PRs that are set to be work-in-progress.
+addWipLabel: false
+
+# Configuration for labels, set ignore to true to skip adding label
+labels:
+  merged:
+    name: "endgame: merged"
+    color: "#C2E0C6"
+    description: "Pull Request has been merged successfully"
+    ignore: false
