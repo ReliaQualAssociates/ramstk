@@ -128,7 +128,8 @@ class RAMSTKDataManager:
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
         """Initialize an RAMSTK data model instance."""
         # Initialize private dictionary attributes.
-        self._dic_insert_function: Dict[str, object] = {}
+        self._fkey: Dict[str, int] = {}
+        self._pkey: Dict[str, List[str]] = {}
 
         # Initialize private list attributes.
         self._lst_id_columns: List[str] = []
@@ -541,23 +542,3 @@ class RAMSTKDataManager:
                 self.do_update(_node.identifier)  # type: ignore
 
         pub.sendMessage("succeed_update_all")
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def on_insert(self, tree: treelib.Tree, node_id: int) -> None:
-        """Wrap _do_set_<module>_tree() on insert.
-
-        succeed_insert_<module> messages have node_id in the broadcast data
-        so this method is needed to wrap the _do_set_tree() method.
-
-        :param tree: the treelib Tree() passed by the calling message.
-        :param node_id: the node ID of the element that was inserted.
-            Unused in this method but required for compatibility with the
-            'succeed_insert_<module>' message data.
-        :return: None
-        :rtype: None
-        """
-        _function = self._dic_insert_function[tree.get_node(0).tag]
-
-        # noinspection PyArgumentList
-        _function(tree)  # type: ignore
