@@ -36,7 +36,6 @@ from .preferences.datamanager import DataManager as dmPreferences
 from .program_status.datamanager import DataManager as dmProgramStatus
 from .requirement.datamanager import DataManager as dmRequirement
 from .revision.datamanager import DataManager as dmRevision
-from .similar_item.analysismanager import AnalysisManager as amSimilarItem
 from .similar_item.datamanager import DataManager as dmSimilarItem
 from .stakeholder.datamanager import DataManager as dmStakeholder
 from .test_method.datamanager import DataManager as dmTestMethod

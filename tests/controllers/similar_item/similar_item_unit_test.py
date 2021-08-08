@@ -18,8 +18,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amSimilarItem, dmSimilarItem
+from ramstk.controllers import dmSimilarItem
 from ramstk.models.programdb import RAMSTKSimilarItem
 
 
@@ -216,28 +215,6 @@ def test_attributes():
 
 
 @pytest.fixture(scope="function")
-def test_analysismanager(test_toml_user_configuration):
-    # Create the device under test (dut) and connect to the configuration.
-    dut = amSimilarItem(test_toml_user_configuration)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_get_all_attributes, "succeed_get_similar_item_attributes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_similar_item_tree")
-    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_similar_item")
-    pub.unsubscribe(dut.on_get_tree, "succeed_update_similar_item")
-    pub.unsubscribe(dut._do_calculate_similar_item, "request_calculate_similar_item")
-    pub.unsubscribe(
-        dut._do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
-    )
-    pub.unsubscribe(dut._on_get_hardware_attributes, "succeed_get_hardware_tree")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -256,24 +233,34 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
     pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
+    pub.unsubscribe(dut.do_calculate_similar_item, "request_calculate_similar_item")
+    pub.unsubscribe(
+        dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
+    )
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
-    """Class for controller initialization test suite."""
+    """Class for testing controller initialization."""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
-        """__init__() should return a Hardware data manager."""
+        """should return a table manager instance."""
         assert isinstance(test_datamanager, dmSimilarItem)
         assert isinstance(test_datamanager.tree, Tree)
         assert test_datamanager._db_id_colname == "fld_hardware_id"
         assert test_datamanager._db_tablename == "ramstk_similar_item"
         assert test_datamanager._tag == "similar_item"
         assert test_datamanager._root == 0
+        assert test_datamanager._lst_id_columns == [
+            "revision_id",
+            "hardware_id",
+        ]
+        assert test_datamanager._record == RAMSTKSimilarItem
+        assert test_datamanager.pkey == "hardware_id"
         assert pub.isSubscribed(
             test_datamanager.do_get_attributes, "request_get_similar_item_attributes"
         )
@@ -302,54 +289,19 @@ class TestCreateControllers:
         assert pub.isSubscribed(
             test_datamanager.do_insert, "request_insert_similar_item"
         )
-
-    @pytest.mark.unit
-    def test_analysis_manager_create(self, test_analysismanager):
-        """__init__() should create an instance of the hardware analysis
-        manager."""
-        assert isinstance(test_analysismanager, amSimilarItem)
-        assert isinstance(
-            test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
-        )
-        assert isinstance(test_analysismanager._attributes, dict)
-        assert isinstance(test_analysismanager._tree, Tree)
-        assert test_analysismanager._attributes == {}
-        assert test_analysismanager._dic_hardware_hrs == {}
         assert pub.isSubscribed(
-            test_analysismanager.on_get_all_attributes,
-            "succeed_get_similar_item_attributes",
-        )
-        assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_get_similar_item_tree"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_retrieve_similar_item"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_update_similar_item"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._do_calculate_similar_item,
-            "request_calculate_similar_item",
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._do_roll_up_change_descriptions,
+            test_datamanager.do_roll_up_change_descriptions,
             "request_roll_up_change_descriptions",
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._on_get_hardware_attributes,
-            "succeed_get_hardware_tree",
         )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+    """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
     def test_do_select_all(self, test_attributes, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKSimilarItem instances on success."""
+        """should return a record tree populated with DB records."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
@@ -360,8 +312,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, test_attributes, test_datamanager):
-        """do_select() should return an instance of the RAMSTKSimilarItem on
-        success."""
+        """should return the record for the passed record ID."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         _similar_item = test_datamanager.do_select(1)
@@ -372,8 +323,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
-        """do_select() should return None when a non-existent Hardware ID is
-        requested."""
+        """should return None when a non-existent record ID is requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert test_datamanager.do_select(100) is None
@@ -381,12 +331,21 @@ class TestSelectMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+    """Class for testing the insert() method."""
+
+    @pytest.mark.unit
+    def test_do_get_new_record(self, test_attributes, test_datamanager):
+        """should return a new record instance with ID fields populated."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        _new_record = test_datamanager.do_get_new_record(test_attributes)
+
+        assert isinstance(_new_record, RAMSTKSimilarItem)
+        assert _new_record.revision_id == 1
+        assert _new_record.hardware_id == 4
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """do_insert() should send the success message after successfully
-        inserting a new sibling hardware assembly."""
+        """should add a new record to the records tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         test_datamanager.do_insert(attributes=test_attributes)
@@ -402,148 +361,102 @@ class TestInsertMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+    """Class for testing the delete() method."""
 
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_datamanager):
-        """_do_delete() should send the success message with the treelib
-        Tree."""
+        """should remove the record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
+        _last_id = test_datamanager.last_id
         test_datamanager.do_delete(test_datamanager.last_id)
 
         assert test_datamanager.last_id == 2
+        assert test_datamanager.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_analysismanager", "test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestAnalysisMethods:
     """Class for similar item methods test suite."""
 
-    @pytest.mark.skip
-    def test_do_calculate_topic_633(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """do_calculate_goal() should calculate the Topic 6.3.3 similar
-        item."""
+    @pytest.mark.unit
+    def test_do_roll_up_change_descriptions(self, test_attributes, test_datamanager):
+        """should combine all child change descriptions into one for the parent."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        _node = test_analysismanager._tree.get_node(1)
+        _record = test_datamanager.do_select(2)
+        _record.change_description_1 = "This is change description 1 for assembly 2."
+        _record.change_description_2 = "This is change description 2 for assembly 2."
+        _record.change_description_3 = "This is change description 3 for assembly 2."
 
-        test_analysismanager._dic_hardware_hrs = {1: 0.000628}
+        _record = test_datamanager.do_select(3)
+        _record.change_description_1 = "This is change description 1 for assembly 3."
+        _record.change_description_2 = "This is change description 2 for assembly 3."
+        _record.change_description_3 = "This is change description 3 for assembly 3."
 
-        _node.data["similar_item"].similar_item_method_id = 1
-        _node.data[
-            "similar_item"
-        ].change_description_1 = "Test change description for factor #1."
-        _node.data["similar_item"].environment_from_id = 2
-        _node.data["similar_item"].environment_to_id = 3
-        _node.data["similar_item"].quality_from_id = 1
-        _node.data["similar_item"].quality_to_id = 2
-        _node.data["similar_item"].temperature_from = 55.0
-        _node.data["similar_item"].temperature_to = 65.0
+        test_datamanager.do_roll_up_change_descriptions(1)
 
-        test_analysismanager._do_calculate_topic_633(_node)
-
-        assert _node.data["similar_item"].change_factor_1 == 0.8
-        assert _node.data["similar_item"].change_factor_2 == 1.4
-        assert _node.data["similar_item"].change_factor_3 == 1.0
-        assert _node.data["similar_item"].result_1 == pytest.approx(0.0005607143)
-
-    @pytest.mark.skip
-    def test_do_calculate_user_defined(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """do_calculate_goal() should calculate the Topic 644 similar item."""
-        test_datamanager.do_select_all(attributes=test_attributes)
-
-        _node = test_analysismanager._tree.get_node(1)
-
-        test_analysismanager._dic_hardware_hrs = {1: 0.00617}
-
-        _node.data["similar_item"].similar_item_method_id = 2
-        _node.data[
-            "similar_item"
-        ].change_description_1 = "Test change description for factor #1."
-        _node.data["similar_item"].change_factor_1 = 0.85
-        _node.data["similar_item"].change_factor_2 = 1.2
-        _node.data["similar_item"].function_1 = "pi1*pi2*hr"
-        _node.data["similar_item"].function_2 = "0"
-        _node.data["similar_item"].function_3 = "0"
-        _node.data["similar_item"].function_4 = "0"
-        _node.data["similar_item"].function_5 = "0"
-
-        test_analysismanager._do_calculate_user_defined(_node)
-
-        assert _node.data["similar_item"].change_description_1 == (
-            "Test change description for factor #1."
-        )
-        assert _node.data["similar_item"].change_factor_1 == 0.85
-        assert _node.data["similar_item"].change_factor_2 == 1.2
-        assert _node.data["similar_item"].result_1 == pytest.approx(0.0062934)
-
-    @pytest.mark.skip
-    def test_do_calculate_no_method(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """do_calculate_goal() should calculate the Topic 644 similar item."""
-        test_datamanager.do_select_all(attributes=test_attributes)
-
-        _node = test_analysismanager._tree.get_node(1)
-
-        _node.data["similar_item"].similar_item_method_id = 0
-        _node.data[
-            "similar_item"
-        ].change_description_1 = "This a change description for no method."
-
-        assert test_analysismanager._do_calculate_similar_item(1) is None
-        assert _node.data["similar_item"].change_description_1 == (
-            "This a change description for no method."
-        )
-        assert _node.data["similar_item"].change_factor_1 == 1.0
-        assert _node.data["similar_item"].change_factor_2 == 1.0
-        assert _node.data["similar_item"].result_1 == 0.0
-
-    @pytest.mark.skip
-    def test_do_roll_up_change_descriptions(
-        self, test_analysismanager, test_attributes, test_datamanager
-    ):
-        """do_roll_up_change_descriptions() should combine all child change
-        descriptions into a single change description for the parent."""
-        test_datamanager.do_select_all(attributes=test_attributes)
-
-        _node = test_analysismanager._tree.get_node(2)
-        _node.data[
-            "similar_item"
-        ].change_description_1 = "This is change description 1 for assembly 2."
-        _node.data[
-            "similar_item"
-        ].change_description_2 = "This is change description 2 for assembly 2."
-        _node.data[
-            "similar_item"
-        ].change_description_3 = "This is change description 3 for assembly 2."
-
-        _node = test_analysismanager._tree.get_node(3)
-        _node.data[
-            "similar_item"
-        ].change_description_1 = "This is change description 1 for assembly 3."
-        _node.data[
-            "similar_item"
-        ].change_description_2 = "This is change description 2 for assembly 3."
-        _node.data[
-            "similar_item"
-        ].change_description_3 = "This is change description 3 for assembly 3."
-
-        _node = test_analysismanager._tree.get_node(1)
-        test_analysismanager._do_roll_up_change_descriptions(_node)
-
-        assert _node.data["similar_item"].change_description_1 == (
+        _record = test_datamanager.do_select(1)
+        assert _record.change_description_1 == (
             "This is change description 1 for assembly 2.\n\nThis is change "
             "description 1 for assembly 3.\n\n"
         )
-        assert _node.data["similar_item"].change_description_2 == (
+        assert _record.change_description_2 == (
             "This is change description 2 for assembly 2.\n\nThis is change "
             "description 2 for assembly 3.\n\n"
         )
-        assert _node.data["similar_item"].change_description_3 == (
+        assert _record.change_description_3 == (
             "This is change description 3 for assembly 2.\n\nThis is change "
             "description 3 for assembly 3.\n\n"
         )
+
+    @pytest.mark.unit
+    def test_do_calculate_topic_633(self, test_attributes, test_datamanager):
+        """should calculate the Topic 6.3.3 similar item."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+
+        test_datamanager._node_hazard_rate = 0.000628
+
+        _record = test_datamanager.do_select(1)
+        _record.similar_item_method_id = 1
+        _record.change_description_1 = "Test change description for factor #1."
+        _record.environment_from_id = 2
+        _record.environment_to_id = 3
+        _record.quality_from_id = 1
+        _record.quality_to_id = 2
+        _record.temperature_from = 55.0
+        _record.temperature_to = 65.0
+
+        test_datamanager._do_calculate_topic_633(1)
+
+        assert _record.change_factor_1 == 0.8
+        assert _record.change_factor_2 == 1.4
+        assert _record.change_factor_3 == 1.0
+        assert _record.result_1 == pytest.approx(0.0005607143)
+        assert _record.change_description_1 == "Test change description for factor #1."
+
+    @pytest.mark.unit
+    def test_do_calculate_user_defined(self, test_attributes, test_datamanager):
+        """should calculate user-defined similar item."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        test_datamanager._node_hazard_rate = 0.000617
+
+        _record = test_datamanager.do_select(1)
+
+        _record.similar_item_method_id = 2
+        _record.change_description_1 = "Test change description for factor #1."
+        _record.change_factor_1 = 0.85
+        _record.change_factor_2 = 1.2
+        _record.function_1 = "pi1*pi2*hr"
+        _record.function_2 = "0"
+        _record.function_3 = "0"
+        _record.function_4 = "0"
+        _record.function_5 = "0"
+
+        test_datamanager._do_calculate_user_defined(1)
+
+        assert _record.change_description_1 == (
+            "Test change description for factor #1."
+        )
+        assert _record.change_factor_1 == 0.85
+        assert _record.change_factor_2 == 1.2
+        assert _record.result_1 == pytest.approx(0.00062934)
