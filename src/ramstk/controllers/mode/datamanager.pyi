@@ -2,6 +2,12 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
+from ramstk.analyses.criticality import (
+    calculate_mode_criticality as calculate_mode_criticality,
+)
+from ramstk.analyses.criticality import (
+    calculate_mode_hazard_rate as calculate_mode_hazard_rate,
+)
 from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKMode as RAMSTKMode
 
@@ -15,3 +21,4 @@ class DataManager(RAMSTKDataManager):
     pkey: str = ...
     def __init__(self, **kwargs: Dict[str, Any]) -> None: ...
     def do_get_new_record(self, attributes: Dict[str, Any]) -> object: ...
+    def do_calculate_criticality(self, item_hr: float) -> None: ...
