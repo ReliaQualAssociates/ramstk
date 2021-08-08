@@ -17,8 +17,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKUserConfiguration
-from ramstk.controllers import amMode, dmMode
+from ramstk.controllers import dmMode
 from ramstk.models.programdb import RAMSTKMode
 
 
