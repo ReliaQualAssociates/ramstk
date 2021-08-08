@@ -49,6 +49,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_program_status")
     pub.unsubscribe(dut.do_insert, "request_insert_program_status")
+    pub.unsubscribe(dut.do_get_actual_status, "request_get_actual_status")
     pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_all_validation_tasks")
 
     # Delete the device under test.
@@ -67,11 +68,11 @@ class TestSelectMethods:
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_program_status")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
 
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_program_status")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
@@ -335,7 +336,9 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_program_status_tree topic was broadcast")
 
     def on_succeed_get_actual_status(self, status):
-        assert isintance(status, pd.DataFrame)
+        assert isinstance(status, pd.DataFrame)
+        assert status.loc[pd.to_datetime(date.today()), "cost"] == 14608.45
+        assert status.loc[pd.to_datetime(date.today()), "time"] == 469.0
         print("\033[36m\nsucceed_get_actual_status topic was broadcast")
 
     @pytest.mark.integration
@@ -392,7 +395,7 @@ class TestGetterSetter:
 
         _node_id = test_datamanager._dic_status[date.today()]
 
-        pub.sendMessage("request_get_program_status")
+        pub.sendMessage("request_get_actual_status")
 
         assert (
             test_datamanager.tree.get_node(_node_id)

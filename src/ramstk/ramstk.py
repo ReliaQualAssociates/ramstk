@@ -67,7 +67,7 @@ class RAMSTKProgramManager:
             "pof": {"data": None},
             "program_status": {"data": None},
             "usage_profile": {"data": None},
-            "validation": {"analysis": None, "data": None},
+            "validation": {"data": None},
             "options": {"data": None},
             "exim": {"export": None},
             "preferences": {"data": None},

@@ -119,7 +119,7 @@ class TestProgramManager:
         assert DUT.dic_managers["pof"] == {"data": None}
         assert DUT.dic_managers["preferences"] == {"data": None}
         assert DUT.dic_managers["program_status"] == {"data": None}
-        assert DUT.dic_managers["validation"] == {"analysis": None, "data": None}
+        assert DUT.dic_managers["validation"] == {"data": None}
         assert DUT.dic_managers["options"] == {"data": None}
         assert isinstance(DUT.program_dao, BaseDatabase)
         assert pub.isSubscribed(DUT.do_create_program, "request_create_program")

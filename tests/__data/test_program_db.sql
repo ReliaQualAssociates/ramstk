@@ -943,9 +943,9 @@ CREATE TABLE ramstk_validation (
     PRIMARY KEY (fld_validation_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_validation" VALUES(1,2,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'2019-08-20','2019-07-21','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,1,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,CURRENT_DATE+INTERVAL'30 days',CURRENT_DATE,'Test Validation','','PRF-0001',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,2,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,CURRENT_DATE+INTERVAL'20 days',CURRENT_DATE-INTERVAL'10 days','Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_validation" VALUES(1,3,0.0,0.0,0.0,0.0,95.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,CURRENT_DATE+INTERVAL'30 days',CURRENT_DATE,'Test Validation','','',0.0,'','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 
 
 
