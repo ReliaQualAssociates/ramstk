@@ -7,9 +7,17 @@
 """Mode Package Data Controller."""
 
 # Standard Library Imports
+from collections import defaultdict
 from typing import Any, Dict, Type
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
+from ramstk.analyses.criticality import (
+    calculate_mode_criticality,
+    calculate_mode_hazard_rate,
+)
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKMode
 
@@ -57,6 +65,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "mode_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_calculate_criticality, "request_calculate_criticality")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -73,3 +82,30 @@ class DataManager(RAMSTKDataManager):
         _new_record.mode_id = self.last_id + 1
 
         return _new_record
+
+    def do_calculate_criticality(self, item_hr: float) -> None:
+        """Calculate MIL-STD-1629A, Task 102 criticality of a hardware item.
+
+        :param item_hr: the hazard rate of the hardware item the criticality is
+            being calculated for.
+        :return: None
+        :rtype: None
+        """
+        _item_criticality: Dict[str, float] = defaultdict(float)
+        for _mode in self.tree.children(0):
+            _mode.data["mode"].mode_hazard_rate = calculate_mode_hazard_rate(
+                item_hr, _mode.data["mode"].mode_ratio
+            )
+            _mode.data["mode"].mode_criticality = calculate_mode_criticality(
+                _mode.data["mode"].mode_hazard_rate,
+                _mode.data["mode"].mode_op_time,
+                _mode.data["mode"].effect_probability,
+            )
+            _item_criticality[_mode.data["mode"].severity_class] += _mode.data[
+                "mode"
+            ].mode_criticality
+
+        pub.sendMessage(
+            "succeed_calculate_mode_criticality",
+            item_criticality=_item_criticality,
+        )

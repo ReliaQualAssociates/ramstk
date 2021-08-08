@@ -103,23 +103,6 @@ def test_attributes():
 
 
 @pytest.fixture(scope="function")
-def test_analysismanager(test_toml_user_configuration):
-    """Get a analysis manager instance for each test function."""
-    # Create the device under test (dut) and connect to the configuration.
-    dut = amMode(test_toml_user_configuration)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_get_tree, "succeed_retrieve_modes")
-    pub.unsubscribe(dut.on_get_tree, "succeed_get_mode_tree")
-    pub.unsubscribe(dut._do_calculate_criticality, "request_calculate_criticality")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="function")
 def test_datamanager(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
@@ -137,6 +120,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mode")
     pub.unsubscribe(dut.do_insert, "request_insert_mode")
+    pub.unsubscribe(dut.do_calculate_criticality, "request_calculate_criticality")
 
     # Delete the device under test.
     del dut
@@ -144,11 +128,11 @@ def test_datamanager(mock_program_dao):
 
 @pytest.mark.usefixtures("test_datamanager")
 class TestCreateControllers:
-    """Class for controller initialization test suite."""
+    """Class for testing controller initialization."""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_datamanager):
-        """should create a failure Mode data manager instance."""
+        """should return a table manager instance."""
         assert isinstance(test_datamanager, dmMode)
         assert isinstance(test_datamanager.tree, Tree)
         assert isinstance(test_datamanager.dao, MockDAO)
@@ -170,36 +154,18 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mode")
         assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_mode")
-
-    @pytest.mark.unit
-    def test_analysis_manager_create(self, test_analysismanager):
-        """should create a failure Mode analysis manager instance."""
-        assert isinstance(test_analysismanager, amMode)
-        assert isinstance(
-            test_analysismanager.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration
-        )
-        assert isinstance(test_analysismanager._attributes, dict)
-        assert isinstance(test_analysismanager._tree, Tree)
-        assert test_analysismanager._attributes == {}
         assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_retrieve_modes"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager.on_get_tree, "succeed_get_mode_tree"
-        )
-        assert pub.isSubscribed(
-            test_analysismanager._do_calculate_criticality,
-            "request_calculate_criticality",
+            test_datamanager.do_calculate_criticality, "request_calculate_criticality"
         )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+    """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
     def test_do_select_all(self, test_attributes, test_datamanager):
-        """should return the records tree populated with RAMSTKMode instances."""
+        """should return a record tree populated with DB records."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert isinstance(test_datamanager.tree, Tree)
@@ -209,7 +175,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select(self, test_attributes, test_datamanager):
-        """should return an instance of the RAMSTKMode."""
+        """should return the record for the passed record ID."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         _mode = test_datamanager.do_select(1)
@@ -220,7 +186,7 @@ class TestSelectMethods:
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_attributes, test_datamanager):
-        """should return None when a non-existent Mode ID is requested."""
+        """should return None when a non-existent record ID is requested."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
         assert test_datamanager.do_select(100) is None
@@ -228,11 +194,21 @@ class TestSelectMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+    """Class for testing the insert() method."""
+
+    @pytest.mark.unit
+    def test_do_get_new_record(self, test_attributes, test_datamanager):
+        """should return a new record instance with ID fields populated."""
+        test_datamanager.do_select_all(attributes=test_attributes)
+        _new_record = test_datamanager.do_get_new_record(test_attributes)
+
+        assert isinstance(_new_record, RAMSTKMode)
+        assert _new_record.revision_id == 1
+        assert _new_record.hardware_id == 1
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """should add the new node and update last_id."""
+        """should add a new record to the records tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_insert(attributes=test_attributes)
 
@@ -244,38 +220,36 @@ class TestInsertMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+    """Class for testing the delete() method."""
 
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_datamanager):
-        """should remove deleted mode from the records tree and update last_id."""
+        """should remove the record from the record tree and update last_id."""
         test_datamanager.do_select_all(attributes=test_attributes)
         test_datamanager.do_delete(4)
 
         assert test_datamanager.tree.get_node(4) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_analysismanager", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestAnalysisMethods:
-    """Class for failure mode analysis manager method tests."""
+    """Class for analytical method tests."""
 
     @pytest.mark.unit
-    def test_do_calculate_criticality(
-        self, test_attributes, test_analysismanager, test_datamanager
-    ):
+    def test_do_calculate_criticality(self, test_attributes, test_datamanager):
         """should calculate the mode hazard rate and mode criticality."""
         test_datamanager.do_select_all(attributes=test_attributes)
 
-        test_analysismanager._tree.get_node(1).data["mode"].mode_ratio = 0.428
-        test_analysismanager._tree.get_node(1).data["mode"].mode_op_time = 4.2
-        test_analysismanager._tree.get_node(1).data["mode"].effect_probability = 1.0
-        test_analysismanager._tree.get_node(1).data["mode"].severity_class = "III"
+        test_datamanager.tree.get_node(1).data["mode"].mode_ratio = 0.428
+        test_datamanager.tree.get_node(1).data["mode"].mode_op_time = 4.2
+        test_datamanager.tree.get_node(1).data["mode"].effect_probability = 1.0
+        test_datamanager.tree.get_node(1).data["mode"].severity_class = "III"
 
-        test_analysismanager._do_calculate_criticality(0.00000682)
+        test_datamanager.do_calculate_criticality(0.00000682)
 
-        assert test_analysismanager._tree.get_node(1).data[
+        assert test_datamanager.tree.get_node(1).data[
             "mode"
         ].mode_hazard_rate == pytest.approx(2.91896e-06)
-        assert test_analysismanager._tree.get_node(1).data[
+        assert test_datamanager.tree.get_node(1).data[
             "mode"
         ].mode_criticality == pytest.approx(1.2259632e-05)
