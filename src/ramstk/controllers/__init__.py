@@ -18,7 +18,6 @@ from .control.datamanager import DataManager as dmControl
 from .environment.datamanager import DataManager as dmEnvironment
 from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .fmea.analysismanager import AnalysisManager as amFMEA
-from .fmea.datamanager import DataManager as dmFMEA
 from .function.datamanager import DataManager as dmFunction
 from .hardware.analysismanager import AnalysisManager as amHardware
 from .hardware.datamanager import DataManager as dmHardware
