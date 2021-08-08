@@ -37,13 +37,13 @@ from ramstk.controllers import (
     dmRevision,
     dmSimilarItem,
     dmStakeholder,
-    dmUsageProfile,
     dmValidation,
 )
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
+from ramstk.models import RAMSTKUsageProfileView
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
 from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
@@ -278,7 +278,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["pof"]["data"] = dmPoF()
     _program_mgr.dic_managers["preferences"]["data"] = dmPreferences()
     _program_mgr.dic_managers["program_status"]["data"] = dmProgramStatus()
-    _program_mgr.dic_managers["usage_profile"]["data"] = dmUsageProfile()
+    _program_mgr.dic_managers["usage_profile"]["data"] = RAMSTKUsageProfileView()
     _program_mgr.dic_managers["validation"]["data"] = dmValidation()
     _program_mgr.dic_managers["exim"]["export"] = Export()
     _program_mgr.dic_managers["exim"]["import"] = Import()
