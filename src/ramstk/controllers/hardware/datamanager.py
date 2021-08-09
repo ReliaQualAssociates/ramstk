@@ -1,7 +1,7 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.hardware.hardware.py is part of The RAMSTK Project
+#       ramstk.models.hardware.hardware.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -16,8 +16,8 @@ from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
 from ramstk.exceptions import DataAccessError
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import (
     RAMSTKNSWC,
     RAMSTKDesignElectric,
@@ -28,7 +28,7 @@ from ramstk.models.programdb import (
 )
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Hardware data manager.
 
     This class manages the hardware data from the RAMSTKHardware,

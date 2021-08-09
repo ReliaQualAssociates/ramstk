@@ -3,10 +3,10 @@ from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.analyses import fha as fha
-from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     _db_id_colname: str = ...
     _db_tablename: str = ...
     _select_msg: str = ...

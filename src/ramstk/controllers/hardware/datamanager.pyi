@@ -2,8 +2,8 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
 from ramstk.exceptions import DataAccessError as DataAccessError
+from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
 from ramstk.models.programdb import RAMSTKDesignElectric as RAMSTKDesignElectric
 from ramstk.models.programdb import RAMSTKDesignMechanic as RAMSTKDesignMechanic
@@ -11,7 +11,7 @@ from ramstk.models.programdb import RAMSTKHardware as RAMSTKHardware
 from ramstk.models.programdb import RAMSTKMilHdbkF as RAMSTKMilHdbkF
 from ramstk.models.programdb import RAMSTKReliability as RAMSTKReliability
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     _tag: str = ...
     _pkey: Any = ...
     def __init__(self, **kwargs: Dict[str, Any]) -> None: ...

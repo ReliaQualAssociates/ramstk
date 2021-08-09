@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.failure_definition.datamanager.py is part of The RAMSTK
+#       ramstk.models.failure_definition.datamanager.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -11,11 +11,11 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKFailureDefinition
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contains attributes and methods of the Failure Definition data manager.
 
     This class manages the failure definition data from the

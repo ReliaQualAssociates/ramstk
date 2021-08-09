@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.hardware.AnalysisManager.py is part of The RAMSTK
+#       ramstk.models.hardware.AnalysisManager.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.

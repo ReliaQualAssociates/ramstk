@@ -8,10 +8,10 @@ from ramstk.analyses.criticality import (
 from ramstk.analyses.criticality import (
     calculate_mode_hazard_rate as calculate_mode_hazard_rate,
 )
-from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKMode as RAMSTKMode
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     _db_id_colname: str = ...
     _db_tablename: str = ...
     _select_msg: str = ...

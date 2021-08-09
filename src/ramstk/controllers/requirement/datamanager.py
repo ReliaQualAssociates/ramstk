@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.requirement.py is part of The RAMSTK Project
+#       ramstk.models.requirement.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -14,11 +14,11 @@ from typing import Any, Dict, Type
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKRequirement
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Requirement data manager."""
 
     # Define private dictionary class attributes.

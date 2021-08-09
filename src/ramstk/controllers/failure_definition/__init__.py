@@ -1,7 +1,7 @@
 # pylint: disable=unused-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.failure_definition.__init__.py is part of The
+#       ramstk.models.failure_definition.__init__.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
