@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKOpStress(MockRAMSTKBaseTable):
+class MockRAMSTKOpStress(MockRAMSTKBaseRecord):
     __defaults__ = {
         "description": "",
         "load_history": "",

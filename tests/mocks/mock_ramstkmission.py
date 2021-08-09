@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKMission(MockRAMSTKBaseTable):
+class MockRAMSTKMission(MockRAMSTKBaseRecord):
     __defaults__ = {"description": "", "mission_time": 0.0, "time_units": "hours"}
 
     def __init__(self):

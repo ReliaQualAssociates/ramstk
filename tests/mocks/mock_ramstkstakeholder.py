@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKStakeholder(MockRAMSTKBaseTable):
+class MockRAMSTKStakeholder(MockRAMSTKBaseRecord):
     __defaults__ = {
         "customer_rank": 1,
         "description": "Stakeholder Input",

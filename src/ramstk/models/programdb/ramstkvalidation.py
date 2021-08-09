@@ -19,10 +19,10 @@ from sqlalchemy.orm import relationship
 # RAMSTK Package Imports
 from ramstk.analyses.statistics import do_calculate_beta_bounds
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_validation in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

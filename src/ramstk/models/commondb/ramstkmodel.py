@@ -14,10 +14,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_model in the RAMSTK Common database."""
 
     __defaults__ = {"description": "Model Description", "model_type": 0}

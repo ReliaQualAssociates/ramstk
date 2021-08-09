@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.environment.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.environment.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,11 +10,11 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKEnvironment
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Environment data manager."""
 
     # Define private dictionary class attributes.

@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKTestMethod(MockRAMSTKBaseTable):
+class MockRAMSTKTestMethod(MockRAMSTKBaseRecord):
     __defaults__ = {"description": "", "boundary_conditions": "", "remarks": ""}
 
     def __init__(self):

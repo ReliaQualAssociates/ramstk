@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.cause.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.cause.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -14,11 +14,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKCause
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Cause data manager."""
 
     # Define private dictionary class attributes.

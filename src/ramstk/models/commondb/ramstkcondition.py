@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_condition in RAMSTK Common database."""
 
     __defaults__ = {"description": "Condition Description", "condition_type": ""}

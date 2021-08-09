@@ -12,10 +12,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKStakeholders(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKStakeholders(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_stakeholders in the RAMSTK Common database."""
 
     __defaults__ = {"stakeholder": "Stakeholder"}

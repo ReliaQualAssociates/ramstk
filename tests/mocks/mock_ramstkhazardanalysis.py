@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKHazardAnalysis(MockRAMSTKBaseTable):
+class MockRAMSTKHazardAnalysis(MockRAMSTKBaseRecord):
     __defaults__ = {
         "potential_hazard": "",
         "potential_cause": "",

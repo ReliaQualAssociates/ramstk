@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKMechanism(MockRAMSTKBaseTable):
+class MockRAMSTKMechanism(MockRAMSTKBaseRecord):
     __defaults__ = {
         "description": "",
         "pof_include": 1,

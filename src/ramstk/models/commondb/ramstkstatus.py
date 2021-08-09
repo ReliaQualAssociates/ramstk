@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKStatus(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKStatus(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_status in the RAMSTK Common database."""
 
     __defaults__ = {

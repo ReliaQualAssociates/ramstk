@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKControl(MockRAMSTKBaseTable):
+class MockRAMSTKControl(MockRAMSTKBaseRecord):
     __defaults__ = {"description": "", "type_id": ""}
 
     def __init__(self):

@@ -1,7 +1,7 @@
 # pylint: disable=unused-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.environment.__init__.py is part of The RAMSTK
+#       ramstk.models.environment.__init__.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.

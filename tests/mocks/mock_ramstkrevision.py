@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKRevision(MockRAMSTKBaseTable):
+class MockRAMSTKRevision(MockRAMSTKBaseRecord):
     __defaults__ = {
         "availability_logistics": 1.0,
         "availability_mission": 1.0,

@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKMethod(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKMethod(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to representramstk_method in the RAMSTK Common database."""
 
     __defaults__ = {

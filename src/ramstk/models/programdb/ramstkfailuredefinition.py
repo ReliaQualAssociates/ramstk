@@ -14,10 +14,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class representing ramstk_failure_definition table in RAMSTK Program db.
 
     This table shares a Many-to-One relationship with ramstk_revision.

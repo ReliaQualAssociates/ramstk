@@ -1,7 +1,7 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.preferences.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.preferences.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,11 +11,11 @@
 from typing import Type
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.programdb import RAMSTKProgramInfo
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Options data manager.
 
     This class manages the user-configurable Preferences and Options data from
@@ -40,7 +40,7 @@ class DataManager(RAMSTKDataManager):
 
     def __init__(self, **kwargs) -> None:
         """Initialize a Options data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        RAMSTKBaseTable.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
 

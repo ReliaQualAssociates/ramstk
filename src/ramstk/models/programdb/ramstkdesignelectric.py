@@ -14,11 +14,11 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
 # pylint: disable=R0902
-class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseRecord):
     """Represent ramstk_design_electric table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

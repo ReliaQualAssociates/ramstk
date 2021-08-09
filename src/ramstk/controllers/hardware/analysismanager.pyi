@@ -10,7 +10,7 @@ from ramstk.analyses import dormancy as dormancy
 from ramstk.analyses import stress as stress
 from ramstk.analyses.milhdbk217f import milhdbk217f as milhdbk217f
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
-from ramstk.controllers import RAMSTKAnalysisManager as RAMSTKAnalysisManager
+from ramstk.models import RAMSTKAnalysisManager as RAMSTKAnalysisManager
 
 def hazard_rate_from_s_distribution(dist: str = ..., **kwargs: Any) -> float: ...
 def hazard_rate_from_specified_mtbf(mtbf: float, time: float = ...) -> float: ...

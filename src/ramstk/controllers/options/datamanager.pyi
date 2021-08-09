@@ -5,10 +5,10 @@ from typing import Any
 from pubsub import pub as pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager as RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
 from ramstk.models.commondb import RAMSTKSiteInfo as RAMSTKSiteInfo
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     _db_id_colname: str = ...
     _db_tablename: str = ...
     _tag: str = ...

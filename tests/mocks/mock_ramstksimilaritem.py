@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKSimilarItem(MockRAMSTKBaseTable):
+class MockRAMSTKSimilarItem(MockRAMSTKBaseRecord):
     __defaults__ = {
         "change_description_1": "",
         "change_description_2": "",

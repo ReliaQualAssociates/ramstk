@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKEnvironment(MockRAMSTKBaseTable):
+class MockRAMSTKEnvironment(MockRAMSTKBaseRecord):
     __defaults__ = {
         "name": "Condition Name",
         "units": "Units",

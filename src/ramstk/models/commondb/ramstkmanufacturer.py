@@ -12,10 +12,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_manufacturer in the RAMSTK Common database."""
 
     __defaults__ = {

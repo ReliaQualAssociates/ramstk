@@ -16,10 +16,10 @@ from sqlalchemy import Column, Date, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_program_info in RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.

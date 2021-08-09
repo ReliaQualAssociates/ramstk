@@ -8,8 +8,7 @@
 """The RAMSTK database models package."""
 
 # RAMSTK Local Imports
-from .basemodel import RAMSTKBaseView
+from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView
 from .fmea.view import RAMSTKFMEAView
 from .pof.view import RAMSTKPoFView
-from .tables import RAMSTKBaseTable
 from .usage_profile.view import RAMSTKUsageProfileView

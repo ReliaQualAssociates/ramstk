@@ -14,10 +14,10 @@ from sqlalchemy import Column, Date, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKSiteInfo(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKSiteInfo(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_site_info in the RAMSTK Common database."""
 
     __defaults__ = {

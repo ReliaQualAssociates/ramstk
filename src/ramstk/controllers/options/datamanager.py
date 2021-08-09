@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.controllers.options.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.options.datamanager.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,11 +10,11 @@
 from typing import Type
 
 # RAMSTK Package Imports
-from ramstk.controllers import RAMSTKDataManager
+from ramstk.models import RAMSTKBaseTable
 from ramstk.models.commondb import RAMSTKSiteInfo
 
 
-class DataManager(RAMSTKDataManager):
+class DataManager(RAMSTKBaseTable):
     """Contain the attributes and methods of the Option data manager."""
 
     # Define private dict class attributes.
@@ -34,7 +34,7 @@ class DataManager(RAMSTKDataManager):
 
     def __init__(self, **kwargs) -> None:
         """Initialize a Options data manager instance."""
-        RAMSTKDataManager.__init__(self, **kwargs)
+        RAMSTKBaseTable.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.
 
