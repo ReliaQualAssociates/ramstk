@@ -64,8 +64,8 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKMechanism instances on success."""
+        """do_select_all() should return a Tree() object populated with RAMSTKMechanism
+        instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
@@ -119,10 +119,7 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print(
-            "\033[36m\nsucceed_delete_mechanism topic was broadcast when deleting "
-            "a failure mode."
-        )
+        print("\033[36m\nsucceed_delete_mechanism topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == ("Attempted to delete non-existent Mechanism ID 300.")
@@ -134,8 +131,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self, test_datamanager):
-        """_do_delete() should send the success message with the treelib Tree
-        when successfully deleting a test method."""
+        """_do_delete() should send the success message with the treelib Tree when
+        successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mechanism")
 
         pub.sendMessage("request_delete_mechanism", node_id=3)
@@ -146,8 +143,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
-        """_do_delete() should send the fail message when attempting to delete
-        a node ID that doesn't exist in the tree."""
+        """_do_delete() should send the fail message when attempting to delete a node
+        ID that doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mechanism")
 
         pub.sendMessage("request_delete_mechanism", node_id=300)
@@ -156,9 +153,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove
-        a node that doesn't exist from the tree even if it exists in the
-        database."""
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mechanism")
 
         test_datamanager.tree.remove_node(4)
@@ -246,8 +242,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mechanism")
 
         _mechanism = test_datamanager.do_select(3)
@@ -258,8 +254,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mechanism"
         )
@@ -274,8 +270,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update() should return a non-zero error code when passed a PoF ID
-        that doesn't exist."""
+        """do_update() should return a non-zero error code when passed a PoF ID that
+        doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mechanism")
 
         pub.sendMessage("request_update_mechanism", node_id=100, table="mechanism")
@@ -284,8 +280,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a FMEA
-        ID that has no data package."""
+        """do_update() should return a non-zero error code when passed a FMEA ID that
+        has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mechanism")
 
         test_datamanager.tree.get_node(3).data.pop("mechanism")
@@ -317,8 +313,7 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_datamanager):
-        """do_get_attributes() should return a dict of mode attributes on
-        success."""
+        """do_get_attributes() should return a dict of mode attributes on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
         test_datamanager.do_get_attributes(node_id=3, table="mechanism")
@@ -340,8 +335,8 @@ class TestGetterSetter:
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should return None when successfully setting
-        operating load attributes."""
+        """do_set_attributes() should return None when successfully setting operating
+        load attributes."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mechanism_tree")
 
         pub.sendMessage(
@@ -353,3 +348,89 @@ class TestGetterSetter:
         assert test_datamanager.do_select(4).rpn_detection == 4
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mechanism_tree")
+
+
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+class TestDeleteMethods:
+    """Class for testing the delete() method."""
+
+    def on_succeed_delete(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1) is None
+        print("\033[36m\nsucceed_delete_mechanism topic was broadcast.")
+
+    def on_fail_delete_non_existent_id(self, error_message):
+        assert error_message == ("Attempted to delete non-existent Mechanism ID 10.")
+        print("\033[35m\nfail_delete_mechanism topic was broadcast on non-existent ID.")
+
+    def on_fail_delete_no_data_package(self, error_message):
+        assert error_message == ("Attempted to delete non-existent Mechanism ID 2.")
+        print("\033[35m\nfail_delete_mechanism topic was broadcast on no data package.")
+
+    @pytest.mark.integration
+    def test_do_delete(self, test_datamanager):
+        """_do_delete_mission() should send the success message after successfully
+        deleting a mission."""
+        pub.subscribe(self.on_succeed_delete, "succeed_delete_mechanism")
+
+        pub.sendMessage("request_delete_mechanism", node_id=1)
+
+        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mechanism")
+
+    @pytest.mark.integration
+    def test_do_delete_non_existent_id(self, test_datamanager):
+        """_do_delete_mission() should send the sfail message when attempting to delete
+        a non-existent mission ID."""
+        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mechanism")
+
+        pub.sendMessage("request_delete_mechanism", node_id=10)
+
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mechanism")
+
+    @pytest.mark.integration
+    def test_do_delete_no_data_package(self, test_datamanager):
+        """_do_delete() should send the fail message when attempting to remove a node
+        that doesn't exist from the tree even if it exists in the database."""
+        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_mechanism")
+
+        test_datamanager.tree.get_node(2).data.pop("mechanism")
+        pub.sendMessage("request_delete_mechanism", node_id=2)
+
+        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_mechanism")
+
+
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+class TestAnalysisMethods:
+    """Class for testing analytical methods."""
+
+    def on_succeed_calculate_rpn_mechanism(self, tree: Tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(3).data["mechanism"].rpn == 192
+        assert tree.get_node(3).data["mechanism"].rpn_new == 64
+        print(
+            "\033[36m\nsucceed_calculate_rpn topic was broadcast after calculating "
+            "mechanism RPN."
+        )
+
+    @pytest.mark.integration
+    def test_do_calculate_mechanism_rpn(self, test_attributes, test_datamanager):
+        """should calculate the mechanism RPN."""
+        pub.subscribe(
+            self.on_succeed_calculate_rpn_mechanism, "succeed_calculate_mechanism_rpn"
+        )
+
+        test_datamanager.do_select_all(test_attributes)
+
+        test_datamanager.tree.get_node(3).data["mechanism"].rpn_occurrence = 8
+        test_datamanager.tree.get_node(3).data["mechanism"].rpn_detection = 3
+        test_datamanager.tree.get_node(3).data["mechanism"].rpn_occurrence_new = 4
+        test_datamanager.tree.get_node(3).data["mechanism"].rpn_detection_new = 2
+
+        pub.sendMessage("request_calculate_mechanism_rpn", severity=8)
+
+        assert test_datamanager.tree.get_node(3).data["mechanism"].rpn == 192
+        assert test_datamanager.tree.get_node(3).data["mechanism"].rpn_new == 64
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_rpn_mechanism, "succeed_calculate_mechanism_rpn"
+        )
