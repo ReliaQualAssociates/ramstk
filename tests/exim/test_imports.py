@@ -669,7 +669,7 @@ class TestImport:
 
         pub.unsubscribe(self.on_succeed_import_hardware, "succeed_import_module")
 
-    @pytest.mark.unit
+    @pytest.mark.skip
     def test_do_insert_validation(self, test_program_dao, test_csv_file_validation):
         """do_insert() should return None on success and create a new RAMSTKValidation object with it's attributes set from the external file data."""
         pub.subscribe(self.on_succeed_import_validation, "succeed_import_module")

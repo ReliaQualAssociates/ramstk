@@ -78,7 +78,7 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         return _new_record
 
-    def _do_calculate_current_ratio(self, node_id: int) -> None:
+    def do_calculate_current_ratio(self, node_id: int) -> None:
         """Calculate the current ratio.
 
         :return: None
@@ -111,11 +111,11 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_stress_analysis",
+                "fail_calculate_current_stress",
                 error_message=_error_msg,
             )
 
-    def _do_calculate_power_ratio(self, node_id: int) -> None:
+    def do_calculate_power_ratio(self, node_id: int) -> None:
         """Calculate the power ratio.
 
         :return: None
@@ -148,11 +148,11 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_stress_analysis",
+                "fail_calculate_power_stress",
                 error_message=_error_msg,
             )
 
-    def _do_calculate_voltage_ratio(self, node_id: int) -> None:
+    def do_calculate_voltage_ratio(self, node_id: int) -> None:
         """Calculate the voltage ratio.
 
         :return: None
@@ -189,6 +189,6 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_stress_analysis",
+                "fail_calculate_voltage_stress",
                 error_message=_error_msg,
             )
