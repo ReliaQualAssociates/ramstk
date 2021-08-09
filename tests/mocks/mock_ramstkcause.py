@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKCause(MockRAMSTKBaseTable):
+class MockRAMSTKCause(MockRAMSTKBaseRecord):
     __defaults__ = {
         "description": "",
         "rpn": 0,

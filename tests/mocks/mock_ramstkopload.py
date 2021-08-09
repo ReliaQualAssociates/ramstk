@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKOpLoad(MockRAMSTKBaseTable):
+class MockRAMSTKOpLoad(MockRAMSTKBaseRecord):
     __defaults__ = {"description": "", "damage_model": "", "priority_id": 0}
 
     def __init__(self):

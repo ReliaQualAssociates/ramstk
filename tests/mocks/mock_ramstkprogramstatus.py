@@ -2,10 +2,10 @@
 from datetime import date
 
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKProgramStatus(MockRAMSTKBaseTable):
+class MockRAMSTKProgramStatus(MockRAMSTKBaseRecord):
     __defaults__ = {
         "cost_remaining": 0.0,
         "date_status": date.today(),

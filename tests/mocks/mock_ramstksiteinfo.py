@@ -2,10 +2,10 @@
 from datetime import date, timedelta
 
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKSiteInfo(MockRAMSTKBaseTable):
+class MockRAMSTKSiteInfo(MockRAMSTKBaseRecord):
     __defaults__ = {
         "site_name": "",
         "product_key": "",

@@ -5,10 +5,10 @@ from datetime import date
 from ramstk.utilities import none_to_default
 
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKRequirement(MockRAMSTKBaseTable):
+class MockRAMSTKRequirement(MockRAMSTKBaseRecord):
     __defaults__ = {
         "derived": 0,
         "description": "",

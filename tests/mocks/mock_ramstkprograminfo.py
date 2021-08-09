@@ -2,10 +2,10 @@
 from datetime import date
 
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKProgramInfo(MockRAMSTKBaseTable):
+class MockRAMSTKProgramInfo(MockRAMSTKBaseRecord):
     __defaults__ = {
         "function_active": 1,
         "requirement_active": 1,

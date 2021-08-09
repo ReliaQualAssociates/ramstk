@@ -13,10 +13,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_op_load in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mechanism.

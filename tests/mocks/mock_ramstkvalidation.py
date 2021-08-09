@@ -5,10 +5,10 @@ from datetime import date, timedelta
 from ramstk.analyses.statistics import do_calculate_beta_bounds
 
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKValidation(MockRAMSTKBaseTable):
+class MockRAMSTKValidation(MockRAMSTKBaseRecord):
     __defaults__ = {
         "acceptable_maximum": 0.0,
         "acceptable_mean": 0.0,

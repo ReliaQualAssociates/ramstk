@@ -6,6 +6,10 @@ import treelib
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase as BaseDatabase
+from ramstk.utilities import none_to_default as none_to_default
+
+class RAMSTKBaseRecord:
+    def set_attributes(self, attributes: Any) -> None: ...
 
 class RAMSTKBaseView:
     _root: int = ...

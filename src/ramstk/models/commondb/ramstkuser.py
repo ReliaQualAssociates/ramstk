@@ -11,10 +11,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent the table ramstk_user in the RAMSTK Common database.
 
     This table shares a One-to-Many relationship with ramstk_workgroup.

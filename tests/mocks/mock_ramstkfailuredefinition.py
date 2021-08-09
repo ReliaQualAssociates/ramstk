@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKFailureDefinition(MockRAMSTKBaseTable):
+class MockRAMSTKFailureDefinition(MockRAMSTKBaseRecord):
     __defaults__ = {"definition": "Mock Failure Definition"}
 
     def __init__(self):

@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKAllocation(MockRAMSTKBaseTable):
+class MockRAMSTKAllocation(MockRAMSTKBaseRecord):
     __defaults__ = {
         "availability_alloc": 0.0,
         "duty_cycle": 100.0,

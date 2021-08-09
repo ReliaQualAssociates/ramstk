@@ -14,10 +14,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_environment table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with

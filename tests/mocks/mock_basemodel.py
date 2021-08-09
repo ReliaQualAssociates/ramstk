@@ -2,7 +2,7 @@
 from ramstk.utilities import none_to_default
 
 
-class MockRAMSTKBaseTable:
+class MockRAMSTKBaseRecord:
     def set_attributes(self, attributes):
         for _key in attributes:
             getattr(self, _key)

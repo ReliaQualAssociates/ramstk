@@ -13,10 +13,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_failuremode in the RAMSTK Common database."""
 
     __defaults__ = {

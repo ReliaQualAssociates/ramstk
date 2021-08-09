@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKMode(MockRAMSTKBaseTable):
+class MockRAMSTKMode(MockRAMSTKBaseRecord):
     __defaults__ = {
         "critical_item": 0,
         "description": "",

@@ -13,10 +13,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_reliability table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

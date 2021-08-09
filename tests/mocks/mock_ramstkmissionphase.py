@@ -1,8 +1,8 @@
 # RAMSTK Local Imports
-from . import MockRAMSTKBaseTable
+from . import MockRAMSTKBaseRecord
 
 
-class MockRAMSTKMissionPhase(MockRAMSTKBaseTable):
+class MockRAMSTKMissionPhase(MockRAMSTKBaseRecord):
     __defaults__ = {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0}
 
     def __init__(self):

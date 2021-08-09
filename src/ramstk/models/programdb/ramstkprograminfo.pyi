@@ -3,9 +3,9 @@ from typing import Any
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
-class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseRecord):
     __defaults__: Any = ...
     __tablename__: str = ...
     __table_args__: Any = ...

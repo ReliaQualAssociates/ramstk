@@ -12,10 +12,10 @@ from sqlalchemy import Column, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent the table ramstk_load_history."""
 
     __defaults__ = {"description": "Load History Description"}

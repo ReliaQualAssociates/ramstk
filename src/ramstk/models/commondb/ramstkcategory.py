@@ -12,10 +12,10 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseTable
+from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseTable):
+class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_category in the RAMSTK Common database.
 
     Types of category are:     # 1. Hardware     # 2. Risk     # 3.
