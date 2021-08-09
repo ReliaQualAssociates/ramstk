@@ -88,6 +88,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_mechanism_rpn")
 
     # Delete the device under test.
     del dut
@@ -126,6 +127,9 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mechanism")
         assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_mechanism")
+        assert pub.isSubscribed(
+            test_datamanager.do_calculate_rpn, "request_calculate_mechanism_rpn"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")

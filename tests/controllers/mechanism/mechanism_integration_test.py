@@ -48,6 +48,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_mechanism_rpn")
 
     # Delete the device under test.
     del dut
@@ -407,10 +408,7 @@ class TestAnalysisMethods:
         assert isinstance(tree, Tree)
         assert tree.get_node(3).data["mechanism"].rpn == 192
         assert tree.get_node(3).data["mechanism"].rpn_new == 64
-        print(
-            "\033[36m\nsucceed_calculate_rpn topic was broadcast after calculating "
-            "mechanism RPN."
-        )
+        print("\033[36m\nsucceed_calculate_mechanism_rpn topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_calculate_mechanism_rpn(self, test_attributes, test_datamanager):

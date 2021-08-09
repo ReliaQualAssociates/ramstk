@@ -9,7 +9,11 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
+from ramstk.analyses import criticality
 from ramstk.controllers import RAMSTKDataManager
 from ramstk.models.programdb import RAMSTKCause
 
@@ -59,6 +63,7 @@ class DataManager(RAMSTKDataManager):
         self.pkey = "cause_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_calculate_rpn, "request_calculate_cause_rpn")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -78,3 +83,33 @@ class DataManager(RAMSTKDataManager):
         _new_record.parent_id = attributes["mechanism_id"]
 
         return _new_record
+
+    def do_calculate_rpn(self, severity: int) -> None:
+        """Calculate the risk priority number (RPN) of a hardware item's modes.
+
+            .. note:: the severity (S) value will always be associated with a
+                failure mode.
+
+            .. note:: the occurrence (O) and detection (D) values may be
+                associated with a failure mechanism or a failure cause.  Typically,
+                hardware FMEA use mechanisms and functional FMEA use causes.
+
+        :param severity: the RPN severity value.
+        :return: None
+        :rtype: None
+        """
+        _sod = {"rpn_severity": severity, "rpn_occurrence": 10, "rpn_detection": 10}
+
+        for _node in self.tree.all_nodes()[1:]:
+            _sod["rpn_occurrence"] = _node.data[self._tag].rpn_occurrence
+            _sod["rpn_detection"] = _node.data[self._tag].rpn_detection
+            _node.data[self._tag].rpn = criticality.calculate_rpn(_sod)
+
+            _sod["rpn_occurrence"] = _node.data[self._tag].rpn_occurrence_new
+            _sod["rpn_detection"] = _node.data[self._tag].rpn_detection_new
+            _node.data[self._tag].rpn_new = criticality.calculate_rpn(_sod)
+
+        pub.sendMessage(
+            "succeed_calculate_cause_rpn",
+            tree=self.tree,
+        )
