@@ -88,6 +88,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
     pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_mechanism_rpn")
 
     # Delete the device under test.
     del dut
@@ -126,6 +127,9 @@ class TestCreateControllers:
         )
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_mechanism")
         assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_mechanism")
+        assert pub.isSubscribed(
+            test_datamanager.do_calculate_rpn, "request_calculate_mechanism_rpn"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
@@ -194,3 +198,23 @@ class TestDeleteMethods:
         test_datamanager.do_delete(2)
 
         assert test_datamanager.tree.get_node(2) is None
+
+
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+class TestAnalysisMethods:
+    """Class for testing analytical methods."""
+
+    @pytest.mark.unit
+    def test_do_calculate_mechanism_rpn(self, test_attributes, test_datamanager):
+        """should calculate the mechanism RPN."""
+        test_datamanager.do_select_all(test_attributes)
+
+        test_datamanager.tree.get_node(1).data["mechanism"].rpn_occurrence = 8
+        test_datamanager.tree.get_node(1).data["mechanism"].rpn_detection = 3
+        test_datamanager.tree.get_node(2).data["mechanism"].rpn_occurrence = 4
+        test_datamanager.tree.get_node(2).data["mechanism"].rpn_detection = 5
+
+        test_datamanager.do_calculate_rpn(8)
+
+        assert test_datamanager.tree.get_node(1).data["mechanism"].rpn == 192
+        assert test_datamanager.tree.get_node(2).data["mechanism"].rpn == 160

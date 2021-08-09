@@ -59,3 +59,4 @@ repos:
             verbose: true
             language: python
             additional_dependencies: [wily]
+            args: [--no-detail]

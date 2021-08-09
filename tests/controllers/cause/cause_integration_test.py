@@ -51,6 +51,7 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut.do_insert, "request_insert_cause")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_cause_rpn")
 
     # Delete the device under test.
     del dut
@@ -334,3 +335,37 @@ class TestGetterSetter:
         assert test_datamanager.do_select(4).rpn_detection == 4
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_cause_tree")
+
+
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+class TestAnalysisMethods:
+    """Class for testing analytical methods."""
+
+    def on_succeed_calculate_rpn_cause(self, tree: Tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(3).data["cause"].rpn == 192
+        assert tree.get_node(3).data["cause"].rpn_new == 64
+        print("\033[36m\nsucceed_calculate_cause_rpn topic was broadcast.")
+
+    @pytest.mark.integration
+    def test_do_calculate_cause_rpn(self, test_attributes, test_datamanager):
+        """should calculate the cause RPN."""
+        pub.subscribe(
+            self.on_succeed_calculate_rpn_cause, "succeed_calculate_cause_rpn"
+        )
+
+        test_datamanager.do_select_all(test_attributes)
+
+        test_datamanager.tree.get_node(3).data["cause"].rpn_occurrence = 8
+        test_datamanager.tree.get_node(3).data["cause"].rpn_detection = 3
+        test_datamanager.tree.get_node(3).data["cause"].rpn_occurrence_new = 4
+        test_datamanager.tree.get_node(3).data["cause"].rpn_detection_new = 2
+
+        pub.sendMessage("request_calculate_cause_rpn", severity=8)
+
+        assert test_datamanager.tree.get_node(3).data["cause"].rpn == 192
+        assert test_datamanager.tree.get_node(3).data["cause"].rpn_new == 64
+
+        pub.unsubscribe(
+            self.on_succeed_calculate_rpn_cause, "succeed_calculate_cause_rpn"
+        )

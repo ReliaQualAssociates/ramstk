@@ -89,6 +89,7 @@ def test_datamanager(mock_program_dao):
     pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
     pub.unsubscribe(dut.do_delete, "request_delete_cause")
     pub.unsubscribe(dut.do_insert, "request_insert_cause")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_cause_rpn")
 
     # Delete the device under test.
     del dut
@@ -123,11 +124,14 @@ class TestCreateControllers:
         assert pub.isSubscribed(test_datamanager.do_get_tree, "request_get_cause_tree")
         assert pub.isSubscribed(test_datamanager.do_delete, "request_delete_cause")
         assert pub.isSubscribed(test_datamanager.do_insert, "request_insert_cause")
+        assert pub.isSubscribed(
+            test_datamanager.do_calculate_rpn, "request_calculate_cause_rpn"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
 class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+    """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
     def test_do_select_all(self, test_attributes, test_datamanager):
@@ -191,3 +195,23 @@ class TestDeleteMethods:
 
         assert test_datamanager.last_id == 1
         assert test_datamanager.tree.get_node(2) is None
+
+
+@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+class TestAnalysisMethods:
+    """Class for testing analytical methods."""
+
+    @pytest.mark.unit
+    def test_do_calculate_mechanism_rpn(self, test_attributes, test_datamanager):
+        """should calculate the cause RPN."""
+        test_datamanager.do_select_all(test_attributes)
+
+        test_datamanager.tree.get_node(1).data["cause"].rpn_occurrence = 8
+        test_datamanager.tree.get_node(1).data["cause"].rpn_detection = 3
+        test_datamanager.tree.get_node(2).data["cause"].rpn_occurrence = 4
+        test_datamanager.tree.get_node(2).data["cause"].rpn_detection = 5
+
+        test_datamanager.do_calculate_rpn(8)
+
+        assert test_datamanager.tree.get_node(1).data["cause"].rpn == 192
+        assert test_datamanager.tree.get_node(2).data["cause"].rpn == 160
