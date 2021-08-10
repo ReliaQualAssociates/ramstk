@@ -13,5 +13,6 @@ from .design_electric.table import RAMSTKDesignElectricTable
 from .design_mechanic.table import RAMSTKDesignMechanicTable
 from .fmea.view import RAMSTKFMEAView
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
+from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
 from .usage_profile.view import RAMSTKUsageProfileView
