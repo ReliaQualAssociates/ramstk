@@ -10,6 +10,7 @@
 # RAMSTK Local Imports
 from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView
 from .design_electric.table import RAMSTKDesignElectricTable
+from .design_mechanic.table import RAMSTKDesignMechanicTable
 from .fmea.view import RAMSTKFMEAView
 from .pof.view import RAMSTKPoFView
 from .usage_profile.view import RAMSTKUsageProfileView
