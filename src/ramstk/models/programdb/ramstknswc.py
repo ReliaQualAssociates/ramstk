@@ -85,6 +85,12 @@ class RAMSTKNSWC(RAMSTK_BASE, RAMSTKBaseRecord):
     __tablename__ = "ramstk_nswc"
     __table_args__ = {"extend_existing": True}
 
+    revision_id = Column(
+        "fld_revision_id",
+        Integer,
+        ForeignKey("ramstk_revision.fld_revision_id"),
+        nullable=False,
+    )
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
