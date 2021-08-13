@@ -8,4 +8,5 @@
 """The RAMSTK statistical analyses package."""
 
 # RAMSTK Local Imports
+from . import exponential
 from .bounds import do_calculate_beta_bounds, do_calculate_fisher_information
