@@ -1,7 +1,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.statistics.lognormal.py is part of the RAMSTK Project
+#       ramstk.analyses.statistics.weibull.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -11,32 +11,36 @@
 from typing import Tuple
 
 # Third Party Imports
-from scipy.stats import lognorm
+from scipy.stats import weibull_min
 
 
 def get_hazard_rate(
-    shape: float, time: float, location: float = 0.0, scale: float = 1.0
+    shape: float, scale: float, time: float, location: float = 0.0
 ) -> float:
     """Calculates the hazard rate given a scale, shape, and location parameter.
 
     This function calculates the rate parameter given the scale, shape, time, and,
     optionally, a location parameter.
 
-        >>> get_hazard_rate(0.9663, 4, scale=33.65)
-        0.6610467490673426
+        >>> get_hazard_rate(2.5, 525.0, 105.0)
+        0.02359719987177253
 
-        >>> get_hazard_rate(0.9663, 4, location=1.85, scale=33.65)
-        1.5117773383839221
+        >>> get_hazard_rate(2.5, 525.0, 105.0, location=18.5)
+        0.028742792496007755
 
-        >>> get_hazard_rate(0, 4, scale=33.65)
+        >>> get_hazard_rate(0.0, 525.0, 105.0)
         nan
 
-        >>> get_hazard_rate(0.9663, 0, scale=33.65)
+        >>> get_hazard_rate(2.5, 0.0, 105.0)
+        0.0
+
+        >>> get_hazard_rate(2.5, 525.0, 0.0)
         0.0
 
     The relationship to scipy parameters is:
-        sigma = s
-        mu = log(scale)
+        beta = shape
+        eta = scale
+        gamma = location
 
     :param scale: the value of the scale parameter.
     :param shape: the value of the shape parameter.
@@ -48,30 +52,36 @@ def get_hazard_rate(
     if time <= 0.0:
         _hazard_rate = 0.0
     else:
-        _hazard_rate = lognorm.pdf(
+        _hazard_rate = weibull_min.pdf(
             time, shape, loc=location, scale=scale
-        ) / lognorm.cdf(time, shape, loc=location, scale=scale)
+        ) / weibull_min.cdf(time, shape, loc=location, scale=scale)
 
     return _hazard_rate
 
 
-def get_mtbf(shape: float, location: float = 0.0, scale: float = 1.0) -> float:
+def get_mtbf(shape: float, scale: float, location: float = 0.0) -> float:
     """Calculate the MTBF given a shape (sigma) and scale (mu) parameter.
 
-        >>> get_mtbf(0.9663, scale=33.65)
-        53.671433807942236
+        >>> get_mtbf(2.5, 525.0)
+        465.8135041891145
 
-        >>> get_mtbf(0.0, scale=33.65)
+        >>> get_mtbf(2.5, 525.0, location=18.5)
+        484.3135041891145
+
+        >>> get_mtbf(0.0, 525.0)
+        nan
+
+        >>> get_mtbf(2.5, 0.0)
         nan
 
     :param shape: the shape parameter.
-    :param location: the location parameter.
     :param scale: the scale parameter.
+    :param location: the location parameter.
     :return: _mtbf; the MTBF.
     :rtype: float
     """
     try:
-        _mtbf = lognorm.mean(
+        _mtbf = weibull_min.mean(
             shape,
             loc=location,
             scale=scale,
@@ -84,20 +94,20 @@ def get_mtbf(shape: float, location: float = 0.0, scale: float = 1.0) -> float:
 
 def get_survival(
     shape: float,
+    scale: float,
     time: float,
     location: float = 0.0,
-    scale: float = 1.0,
 ) -> float:
     """Calculate value of the survival function at time given scale and location.
 
     This function returns the lower and upper alpha bounds as well as the point
     estimate of the survival function at time.
 
-        >>> get_survival(0.9663, 5.0, scale=33.65)
-        0.9757561
+        >>> get_survival(2.5, 525.0, 105.0)
+        0.9822705063757785
 
-        >>> get_survival(0.9663, 5.0, location=1.85, scale=33.65)
-        0.9928813
+        >>> get_survival(2.5, 525.0, 105.0, location=18.5)
+        0.9890414911478198
 
     :param scale: the point estimate of the scale parameter.
     :param time: the time at which to calculate the survival function.
@@ -105,11 +115,11 @@ def get_survival(
     :return: _surv; the value of the survival function at time.
     :rtype: float
     """
-    return lognorm.sf(time, shape, loc=location, scale=scale)
+    return weibull_min.sf(time, shape, loc=location, scale=scale)
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float, float]:
-    """Fits the provided data to the LOGN distribution and estimates scale and location.
+    """Fits the provided data to the WEI distribution and estimates scale and location.
 
     :param data: the data to use in the fit.
     :return: (_shape, _location, _scale); the estimated parameters.
@@ -121,14 +131,14 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        _shape, _location, _scale = lognorm.fit(
+        _shape, _location, _scale = weibull_min.fit(
             data,
             loc=_location,
             scale=_scale,
             method=_method,
         )
     else:
-        _shape, _location, _scale = lognorm.fit(
+        _shape, _location, _scale = weibull_min.fit(
             data,
             loc=_location,
             scale=_scale,
