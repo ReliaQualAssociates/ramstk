@@ -80,16 +80,11 @@ def get_mtbf(shape: float, scale: float, location: float = 0.0) -> float:
     :return: _mtbf; the MTBF.
     :rtype: float
     """
-    try:
-        _mtbf = weibull_min.mean(
-            shape,
-            loc=location,
-            scale=scale,
-        )
-    except ZeroDivisionError:
-        _mtbf = 0.0
-
-    return _mtbf
+    return weibull_min.mean(
+        shape,
+        loc=location,
+        scale=scale,
+    )
 
 
 def get_survival(

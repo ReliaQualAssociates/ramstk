@@ -70,16 +70,11 @@ def get_mtbf(shape: float, location: float = 0.0, scale: float = 1.0) -> float:
     :return: _mtbf; the MTBF.
     :rtype: float
     """
-    try:
-        _mtbf = lognorm.mean(
-            shape,
-            loc=location,
-            scale=scale,
-        )
-    except ZeroDivisionError:
-        _mtbf = 0.0
-
-    return _mtbf
+    return lognorm.mean(
+        shape,
+        loc=location,
+        scale=scale,
+    )
 
 
 def get_survival(
@@ -109,7 +104,8 @@ def get_survival(
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float, float]:
-    """Fits the provided data to the LOGN distribution and estimates scale and location.
+    """Fits the provided data to the LOGN distribution and estimates scale and
+    location.
 
     :param data: the data to use in the fit.
     :return: (_shape, _location, _scale); the estimated parameters.

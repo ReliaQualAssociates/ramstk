@@ -1978,3 +1978,254 @@ class TestMilHdbk217FPredictions:
         assert DUT._tree.get_node(2).data[
             "reliability"
         ].reliability_mission == pytest.approx(0.9999978)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_s_weibull():
+    """should calculate the hazard rate for the WEI given the parameters."""
+    # For the two-parameter Weibull.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 33.9428,
+            "shape": 2.2938,
+            "location": 0.0,
+        },
+        time=100.0,
+        dist="weibull",
+    )
+
+    assert _hazard_rate == pytest.approx(0.2734806)
+
+    # For the three-parameter Weibull.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 33.9428,
+            "shape": 2.2938,
+            "location": 56.4,
+        },
+        time=100.0,
+        dist="weibull",
+    )
+
+    assert _hazard_rate == pytest.approx(0.09343168)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_s_lognorm():
+    """should calculate the hazard rate for the LOGN given the parameters."""
+    # For the two-parameter log-Normal.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 3.516,
+            "shape": 0.9663,
+            "location": 0.0,
+        },
+        time=100.0,
+        dist="lognormal",
+    )
+
+    assert _hazard_rate == pytest.approx(0.03847692)
+
+    # For the three-parameter log-Normal.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 3.516,
+            "shape": 0.9663,
+            "location": 0.563,
+        },
+        time=100.0,
+        dist="lognorm",
+    )
+
+    assert _hazard_rate == pytest.approx(0.03863748)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_s_gaussian():
+    """should calculate the hazard rate for the GAU given the parameters."""
+    # For the two-parameter log-Normal.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 100.0,
+            "shape": 10.0,
+            "location": 0.0,
+        },
+        time=100.0,
+        dist="normal",
+    )
+
+    assert _hazard_rate == pytest.approx(0.008626175)
+
+    # For the three-parameter log-Normal.
+    _hazard_rate = rt_prediction.get_hazard_rate_from_s_distribution(
+        {
+            "scale": 100.0,
+            "shape": 10.0,
+            "location": 3.8,
+        },
+        time=100.0,
+        dist="gauss",
+    )
+
+    assert _hazard_rate == pytest.approx(0.008377694)
+
+
+@pytest.mark.unit
+def test_do_calculate_hazard_rate_s_unknown():
+    """should return 0.0 when passed an unknown s-distribution."""
+    assert (
+        rt_prediction.get_hazard_rate_from_s_distribution(
+            {
+                "scale": 100.0,
+                "shape": 10.0,
+                "location": 3.8,
+            },
+            time=100.0,
+            dist="doyles_d",
+        )
+        == 0.0
+    )
+
+
+@pytest.mark.unit
+def test_do_calculate_hazard_rates():
+    """should calculate the logistics and mission MTBF."""
+    (_hr_logistic, _hr_mission) = rt_prediction.do_calculate_hazard_rates(
+        {
+            "active": 0.000382,
+            "dormant": 0.000000429,
+            "software": 0.000069,
+        }
+    )
+
+    assert _hr_logistic == pytest.approx(0.000451429)
+    assert _hr_mission == pytest.approx(0.000451)
+
+
+# ----- ----- ----- ----- ----- MTBF CALCULATION TESTS ----- ----- ----- ----- -----
+@pytest.mark.unit
+def test_get_mtbf_s_weibull():
+    """should calculate the MTBF for the WEI given the parameters."""
+    # For the two-parameter Weibull.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 33.9428,
+            "shape": 2.2938,
+            "location": 0.0,
+        },
+        dist="weibull",
+    )
+
+    assert _mtbf == pytest.approx(30.0695166)
+
+    # For the three-parameter Weibull.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 33.9428,
+            "shape": 2.2938,
+            "location": 56.4,
+        },
+        dist="weibull",
+    )
+
+    assert _mtbf == pytest.approx(86.4695166)
+
+
+@pytest.mark.unit
+def test_get_mtbf_s_lognorm():
+    """should calculate the MTBF for the LOGN given the parameters."""
+    # For the two-parameter log-Normal.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 3.516,
+            "shape": 0.9663,
+            "location": 0.0,
+        },
+        dist="lognormal",
+    )
+
+    assert _mtbf == pytest.approx(5.607987)
+
+    # For the three-parameter log-Normal.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 3.516,
+            "shape": 0.9663,
+            "location": 0.563,
+        },
+        dist="lognorm",
+    )
+
+    assert _mtbf == pytest.approx(6.170987)
+
+
+@pytest.mark.unit
+def test_get_mtbf_s_gaussian():
+    """should calculate the MTBF for the GAU given the parameters."""
+    # For the two-parameter log-Normal.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 100.0,
+            "shape": 10.0,
+            "location": 0.0,
+        },
+        dist="normal",
+    )
+
+    assert _mtbf == 100.0
+
+    # For the three-parameter log-Normal.
+    _mtbf = rt_prediction.get_mtbf_from_s_distribution(
+        {
+            "scale": 100.0,
+            "shape": 10.0,
+            "location": 3.8,
+        },
+        dist="gauss",
+    )
+
+    assert _mtbf == 100.0
+
+
+@pytest.mark.unit
+def test_get_mtbf_s_unknown():
+    """should return 0.0 when passed an unknown s-distribution."""
+    assert (
+        rt_prediction.get_mtbf_from_s_distribution(
+            {
+                "scale": 100.0,
+                "shape": 10.0,
+                "location": 3.8,
+            },
+            dist="doyles_d",
+        )
+        == 0.0
+    )
+
+
+@pytest.mark.unit
+def test_do_calculate_mtbfs():
+    """should calculate the logistics and mission MTBF."""
+    (_mtbf_logistic, _mtbf_mission) = rt_prediction.do_calculate_mtbfs(
+        {
+            "logistic": 0.000382,
+            "mission": 0.0000429,
+        }
+    )
+
+    assert _mtbf_logistic == pytest.approx(2617.8010471)
+    assert _mtbf_mission == pytest.approx(23310.02331)
+
+
+@pytest.mark.unit
+def test_do_calculate_mtbfs_zero_hazard_rates():
+    """should return 0.0 for the MTBF when passed a zero hazard rate."""
+    (_mtbf_logistic, _mtbf_mission) = rt_prediction.do_calculate_mtbfs(
+        {
+            "logistic": 0.0,
+            "mission": 0.0,
+        }
+    )
+
+    assert _mtbf_logistic == 0.0
+    assert _mtbf_mission == 0.0
