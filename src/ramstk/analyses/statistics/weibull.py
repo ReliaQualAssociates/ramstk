@@ -127,7 +127,7 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        if scipy.__version__ >= "1.7":
+        if scipy.__version__ >= "1.7.1":
             _shape, _location, _scale = weibull_min.fit(
                 data,
                 loc=_location,
@@ -141,7 +141,7 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
                 scale=_scale,
             )
     else:
-        if scipy.__version__ >= "1.7":
+        if scipy.__version__ >= "1.7.1":
             _shape, _location, _scale = weibull_min.fit(
                 data,
                 loc=_location,
@@ -155,7 +155,6 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
                 loc=_location,
                 scale=_scale,
                 floc=_floc,
-                method=_method,
             )
 
     return _shape, _location, _scale

@@ -322,21 +322,6 @@ class TestAnalysisMethods:
         assert _reliability.hazard_rate_active == pytest.approx(0.02874279)
 
     @pytest.mark.unit
-    def test_do_calculate_hazard_rate_logistics(self, test_attributes, test_tablemodel):
-        """should calculate the logistics hazard rate."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_active = 0.0032
-        _reliability.hazard_rate_dormant = 0.000128
-        _reliability.hazard_rate_software = 0.00005
-
-        test_tablemodel.do_calculate_hazard_rate_logistics(1)
-
-        assert _reliability.hazard_rate_logistics == pytest.approx(0.003378)
-
-    @pytest.mark.unit
     def test_do_calculate_hazard_rate_no_type(self, test_attributes, test_tablemodel):
         """should return zero for the active hazard rate when unknown type ID."""
         test_tablemodel.do_select_all(attributes=test_attributes)

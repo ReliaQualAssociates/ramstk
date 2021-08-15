@@ -98,9 +98,9 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
-    # method is not an argument to fit() until scipy-1.7.0.
+    # method is not an argument to fit() until scipy-1.7.1.
     if _floc is None:
-        if scipy.__version__ >= "1.7":
+        if scipy.__version__ >= "1.7.1":
             _location, _scale = expon.fit(
                 data,
                 loc=_location,
@@ -114,7 +114,7 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
                 scale=_scale,
             )
     else:
-        if scipy.__version__ >= "1.7":
+        if scipy.__version__ >= "1.7.1":
             _location, _scale = expon.fit(
                 data,
                 loc=_location,
