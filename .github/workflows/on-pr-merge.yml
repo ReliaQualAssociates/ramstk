@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: TODO to Issue
         id: todo
-        uses: alstr/todo-to-issue-action@v2.0
+        uses: alstr/todo-to-issue-action@master
         with:
           REPO: ${{ github.repository }}
           BEFORE: ${{ github.event.before }}
