@@ -11,6 +11,7 @@
 from typing import Tuple
 
 # Third Party Imports
+import scipy
 from scipy.stats import expon
 
 
@@ -97,20 +98,36 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
+    # method is not an argument to fit() until scipy-1.7.0.
     if _floc is None:
-        _location, _scale = expon.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _location, _scale = expon.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                method=_method,
+            )
+        else:
+            _location, _scale = expon.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+            )
     else:
-        _location, _scale = expon.fit(
-            data,
-            loc=_location,
-            floc=_floc,
-            scale=_scale,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _location, _scale = expon.fit(
+                data,
+                loc=_location,
+                floc=_floc,
+                scale=_scale,
+                method=_method,
+            )
+        else:
+            _location, _scale = expon.fit(
+                data,
+                loc=_location,
+                floc=_floc,
+                scale=_scale,
+            )
 
     return _location, _scale

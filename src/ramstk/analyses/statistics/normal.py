@@ -11,6 +11,7 @@
 from typing import Tuple
 
 # Third Party Imports
+import scipy
 from scipy.stats import norm
 
 
@@ -105,19 +106,34 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        _location, _scale = norm.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _location, _scale = norm.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                method=_method,
+            )
+        else:
+            _location, _scale = norm.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+            )
     else:
-        _location, _scale = norm.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            floc=_floc,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _location, _scale = norm.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                floc=_floc,
+                method=_method,
+            )
+        else:
+            _location, _scale = norm.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                floc=_floc,
+            )
 
     return _location, _scale

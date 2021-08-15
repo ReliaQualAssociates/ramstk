@@ -11,6 +11,7 @@
 from typing import Tuple
 
 # Third Party Imports
+import scipy
 from scipy.stats import weibull_min
 
 
@@ -126,19 +127,35 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        _shape, _location, _scale = weibull_min.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _shape, _location, _scale = weibull_min.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                method=_method,
+            )
+        else:
+            _shape, _location, _scale = weibull_min.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+            )
     else:
-        _shape, _location, _scale = weibull_min.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            floc=_floc,
-            method=_method,
-        )
+        if scipy.__version__ >= "1.7":
+            _shape, _location, _scale = weibull_min.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                floc=_floc,
+                method=_method,
+            )
+        else:
+            _shape, _location, _scale = weibull_min.fit(
+                data,
+                loc=_location,
+                scale=_scale,
+                floc=_floc,
+                method=_method,
+            )
 
     return _shape, _location, _scale
