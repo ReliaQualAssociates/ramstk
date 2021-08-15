@@ -14,6 +14,7 @@ import math
 # Third Party Imports
 import numpy as np
 import pytest
+import scipy
 
 # RAMSTK Package Imports
 from ramstk.analyses.statistics import lognormal
@@ -138,6 +139,7 @@ def test_do_fit_no_floc(test_data):
 
 
 @pytest.mark.unit
+@pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method(test_data):
     """should estimate the scale, shape, and location parameters using the MM
     method."""
@@ -149,6 +151,7 @@ def test_do_fit_mm_method(test_data):
 
 
 @pytest.mark.unit
+@pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method_no_floc(test_data):
     """should estimate the scale and shape parameters using the MM method."""
     _shape, _location, _scale = lognormal.do_fit(test_data, method="MM", floc=0.0)
