@@ -41,6 +41,8 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_hardware")
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
+    pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
+    pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
 
     # Delete the device under test.
     del dut

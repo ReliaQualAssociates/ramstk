@@ -61,6 +61,10 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_calculate_cost, "request_calculate_total_cost")
+        pub.subscribe(
+            self.do_calculate_part_count, "request_calculate_total_part_count"
+        )
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -117,19 +121,19 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         """
         _node = self.tree.get_node(node_id)
         _record = _node.data[self._tag]
-        _part_count: int = 0
+        _total_part_count: int = 0
 
         if _record.part == 1:
-            _part_count = _record.quantity
+            _total_part_count = _record.quantity
         else:
             for _node_id in _node.successors(self.tree.identifier):
-                _part_count += self.do_calculate_part_count(_node_id)
-            _part_count = _part_count * _record.quantity
+                _total_part_count += self.do_calculate_part_count(_node_id)
+            _total_part_count = _total_part_count * _record.quantity
 
         pub.sendMessage(
             "request_set_hardware_attributes",
             node_id=node_id,
-            package={"total_part_count": _part_count},
+            package={"total_part_count": _total_part_count},
         )
 
-        return _part_count
+        return _total_part_count
