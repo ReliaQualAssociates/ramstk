@@ -18,7 +18,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKHardwareTable
+from ramstk.db.base import BaseDatabase
+from ramstk.models import RAMSTKHardwareBoMView, RAMSTKHardwareTable
 from ramstk.models.programdb import RAMSTKHardware
 
 
@@ -48,12 +49,44 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestCreateControllers:
-    """Class for testing controller initialization."""
+@pytest.fixture(scope="function")
+def test_viewmodel():
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKHardwareBoMView()
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.on_insert, "succeed_insert_hardware")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_design_electric")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_design_mechanic")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_milhdbk217f")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_nswc")
+    pub.unsubscribe(dut.on_insert, "succeed_insert_reliability")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_milhdbk217fs")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_nswcs")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_reliabilitys")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.mark.usefixtures("test_tablemodel", "test_viewmodel")
+class TestCreateModels:
+    """Class for testing model initialization."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_table_model_create(self, test_tablemodel):
         """should return a table manager instance."""
         assert isinstance(test_tablemodel, RAMSTKHardwareTable)
         assert isinstance(test_tablemodel.tree, Tree)
@@ -90,6 +123,78 @@ class TestCreateControllers:
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_hardware")
         assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_hardware")
         assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_hardware")
+
+    @pytest.mark.unit
+    def test_view_model_create(self, test_viewmodel):
+        """should return a view manager instance."""
+        assert isinstance(test_viewmodel, RAMSTKHardwareBoMView)
+        assert isinstance(test_viewmodel.tree, Tree)
+        assert isinstance(test_viewmodel.dao, BaseDatabase)
+        assert test_viewmodel._tag == "hardware_bom"
+        assert test_viewmodel._root == 0
+        assert test_viewmodel._revision_id == 0
+        assert test_viewmodel._dic_load_functions == {
+            "hardware": test_viewmodel._do_load_hardware,
+            "design_electric": test_viewmodel._do_load_design_electric,
+            "design_mechanic": test_viewmodel._do_load_design_mechanic,
+            "milhdbk217f": test_viewmodel._do_load_milhdbk217f,
+            "nswc": test_viewmodel._do_load_nswc,
+            "reliability": test_viewmodel._do_load_reliability,
+        }
+        assert isinstance(test_viewmodel._dic_trees["hardware"], Tree)
+        assert isinstance(test_viewmodel._dic_trees["design_electric"], Tree)
+        assert isinstance(test_viewmodel._dic_trees["design_mechanic"], Tree)
+        assert isinstance(test_viewmodel._dic_trees["milhdbk217f"], Tree)
+        assert isinstance(test_viewmodel._dic_trees["nswc"], Tree)
+        assert isinstance(test_viewmodel._dic_trees["reliability"], Tree)
+        assert test_viewmodel._lst_modules == [
+            "hardware",
+            "design_electric",
+            "design_mechanic",
+            "milhdbk217f",
+            "nswc",
+            "reliability",
+        ]
+        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_hardware")
+        assert pub.isSubscribed(
+            test_viewmodel.on_insert, "succeed_insert_design_electric"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.on_insert, "succeed_insert_design_mechanic"
+        )
+        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_milhdbk217f")
+        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_nswc")
+        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_reliability")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_hardwares"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_design_electrics"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_design_mechanics"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_milhdbk217fs"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_nswcs")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_reliabilitys"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_hardware")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_delete_design_electric"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_delete_design_mechanic"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_delete_milhdbk217f"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_nswc")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_delete_reliability"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
