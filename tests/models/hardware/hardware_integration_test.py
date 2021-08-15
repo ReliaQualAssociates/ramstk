@@ -125,15 +125,11 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == ("Attempted to delete non-existent Hardware ID 300.")
-        print(
-            "\033[35m\nfail_delete_hardware topic was broadcast on non-existent " "ID."
-        )
+        print("\033[35m\nfail_delete_hardware topic was broadcast on non-existent ID.")
 
     def on_fail_delete_no_data_package(self, error_message):
         assert error_message == ("Attempted to delete non-existent Hardware ID 2.")
-        print(
-            "\033[35m\nfail_delete_hardware topic was broadcast on no data " "package."
-        )
+        print("\033[35m\nfail_delete_hardware topic was broadcast on no data package.")
 
     @pytest.mark.integration
     def test_do_delete(self, test_tablemodel):
@@ -190,9 +186,7 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for hardware ID 1 was the "
             "wrong type."
         )
-        print(
-            "\033[35m\nfail_update_hardware topic was broadcast on wrong data " "type."
-        )
+        print("\033[35m\nfail_update_hardware topic was broadcast on wrong data type.")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
@@ -202,15 +196,11 @@ class TestUpdateMethods:
         assert error_message == (
             "do_update: Attempted to save non-existent hardware with hardware ID 100."
         )
-        print(
-            "\033[35m\nfail_update_hardware topic was broadcast on " "non-existent ID."
-        )
+        print("\033[35m\nfail_update_hardware topic was broadcast on non-existent ID.")
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == ("do_update: No data package found for hardware ID 1.")
-        print(
-            "\033[35m\nfail_update_hardware topic was broadcast on no data " "package."
-        )
+        print("\033[35m\nfail_update_hardware topic was broadcast on no data package.")
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
