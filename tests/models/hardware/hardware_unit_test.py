@@ -274,6 +274,22 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(4).data["hardware"].revision_id == 1
         assert test_tablemodel.tree.get_node(4).data["hardware"].hardware_id == 4
 
+    @pytest.mark.unit
+    def test_do_make_comp_ref_des(self, test_attributes, test_tablemodel):
+        """should create the composite reference designator."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _hardware = test_tablemodel.do_select(1)
+        _hardware.ref_des = "SS8"
+
+        _hardware = test_tablemodel.do_select(2)
+        _hardware.ref_des = "A9"
+
+        test_tablemodel.do_make_composite_ref_des(1)
+
+        assert test_tablemodel.do_select(1).comp_ref_des == "SS8"
+        assert test_tablemodel.do_select(2).comp_ref_des == "SS8:A9"
+
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestDeleteMethods:

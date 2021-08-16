@@ -961,3 +961,39 @@ class TestAnalysisMethods:
         _attributes = test_reliability.do_select(2).get_attributes()
 
         assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)
+
+    @pytest.mark.integration
+    def test_do_predict_hazard_rate_active_not_217f(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+    ):
+        """should not predict the active hazard of a part when not using handbook."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        _hardware = test_tablemodel.do_select(2)
+        _hardware.part = 1
+
+        _hardware = test_reliability.do_select(2)
+        _hardware.hazard_rate_method_id = 3
+        _hardware.hazard_rate_active = 0.0007829
+
+        test_viewmodel.do_predict_active_hazard_rate(2)
+        _attributes = test_reliability.do_select(2).get_attributes()
+
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)

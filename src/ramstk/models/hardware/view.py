@@ -147,11 +147,11 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         _node = self.tree.get_node(node_id)
-        _hazard_rate_active: float = 0
+        _hazard_rate_active: float = _node.data["reliability"].hazard_rate_active
 
-        if _node.data["hardware"].part != 1:
-            _hazard_rate_active = _node.data["reliability"].hazard_rate_active
-        elif _node.data["reliability"].hazard_rate_method_id in [1, 2]:
+        if _node.data["hardware"].part == 1 and _node.data[
+            "reliability"
+        ].hazard_rate_method_id in [1, 2]:
             _attributes = {
                 **_node.data["hardware"].get_attributes(),
                 **_node.data["design_mechanic"].get_attributes(),
@@ -161,18 +161,15 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 **_node.data["reliability"].get_attributes(),
             }
 
-            try:
-                _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
-                    **_attributes
-                )
-            except KeyError:
-                _hazard_rate_active = 0.0
+            _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
+                **_attributes
+            )
 
-        pub.sendMessage(
-            "request_set_reliability_attributes",
-            node_id=node_id,
-            package={"hazard_rate_active": _hazard_rate_active},
-        )
+            pub.sendMessage(
+                "request_set_reliability_attributes",
+                node_id=node_id,
+                package={"hazard_rate_active": _hazard_rate_active},
+            )
 
         return _hazard_rate_active
 
@@ -192,8 +189,11 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 data={"hardware": _hardware},
             )
 
-        if self._dic_trees["design_electric"].depth() > 0:
-            self._dic_load_functions["design_electric"]()
+        self._dic_load_functions["design_electric"]()
+        self._dic_load_functions["design_mechanic"]()
+        self._dic_load_functions["milhdbk217f"]()
+        self._dic_load_functions["nswc"]()
+        self._dic_load_functions["reliability"]()
 
     def _do_load_design_electric(self) -> None:
         """Load the design electric data into the tree.
@@ -210,9 +210,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             except ObjectDeletedError:
                 self._dic_trees["design_electric"].remove_node(_node.identifier)
 
-        if self._dic_trees["design_mechanic"].depth() > 0:
-            self._dic_load_functions["design_mechanic"]()
-
     def _do_load_design_mechanic(self) -> None:
         """Load the design_mechanic into the tree.
 
@@ -227,9 +224,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _par_node.data["design_mechanic"] = _design_mechanic
             except ObjectDeletedError:
                 self._dic_trees["design_mechanic"].remove_node(_node.identifier)
-
-        if self._dic_trees["milhdbk217f"].depth() > 0:
-            self._dic_load_functions["milhdbk217f"]()
 
     def _do_load_milhdbk217f(self) -> None:
         """Load the MIL-HDBK-217F data into the tree.
@@ -246,9 +240,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             except ObjectDeletedError:
                 self._dic_trees["milhdbk217f"].remove_node(_node.identifier)
 
-        if self._dic_trees["nswc"].depth() > 0:
-            self._dic_load_functions["nswc"]()
-
     def _do_load_nswc(self) -> None:
         """Load the NSWC data into the tree.
 
@@ -263,9 +254,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _par_node.data["nswc"] = _nswc
             except ObjectDeletedError:
                 self._dic_trees["nswc"].remove_node(_node.identifier)
-
-        if self._dic_trees["reliability"].depth() > 0:
-            self._dic_load_functions["reliability"]()
 
     def _do_load_reliability(self) -> None:
         """Load the reliability data into the tree.
