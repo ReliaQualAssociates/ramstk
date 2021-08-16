@@ -1,15 +1,14 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.data.storage.RAMSTKReliability.py is part of The RAMSTK Project
+#       ramstk.models.reliability.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKReliability Table Module."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
@@ -70,13 +69,13 @@ class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
-        ForeignKey("ramstk_hardware.fld_hardware_id"),
+        ForeignKey("ramstk_hardware.fld_hardware_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,
     )
@@ -225,10 +224,6 @@ class RAMSTKReliability(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware: relationship = relationship(
-        "RAMSTKHardware",
-        back_populates="reliability",
-    )
 
     def get_attributes(self):
         """Retrieve RAMSTKReliability attributes from RAMSTK Program database.

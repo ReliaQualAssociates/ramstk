@@ -1,10 +1,10 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.data.storage.RAMSTKHardware.py is part of The RAMSTK Project
+#       ramstk.models.hardware.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKHardware Table Module."""
 
 # Standard Library Imports
@@ -182,32 +182,32 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseRecord):
     reliability = relationship(  # type: ignore
         "RAMSTKReliability",
         uselist=False,
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
     milhdbkf = relationship(  # type: ignore
         "RAMSTKMilHdbkF",
         uselist=False,
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
     nswc = relationship(  # type: ignore
         "RAMSTKNSWC",
         uselist=False,
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
     design_electric = relationship(  # type: ignore
         "RAMSTKDesignElectric",
         uselist=False,
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
     design_mechanic = relationship(  # type: ignore
         "RAMSTKDesignMechanic",
         uselist=False,
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
 
     def get_attributes(self):
