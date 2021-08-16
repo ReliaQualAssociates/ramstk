@@ -76,6 +76,12 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
+    pub.unsubscribe(
+        dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
+    )
+    pub.unsubscribe(
+        dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
+    )
 
     # Delete the device under test.
     del dut
@@ -294,7 +300,6 @@ class TestAnalysisMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 1
         _hardware.cost_type_id = 2
         _hardware.part = 1
         _hardware.cost = 12.98
@@ -311,17 +316,14 @@ class TestAnalysisMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         _hardware = test_tablemodel.do_select(1)
-        _hardware.hardware_id = 1
         _hardware.cost_type_id = 2
         _hardware.part = 0
         _hardware.quantity = 1
         _hardware = test_tablemodel.do_select(2)
-        _hardware.hardware_id = 2
         _hardware.cost_type_id = 2
         _hardware.part = 0
         _hardware.quantity = 3
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 3
         _hardware.cost_type_id = 1
         _hardware.part = 1
         _hardware.total_cost = 25.96
@@ -337,7 +339,6 @@ class TestAnalysisMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 1
         _hardware.part = 1
         _hardware.quantity = 2
 
@@ -352,15 +353,12 @@ class TestAnalysisMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         _hardware = test_tablemodel.do_select(1)
-        _hardware.hardware_id = 1
         _hardware.part = 0
         _hardware.quantity = 1
         _hardware = test_tablemodel.do_select(2)
-        _hardware.hardware_id = 2
         _hardware.part = 0
         _hardware.quantity = 3
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 3
         _hardware.part = 1
         _hardware.quantity = 2
 

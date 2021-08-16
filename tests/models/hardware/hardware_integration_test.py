@@ -80,6 +80,12 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
+    pub.unsubscribe(
+        dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
+    )
+    pub.unsubscribe(
+        dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
+    )
 
     # Delete the device under test.
     del dut
@@ -137,7 +143,7 @@ class TestSelectMethods:
         test_nswc,
         test_reliability,
     ):
-        """should return records tree with missions, mission phases, environments."""
+        """should return records tree with hardware tables."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
 
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
@@ -425,7 +431,7 @@ class TestDeleteMethods:
         assert isinstance(tree, Tree)
         assert not tree.contains(5)
         print(
-            "\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast on mission "
+            "\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast on hardware "
             "delete."
         )
 
@@ -720,7 +726,15 @@ class TestGetterSetter:
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_hardware_tree")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures(
+    "test_tablemodel",
+    "test_viewmodel",
+    "test_design_electric",
+    "test_design_electric",
+    "test_milhdbk217f",
+    "test_nswc",
+    "test_reliability",
+)
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
@@ -728,7 +742,6 @@ class TestAnalysisMethods:
     def test_do_calculate_cost_part(self, test_tablemodel):
         """should calculate the total cost for a part."""
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 1
         _hardware.cost_type_id = 2
         _hardware.part = 1
         _hardware.cost = 12.98
@@ -743,18 +756,15 @@ class TestAnalysisMethods:
     def test_do_calculate_cost_assembly(self, test_tablemodel):
         """should calculate the total cost of an assembly."""
         _hardware = test_tablemodel.do_select(1)
-        _hardware.hardware_id = 1
         _hardware.cost_type_id = 2
         _hardware.part = 0
         _hardware.quantity = 1
         _hardware = test_tablemodel.do_select(2)
-        _hardware.hardware_id = 2
         _hardware.cost_type_id = 2
         _hardware.part = 1
         _hardware.quantity = 3
         _hardware.cost = 5.16
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 3
         _hardware.cost_type_id = 1
         _hardware.part = 1
         _hardware.total_cost = 25.96
@@ -768,7 +778,6 @@ class TestAnalysisMethods:
     def test_do_calculate_part_count_part(self, test_tablemodel):
         """should calculate the total part count of a part."""
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 1
         _hardware.part = 1
         _hardware.quantity = 2
 
@@ -781,15 +790,12 @@ class TestAnalysisMethods:
     def test_do_calculate_part_count_assembly(self, test_tablemodel):
         """should calculate the total part count of an assembly."""
         _hardware = test_tablemodel.do_select(1)
-        _hardware.hardware_id = 1
         _hardware.part = 0
         _hardware.quantity = 1
         _hardware = test_tablemodel.do_select(2)
-        _hardware.hardware_id = 2
         _hardware.part = 0
         _hardware.quantity = 4
         _hardware = test_tablemodel.do_select(3)
-        _hardware.hardware_id = 3
         _hardware.part = 1
         _hardware.quantity = 3
 
@@ -797,3 +803,161 @@ class TestAnalysisMethods:
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["total_part_count"] == 7
+
+    @pytest.mark.integration
+    def test_do_calculate_power_dissipation_part(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+    ):
+        """should calculate the total power dissipation of a part."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        _hardware = test_tablemodel.do_select(3)
+        _hardware.part = 1
+        _hardware.quantity = 2
+
+        _design_electric = test_design_electric.do_select(3)
+        _design_electric.power_operating = 0.00295
+
+        test_viewmodel.do_calculate_power_dissipation(3)
+        _attributes = test_tablemodel.do_select(3).get_attributes()
+
+        assert _attributes["total_power_dissipation"] == 0.0059
+
+    @pytest.mark.integration
+    def test_do_calculate_power_dissipation_assembly(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+    ):
+        """should calculate the total power dissipation of an assembly."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        _hardware = test_tablemodel.do_select(2)
+        _hardware.part = 0
+        _hardware.quantity = 1
+        _hardware = test_tablemodel.do_select(6)
+        _hardware.part = 0
+        _hardware.quantity = 4
+        _hardware = test_tablemodel.do_select(7)
+        _hardware.part = 1
+        _hardware.quantity = 3
+
+        _design_electric = test_design_electric.do_select(7)
+        _design_electric.power_operating = 0.00295
+
+        pub.sendMessage("request_calculate_power_dissipation", node_id=2)
+        _attributes = test_tablemodel.do_select(2).get_attributes()
+
+        assert _attributes["total_power_dissipation"] == 0.00885
+
+    @pytest.mark.integration
+    def test_do_predict_hazard_rate_active_part(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+    ):
+        """should predict the active hazard of a part."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        _hardware = test_tablemodel.do_select(3)
+        _hardware.category_id = 3
+        _hardware.subcategory_id = 1
+        _hardware.part = 1
+
+        _hardware = test_design_electric.do_select(3)
+        _hardware.environment_active_id = 9
+
+        _hardware = test_milhdbk217f.do_select(3)
+        _hardware.piR = 0.0038
+
+        _hardware = test_reliability.do_select(3)
+        _hardware.hazard_rate_method_id = 2
+        _hardware.quality_id = 3
+
+        test_viewmodel.do_predict_active_hazard_rate(3)
+        _attributes = test_reliability.do_select(3).get_attributes()
+
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0007813826)
+
+    @pytest.mark.integration
+    def test_do_predict_hazard_rate_active_assembly(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+    ):
+        """should predict the active hazard of a part."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+        _hardware = test_tablemodel.do_select(2)
+        _hardware.part = 0
+
+        _hardware = test_reliability.do_select(2)
+        _hardware.hazard_rate_method_id = 2
+        _hardware.hazard_rate_active = 0.0007829
+
+        test_viewmodel.do_predict_active_hazard_rate(2)
+        _attributes = test_reliability.do_select(2).get_attributes()
+
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)

@@ -99,6 +99,82 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_milhdbk217f")
         pub.subscribe(super().do_set_tree, "succeed_delete_nswc")
         pub.subscribe(super().do_set_tree, "succeed_delete_reliability")
+        pub.subscribe(
+            self.do_calculate_power_dissipation, "request_calculate_power_dissipation"
+        )
+        pub.subscribe(
+            self.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
+        )
+
+    def do_calculate_power_dissipation(self, node_id: int) -> float:
+        """Calculate the total power dissipation of a hardware item.
+
+        :param node_id: the record ID to calculate.
+        :return: _total_power_dissipation; the total power dissipation.
+        :rtype: float
+        """
+        _node = self.tree.get_node(node_id)
+        _design_electric = _node.data["design_electric"]
+        _hardware = _node.data["hardware"]
+        _total_power_dissipation: float = 0.0
+
+        if _hardware.part == 1:
+            _total_power_dissipation = (
+                _design_electric.power_operating * _hardware.quantity
+            )
+        else:
+            for _node_id in _node.successors(self.tree.identifier):
+                _total_power_dissipation += self.do_calculate_power_dissipation(
+                    _node_id
+                )
+            _total_power_dissipation = _total_power_dissipation * _hardware.quantity
+
+        _hardware.total_power_dissipation = _total_power_dissipation
+
+        pub.sendMessage(
+            "request_set_hardware_attributes",
+            node_id=node_id,
+            package={"total_power_dissipation": _total_power_dissipation},
+        )
+
+        return _total_power_dissipation
+
+    def do_predict_active_hazard_rate(self, node_id: int) -> float:
+        """Request that the hazard rate prediction be performed.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _node = self.tree.get_node(node_id)
+        _hazard_rate_active: float = 0
+
+        if _node.data["hardware"].part != 1:
+            _hazard_rate_active = _node.data["reliability"].hazard_rate_active
+        elif _node.data["reliability"].hazard_rate_method_id in [1, 2]:
+            _attributes = {
+                **_node.data["hardware"].get_attributes(),
+                **_node.data["design_mechanic"].get_attributes(),
+                **_node.data["design_electric"].get_attributes(),
+                **_node.data["milhdbk217f"].get_attributes(),
+                **_node.data["nswc"].get_attributes(),
+                **_node.data["reliability"].get_attributes(),
+            }
+
+            try:
+                _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
+                    **_attributes
+                )
+            except KeyError:
+                _hazard_rate_active = 0.0
+
+        pub.sendMessage(
+            "request_set_reliability_attributes",
+            node_id=node_id,
+            package={"hazard_rate_active": _hazard_rate_active},
+        )
+
+        return _hazard_rate_active
 
     def _do_load_hardware(self) -> None:
         """Load the hardware data into the tree.
@@ -112,7 +188,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             self.tree.create_node(
                 tag="hardware",
                 identifier=_hardware.hardware_id,
-                parent=self._root,
+                parent=_hardware.parent_id,
                 data={"hardware": _hardware},
             )
 
@@ -205,73 +281,3 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _par_node.data["reliability"] = _reliability
             except ObjectDeletedError:
                 self._dic_trees["reliability"].remove_node(_node.identifier)
-
-    def _do_calculate_power_dissipation(self, node_id: int) -> float:
-        """Calculate the total power dissipation of a hardware item.
-
-        :param node_id: the record ID to calculate.
-        :return: _total_power_dissipation; the total power dissipation.
-        :rtype: float
-        """
-        _node = self.tree.get_node(node_id)
-        _design_electric = _node.data["design_electric"]
-        _hardware = _node.data["hardware"]
-        _total_power_dissipation: float = 0.0
-
-        if _hardware.part == 1:
-            _total_power_dissipation = (
-                _design_electric.power_operating * _hardware.quantity
-            )
-        else:
-            for _node_id in _node.successors(self.tree.identifier):
-                _total_power_dissipation += self._do_calculate_power_dissipation(
-                    _node_id
-                )
-            _total_power_dissipation = _total_power_dissipation * _hardware.quantity
-
-        _hardware.total_power_dissipation = _total_power_dissipation
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_power_dissipation": _total_power_dissipation},
-        )
-
-        return _total_power_dissipation
-
-    def _do_predict_active_hazard_rate(self, node_id: int) -> float:
-        """Request that the hazard rate prediction be performed.
-
-        :param node_id: the record ID to calculate.
-        :return: None
-        :rtype: None
-        """
-        _node = self.tree.get_node(node_id)
-        _hazard_rate_active: float = 0
-
-        if _node.data["hardware"].part != 1:
-            _hazard_rate_active = _node.data["reliability"].hazard_rate_active
-        elif _node.data["reliability"].hazard_rate_method_id in [1, 2]:
-            _attributes = {
-                **_node.data["hardware"].get_attributes(),
-                **_node.data["design_mechanic"].get_attributes(),
-                **_node.data["design_electric"].get_attributes(),
-                **_node.data["mil_hdbk_217f"].get_attributes(),
-                **_node.data["nswc"].get_attributes(),
-                **_node.data["reliability"].get_attributes(),
-            }
-
-            try:
-                _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
-                    **_attributes
-                )
-            except KeyError:
-                _hazard_rate_active = 0.0
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"hazard_rate_active": _hazard_rate_active},
-        )
-
-        return _hazard_rate_active
