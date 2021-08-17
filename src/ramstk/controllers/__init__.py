@@ -7,9 +7,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK controllers package."""
 
-# RAMSTK Package Imports
-from ramstk.controllers.managers import RAMSTKAnalysisManager
-
 # RAMSTK Local Imports
 from .action.datamanager import DataManager as dmAction
 from .allocation.datamanager import DataManager as dmAllocation
