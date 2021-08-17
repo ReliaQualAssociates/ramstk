@@ -248,7 +248,7 @@ class TestAnalysisMethods:
             test_toml_user_configuration.RAMSTK_STRESS_LIMITS
         )
         _design_electric.hardware_id = 1
-        _design_electric.current_ratio = 0.62
+        _design_electric.current_ratio = 1.62
         _design_electric.power_ratio = 0.55
         _design_electric.voltage_ratio = 0.58
 
@@ -256,7 +256,10 @@ class TestAnalysisMethods:
         assert _design_electric.overstress
         assert (
             _design_electric.reason
-            == "Operating power is greater than limit in a harsh environment.\n"
+            == "Operating current is greater than limit in a harsh "
+            "environment.\nOperating current is greater than limit in a mild "
+            "environment.\nOperating power is greater than limit in a harsh "
+            "environment.\n"
         )
 
         test_tablemodel.do_derating_analysis(1, 5)
@@ -264,6 +267,7 @@ class TestAnalysisMethods:
         assert (
             _design_electric.reason
             == "Operating current is greater than limit in a harsh environment.\n"
+            "Operating current is greater than limit in a mild environment.\n"
             "Operating voltage is greater than limit in a harsh environment.\n"
         )
 
@@ -288,10 +292,35 @@ class TestAnalysisMethods:
         assert (
             _design_electric.reason
             == "Operating current is less than limit in a harsh "
-               "environment.\nOperating current is less than limit in a mild "
-               "environment.\nOperating power is less than limit in a harsh "
-               "environment.\nOperating power is less than limit in a mild "
-               "environment.\nOperating voltage is less than limit in a harsh "
-               "environment.\nOperating voltage is less than limit in a mild "
-               "environment.\n"
+            "environment.\nOperating current is less than limit in a mild "
+            "environment.\nOperating power is less than limit in a harsh "
+            "environment.\nOperating power is less than limit in a mild "
+            "environment.\nOperating voltage is less than limit in a harsh "
+            "environment.\nOperating voltage is less than limit in a mild "
+            "environment.\n"
         )
+
+    @pytest.mark.unit
+    def test_do_stress_analysis(self, test_attributes, test_tablemodel):
+        """should calculate appropriate stress ratios for the component category."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _design_electric = test_tablemodel.do_select(1)
+        _design_electric.current_rated = 0.5
+        _design_electric.current_operating = 0.0032
+        _design_electric.power_rated = 0.1
+        _design_electric.power_operating = 0.00009
+        _design_electric.voltage_rated = 50
+        _design_electric.voltage_ac_operating = 0.005
+        _design_electric.voltage_dc_operating = 3.3
+
+        test_tablemodel.do_stress_analysis(1, 3)
+        _attributes = test_tablemodel.do_select(1).get_attributes()
+
+        assert _attributes["power_ratio"] == pytest.approx(0.0009)
+
+        test_tablemodel.do_stress_analysis(1, 5)
+        _attributes = test_tablemodel.do_select(1).get_attributes()
+
+        assert _attributes["current_ratio"] == pytest.approx(0.0064)
+        assert _attributes["voltage_ratio"] == pytest.approx(0.0661)

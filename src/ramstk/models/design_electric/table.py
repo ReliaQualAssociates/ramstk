@@ -293,3 +293,20 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
             node_id=node_id,
             package={"reason": _reason},
         )
+
+    def do_stress_analysis(self, node_id: int, category_id: int) -> None:
+        """Perform a stress analysis.
+
+        :param node_id: the record ID to calculate.
+        :param category_id: the component category ID of the record to calculate.
+        :return: None
+        :rtype: None
+        """
+        if category_id in [1, 2, 5, 6, 7, 8]:
+            self.do_calculate_current_ratio(node_id)
+
+        if category_id == 3:
+            self.do_calculate_power_ratio(node_id)
+
+        if category_id in [4, 5, 8]:
+            self.do_calculate_voltage_ratio(node_id)
