@@ -61,6 +61,7 @@ class TestCreateControllers:
         assert test_tablemodel._select_msg == "selected_revision"
         assert test_tablemodel._root == 0
         assert test_tablemodel._tag == "design_electric"
+        assert test_tablemodel._dic_stress_limits == {}
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
@@ -183,7 +184,9 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures(
+    "test_attributes", "test_tablemodel", "test_toml_user_configuration"
+)
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
@@ -232,3 +235,63 @@ class TestAnalysisMethods:
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["voltage_ratio"] == pytest.approx(0.0661)
+
+    @pytest.mark.unit
+    def test_do_derating_analysis_over_limit(
+        self, test_attributes, test_tablemodel, test_toml_user_configuration
+    ):
+        """should determine if a component is overstressed and the reason."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _design_electric = test_tablemodel.do_select(1)
+        test_tablemodel._dic_stress_limits = (
+            test_toml_user_configuration.RAMSTK_STRESS_LIMITS
+        )
+        _design_electric.hardware_id = 1
+        _design_electric.current_ratio = 0.62
+        _design_electric.power_ratio = 0.55
+        _design_electric.voltage_ratio = 0.58
+
+        test_tablemodel.do_derating_analysis(1, 3)
+        assert _design_electric.overstress
+        assert (
+            _design_electric.reason
+            == "Operating power is greater than limit in a harsh environment.\n"
+        )
+
+        test_tablemodel.do_derating_analysis(1, 5)
+        assert _design_electric.overstress
+        assert (
+            _design_electric.reason
+            == "Operating current is greater than limit in a harsh environment.\n"
+            "Operating voltage is greater than limit in a harsh environment.\n"
+        )
+
+    @pytest.mark.unit
+    def test_do_derating_analysis_under_limit(
+        self, test_attributes, test_tablemodel, test_toml_user_configuration
+    ):
+        """should determine if a component is overstressed and the reason."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _design_electric = test_tablemodel.do_select(1)
+        test_tablemodel._dic_stress_limits = (
+            test_toml_user_configuration.RAMSTK_STRESS_LIMITS
+        )
+        _design_electric.hardware_id = 1
+        _design_electric.current_ratio = -0.62
+        _design_electric.power_ratio = -0.55
+        _design_electric.voltage_ratio = -0.58
+
+        test_tablemodel.do_derating_analysis(1, 3)
+        assert _design_electric.overstress
+        assert (
+            _design_electric.reason
+            == "Operating current is less than limit in a harsh "
+               "environment.\nOperating current is less than limit in a mild "
+               "environment.\nOperating power is less than limit in a harsh "
+               "environment.\nOperating power is less than limit in a mild "
+               "environment.\nOperating voltage is less than limit in a harsh "
+               "environment.\nOperating voltage is less than limit in a mild "
+               "environment.\n"
+        )
