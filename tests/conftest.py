@@ -833,6 +833,7 @@ def test_toml_user_configuration(make_home_config_dir):
     }
 
     toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w"))
+    _user_config.get_user_configuration()
 
     yield _user_config
 

@@ -108,13 +108,13 @@ class TestProgramManager:
         assert isinstance(DUT, RAMSTKProgramManager)
         assert isinstance(DUT.dic_managers, dict)
         assert DUT.dic_managers["revision"] == {"data": None}
-        assert DUT.dic_managers["function"] == {"analysis": None, "data": None}
+        assert DUT.dic_managers["function"] == {"data": None}
         assert DUT.dic_managers["allocation"] == {"data": None}
         assert DUT.dic_managers["requirement"] == {"data": None}
         assert DUT.dic_managers["similar_item"] == {"data": None}
         assert DUT.dic_managers["stakeholder"] == {"data": None}
-        assert DUT.dic_managers["hardware"] == {"analysis": None, "data": None}
-        assert DUT.dic_managers["fmea"] == {"analysis": None, "data": None}
+        assert DUT.dic_managers["hardware"] == {"data": None}
+        assert DUT.dic_managers["fmea"] == {"data": None}
         assert DUT.dic_managers["options"] == {"data": None}
         assert DUT.dic_managers["pof"] == {"data": None}
         assert DUT.dic_managers["preferences"] == {"data": None}

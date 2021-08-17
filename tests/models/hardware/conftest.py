@@ -1,8 +1,16 @@
 # Third Party Imports
 import pytest
 from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.models import (
+    RAMSTKDesignElectricTable,
+    RAMSTKDesignMechanicTable,
+    RAMSTKMILHDBK217FTable,
+    RAMSTKNSWCTable,
+    RAMSTKReliabilityTable,
+)
 from ramstk.models.programdb import RAMSTKHardware
 
 
@@ -168,3 +176,146 @@ def mock_program_dao(monkeypatch):
     ]
 
     yield DAO
+
+
+@pytest.fixture(scope="class")
+def test_design_electric(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKDesignElectricTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_design_electric_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_design_electric_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_design_electric")
+    pub.unsubscribe(dut.do_update, "request_update_design_electric")
+    pub.unsubscribe(dut.do_get_tree, "request_get_design_electric_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
+    pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
+    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
+    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_design_mechanic(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKDesignMechanicTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_design_mechanic_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_design_mechanic_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_design_mechanic")
+    pub.unsubscribe(dut.do_update, "request_update_design_mechanic")
+    pub.unsubscribe(dut.do_get_tree, "request_get_design_mechanic_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_design_mechanic")
+    pub.unsubscribe(dut.do_insert, "request_insert_design_mechanic")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_milhdbk217f(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKMILHDBK217FTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_milhdbk217f_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_milhdbk217f_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_milhdbk217f")
+    pub.unsubscribe(dut.do_update, "request_update_milhdbk217f")
+    pub.unsubscribe(dut.do_get_tree, "request_get_milhdbk217f_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_milhdbk217f")
+    pub.unsubscribe(dut.do_insert, "request_insert_milhdbk217f")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_nswc(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKNSWCTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_nswc_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_nswc_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_nswc")
+    pub.unsubscribe(dut.do_update, "request_update_nswc")
+    pub.unsubscribe(dut.do_get_tree, "request_get_nswc_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_nswc")
+    pub.unsubscribe(dut.do_insert, "request_insert_nswc")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_reliability(test_program_dao):
+    """Get a data manager instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKReliabilityTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_reliability_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_reliability_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_reliability")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_reliability")
+    pub.unsubscribe(dut.do_update, "request_update_reliability")
+    pub.unsubscribe(dut.do_get_tree, "request_get_reliability_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_reliability")
+    pub.unsubscribe(dut.do_insert, "request_insert_reliability")
+    pub.unsubscribe(
+        dut.do_calculate_hazard_rate_active, "request_calculate_hazard_rate_active"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_hazard_rate_dormant,
+        "request_calculate_hazard_rate_dormant",
+    )
+    pub.unsubscribe(
+        dut.do_calculate_hazard_rate_logistics,
+        "request_calculate_hazard_rate_logistics",
+    )
+    pub.unsubscribe(
+        dut.do_calculate_hazard_rate_mission, "request_calculate_hazard_rate_mission"
+    )
+    pub.unsubscribe(dut.do_calculate_mtbf, "request_calculate_mtbf")
+    pub.unsubscribe(dut.do_calculate_reliability, "request_calculate_reliability")
+
+    # Delete the device under test.
+    del dut

@@ -7,9 +7,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK controllers package."""
 
-# RAMSTK Package Imports
-from ramstk.controllers.managers import RAMSTKAnalysisManager
-
 # RAMSTK Local Imports
 from .action.datamanager import DataManager as dmAction
 from .allocation.datamanager import DataManager as dmAllocation
@@ -18,8 +15,6 @@ from .control.datamanager import DataManager as dmControl
 from .environment.datamanager import DataManager as dmEnvironment
 from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .function.datamanager import DataManager as dmFunction
-from .hardware.analysismanager import AnalysisManager as amHardware
-from .hardware.datamanager import DataManager as dmHardware
 from .hazards.datamanager import DataManager as dmHazards
 from .mechanism.datamanager import DataManager as dmMechanism
 from .mission.datamanager import DataManager as dmMission

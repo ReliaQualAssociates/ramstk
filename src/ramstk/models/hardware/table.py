@@ -65,6 +65,7 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         pub.subscribe(
             self.do_calculate_part_count, "request_calculate_total_part_count"
         )
+        pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -137,3 +138,39 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         )
 
         return _total_part_count
+
+    def do_make_composite_ref_des(self, node_id: int = 1) -> None:
+        """Make the composite reference designators.
+
+        :param node_id: the record ID to start making the composite reference
+            designators.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve the parent hardware item's composite reference designator.
+        _node = self.tree.get_node(node_id)
+        _hardware = _node.data["hardware"]
+
+        if _node.predecessor(self.tree.identifier) != 0:
+            _p_comp_ref_des = self.do_select(
+                _node.predecessor(self.tree.identifier)
+            ).comp_ref_des
+        else:
+            _p_comp_ref_des = ""
+
+        if _p_comp_ref_des != "":
+            _hardware.comp_ref_des = _p_comp_ref_des + ":" + _hardware.ref_des
+            _node.tag = _p_comp_ref_des + ":" + _hardware.ref_des
+        else:
+            _hardware.comp_ref_des = _hardware.ref_des
+            _node.tag = _hardware.ref_des
+
+        # Now make the composite reference designator for all the child nodes.
+        for _child_node in self.tree.children(node_id):
+            self.do_make_composite_ref_des(node_id=_child_node.identifier)
+
+        pub.sendMessage(
+            "request_set_hardware_attributes",
+            node_id=node_id,
+            package={"comp_ref_des": _hardware.comp_ref_des},
+        )
