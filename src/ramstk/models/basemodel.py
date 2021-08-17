@@ -350,7 +350,7 @@ class RAMSTKBaseTable:
                 parent=self._parent_id,
                 data={self._tag: _record},
             )
-            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
         pub.sendMessage(
             "succeed_retrieve_{}s".format(self._tag),
@@ -367,14 +367,25 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         [[_key, _value]] = package.items()
+        # ISSUE: Make node_id an integer argument to do_set_attributes()
+        #
+        # The node_id argument to RAMSTKBaseTable.do_set_attributes() is currently a
+        # List type argument.  This is deprecated and all calls should replace this
+        # with an integer argument.  After fixing all calls, remove the try construct
+        # in do_set_attributes() that exists to handle the List and int types.
+        # labels: type: refactor
+        try:
+            _node_id = node_id[0]
+        except TypeError:
+            _node_id = node_id
 
         try:
-            _attributes = self.do_select(node_id[0]).get_attributes()
+            _attributes = self.do_select(_node_id).get_attributes()
         except (AttributeError, KeyError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 "{2}: No data package for node ID {0} in module "
-                "{1}.".format(node_id[0], self._tag, _method_name)
+                "{1}.".format(_node_id, self._tag, _method_name)
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -392,7 +403,7 @@ class RAMSTKBaseTable:
         if _key in _attributes:
             _attributes[_key] = _value
 
-            self.do_select(node_id[0]).set_attributes(_attributes)
+            self.do_select(_node_id).set_attributes(_attributes)
 
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore

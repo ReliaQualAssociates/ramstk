@@ -1,16 +1,14 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.data.storage.RAMSTKDesignElectric.py is part of The RAMSTK
-#       Project
+#       ramstk.models.design_electric.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKDesignElectric Table Module."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
@@ -86,13 +84,13 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
-        ForeignKey("ramstk_hardware.fld_hardware_id"),
+        ForeignKey("ramstk_hardware.fld_hardware_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,
     )
@@ -237,9 +235,6 @@ class RAMSTKDesignElectric(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship(  # type: ignore
-        "RAMSTKHardware", back_populates="design_electric"
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKDesignElectric model attributes.

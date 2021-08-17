@@ -25,7 +25,7 @@ repos:
       rev: 'v1.4'
       hooks:
         - id: docformatter
-          args: [-c]
+          args: [--check, --wrap-summaries, "87", --wrap-descriptions, "81"]
     - repo: https://github.com/weibullguy/pycodestyle
       rev: '2.6.1'
       hooks:

@@ -32,6 +32,82 @@ from .models import (
 
 
 # noinspection PyTypeChecker
+def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
+    """Calculate the active hazard rate for a hardware item.
+
+    .. attention:: The programmer is responsible for ensuring appropriate
+        stress analyses (e.g., voltage ratios) are performed and results
+        assigned to the attributes dict prior to calling the MIL-HDBK-217F
+        methods.
+
+    .. important:: The calling object is responsible for handling any
+        exceptions raised by or passed through this method.
+
+    :return: attributes['hazard_rate_active']
+    :rtype: float
+    """
+    try:
+        if attributes["hazard_rate_method_id"] == 1:
+            attributes = _do_calculate_part_count(**attributes)
+        elif attributes["hazard_rate_method_id"] == 2:
+            attributes = _do_calculate_part_stress(**attributes)
+
+        pub.sendMessage("succeed_predict_reliability", attributes=attributes)
+    except ValueError:
+        pub.sendMessage(
+            "fail_predict_reliability",
+            error_message=(
+                "Failed to predict MIL-HDBK-217F "
+                "hazard rate for hardware ID {0:d}; "
+                "one or more inputs has a negative or "
+                "missing value. Hardware item category "
+                "ID={1:d}, subcategory ID={2:d}, rated "
+                "power={3:f}, number of "
+                "elements={4:d}."
+            ).format(
+                attributes["hardware_id"],
+                attributes["category_id"],
+                attributes["subcategory_id"],
+                attributes["power_rated"],
+                attributes["n_elements"],
+            ),
+        )
+    except ZeroDivisionError:
+        pub.sendMessage(
+            "fail_predict_reliability",
+            error_message=(
+                "Failed to predict MIL-HDBK-217F "
+                "hazard rate for hardware ID {0:d}; "
+                "one or more inputs has a value of "
+                "0.0.  Hardware item category "
+                "ID={1:d}, subcategory ID={2:d}, "
+                "operating ac voltage={3:f}, operating "
+                "DC voltage={4:f}, operating "
+                "temperature={5:f}, temperature "
+                "rise={10:f}, rated maximum "
+                "temperature={6:f}, "
+                "feature size={7:f}, "
+                "surface area={8:f}, and item "
+                "weight={9:f}."
+            ).format(
+                attributes["hardware_id"],
+                attributes["category_id"],
+                attributes["subcategory_id"],
+                attributes["voltage_ac_operating"],
+                attributes["voltage_dc_operating"],
+                attributes["temperature_active"],
+                attributes["temperature_rated_max"],
+                attributes["feature_size"],
+                attributes["area"],
+                attributes["weight"],
+                attributes["temperature_rise"],
+            ),
+        )
+
+    return attributes["hazard_rate_active"]
+
+
+# noinspection PyTypeChecker
 def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
@@ -274,79 +350,3 @@ def _get_part_stress_quality_factor(
         _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
 
     return _pi_q
-
-
-# noinspection PyTypeChecker
-def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
-    """Calculate the active hazard rate for a hardware item.
-
-    .. attention:: The programmer is responsible for ensuring appropriate
-        stress analyses (e.g., voltage ratios) are performed and results
-        assigned to the attributes dict prior to calling the MIL-HDBK-217F
-        methods.
-
-    .. important:: The calling object is responsible for handling any
-        exceptions raised by or passed through this method.
-
-    :return: attributes['hazard_rate_active']
-    :rtype: float
-    """
-    try:
-        if attributes["hazard_rate_method_id"] == 1:
-            attributes = _do_calculate_part_count(**attributes)
-        elif attributes["hazard_rate_method_id"] == 2:
-            attributes = _do_calculate_part_stress(**attributes)
-
-        pub.sendMessage("succeed_predict_reliability", attributes=attributes)
-
-        return attributes["hazard_rate_active"]
-    except ValueError:
-        pub.sendMessage(
-            "fail_predict_reliability",
-            error_message=(
-                "Failed to predict MIL-HDBK-217F "
-                "hazard rate for hardware ID {0:d}; "
-                "one or more inputs has a negative or "
-                "missing value. Hardware item category "
-                "ID={1:d}, subcategory ID={2:d}, rated "
-                "power={3:f}, number of "
-                "elements={4:d}."
-            ).format(
-                attributes["hardware_id"],
-                attributes["category_id"],
-                attributes["subcategory_id"],
-                attributes["power_rated"],
-                attributes["n_elements"],
-            ),
-        )
-    except ZeroDivisionError:
-        pub.sendMessage(
-            "fail_predict_reliability",
-            error_message=(
-                "Failed to predict MIL-HDBK-217F "
-                "hazard rate for hardware ID {0:d}; "
-                "one or more inputs has a value of "
-                "0.0.  Hardware item category "
-                "ID={1:d}, subcategory ID={2:d}, "
-                "operating ac voltage={3:f}, operating "
-                "DC voltage={4:f}, operating "
-                "temperature={5:f}, temperature "
-                "rise={10:f}, rated maximum "
-                "temperature={6:f}, "
-                "feature size={7:f}, "
-                "surface area={8:f}, and item "
-                "weight={9:f}."
-            ).format(
-                attributes["hardware_id"],
-                attributes["category_id"],
-                attributes["subcategory_id"],
-                attributes["voltage_ac_operating"],
-                attributes["voltage_dc_operating"],
-                attributes["temperature_active"],
-                attributes["temperature_rated_max"],
-                attributes["feature_size"],
-                attributes["area"],
-                attributes["weight"],
-                attributes["temperature_rise"],
-            ),
-        )
