@@ -14,8 +14,9 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFunction, dmHardware, dmRequirement, dmValidation
+from ramstk.controllers import dmFunction, dmRequirement, dmValidation
 from ramstk.exim import Export
+from ramstk.models import RAMSTKHardwareTable
 
 
 @pytest.mark.usefixtures("test_program_dao")
@@ -24,8 +25,8 @@ class TestExport:
 
     @pytest.mark.unit
     def test_do_load_output_function(self, test_program_dao):
-        """do_load_output() should return a Pandas DataFrame when loading
-        Functions for export."""
+        """do_load_output() should return a Pandas DataFrame when loading Functions for
+        export."""
         _function = dmFunction()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
@@ -39,8 +40,7 @@ class TestExport:
 
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):
-        """do_load_output() should return None when loading Requirements for
-        export."""
+        """do_load_output() should return None when loading Requirements for export."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
@@ -54,9 +54,8 @@ class TestExport:
 
     @pytest.mark.skip
     def test_do_load_output_hardware(self, test_program_dao):
-        """do_load_output() should return None when loading Hardware for
-        export."""
-        _hardware = dmHardware()
+        """do_load_output() should return None when loading Hardware for export."""
+        _hardware = RAMSTKHardwareTable()
         _hardware.do_connect(test_program_dao)
         _hardware.do_select_all(attributes={"revision_id": 1})
 
@@ -69,8 +68,7 @@ class TestExport:
 
     @pytest.mark.unit
     def test_do_load_output_validation(self, test_program_dao):
-        """do_load_output() should return None when loading Validations for
-        export."""
+        """do_load_output() should return None when loading Validations for export."""
         _validation = dmValidation()
         _validation.do_connect(test_program_dao)
         _validation.do_select_all(attributes={"revision_id": 1})
@@ -142,8 +140,8 @@ class TestExport:
     def test_do_export_to_excel_unknown_extension(
         self, test_program_dao, test_export_dir
     ):
-        """do_export() should return None when exporting to an Excel file and
-        default to using the xlwt engine."""
+        """do_export() should return None when exporting to an Excel file and default
+        to using the xlwt engine."""
         _requirement = dmRequirement()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})

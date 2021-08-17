@@ -21,11 +21,9 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    amHardware,
     dmAllocation,
     dmFailureDefinition,
     dmFunction,
-    dmHardware,
     dmHazards,
     dmOptions,
     dmPreferences,
@@ -40,7 +38,12 @@ from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models import RAMSTKFMEAView, RAMSTKPoFView, RAMSTKUsageProfileView
+from ramstk.models import (
+    RAMSTKFMEAView,
+    RAMSTKHardwareBoMView,
+    RAMSTKPoFView,
+    RAMSTKUsageProfileView,
+)
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
 from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
@@ -267,8 +270,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()
     _program_mgr.dic_managers["similar_item"]["data"] = dmSimilarItem()
     _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
-    _program_mgr.dic_managers["hardware"]["analysis"] = amHardware(user_configuration)
-    _program_mgr.dic_managers["hardware"]["data"] = dmHardware()
+    _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()
     _program_mgr.dic_managers["failure_definition"]["data"] = dmFailureDefinition()
     _program_mgr.dic_managers["fmea"]["data"] = RAMSTKFMEAView()
     _program_mgr.dic_managers["pof"]["data"] = RAMSTKPoFView()
