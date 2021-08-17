@@ -48,6 +48,7 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
     pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
     pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
+    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -80,6 +81,7 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
+    pub.unsubscribe(dut.do_calculate_hardware, "request_calculate_hardware")
     pub.unsubscribe(
         dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
     )
@@ -734,6 +736,7 @@ class TestGetterSetter:
     "test_milhdbk217f",
     "test_nswc",
     "test_reliability",
+    "test_toml_user_configuration",
 )
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
@@ -997,3 +1000,68 @@ class TestAnalysisMethods:
         _attributes = test_reliability.do_select(2).get_attributes()
 
         assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)
+
+    @pytest.mark.integration
+    def test_do_calculate_hardware(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+        test_toml_user_configuration,
+    ):
+        """should calculate all hardware metrics."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_design_mechanic.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric._dic_stress_limits = (
+            test_toml_user_configuration.RAMSTK_STRESS_LIMITS
+        )
+
+        _hardware = test_tablemodel.do_select(3)
+        _hardware.category_id = 3
+        _hardware.cost = 12.98
+        _hardware.cost_type_id = 2
+        _hardware.part = 1
+        _hardware.quantity = 2
+        _hardware.subcategory_id = 1
+
+        _hardware = test_design_electric.do_select(3)
+        _hardware.environment_active_id = 9
+        _hardware.environment_dormant_id = 1
+        _hardware.power_operating = 0.00295
+
+        _hardware = test_milhdbk217f.do_select(3)
+        _hardware.piR = 0.0038
+
+        _hardware = test_reliability.do_select(3)
+        _hardware.hazard_rate_method_id = 2
+        _hardware.quality_id = 3
+
+        test_viewmodel.do_calculate_hardware(3)
+
+        _attributes = test_tablemodel.do_select(3).get_attributes()
+        assert _attributes["total_cost"] == 25.96
+        assert _attributes["total_part_count"] == 2
+        assert _attributes["total_power_dissipation"] == 0.0059
+
+        _attributes = test_reliability.do_select(3).get_attributes()
+        assert _attributes["hazard_rate_active"] == pytest.approx(5.2230231e-05)
+        assert _attributes["hazard_rate_dormant"] == pytest.approx(3.1338139e-06)
+        assert _attributes["hazard_rate_logistics"] == pytest.approx(0.04505536)
+        assert _attributes["hazard_rate_mission"] == pytest.approx(0.04991278)
+        assert _attributes["mtbf_logistics"] == pytest.approx(22.1949155)
+        assert _attributes["mtbf_mission"] == pytest.approx(20.0349508)
+        assert _attributes["reliability_logistics"] == pytest.approx(0.01104766)
+        assert _attributes["reliability_mission"] == pytest.approx(0.006796975)

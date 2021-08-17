@@ -108,6 +108,7 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_derating_analysis, "request_derating_analysis")
+        pub.subscribe(self.do_stress_analysis, "request_stress_analysis")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

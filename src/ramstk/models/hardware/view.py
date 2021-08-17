@@ -73,6 +73,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         ]
 
         # Initialize private scalar attributes.
+        self._hr_multiplier = kwargs.get("hr_multiplier", 1.0)
 
         # Initialize public dictionary attributes.
 
@@ -99,11 +100,72 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_milhdbk217f")
         pub.subscribe(super().do_set_tree, "succeed_delete_nswc")
         pub.subscribe(super().do_set_tree, "succeed_delete_reliability")
+        pub.subscribe(self.do_calculate_hardware, "request_calculate_hardware")
         pub.subscribe(
             self.do_calculate_power_dissipation, "request_calculate_power_dissipation"
         )
         pub.subscribe(
             self.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
+        )
+
+    def do_calculate_hardware(self, node_id: int) -> None:
+        """Calculate all metrics for the hardware associated with node ID.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id)
+
+        self.do_calculate_power_dissipation(node_id)
+
+        _hardware = _record.data["hardware"]
+        _design_electric = _record.data["design_electric"]
+        _reliability = _record.data["reliability"]
+
+        pub.sendMessage("request_calculate_total_cost", node_id=node_id)
+        pub.sendMessage("request_calculate_total_part_count", node_id=node_id)
+        pub.sendMessage(
+            "request_stress_analysis",
+            node_id=node_id,
+            category_id=_hardware.category_id,
+        )
+        pub.sendMessage(
+            "request_derating_analysis",
+            node_id=node_id,
+            category_id=_hardware.category_id,
+        )
+        pub.sendMessage(
+            "request_calculate_hazard_rate_active",
+            node_id=node_id,
+            duty_cycle=_hardware.duty_cycle,
+            quantity=_hardware.quantity,
+            multiplier=self._hr_multiplier,
+            time=_hardware.mission_time,
+        )
+        pub.sendMessage(
+            "request_calculate_hazard_rate_dormant",
+            node_id=node_id,
+            category_id=_hardware.category_id,
+            subcategory_id=_hardware.subcategory_id,
+            env_active=_design_electric.environment_active_id,
+            env_dormant=_design_electric.environment_dormant_id,
+        )
+        pub.sendMessage("request_calculate_hazard_rate_logistics", node_id=node_id)
+        pub.sendMessage(
+            "request_calculate_hazard_rate_mission",
+            node_id=node_id,
+            duty_cycle=_hardware.duty_cycle,
+        )
+        pub.sendMessage(
+            "request_calculate_mtbf",
+            node_id=node_id,
+            multiplier=self._hr_multiplier,
+        )
+        pub.sendMessage(
+            "request_calculate_reliability",
+            node_id=node_id,
+            time=_hardware.mission_time,
         )
 
     def do_calculate_power_dissipation(self, node_id: int) -> float:

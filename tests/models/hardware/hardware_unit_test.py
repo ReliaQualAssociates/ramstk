@@ -44,6 +44,7 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
     pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
     pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
+    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -76,13 +77,13 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
+    pub.unsubscribe(dut.do_calculate_hardware, "request_calculate_hardware")
     pub.unsubscribe(
         dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
     )
     pub.unsubscribe(
         dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
     )
-
     # Delete the device under test.
     del dut
 

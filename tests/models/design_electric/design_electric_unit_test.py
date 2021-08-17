@@ -41,6 +41,8 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
+    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
+    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
 
     # Delete the device under test.
     del dut
