@@ -27,12 +27,15 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignMechanicRecord
+from ramstk.models import (
+    RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
+    RAMSTKHardwareRecord,
+)
 from ramstk.models.programdb import (
     RAMSTKNSWC,
     RAMSTKAllocation,
     RAMSTKFunction,
-    RAMSTKHardware,
     RAMSTKMilHdbkF,
     RAMSTKReliability,
     RAMSTKRequirement,
@@ -663,7 +666,7 @@ class Import:
 
         return _function
 
-    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware:
+    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardwareRecord:
         """Insert a new Hardware entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -671,7 +674,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramstkhardware.RAMSTKHardware`
         """
-        _hardware = RAMSTKHardware()
+        _hardware = RAMSTKHardwareRecord()
         _map = self._dic_field_map["Hardware"]
 
         _hardware.revision_id = _get_input_value(_map, row, "Revision ID", 1)

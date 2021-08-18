@@ -12,9 +12,6 @@
 # noinspection PyPackageRequirements
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
-# noinspection PyPackageRequirements
-from sqlalchemy.orm import relationship
-
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
@@ -88,13 +85,13 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
-        ForeignKey("ramstk_hardware.fld_hardware_id"),
+        ForeignKey("ramstk_hardware.fld_hardware_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,
     )
@@ -232,10 +229,6 @@ class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseRecord):
     user_int_5 = Column("fld_user_int_5", Integer, default=__defaults__["user_int_5"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware: relationship = relationship(
-        "RAMSTKHardware",
-        back_populates="sia",
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKSimilarItem data model attributes.
