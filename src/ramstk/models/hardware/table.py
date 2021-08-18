@@ -105,12 +105,6 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
 
         _record.total_cost = _total_cost
 
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_cost": _total_cost},
-        )
-
         return _total_cost
 
     def do_calculate_part_count(self, node_id: int) -> int:
