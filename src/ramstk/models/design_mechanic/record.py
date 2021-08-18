@@ -15,7 +15,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKDesignMechanic(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Represent ramstk_design_mechanic table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

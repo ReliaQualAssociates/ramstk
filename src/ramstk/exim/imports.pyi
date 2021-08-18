@@ -8,9 +8,9 @@ import pandas as pd
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.exceptions import DataAccessError as DataAccessError
 from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord
+from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord
 from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
-from ramstk.models.programdb import RAMSTKDesignMechanic as RAMSTKDesignMechanic
 from ramstk.models.programdb import RAMSTKFunction as RAMSTKFunction
 from ramstk.models.programdb import RAMSTKHardware as RAMSTKHardware
 from ramstk.models.programdb import RAMSTKMilHdbkF as RAMSTKMilHdbkF
@@ -35,7 +35,9 @@ class Import:
     def _do_insert_design_electric(
         self, row: pd.Series
     ) -> RAMSTKDesignElectricRecord: ...
-    def _do_insert_design_mechanic(self, row: pd.Series) -> RAMSTKDesignMechanic: ...
+    def _do_insert_design_mechanic(
+        self, row: pd.Series
+    ) -> RAMSTKDesignMechanicRecord: ...
     def _do_insert_function(self, row: pd.Series) -> RAMSTKFunction: ...
     def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware: ...
     def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF: ...

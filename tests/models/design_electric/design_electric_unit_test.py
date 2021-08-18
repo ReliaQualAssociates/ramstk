@@ -22,17 +22,6 @@ from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignElectricTable
 
 
 @pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord, _all=False)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="function")
 def test_tablemodel(mock_program_dao):
     """Get a data model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
