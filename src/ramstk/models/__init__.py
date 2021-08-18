@@ -11,6 +11,7 @@
 from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView
 from .design_electric.record import RAMSTKDesignElectricRecord
 from .design_electric.table import RAMSTKDesignElectricTable
+from .design_mechanic.record import RAMSTKDesignMechanicRecord
 from .design_mechanic.table import RAMSTKDesignMechanicTable
 from .fmea.view import RAMSTKFMEAView
 from .hardware.table import RAMSTKHardwareTable
