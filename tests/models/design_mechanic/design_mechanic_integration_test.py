@@ -15,68 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignMechanicTable
-from ramstk.models.programdb import RAMSTKDesignMechanic
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "altitude_operating": 0.0,
-        "application_id": 0,
-        "balance_id": 0,
-        "clearance": 0.0,
-        "casing_id": 0,
-        "contact_pressure": 0.0,
-        "deflection": 0.0,
-        "diameter_coil": 0.0,
-        "diameter_inner": 0.0,
-        "diameter_outer": 0.0,
-        "diameter_wire": 0.0,
-        "filter_size": 0.0,
-        "flow_design": 0.0,
-        "flow_operating": 0.0,
-        "frequency_operating": 0.0,
-        "friction": 0.0,
-        "impact_id": 0,
-        "leakage_allowable": 0.0,
-        "length": 0.0,
-        "length_compressed": 0.0,
-        "length_relaxed": 0.0,
-        "load_design": 0.0,
-        "load_id": 0,
-        "load_operating": 0.0,
-        "lubrication_id": 0,
-        "manufacturing_id": 0,
-        "material_id": 0,
-        "meyer_hardness": 0.0,
-        "misalignment_angle": 0.0,
-        "n_ten": 0,
-        "n_cycles": 0,
-        "n_elements": 0,
-        "offset": 0.0,
-        "particle_size": 0.0,
-        "pressure_contact": 0.0,
-        "pressure_delta": 0.0,
-        "pressure_downstream": 0.0,
-        "pressure_rated": 0.0,
-        "pressure_upstream": 0.0,
-        "rpm_design": 0.0,
-        "rpm_operating": 0.0,
-        "service_id": 0,
-        "spring_index": 0.0,
-        "surface_finish": 0.0,
-        "technology_id": 0,
-        "thickness": 0.0,
-        "torque_id": 0,
-        "type_id": 0,
-        "viscosity_design": 0.0,
-        "viscosity_dynamic": 0.0,
-        "water_per_cent": 0.0,
-        "width_minimum": 0.0,
-    }
+from ramstk.models import RAMSTKDesignMechanicRecord, RAMSTKDesignMechanicTable
 
 
 @pytest.fixture(scope="class")
@@ -111,7 +50,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanic
+            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
         print("\033[36m\nsucceed_retrieve_design_mechanic topic was broadcast.")
 
@@ -133,7 +72,7 @@ class TestInsertMethods:
         assert node_id == 8
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["design_mechanic"], RAMSTKDesignMechanic
+            tree.get_node(node_id).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
         assert tree.get_node(node_id).data["design_mechanic"].hardware_id == 8
         print("\033[36m\nsucceed_insert_design_mechanic topic was broadcast.")
@@ -160,7 +99,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(8).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
 
         pub.unsubscribe(
@@ -255,9 +194,8 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["design_mechanic"].parent_id == 1
-        assert tree.get_node(2).data["design_mechanic"].n_active_pins == 5
-        assert tree.get_node(2).data["design_mechanic"].temperature_active == 81
+        assert tree.get_node(5).data["design_mechanic"].altitude_operating == 5
+        assert tree.get_node(5).data["design_mechanic"].rpm_operating == 81
         print("\033[36m\nsucceed_update_design_mechanic topic was broadcast.")
 
     def on_succeed_update_all(self):
@@ -301,11 +239,17 @@ class TestUpdateMethods:
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_design_mechanic")
 
-        _design_mechanic = test_tablemodel.do_select(2)
+        _design_mechanic = test_tablemodel.do_select(5)
         _design_mechanic.altitude_operating = 5
         _design_mechanic.rpm_operating = 81
-        pub.sendMessage(
-            "request_update_design_mechanic", node_id=2, table="design_mechanic"
+        pub.sendMessage("request_update_design_mechanic", node_id=2)
+
+        assert (
+            test_tablemodel.tree.get_node(5).data["design_mechanic"].altitude_operating
+            == 5
+        )
+        assert (
+            test_tablemodel.tree.get_node(5).data["design_mechanic"].rpm_operating == 81
         )
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_design_mechanic")
@@ -350,9 +294,7 @@ class TestUpdateMethods:
 
         _design_mechanic = test_tablemodel.do_select(1)
         _design_mechanic.altitude_operating = {1: 2}
-        pub.sendMessage(
-            "request_update_design_mechanic", node_id=1, table="design_mechanic"
-        )
+        pub.sendMessage("request_update_design_mechanic", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_wrong_data_type, "fail_update_design_mechanic"
@@ -367,9 +309,7 @@ class TestUpdateMethods:
 
         _design_mechanic = test_tablemodel.do_select(1)
         _design_mechanic.altitude_operating = {1: 2}
-        pub.sendMessage(
-            "request_update_design_mechanic", node_id=0, table="design_mechanic"
-        )
+        pub.sendMessage("request_update_design_mechanic", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_design_mechanic"
@@ -382,9 +322,7 @@ class TestUpdateMethods:
             self.on_fail_update_non_existent_id, "fail_update_design_mechanic"
         )
 
-        pub.sendMessage(
-            "request_update_design_mechanic", node_id=100, table="design_mechanic"
-        )
+        pub.sendMessage("request_update_design_mechanic", node_id=100)
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_design_mechanic"
@@ -398,9 +336,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data.pop("design_mechanic")
-        pub.sendMessage(
-            "request_update_design_mechanic", node_id=1, table="design_mechanic"
-        )
+        pub.sendMessage("request_update_design_mechanic", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_design_mechanic"
@@ -472,7 +408,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanic
+            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
         print("\033[36m\nsucceed_get_design_mechanic_tree topic was broadcast.")
 
@@ -482,8 +418,70 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_design_mechanic_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """should return the attributes dict."""
+    def test_get_record_model_attributes(self, test_program_dao):
+        """should return the record model attributes dict."""
+        dut = test_program_dao.session.query(RAMSTKDesignMechanicRecord).first()
+
+        _attributes = dut.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["pressure_upstream"] == 0.0
+        assert _attributes["frequency_operating"] == 0.0
+        assert _attributes["surface_finish"] == 0.0
+        assert _attributes["friction"] == 0.0
+        assert _attributes["length_compressed"] == 0.0
+        assert _attributes["load_id"] == 0
+        assert _attributes["n_cycles"] == 0
+        assert _attributes["balance_id"] == 0
+        assert _attributes["lubrication_id"] == 0
+        assert _attributes["water_per_cent"] == 0.0
+        assert _attributes["misalignment_angle"] == 0.0
+        assert _attributes["type_id"] == 0
+        assert _attributes["rpm_design"] == 0.0
+        assert _attributes["pressure_downstream"] == 0.0
+        assert _attributes["diameter_coil"] == 0.0
+        assert _attributes["manufacturing_id"] == 0
+        assert _attributes["pressure_contact"] == 0.0
+        assert _attributes["meyer_hardness"] == 0.0
+        assert _attributes["rpm_operating"] == 0.0
+        assert _attributes["length_relaxed"] == 0.0
+        assert _attributes["impact_id"] == 0
+        assert _attributes["n_ten"] == 0
+        assert _attributes["material_id"] == 0
+        assert _attributes["technology_id"] == 0
+        assert _attributes["service_id"] == 0
+        assert _attributes["flow_design"] == 0.0
+        assert _attributes["application_id"] == 0
+        assert _attributes["diameter_wire"] == 0.0
+        assert _attributes["deflection"] == 0.0
+        assert _attributes["filter_size"] == 0.0
+        assert _attributes["diameter_inner"] == 0.0
+        assert _attributes["pressure_rated"] == 0.0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["altitude_operating"] == 0.0
+        assert _attributes["thickness"] == 0.0
+        assert _attributes["diameter_outer"] == 0.0
+        assert _attributes["n_elements"] == 0
+        assert _attributes["contact_pressure"] == 0.0
+        assert _attributes["particle_size"] == 0.0
+        assert _attributes["casing_id"] == 0
+        assert _attributes["viscosity_dynamic"] == 0.0
+        assert _attributes["viscosity_design"] == 0.0
+        assert _attributes["torque_id"] == 0
+        assert _attributes["leakage_allowable"] == 0.0
+        assert _attributes["offset"] == 0.0
+        assert _attributes["width_minimum"] == 0.0
+        assert _attributes["load_operating"] == 0.0
+        assert _attributes["spring_index"] == 0.0
+        assert _attributes["flow_operating"] == 0.0
+        assert _attributes["pressure_delta"] == 0.0
+        assert _attributes["length"] == 0.0
+        assert _attributes["load_design"] == 0.0
+        assert _attributes["clearance"] == 0.0
+
+    @pytest.mark.integration
+    def test_do_get_table_model_attributes(self, test_tablemodel):
+        """should return the table model attributes dict."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_design_mechanic_attributes"
         )
@@ -511,7 +509,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self):
+    def test_do_set_table_model_attributes(self):
         """should set the value of the attribute requested."""
         pub.subscribe(
             self.on_succeed_set_attributes, "succeed_get_design_mechanic_tree"
@@ -526,3 +524,34 @@ class TestGetterSetter:
         pub.unsubscribe(
             self.on_succeed_set_attributes, "succeed_get_design_mechanic_tree"
         )
+
+    @pytest.mark.integration
+    def test_set_record_model_attributes(self, test_attributes, test_program_dao):
+        """should set the value of the attribute requested."""
+        dut = test_program_dao.session.query(RAMSTKDesignMechanicRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+
+    @pytest.mark.integration
+    def test_set_attributes_none_value(self, test_attributes, test_program_dao):
+        """should set an attribute to it's default value when passed a None value."""
+        dut = test_program_dao.session.query(RAMSTKDesignMechanicRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        test_attributes["type_id"] = None
+
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.get_attributes()["type_id"] == 0.0
+
+    @pytest.mark.integration
+    def test_set_attributes_unknown_attributes(self, test_attributes, test_program_dao):
+        """should raise an AttributeError when passed an unknown attribute."""
+        dut = test_program_dao.session.query(RAMSTKDesignMechanicRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        with pytest.raises(AttributeError):
+            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})

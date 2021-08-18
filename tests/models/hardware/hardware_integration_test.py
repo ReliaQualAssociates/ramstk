@@ -17,12 +17,12 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models import (
     RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
     RAMSTKHardwareBoMView,
     RAMSTKHardwareTable,
 )
 from ramstk.models.programdb import (
     RAMSTKNSWC,
-    RAMSTKDesignMechanic,
     RAMSTKHardware,
     RAMSTKMilHdbkF,
     RAMSTKReliability,
@@ -121,7 +121,7 @@ class TestSelectMethods:
             tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
         )
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanic
+            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkF)
         assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWC)
@@ -171,7 +171,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
@@ -194,7 +194,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["milhdbk217f"],
@@ -243,7 +243,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
@@ -271,7 +271,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
