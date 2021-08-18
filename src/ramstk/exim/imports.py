@@ -27,10 +27,10 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
+from ramstk.models import RAMSTKDesignElectricRecord
 from ramstk.models.programdb import (
     RAMSTKNSWC,
     RAMSTKAllocation,
-    RAMSTKDesignElectric,
     RAMSTKDesignMechanic,
     RAMSTKFunction,
     RAMSTKHardware,
@@ -434,7 +434,7 @@ class Import:
 
         return _allocation
 
-    def _do_insert_design_electric(self, row: pd.Series) -> RAMSTKDesignElectric:
+    def _do_insert_design_electric(self, row: pd.Series) -> RAMSTKDesignElectricRecord:
         """Insert a new Design Electric entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -442,7 +442,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignElectric`
         """
-        _design_electric = RAMSTKDesignElectric()
+        _design_electric = RAMSTKDesignElectricRecord()
 
         _map = self._dic_field_map["Hardware"]
 

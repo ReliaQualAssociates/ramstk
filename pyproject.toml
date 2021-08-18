@@ -259,7 +259,7 @@ wrap-descriptions = 81
 
 [tool.mypy]
 allow_subclassing_any = true
-follow_imports = false
+follow_imports = "skip"
 implicit_reexport = true
 ignore_missing_imports = true
 

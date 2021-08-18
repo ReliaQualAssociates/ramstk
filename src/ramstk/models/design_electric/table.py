@@ -15,8 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKDesignElectric
+from ramstk.models import RAMSTKBaseTable, RAMSTKDesignElectricRecord
 
 
 def do_check_overstress(
@@ -97,7 +96,7 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         # This is the record class associated with the table being modelled.
-        self._record: Type[RAMSTKDesignElectric] = RAMSTKDesignElectric
+        self._record: Type[RAMSTKDesignElectricRecord] = RAMSTKDesignElectricRecord
 
         # Initialize public dictionary attributes.
 

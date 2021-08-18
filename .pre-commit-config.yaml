@@ -25,7 +25,8 @@ repos:
       rev: v1.5
       hooks:
         - id: docformatter
-          args: [--check, --config, './pyproject.toml']
+          additional_dependencies: [tomli]
+          args: [--check, --config, ./pyproject.toml]
     - repo: https://github.com/weibullguy/pycodestyle
       rev: '2.6.1'
       hooks:
@@ -40,6 +41,7 @@ repos:
       rev: v0.910
       hooks:
         - id: mypy
+          additional_dependencies: [types-python-dateutil]
           args: [--config-file, ./pyproject.toml]
     - repo: https://github.com/pre-commit/mirrors-pylint
       rev: v2.6.0
