@@ -15,8 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignElectricTable
-from ramstk.models.programdb import RAMSTKDesignElectric
+from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignElectricTable
 
 
 @pytest.fixture(scope="class")
@@ -53,7 +52,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["design_electric"], RAMSTKDesignElectric
+            tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
         )
         print("\033[36m\nsucceed_retrieve_design_electric topic was broadcast.")
 
@@ -75,7 +74,7 @@ class TestInsertMethods:
         assert node_id == 8
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["design_electric"], RAMSTKDesignElectric
+            tree.get_node(node_id).data["design_electric"], RAMSTKDesignElectricRecord
         )
         assert tree.get_node(node_id).data["design_electric"].hardware_id == 8
         print("\033[36m\nsucceed_insert_design_electric topic was broadcast.")
@@ -102,7 +101,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(8).data["design_electric"],
-            RAMSTKDesignElectric,
+            RAMSTKDesignElectricRecord,
         )
 
         pub.unsubscribe(
@@ -416,7 +415,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["design_electric"], RAMSTKDesignElectric
+            tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
         )
         print("\033[36m\nsucceed_get_design_electric_tree topic was broadcast.")
 
@@ -426,8 +425,72 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_design_electric_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """should return the attributes dict."""
+    def test_get_record_model_attributes(self, test_program_dao):
+        """should return the record model attributes dict."""
+        dut = test_program_dao.session.query(RAMSTKDesignElectricRecord).first()
+
+        _attributes = dut.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["voltage_ac_operating"] == 0.0
+        assert _attributes["frequency_operating"] == 0.0
+        assert _attributes["type_id"] == 0
+        assert _attributes["resistance"] == 0.0
+        assert _attributes["package_id"] == 0
+        assert _attributes["technology_id"] == 0
+        assert _attributes["n_cycles"] == 0
+        assert _attributes["n_circuit_planes"] == 1
+        assert _attributes["contact_gauge"] == 0
+        assert _attributes["current_operating"] == 0.0
+        assert _attributes["n_hand_soldered"] == 0
+        assert _attributes["contact_rating_id"] == 0
+        assert _attributes["area"] == 0.0
+        assert _attributes["contact_form_id"] == 0
+        assert _attributes["years_in_production"] == 1
+        assert _attributes["n_active_pins"] == 0
+        assert _attributes["capacitance"] == 0.0
+        assert _attributes["temperature_case"] == 0.0
+        assert _attributes["current_rated"] == 0.0
+        assert _attributes["power_operating"] == 0.0
+        assert _attributes["configuration_id"] == 0
+        assert _attributes["temperature_hot_spot"] == 0.0
+        assert _attributes["temperature_junction"] == 0.0
+        assert _attributes["current_ratio"] == 0.0
+        assert _attributes["insulation_id"] == 0
+        assert _attributes["construction_id"] == 0
+        assert _attributes["insert_id"] == 0
+        assert _attributes["theta_jc"] == 0.0
+        assert _attributes["voltage_dc_operating"] == 0.0
+        assert _attributes["power_ratio"] == 0.0
+        assert _attributes["family_id"] == 0
+        assert _attributes["overstress"] == 0
+        assert _attributes["voltage_rated"] == 0.0
+        assert _attributes["feature_size"] == 0.0
+        assert _attributes["operating_life"] == 0.0
+        assert _attributes["application_id"] == 0
+        assert _attributes["weight"] == 0.0
+        assert _attributes["temperature_rated_max"] == 0.0
+        assert _attributes["voltage_ratio"] == 0.0
+        assert _attributes["temperature_rated_min"] == 0.0
+        assert _attributes["power_rated"] == 0.0
+        assert _attributes["environment_active_id"] == 0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["specification_id"] == 0
+        assert _attributes["matching_id"] == 0
+        assert _attributes["n_elements"] == 0
+        assert _attributes["environment_dormant_id"] == 0
+        assert _attributes["reason"] == ""
+        assert _attributes["voltage_esd"] == 0.0
+        assert _attributes["manufacturing_id"] == 0
+        assert _attributes["n_wave_soldered"] == 0
+        assert _attributes["temperature_knee"] == 25.0
+        assert _attributes["temperature_rise"] == 0.0
+        assert _attributes["temperature_active"] == 35.0
+        assert _attributes["temperature_dormant"] == 25.0
+
+    @pytest.mark.integration
+    def test_do_get_table_model_attributes(self, test_tablemodel):
+        """should return the table model attributes dict."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_design_electric_attributes"
         )
@@ -455,7 +518,42 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self):
+    def test_set_record_model_attributes(self, test_attributes, test_program_dao):
+        """should set the value of the attribute requested."""
+        dut = test_program_dao.session.query(RAMSTKDesignElectricRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+
+    @pytest.mark.integration
+    def test_set_record_model_attributes_none_value(
+        self, test_attributes, test_program_dao
+    ):
+        """should set an attribute to it's default value when passed a None value."""
+        dut = test_program_dao.session.query(RAMSTKDesignElectricRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        test_attributes["type_id"] = None
+
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.get_attributes()["type_id"] == 0
+
+    @pytest.mark.integration
+    def test_set_record_model_attributes_unknown_attributes(
+        self, test_attributes, test_program_dao
+    ):
+        """should raise an AttributeError when passed an unknown attribute."""
+        dut = test_program_dao.session.query(RAMSTKDesignElectricRecord).first()
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        with pytest.raises(AttributeError):
+            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})
+
+    @pytest.mark.integration
+    def test_do_set_table_model_attributes(self):
         """should set the value of the attribute requested."""
         pub.subscribe(
             self.on_succeed_set_attributes, "succeed_get_design_electric_tree"

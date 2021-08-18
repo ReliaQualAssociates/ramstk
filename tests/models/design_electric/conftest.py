@@ -3,7 +3,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models.programdb import RAMSTKDesignElectric
+from ramstk.models import RAMSTKDesignElectricRecord
 
 
 @pytest.fixture(scope="function")
@@ -70,7 +70,7 @@ def test_attributes():
 
 @pytest.fixture()
 def mock_program_dao(monkeypatch):
-    _design_electric_1 = RAMSTKDesignElectric()
+    _design_electric_1 = RAMSTKDesignElectricRecord()
     _design_electric_1.revision_id = 1
     _design_electric_1.hardware_id = 1
     _design_electric_1.application_id = 0
@@ -128,7 +128,7 @@ def mock_program_dao(monkeypatch):
     _design_electric_1.weight = 0.0
     _design_electric_1.years_in_production = 1
 
-    _design_electric_2 = RAMSTKDesignElectric()
+    _design_electric_2 = RAMSTKDesignElectricRecord()
     _design_electric_2.revision_id = 1
     _design_electric_2.hardware_id = 2
     _design_electric_2.application_id = 0
@@ -186,7 +186,7 @@ def mock_program_dao(monkeypatch):
     _design_electric_2.weight = 0.0
     _design_electric_2.years_in_production = 1
 
-    _design_electric_3 = RAMSTKDesignElectric()
+    _design_electric_3 = RAMSTKDesignElectricRecord()
     _design_electric_3.revision_id = 1
     _design_electric_3.hardware_id = 3
     _design_electric_3.application_id = 0
