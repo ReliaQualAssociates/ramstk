@@ -18,13 +18,23 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignElectricTable
-from ramstk.models.programdb import RAMSTKDesignElectric
+from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignElectricTable
+
+
+@pytest.fixture(scope="function")
+def test_recordmodel(mock_program_dao):
+    """Get a record model instance for each test function."""
+    dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord, _all=False)
+
+    yield dut
+
+    # Delete the device under test.
+    del dut
 
 
 @pytest.fixture(scope="function")
 def test_tablemodel(mock_program_dao):
-    """Get a data manager instance for each test function."""
+    """Get a data model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignElectricTable()
     dut.do_connect(mock_program_dao)
@@ -48,13 +58,75 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestCreateControllers:
+@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+class TestCreateModels:
     """Class for testing controller initialization."""
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
-        """should return a table manager instance."""
+    def test_record_model_create(self, test_recordmodel):
+        """should return a record model instance."""
+        assert isinstance(test_recordmodel, RAMSTKDesignElectricRecord)
+
+        # Verify class attributes are properly initialized.
+        assert test_recordmodel.__tablename__ == "ramstk_design_electric"
+        assert test_recordmodel.hardware_id == 1
+        assert test_recordmodel.application_id == 0
+        assert test_recordmodel.area == 0.0
+        assert test_recordmodel.capacitance == 0.0
+        assert test_recordmodel.configuration_id == 0
+        assert test_recordmodel.construction_id == 0
+        assert test_recordmodel.contact_form_id == 0
+        assert test_recordmodel.contact_gauge == 0
+        assert test_recordmodel.contact_rating_id == 0
+        assert test_recordmodel.current_operating == 0.0
+        assert test_recordmodel.current_rated == 0.0
+        assert test_recordmodel.current_ratio == 0.0
+        assert test_recordmodel.environment_active_id == 0
+        assert test_recordmodel.environment_dormant_id == 0
+        assert test_recordmodel.family_id == 0
+        assert test_recordmodel.feature_size == 0.0
+        assert test_recordmodel.frequency_operating == 0.0
+        assert test_recordmodel.insert_id == 0
+        assert test_recordmodel.insulation_id == 0
+        assert test_recordmodel.manufacturing_id == 0
+        assert test_recordmodel.matching_id == 0
+        assert test_recordmodel.n_active_pins == 0
+        assert test_recordmodel.n_circuit_planes == 1
+        assert test_recordmodel.n_cycles == 0
+        assert test_recordmodel.n_elements == 0
+        assert test_recordmodel.n_hand_soldered == 0
+        assert test_recordmodel.n_wave_soldered == 0
+        assert test_recordmodel.operating_life == 0.0
+        assert test_recordmodel.overstress == 0
+        assert test_recordmodel.package_id == 0
+        assert test_recordmodel.power_operating == 0.0
+        assert test_recordmodel.power_rated == 0.0
+        assert test_recordmodel.power_ratio == 0.0
+        assert test_recordmodel.reason == ""
+        assert test_recordmodel.resistance == 0.0
+        assert test_recordmodel.specification_id == 0
+        assert test_recordmodel.technology_id == 0
+        assert test_recordmodel.temperature_active == 35.0
+        assert test_recordmodel.temperature_case == 0.0
+        assert test_recordmodel.temperature_dormant == 25.0
+        assert test_recordmodel.temperature_hot_spot == 0.0
+        assert test_recordmodel.temperature_junction == 0.0
+        assert test_recordmodel.temperature_rated_max == 0.0
+        assert test_recordmodel.temperature_rated_min == 0.0
+        assert test_recordmodel.temperature_rise == 0.0
+        assert test_recordmodel.theta_jc == 0.0
+        assert test_recordmodel.type_id == 0
+        assert test_recordmodel.voltage_ac_operating == 0.0
+        assert test_recordmodel.voltage_dc_operating == 0.0
+        assert test_recordmodel.voltage_esd == 0.0
+        assert test_recordmodel.voltage_rated == 0.0
+        assert test_recordmodel.voltage_ratio == 0.0
+        assert test_recordmodel.weight == 0.0
+        assert test_recordmodel.years_in_production == 1
+
+    @pytest.mark.unit
+    def test_table_model_create(self, test_tablemodel):
+        """should return a table model instance."""
         assert isinstance(test_tablemodel, RAMSTKDesignElectricTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
@@ -69,7 +141,7 @@ class TestCreateControllers:
             "hardware_id",
         ]
         assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._record == RAMSTKDesignElectric
+        assert test_tablemodel._record == RAMSTKDesignElectricRecord
         assert test_tablemodel.last_id == 0
         assert test_tablemodel.pkey == "hardware_id"
         assert pub.isSubscribed(
@@ -110,15 +182,15 @@ class TestSelectMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(1).data["design_electric"],
-            RAMSTKDesignElectric,
+            RAMSTKDesignElectricRecord,
         )
         assert isinstance(
             test_tablemodel.tree.get_node(2).data["design_electric"],
-            RAMSTKDesignElectric,
+            RAMSTKDesignElectricRecord,
         )
         assert isinstance(
             test_tablemodel.tree.get_node(3).data["design_electric"],
-            RAMSTKDesignElectric,
+            RAMSTKDesignElectricRecord,
         )
 
     @pytest.mark.unit
@@ -128,7 +200,7 @@ class TestSelectMethods:
 
         _design_electric = test_tablemodel.do_select(1)
 
-        assert isinstance(_design_electric, RAMSTKDesignElectric)
+        assert isinstance(_design_electric, RAMSTKDesignElectricRecord)
         assert _design_electric.revision_id == 1
         assert _design_electric.hardware_id == 1
         assert _design_electric.environment_active_id == 0
@@ -151,7 +223,7 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
         _new_record = test_tablemodel.do_get_new_record(test_attributes)
 
-        assert isinstance(_new_record, RAMSTKDesignElectric)
+        assert isinstance(_new_record, RAMSTKDesignElectricRecord)
         assert _new_record.revision_id == 1
         assert _new_record.hardware_id == 1
 
@@ -165,7 +237,7 @@ class TestInsertMethods:
         assert test_tablemodel.last_id == 4
         assert isinstance(
             test_tablemodel.tree.get_node(4).data["design_electric"],
-            RAMSTKDesignElectric,
+            RAMSTKDesignElectricRecord,
         )
         assert test_tablemodel.tree.get_node(4).data["design_electric"].revision_id == 1
         assert test_tablemodel.tree.get_node(4).data["design_electric"].hardware_id == 4

@@ -198,7 +198,7 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     design_electric = relationship(  # type: ignore
-        "RAMSTKDesignElectric",
+        "RAMSTKDesignElectricRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,

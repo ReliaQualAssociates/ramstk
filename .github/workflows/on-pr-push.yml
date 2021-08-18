@@ -110,7 +110,7 @@ jobs:
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""
           extra-pydocstyle-options: ""
-          extra-mypy-options: "--config-file ./setup.cfg"
+          extra-mypy-options: "--config-file ./pyproject.toml"
           extra-pylint-options: ""
           extra-flake8-options: ""
 

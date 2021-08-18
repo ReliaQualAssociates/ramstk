@@ -12,7 +12,6 @@ from .ramstkaction import RAMSTKAction
 from .ramstkallocation import RAMSTKAllocation
 from .ramstkcause import RAMSTKCause
 from .ramstkcontrol import RAMSTKControl
-from .ramstkdesignelectric import RAMSTKDesignElectric
 from .ramstkdesignmechanic import RAMSTKDesignMechanic
 from .ramstkenvironment import RAMSTKEnvironment
 from .ramstkfailuredefinition import RAMSTKFailureDefinition
