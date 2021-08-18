@@ -256,3 +256,13 @@ max-args = 6
 [tool.docformatter]
 wrap-summaries = 87
 wrap-descriptions = 81
+
+[tool.mypy]
+allow_subclassing_any = true
+follow_imports = false
+implicit_reexport = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+ignore_errors = true
