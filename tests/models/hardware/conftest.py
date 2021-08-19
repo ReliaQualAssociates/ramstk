@@ -7,57 +7,16 @@ from pubsub import pub
 from ramstk.models import (
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
+    RAMSTKHardwareRecord,
     RAMSTKMILHDBK217FTable,
     RAMSTKNSWCTable,
     RAMSTKReliabilityTable,
 )
-from ramstk.models.programdb import RAMSTKHardware
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "alt_part_number": "",
-        "attachments": "",
-        "cage_code": "",
-        "category_id": 0,
-        "comp_ref_des": "S1",
-        "cost": 0.0,
-        "cost_failure": 0.0,
-        "cost_hour": 0.0,
-        "cost_type_id": 2,
-        "description": "Test System",
-        "duty_cycle": 100.0,
-        "figure_number": "",
-        "lcn": "",
-        "level": 0,
-        "manufacturer_id": 0,
-        "mission_time": 100.0,
-        "name": "",
-        "nsn": "",
-        "page_number": "",
-        "parent_id": 0,
-        "part": 0,
-        "part_number": "",
-        "quantity": 1,
-        "ref_des": "S1",
-        "remarks": "",
-        "repairable": 0,
-        "specification_number": "",
-        "subcategory_id": 0,
-        "tagged_part": 0,
-        "total_cost": 0.0,
-        "total_part_count": 0,
-        "total_power_dissipation": 0.0,
-        "year_of_manufacture": 2019,
-    }
 
 
 @pytest.fixture()
 def mock_program_dao(monkeypatch):
-    _hardware_1 = RAMSTKHardware()
+    _hardware_1 = RAMSTKHardwareRecord()
     _hardware_1.revision_id = 1
     _hardware_1.hardware_id = 1
     _hardware_1.alt_part_number = ""
@@ -94,7 +53,7 @@ def mock_program_dao(monkeypatch):
     _hardware_1.total_power_dissipation = 0.0
     _hardware_1.year_of_manufacture = 2019
 
-    _hardware_2 = RAMSTKHardware()
+    _hardware_2 = RAMSTKHardwareRecord()
     _hardware_2.revision_id = 1
     _hardware_2.hardware_id = 2
     _hardware_2.alt_part_number = ""
@@ -131,7 +90,7 @@ def mock_program_dao(monkeypatch):
     _hardware_2.total_power_dissipation = 0.0
     _hardware_2.year_of_manufacture = 2019
 
-    _hardware_3 = RAMSTKHardware()
+    _hardware_3 = RAMSTKHardwareRecord()
     _hardware_3.revision_id = 1
     _hardware_3.hardware_id = 3
     _hardware_3.alt_part_number = ""
@@ -176,6 +135,58 @@ def mock_program_dao(monkeypatch):
     ]
 
     yield DAO
+
+
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "alt_part_number": "",
+        "attachments": "",
+        "cage_code": "",
+        "category_id": 0,
+        "comp_ref_des": "S1",
+        "cost": 0.0,
+        "cost_failure": 0.0,
+        "cost_hour": 0.0,
+        "cost_type_id": 2,
+        "description": "Test System",
+        "duty_cycle": 100.0,
+        "figure_number": "",
+        "lcn": "",
+        "level": 0,
+        "manufacturer_id": 0,
+        "mission_time": 100.0,
+        "name": "",
+        "nsn": "",
+        "page_number": "",
+        "parent_id": 0,
+        "part": 0,
+        "part_number": "",
+        "quantity": 1,
+        "ref_des": "S1",
+        "remarks": "",
+        "repairable": 0,
+        "specification_number": "",
+        "subcategory_id": 0,
+        "tagged_part": 0,
+        "total_cost": 0.0,
+        "total_part_count": 0,
+        "total_power_dissipation": 0.0,
+        "year_of_manufacture": 2019,
+    }
+
+
+@pytest.fixture(scope="function")
+def test_recordmodel(mock_program_dao):
+    """Get a record model instance for each test function."""
+    dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord, _all=False)
+
+    yield dut
+
+    # Delete the device under test.
+    del dut
 
 
 @pytest.fixture(scope="class")

@@ -17,16 +17,14 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models import (
     RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
     RAMSTKHardwareBoMView,
+    RAMSTKHardwareRecord,
     RAMSTKHardwareTable,
+    RAMSTKMilHdbk217FRecord,
+    RAMSTKNSWCRecord,
 )
-from ramstk.models.programdb import (
-    RAMSTKNSWC,
-    RAMSTKDesignMechanic,
-    RAMSTKHardware,
-    RAMSTKMilHdbkF,
-    RAMSTKReliability,
-)
+from ramstk.models.programdb import RAMSTKReliability
 
 
 @pytest.fixture(scope="class")
@@ -111,20 +109,20 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardware)
+        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
         print("\033[36m\nsucceed_retrieve_hardware topic was broadcast.")
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardware)
+        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
         assert isinstance(
             tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
         )
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanic
+            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
-        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkF)
-        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWC)
+        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
+        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
         assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliability)
         print("\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast.")
 
@@ -163,7 +161,7 @@ class TestSelectMethods:
         test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardware
+            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -171,22 +169,22 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
-            RAMSTKMilHdbkF,
+            RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
             RAMSTKReliability,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["hardware"], RAMSTKHardware
+            test_viewmodel.tree.get_node(2).data["hardware"], RAMSTKHardwareRecord
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["design_electric"],
@@ -194,15 +192,15 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["milhdbk217f"],
-            RAMSTKMilHdbkF,
+            RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["reliability"],
@@ -235,7 +233,7 @@ class TestSelectMethods:
         test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardware
+            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -243,15 +241,15 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
-            RAMSTKMilHdbkF,
+            RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
@@ -263,7 +261,7 @@ class TestSelectMethods:
         test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardware
+            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -271,15 +269,15 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanic,
+            RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["milhdbk217f"],
-            RAMSTKMilHdbkF,
+            RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
@@ -322,7 +320,7 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 9
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["hardware"], RAMSTKHardware)
+        assert isinstance(tree.get_node(node_id).data["hardware"], RAMSTKHardwareRecord)
         assert tree.get_node(node_id).data["hardware"].hardware_id == 9
         print("\033[36m\nsucceed_insert_hardware topic was broadcast.")
 
@@ -353,7 +351,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(9).data["hardware"],
-            RAMSTKHardware,
+            RAMSTKHardwareRecord,
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_hardware")
@@ -470,8 +468,8 @@ class TestDeleteMethods:
         test_tablemodel.tree.get_node(2).data.pop("hardware")
         pub.sendMessage("request_delete_hardware", node_id=2)
 
-        assert not isinstance(test_tablemodel.tree.get_node(6), RAMSTKHardware)
-        assert not isinstance(test_tablemodel.tree.get_node(7), RAMSTKHardware)
+        assert not isinstance(test_tablemodel.tree.get_node(6), RAMSTKHardwareRecord)
+        assert not isinstance(test_tablemodel.tree.get_node(7), RAMSTKHardwareRecord)
 
         pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_hardware")
 
@@ -682,7 +680,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardware)
+        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
         print("\033[36m\nsucceed_get_hardware_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):

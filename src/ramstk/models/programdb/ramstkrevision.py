@@ -215,8 +215,9 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="revision",
     )
     hardware: relationship = relationship(
-        "RAMSTKHardware",
-        back_populates="revision",
+        "RAMSTKHardwareRecord",
+        backref="revision",
+        passive_deletes=True,
     )
     # software: relationship = relationship('RAMSTKSoftware',
     # back_populates='revision',)

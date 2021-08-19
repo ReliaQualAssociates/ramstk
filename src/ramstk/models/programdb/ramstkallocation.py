@@ -12,9 +12,6 @@
 # noinspection PyPackageRequirements
 from sqlalchemy import Column, Float, ForeignKey, Integer
 
-# noinspection PyPackageRequirements
-from sqlalchemy.orm import relationship
-
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
@@ -55,13 +52,13 @@ class RAMSTKAllocation(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
-        ForeignKey("ramstk_hardware.fld_hardware_id"),
+        ForeignKey("ramstk_hardware.fld_hardware_id", ondelete="CASCADE"),
         primary_key=True,
         nullable=False,
     )
@@ -119,9 +116,6 @@ class RAMSTKAllocation(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hardware = relationship(  # type: ignore
-        "RAMSTKHardware", back_populates="allocation"
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKAllocation data model attributes.

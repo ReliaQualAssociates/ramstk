@@ -11,8 +11,7 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKMilHdbkF
+from ramstk.models import RAMSTKBaseTable, RAMSTKMilHdbk217FRecord
 
 
 class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
@@ -48,7 +47,7 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         # This is the record class associated with the table being modelled.
-        self._record: Type[RAMSTKMilHdbkF] = RAMSTKMilHdbkF
+        self._record: Type[RAMSTKMilHdbk217FRecord] = RAMSTKMilHdbk217FRecord
 
         # Initialize public dictionary attributes.
 

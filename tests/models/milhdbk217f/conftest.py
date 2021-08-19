@@ -3,55 +3,12 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models.programdb import RAMSTKMilHdbkF
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "A1": 0.0,
-        "A2": 0.0,
-        "B1": 0.0,
-        "B2": 0.0,
-        "C1": 0.0,
-        "C2": 0.0,
-        "lambdaBD": 0.0,
-        "lambdaBP": 0.0,
-        "lambdaCYC": 0.0,
-        "lambdaEOS": 0.0,
-        "piA": 0.0,
-        "piC": 0.0,
-        "piCD": 0.0,
-        "piCF": 0.0,
-        "piCR": 0.0,
-        "piCV": 0.0,
-        "piCYC": 0.0,
-        "piE": 0.0,
-        "piF": 0.0,
-        "piI": 0.0,
-        "piK": 0.0,
-        "piL": 0.0,
-        "piM": 0.0,
-        "piMFG": 0.0,
-        "piN": 0.0,
-        "piNR": 0.0,
-        "piP": 0.0,
-        "piPT": 0.0,
-        "piQ": 0.0,
-        "piR": 0.0,
-        "piS": 0.0,
-        "piT": 0.0,
-        "piTAPS": 0.0,
-        "piU": 0.0,
-        "piV": 0.0,
-    }
+from ramstk.models import RAMSTKMilHdbk217FRecord
 
 
 @pytest.fixture()
 def mock_program_dao(monkeypatch):
-    _milhdbk217f_1 = RAMSTKMilHdbkF()
+    _milhdbk217f_1 = RAMSTKMilHdbk217FRecord()
     _milhdbk217f_1.revision_id = 1
     _milhdbk217f_1.hardware_id = 1
     _milhdbk217f_1.A1 = 0.0
@@ -90,7 +47,7 @@ def mock_program_dao(monkeypatch):
     _milhdbk217f_1.piU = 0.0
     _milhdbk217f_1.piV = 0.0
 
-    _milhdbk217f_2 = RAMSTKMilHdbkF()
+    _milhdbk217f_2 = RAMSTKMilHdbk217FRecord()
     _milhdbk217f_2.revision_id = 1
     _milhdbk217f_2.hardware_id = 2
     _milhdbk217f_2.A1 = 0.0
@@ -129,7 +86,7 @@ def mock_program_dao(monkeypatch):
     _milhdbk217f_2.piU = 0.0
     _milhdbk217f_2.piV = 0.0
 
-    _milhdbk217f_3 = RAMSTKMilHdbkF()
+    _milhdbk217f_3 = RAMSTKMilHdbk217FRecord()
     _milhdbk217f_3.revision_id = 1
     _milhdbk217f_3.hardware_id = 3
     _milhdbk217f_3.A1 = 0.0
@@ -176,3 +133,57 @@ def mock_program_dao(monkeypatch):
     ]
 
     yield DAO
+
+
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "A1": 0.0,
+        "A2": 0.0,
+        "B1": 0.0,
+        "B2": 0.0,
+        "C1": 0.0,
+        "C2": 0.0,
+        "lambdaBD": 0.0,
+        "lambdaBP": 0.0,
+        "lambdaCYC": 0.0,
+        "lambdaEOS": 0.0,
+        "piA": 0.0,
+        "piC": 0.0,
+        "piCD": 0.0,
+        "piCF": 0.0,
+        "piCR": 0.0,
+        "piCV": 0.0,
+        "piCYC": 0.0,
+        "piE": 0.0,
+        "piF": 0.0,
+        "piI": 0.0,
+        "piK": 0.0,
+        "piL": 0.0,
+        "piM": 0.0,
+        "piMFG": 0.0,
+        "piN": 0.0,
+        "piNR": 0.0,
+        "piP": 0.0,
+        "piPT": 0.0,
+        "piQ": 0.0,
+        "piR": 0.0,
+        "piS": 0.0,
+        "piT": 0.0,
+        "piTAPS": 0.0,
+        "piU": 0.0,
+        "piV": 0.0,
+    }
+
+
+@pytest.fixture(scope="function")
+def test_recordmodel(mock_program_dao):
+    """Get a record model instance for each test function."""
+    dut = mock_program_dao.do_select_all(RAMSTKMilHdbk217FRecord, _all=False)
+
+    yield dut
+
+    # Delete the device under test.
+    del dut

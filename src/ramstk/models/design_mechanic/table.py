@@ -11,8 +11,7 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKDesignMechanic
+from ramstk.models import RAMSTKBaseTable, RAMSTKDesignMechanicRecord
 
 
 class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
@@ -47,8 +46,7 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        # This is the record class associated with the table being modelled.
-        self._record: Type[RAMSTKDesignMechanic] = RAMSTKDesignMechanic
+        self._record: Type[RAMSTKDesignMechanicRecord] = RAMSTKDesignMechanicRecord
 
         # Initialize public dictionary attributes.
 

@@ -11,21 +11,23 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignElectricRecord
+from ramstk.models import (
+    RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
+    RAMSTKHardwareRecord,
+    RAMSTKMilHdbk217FRecord,
+    RAMSTKNSWCRecord,
+)
 from ramstk.models.programdb import (
-    RAMSTKNSWC,
     RAMSTKAction,
     RAMSTKAllocation,
     RAMSTKCause,
     RAMSTKControl,
-    RAMSTKDesignMechanic,
     RAMSTKEnvironment,
     RAMSTKFailureDefinition,
     RAMSTKFunction,
-    RAMSTKHardware,
     RAMSTKHazardAnalysis,
     RAMSTKMechanism,
-    RAMSTKMilHdbkF,
     RAMSTKMission,
     RAMSTKMissionPhase,
     RAMSTKMode,
@@ -66,12 +68,12 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKRequirement.__table__.create(bind=engine)
     RAMSTKStakeholder.__table__.create(bind=engine)
 
-    RAMSTKHardware.__table__.create(bind=engine)
+    RAMSTKHardwareRecord.__table__.create(bind=engine)
     RAMSTKAllocation.__table__.create(bind=engine)
     RAMSTKDesignElectricRecord.__table__.create(bind=engine)
-    RAMSTKDesignMechanic.__table__.create(bind=engine)
-    RAMSTKMilHdbkF.__table__.create(bind=engine)
-    RAMSTKNSWC.__table__.create(bind=engine)
+    RAMSTKDesignMechanicRecord.__table__.create(bind=engine)
+    RAMSTKMilHdbk217FRecord.__table__.create(bind=engine)
+    RAMSTKNSWCRecord.__table__.create(bind=engine)
     RAMSTKReliability.__table__.create(bind=engine)
     RAMSTKSimilarItem.__table__.create(bind=engine)
     RAMSTKMode.__table__.create(bind=engine)

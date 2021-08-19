@@ -27,14 +27,16 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import RAMSTKDesignElectricRecord
+from ramstk.models import (
+    RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
+    RAMSTKHardwareRecord,
+    RAMSTKMilHdbk217FRecord,
+    RAMSTKNSWCRecord,
+)
 from ramstk.models.programdb import (
-    RAMSTKNSWC,
     RAMSTKAllocation,
-    RAMSTKDesignMechanic,
     RAMSTKFunction,
-    RAMSTKHardware,
-    RAMSTKMilHdbkF,
     RAMSTKReliability,
     RAMSTKRequirement,
     RAMSTKSimilarItem,
@@ -544,7 +546,7 @@ class Import:
 
         return _design_electric
 
-    def _do_insert_design_mechanic(self, row: pd.Series) -> RAMSTKDesignMechanic:
+    def _do_insert_design_mechanic(self, row: pd.Series) -> RAMSTKDesignMechanicRecord:
         """Insert a new Design Mechanic entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -552,7 +554,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMMSTKDesignMechanic`
         """
-        _design_mechanic = RAMSTKDesignMechanic()
+        _design_mechanic = RAMSTKDesignMechanicRecord()
 
         _map = self._dic_field_map["Hardware"]
         _design_mechanic.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
@@ -664,7 +666,7 @@ class Import:
 
         return _function
 
-    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardware:
+    def _do_insert_hardware(self, row: pd.Series) -> RAMSTKHardwareRecord:
         """Insert a new Hardware entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -672,7 +674,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramstkhardware.RAMSTKHardware`
         """
-        _hardware = RAMSTKHardware()
+        _hardware = RAMSTKHardwareRecord()
         _map = self._dic_field_map["Hardware"]
 
         _hardware.revision_id = _get_input_value(_map, row, "Revision ID", 1)
@@ -713,7 +715,7 @@ class Import:
 
         return _hardware
 
-    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF:
+    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbk217FRecord:
         """Insert a new MIL-HDBK-217F entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -721,22 +723,22 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKMilHdbkF`
         """
-        _mil_hdbk_f = RAMSTKMilHdbkF()
+        _mil_hdbk_f = RAMSTKMilHdbk217FRecord()
 
         _map = self._dic_field_map["Hardware"]
         _mil_hdbk_f.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
 
         return _mil_hdbk_f
 
-    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWC:
+    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWCRecord:
         """Insert a new NSWC entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
         :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
+        :rtype: :class:`ramstk.models.nswc.RAMSTKNSWCRecord`
         """
-        _nswc = RAMSTKNSWC()
+        _nswc = RAMSTKNSWCRecord()
 
         _map = self._dic_field_map["Hardware"]
         _nswc.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
