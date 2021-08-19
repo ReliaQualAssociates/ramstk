@@ -22,8 +22,9 @@ from ramstk.models import (
     RAMSTKHardwareRecord,
     RAMSTKHardwareTable,
     RAMSTKMilHdbk217FRecord,
+    RAMSTKNSWCRecord,
 )
-from ramstk.models.programdb import RAMSTKNSWC, RAMSTKReliability
+from ramstk.models.programdb import RAMSTKReliability
 
 
 @pytest.fixture(scope="class")
@@ -121,7 +122,7 @@ class TestSelectMethods:
             tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
         )
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
-        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWC)
+        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
         assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliability)
         print("\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast.")
 
@@ -176,7 +177,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
@@ -199,7 +200,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["reliability"],
@@ -248,7 +249,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
@@ -276,7 +277,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],

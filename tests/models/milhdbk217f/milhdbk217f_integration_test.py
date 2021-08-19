@@ -49,7 +49,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkF)
+        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkFRecord)
         print("\033[36m\nsucceed_retrieve_milhdbk217f topic was broadcast.")
 
     @pytest.mark.integration

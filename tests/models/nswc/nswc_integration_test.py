@@ -15,8 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKNSWCTable
-from ramstk.models.programdb import RAMSTKNSWC
+from ramstk.models import RAMSTKNSWCRecord, RAMSTKNSWCTable
 
 
 @pytest.fixture(scope="class")
@@ -50,7 +49,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWC)
+        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
         print("\033[36m\nsucceed_retrieve_nswc topic was broadcast.")
 
     @pytest.mark.integration
@@ -70,7 +69,7 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 8
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["nswc"], RAMSTKNSWC)
+        assert isinstance(tree.get_node(node_id).data["nswc"], RAMSTKNSWCRecord)
         assert tree.get_node(node_id).data["nswc"].hardware_id == 8
         print("\033[36m\nsucceed_insert_nswc topic was broadcast.")
 
@@ -94,7 +93,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(8).data["nswc"],
-            RAMSTKNSWC,
+            RAMSTKNSWCRecord,
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_nswc")
@@ -344,7 +343,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWC)
+        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
         print("\033[36m\nsucceed_get_nswc_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):

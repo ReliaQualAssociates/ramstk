@@ -3,77 +3,12 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models.programdb import RAMSTKNSWC
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "Cac": 0.0,
-        "Calt": 0.0,
-        "Cb": 0.0,
-        "Cbl": 0.0,
-        "Cbt": 0.0,
-        "Cbv": 0.0,
-        "Cc": 0.0,
-        "Ccf": 0.0,
-        "Ccp": 0.0,
-        "Ccs": 0.0,
-        "Ccv": 0.0,
-        "Ccw": 0.0,
-        "Cd": 0.0,
-        "Cdc": 0.0,
-        "Cdl": 0.0,
-        "Cdp": 0.0,
-        "Cds": 0.0,
-        "Cdt": 0.0,
-        "Cdw": 0.0,
-        "Cdy": 0.0,
-        "Ce": 0.0,
-        "Cf": 0.0,
-        "Cg": 0.0,
-        "Cga": 0.0,
-        "Cgl": 0.0,
-        "Cgp": 0.0,
-        "Cgs": 0.0,
-        "Cgt": 0.0,
-        "Cgv": 0.0,
-        "Ch": 0.0,
-        "Ci": 0.0,
-        "Ck": 0.0,
-        "Cl": 0.0,
-        "Clc": 0.0,
-        "Cm": 0.0,
-        "Cmu": 0.0,
-        "Cn": 0.0,
-        "Cnp": 0.0,
-        "Cnw": 0.0,
-        "Cp": 0.0,
-        "Cpd": 0.0,
-        "Cpf": 0.0,
-        "Cpv": 0.0,
-        "Cq": 0.0,
-        "Cr": 0.0,
-        "Crd": 0.0,
-        "Cs": 0.0,
-        "Csc": 0.0,
-        "Csf": 0.0,
-        "Cst": 0.0,
-        "Csv": 0.0,
-        "Csw": 0.0,
-        "Csz": 0.0,
-        "Ct": 0.0,
-        "Cv": 0.0,
-        "Cw": 0.0,
-        "Cy": 0.0,
-    }
+from ramstk.models import RAMSTKNSWCRecord
 
 
 @pytest.fixture()
 def mock_program_dao(monkeypatch):
-    _nswc_1 = RAMSTKNSWC()
+    _nswc_1 = RAMSTKNSWCRecord()
     _nswc_1.revision_id = 1
     _nswc_1.hardware_id = 1
     _nswc_1.Cac = 0.0
@@ -134,7 +69,7 @@ def mock_program_dao(monkeypatch):
     _nswc_1.Cw = 0.0
     _nswc_1.Cy = 0.0
 
-    _nswc_2 = RAMSTKNSWC()
+    _nswc_2 = RAMSTKNSWCRecord()
     _nswc_2.revision_id = 1
     _nswc_2.hardware_id = 2
     _nswc_2.Cac = 0.0
@@ -195,7 +130,7 @@ def mock_program_dao(monkeypatch):
     _nswc_2.Cw = 0.0
     _nswc_2.Cy = 0.0
 
-    _nswc_3 = RAMSTKNSWC()
+    _nswc_3 = RAMSTKNSWCRecord()
     _nswc_3.revision_id = 1
     _nswc_3.hardware_id = 3
     _nswc_3.Cac = 0.0
@@ -264,3 +199,79 @@ def mock_program_dao(monkeypatch):
     ]
 
     yield DAO
+
+
+@pytest.fixture(scope="function")
+def test_attributes():
+    yield {
+        "revision_id": 1,
+        "hardware_id": 1,
+        "Cac": 0.0,
+        "Calt": 0.0,
+        "Cb": 0.0,
+        "Cbl": 0.0,
+        "Cbt": 0.0,
+        "Cbv": 0.0,
+        "Cc": 0.0,
+        "Ccf": 0.0,
+        "Ccp": 0.0,
+        "Ccs": 0.0,
+        "Ccv": 0.0,
+        "Ccw": 0.0,
+        "Cd": 0.0,
+        "Cdc": 0.0,
+        "Cdl": 0.0,
+        "Cdp": 0.0,
+        "Cds": 0.0,
+        "Cdt": 0.0,
+        "Cdw": 0.0,
+        "Cdy": 0.0,
+        "Ce": 0.0,
+        "Cf": 0.0,
+        "Cg": 0.0,
+        "Cga": 0.0,
+        "Cgl": 0.0,
+        "Cgp": 0.0,
+        "Cgs": 0.0,
+        "Cgt": 0.0,
+        "Cgv": 0.0,
+        "Ch": 0.0,
+        "Ci": 0.0,
+        "Ck": 0.0,
+        "Cl": 0.0,
+        "Clc": 0.0,
+        "Cm": 0.0,
+        "Cmu": 0.0,
+        "Cn": 0.0,
+        "Cnp": 0.0,
+        "Cnw": 0.0,
+        "Cp": 0.0,
+        "Cpd": 0.0,
+        "Cpf": 0.0,
+        "Cpv": 0.0,
+        "Cq": 0.0,
+        "Cr": 0.0,
+        "Crd": 0.0,
+        "Cs": 0.0,
+        "Csc": 0.0,
+        "Csf": 0.0,
+        "Cst": 0.0,
+        "Csv": 0.0,
+        "Csw": 0.0,
+        "Csz": 0.0,
+        "Ct": 0.0,
+        "Cv": 0.0,
+        "Cw": 0.0,
+        "Cy": 0.0,
+    }
+
+
+@pytest.fixture(scope="function")
+def test_recordmodel(mock_program_dao):
+    """Get a record model instance for each test function."""
+    dut = mock_program_dao.do_select_all(RAMSTKNSWCRecord, _all=False)
+
+    yield dut
+
+    # Delete the device under test.
+    del dut
