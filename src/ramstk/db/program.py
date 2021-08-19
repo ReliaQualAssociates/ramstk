@@ -15,6 +15,7 @@ from ramstk.models import (
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
     RAMSTKHardwareRecord,
+    RAMSTKMilHdbk217FRecord,
 )
 from ramstk.models.programdb import (
     RAMSTKNSWC,
@@ -27,7 +28,6 @@ from ramstk.models.programdb import (
     RAMSTKFunction,
     RAMSTKHazardAnalysis,
     RAMSTKMechanism,
-    RAMSTKMilHdbkF,
     RAMSTKMission,
     RAMSTKMissionPhase,
     RAMSTKMode,
@@ -72,7 +72,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKAllocation.__table__.create(bind=engine)
     RAMSTKDesignElectricRecord.__table__.create(bind=engine)
     RAMSTKDesignMechanicRecord.__table__.create(bind=engine)
-    RAMSTKMilHdbkF.__table__.create(bind=engine)
+    RAMSTKMilHdbk217FRecord.__table__.create(bind=engine)
     RAMSTKNSWC.__table__.create(bind=engine)
     RAMSTKReliability.__table__.create(bind=engine)
     RAMSTKSimilarItem.__table__.create(bind=engine)

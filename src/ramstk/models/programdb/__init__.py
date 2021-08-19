@@ -17,7 +17,6 @@ from .ramstkfailuredefinition import RAMSTKFailureDefinition
 from .ramstkfunction import RAMSTKFunction
 from .ramstkhazardanalysis import RAMSTKHazardAnalysis
 from .ramstkmechanism import RAMSTKMechanism
-from .ramstkmilhdbk217f import RAMSTKMilHdbkF
 from .ramstkmission import RAMSTKMission
 from .ramstkmissionphase import RAMSTKMissionPhase
 from .ramstkmode import RAMSTKMode

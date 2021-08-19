@@ -31,12 +31,12 @@ from ramstk.models import (
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
     RAMSTKHardwareRecord,
+    RAMSTKMilHdbk217FRecord,
 )
 from ramstk.models.programdb import (
     RAMSTKNSWC,
     RAMSTKAllocation,
     RAMSTKFunction,
-    RAMSTKMilHdbkF,
     RAMSTKReliability,
     RAMSTKRequirement,
     RAMSTKSimilarItem,
@@ -715,7 +715,7 @@ class Import:
 
         return _hardware
 
-    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbkF:
+    def _do_insert_mil_hdbk_f(self, row: pd.Series) -> RAMSTKMilHdbk217FRecord:
         """Insert a new MIL-HDBK-217F entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -723,7 +723,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKMilHdbkF`
         """
-        _mil_hdbk_f = RAMSTKMilHdbkF()
+        _mil_hdbk_f = RAMSTKMilHdbk217FRecord()
 
         _map = self._dic_field_map["Hardware"]
         _mil_hdbk_f.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)

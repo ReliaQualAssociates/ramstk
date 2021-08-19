@@ -180,7 +180,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     milhdbkf = relationship(  # type: ignore
-        "RAMSTKMilHdbkF",
+        "RAMSTKMilHdbk217FRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,

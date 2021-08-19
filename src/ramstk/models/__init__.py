@@ -17,6 +17,7 @@ from .fmea.view import RAMSTKFMEAView
 from .hardware.record import RAMSTKHardwareRecord
 from .hardware.table import RAMSTKHardwareTable
 from .hardware.view import RAMSTKHardwareBoMView
+from .milhdbk217f.record import RAMSTKMilHdbk217FRecord
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
