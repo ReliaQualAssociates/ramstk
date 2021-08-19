@@ -15,7 +15,6 @@ from .ramstkcontrol import RAMSTKControl
 from .ramstkenvironment import RAMSTKEnvironment
 from .ramstkfailuredefinition import RAMSTKFailureDefinition
 from .ramstkfunction import RAMSTKFunction
-from .ramstkhardware import RAMSTKHardware
 from .ramstkhazardanalysis import RAMSTKHazardAnalysis
 from .ramstkmechanism import RAMSTKMechanism
 from .ramstkmilhdbk217f import RAMSTKMilHdbkF

@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKHardware Table Module."""
+"""RAMSTKHardware Record Module."""
 
 # Standard Library Imports
 from datetime import date
@@ -19,7 +19,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_hardware table in the RAMSTK Program database.
 
     This table shares a:
@@ -81,7 +81,7 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     hardware_id = Column(
@@ -163,21 +163,15 @@ class RAMSTKHardware(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship(  # type: ignore
-        "RAMSTKRevision",
-        back_populates="hardware",
-    )
-
-    # One-to-one relationships.
     allocation = relationship(  # type: ignore
         "RAMSTKAllocation",
-        back_populates="hardware",
+        backref="hardware",
         cascade="all,delete",
     )
     sia = relationship(  # type: ignore
         "RAMSTKSimilarItem",
-        back_populates="hardware",
-        cascade="all,delete",
+        backref="hardware",
+        passive_deletes=True,
     )
     reliability = relationship(  # type: ignore
         "RAMSTKReliability",

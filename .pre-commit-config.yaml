@@ -1,6 +1,6 @@
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v3.4.0
+      rev: v4.0.1
       hooks:
           - id: check-docstring-first
           - id: check-merge-conflict
@@ -11,13 +11,13 @@ repos:
           - id: no-commit-to-branch
           - id: trailing-whitespace
     - repo: https://github.com/psf/black
-      rev: '20.8b1'
+      rev: '21.7b0'
       hooks:
         - id: black
           types_or: [python, pyi]
           language_version: python3
     - repo: https://github.com/PyCQA/isort
-      rev: 5.7.0
+      rev: 5.9.3
       hooks:
         - id: isort
           args: [--settings-file, ./pyproject.toml]
@@ -33,7 +33,7 @@ repos:
         - id: pycodestyle
           args: [--config, ./setup.cfg]
     - repo: https://github.com/pycqa/pydocstyle
-      rev: 5.1.1
+      rev: 6.1.1
       hooks:
         - id: pydocstyle
           args: [--config, ./setup.cfg]
@@ -44,7 +44,7 @@ repos:
           additional_dependencies: [types-python-dateutil]
           args: [--config-file, ./pyproject.toml]
     - repo: https://github.com/pre-commit/mirrors-pylint
-      rev: v2.6.0
+      rev: v3.0.0a4
       hooks:
           - id: pylint
             args: [-d, E0401, -f, colorized, --rcfile, ./pyproject.toml]

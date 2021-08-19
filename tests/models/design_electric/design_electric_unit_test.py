@@ -247,6 +247,110 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
+@pytest.mark.usefixtures("test_tablemodel", "test_toml_user_configuration")
+class TestGetterSetterMethods:
+    """Class for testing methods that get or set."""
+
+    @pytest.mark.unit
+    def test_get_record_model_attributes(self, mock_program_dao):
+        """should return the record model attributes dict."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord)[0]
+
+        _attributes = dut.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["voltage_ac_operating"] == 0.0
+        assert _attributes["frequency_operating"] == 0.0
+        assert _attributes["type_id"] == 0
+        assert _attributes["resistance"] == 0.0
+        assert _attributes["package_id"] == 0
+        assert _attributes["technology_id"] == 0
+        assert _attributes["n_cycles"] == 0
+        assert _attributes["n_circuit_planes"] == 1
+        assert _attributes["contact_gauge"] == 0
+        assert _attributes["current_operating"] == 0.0
+        assert _attributes["n_hand_soldered"] == 0
+        assert _attributes["contact_rating_id"] == 0
+        assert _attributes["area"] == 0.0
+        assert _attributes["contact_form_id"] == 0
+        assert _attributes["years_in_production"] == 1
+        assert _attributes["n_active_pins"] == 0
+        assert _attributes["capacitance"] == 0.0
+        assert _attributes["temperature_case"] == 0.0
+        assert _attributes["current_rated"] == 0.0
+        assert _attributes["power_operating"] == 0.0
+        assert _attributes["configuration_id"] == 0
+        assert _attributes["temperature_hot_spot"] == 0.0
+        assert _attributes["temperature_junction"] == 0.0
+        assert _attributes["current_ratio"] == 0.0
+        assert _attributes["insulation_id"] == 0
+        assert _attributes["construction_id"] == 0
+        assert _attributes["insert_id"] == 0
+        assert _attributes["theta_jc"] == 0.0
+        assert _attributes["voltage_dc_operating"] == 0.0
+        assert _attributes["power_ratio"] == 0.0
+        assert _attributes["family_id"] == 0
+        assert _attributes["overstress"] == 0
+        assert _attributes["voltage_rated"] == 0.0
+        assert _attributes["feature_size"] == 0.0
+        assert _attributes["operating_life"] == 0.0
+        assert _attributes["application_id"] == 0
+        assert _attributes["weight"] == 0.0
+        assert _attributes["temperature_rated_max"] == 0.0
+        assert _attributes["voltage_ratio"] == 0.0
+        assert _attributes["temperature_rated_min"] == 0.0
+        assert _attributes["power_rated"] == 0.0
+        assert _attributes["environment_active_id"] == 0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["specification_id"] == 0
+        assert _attributes["matching_id"] == 0
+        assert _attributes["n_elements"] == 0
+        assert _attributes["environment_dormant_id"] == 0
+        assert _attributes["reason"] == ""
+        assert _attributes["voltage_esd"] == 0.0
+        assert _attributes["manufacturing_id"] == 0
+        assert _attributes["n_wave_soldered"] == 0
+        assert _attributes["temperature_knee"] == 25.0
+        assert _attributes["temperature_rise"] == 0.0
+        assert _attributes["temperature_active"] == 35.0
+        assert _attributes["temperature_dormant"] == 25.0
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes(self, test_attributes, mock_program_dao):
+        """should set the value of the attribute requested."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_none_value(
+        self, test_attributes, mock_program_dao
+    ):
+        """should set an attribute to it's default value when passed a None value."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        test_attributes["type_id"] = None
+
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.get_attributes()["type_id"] == 0
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_unknown_attributes(
+        self, test_attributes, mock_program_dao
+    ):
+        """should raise an AttributeError when passed an unknown attribute."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        with pytest.raises(AttributeError):
+            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})
+
+
 @pytest.mark.usefixtures(
     "test_attributes", "test_tablemodel", "test_toml_user_configuration"
 )

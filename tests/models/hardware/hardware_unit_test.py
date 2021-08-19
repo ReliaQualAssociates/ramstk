@@ -19,8 +19,11 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.models import RAMSTKHardwareBoMView, RAMSTKHardwareTable
-from ramstk.models.programdb import RAMSTKHardware
+from ramstk.models import (
+    RAMSTKHardwareBoMView,
+    RAMSTKHardwareRecord,
+    RAMSTKHardwareTable,
+)
 
 
 @pytest.fixture(scope="function")
@@ -108,7 +111,7 @@ class TestCreateModels:
             "hardware_id",
         ]
         assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._record == RAMSTKHardware
+        assert test_tablemodel._record == RAMSTKHardwareRecord
         assert test_tablemodel.last_id == 0
         assert test_tablemodel.pkey == "hardware_id"
         assert pub.isSubscribed(
@@ -215,15 +218,15 @@ class TestSelectMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(1).data["hardware"],
-            RAMSTKHardware,
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_tablemodel.tree.get_node(2).data["hardware"],
-            RAMSTKHardware,
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_tablemodel.tree.get_node(3).data["hardware"],
-            RAMSTKHardware,
+            RAMSTKHardwareRecord,
         )
 
     @pytest.mark.unit
@@ -233,7 +236,7 @@ class TestSelectMethods:
 
         _hardware = test_tablemodel.do_select(1)
 
-        assert isinstance(_hardware, RAMSTKHardware)
+        assert isinstance(_hardware, RAMSTKHardwareRecord)
         assert _hardware.revision_id == 1
         assert _hardware.hardware_id == 1
         assert _hardware.year_of_manufacture == 2019
@@ -256,7 +259,7 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
         _new_record = test_tablemodel.do_get_new_record(test_attributes)
 
-        assert isinstance(_new_record, RAMSTKHardware)
+        assert isinstance(_new_record, RAMSTKHardwareRecord)
         assert _new_record.revision_id == 1
         assert _new_record.hardware_id == 1
 
@@ -270,7 +273,7 @@ class TestInsertMethods:
         assert test_tablemodel.last_id == 4
         assert isinstance(
             test_tablemodel.tree.get_node(4).data["hardware"],
-            RAMSTKHardware,
+            RAMSTKHardwareRecord,
         )
         assert test_tablemodel.tree.get_node(4).data["hardware"].revision_id == 1
         assert test_tablemodel.tree.get_node(4).data["hardware"].hardware_id == 4
@@ -305,6 +308,121 @@ class TestDeleteMethods:
 
         assert test_tablemodel.last_id == 2
         assert test_tablemodel.tree.get_node(_last_id) is None
+
+
+@pytest.mark.usefixtures("test_attributes", "mock_program_dao")
+class TestGetterSetterMethods:
+    """Class for testing methods that get and set."""
+
+    @pytest.mark.unit
+    def test_get_record_model_attributes(self, mock_program_dao):
+        """should return a dict of attribute key:value pairs."""
+        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
+
+        _attributes = dut.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["alt_part_number"] == ""
+        assert _attributes["attachments"] == ""
+        assert _attributes["cage_code"] == ""
+        assert _attributes["category_id"] == 0
+        assert _attributes["comp_ref_des"] == "S1"
+        assert _attributes["cost"] == 0.0
+        assert _attributes["cost_failure"] == 0.0
+        assert _attributes["cost_hour"] == 0.0
+        assert _attributes["cost_type_id"] == 2
+        assert _attributes["description"] == "Test System"
+        assert _attributes["duty_cycle"] == 100.0
+        assert _attributes["figure_number"] == ""
+        assert _attributes["lcn"] == ""
+        assert _attributes["level"] == 0
+        assert _attributes["manufacturer_id"] == 0
+        assert _attributes["mission_time"] == 100.0
+        assert _attributes["name"] == ""
+        assert _attributes["nsn"] == ""
+        assert _attributes["page_number"] == ""
+        assert _attributes["parent_id"] == 0
+        assert _attributes["part"] == 0
+        assert _attributes["part_number"] == ""
+        assert _attributes["quantity"] == 1
+        assert _attributes["ref_des"] == "S1"
+        assert _attributes["remarks"] == ""
+        assert _attributes["repairable"] == 0
+        assert _attributes["specification_number"] == ""
+        assert _attributes["subcategory_id"] == 0
+        assert _attributes["tagged_part"] == 0
+        assert _attributes["total_cost"] == 0.0
+        assert _attributes["total_part_count"] == 0
+        assert _attributes["total_power_dissipation"] == 0.0
+        assert _attributes["year_of_manufacture"] == 2019
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes(self, mock_program_dao, test_attributes):
+        """should return None on success."""
+        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.alt_part_number == ""
+        assert dut.attachments == ""
+        assert dut.cage_code == ""
+        assert dut.category_id == 0
+        assert dut.comp_ref_des == "S1"
+        assert dut.cost == 0.0
+        assert dut.cost_failure == 0.0
+        assert dut.cost_hour == 0.0
+        assert dut.cost_type_id == 2
+        assert dut.description == "Test System"
+        assert dut.duty_cycle == 100.0
+        assert dut.figure_number == ""
+        assert dut.lcn == ""
+        assert dut.level == 0
+        assert dut.manufacturer_id == 0
+        assert dut.mission_time == 100.0
+        assert dut.name == ""
+        assert dut.nsn == ""
+        assert dut.page_number == ""
+        assert dut.parent_id == 0
+        assert dut.part == 0
+        assert dut.part_number == ""
+        assert dut.quantity == 1
+        assert dut.ref_des == "S1"
+        assert dut.remarks == ""
+        assert dut.repairable == 0
+        assert dut.specification_number == ""
+        assert dut.subcategory_id == 0
+        assert dut.tagged_part == 0
+        assert dut.total_cost == 0.0
+        assert dut.total_part_count == 0
+        assert dut.total_power_dissipation == 0.0
+        assert dut.year_of_manufacture == 2019
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_none_value(
+        self, mock_program_dao, test_attributes
+    ):
+        """should set an attribute to it's default value when the a None value."""
+        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
+
+        test_attributes["nsn"] = None
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.get_attributes()["nsn"] == ""
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_unknown_attributes(
+        self, test_attributes, mock_program_dao
+    ):
+        """should raise an AttributeError when passed an unknown attribute."""
+        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        with pytest.raises(AttributeError):
+            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

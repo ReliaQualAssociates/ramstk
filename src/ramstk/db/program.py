@@ -11,7 +11,11 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignMechanicRecord
+from ramstk.models import (
+    RAMSTKDesignElectricRecord,
+    RAMSTKDesignMechanicRecord,
+    RAMSTKHardwareRecord,
+)
 from ramstk.models.programdb import (
     RAMSTKNSWC,
     RAMSTKAction,
@@ -21,7 +25,6 @@ from ramstk.models.programdb import (
     RAMSTKEnvironment,
     RAMSTKFailureDefinition,
     RAMSTKFunction,
-    RAMSTKHardware,
     RAMSTKHazardAnalysis,
     RAMSTKMechanism,
     RAMSTKMilHdbkF,
@@ -65,7 +68,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKRequirement.__table__.create(bind=engine)
     RAMSTKStakeholder.__table__.create(bind=engine)
 
-    RAMSTKHardware.__table__.create(bind=engine)
+    RAMSTKHardwareRecord.__table__.create(bind=engine)
     RAMSTKAllocation.__table__.create(bind=engine)
     RAMSTKDesignElectricRecord.__table__.create(bind=engine)
     RAMSTKDesignMechanicRecord.__table__.create(bind=engine)

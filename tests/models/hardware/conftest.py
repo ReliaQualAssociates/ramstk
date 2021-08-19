@@ -7,11 +7,11 @@ from pubsub import pub
 from ramstk.models import (
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
+    RAMSTKHardwareRecord,
     RAMSTKMILHDBK217FTable,
     RAMSTKNSWCTable,
     RAMSTKReliabilityTable,
 )
-from ramstk.models.programdb import RAMSTKHardware
 
 
 @pytest.fixture(scope="function")
@@ -57,7 +57,7 @@ def test_attributes():
 
 @pytest.fixture()
 def mock_program_dao(monkeypatch):
-    _hardware_1 = RAMSTKHardware()
+    _hardware_1 = RAMSTKHardwareRecord()
     _hardware_1.revision_id = 1
     _hardware_1.hardware_id = 1
     _hardware_1.alt_part_number = ""
@@ -94,7 +94,7 @@ def mock_program_dao(monkeypatch):
     _hardware_1.total_power_dissipation = 0.0
     _hardware_1.year_of_manufacture = 2019
 
-    _hardware_2 = RAMSTKHardware()
+    _hardware_2 = RAMSTKHardwareRecord()
     _hardware_2.revision_id = 1
     _hardware_2.hardware_id = 2
     _hardware_2.alt_part_number = ""
@@ -131,7 +131,7 @@ def mock_program_dao(monkeypatch):
     _hardware_2.total_power_dissipation = 0.0
     _hardware_2.year_of_manufacture = 2019
 
-    _hardware_3 = RAMSTKHardware()
+    _hardware_3 = RAMSTKHardwareRecord()
     _hardware_3.revision_id = 1
     _hardware_3.hardware_id = 3
     _hardware_3.alt_part_number = ""
