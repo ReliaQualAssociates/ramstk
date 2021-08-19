@@ -32,9 +32,9 @@ from ramstk.models import (
     RAMSTKDesignMechanicRecord,
     RAMSTKHardwareRecord,
     RAMSTKMilHdbk217FRecord,
+    RAMSTKNSWCRecord,
 )
 from ramstk.models.programdb import (
-    RAMSTKNSWC,
     RAMSTKAllocation,
     RAMSTKFunction,
     RAMSTKReliability,
@@ -730,15 +730,15 @@ class Import:
 
         return _mil_hdbk_f
 
-    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWC:
+    def _do_insert_nswc(self, row: pd.Series) -> RAMSTKNSWCRecord:
         """Insert a new NSWC entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
         :return: _entity
-        :rtype: :class:`ramstk.models.programdb.ramstknswc.RAMSTKNSWC`
+        :rtype: :class:`ramstk.models.nswc.RAMSTKNSWCRecord`
         """
-        _nswc = RAMSTKNSWC()
+        _nswc = RAMSTKNSWCRecord()
 
         _map = self._dic_field_map["Hardware"]
         _nswc.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)

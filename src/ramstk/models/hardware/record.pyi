@@ -44,7 +44,6 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     total_part_count: Any
     total_power_dissipation: Any
     year_of_manufacture: Any
-    revision: Any
     allocation: Any
     sia: Any
     reliability: Any

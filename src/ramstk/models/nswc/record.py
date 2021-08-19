@@ -15,8 +15,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-# pylint: disable=R0902
-class RAMSTKNSWC(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKNSWCRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_nswc table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

@@ -20,7 +20,6 @@ from .ramstkmechanism import RAMSTKMechanism
 from .ramstkmission import RAMSTKMission
 from .ramstkmissionphase import RAMSTKMissionPhase
 from .ramstkmode import RAMSTKMode
-from .ramstknswc import RAMSTKNSWC
 from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress
 from .ramstkprograminfo import RAMSTKProgramInfo

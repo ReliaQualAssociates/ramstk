@@ -7,7 +7,7 @@ from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricReco
 from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
 from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
-from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
+from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
