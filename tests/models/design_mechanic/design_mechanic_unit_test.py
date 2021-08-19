@@ -241,3 +241,105 @@ class TestDeleteMethods:
 
         assert test_tablemodel.last_id == 2
         assert test_tablemodel.tree.get_node(_last_id) is None
+
+
+@pytest.mark.usefixtures("test_attributes", "mock_program_dao")
+class TestGetterSetter:
+    """Class for testing methods that get or set."""
+
+    @pytest.mark.unit
+    def test_get_record_model_attributes(self, mock_program_dao):
+        """should return the record model attributes dict."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+
+        _attributes = dut.get_attributes()
+
+        assert isinstance(_attributes, dict)
+        assert _attributes["pressure_upstream"] == 0.0
+        assert _attributes["frequency_operating"] == 0.0
+        assert _attributes["surface_finish"] == 0.0
+        assert _attributes["friction"] == 0.0
+        assert _attributes["length_compressed"] == 0.0
+        assert _attributes["load_id"] == 0
+        assert _attributes["n_cycles"] == 0
+        assert _attributes["balance_id"] == 0
+        assert _attributes["lubrication_id"] == 0
+        assert _attributes["water_per_cent"] == 0.0
+        assert _attributes["misalignment_angle"] == 0.0
+        assert _attributes["type_id"] == 0
+        assert _attributes["rpm_design"] == 0.0
+        assert _attributes["pressure_downstream"] == 0.0
+        assert _attributes["diameter_coil"] == 0.0
+        assert _attributes["manufacturing_id"] == 0
+        assert _attributes["pressure_contact"] == 0.0
+        assert _attributes["meyer_hardness"] == 0.0
+        assert _attributes["rpm_operating"] == 0.0
+        assert _attributes["length_relaxed"] == 0.0
+        assert _attributes["impact_id"] == 0
+        assert _attributes["n_ten"] == 0
+        assert _attributes["material_id"] == 0
+        assert _attributes["technology_id"] == 0
+        assert _attributes["service_id"] == 0
+        assert _attributes["flow_design"] == 0.0
+        assert _attributes["application_id"] == 0
+        assert _attributes["diameter_wire"] == 0.0
+        assert _attributes["deflection"] == 0.0
+        assert _attributes["filter_size"] == 0.0
+        assert _attributes["diameter_inner"] == 0.0
+        assert _attributes["pressure_rated"] == 0.0
+        assert _attributes["hardware_id"] == 1
+        assert _attributes["altitude_operating"] == 0.0
+        assert _attributes["thickness"] == 0.0
+        assert _attributes["diameter_outer"] == 0.0
+        assert _attributes["n_elements"] == 0
+        assert _attributes["contact_pressure"] == 0.0
+        assert _attributes["particle_size"] == 0.0
+        assert _attributes["casing_id"] == 0
+        assert _attributes["viscosity_dynamic"] == 0.0
+        assert _attributes["viscosity_design"] == 0.0
+        assert _attributes["torque_id"] == 0
+        assert _attributes["leakage_allowable"] == 0.0
+        assert _attributes["offset"] == 0.0
+        assert _attributes["width_minimum"] == 0.0
+        assert _attributes["load_operating"] == 0.0
+        assert _attributes["spring_index"] == 0.0
+        assert _attributes["flow_operating"] == 0.0
+        assert _attributes["pressure_delta"] == 0.0
+        assert _attributes["length"] == 0.0
+        assert _attributes["load_design"] == 0.0
+        assert _attributes["clearance"] == 0.0
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes(self, test_attributes, mock_program_dao):
+        """should set the value of the attribute requested."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        assert dut.set_attributes(test_attributes) is None
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_none_value(
+        self, test_attributes, mock_program_dao
+    ):
+        """should set an attribute to it's default value when passed a None value."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        test_attributes["type_id"] = None
+
+        assert dut.set_attributes(test_attributes) is None
+        assert dut.get_attributes()["type_id"] == 0.0
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_unknown_attributes(
+        self, test_attributes, mock_program_dao
+    ):
+        """should raise an AttributeError when passed an unknown attribute."""
+        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
+        with pytest.raises(AttributeError):
+            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})

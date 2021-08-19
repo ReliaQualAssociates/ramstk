@@ -311,12 +311,12 @@ class TestDeleteMethods:
 
 
 @pytest.mark.usefixtures("test_attributes", "mock_program_dao")
-class GetterSetterMethods:
+class TestGetterSetterMethods:
     """Class for testing methods that get and set."""
 
-    @pytest.mark.integration
-    def test_get_attributes(self, mock_program_dao):
-        """get_attributes() should return a dict of attribute values."""
+    @pytest.mark.unit
+    def test_get_record_model_attributes(self, mock_program_dao):
+        """should return a dict of attribute key:value pairs."""
         dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
 
         _attributes = dut.get_attributes()
@@ -330,7 +330,7 @@ class GetterSetterMethods:
         assert _attributes["cost"] == 0.0
         assert _attributes["cost_failure"] == 0.0
         assert _attributes["cost_hour"] == 0.0
-        assert _attributes["cost_type_id"] == 0
+        assert _attributes["cost_type_id"] == 2
         assert _attributes["description"] == "Test System"
         assert _attributes["duty_cycle"] == 100.0
         assert _attributes["figure_number"] == ""
@@ -357,10 +357,12 @@ class GetterSetterMethods:
         assert _attributes["year_of_manufacture"] == 2019
 
     @pytest.mark.unit
-    def test_set_attributes(self, mock_program_dao, test_attributes):
+    def test_set_record_model_attributes(self, mock_program_dao, test_attributes):
         """should return None on success."""
         dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
 
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
         assert dut.set_attributes(test_attributes) is None
         assert dut.alt_part_number == ""
         assert dut.attachments == ""
@@ -397,20 +399,28 @@ class GetterSetterMethods:
         assert dut.year_of_manufacture == 2019
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, mock_program_dao, test_attributes):
+    def test_set_record_model_attributes_none_value(
+        self, mock_program_dao, test_attributes
+    ):
         """should set an attribute to it's default value when the a None value."""
         dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
 
         test_attributes["nsn"] = None
 
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
         assert dut.set_attributes(test_attributes) is None
         assert dut.get_attributes()["nsn"] == ""
 
     @pytest.mark.unit
-    def test_set_attributes_unknown_attributes(self, mock_program_dao):
+    def test_set_record_model_attributes_unknown_attributes(
+        self, test_attributes, mock_program_dao
+    ):
         """should raise an AttributeError when passed an unknown attribute."""
         dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
 
+        test_attributes.pop("revision_id")
+        test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
             dut.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
