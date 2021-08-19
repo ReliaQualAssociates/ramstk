@@ -6,6 +6,7 @@ from sqlalchemy.orm import scoped_session as scoped_session
 from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord
 from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
+from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models.programdb import RAMSTKNSWC as RAMSTKNSWC
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
@@ -16,7 +17,6 @@ from ramstk.models.programdb import RAMSTKFailureDefinition as RAMSTKFailureDefi
 from ramstk.models.programdb import RAMSTKFunction as RAMSTKFunction
 from ramstk.models.programdb import RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
 from ramstk.models.programdb import RAMSTKMechanism as RAMSTKMechanism
-from ramstk.models.programdb import RAMSTKMilHdbkF as RAMSTKMilHdbkF
 from ramstk.models.programdb import RAMSTKMission as RAMSTKMission
 from ramstk.models.programdb import RAMSTKMissionPhase as RAMSTKMissionPhase
 from ramstk.models.programdb import RAMSTKMode as RAMSTKMode

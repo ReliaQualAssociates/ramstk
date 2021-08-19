@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMilHdbkF Table Module."""
+"""RAMSTKMilHdbkF Record Module."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
@@ -15,7 +15,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKMilHdbkF(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_mil_hdbk_f table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.
