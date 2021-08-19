@@ -15,8 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMILHDBK217FTable
-from ramstk.models.programdb import RAMSTKMilHdbkF
+from ramstk.models import RAMSTKMilHdbk217FRecord, RAMSTKMILHDBK217FTable
 
 
 @pytest.fixture(scope="class")
@@ -70,7 +69,9 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 8
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["milhdbk217f"], RAMSTKMilHdbkF)
+        assert isinstance(
+            tree.get_node(node_id).data["milhdbk217f"], RAMSTKMilHdbk217FRecord
+        )
         assert tree.get_node(node_id).data["milhdbk217f"].hardware_id == 8
         print("\033[36m\nsucceed_insert_milhdbk217f topic was broadcast.")
 
@@ -94,7 +95,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(8).data["milhdbk217f"],
-            RAMSTKMilHdbkF,
+            RAMSTKMilHdbk217FRecord,
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_milhdbk217f")
@@ -341,7 +342,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkF)
+        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
         print("\033[36m\nsucceed_get_milhdbk217f_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):

@@ -97,7 +97,7 @@ class TestCreateModels:
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
-        """should return a table manager instance."""
+        """should return a table model instance."""
         assert isinstance(test_tablemodel, RAMSTKHardwareTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
@@ -310,16 +310,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "mock_program_dao")
+@pytest.mark.usefixtures("test_attributes", "test_recordmodel", "mock_program_dao")
 class TestGetterSetterMethods:
     """Class for testing methods that get and set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, mock_program_dao):
+    def test_get_record_model_attributes(self, test_recordmodel):
         """should return a dict of attribute key:value pairs."""
-        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
-
-        _attributes = dut.get_attributes()
+        _attributes = test_recordmodel.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["alt_part_number"] == ""
@@ -357,72 +355,66 @@ class TestGetterSetterMethods:
         assert _attributes["year_of_manufacture"] == 2019
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, mock_program_dao, test_attributes):
+    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
         """should return None on success."""
-        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
-
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert dut.set_attributes(test_attributes) is None
-        assert dut.alt_part_number == ""
-        assert dut.attachments == ""
-        assert dut.cage_code == ""
-        assert dut.category_id == 0
-        assert dut.comp_ref_des == "S1"
-        assert dut.cost == 0.0
-        assert dut.cost_failure == 0.0
-        assert dut.cost_hour == 0.0
-        assert dut.cost_type_id == 2
-        assert dut.description == "Test System"
-        assert dut.duty_cycle == 100.0
-        assert dut.figure_number == ""
-        assert dut.lcn == ""
-        assert dut.level == 0
-        assert dut.manufacturer_id == 0
-        assert dut.mission_time == 100.0
-        assert dut.name == ""
-        assert dut.nsn == ""
-        assert dut.page_number == ""
-        assert dut.parent_id == 0
-        assert dut.part == 0
-        assert dut.part_number == ""
-        assert dut.quantity == 1
-        assert dut.ref_des == "S1"
-        assert dut.remarks == ""
-        assert dut.repairable == 0
-        assert dut.specification_number == ""
-        assert dut.subcategory_id == 0
-        assert dut.tagged_part == 0
-        assert dut.total_cost == 0.0
-        assert dut.total_part_count == 0
-        assert dut.total_power_dissipation == 0.0
-        assert dut.year_of_manufacture == 2019
+        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_recordmodel.alt_part_number == ""
+        assert test_recordmodel.attachments == ""
+        assert test_recordmodel.cage_code == ""
+        assert test_recordmodel.category_id == 0
+        assert test_recordmodel.comp_ref_des == "S1"
+        assert test_recordmodel.cost == 0.0
+        assert test_recordmodel.cost_failure == 0.0
+        assert test_recordmodel.cost_hour == 0.0
+        assert test_recordmodel.cost_type_id == 2
+        assert test_recordmodel.description == "Test System"
+        assert test_recordmodel.duty_cycle == 100.0
+        assert test_recordmodel.figure_number == ""
+        assert test_recordmodel.lcn == ""
+        assert test_recordmodel.level == 0
+        assert test_recordmodel.manufacturer_id == 0
+        assert test_recordmodel.mission_time == 100.0
+        assert test_recordmodel.name == ""
+        assert test_recordmodel.nsn == ""
+        assert test_recordmodel.page_number == ""
+        assert test_recordmodel.parent_id == 0
+        assert test_recordmodel.part == 0
+        assert test_recordmodel.part_number == ""
+        assert test_recordmodel.quantity == 1
+        assert test_recordmodel.ref_des == "S1"
+        assert test_recordmodel.remarks == ""
+        assert test_recordmodel.repairable == 0
+        assert test_recordmodel.specification_number == ""
+        assert test_recordmodel.subcategory_id == 0
+        assert test_recordmodel.tagged_part == 0
+        assert test_recordmodel.total_cost == 0.0
+        assert test_recordmodel.total_part_count == 0
+        assert test_recordmodel.total_power_dissipation == 0.0
+        assert test_recordmodel.year_of_manufacture == 2019
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, mock_program_dao, test_attributes
+        self, test_attributes, test_recordmodel
     ):
         """should set an attribute to it's default value when the a None value."""
-        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
-
         test_attributes["nsn"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert dut.set_attributes(test_attributes) is None
-        assert dut.get_attributes()["nsn"] == ""
+        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_recordmodel.get_attributes()["nsn"] == ""
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, mock_program_dao
+        self, test_attributes, test_recordmodel
     ):
         """should raise an AttributeError when passed an unknown attribute."""
-        dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord)[0]
-
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            dut.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
