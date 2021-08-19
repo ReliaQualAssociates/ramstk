@@ -186,7 +186,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     nswc = relationship(  # type: ignore
-        "RAMSTKNSWC",
+        "RAMSTKNSWCRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
