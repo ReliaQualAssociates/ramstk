@@ -1,12 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.data.storage.programdb.RAMSTKAllocation.py is part of The RAMSTK
-#       Project
+#       ramstk.models.allocation.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKAllocation Table."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Allocation Package Record Model."""
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -17,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKAllocation(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_allocation table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

@@ -7,13 +7,13 @@ import pandas as pd
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.exceptions import DataAccessError as DataAccessError
+from ramstk.models import RAMSTKAllocationRecord as RAMSTKAllocationRecord
 from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord
 from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
 from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
 from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
-from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import RAMSTKFunction as RAMSTKFunction
 from ramstk.models.programdb import RAMSTKRequirement as RAMSTKRequirement
 from ramstk.models.programdb import RAMSTKSimilarItem as RAMSTKSimilarItem
@@ -31,7 +31,7 @@ class Import:
     def __init__(self) -> None: ...
     def _do_connect(self, dao: BaseDatabase) -> None: ...
     def _do_import(self, module: str) -> None: ...
-    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation: ...
+    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocationRecord: ...
     def _do_insert_design_electric(
         self, row: pd.Series
     ) -> RAMSTKDesignElectricRecord: ...

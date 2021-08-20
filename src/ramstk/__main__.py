@@ -21,7 +21,6 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    dmAllocation,
     dmFailureDefinition,
     dmFunction,
     dmHazards,
@@ -39,6 +38,7 @@ from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
+    RAMSTKAllocationTable,
     RAMSTKFMEAView,
     RAMSTKHardwareBoMView,
     RAMSTKPoFView,
@@ -263,7 +263,7 @@ def the_one_ring() -> None:
     )
 
     _program_mgr = RAMSTKProgramManager()
-    _program_mgr.dic_managers["allocation"]["data"] = dmAllocation()
+    _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
     _program_mgr.dic_managers["revision"]["data"] = dmRevision()
     _program_mgr.dic_managers["function"]["data"] = dmFunction()
     _program_mgr.dic_managers["hazards"]["data"] = dmHazards()

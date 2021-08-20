@@ -9,7 +9,6 @@
 
 # RAMSTK Local Imports
 from .ramstkaction import RAMSTKAction
-from .ramstkallocation import RAMSTKAllocation
 from .ramstkcause import RAMSTKCause
 from .ramstkcontrol import RAMSTKControl
 from .ramstkenvironment import RAMSTKEnvironment

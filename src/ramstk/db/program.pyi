@@ -3,6 +3,7 @@ from sqlalchemy.engine import Engine as Engine
 from sqlalchemy.orm import scoped_session as scoped_session
 
 # RAMSTK Package Imports
+from ramstk.models import RAMSTKAllocationRecord as RAMSTKAllocationRecord
 from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord
 from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
@@ -10,7 +11,6 @@ from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
 from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
-from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
 from ramstk.models.programdb import RAMSTKControl as RAMSTKControl
 from ramstk.models.programdb import RAMSTKEnvironment as RAMSTKEnvironment
