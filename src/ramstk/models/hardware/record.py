@@ -169,12 +169,12 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         backref="hardware",
         passive_deletes=True,
     )
-    # sia: relationship = relationship(
-    #    "RAMSTKSimilarItem",
-    #    uselist=False,
-    #    backref="hardware",
-    #    passive_deletes=True,
-    # )
+    sia: relationship = relationship(
+        "RAMSTKSimilarItemRecord",
+        uselist=False,
+        backref="hardware",
+        passive_deletes=True,
+    )
     reliability: relationship = relationship(
         "RAMSTKReliabilityRecord",
         uselist=False,

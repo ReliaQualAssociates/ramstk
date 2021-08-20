@@ -48,6 +48,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     total_power_dissipation: Any
     year_of_manufacture: Any
     allocation: relationship
+    sia: relationship
     reliability: relationship
     milhdbkf: relationship
     nswc: relationship

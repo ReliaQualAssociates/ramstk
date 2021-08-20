@@ -35,13 +35,9 @@ from ramstk.models import (
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
+    RAMSTKSimilarItemRecord,
 )
-from ramstk.models.programdb import (
-    RAMSTKFunction,
-    RAMSTKRequirement,
-    RAMSTKSimilarItem,
-    RAMSTKValidation,
-)
+from ramstk.models.programdb import RAMSTKFunction, RAMSTKRequirement, RAMSTKValidation
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:
@@ -837,7 +833,7 @@ class Import:
 
         return _requirement
 
-    def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItem:
+    def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItemRecord:
         """Insert a new Similar Item record to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -846,7 +842,7 @@ class Import:
             table record.
         :rtype: :class:`ramstk.models.programdb.RAMSTKSimilarItem`
         """
-        _similar_item = RAMSTKSimilarItem()
+        _similar_item = RAMSTKSimilarItemRecord()
         _map = self._dic_field_map["Hardware"]
 
         _similar_item.revision_id = _get_input_value(_map, row, "Revision ID", 1)
