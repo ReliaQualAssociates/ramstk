@@ -33,11 +33,11 @@ from ramstk.models import (
     RAMSTKHardwareRecord,
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
+    RAMSTKReliabilityRecord,
 )
 from ramstk.models.programdb import (
     RAMSTKAllocation,
     RAMSTKFunction,
-    RAMSTKReliability,
     RAMSTKRequirement,
     RAMSTKSimilarItem,
     RAMSTKValidation,
@@ -745,7 +745,7 @@ class Import:
 
         return _nswc
 
-    def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliability:
+    def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliabilityRecord:
         """Insert a new Reliability entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -753,7 +753,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKReliability`
         """
-        _reliability = RAMSTKReliability()
+        _reliability = RAMSTKReliabilityRecord()
 
         _map = self._dic_field_map["Hardware"]
         _reliability.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)

@@ -8,6 +8,7 @@ from ramstk.models import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicReco
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
 from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
+from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKAllocation as RAMSTKAllocation
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
@@ -24,7 +25,6 @@ from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad
 from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
 from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
-from ramstk.models.programdb import RAMSTKReliability as RAMSTKReliability
 from ramstk.models.programdb import RAMSTKRequirement as RAMSTKRequirement
 from ramstk.models.programdb import RAMSTKRevision as RAMSTKRevision
 from ramstk.models.programdb import RAMSTKSimilarItem as RAMSTKSimilarItem

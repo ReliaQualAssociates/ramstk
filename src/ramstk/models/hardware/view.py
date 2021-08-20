@@ -121,7 +121,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
 
         _hardware = _record.data["hardware"]
         _design_electric = _record.data["design_electric"]
-        _reliability = _record.data["reliability"]
 
         pub.sendMessage("request_calculate_total_cost", node_id=node_id)
         pub.sendMessage("request_calculate_total_part_count", node_id=node_id)

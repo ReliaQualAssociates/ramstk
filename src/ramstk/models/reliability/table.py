@@ -17,8 +17,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.analyses import dormancy
 from ramstk.analyses.statistics import exponential, lognormal, normal, weibull
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKReliability
+from ramstk.models import RAMSTKBaseTable, RAMSTKReliabilityRecord
 
 
 class RAMSTKReliabilityTable(RAMSTKBaseTable):
@@ -53,7 +52,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKReliability] = RAMSTKReliability
+        self._record: Type[RAMSTKReliabilityRecord] = RAMSTKReliabilityRecord
 
         # Initialize public dictionary attributes.
 
