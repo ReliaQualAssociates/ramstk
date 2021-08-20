@@ -12,7 +12,6 @@ from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
 from ramstk.controllers import dmRequirement as dmRequirement
-from ramstk.controllers import dmRevision as dmRevision
 from ramstk.controllers import dmStakeholder as dmStakeholder
 from ramstk.controllers import dmValidation as dmValidation
 from ramstk.db.base import BaseDatabase as BaseDatabase
@@ -24,6 +23,7 @@ from ramstk.models import RAMSTKAllocationTable as RAMSTKAllocationTable
 from ramstk.models import RAMSTKFMEAView as RAMSTKFMEAView
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
 from ramstk.models import RAMSTKPoFView as RAMSTKPoFView
+from ramstk.models import RAMSTKRevisionTable as RAMSTKRevisionTable
 from ramstk.models import RAMSTKSimilarItemTable as RAMSTKSimilarItemTable
 from ramstk.models import RAMSTKUsageProfileView as RAMSTKUsageProfileView
 from ramstk.utilities import file_exists as file_exists

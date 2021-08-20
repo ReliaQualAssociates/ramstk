@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.revision.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.revision.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Revision Package Data Model."""
+"""Revision Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKRevision
+from ramstk.models import RAMSTKBaseTable, RAMSTKRevisionRecord
 
 
-class DataManager(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Revision data manager."""
+class RAMSTKRevisionTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the Revision table model."""
 
     # Define private dictionary class attributes.
 
@@ -34,7 +33,7 @@ class DataManager(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Revision data manager instance."""
+        """Initialize a Revision table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -46,7 +45,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKRevision] = RAMSTKRevision
+        self._record: Type[RAMSTKRevisionRecord] = RAMSTKRevisionRecord
 
         # Initialize public dictionary attributes.
 
