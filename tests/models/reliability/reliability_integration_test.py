@@ -15,8 +15,7 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKReliabilityTable
-from ramstk.models.programdb import RAMSTKReliability
+from ramstk.models import RAMSTKReliabilityRecord, RAMSTKReliabilityTable
 
 
 @pytest.fixture(scope="class")
@@ -66,7 +65,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliability)
+        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
         print("\033[36m\nsucceed_retrieve_reliability topic was broadcast.")
 
     @pytest.mark.integration
@@ -86,7 +85,9 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 8
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["reliability"], RAMSTKReliability)
+        assert isinstance(
+            tree.get_node(node_id).data["reliability"], RAMSTKReliabilityRecord
+        )
         assert tree.get_node(node_id).data["reliability"].hardware_id == 8
         print("\033[36m\nsucceed_insert_reliability topic was broadcast.")
 
@@ -110,7 +111,7 @@ class TestInsertMethods:
 
         assert isinstance(
             test_tablemodel.tree.get_node(8).data["reliability"],
-            RAMSTKReliability,
+            RAMSTKReliabilityRecord,
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_reliability")
@@ -200,7 +201,7 @@ class TestUpdateMethods:
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
-            "do_update: The value for one or more attributes for design electric "
+            "do_update: The value for one or more attributes for reliability "
             "ID 1 was the wrong type."
         )
         print(
@@ -270,7 +271,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_reliability")
 
         _reliability = test_tablemodel.do_select(1)
-        _reliability.hazar_rate_active = {1: 2}
+        _reliability.hazard_rate_active = {1: 2}
         pub.sendMessage("request_update_reliability", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_reliability")
@@ -362,7 +363,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliability)
+        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
         print("\033[36m\nsucceed_get_reliability_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):

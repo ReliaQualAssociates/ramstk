@@ -23,8 +23,8 @@ from ramstk.models import (
     RAMSTKHardwareTable,
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
+    RAMSTKReliabilityRecord,
 )
-from ramstk.models.programdb import RAMSTKReliability
 
 
 @pytest.fixture(scope="class")
@@ -123,7 +123,7 @@ class TestSelectMethods:
         )
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
         assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliability)
+        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
         print("\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast.")
 
     @pytest.mark.integration
@@ -181,7 +181,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
-            RAMSTKReliability,
+            RAMSTKReliabilityRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["hardware"], RAMSTKHardwareRecord
@@ -204,7 +204,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["reliability"],
-            RAMSTKReliability,
+            RAMSTKReliabilityRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
@@ -253,7 +253,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
-            RAMSTKReliability,
+            RAMSTKReliabilityRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
@@ -281,7 +281,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["reliability"],
-            RAMSTKReliability,
+            RAMSTKReliabilityRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
