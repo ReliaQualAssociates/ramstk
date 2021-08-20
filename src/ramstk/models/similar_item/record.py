@@ -1,12 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.data.storage.programdb.RAMSTKSimilarItem.py is part of The
-#       RAMSTK Project
+#       ramstk.models.similar_item.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKSimilarItem Table."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Similar Item Record Model."""
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -18,7 +17,7 @@ from ramstk.models import RAMSTKBaseRecord
 
 
 # pylint: disable=R0902
-class RAMSTKSimilarItem(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_similar_item table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_hardware.

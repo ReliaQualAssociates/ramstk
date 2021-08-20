@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Tuple
+from typing import Tuple
 
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
@@ -13,7 +13,6 @@ from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
 from ramstk.controllers import dmRequirement as dmRequirement
 from ramstk.controllers import dmRevision as dmRevision
-from ramstk.controllers import dmSimilarItem as dmSimilarItem
 from ramstk.controllers import dmStakeholder as dmStakeholder
 from ramstk.controllers import dmValidation as dmValidation
 from ramstk.db.base import BaseDatabase as BaseDatabase
@@ -25,6 +24,7 @@ from ramstk.models import RAMSTKAllocationTable as RAMSTKAllocationTable
 from ramstk.models import RAMSTKFMEAView as RAMSTKFMEAView
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
 from ramstk.models import RAMSTKPoFView as RAMSTKPoFView
+from ramstk.models import RAMSTKSimilarItemTable as RAMSTKSimilarItemTable
 from ramstk.models import RAMSTKUsageProfileView as RAMSTKUsageProfileView
 from ramstk.utilities import file_exists as file_exists
 from ramstk.views.gtk3 import Gtk as Gtk
@@ -32,7 +32,7 @@ from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect as RAMSTKDatabaseSelect
 
-def do_connect_to_site_db(conn_info: Any) -> BaseDatabase: ...
+def do_connect_to_site_db(conn_info) -> BaseDatabase: ...
 def do_first_run(configuration: RAMSTKSiteConfiguration) -> None: ...
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager: ...
 def do_read_site_configuration() -> RAMSTKSiteConfiguration: ...

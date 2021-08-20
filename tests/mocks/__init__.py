@@ -31,7 +31,6 @@ from .mock_ramstkprograminfo import MockRAMSTKProgramInfo
 from .mock_ramstkprogramstatus import MockRAMSTKProgramStatus
 from .mock_ramstkrequirement import MockRAMSTKRequirement
 from .mock_ramstkrevision import MockRAMSTKRevision
-from .mock_ramstksimilaritem import MockRAMSTKSimilarItem
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .mock_ramstkstakeholder import MockRAMSTKStakeholder
 from .mock_ramstktestmethod import MockRAMSTKTestMethod

@@ -27,4 +27,6 @@ from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
 from .reliability.record import RAMSTKReliabilityRecord
 from .reliability.table import RAMSTKReliabilityTable
+from .similar_item.record import RAMSTKSimilarItemRecord
+from .similar_item.table import RAMSTKSimilarItemTable
 from .usage_profile.view import RAMSTKUsageProfileView

@@ -25,7 +25,6 @@ from .ramstkprograminfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
 from .ramstkrequirement import RAMSTKRequirement
 from .ramstkrevision import RAMSTKRevision
-from .ramstksimilaritem import RAMSTKSimilarItem
 from .ramstkstakeholder import RAMSTKStakeholder
 from .ramstktestmethod import RAMSTKTestMethod
 from .ramstkvalidation import RAMSTKValidation
