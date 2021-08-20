@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.allocation.allocation_integration_test.py is part of The
+#       tests.models.allocation.allocation_integration_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
@@ -15,43 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmAllocation
-from ramstk.models.programdb import RAMSTKAllocation
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "availability_alloc": 0.0,
-        "env_factor": 1,
-        "goal_measure_id": 1,
-        "hazard_rate_alloc": 0.0,
-        "hazard_rate_goal": 0.0,
-        "included": 1,
-        "int_factor": 1,
-        "allocation_method_id": 1,
-        "mission_time": 100.0,
-        "mtbf_alloc": 0.0,
-        "mtbf_goal": 0.0,
-        "n_sub_systems": 1,
-        "n_sub_elements": 1,
-        "parent_id": 7,
-        "percent_weight_factor": 0.0,
-        "reliability_alloc": 1.0,
-        "reliability_goal": 0.999,
-        "op_time_factor": 1,
-        "soa_factor": 1,
-        "weight_factor": 1,
-    }
+from ramstk.models import RAMSTKAllocationRecord, RAMSTKAllocationTable
 
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmAllocation()
+    dut = RAMSTKAllocationTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
@@ -82,7 +53,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.integration
@@ -102,7 +73,9 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 6
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["allocation"], RAMSTKAllocation)
+        assert isinstance(
+            tree.get_node(node_id).data["allocation"], RAMSTKAllocationRecord
+        )
         assert tree.get_node(node_id).data["allocation"].revision_id == 1
         assert tree.get_node(node_id).data["allocation"].hardware_id == 6
         assert tree.get_node(node_id).data["allocation"].parent_id == 2
@@ -142,7 +115,7 @@ class TestInsertMethods:
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(6).data["allocation"], RAMSTKAllocation
+            test_datamanager.tree.get_node(6).data["allocation"], RAMSTKAllocationRecord
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
@@ -404,7 +377,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
@@ -521,20 +494,24 @@ class TestAnalysisMethods:
             "method."
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_calculate_agree_allocation(self, test_datamanager):
         """should apportion the record ID reliability goal using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
         test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 2
         test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.717
-        test_datamanager.tree.get_node(2).data["allocation"].duty_cycle = 90.0
         test_datamanager.tree.get_node(2).data["allocation"].mission_time = 100.0
         test_datamanager.tree.get_node(2).data["allocation"].n_sub_subsystems = 6
         test_datamanager.tree.get_node(2).data["allocation"].n_sub_elements = 2
         test_datamanager.tree.get_node(2).data["allocation"].weight_factor = 0.95
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage(
+            "request_calculate_allocation",
+            node_id=1,
+            mission_time=100.0,
+            duty_cycle=90.0,
+        )
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
