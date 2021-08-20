@@ -38,7 +38,16 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
-    pub.unsubscribe(dut.do_calculate_allocation, "request_calculate_allocation")
+    pub.unsubscribe(
+        dut.do_calculate_agree_allocation, "request_calculate_agree_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_equal_allocation, "request_calculate_equal_allocation"
+    )
+    pub.unsubscribe(dut.do_calculate_foo_allocation, "request_calculate_foo_allocation")
     pub.unsubscribe(
         dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
     )
@@ -474,27 +483,17 @@ class TestAnalysisMethods:
     def on_succeed_calculate_foo(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
-            0.00049971186
+            0.0006151015
         )
         assert tree.get_node(2).data["allocation"].mtbf_alloc == pytest.approx(
-            2001.1532174
+            1625.747844
         )
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
-            0.95125683
+            0.9403434
         )
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast on FOO.")
 
-    def on_fail_calculate_unknown_method(self, error_message):
-        assert error_message == (
-            "Failed to allocate reliability for hardware ID 1.  Unknown allocation "
-            "method ID 22 selected."
-        )
-        print(
-            "\033[35m\nfail_calculate_allocation topic was broadcast on unknown "
-            "method."
-        )
-
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_calculate_agree_allocation(self, test_datamanager):
         """should apportion the record ID reliability goal using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
@@ -507,9 +506,8 @@ class TestAnalysisMethods:
         test_datamanager.tree.get_node(2).data["allocation"].weight_factor = 0.95
 
         pub.sendMessage(
-            "request_calculate_allocation",
+            "request_calculate_agree_allocation",
             node_id=1,
-            mission_time=100.0,
             duty_cycle=90.0,
         )
 
@@ -530,7 +528,7 @@ class TestAnalysisMethods:
             "allocation"
         ].hazard_rate_active = 0.000628
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_arinc_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
@@ -543,7 +541,7 @@ class TestAnalysisMethods:
         test_datamanager.tree.get_node(1).data["allocation"].goal_measure_id = 1
         test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.995
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_equal_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
@@ -560,21 +558,6 @@ class TestAnalysisMethods:
         test_datamanager.tree.get_node(2).data["allocation"].op_time_factor = 9
         test_datamanager.tree.get_node(2).data["allocation"].int_factor = 3
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_foo_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
-
-    @pytest.mark.integration
-    def test_do_calculate_unknown_method(self, test_datamanager):
-        """should send the fail message when unknown allocation method is specified."""
-        pub.subscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
-        )
-
-        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 22
-
-        pub.sendMessage("request_calculate_allocation", node_id=1)
-
-        pub.unsubscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
-        )

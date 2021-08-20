@@ -40,7 +40,16 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
-    pub.unsubscribe(dut.do_calculate_allocation, "request_calculate_allocation")
+    pub.unsubscribe(
+        dut.do_calculate_agree_allocation, "request_calculate_agree_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_equal_allocation, "request_calculate_equal_allocation"
+    )
+    pub.unsubscribe(dut.do_calculate_foo_allocation, "request_calculate_foo_allocation")
     pub.unsubscribe(
         dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
     )
@@ -119,7 +128,20 @@ class TestCreateModels:
         assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_allocation")
         assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_allocation")
         assert pub.isSubscribed(
-            test_tablemodel.do_calculate_allocation, "request_calculate_allocation"
+            test_tablemodel.do_calculate_agree_allocation,
+            "request_calculate_agree_allocation",
+        )
+        assert pub.isSubscribed(
+            test_tablemodel.do_calculate_arinc_allocation,
+            "request_calculate_arinc_allocation",
+        )
+        assert pub.isSubscribed(
+            test_tablemodel.do_calculate_equal_allocation,
+            "request_calculate_equal_allocation",
+        )
+        assert pub.isSubscribed(
+            test_tablemodel.do_calculate_foo_allocation,
+            "request_calculate_foo_allocation",
         )
         assert pub.isSubscribed(
             test_tablemodel.do_calculate_allocation_goals,
@@ -362,7 +384,7 @@ class TestAnalysisMethods:
         _record.n_sub_subsystems = 6
         _record.n_sub_elements = 2
         _record.weight_factor = 0.95
-        test_tablemodel._do_calculate_agree_allocation(1, 100.0, 90.0)
+        test_tablemodel.do_calculate_agree_allocation(1, 90.0)
 
         assert test_tablemodel.tree.get_node(2).data[
             "allocation"
@@ -387,7 +409,7 @@ class TestAnalysisMethods:
         _record.goal_measure_id = 2
         _record.hazard_rate_goal = 0.000617
 
-        test_tablemodel._do_calculate_arinc_allocation(1)
+        test_tablemodel.do_calculate_arinc_allocation(1)
 
         assert test_tablemodel.tree.get_node(2).data[
             "allocation"
@@ -400,7 +422,9 @@ class TestAnalysisMethods:
         ].reliability_alloc == pytest.approx(0.9856513)
 
     @pytest.mark.unit
-    def test_do_calculate_arinc_allocation(self, test_attributes, test_tablemodel):
+    def test_do_calculate_arinc_allocation_zero_system_rate(
+        self, test_attributes, test_tablemodel
+    ):
         """should raise ZeroDivisionError using ARINC method with system h(t)=0.0."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -408,7 +432,7 @@ class TestAnalysisMethods:
         test_tablemodel._system_hazard_rate = 0.0
 
         with pytest.raises(ZeroDivisionError):
-            test_tablemodel._do_calculate_arinc_allocation(1)
+            test_tablemodel.do_calculate_arinc_allocation(1)
 
     @pytest.mark.unit
     def test_do_calculate_equal_allocation(self, test_attributes, test_tablemodel):
@@ -420,7 +444,7 @@ class TestAnalysisMethods:
         _record.goal_measure_id = 1
         _record.reliability_goal = 0.995
 
-        test_tablemodel._do_calculate_equal_allocation(1)
+        test_tablemodel.do_calculate_equal_allocation(1)
 
         assert test_tablemodel.tree.get_node(2).data[
             "allocation"
@@ -477,7 +501,7 @@ class TestAnalysisMethods:
         _record.op_time_factor = 10
         _record.int_factor = 4
 
-        test_tablemodel._do_calculate_foo_allocation(1)
+        test_tablemodel.do_calculate_foo_allocation(1)
 
         assert test_tablemodel.tree.get_node(2).data[
             "allocation"
