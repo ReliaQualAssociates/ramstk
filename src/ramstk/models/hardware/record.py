@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKHardware Record Module."""
+"""RAMSTKHardware Record Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -163,41 +163,43 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    allocation = relationship(  # type: ignore
-        "RAMSTKAllocation",
-        backref="hardware",
-        cascade="all,delete",
-    )
-    sia = relationship(  # type: ignore
-        "RAMSTKSimilarItem",
-        backref="hardware",
-        passive_deletes=True,
-    )
-    reliability = relationship(  # type: ignore
-        "RAMSTKReliability",
+    # allocation: relationship = relationship(
+    #    "RAMSTKAllocation",
+    #    uselist=False,
+    #    backref="hardware",
+    #    passive_deletes=True,
+    # )
+    # sia: relationship = relationship(
+    #    "RAMSTKSimilarItem",
+    #    uselist=False,
+    #    backref="hardware",
+    #    passive_deletes=True,
+    # )
+    reliability: relationship = relationship(
+        "RAMSTKReliabilityRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    milhdbkf = relationship(  # type: ignore
+    milhdbkf: relationship = relationship(
         "RAMSTKMilHdbk217FRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    nswc = relationship(  # type: ignore
+    nswc: relationship = relationship(
         "RAMSTKNSWCRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    design_electric = relationship(  # type: ignore
+    design_electric: relationship = relationship(
         "RAMSTKDesignElectricRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    design_mechanic = relationship(  # type: ignore
+    design_mechanic: relationship = relationship(
         "RAMSTKDesignMechanicRecord",
         uselist=False,
         backref="hardware",

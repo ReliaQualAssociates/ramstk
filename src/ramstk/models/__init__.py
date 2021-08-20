@@ -22,5 +22,6 @@ from .milhdbk217f.table import RAMSTKMILHDBK217FTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
+from .reliability.record import RAMSTKReliabilityRecord
 from .reliability.table import RAMSTKReliabilityTable
 from .usage_profile.view import RAMSTKUsageProfileView

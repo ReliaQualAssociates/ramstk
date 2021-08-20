@@ -24,7 +24,6 @@ from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress
 from .ramstkprograminfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
-from .ramstkreliability import RAMSTKReliability
 from .ramstkrequirement import RAMSTKRequirement
 from .ramstkrevision import RAMSTKRevision
 from .ramstksimilaritem import RAMSTKSimilarItem
