@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.similar_item.similar_item_integration_test.py is part of The
+#       tests.models.similar_item.similar_item_integration_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
@@ -15,24 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmSimilarItem
-from ramstk.models.programdb import RAMSTKSimilarItem
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 4,
-        "parent_id": 1,
-    }
+from ramstk.models import RAMSTKSimilarItemRecord, RAMSTKSimilarItemTable
 
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmSimilarItem()
+    dut = RAMSTKSimilarItemTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
 
@@ -63,7 +53,9 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["similar_item"], RAMSTKSimilarItem)
+        assert isinstance(
+            tree.get_node(1).data["similar_item"], RAMSTKSimilarItemRecord
+        )
         print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
 
     @pytest.mark.integration
@@ -84,7 +76,7 @@ class TestInsertMethods:
         assert node_id == 8
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["similar_item"], RAMSTKSimilarItem
+            tree.get_node(node_id).data["similar_item"], RAMSTKSimilarItemRecord
         )
         assert tree.get_node(node_id).data["similar_item"].revision_id == 1
         assert tree.get_node(node_id).data["similar_item"].hardware_id == 8
@@ -119,7 +111,8 @@ class TestInsertMethods:
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(8).data["similar_item"], RAMSTKSimilarItem
+            test_datamanager.tree.get_node(8).data["similar_item"],
+            RAMSTKSimilarItemRecord,
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
@@ -423,7 +416,9 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["similar_item"], RAMSTKSimilarItem)
+        assert isinstance(
+            tree.get_node(1).data["similar_item"], RAMSTKSimilarItemRecord
+        )
         print("\033[36m\nsucceed_get_similar_item_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
