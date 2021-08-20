@@ -228,7 +228,7 @@ notes = [
 ]
 
 [tool.pylint.similarities]
-min-similarity-lines = 10
+min-similarity-lines = 100
 ignore-comments = true
 ignore-docstrings = true
 ignore-imports = true

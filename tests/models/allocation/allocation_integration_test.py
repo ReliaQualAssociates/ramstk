@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.allocation.allocation_integration_test.py is part of The
+#       tests.models.allocation.allocation_integration_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
@@ -15,43 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmAllocation
-from ramstk.models.programdb import RAMSTKAllocation
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "availability_alloc": 0.0,
-        "env_factor": 1,
-        "goal_measure_id": 1,
-        "hazard_rate_alloc": 0.0,
-        "hazard_rate_goal": 0.0,
-        "included": 1,
-        "int_factor": 1,
-        "allocation_method_id": 1,
-        "mission_time": 100.0,
-        "mtbf_alloc": 0.0,
-        "mtbf_goal": 0.0,
-        "n_sub_systems": 1,
-        "n_sub_elements": 1,
-        "parent_id": 7,
-        "percent_weight_factor": 0.0,
-        "reliability_alloc": 1.0,
-        "reliability_goal": 0.999,
-        "op_time_factor": 1,
-        "soa_factor": 1,
-        "weight_factor": 1,
-    }
+from ramstk.models import RAMSTKAllocationRecord, RAMSTKAllocationTable
 
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmAllocation()
+    dut = RAMSTKAllocationTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
 
@@ -67,7 +38,16 @@ def test_datamanager(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_allocation")
     pub.unsubscribe(dut.do_insert, "request_insert_allocation")
-    pub.unsubscribe(dut.do_calculate_allocation, "request_calculate_allocation")
+    pub.unsubscribe(
+        dut.do_calculate_agree_allocation, "request_calculate_agree_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
+    )
+    pub.unsubscribe(
+        dut.do_calculate_equal_allocation, "request_calculate_equal_allocation"
+    )
+    pub.unsubscribe(dut.do_calculate_foo_allocation, "request_calculate_foo_allocation")
     pub.unsubscribe(
         dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
     )
@@ -82,7 +62,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
         print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.integration
@@ -102,7 +82,9 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 6
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["allocation"], RAMSTKAllocation)
+        assert isinstance(
+            tree.get_node(node_id).data["allocation"], RAMSTKAllocationRecord
+        )
         assert tree.get_node(node_id).data["allocation"].revision_id == 1
         assert tree.get_node(node_id).data["allocation"].hardware_id == 6
         assert tree.get_node(node_id).data["allocation"].parent_id == 2
@@ -142,7 +124,7 @@ class TestInsertMethods:
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(6).data["allocation"], RAMSTKAllocation
+            test_datamanager.tree.get_node(6).data["allocation"], RAMSTKAllocationRecord
         )
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_allocation")
@@ -404,7 +386,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocation)
+        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
@@ -501,25 +483,15 @@ class TestAnalysisMethods:
     def on_succeed_calculate_foo(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
-            0.00049971186
+            0.0006151015
         )
         assert tree.get_node(2).data["allocation"].mtbf_alloc == pytest.approx(
-            2001.1532174
+            1625.747844
         )
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
-            0.95125683
+            0.9403434
         )
         print("\033[36m\nsucceed_calculate_allocation topic was broadcast on FOO.")
-
-    def on_fail_calculate_unknown_method(self, error_message):
-        assert error_message == (
-            "Failed to allocate reliability for hardware ID 1.  Unknown allocation "
-            "method ID 22 selected."
-        )
-        print(
-            "\033[35m\nfail_calculate_allocation topic was broadcast on unknown "
-            "method."
-        )
 
     @pytest.mark.integration
     def test_do_calculate_agree_allocation(self, test_datamanager):
@@ -528,13 +500,16 @@ class TestAnalysisMethods:
 
         test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 2
         test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.717
-        test_datamanager.tree.get_node(2).data["allocation"].duty_cycle = 90.0
         test_datamanager.tree.get_node(2).data["allocation"].mission_time = 100.0
         test_datamanager.tree.get_node(2).data["allocation"].n_sub_subsystems = 6
         test_datamanager.tree.get_node(2).data["allocation"].n_sub_elements = 2
         test_datamanager.tree.get_node(2).data["allocation"].weight_factor = 0.95
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage(
+            "request_calculate_agree_allocation",
+            node_id=1,
+            duty_cycle=90.0,
+        )
 
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
@@ -553,7 +528,7 @@ class TestAnalysisMethods:
             "allocation"
         ].hazard_rate_active = 0.000628
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_arinc_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
@@ -566,7 +541,7 @@ class TestAnalysisMethods:
         test_datamanager.tree.get_node(1).data["allocation"].goal_measure_id = 1
         test_datamanager.tree.get_node(1).data["allocation"].reliability_goal = 0.995
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_equal_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
@@ -583,21 +558,6 @@ class TestAnalysisMethods:
         test_datamanager.tree.get_node(2).data["allocation"].op_time_factor = 9
         test_datamanager.tree.get_node(2).data["allocation"].int_factor = 3
 
-        pub.sendMessage("request_calculate_allocation", node_id=1)
+        pub.sendMessage("request_calculate_foo_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
-
-    @pytest.mark.integration
-    def test_do_calculate_unknown_method(self, test_datamanager):
-        """should send the fail message when unknown allocation method is specified."""
-        pub.subscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
-        )
-
-        test_datamanager.tree.get_node(1).data["allocation"].allocation_method_id = 22
-
-        pub.sendMessage("request_calculate_allocation", node_id=1)
-
-        pub.unsubscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_allocation"
-        )

@@ -7,8 +7,11 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK database models package."""
 
+from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isort:skip
+
 # RAMSTK Local Imports
-from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView
+from .allocation.record import RAMSTKAllocationRecord
+from .allocation.table import RAMSTKAllocationTable
 from .design_electric.record import RAMSTKDesignElectricRecord
 from .design_electric.table import RAMSTKDesignElectricTable
 from .design_mechanic.record import RAMSTKDesignMechanicRecord

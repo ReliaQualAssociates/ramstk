@@ -163,12 +163,12 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    # allocation: relationship = relationship(
-    #    "RAMSTKAllocation",
-    #    uselist=False,
-    #    backref="hardware",
-    #    passive_deletes=True,
-    # )
+    allocation: relationship = relationship(
+        "RAMSTKAllocationRecord",
+        uselist=False,
+        backref="hardware",
+        passive_deletes=True,
+    )
     # sia: relationship = relationship(
     #    "RAMSTKSimilarItem",
     #    uselist=False,

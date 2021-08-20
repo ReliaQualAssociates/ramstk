@@ -1,11 +1,11 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.allocation.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.allocation.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Package Data Model."""
+"""Allocation Package Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Tuple, Type
@@ -15,11 +15,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import allocation
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKAllocation
+from ramstk.models import RAMSTKAllocationRecord, RAMSTKBaseTable
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKAllocationTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Allocation data manager."""
 
     # Define private dictionary class attributes.
@@ -54,7 +53,7 @@ class DataManager(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         self._node_hazard_rate: float = 0.0
-        self._record: Type[RAMSTKAllocation] = RAMSTKAllocation
+        self._record: Type[RAMSTKAllocationRecord] = RAMSTKAllocationRecord
 
         # Initialize public dictionary attributes.
 
@@ -64,7 +63,18 @@ class DataManager(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_calculate_allocation, "request_calculate_allocation")
+        pub.subscribe(
+            self.do_calculate_agree_allocation, "request_calculate_agree_allocation"
+        )
+        pub.subscribe(
+            self.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
+        )
+        pub.subscribe(
+            self.do_calculate_equal_allocation, "request_calculate_equal_allocation"
+        )
+        pub.subscribe(
+            self.do_calculate_foo_allocation, "request_calculate_foo_allocation"
+        )
         pub.subscribe(
             self.do_calculate_allocation_goals, "request_calculate_allocation_goals"
         )
@@ -78,6 +88,7 @@ class DataManager(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        # pylint: disable=attribute-defined-outside-init
         self._parent_id = attributes["parent_id"]
 
         _new_record = self._record()
@@ -86,48 +97,6 @@ class DataManager(RAMSTKBaseTable):
         _new_record.hardware_id = attributes["hardware_id"]
 
         return _new_record
-
-    def do_calculate_allocation(self, node_id: int) -> None:
-        """Allocate a parent reliability goal to it's children.
-
-        :param node_id: the record ID whose goals are to be calculated.
-        :return: None
-        :rtype: None
-        """
-        _dic_method = {
-            1: self._do_calculate_equal_allocation,
-            2: self._do_calculate_agree_allocation,
-            3: self._do_calculate_arinc_allocation,
-            4: self._do_calculate_foo_allocation,
-        }
-
-        self.do_calculate_allocation_goals(node_id)
-
-        _record = self.tree.get_node(node_id).data[self._tag]
-        try:
-            _method = _dic_method[_record.allocation_method_id]
-            _method(node_id)
-
-            pub.sendMessage(
-                "succeed_calculate_allocation",
-                tree=self.tree,
-            )
-        except KeyError:
-            _error_msg: str = (
-                "Failed to allocate reliability for hardware ID {0}.  "
-                "Unknown allocation method ID {1} selected.".format(
-                    node_id, _record.allocation_method_id
-                )
-            )
-            pub.sendMessage(
-                "do_log_debug",
-                logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_calculate_allocation",
-                error_message=_error_msg,
-            )
 
     def do_calculate_allocation_goals(self, node_id: int) -> None:
         """Calculate the allocation goals.
@@ -154,10 +123,11 @@ class DataManager(RAMSTKBaseTable):
             package={"reliability_goal": _attributes["reliability_goal"]},
         )
 
-    def _do_calculate_agree_allocation(self, node_id: int) -> None:
+    def do_calculate_agree_allocation(self, node_id: int, duty_cycle: float) -> None:
         """Allocate reliability using the AGREE method.
 
         :param node_id: the record ID whose allocation is to be calculated.
+        :param duty_cycle: the duty cycle of the item to be calculated.
         :return: None
         :rtype: None
         """
@@ -168,6 +138,7 @@ class DataManager(RAMSTKBaseTable):
         for _node in self.tree.children(node_id):
             _attributes: Dict[str, Any] = _node.data["allocation"].get_attributes()
             _attributes["allocation_method_id"] = _method_id
+            _attributes["duty_cycle"] = duty_cycle
 
             (
                 _attributes["n_sub_elements"],
@@ -188,24 +159,12 @@ class DataManager(RAMSTKBaseTable):
 
             _parent_goal = _node.data["allocation"].reliability_goal
 
-    def _do_calculate_agree_total_elements(self, node_id: int) -> Tuple[int, int]:
-        """Calculate the total number of elements for the AGREE method.
+        pub.sendMessage(
+            "succeed_calculate_allocation",
+            tree=self.tree,
+        )
 
-        :param node_id: the record ID whose allocation is to be calculated.
-        :return: _n_sub_elements, _n_sub_systems; the number of
-            sub-elements and subsystems comprising the selected node.
-        :rtype: tuple
-        """
-        _n_sub_elements = 0
-        _n_sub_systems = 0
-
-        for _node in self.tree.children(node_id):
-            _n_sub_elements += _node.data["allocation"].n_sub_elements
-            _n_sub_systems += _node.data["allocation"].n_sub_systems
-
-        return _n_sub_elements, _n_sub_systems
-
-    def _do_calculate_arinc_allocation(self, node_id: int) -> None:
+    def do_calculate_arinc_allocation(self, node_id: int) -> None:
         """Allocate reliability using the ARINC method.
 
         :param node_id: the record ID whose allocation is to be calculated.
@@ -239,7 +198,12 @@ class DataManager(RAMSTKBaseTable):
 
             _parent_goal = _node.data["allocation"].hazard_rate_goal
 
-    def _do_calculate_equal_allocation(self, node_id: int) -> None:
+        pub.sendMessage(
+            "succeed_calculate_allocation",
+            tree=self.tree,
+        )
+
+    def do_calculate_equal_allocation(self, node_id: int) -> None:
         """Allocate reliability using equal apportionment.
 
         :param node_id: the record ID whose allocation is to be calculated.
@@ -284,7 +248,12 @@ class DataManager(RAMSTKBaseTable):
 
             _parent_goal = _node.data["allocation"].reliability_goal
 
-    def _do_calculate_foo_allocation(self, node_id: int) -> None:
+        pub.sendMessage(
+            "succeed_calculate_allocation",
+            tree=self.tree,
+        )
+
+    def do_calculate_foo_allocation(self, node_id: int) -> None:
         """Allocate reliability using the FOO method.
 
         :param node_id: the record ID whose allocation is to be calculated.
@@ -325,6 +294,28 @@ class DataManager(RAMSTKBaseTable):
                 node_id=[_node.identifier],
                 package={"reliability_alloc": _attributes["reliability_alloc"]},
             )
+
+        pub.sendMessage(
+            "succeed_calculate_allocation",
+            tree=self.tree,
+        )
+
+    def _do_calculate_agree_total_elements(self, node_id: int) -> Tuple[int, int]:
+        """Calculate the total number of elements for the AGREE method.
+
+        :param node_id: the record ID whose allocation is to be calculated.
+        :return: _n_sub_elements, _n_sub_systems; the number of
+            sub-elements and subsystems comprising the selected node.
+        :rtype: tuple
+        """
+        _n_sub_elements = 0
+        _n_sub_systems = 0
+
+        for _node in self.tree.children(node_id):
+            _n_sub_elements += _node.data["allocation"].n_sub_elements
+            _n_sub_systems += _node.data["allocation"].n_sub_systems
+
+        return _n_sub_elements, _n_sub_systems
 
     def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int:
         """Calculate the cumulative weight for the FOO method.

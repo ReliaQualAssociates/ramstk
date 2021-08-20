@@ -1,6 +1,9 @@
 # Standard Library Imports
 from typing import Any
 
+# Third Party Imports
+from sqlalchemy.orm import relationship
+
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
@@ -44,11 +47,10 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     total_part_count: Any
     total_power_dissipation: Any
     year_of_manufacture: Any
-    allocation: Any
-    sia: Any
-    reliability: Any
-    milhdbkf: Any
-    nswc: Any
-    design_electric: Any
-    design_mechanic: Any
+    allocation: relationship
+    reliability: relationship
+    milhdbkf: relationship
+    nswc: relationship
+    design_electric: relationship
+    design_mechanic: relationship
     def get_attributes(self): ...

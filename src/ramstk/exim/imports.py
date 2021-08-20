@@ -28,6 +28,7 @@ from pubsub import pub
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models import (
+    RAMSTKAllocationRecord,
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
     RAMSTKHardwareRecord,
@@ -36,7 +37,6 @@ from ramstk.models import (
     RAMSTKReliabilityRecord,
 )
 from ramstk.models.programdb import (
-    RAMSTKAllocation,
     RAMSTKFunction,
     RAMSTKRequirement,
     RAMSTKSimilarItem,
@@ -418,16 +418,16 @@ class Import:
                 error_message=_error_msg,
             )
 
-    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocation:
+    def _do_insert_allocation(self, row: pd.Series) -> RAMSTKAllocationRecord:
         """Insert a new Allocation record to the RAMSTK database.
 
         :param row: the row from the pandas DataFrame containing the input
             data.
-        :return: _allocation; an instance of the RAMSTKAllocation database
+        :return: _allocation; an instance of the RAMSTKAllocationRecord database
             table record.
-        :rtype: :class:`ramstk.models.programdb.RAMSTKAllocation`
+        :rtype: :class:`ramstk.models.programdb.RAMSTKAllocationRecord`
         """
-        _allocation = RAMSTKAllocation()
+        _allocation = RAMSTKAllocationRecord()
         _map = self._dic_field_map["Hardware"]
 
         _allocation.revision_id = _get_input_value(_map, row, "Revision ID", 1)
