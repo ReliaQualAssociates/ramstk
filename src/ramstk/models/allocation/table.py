@@ -1,25 +1,24 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.allocation.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.allocation.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Package Data Model."""
+"""Allocation Package Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Tuple, Type
+from typing import Any, Callable, Dict, Tuple, Type
 
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import allocation
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKAllocation
+from ramstk.models import RAMSTKAllocationRecord, RAMSTKBaseTable
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKAllocationTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Allocation data manager."""
 
     # Define private dictionary class attributes.
@@ -54,7 +53,7 @@ class DataManager(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         self._node_hazard_rate: float = 0.0
-        self._record: Type[RAMSTKAllocation] = RAMSTKAllocation
+        self._record: Type[RAMSTKAllocationRecord] = RAMSTKAllocationRecord
 
         # Initialize public dictionary attributes.
 
@@ -94,7 +93,7 @@ class DataManager(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _dic_method = {
+        _dic_method: Dict[int, Callable] = {
             1: self._do_calculate_equal_allocation,
             2: self._do_calculate_agree_allocation,
             3: self._do_calculate_arinc_allocation,
@@ -105,7 +104,7 @@ class DataManager(RAMSTKBaseTable):
 
         _record = self.tree.get_node(node_id).data[self._tag]
         try:
-            _method = _dic_method[_record.allocation_method_id]
+            _method: Callable = _dic_method[_record.allocation_method_id]
             _method(node_id)
 
             pub.sendMessage(
@@ -154,10 +153,14 @@ class DataManager(RAMSTKBaseTable):
             package={"reliability_goal": _attributes["reliability_goal"]},
         )
 
-    def _do_calculate_agree_allocation(self, node_id: int) -> None:
+    def _do_calculate_agree_allocation(
+        self, node_id: int, mission_time: float, duty_cycle: float
+    ) -> None:
         """Allocate reliability using the AGREE method.
 
         :param node_id: the record ID whose allocation is to be calculated.
+        :param mission_time: the mission time of the item to be calculated.
+        :param duty_cycle: the duty cycle of the item to be calculated.
         :return: None
         :rtype: None
         """
@@ -168,6 +171,8 @@ class DataManager(RAMSTKBaseTable):
         for _node in self.tree.children(node_id):
             _attributes: Dict[str, Any] = _node.data["allocation"].get_attributes()
             _attributes["allocation_method_id"] = _method_id
+            _attributes["duty_cycle"] = duty_cycle
+            _attributes["mission_time"] = mission_time
 
             (
                 _attributes["n_sub_elements"],

@@ -5,7 +5,6 @@ from typing import Any, Tuple
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
-from ramstk.controllers import dmAllocation as dmAllocation
 from ramstk.controllers import dmFailureDefinition as dmFailureDefinition
 from ramstk.controllers import dmFunction as dmFunction
 from ramstk.controllers import dmHazards as dmHazards
@@ -22,6 +21,7 @@ from ramstk.db.common import do_load_variables as do_load_variables
 from ramstk.exim import Export as Export
 from ramstk.exim import Import as Import
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
+from ramstk.models import RAMSTKAllocationTable as RAMSTKAllocationTable
 from ramstk.models import RAMSTKFMEAView as RAMSTKFMEAView
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
 from ramstk.models import RAMSTKPoFView as RAMSTKPoFView
