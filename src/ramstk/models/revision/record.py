@@ -1,11 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.dao.RAMSTKRevision.py is part of The RAMSTK Project
+#       ramstk.models.revision.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2017 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKRevision Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Revision Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, Integer, String
@@ -16,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_revision table in the RAMSTK Program database.
 
     This table shares a:
@@ -219,18 +219,10 @@ class RAMSTKRevision(RAMSTK_BASE, RAMSTKBaseRecord):
         backref="revision",
         passive_deletes=True,
     )
-    # software: relationship = relationship('RAMSTKSoftware',
-    # back_populates='revision',)
     validation: relationship = relationship(
         "RAMSTKValidation",
         back_populates="revision",
     )
-    # incident: relationship = relationship('RAMSTKIncident',
-    # back_populates='revision',)
-    # test: relationship = relationship('RAMSTKTest',
-    # back_populates='revision',)
-    # survival: relationship = relationship('RAMSTKSurvival',
-    # back_populates='revision',)
     hazard: relationship = relationship(
         "RAMSTKHazardAnalysis",
         back_populates="revision",

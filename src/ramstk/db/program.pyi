@@ -10,6 +10,8 @@ from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
 from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
 from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
+from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
+from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
 from ramstk.models.programdb import RAMSTKControl as RAMSTKControl
@@ -26,8 +28,6 @@ from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
 from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
 from ramstk.models.programdb import RAMSTKRequirement as RAMSTKRequirement
-from ramstk.models.programdb import RAMSTKRevision as RAMSTKRevision
-from ramstk.models.programdb import RAMSTKSimilarItem as RAMSTKSimilarItem
 from ramstk.models.programdb import RAMSTKStakeholder as RAMSTKStakeholder
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
 from ramstk.models.programdb import RAMSTKValidation as RAMSTKValidation
