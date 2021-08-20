@@ -37,7 +37,7 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     status_id = Column(
@@ -49,10 +49,6 @@ class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseRecord):
     time_remaining = Column("fld_time_remaining", Float, default=0.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="program_status",
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKProgramStatus model attributes.

@@ -63,7 +63,7 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     validation_id = Column(
@@ -133,10 +133,6 @@ class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="validation",
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKValidation data model attributes.

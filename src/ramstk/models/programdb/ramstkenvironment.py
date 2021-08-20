@@ -41,13 +41,13 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     phase_id = Column(
         "fld_phase_id",
         Integer,
-        ForeignKey("ramstk_mission_phase.fld_phase_id"),
+        ForeignKey("ramstk_mission_phase.fld_phase_id", ondelete="CASCADE"),
         nullable=False,
     )
     environment_id = Column(
@@ -73,12 +73,6 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision", back_populates="environment"
-    )
-    phase: relationship = relationship(
-        "RAMSTKMissionPhase", back_populates="environment"
-    )
 
     is_mission = False
     is_phase = False

@@ -55,18 +55,10 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
     phase_end = Column("fld_phase_end", Float, default=__defaults__["phase_end"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="phase",
-    )
-    mission: relationship = relationship(
-        "RAMSTKMission",
-        back_populates="phase",
-    )
     environment: relationship = relationship(
         "RAMSTKEnvironment",
-        back_populates="phase",
-        cascade="delete",
+        backref="phase",
+        passive_deletes=True,
     )
 
     is_mission = False

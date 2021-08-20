@@ -70,13 +70,13 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     function_id = Column(
         "fld_function_id",
         Integer,
-        ForeignKey("ramstk_function.fld_function_id"),
+        ForeignKey("ramstk_function.fld_function_id", ondelete="CASCADE"),
         nullable=False,
     )
     hazard_id = Column(
@@ -188,8 +188,6 @@ class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseRecord):
     user_int_3 = Column("fld_user_int_3", Integer, default=__defaults__["user_int_3"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship("RAMSTKRevision", back_populates="hazard")  # type: ignore
-    function = relationship("RAMSTKFunction", back_populates="hazard")  # type: ignore
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKHazardAnalysis model attributes.

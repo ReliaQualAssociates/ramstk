@@ -14,6 +14,7 @@ from sqlalchemy.orm import relationship
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
+from ramstk.models.programdb import *  # pylint: disable=unused-import
 
 
 class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
@@ -183,36 +184,30 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    environment: relationship = relationship(
-        "RAMSTKEnvironment",
-        back_populates="revision",
-        cascade="delete",
+    failures: relationship = relationship(
+        "RAMSTKFailureDefinition",
+        backref="revision",
+        passive_deletes=True,
     )
     mission: relationship = relationship(
         "RAMSTKMission",
-        back_populates="revision",
-        cascade="delete",
-    )
-    phase: relationship = relationship(
-        "RAMSTKMissionPhase",
-        back_populates="revision",
-        cascade="delete",
-    )
-    failures: relationship = relationship(
-        "RAMSTKFailureDefinition",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     function: relationship = relationship(
         "RAMSTKFunction",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     requirement: relationship = relationship(
         "RAMSTKRequirement",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     stakeholder: relationship = relationship(
         "RAMSTKStakeholder",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     hardware: relationship = relationship(
         "RAMSTKHardwareRecord",
@@ -221,15 +216,18 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     validation: relationship = relationship(
         "RAMSTKValidation",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     hazard: relationship = relationship(
         "RAMSTKHazardAnalysis",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
     program_status: relationship = relationship(
         "RAMSTKProgramStatus",
-        back_populates="revision",
+        backref="revision",
+        passive_deletes=True,
     )
 
     def get_attributes(self):

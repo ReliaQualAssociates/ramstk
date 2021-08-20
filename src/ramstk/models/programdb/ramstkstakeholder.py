@@ -44,7 +44,7 @@ class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     stakeholder_id = Column(
@@ -91,10 +91,6 @@ class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="stakeholder",
-    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKStakeholder data model attributes.

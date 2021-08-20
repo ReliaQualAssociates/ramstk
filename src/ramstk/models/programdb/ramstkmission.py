@@ -31,7 +31,7 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     mission_id = Column(
@@ -50,13 +50,10 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship(  # type: ignore
-        "RAMSTKRevision",
-        back_populates="mission",
-    )
     phase = relationship(  # type: ignore
         "RAMSTKMissionPhase",
-        back_populates="mission",
+        backref="mission",
+        passive_deletes=True,
     )
 
     is_mission = True

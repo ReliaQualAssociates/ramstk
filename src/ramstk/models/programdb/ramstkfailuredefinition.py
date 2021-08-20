@@ -30,7 +30,7 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     definition_id = Column(
@@ -44,7 +44,6 @@ class RAMSTKFailureDefinition(RAMSTK_BASE, RAMSTKBaseRecord):
     definition = Column("fld_definition", String, default=__defaults__["definition"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship("RAMSTKRevision", back_populates="failures")  # type: ignore
 
     def get_attributes(self):
         """Retrieve current values of the RAMSTKFailureDefinition attributes.
