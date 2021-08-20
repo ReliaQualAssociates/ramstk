@@ -272,12 +272,12 @@ class TestUpdateMethods:
 
         _similar_item = test_datamanager.do_select(1)
         _similar_item.change_description_1 = (
-            "This is change description 1 from " "test_do_update_all"
+            "This is change description 1 from test_do_update_all"
         )
         _similar_item.quality_from_id = 12000
         _similar_item = test_datamanager.do_select(2)
         _similar_item.change_description_2 = (
-            "This is change description 2 from " "test_do_update_all"
+            "This is change description 2 from test_do_update_all"
         )
         _similar_item.temperature_to = 18500
 

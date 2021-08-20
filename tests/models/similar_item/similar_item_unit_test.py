@@ -20,6 +20,8 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKSimilarItemRecord, RAMSTKSimilarItemTable
 
+test_change_description = "Test change description for factor #1."
+
 
 @pytest.fixture(scope="function")
 def test_tablemodel(mock_program_dao):
@@ -384,7 +386,7 @@ class TestAnalysisMethods:
 
         _record = test_tablemodel.do_select(1)
         _record.similar_item_method_id = 1
-        _record.change_description_1 = "Test change description for factor #1."
+        _record.change_description_1 = test_change_description
         _record.environment_from_id = 2
         _record.environment_to_id = 3
         _record.quality_from_id = 1
@@ -398,7 +400,7 @@ class TestAnalysisMethods:
         assert _record.change_factor_2 == 1.4
         assert _record.change_factor_3 == 1.0
         assert _record.result_1 == pytest.approx(0.0005607143)
-        assert _record.change_description_1 == "Test change description for factor #1."
+        assert _record.change_description_1 == test_change_description
 
     @pytest.mark.unit
     def test_do_calculate_user_defined(self, test_attributes, test_tablemodel):
@@ -409,7 +411,7 @@ class TestAnalysisMethods:
         _record = test_tablemodel.do_select(1)
 
         _record.similar_item_method_id = 2
-        _record.change_description_1 = "Test change description for factor #1."
+        _record.change_description_1 = test_change_description
         _record.change_factor_1 = 0.85
         _record.change_factor_2 = 1.2
         _record.function_1 = "pi1*pi2*hr"
@@ -420,9 +422,7 @@ class TestAnalysisMethods:
 
         test_tablemodel._do_calculate_user_defined(1)
 
-        assert _record.change_description_1 == (
-            "Test change description for factor #1."
-        )
+        assert _record.change_description_1 == (test_change_description)
         assert _record.change_factor_1 == 0.85
         assert _record.change_factor_2 == 1.2
         assert _record.result_1 == pytest.approx(0.00062934)
