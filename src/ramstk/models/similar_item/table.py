@@ -1,11 +1,11 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.similar_item.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.similar_item.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Similar Item Package Data Model."""
+"""Similar Item Table Model."""
 
 # Standard Library Imports
 from collections import OrderedDict
@@ -16,11 +16,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import similaritem
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKSimilarItem
+from ramstk.models import RAMSTKBaseTable, RAMSTKSimilarItemRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKSimilarItemTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Similar Item data manager."""
 
     # Define private dictionary class attributes.
@@ -53,7 +52,7 @@ class DataManager(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         self._node_hazard_rate: float = 0.0
-        self._record: Type[RAMSTKSimilarItem] = RAMSTKSimilarItem
+        self._record: Type[RAMSTKSimilarItemRecord] = RAMSTKSimilarItemRecord
 
         # Initialize public dictionary attributes.
 
