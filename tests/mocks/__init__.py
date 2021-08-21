@@ -30,7 +30,6 @@ from .mock_ramstkopstress import MockRAMSTKOpStress
 from .mock_ramstkprograminfo import MockRAMSTKProgramInfo
 from .mock_ramstkprogramstatus import MockRAMSTKProgramStatus
 from .mock_ramstkrequirement import MockRAMSTKRequirement
-from .mock_ramstkrevision import MockRAMSTKRevision
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .mock_ramstkstakeholder import MockRAMSTKStakeholder
 from .mock_ramstktestmethod import MockRAMSTKTestMethod

@@ -22,8 +22,9 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
+from ramstk.models import RAMSTKRevisionRecord
 from ramstk.models.commondb import RAMSTKSiteInfo
-from ramstk.models.programdb import RAMSTKFunction, RAMSTKRevision
+from ramstk.models.programdb import RAMSTKFunction
 
 TEMPDIR = tempfile.gettempdir()
 
@@ -33,7 +34,7 @@ class TestCreateBaseDatabase:
 
     @pytest.mark.unit
     def test_base_database_create(self):
-        """__init__() should create a BaseDatabase class instance."""
+        """should create a BaseDatabase class instance."""
         DUT = BaseDatabase()
 
         assert isinstance(DUT, BaseDatabase)
@@ -153,7 +154,7 @@ class TestInsertMethods:
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
-        _revision = RAMSTKRevision()
+        _revision = RAMSTKRevisionRecord()
         _revision.revision_id = 4
 
         assert DUT.do_insert(_revision) is None
@@ -252,11 +253,11 @@ class TestInsertMethods:
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
-        _revision1 = RAMSTKRevision()
+        _revision1 = RAMSTKRevisionRecord()
         _revision1.revision_id = 5
-        _revision2 = RAMSTKRevision()
+        _revision2 = RAMSTKRevisionRecord()
         _revision2.revision_id = 6
-        _revision3 = RAMSTKRevision()
+        _revision3 = RAMSTKRevisionRecord()
         _revision3.revision_id = 7
         assert DUT.do_insert_many([_revision1, _revision2, _revision3]) is None
 
@@ -324,7 +325,7 @@ class TestDeleteMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _record = RAMSTKRevision()
+        _record = RAMSTKRevisionRecord()
         _record.revision_id = 4
         DUT.do_insert(_record)
 

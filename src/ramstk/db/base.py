@@ -324,7 +324,7 @@ class BaseDatabase:
         _all: bool = kwargs.get("_all", True)
 
         _filters = {}
-        if _keys[0] is not None:
+        if _values[0] is not None:
             for _idx, _key in enumerate(_keys):
                 _filters[_key] = _values[_idx]
 

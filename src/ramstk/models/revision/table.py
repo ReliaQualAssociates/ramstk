@@ -40,7 +40,6 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
 
         # Initialize private list attributes.
         self._lst_id_columns = [
-            None,
             "revision_id",
         ]
 
@@ -57,7 +56,7 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Any]  # pylint: disable=unused-argument
     ) -> object:
         """Gets a new record instance with attributes set.
 
@@ -67,8 +66,6 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
         """
         _new_record = self._record()
         _new_record.revision_id = self.last_id + 1
-
-        # We add this so the do_insert() method can pop it without raising a KeyError.
-        attributes[None] = "None"  # type: ignore
+        _new_record.name = "New Revision"
 
         return _new_record
