@@ -9,7 +9,7 @@
 """RAMSTKEnvironment Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -20,8 +20,7 @@ from ramstk.models import RAMSTKBaseRecord
 class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_environment table in RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with
-    ramstk_mission_phase.
+    This table shares a Many-to-One relationship with ramstk_mission_phase.
     """
 
     __defaults__ = {
@@ -36,20 +35,26 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
         "high_dwell_time": 0.0,
     }
     __tablename__ = "ramstk_environment"
-    __table_args__ = {"extend_existing": True}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["fld_revision_id", "fld_mission_id", "fld_phase_id"],
+            [
+                "ramstk_mission_phase.fld_revision_id",
+                "ramstk_mission_phase.fld_mission_id",
+                "ramstk_mission_phase.fld_phase_id",
+            ],
+        ),
+        {"extend_existing": True},
+    )
 
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        primary_key=True,
         nullable=False,
     )
-    phase_id = Column(
-        "fld_phase_id",
-        Integer,
-        ForeignKey("ramstk_mission_phase.fld_phase_id"),
-        nullable=False,
-    )
+    mission_id = Column("fld_mission_id", Integer, primary_key=True, nullable=False)
+    phase_id = Column("fld_phase_id", Integer, primary_key=True, nullable=False)
     environment_id = Column(
         "fld_environment_id",
         Integer,
@@ -73,11 +78,9 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision", back_populates="environment"
-    )
-    phase: relationship = relationship(
-        "RAMSTKMissionPhase", back_populates="environment"
+    phase: relationship = relationship(  # type: ignore
+        "RAMSTKMissionPhase",
+        back_populates="environment",
     )
 
     is_mission = False

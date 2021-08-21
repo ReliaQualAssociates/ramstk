@@ -81,7 +81,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     requirement_id = Column(
@@ -210,10 +210,6 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="requirement",
-    )
 
     def get_attributes(self):
         """Retrieve current values of the Requirement data model attributes.

@@ -14,14 +14,6 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
-# ISSUE: Remove the unused imports in record files.
-#
-# In order for foreign keys to be established, the foreign table needs to be imported
-# in the child classes.  Once everything is moved to it's respective models package,
-# these imports should no longer be required and can be removed.
-# label: type: style
-from ramstk.models.programdb import RAMSTKRevision  # pylint: disable=unused-import
-
 
 class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_reliability table in RAMSTK Program database.

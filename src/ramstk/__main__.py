@@ -28,7 +28,6 @@ from ramstk.controllers import (
     dmPreferences,
     dmProgramStatus,
     dmRequirement,
-    dmRevision,
     dmStakeholder,
     dmValidation,
 )
@@ -41,6 +40,7 @@ from ramstk.models import (
     RAMSTKFMEAView,
     RAMSTKHardwareBoMView,
     RAMSTKPoFView,
+    RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
     RAMSTKUsageProfileView,
 )
@@ -264,7 +264,7 @@ def the_one_ring() -> None:
 
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
-    _program_mgr.dic_managers["revision"]["data"] = dmRevision()
+    _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
     _program_mgr.dic_managers["function"]["data"] = dmFunction()
     _program_mgr.dic_managers["hazards"]["data"] = dmHazards()
     _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()

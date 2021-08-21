@@ -60,6 +60,7 @@ CREATE TABLE ramstk_mission_phase (
     fld_phase_start FLOAT,
     fld_phase_end FLOAT,
     PRIMARY KEY (fld_phase_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_mission_phase" VALUES(1,1,1,'Test Mission Phase 1','',0.0,0.0);
@@ -67,6 +68,7 @@ INSERT INTO "ramstk_mission_phase" VALUES(1,2,2,'Test Mission Phase 2','',0.0,0.
 INSERT INTO "ramstk_mission_phase" VALUES(1,3,3,'Test Mission Phase 3','',0.0,0.0);
 CREATE TABLE ramstk_environment (
     fld_revision_id INTEGER,
+    fld_mission_id INTEGER,
     fld_phase_id INTEGER,
     fld_environment_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
@@ -79,11 +81,13 @@ CREATE TABLE ramstk_environment (
     fld_low_dwell_time FLOAT,
     fld_high_dwell_time FLOAT,
     PRIMARY KEY (fld_environment_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_environment" VALUES(1,1,1,'Condition Name','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_environment" VALUES(1,2,2,'Condition Name 2','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
-INSERT INTO "ramstk_environment" VALUES(1,3,3,'Condition Name 3','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES(1,1,1,1,'Condition Name','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES(1,2,2,2,'Condition Name 2','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES(1,3,3,3,'Condition Name 3','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_program_info (
     fld_revision_id INTEGER NOT NULL,
     fld_function_active INTEGER,

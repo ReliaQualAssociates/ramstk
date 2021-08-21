@@ -9,7 +9,7 @@
 """RAMSTKMissionPhase Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -27,18 +27,27 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
 
     __defaults__ = {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0}
     __tablename__ = "ramstk_mission_phase"
-    __table_args__ = {"extend_existing": True}
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["fld_revision_id", "fld_mission_id"],
+            [
+                "ramstk_mission.fld_revision_id",
+                "ramstk_mission.fld_mission_id",
+            ],
+        ),
+        {"extend_existing": True},
+    )
 
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        primary_key=True,
         nullable=False,
     )
     mission_id = Column(
         "fld_mission_id",
         Integer,
-        ForeignKey("ramstk_mission.fld_mission_id"),
+        primary_key=True,
         nullable=False,
     )
     phase_id = Column(
@@ -55,10 +64,6 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
     phase_end = Column("fld_phase_end", Float, default=__defaults__["phase_end"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision: relationship = relationship(
-        "RAMSTKRevision",
-        back_populates="phase",
-    )
     mission: relationship = relationship(
         "RAMSTKMission",
         back_populates="phase",
@@ -66,7 +71,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
     environment: relationship = relationship(
         "RAMSTKEnvironment",
         back_populates="phase",
-        cascade="delete",
+        cascade="all,delete",
     )
 
     is_mission = False

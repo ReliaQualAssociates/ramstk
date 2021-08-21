@@ -13,7 +13,7 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.db.program import do_create_program_db, do_make_programdb_tables
-from ramstk.models.programdb import RAMSTKRevision
+from ramstk.models import RAMSTKRevisionRecord
 
 
 @pytest.mark.unit
@@ -22,7 +22,7 @@ def test_create_program_db_tables(test_simple_program_database):
     """do_make_programdb_tables() should return None when successfully creating
     the tables in the RAMSTK common database."""
     assert do_make_programdb_tables(test_simple_program_database.engine) is None
-    assert test_simple_program_database.do_insert(RAMSTKRevision()) is None
+    assert test_simple_program_database.do_insert(RAMSTKRevisionRecord()) is None
     assert (
         test_simple_program_database.get_last_id("ramstk_revision", "fld_revision_id")
         == 1
@@ -42,8 +42,8 @@ def test_do_create_program_db(test_simple_program_database):
     )
 
     _record = (
-        test_simple_program_database.session.query(RAMSTKRevision)
-        .filter(RAMSTKRevision.revision_id == 1)
+        test_simple_program_database.session.query(RAMSTKRevisionRecord)
+        .filter(RAMSTKRevisionRecord.revision_id == 1)
         .first()
     )
     assert _record.availability_logistics == 1.0

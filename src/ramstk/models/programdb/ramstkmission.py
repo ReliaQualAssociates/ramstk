@@ -8,7 +8,7 @@
 """RAMSTKMission Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -26,12 +26,17 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseRecord):
 
     __defaults__ = {"description": "", "mission_time": 0.0, "time_units": "hours"}
     __tablename__ = "ramstk_mission"
-    __table_args__ = {"extend_existing": True}
+    __table_args__ = (
+        UniqueConstraint(
+            "fld_revision_id", "fld_mission_id", name="ramstk_mission_ukey"
+        ),
+        {"extend_existing": True},
+    )
 
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     mission_id = Column(
@@ -50,13 +55,10 @@ class RAMSTKMission(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship(  # type: ignore
-        "RAMSTKRevision",
-        back_populates="mission",
-    )
     phase = relationship(  # type: ignore
         "RAMSTKMissionPhase",
         back_populates="mission",
+        cascade="all,delete",
     )
 
     is_mission = True

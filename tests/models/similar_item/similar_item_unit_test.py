@@ -120,7 +120,7 @@ class TestCreateModels:
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
-        """should return a table manager instance."""
+        """should return a table model instance."""
         assert isinstance(test_tablemodel, RAMSTKSimilarItemTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert test_tablemodel._db_id_colname == "fld_hardware_id"

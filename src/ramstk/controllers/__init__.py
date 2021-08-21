@@ -25,7 +25,6 @@ from .options.datamanager import DataManager as dmOptions
 from .preferences.datamanager import DataManager as dmPreferences
 from .program_status.datamanager import DataManager as dmProgramStatus
 from .requirement.datamanager import DataManager as dmRequirement
-from .revision.datamanager import DataManager as dmRevision
 from .stakeholder.datamanager import DataManager as dmStakeholder
 from .test_method.datamanager import DataManager as dmTestMethod
 from .validation.datamanager import DataManager as dmValidation

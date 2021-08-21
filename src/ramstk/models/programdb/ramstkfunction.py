@@ -51,7 +51,7 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseRecord):
     revision_id = Column(
         "fld_revision_id",
         Integer,
-        ForeignKey("ramstk_revision.fld_revision_id"),
+        ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
     function_id = Column(
@@ -112,9 +112,10 @@ class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseRecord):
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    revision = relationship("RAMSTKRevision", back_populates="function")  # type: ignore
-    hazard = relationship(  # type: ignore
-        "RAMSTKHazardAnalysis", back_populates="function", cascade="all,delete"
+    hazard: relationship = relationship(
+        "RAMSTKHazardAnalysis",
+        backref="function",
+        passive_deletes=True,
     )
 
     def get_attributes(self):

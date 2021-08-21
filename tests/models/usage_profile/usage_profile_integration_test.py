@@ -376,6 +376,52 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
+    def test_do_delete_environment(
+        self, test_viewmodel, test_mission, test_phase, test_environment
+    ):
+        """should remove deleted environment record from the records tree."""
+        test_mission.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 3})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 3})
+
+        assert test_viewmodel.tree.contains("3.3.3")
+        assert test_viewmodel.tree.contains("3.3")
+        assert test_viewmodel.tree.contains("3")
+
+        pub.subscribe(
+            self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
+        )
+
+        pub.sendMessage("request_delete_environment", node_id=3)
+
+        pub.unsubscribe(
+            self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
+        )
+
+    @pytest.mark.integration
+    def test_do_delete_mission_phase(
+        self, test_viewmodel, test_mission, test_phase, test_environment
+    ):
+        """should remove deleted phase and environment records from records tree."""
+        test_mission.do_select_all(attributes={"revision_id": 1})
+        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 2})
+        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 2})
+
+        assert test_viewmodel.tree.contains("2.2.2")
+        assert test_viewmodel.tree.contains("2.2")
+        assert test_viewmodel.tree.contains("2")
+
+        pub.subscribe(
+            self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
+        )
+
+        pub.sendMessage("request_delete_mission_phase", node_id=2)
+
+        pub.unsubscribe(
+            self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
+        )
+
+    @pytest.mark.integration
     def test_do_delete_mission(
         self, test_viewmodel, test_mission, test_phase, test_environment
     ):
@@ -394,50 +440,4 @@ class TestDeleteMethods:
 
         pub.unsubscribe(
             self.on_succeed_delete_mission, "succeed_retrieve_usage_profile"
-        )
-
-    @pytest.mark.integration
-    def test_do_delete_mission_phase(
-        self, test_viewmodel, test_mission, test_phase, test_environment
-    ):
-        """should remove deleted phase and environment records from records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
-
-        assert test_viewmodel.tree.contains("2.2.2")
-        assert test_viewmodel.tree.contains("2.2")
-        assert test_viewmodel.tree.contains("2")
-
-        pub.subscribe(
-            self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
-        )
-
-        pub.sendMessage("request_delete_mission_phase", node_id=2)
-
-        pub.unsubscribe(
-            self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
-        )
-
-    @pytest.mark.integration
-    def test_do_delete_environment(
-        self, test_viewmodel, test_mission, test_phase, test_environment
-    ):
-        """should remove deleted environment record from the records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
-
-        assert test_viewmodel.tree.contains("3.3.3")
-        assert test_viewmodel.tree.contains("3.3")
-        assert test_viewmodel.tree.contains("3")
-
-        pub.subscribe(
-            self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
-        )
-
-        pub.sendMessage("request_delete_environment", node_id=3)
-
-        pub.unsubscribe(
-            self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
         )
