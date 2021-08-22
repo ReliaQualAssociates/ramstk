@@ -17,7 +17,6 @@ from .mock_basemodel import MockRAMSTKBaseRecord
 from .mock_ramstkaction import MockRAMSTKAction
 from .mock_ramstkcause import MockRAMSTKCause
 from .mock_ramstkcontrol import MockRAMSTKControl
-from .mock_ramstkenvironment import MockRAMSTKEnvironment
 from .mock_ramstkfunction import MockRAMSTKFunction
 from .mock_ramstkhazardanalysis import MockRAMSTKHazardAnalysis
 from .mock_ramstkmechanism import MockRAMSTKMechanism

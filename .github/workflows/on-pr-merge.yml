@@ -9,7 +9,7 @@ on:
 
 jobs:
   test_suite:
-    name: RAMSTK Test Suite
+    name: Execute RAMSTK Test Suite with Coverage
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -71,7 +71,7 @@ jobs:
           parallel-finished: true
 
   pre_release:
-    name: Tag and Draft 'latest' Release
+    name: Create Development Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -97,7 +97,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tag_master:
-    name: Tag and Draft Versioned Release
+    name: Tag Master and Update Version Files
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

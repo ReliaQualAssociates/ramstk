@@ -11,7 +11,6 @@
 from .ramstkaction import RAMSTKAction
 from .ramstkcause import RAMSTKCause
 from .ramstkcontrol import RAMSTKControl
-from .ramstkenvironment import RAMSTKEnvironment
 from .ramstkfunction import RAMSTKFunction
 from .ramstkhazardanalysis import RAMSTKHazardAnalysis
 from .ramstkmechanism import RAMSTKMechanism

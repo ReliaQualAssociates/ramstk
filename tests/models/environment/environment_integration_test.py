@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.environment.environment_integration_test.py is part
-#       of The RAMSTK Project
+#       tests.models.environment.environment_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Environment module integrations."""
 
 # Third Party Imports
@@ -15,25 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmEnvironment
-from ramstk.models.programdb import RAMSTKEnvironment
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "phase_id": 1,
-        "environment_id": 1,
-        "name": "Condition Name",
-    }
+from ramstk.models import RAMSTKEnvironmentRecord, RAMSTKEnvironmentTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmEnvironment()
+    dut = RAMSTKEnvironmentTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
@@ -58,17 +47,17 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironment)
+        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironmentRecord)
         print("\033[36m\nsucceed_retrieve_environments topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should send success message with record tree as MDS."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
 
@@ -77,14 +66,14 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(4).data["environment"], RAMSTKEnvironment)
+        assert isinstance(tree.get_node(4).data["environment"], RAMSTKEnvironmentRecord)
         print("\033[36m\nsucceed_insert_environment topic was broadcast")
 
     def on_fail_insert_no_parent(self, error_message):
@@ -123,7 +112,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
         """should send the fail message when the revision ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
 
@@ -133,7 +122,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -168,7 +157,7 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_environment")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_not_in_tree(self, test_tablemodel):
         """should send the fail message when the node doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
 
@@ -177,7 +166,7 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -214,49 +203,49 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_environment topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """should send the success message after updating an environment record."""
         pub.subscribe(self.on_succeed_update, "succeed_update_environment")
 
-        _environment = test_datamanager.do_select(1)
+        _environment = test_tablemodel.do_select(1)
         _environment.name = "Big test environment"
         pub.sendMessage("request_update_environment", node_id=1, table="environment")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_environment")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """should send the success message after updating all environment records."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _environment = test_datamanager.do_select(1)
+        _environment = test_tablemodel.do_select(1)
         _environment.name = "Even bigger test environment"
 
         pub.sendMessage("request_update_all_environments")
 
-        assert test_datamanager.do_select(1).name == "Even bigger test environment"
+        assert test_tablemodel.do_select(1).name == "Even bigger test environment"
 
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when data type is wrong for attribute."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
 
-        _environment = test_datamanager.do_select(1)
+        _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=1, table="environment")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when data type is wrong for root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_environment"
         )
 
-        _environment = test_datamanager.do_select(1)
+        _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=0, table="environment")
 
@@ -274,11 +263,11 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_environment")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when no record exists for environment ID."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_environment")
 
-        test_datamanager.tree.get_node(1).data.pop("environment")
+        test_tablemodel.tree.get_node(1).data.pop("environment")
         pub.sendMessage("request_update_environment", node_id=1, table="environment")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_environment")
@@ -296,7 +285,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironment)
+        assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironmentRecord)
         print("\033[36m\nsucceed_get_environment_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):

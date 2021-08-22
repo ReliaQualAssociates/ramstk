@@ -42,7 +42,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build_documentation:
-    name: Build RAMSTK documentation
+    name: Build RAMSTK Documentation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -50,7 +50,7 @@ jobs:
         with:
           docs-folder: "docs/"
 
-      - name: Commit RAMSTK Documentation
+      - name: Commit RAMSTK Documentation Changes
         run: |
           git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
           cp -fr docs/_build/html/* gh-pages/
