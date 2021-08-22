@@ -16,6 +16,8 @@ from .design_electric.record import RAMSTKDesignElectricRecord
 from .design_electric.table import RAMSTKDesignElectricTable
 from .design_mechanic.record import RAMSTKDesignMechanicRecord
 from .design_mechanic.table import RAMSTKDesignMechanicTable
+from .failure_definition.record import RAMSTKFailureDefinitionRecord
+from .failure_definition.table import RAMSTKFailureDefinitionTable
 from .fmea.view import RAMSTKFMEAView
 from .hardware.record import RAMSTKHardwareRecord
 from .hardware.table import RAMSTKHardwareTable
