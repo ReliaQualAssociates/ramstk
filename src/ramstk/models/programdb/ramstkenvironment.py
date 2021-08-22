@@ -1,15 +1,15 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKEnvironment.py is part of The RAMSTK
+#       ramstk.models.environment.record.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKEnvironment Table Module."""
 
 # Third Party Imports
-from sqlalchemy import Column, Float, ForeignKey, ForeignKeyConstraint, Integer, String
+from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -79,7 +79,7 @@ class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     phase: relationship = relationship(  # type: ignore
-        "RAMSTKMissionPhase",
+        "RAMSTKMissionPhaseRecord",
         back_populates="environment",
     )
 

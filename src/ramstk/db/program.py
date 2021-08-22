@@ -18,6 +18,7 @@ from ramstk.models import (
     RAMSTKFailureDefinitionRecord,
     RAMSTKHardwareRecord,
     RAMSTKMilHdbk217FRecord,
+    RAMSTKMissionPhaseRecord,
     RAMSTKMissionRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
@@ -32,7 +33,6 @@ from ramstk.models.programdb import (
     RAMSTKFunction,
     RAMSTKHazardAnalysis,
     RAMSTKMechanism,
-    RAMSTKMissionPhase,
     RAMSTKMode,
     RAMSTKOpLoad,
     RAMSTKOpStress,
@@ -58,7 +58,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKProgramInfo.__table__.create(bind=engine)
     RAMSTKProgramStatus.__table__.create(bind=engine)
     RAMSTKMissionRecord.__table__.create(bind=engine)
-    RAMSTKMissionPhase.__table__.create(bind=engine)
+    RAMSTKMissionPhaseRecord.__table__.create(bind=engine)
     RAMSTKEnvironment.__table__.create(bind=engine)
     RAMSTKFailureDefinitionRecord.__table__.create(bind=engine)
 

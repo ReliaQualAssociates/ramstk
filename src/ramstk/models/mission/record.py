@@ -55,7 +55,7 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     phase = relationship(  # type: ignore
-        "RAMSTKMissionPhase",
+        "RAMSTKMissionPhaseRecord",
         back_populates="mission",
         cascade="all,delete",
     )

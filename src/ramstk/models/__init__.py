@@ -26,6 +26,8 @@ from .milhdbk217f.record import RAMSTKMilHdbk217FRecord
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
 from .mission.record import RAMSTKMissionRecord
 from .mission.table import RAMSTKMissionTable
+from .mission_phase.record import RAMSTKMissionPhaseRecord
+from .mission_phase.table import RAMSTKMissionPhaseTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
