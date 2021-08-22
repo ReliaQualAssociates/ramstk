@@ -12,7 +12,6 @@ from .action.datamanager import DataManager as dmAction
 from .cause.datamanager import DataManager as dmCause
 from .control.datamanager import DataManager as dmControl
 from .environment.datamanager import DataManager as dmEnvironment
-from .failure_definition.datamanager import DataManager as dmFailureDefinition
 from .function.datamanager import DataManager as dmFunction
 from .hazards.datamanager import DataManager as dmHazards
 from .mechanism.datamanager import DataManager as dmMechanism
