@@ -21,7 +21,6 @@ from .mock_ramstkenvironment import MockRAMSTKEnvironment
 from .mock_ramstkfunction import MockRAMSTKFunction
 from .mock_ramstkhazardanalysis import MockRAMSTKHazardAnalysis
 from .mock_ramstkmechanism import MockRAMSTKMechanism
-from .mock_ramstkmissionphase import MockRAMSTKMissionPhase
 from .mock_ramstkmode import MockRAMSTKMode
 from .mock_ramstkopload import MockRAMSTKOpLoad
 from .mock_ramstkopstress import MockRAMSTKOpStress
