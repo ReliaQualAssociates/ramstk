@@ -10,19 +10,15 @@ jobs:
     name: Create Branch for Issue
     runs-on: ubuntu-latest
     steps:
+      - name: Is Issue Epic
+        id: getlabel
+        uses: renanmav/match-label-action@v3
+        with:
+          allowed: >
+            EPIC!
       - name: Create Issue Branch
         id: create_issue_branch
+        if: steps.getlabel.outputs.match != 'EPIC!'
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Add PR Link to Issue
-        uses: mshick/add-pr-comment@master
-        if: steps.create_issue_branch.outputs.branchName != ''
-        env:
-          PULL_REQUEST_URL: ${{ format('https://github.com/{0}/compare/{1}...{2}?quick_pull=1', github.repository, github.event.repository.default_branch, steps.create-issue-branch.outputs.branchName) }}
-        with:
-          message: |
-            ## Pull Request ![](https://raw.githubusercontent.com/primer/octicons/main/icons/git-pull-request-16.svg)
-            [Create a pull request](${{ env.PULL_REQUEST_URL }}) for the issue branch.
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          repo-token-user-login: "github-actions[bot]"
