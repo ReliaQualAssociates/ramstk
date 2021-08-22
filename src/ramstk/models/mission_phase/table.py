@@ -4,18 +4,17 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Usage Profile Package Data Model."""
+"""Mission Phase Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKMissionPhase
+from ramstk.models import RAMSTKBaseTable, RAMSTKMissionPhaseRecord
 
 
-class DataManager(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Usage Profile data manager."""
+class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the Mission Phase table model."""
 
     # Define private dictionary class attributes.
 
@@ -47,7 +46,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKMissionPhase] = RAMSTKMissionPhase
+        self._record: Type[RAMSTKMissionPhaseRecord] = RAMSTKMissionPhaseRecord
 
         # Initialize public dictionary attributes.
 
