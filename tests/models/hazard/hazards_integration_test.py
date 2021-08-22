@@ -15,24 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmHazards
-from ramstk.models.programdb import RAMSTKHazardAnalysis
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "function_id": 1,
-        "hazard_id": 1,
-    }
+from ramstk.models import RAMSTKHazardRecord, RAMSTKHazardTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmHazards()
+    dut = RAMSTKHazardTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "function_id": 1})
 
@@ -54,37 +44,37 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardRecord)
         print("\033[36m\nsucceed_retrieve_hazards topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis
+            test_tablemodel.tree.get_node(1).data["hazard"], RAMSTKHazardRecord
         )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_hazards")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 5
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(5).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(5).data["hazard"], RAMSTKHazardRecord)
         print("\033[36m\nsucceed_insert_hazard topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
@@ -105,48 +95,48 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_hazard topic was broadcast on no revision.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_hazard")
 
-        assert test_datamanager.tree.get_node(5) is None
+        assert test_tablemodel.tree.get_node(5) is None
 
         pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
-        assert test_datamanager.last_id == 5
+        assert test_tablemodel.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_hazard")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_tablemodel):
         """should not add a record when passed a non-existent parent ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_hazard")
 
-        assert test_datamanager.tree.get_node(7) is None
+        assert test_tablemodel.tree.get_node(7) is None
 
         test_attributes["function_id"] = 10
         pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
-        assert test_datamanager.tree.get_node(7) is None
+        assert test_tablemodel.tree.get_node(7) is None
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_hazard")
 
     @pytest.mark.integration
-    def test_insert_no_revision(self, test_attributes, test_datamanager):
+    def test_insert_no_revision(self, test_attributes, test_tablemodel):
         """should not add a record when passed a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
-        assert test_datamanager.tree.get_node(7) is None
+        assert test_tablemodel.tree.get_node(7) is None
 
         test_attributes["revision_id"] = 40
         pub.sendMessage("request_insert_hazard", attributes=test_attributes)
 
-        assert test_datamanager.tree.get_node(7) is None
+        assert test_tablemodel.tree.get_node(7) is None
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_hazard")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
@@ -163,14 +153,14 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_hazard topic was broadcast on no data package.")
 
     @pytest.mark.integration
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_tablemodel):
         """should remove record from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_hazard")
 
         pub.sendMessage("request_delete_hazard", node_id=1)
 
-        assert test_datamanager.last_id == 4
-        assert test_datamanager.tree.get_node(1) is None
+        assert test_tablemodel.last_id == 4
+        assert test_tablemodel.tree.get_node(1) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_hazard")
 
@@ -184,17 +174,17 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_hazard")
 
     @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_datamanager):
+    def test_do_delete_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_hazard")
 
-        test_datamanager.tree.get_node(4).data.pop("hazard")
+        test_tablemodel.tree.get_node(4).data.pop("hazard")
         pub.sendMessage("request_delete_hazard", node_id=4)
 
         pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_hazard")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -228,56 +218,56 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_hazard topic was broadcast on no data package.")
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_hazard")
 
-        test_datamanager.tree.get_node(1).data["hazard"].potential_hazard = "Big Hazard"
+        test_tablemodel.tree.get_node(1).data["hazard"].potential_hazard = "Big Hazard"
         pub.sendMessage("request_update_hazard", node_id=1, table="hazard")
 
         assert (
-            test_datamanager.tree.get_node(1).data["hazard"].potential_hazard
+            test_tablemodel.tree.get_node(1).data["hazard"].potential_hazard
             == "Big Hazard"
         )
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_hazard")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        test_datamanager.tree.get_node(1).data[
+        test_tablemodel.tree.get_node(1).data[
             "hazard"
         ].potential_hazard = "Big test hazard"
 
         pub.sendMessage("request_update_all_hazards")
 
         assert (
-            test_datamanager.tree.get_node(1).data["hazard"].potential_hazard
+            test_tablemodel.tree.get_node(1).data["hazard"].potential_hazard
             == "Big test hazard"
         )
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
-        test_datamanager.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
+        test_tablemodel.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
         pub.sendMessage("request_update_hazard", node_id=1, table="hazard")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when attempting to update the root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_hazard"
         )
 
-        test_datamanager.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
+        test_tablemodel.tree.get_node(1).data["hazard"].assembly_effect = {1: "What?"}
         pub.sendMessage("request_update_hazard", node_id=0, table="hazard")
 
         pub.unsubscribe(
@@ -294,17 +284,17 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_hazard")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_hazard")
 
-        test_datamanager.tree.get_node(1).data.pop("hazard")
+        test_tablemodel.tree.get_node(1).data.pop("hazard")
         pub.sendMessage("request_update_hazard", node_id=1, table="hazard")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_hazard")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -316,7 +306,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardAnalysis)
+        assert isinstance(tree.get_node(1).data["hazard"], RAMSTKHazardRecord)
         print("\033[36m\nsucceed_get_hazard_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
@@ -325,11 +315,11 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_hazard_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
+    def test_do_get_attributes(self, test_tablemodel):
         """should return the attributes dict."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hazard_attributes")
 
-        test_datamanager.do_get_attributes(
+        test_tablemodel.do_get_attributes(
             node_id=1,
             table="hazard",
         )
@@ -348,7 +338,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self, test_datamanager):
+    def test_do_set_attributes(self, test_tablemodel):
         """should set the value of the attribute requested."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_hazard_tree")
 
@@ -359,14 +349,14 @@ class TestGetterSetter:
         )
 
         assert (
-            test_datamanager.tree.get_node(1).data["hazard"].potential_hazard
+            test_tablemodel.tree.get_node(1).data["hazard"].potential_hazard
             == "Donald Trump"
         )
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_hazard_tree")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
@@ -375,12 +365,12 @@ class TestAnalysisMethods:
         print("\033[36m\nsucceed_calculate_fha topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_calculate_fha(self, test_datamanager):
+    def test_do_calculate_fha(self, test_tablemodel):
         """should calculate the HRI and user-defined hazard analyses."""
         pub.subscribe(self.on_succeed_calculate_fha, "succeed_calculate_fha")
 
         pub.sendMessage("request_calculate_fha", node_id=1)
-        _attributes = test_datamanager.do_select(1).get_attributes()
+        _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["assembly_hri"] == 30
         assert _attributes["system_hri"] == 20
