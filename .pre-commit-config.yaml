@@ -66,4 +66,5 @@ repos:
       rev: 'v3.3.2'
       hooks:
         - id: rstcheck
+          additional_dependencies: [tomli]
           args: [-r, --config, ./pyproject.toml]
