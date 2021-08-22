@@ -20,7 +20,7 @@ from ramstk.models import RAMSTKBaseView
 class RAMSTKUsageProfileView(RAMSTKBaseView):
     """Contain the attributes and methods of the Usage Profile view.
 
-    This class manages the usage profile data from the RAMSTKMission,
+    This class manages the usage profile data from the RAMSTKMissionRecord,
     RAMSTKMissionPhase, and RAMSKTEnvironment table models.
     """
 

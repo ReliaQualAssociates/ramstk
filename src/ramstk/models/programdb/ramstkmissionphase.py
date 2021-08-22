@@ -20,9 +20,8 @@ from ramstk.models import RAMSTKBaseRecord
 class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_mission_phase in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mission.
-    This table shares a One-to-Many relationship with
-    ramstk_environment.
+    This table shares a Many-to-One relationship with ramstk_mission. This table
+    shares a One-to-Many relationship with ramstk_environment.
     """
 
     __defaults__ = {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0}
@@ -65,7 +64,7 @@ class RAMSTKMissionPhase(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mission: relationship = relationship(
-        "RAMSTKMission",
+        "RAMSTKMissionRecord",
         back_populates="phase",
     )
     environment: relationship = relationship(
