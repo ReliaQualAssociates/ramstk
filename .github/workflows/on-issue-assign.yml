@@ -18,7 +18,7 @@ jobs:
             dobranch
       - name: Create Issue Branch
         id: create_issue_branch
-        if: steps.getlabel.outputs.match == "dobranch"
+        if: steps.getlabel.outputs.match == 'dobranch'
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
