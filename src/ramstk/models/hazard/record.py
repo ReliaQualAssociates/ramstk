@@ -10,18 +10,17 @@
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKHazardAnalysis(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_hazard_analysis table in the Program database.
 
-    This table shares a Many-to-One relationship with ramstk_revision.
-    This table shares a Many-to-One relationship with ramstk_function.
+    This table shares a Many-to-One relationship with ramstk_revision. This table
+    shares a Many-to-One relationship with ramstk_function.
     """
 
     __defaults__ = {

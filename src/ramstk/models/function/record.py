@@ -113,7 +113,7 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     hazard: relationship = relationship(
-        "RAMSTKHazardAnalysis",
+        "RAMSTKHazardRecord",
         backref="function",
         passive_deletes=True,
     )

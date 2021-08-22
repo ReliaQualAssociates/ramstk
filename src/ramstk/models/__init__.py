@@ -26,6 +26,8 @@ from .function.table import RAMSTKFunctionTable
 from .hardware.record import RAMSTKHardwareRecord
 from .hardware.table import RAMSTKHardwareTable
 from .hardware.view import RAMSTKHardwareBoMView
+from .hazard.record import RAMSTKHazardRecord
+from .hazard.table import RAMSTKHazardTable
 from .milhdbk217f.record import RAMSTKMilHdbk217FRecord
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
 from .mission.record import RAMSTKMissionRecord
