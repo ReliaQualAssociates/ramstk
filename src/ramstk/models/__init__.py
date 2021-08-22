@@ -24,6 +24,8 @@ from .hardware.table import RAMSTKHardwareTable
 from .hardware.view import RAMSTKHardwareBoMView
 from .milhdbk217f.record import RAMSTKMilHdbk217FRecord
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
+from .mission.record import RAMSTKMissionRecord
+from .mission.table import RAMSTKMissionTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
