@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.mission.mission_integration_test.py is part of The RAMSTK
+#       tests.models.mission.mission_integration_test.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -15,23 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmMission
-from ramstk.models.programdb import RAMSTKMission
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "mission_id": 1,
-    }
+from ramstk.models import RAMSTKMissionRecord, RAMSTKMissionTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmMission()
+    dut = RAMSTKMissionTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
 
@@ -51,36 +42,36 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMission)
-        assert isinstance(tree.get_node(2).data["mission"], RAMSTKMission)
-        assert isinstance(tree.get_node(3).data["mission"], RAMSTKMission)
+        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMissionRecord)
+        assert isinstance(tree.get_node(2).data["mission"], RAMSTKMissionRecord)
+        assert isinstance(tree.get_node(3).data["mission"], RAMSTKMissionRecord)
         print("\033[36m\nsucceed_retrieve_missions topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should clear out an existing tree and build a new one when
         called on a populated Mission data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(4).data["mission"], RAMSTKMission)
+        assert isinstance(tree.get_node(4).data["mission"], RAMSTKMissionRecord)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -89,32 +80,32 @@ class TestInsertMethods:
             "Database returned:\n\tKey (fld_revision_id)=(4) is not present "
             'in table "ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_mission topic was broadcast")
+        print("\033[35m\nfail_insert_mission topic was broadcast on no Revision")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message with the ID of the newly
         inserted node and the data manager's tree after successfully inserting a new
         mission."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission")
 
-        test_datamanager.do_insert(attributes=test_attributes)
+        test_tablemodel.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
         """do_insert() should send the fail message attempting to insert a new mission
         for an non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
 
         test_attributes["revision_id"] = 4
-        test_datamanager.do_insert(attributes=test_attributes)
+        test_tablemodel.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -132,7 +123,7 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_mission topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_tablemodel):
         """_do_delete_mission() should send the success message after successfully
         deleting a mission."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_mission")
@@ -142,7 +133,7 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mission")
 
     @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_datamanager):
+    def test_do_delete_non_existent_id(self, test_tablemodel):
         """_do_delete_mission() should send the sfail message when attempting to delete
         a non-existent mission ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
@@ -152,18 +143,18 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_not_in_tree(self, test_tablemodel):
         """_do_delete() should send the fail message when attempting to remove a node
         that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
 
-        test_datamanager.tree.remove_node(2)
+        test_tablemodel.tree.remove_node(2)
         pub.sendMessage("request_delete_mission", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -197,33 +188,33 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_mission topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the succeed message on
         success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_mission")
 
-        _mission = test_datamanager.do_select(1)
+        _mission = test_tablemodel.do_select(1)
         _mission.name = "Big test mission"
 
-        test_datamanager.do_update(1, table="mission")
+        test_tablemodel.do_update(1, table="mission")
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_mission")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed_update_all message on
         success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _mission1 = test_datamanager.do_select(1)
-        _mission2 = test_datamanager.do_select(2)
+        _mission1 = test_tablemodel.do_select(1)
+        _mission2 = test_tablemodel.do_select(2)
         _mission1.name = "Big test mission"
         _mission2.name = "Big test mission 2"
 
         pub.sendMessage("request_update_all_mission")
 
-        _mission1 = test_datamanager.do_select(1)
-        _mission2 = test_datamanager.do_select(2)
+        _mission1 = test_tablemodel.do_select(1)
+        _mission2 = test_tablemodel.do_select(2)
 
         assert _mission1.name == "Big test mission"
         assert _mission2.name == "Big test mission 2"
@@ -231,58 +222,58 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a Requirement ID
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
-        _mission = test_datamanager.do_select(1)
+        _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
 
-        test_datamanager.do_update(1, table="mission")
+        test_tablemodel.do_update(1, table="mission")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
         )
 
-        _mission = test_datamanager.do_select(1)
+        _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
 
-        test_datamanager.do_update(0, table="mission")
+        test_tablemodel.do_update(0, table="mission")
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_datamanager):
+    def test_do_update_non_existent_id(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
 
-        test_datamanager.do_update(10, table="mission")
+        test_tablemodel.do_update(10, table="mission")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mission")
 
-        test_datamanager.tree.get_node(1).data.pop("mission")
-        test_datamanager.do_update(1, table="mission")
+        test_tablemodel.tree.get_node(1).data.pop("mission")
+        test_tablemodel.do_update(1, table="mission")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mission")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -295,7 +286,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMission)
+        assert isinstance(tree.get_node(1).data["mission"], RAMSTKMissionRecord)
         print("\033[36m\nsucceed_get_mission_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
@@ -304,33 +295,33 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_mission_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
+    def test_do_get_attributes(self, test_tablemodel):
         """_do_get_attributes() should return treelib Tree() on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mission_attributes")
 
-        test_datamanager.do_get_attributes(1, "mission")
+        test_tablemodel.do_get_attributes(1, "mission")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_mission_attributes"
         )
 
     @pytest.mark.integration
-    def test_on_get_tree(self, test_datamanager):
+    def test_on_get_tree(self, test_tablemodel):
         """on_get_tree() should return the revision treelib Tree."""
         pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_mission_tree")
 
-        test_datamanager.do_get_tree()
+        test_tablemodel.do_get_tree()
 
         pub.unsubscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_mission_tree"
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self, test_datamanager):
+    def test_do_set_attributes(self, test_tablemodel):
         """do_set_attributes() should send the success message."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mission_tree")
 
-        test_datamanager.do_set_attributes(
+        test_tablemodel.do_set_attributes(
             node_id=[1, ""], package={"mission_time": 12.86}
         )
 

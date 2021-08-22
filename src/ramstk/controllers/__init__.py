@@ -15,8 +15,7 @@ from .environment.datamanager import DataManager as dmEnvironment
 from .function.datamanager import DataManager as dmFunction
 from .hazards.datamanager import DataManager as dmHazards
 from .mechanism.datamanager import DataManager as dmMechanism
-from .mission.datamanager import DataManager as RAMSTKMissionTable
-from .mission_phase.datamanager import DataManager as RAMSTKMissionPhase
+from .mission_phase.datamanager import DataManager as dmMissionPhase
 from .mode.datamanager import DataManager as dmMode
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
