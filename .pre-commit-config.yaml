@@ -62,3 +62,8 @@ repos:
             language: python
             additional_dependencies: [wily]
             args: [--no-detail]
+    - repo: https://github.com/weibullguy/rstcheck
+      rev: 'v3.3.2'
+      hooks:
+        - id: rstcheck
+          args: [-r, --config, ./pyproject.toml]
