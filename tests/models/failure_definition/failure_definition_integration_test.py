@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.failure_definition.failure_definition_integration_test.py is
+#       tests.models.failure_definition.failure_definition_integration_test.py is
 #       part of The RAMSTK Project
 #
 # All rights reserved.
@@ -15,24 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFailureDefinition
-from ramstk.models.programdb import RAMSTKFailureDefinition
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "definition_id": 1,
-        "definition": "Failure Definition",
-    }
+from ramstk.models import RAMSTKFailureDefinitionRecord, RAMSTKFailureDefinitionTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmFailureDefinition()
+    dut = RAMSTKFailureDefinitionTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
 
@@ -52,7 +42,7 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -60,15 +50,15 @@ class TestSelectMethods:
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(1).data["failure_definition"],
-            RAMSTKFailureDefinition,
+            RAMSTKFailureDefinitionRecord,
         )
         print("\033[36m\nsucceed_retrieve_failure_definition topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should return a Tree() object populated with
-        RAMSTKFailureDefinition instances on success when there is already a
-        tree of definitions."""
+        RAMSTKFailureDefinitionRecord instances on success when there is already a tree
+        of definitions."""
         pub.subscribe(
             self.on_succeed_select_all, "succeed_retrieve_failure_definitions"
         )
@@ -80,14 +70,16 @@ class TestSelectMethods:
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class to test data controller insert methods using actual database."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 3
         assert isinstance(tree, Tree)
-        assert isinstance(tree[3].data["failure_definition"], RAMSTKFailureDefinition)
+        assert isinstance(
+            tree[3].data["failure_definition"], RAMSTKFailureDefinitionRecord
+        )
         print("\033[36m\nsucceed_insert_failure_definition topic was broadcast")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -99,20 +91,20 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """do_insert() should send the success message after successfully
-        inserting a new failure definition."""
+    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
+        """do_insert() should send the success message after successfully inserting a
+        new failure definition."""
         pub.subscribe(
             self.on_succeed_insert_sibling, "succeed_insert_failure_definition"
         )
 
-        assert test_datamanager.tree.get_node(3) is None
+        assert test_tablemodel.tree.get_node(3) is None
 
         pub.sendMessage("request_insert_failure_definition", attributes=test_attributes)
 
         assert isinstance(
-            test_datamanager.tree.get_node(3).data["failure_definition"],
-            RAMSTKFailureDefinition,
+            test_tablemodel.tree.get_node(3).data["failure_definition"],
+            RAMSTKFailureDefinitionRecord,
         )
 
         pub.unsubscribe(
@@ -120,10 +112,10 @@ class TestInsertMethods:
         )
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
-        """do_insert() should send the fail_insert_failure_definition message
-        when attempting to insert a new failure definition with a non-existent
-        revision ID."""
+    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
+        """do_insert() should send the fail_insert_failure_definition message when
+        attempting to insert a new failure definition with a non-existent revision
+        ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_failure_definition")
 
         test_attributes["revision_id"] = 40
@@ -134,7 +126,7 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
@@ -156,8 +148,8 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete(self):
-        """_do_delete_failure_definition() should send the success message
-        after successfully deleting a definition."""
+        """_do_delete_failure_definition() should send the success message after
+        successfully deleting a definition."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_failure_definition")
 
         pub.sendMessage("request_delete_failure_definition", node_id=1)
@@ -165,14 +157,14 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_failure_definition")
 
     @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_datamanager):
-        """_do_delete_failure_definition() should send the fail message when
-        attempting to delete a non-existent failure definition."""
+    def test_do_delete_non_existent_id(self, test_tablemodel):
+        """_do_delete_failure_definition() should send the fail message when attempting
+        to delete a non-existent failure definition."""
         pub.subscribe(
             self.on_fail_delete_non_existent_id, "fail_delete_failure_definition"
         )
 
-        assert test_datamanager.tree.get_node(10) is None
+        assert test_tablemodel.tree.get_node(10) is None
 
         pub.sendMessage("request_delete_failure_definition", node_id=10)
 
@@ -181,11 +173,11 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_not_in_tree(self, test_tablemodel):
         """should send the fail message when the node doesn't exist in the tree."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_failure_definition")
 
-        test_datamanager.tree.remove_node(2)
+        test_tablemodel.tree.remove_node(2)
         pub.sendMessage("request_delete_failure_definition", node_id=2)
 
         pub.unsubscribe(
@@ -193,7 +185,7 @@ class TestDeleteMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class to test data controller update methods using actual database."""
 
@@ -233,12 +225,11 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_failure_definition topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
-        """do_update() should send the succeed_update_failure_definition on
-        success."""
+    def test_do_update(self, test_tablemodel):
+        """do_update() should send the succeed_update_failure_definition on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_failure_definition")
 
-        _failure_definition = test_datamanager.do_select(1)
+        _failure_definition = test_tablemodel.do_select(1)
         _failure_definition.definition = "Big test definition"
         pub.sendMessage(
             "request_update_failure_definition", node_id=1, table="failure_definition"
@@ -247,34 +238,33 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_failure_definition")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """do_update_all failure_definition() should return None on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _failure_definition = test_datamanager.do_select(1)
+        _failure_definition = test_tablemodel.do_select(1)
         _failure_definition.definition = "Big test definition #1"
-        _failure_definition = test_datamanager.do_select(2)
+        _failure_definition = test_tablemodel.do_select(2)
         _failure_definition.definition = "Big test definition #2"
 
         pub.sendMessage("request_update_all_failure_definitions")
 
-        _failure_definition = test_datamanager.do_select(1)
+        _failure_definition = test_tablemodel.do_select(1)
         assert _failure_definition.definition == "Big test definition #1"
 
-        _failure_definition = test_datamanager.do_select(2)
+        _failure_definition = test_tablemodel.do_select(2)
         assert _failure_definition.definition == "Big test definition #2"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should send the succeed_update_failure_definition on
-        success."""
+    def test_do_update_wrong_data_type(self, test_tablemodel):
+        """do_update() should send the succeed_update_failure_definition on success."""
         pub.subscribe(
             self.on_fail_update_wrong_data_type, "fail_update_failure_definition"
         )
 
-        test_datamanager.tree.get_node(1).data["failure_definition"].definition = {
+        test_tablemodel.tree.get_node(1).data["failure_definition"].definition = {
             1: "Big test definition",
         }
         pub.sendMessage(
@@ -286,15 +276,15 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Requirement ID that doesn't exist."""
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
+        """do_update() should return a non-zero error code when passed a Requirement ID
+        that doesn't exist."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type,
             "fail_update_failure_definition",
         )
 
-        test_datamanager.tree.get_node(1).data["failure_definition"].definition = {
+        test_tablemodel.tree.get_node(1).data["failure_definition"].definition = {
             1: "Big test definition",
         }
         pub.sendMessage(
@@ -308,8 +298,8 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update_failure_definition() should broadcast the fail message
-        when attempting to save a non-existent ID."""
+        """do_update_failure_definition() should broadcast the fail message when
+        attempting to save a non-existent ID."""
         pub.subscribe(
             self.on_fail_update_non_existent_id, "fail_update_failure_definition"
         )
@@ -325,14 +315,14 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a
-        Function ID that has no data package."""
+    def test_do_update_no_data_package(self, test_tablemodel):
+        """do_update() should return a non-zero error code when passed a Function ID
+        that has no data package."""
         pub.subscribe(
             self.on_fail_update_no_data_package, "fail_update_failure_definition"
         )
 
-        test_datamanager.tree.get_node(1).data.pop("failure_definition")
+        test_tablemodel.tree.get_node(1).data.pop("failure_definition")
         pub.sendMessage(
             "request_update_failure_definition", node_id=1, table="failure_definitions"
         )
@@ -342,7 +332,7 @@ class TestUpdateMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -355,7 +345,7 @@ class TestGetterSetter:
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinition
+            tree.get_node(1).data["failure_definition"], RAMSTKFailureDefinitionRecord
         )
         print("\033[36m\nsucceed_get_failure_definition_tree topic was broadcast")
 
@@ -368,14 +358,14 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_allocation_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
-        """_do_get_attributes() should return a dict of failure definition
-        records on success."""
+    def test_do_get_attributes(self, test_tablemodel):
+        """_do_get_attributes() should return a dict of failure definition records on
+        success."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_failure_definition_attributes"
         )
 
-        test_datamanager.do_get_attributes(1, "failure_definition")
+        test_tablemodel.do_get_attributes(1, "failure_definition")
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_failure_definition_attributes"
@@ -395,7 +385,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self, test_datamanager):
+    def test_do_set_attributes(self, test_tablemodel):
         """do_set_attributes() should send the success message."""
         pub.subscribe(
             self.on_succeed_set_attributes, "succeed_get_failure_definition_tree"
