@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
-class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __defaults__: Any
     __tablename__: str
     __table_args__: Any

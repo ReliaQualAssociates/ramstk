@@ -31,13 +31,14 @@ from ramstk.models import (
     RAMSTKAllocationRecord,
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
+    RAMSTKFunctionRecord,
     RAMSTKHardwareRecord,
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
     RAMSTKSimilarItemRecord,
 )
-from ramstk.models.programdb import RAMSTKFunction, RAMSTKRequirement, RAMSTKValidation
+from ramstk.models.programdb import RAMSTKRequirement, RAMSTKValidation
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:
@@ -639,7 +640,7 @@ class Import:
 
         return _design_mechanic
 
-    def _do_insert_function(self, row: pd.Series) -> RAMSTKFunction:
+    def _do_insert_function(self, row: pd.Series) -> RAMSTKFunctionRecord:
         """Insert a new Function entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -647,7 +648,7 @@ class Import:
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.ramskfunction.RAMSTKFunction`
         """
-        _function = RAMSTKFunction()
+        _function = RAMSTKFunctionRecord()
         _map = self._dic_field_map["Function"]
 
         _function.revision_id = _get_input_value(_map, row, "Revision ID", 1)
