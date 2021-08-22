@@ -15,10 +15,10 @@ jobs:
         uses: renanmav/match-label-action@v3
         with:
           allowed: >
-            admin: branch
+            dobranch
       - name: Create Issue Branch
         id: create_issue_branch
-        if: steps.getlabel.outputs.match == "admin: branch"
+        if: steps.getlabel.outputs.match == "dobranch"
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
