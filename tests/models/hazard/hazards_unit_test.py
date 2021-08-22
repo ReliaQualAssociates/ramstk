@@ -19,6 +19,12 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKHazardRecord, RAMSTKHazardTable
 
+TEST_PROBS = {
+    "A": "Level A - Frequent",
+    "B": "Level B - Reasonably Probable",
+    "C": "Level C - Occasional",
+}
+
 
 @pytest.fixture(scope="function")
 def test_tablemodel(mock_program_dao):
@@ -61,10 +67,8 @@ class TestCreateModels:
         assert test_recordmodel.assembly_hri == 20
         assert test_recordmodel.assembly_hri_f == 4
         assert test_recordmodel.assembly_mitigation == ""
-        assert test_recordmodel.assembly_probability == "Level A - Frequent"
-        assert (
-            test_recordmodel.assembly_probability_f == "Level B - Reasonably Probable"
-        )
+        assert test_recordmodel.assembly_probability == TEST_PROBS["A"]
+        assert test_recordmodel.assembly_probability_f == TEST_PROBS["B"]
         assert test_recordmodel.assembly_severity == "Major"
         assert test_recordmodel.assembly_severity_f == "Medium"
         assert test_recordmodel.function_1 == "uf1*uf2"
@@ -84,8 +88,8 @@ class TestCreateModels:
         assert test_recordmodel.system_hri == 20
         assert test_recordmodel.system_hri_f == 20
         assert test_recordmodel.system_mitigation == ""
-        assert test_recordmodel.system_probability == "Level A - Frequent"
-        assert test_recordmodel.system_probability_f == "Level C - Occasional"
+        assert test_recordmodel.system_probability == TEST_PROBS["A"]
+        assert test_recordmodel.system_probability_f == TEST_PROBS["C"]
         assert test_recordmodel.system_severity == "Medium"
         assert test_recordmodel.system_severity_f == "Medium"
         assert test_recordmodel.user_blob_1 == ""
@@ -227,11 +231,11 @@ class TestGetterSetter:
         assert _attributes["potential_cause"] == ""
         assert _attributes["assembly_effect"] == ""
         assert _attributes["assembly_severity"] == "Major"
-        assert _attributes["assembly_probability"] == "Level A - Frequent"
+        assert _attributes["assembly_probability"] == TEST_PROBS["A"]
         assert _attributes["assembly_hri"] == 20
         assert _attributes["assembly_mitigation"] == ""
         assert _attributes["assembly_severity_f"] == "Medium"
-        assert _attributes["assembly_probability_f"] == "Level B - Reasonably Probable"
+        assert _attributes["assembly_probability_f"] == TEST_PROBS["B"]
         assert _attributes["assembly_hri_f"] == 4
         assert _attributes["function_1"] == "uf1*uf2"
         assert _attributes["function_2"] == "res1/ui1"
@@ -246,11 +250,11 @@ class TestGetterSetter:
         assert _attributes["result_5"] == 0.0
         assert _attributes["system_effect"] == ""
         assert _attributes["system_severity"] == "Medium"
-        assert _attributes["system_probability"] == "Level A - Frequent"
+        assert _attributes["system_probability"] == TEST_PROBS["A"]
         assert _attributes["system_hri"] == 20
         assert _attributes["system_mitigation"] == ""
         assert _attributes["system_severity_f"] == "Medium"
-        assert _attributes["system_probability_f"] == "Level C - Occasional"
+        assert _attributes["system_probability_f"] == TEST_PROBS["C"]
         assert _attributes["system_hri_f"] == 20
         assert _attributes["user_blob_1"] == ""
         assert _attributes["user_blob_2"] == ""

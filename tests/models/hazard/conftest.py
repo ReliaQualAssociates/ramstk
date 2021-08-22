@@ -5,6 +5,12 @@ from mocks import MockDAO
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKHazardRecord
 
+TEST_PROBS = {
+    "A": "Level A - Frequent",
+    "B": "Level B - Reasonably Probable",
+    "C": "Level C - Occasional",
+}
+
 
 @pytest.fixture
 def mock_program_dao(monkeypatch):
@@ -16,8 +22,8 @@ def mock_program_dao(monkeypatch):
     _hazard_1.assembly_hri = 20
     _hazard_1.assembly_hri_f = 4
     _hazard_1.assembly_mitigation = ""
-    _hazard_1.assembly_probability = "Level A - Frequent"
-    _hazard_1.assembly_probability_f = "Level B - Reasonably Probable"
+    _hazard_1.assembly_probability = TEST_PROBS["A"]
+    _hazard_1.assembly_probability_f = TEST_PROBS["B"]
     _hazard_1.assembly_severity = "Major"
     _hazard_1.assembly_severity_f = "Medium"
     _hazard_1.function_1 = "uf1*uf2"
@@ -37,8 +43,8 @@ def mock_program_dao(monkeypatch):
     _hazard_1.system_hri = 20
     _hazard_1.system_hri_f = 20
     _hazard_1.system_mitigation = ""
-    _hazard_1.system_probability = "Level A - Frequent"
-    _hazard_1.system_probability_f = "Level C - Occasional"
+    _hazard_1.system_probability = TEST_PROBS["A"]
+    _hazard_1.system_probability_f = TEST_PROBS["C"]
     _hazard_1.system_severity = "Medium"
     _hazard_1.system_severity_f = "Medium"
     _hazard_1.user_blob_1 = ""
@@ -69,11 +75,11 @@ def test_attributes():
         "potential_cause": "",
         "assembly_effect": "",
         "assembly_severity": "Major",
-        "assembly_probability": "Level A - Frequent",
+        "assembly_probability": TEST_PROBS["A"],
         "assembly_hri": 20,
         "assembly_mitigation": "",
         "assembly_severity_f": "Major",
-        "assembly_probability_f": "Level A - Frequent",
+        "assembly_probability_f": TEST_PROBS["A"],
         "assembly_hri_f": 20,
         "function_1": "",
         "function_2": "",
@@ -88,11 +94,11 @@ def test_attributes():
         "result_5": 0.0,
         "system_effect": "",
         "system_severity": "Major",
-        "system_probability": "Level A - Frequent",
+        "system_probability": TEST_PROBS["A"],
         "system_hri": 20,
         "system_mitigation": "",
         "system_severity_f": "Major",
-        "system_probability_f": "Level A - Frequent",
+        "system_probability_f": TEST_PROBS["A"],
         "system_hri_f": 20,
         "user_blob_1": "",
         "user_blob_2": "",
