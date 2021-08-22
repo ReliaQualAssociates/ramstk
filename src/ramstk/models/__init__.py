@@ -21,6 +21,8 @@ from .environment.table import RAMSTKEnvironmentTable
 from .failure_definition.record import RAMSTKFailureDefinitionRecord
 from .failure_definition.table import RAMSTKFailureDefinitionTable
 from .fmea.view import RAMSTKFMEAView
+from .function.record import RAMSTKFunctionRecord
+from .function.table import RAMSTKFunctionTable
 from .hardware.record import RAMSTKHardwareRecord
 from .hardware.table import RAMSTKHardwareTable
 from .hardware.view import RAMSTKHardwareBoMView

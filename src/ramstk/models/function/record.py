@@ -1,11 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKFunction.py is part of The RAMSTK Project
+#       ramstk.models.function.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKFunction Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Function Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -16,11 +16,11 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKFunction(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_function table in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_revision.
-    This table shares a One-to-Many relationship with ramstk_mode.
+    This table shares a Many-to-One relationship with ramstk_revision. This table
+    shares a One-to-Many relationship with ramstk_mode.
     """
 
     __defaults__ = {

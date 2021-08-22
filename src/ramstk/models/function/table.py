@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.function.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.function.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Function Package Data Model."""
+"""Function Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKFunction
+from ramstk.models import RAMSTKBaseTable, RAMSTKFunctionRecord
 
 
-class DataManager(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Function data manager."""
+class RAMSTKFunctionTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the Function table model."""
 
     # Define private dictionary class attributes.
 
@@ -46,7 +45,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKFunction] = RAMSTKFunction
+        self._record: Type[RAMSTKFunctionRecord] = RAMSTKFunctionRecord
 
         # Initialize public dictionary attributes.
 

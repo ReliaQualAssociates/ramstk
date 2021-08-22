@@ -195,7 +195,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     function: relationship = relationship(
-        "RAMSTKFunction",
+        "RAMSTKFunctionRecord",
         backref="revision",
         passive_deletes=True,
     )

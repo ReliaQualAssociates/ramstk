@@ -14,9 +14,9 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmFunction, dmRequirement, dmValidation
+from ramstk.controllers import dmRequirement, dmValidation
 from ramstk.exim import Export
-from ramstk.models import RAMSTKHardwareTable
+from ramstk.models import RAMSTKFunctionTable, RAMSTKHardwareTable
 
 
 @pytest.mark.usefixtures("test_program_dao")
@@ -27,7 +27,7 @@ class TestExport:
     def test_do_load_output_function(self, test_program_dao):
         """do_load_output() should return a Pandas DataFrame when loading Functions for
         export."""
-        _function = dmFunction()
+        _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
@@ -83,7 +83,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_to_csv(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a CSV file."""
-        _function = dmFunction()
+        _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
@@ -156,7 +156,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_to_text(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
-        _function = dmFunction()
+        _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
@@ -170,7 +170,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_unknown_type(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
-        _function = dmFunction()
+        _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
@@ -184,7 +184,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_multi_sheet(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
-        _function = dmFunction()
+        _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 

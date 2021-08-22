@@ -17,6 +17,8 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKMissionPhaseRecord, RAMSTKMissionPhaseTable
 
+_test_name = "Big test mission phase"
+
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
@@ -117,7 +119,7 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == (
-            "Attempted to delete non-existent Mission Phase ID " "10."
+            "Attempted to delete non-existent Mission Phase ID 10."
         )
         print("\033[35m\nfail_delete_mission_phase topic was broadcast.")
 
@@ -164,7 +166,7 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["mission_phase"].name == ("Big test mission phase")
+        assert tree.get_node(1).data["mission_phase"].name == _test_name
         print("\033[36m\nsucceed_update_mission_phase topic was broadcast")
 
     def on_succeed_update_all(self):
@@ -175,24 +177,33 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for mission "
             "phase ID 1 was the wrong type."
         )
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print(
+            "\033[35m\nfail_update_mission_phase topic was broadcast on wrong data "
+            "type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print("\033[35m\nfail_update_mission_phase topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent mission phase with mission "
             "phase ID 10."
         )
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print(
+            "\033[35m\nfail_update_mission_phase topic was broadcast on "
+            "non-existent ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
             "do_update: No data package found for mission phase ID 1."
         )
-        print("\033[35m\nfail_update_mission_phase topic was broadcast")
+        print(
+            "\033[35m\nfail_update_mission_phase topic was broadcast on no data "
+            "package."
+        )
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
@@ -201,7 +212,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_succeed_update, "succeed_update_mission_phase")
 
         _mission_phase = test_datamanager.do_select(1)
-        _mission_phase.name = "Big test mission phase"
+        _mission_phase.name = _test_name
 
         pub.sendMessage(
             "request_update_mission_phase", node_id=1, table="mission_phase"
@@ -216,7 +227,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
         _mission_phase1 = test_datamanager.do_select(1)
-        _mission_phase1.name = "Big test mission phase"
+        _mission_phase1.name = _test_name
 
         pub.sendMessage("request_update_all_mission_phases")
 

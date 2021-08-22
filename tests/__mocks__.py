@@ -13,89 +13,6 @@ from datetime import date, timedelta
 # Third Party Imports
 from treelib import Tree
 
-MOCK_ENVIRONMENTS = {
-    1: {
-        "name": "Condition Name",
-        "units": "Units",
-        "minimum": 0.0,
-        "maximum": 0.0,
-        "mean": 0.0,
-        "variance": 0.0,
-        "ramp_rate": 0.0,
-        "low_dwell_time": 0.0,
-        "high_dwell_time": 0.0,
-    },
-    2: {
-        "name": "Condition Name",
-        "units": "Units",
-        "minimum": 0.0,
-        "maximum": 0.0,
-        "mean": 0.0,
-        "variance": 0.0,
-        "ramp_rate": 0.0,
-        "low_dwell_time": 0.0,
-        "high_dwell_time": 0.0,
-    },
-    3: {
-        "name": "Condition Name",
-        "units": "Units",
-        "minimum": 0.0,
-        "maximum": 0.0,
-        "mean": 0.0,
-        "variance": 0.0,
-        "ramp_rate": 0.0,
-        "low_dwell_time": 0.0,
-        "high_dwell_time": 0.0,
-    },
-}
-
-MOCK_FUNCTIONS = {
-    1: {
-        "availability_logistics": 1.0,
-        "availability_mission": 1.0,
-        "cost": 0.0,
-        "function_code": "PRESS-001",
-        "hazard_rate_logistics": 0.0,
-        "hazard_rate_mission": 0.0,
-        "level": 0,
-        "mcmt": 0.0,
-        "mmt": 0.0,
-        "mpmt": 0.0,
-        "mtbf_logistics": 0.0,
-        "mtbf_mission": 0.0,
-        "mttr": 0.0,
-        "name": "Function Name",
-        "parent_id": 0,
-        "remarks": "",
-        "safety_critical": 0,
-        "total_mode_count": 0,
-        "total_part_count": 0,
-        "type_id": 0,
-    },
-    2: {
-        "availability_logistics": 1.0,
-        "availability_mission": 1.0,
-        "cost": 0.0,
-        "function_code": "PRESS-001",
-        "hazard_rate_logistics": 0.0,
-        "hazard_rate_mission": 0.0,
-        "level": 0,
-        "mcmt": 0.0,
-        "mmt": 0.0,
-        "mpmt": 0.0,
-        "mtbf_logistics": 0.0,
-        "mtbf_mission": 0.0,
-        "mttr": 0.0,
-        "name": "Function Name",
-        "parent_id": 0,
-        "remarks": "",
-        "safety_critical": 0,
-        "total_mode_count": 0,
-        "total_part_count": 0,
-        "type_id": 0,
-    },
-}
-
 MOCK_HAZARDS = {
     1: {
         "assembly_effect": "",
@@ -137,27 +54,6 @@ MOCK_HAZARDS = {
         "user_int_2": 0,
         "user_int_3": 0,
     }
-}
-
-MOCK_MISSIONS = {
-    1: {"description": "", "mission_time": 0.0, "time_units": "hours"},
-    2: {"description": "Mission #2", "mission_time": 0.0, "time_units": "hours"},
-}
-
-MOCK_MISSION_PHASES = {
-    1: {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0},
-    2: {
-        "description": "Phase #1 for mission #2",
-        "name": "",
-        "phase_start": 0.0,
-        "phase_end": 0.0,
-    },
-    3: {
-        "description": "Phase #2 for mission #2",
-        "name": "",
-        "phase_start": 0.0,
-        "phase_end": 0.0,
-    },
 }
 
 MOCK_STATUS = {
@@ -392,10 +288,6 @@ MOCK_VALIDATIONS = {
         "time_variance": 0.0,
     },
 }
-
-# Mock treelib Tree()'s.
-MOCK_FNCTN_TREE = Tree()
-MOCK_FNCTN_TREE.create_node(tag="function", identifier=0, parent=None, data=None)
 
 MOCK_RQRMNT_TREE = Tree()
 MOCK_RQRMNT_TREE.create_node(tag="requirement", identifier=0, parent=None, data=None)
