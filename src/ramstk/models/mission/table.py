@@ -4,18 +4,17 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mission Package Data Model."""
+"""Mission Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKMission
+from ramstk.models import RAMSTKBaseTable, RAMSTKMissionRecord
 
 
-class DataManager(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Mission data manager."""
+class RAMSTKMissionTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the Mission table model."""
 
     # Define private dictionary class attributes.
 
@@ -46,7 +45,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKMission] = RAMSTKMission
+        self._record: Type[RAMSTKMissionRecord] = RAMSTKMissionRecord
 
         # Initialize public dictionary attributes.
 
