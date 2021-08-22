@@ -15,15 +15,15 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmEnvironment
 from ramstk.models import (
+    RAMSTKEnvironmentRecord,
+    RAMSTKEnvironmentTable,
     RAMSTKMissionPhaseRecord,
     RAMSTKMissionPhaseTable,
     RAMSTKMissionRecord,
     RAMSTKMissionTable,
     RAMSTKUsageProfileView,
 )
-from ramstk.models.programdb import RAMSTKEnvironment
 
 
 @pytest.fixture(scope="class")
@@ -78,7 +78,7 @@ def test_phase(test_program_dao):
 def test_environment(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmEnvironment()
+    dut = RAMSTKEnvironmentTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
 
@@ -134,7 +134,7 @@ class TestSelectMethods:
             tree.get_node("1.1").data["usage_profile"], RAMSTKMissionPhaseRecord
         )
         assert isinstance(
-            tree.get_node("1.1.1").data["usage_profile"], RAMSTKEnvironment
+            tree.get_node("1.1.1").data["usage_profile"], RAMSTKEnvironmentRecord
         )
         print("\033[36m\nsucceed_retrieve_usage_profile topic was broadcast.")
 
@@ -158,7 +158,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
-            RAMSTKEnvironment,
+            RAMSTKEnvironmentRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("2").data["usage_profile"], RAMSTKMissionRecord
@@ -169,7 +169,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("2.2.2").data["usage_profile"],
-            RAMSTKEnvironment,
+            RAMSTKEnvironmentRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("3").data["usage_profile"], RAMSTKMissionRecord
@@ -180,7 +180,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("3.3.3").data["usage_profile"],
-            RAMSTKEnvironment,
+            RAMSTKEnvironmentRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
@@ -203,7 +203,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
-            RAMSTKEnvironment,
+            RAMSTKEnvironmentRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
@@ -219,7 +219,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
-            RAMSTKEnvironment,
+            RAMSTKEnvironmentRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
@@ -320,7 +320,9 @@ class TestInsertMethods:
         """should add a new environment record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 1, "phase_id": 1}
+        )
 
         assert not test_viewmodel.tree.contains("1.1.4")
 
@@ -332,6 +334,7 @@ class TestInsertMethods:
             "request_insert_environment",
             attributes={
                 "revision_id": 1,
+                "mission_id": 1,
                 "phase_id": 1,
                 "environment_id": 1,
                 "name": "Condition Name",
