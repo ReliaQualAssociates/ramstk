@@ -21,7 +21,6 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    dmHazards,
     dmOptions,
     dmPreferences,
     dmProgramStatus,
@@ -39,6 +38,7 @@ from ramstk.models import (
     RAMSTKFMEAView,
     RAMSTKFunctionTable,
     RAMSTKHardwareBoMView,
+    RAMSTKHazardTable,
     RAMSTKPoFView,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
@@ -266,7 +266,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
     _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
     _program_mgr.dic_managers["function"]["data"] = RAMSTKFunctionTable()
-    _program_mgr.dic_managers["hazards"]["data"] = dmHazards()
+    _program_mgr.dic_managers["hazards"]["data"] = RAMSTKHazardTable()
     _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()
     _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
     _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
