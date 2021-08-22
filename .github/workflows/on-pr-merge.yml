@@ -70,33 +70,6 @@ jobs:
         with:
           parallel-finished: true
 
-  build_documentation:
-    name: Build RAMSTK documentation
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
-
-      - name: Commit RAMSTK Documentation
-        run: |
-          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
-          cp -fr docs/_build/html/* gh-pages/
-          cd gh-pages
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
-
-      - name: Push RAMSTK Documentation Changes
-        if: env.do_push == 1
-        uses: ad-m/github-push-action@master
-        with:
-          branch: gh-pages
-          directory: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
   pre_release:
     name: Tag and Draft 'latest' Release
     runs-on: ubuntu-latest
@@ -116,7 +89,7 @@ jobs:
       - name: Draft 'latest' release notes
         uses: release-drafter/release-drafter@master
         with:
-          name: "latest"
+          name: "Development"
           tag: "latest"
           version: "latest"
           prerelease: true
@@ -185,6 +158,25 @@ jobs:
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update VERSION and pyproject.toml file
+        if: ${{ env.do_tag == 1 }}
+        run: |
+          echo "${{ steps.versions.outputs.new_ver }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ steps.versions.outputs.new_ver }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Cut pull request to merge updated version files
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: Bump version files
+          title: "ci: bump version files"
+          body: Bump VERSION and pyproject.toml to next version.
+          branch: bump_version_files/${{ github.head_ref }}
 
   todo_issue:
     name: Create Issues from TODOs
