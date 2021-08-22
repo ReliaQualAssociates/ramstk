@@ -15,10 +15,10 @@ jobs:
         uses: renanmav/match-label-action@v3
         with:
           allowed: >
-            EPIC!
+            admin: branch
       - name: Create Issue Branch
         id: create_issue_branch
-        if: steps.getlabel.outputs.match != 'EPIC!'
+        if: steps.getlabel.outputs.match == 'admin: branch'
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
