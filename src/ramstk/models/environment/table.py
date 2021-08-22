@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.environment.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.environment.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Environment Package Data Model."""
+"""Environment Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKEnvironment
+from ramstk.models import RAMSTKBaseTable, RAMSTKEnvironmentRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKEnvironmentTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Environment data manager."""
 
     # Define private dictionary class attributes.
@@ -42,12 +41,13 @@ class DataManager(RAMSTKBaseTable):
         # Initialize private list attributes.
         self._lst_id_columns = [
             "revision_id",
+            "mission_id",
             "phase_id",
             "environment_id",
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKEnvironment] = RAMSTKEnvironment
+        self._record: Type[RAMSTKEnvironmentRecord] = RAMSTKEnvironmentRecord
 
         # Initialize public dictionary attributes.
 
@@ -69,6 +69,7 @@ class DataManager(RAMSTKBaseTable):
         """
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
+        _new_record.mission_id = attributes["mission_id"]
         _new_record.phase_id = attributes["phase_id"]
         _new_record.environment_id = self.last_id + 1
 
