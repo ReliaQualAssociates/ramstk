@@ -185,7 +185,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     failures: relationship = relationship(
-        "RAMSTKFailureDefinition",
+        "RAMSTKFailureDefinitionRecord",
         backref="revision",
         passive_deletes=True,
     )
