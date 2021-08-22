@@ -1,0 +1,69 @@
+name: Push Tag Workflow
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  tagged-release:
+    name: Create Tagged Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+
+  create_new_milestone:
+    name: Create New Milestone
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Get previous tag
+        id: previoustag
+        run: |
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
+
+      - name: Get next semantic version
+        id: nexttag
+        uses: WyriHaximus/github-action-next-semvers@v1.1.0
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Create new release milestone
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "${{ steps.nexttag.outputs.v_minor }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_documentation:
+    name: Build RAMSTK documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
+
+      - name: Push RAMSTK Documentation Changes
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

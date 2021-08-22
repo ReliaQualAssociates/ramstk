@@ -15,7 +15,6 @@ from .ramstkenvironment import RAMSTKEnvironment
 from .ramstkfunction import RAMSTKFunction
 from .ramstkhazardanalysis import RAMSTKHazardAnalysis
 from .ramstkmechanism import RAMSTKMechanism
-from .ramstkmissionphase import RAMSTKMissionPhase
 from .ramstkmode import RAMSTKMode
 from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress

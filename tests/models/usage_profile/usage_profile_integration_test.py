@@ -15,13 +15,15 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmEnvironment, dmMissionPhase
+from ramstk.controllers import dmEnvironment
 from ramstk.models import (
+    RAMSTKMissionPhaseRecord,
+    RAMSTKMissionPhaseTable,
     RAMSTKMissionRecord,
     RAMSTKMissionTable,
     RAMSTKUsageProfileView,
 )
-from ramstk.models.programdb import RAMSTKEnvironment, RAMSTKMissionPhase
+from ramstk.models.programdb import RAMSTKEnvironment
 
 
 @pytest.fixture(scope="class")
@@ -52,7 +54,7 @@ def test_mission(test_program_dao):
 def test_phase(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmMissionPhase()
+    dut = RAMSTKMissionPhaseTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
 
@@ -129,7 +131,7 @@ class TestSelectMethods:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord)
         assert isinstance(
-            tree.get_node("1.1").data["usage_profile"], RAMSTKMissionPhase
+            tree.get_node("1.1").data["usage_profile"], RAMSTKMissionPhaseRecord
         )
         assert isinstance(
             tree.get_node("1.1.1").data["usage_profile"], RAMSTKEnvironment
@@ -152,7 +154,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1").data["usage_profile"],
-            RAMSTKMissionPhase,
+            RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
@@ -163,7 +165,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("2.2").data["usage_profile"],
-            RAMSTKMissionPhase,
+            RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("2.2.2").data["usage_profile"],
@@ -174,7 +176,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("3.3").data["usage_profile"],
-            RAMSTKMissionPhase,
+            RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("3.3.3").data["usage_profile"],
@@ -197,7 +199,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1").data["usage_profile"],
-            RAMSTKMissionPhase,
+            RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
@@ -213,7 +215,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1").data["usage_profile"],
-            RAMSTKMissionPhase,
+            RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],

@@ -21,12 +21,12 @@ jobs:
       - uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
-          parameters: '[ {"keywords": ["build", "tool"], "labels": ["type: build"], "assignees": [""]},
-                         {"keywords": ["ci"], "labels": ["type: ci"], "assignees": [""]},
-                         {"keywords": ["documentation"], "labels": ["type: docs"], "assignees": [""]},
-                         {"keywords": ["feature", "feat"], "labels": ["type: feature"], "assignees": [""]},
-                         {"keywords": ["fix", "bugfix", "hotfix"], "labels": ["type: fix"], "assignees": [""]},
-                         {"keywords": ["refactor"], "labels": ["type: refactor"], "assignees": [""]},
-                         {"keywords": ["style"], "labels": ["type: style"], "assignees": [""]},
-                         {"keywords": ["test", "tests"], "labels": ["type: test"], "assignees": [""]}]'
+          parameters: '[ {"keywords": ["type: build", "type: tool"], "labels": ["type: build"], "assignees": [""]},
+                         {"keywords": ["type: ci"], "labels": ["type: ci"], "assignees": [""]},
+                         {"keywords": ["type: docs", "type: documentation"], "labels": ["type: docs"], "assignees": [""]},
+                         {"keywords": ["type: feature", "type: feat"], "labels": ["type: feature"], "assignees": [""]},
+                         {"keywords": ["type: fix", "type: bugfix", "type: hotfix"], "labels": ["type: fix"], "assignees": [""]},
+                         {"keywords": ["type: refactor"], "labels": ["type: refactor"], "assignees": [""]},
+                         {"keywords": ["type: style"], "labels": ["type: style"], "assignees": [""]},
+                         {"keywords": ["type: test", "type: tests"], "labels": ["type: test"], "assignees": [""]},]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
