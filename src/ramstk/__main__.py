@@ -21,8 +21,6 @@ from pubsub import pub
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.controllers import (
-    dmFailureDefinition,
-    dmFunction,
     dmHazards,
     dmOptions,
     dmPreferences,
@@ -37,7 +35,9 @@ from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
     RAMSTKAllocationTable,
+    RAMSTKFailureDefinitionTable,
     RAMSTKFMEAView,
+    RAMSTKFunctionTable,
     RAMSTKHardwareBoMView,
     RAMSTKPoFView,
     RAMSTKRevisionTable,
@@ -265,13 +265,15 @@ def the_one_ring() -> None:
     _program_mgr = RAMSTKProgramManager()
     _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
     _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
-    _program_mgr.dic_managers["function"]["data"] = dmFunction()
+    _program_mgr.dic_managers["function"]["data"] = RAMSTKFunctionTable()
     _program_mgr.dic_managers["hazards"]["data"] = dmHazards()
     _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()
     _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
     _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
     _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()
-    _program_mgr.dic_managers["failure_definition"]["data"] = dmFailureDefinition()
+    _program_mgr.dic_managers["failure_definition"][
+        "data"
+    ] = RAMSTKFailureDefinitionTable()
     _program_mgr.dic_managers["fmea"]["data"] = RAMSTKFMEAView()
     _program_mgr.dic_managers["pof"]["data"] = RAMSTKPoFView()
     _program_mgr.dic_managers["preferences"]["data"] = dmPreferences()
