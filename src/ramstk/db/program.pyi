@@ -10,6 +10,7 @@ from ramstk.models import RAMSTKEnvironmentRecord as RAMSTKEnvironmentRecord
 from ramstk.models import RAMSTKFailureDefinitionRecord as RAMSTKFailureDefinitionRecord
 from ramstk.models import RAMSTKFunctionRecord as RAMSTKFunctionRecord
 from ramstk.models import RAMSTKHardwareRecord as RAMSTKHardwareRecord
+from ramstk.models import RAMSTKHazardRecord as RAMSTKHazardRecord
 from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKMissionPhaseRecord as RAMSTKMissionPhaseRecord
 from ramstk.models import RAMSTKMissionRecord as RAMSTKMissionRecord
@@ -20,7 +21,6 @@ from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
 from ramstk.models.programdb import RAMSTKControl as RAMSTKControl
-from ramstk.models.programdb import RAMSTKHazardAnalysis as RAMSTKHazardAnalysis
 from ramstk.models.programdb import RAMSTKMechanism as RAMSTKMechanism
 from ramstk.models.programdb import RAMSTKMode as RAMSTKMode
 from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad

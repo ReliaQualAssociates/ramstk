@@ -220,7 +220,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     hazard: relationship = relationship(
-        "RAMSTKHazardAnalysis",
+        "RAMSTKHazardRecord",
         backref="revision",
         passive_deletes=True,
     )

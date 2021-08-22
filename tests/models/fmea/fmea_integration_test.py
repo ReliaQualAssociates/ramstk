@@ -24,6 +24,14 @@ from ramstk.models.programdb import (
     RAMSTKMode,
 )
 
+TEST_IDS = {
+    "mode": "6",
+    "mechanism": "6.3",
+    "cause": "6.3.3",
+    "control": "6.3.3.3c",
+    "action": "6.3.3.3a",
+}
+
 
 @pytest.fixture(scope="class")
 def test_mode(test_program_dao):
@@ -210,11 +218,15 @@ class TestSelectMethods:
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node("6").data["fmea"], RAMSTKMode)
-        assert isinstance(tree.get_node("6.3").data["fmea"], RAMSTKMechanism)
-        assert isinstance(tree.get_node("6.3.3").data["fmea"], RAMSTKCause)
-        assert isinstance(tree.get_node("6.3.3.3c").data["fmea"], RAMSTKControl)
-        assert isinstance(tree.get_node("6.3.3.3a").data["fmea"], RAMSTKAction)
+        assert isinstance(tree.get_node(TEST_IDS["mode"]).data["fmea"], RAMSTKMode)
+        assert isinstance(
+            tree.get_node(TEST_IDS["mechanism"]).data["fmea"], RAMSTKMechanism
+        )
+        assert isinstance(tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCause)
+        assert isinstance(
+            tree.get_node(TEST_IDS["control"]).data["fmea"], RAMSTKControl
+        )
+        assert isinstance(tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction)
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast.")
 
     @pytest.mark.integration
@@ -261,18 +273,22 @@ class TestSelectMethods:
             }
         )
 
-        assert isinstance(test_viewmodel.tree.get_node("6").data["fmea"], RAMSTKMode)
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3").data["fmea"], RAMSTKMechanism
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"], RAMSTKMode
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3").data["fmea"], RAMSTKCause
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            RAMSTKMechanism,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3c").data["fmea"], RAMSTKControl
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCause
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3a").data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            RAMSTKControl,
+        )
+        assert isinstance(
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
@@ -320,36 +336,44 @@ class TestSelectMethods:
             }
         )
 
-        assert isinstance(test_viewmodel.tree.get_node("6").data["fmea"], RAMSTKMode)
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3").data["fmea"], RAMSTKMechanism
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"], RAMSTKMode
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3").data["fmea"], RAMSTKCause
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            RAMSTKMechanism,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3c").data["fmea"], RAMSTKControl
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCause
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3a").data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            RAMSTKControl,
+        )
+        assert isinstance(
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
 
         test_viewmodel.on_select_all()
 
-        assert isinstance(test_viewmodel.tree.get_node("6").data["fmea"], RAMSTKMode)
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3").data["fmea"], RAMSTKMechanism
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"], RAMSTKMode
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3").data["fmea"], RAMSTKCause
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            RAMSTKMechanism,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3c").data["fmea"], RAMSTKControl
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCause
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("6.3.3.3a").data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            RAMSTKControl,
+        )
+        assert isinstance(
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
@@ -533,35 +557,35 @@ class TestDeleteMethods:
 
     def on_succeed_delete_action(self, tree):
         assert isinstance(tree, Tree)
-        assert not tree.contains("6.3.3.3a")
-        assert tree.contains("6.3.3.3c")
-        assert tree.contains("6.3.3")
-        assert tree.contains("6.3")
-        assert tree.contains("6")
+        assert not tree.contains(TEST_IDS["action"])
+        assert tree.contains(TEST_IDS["control"])
+        assert tree.contains(TEST_IDS["cause"])
+        assert tree.contains(TEST_IDS["mechanism"])
+        assert tree.contains(TEST_IDS["mode"])
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast on action delete.")
 
     def on_succeed_delete_control(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("6")
-        assert tree.contains("6.3")
-        assert tree.contains("6.3.3")
+        assert tree.contains(TEST_IDS["mode"])
+        assert tree.contains(TEST_IDS["mechanism"])
+        assert tree.contains(TEST_IDS["cause"])
         assert not tree.contains("6.3.3.4c")
         assert tree.contains("6.3.3.4a")
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast on control delete.")
 
     def on_succeed_delete_cause(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("6")
-        assert tree.contains("6.3")
-        assert not tree.contains("6.3.3")
+        assert tree.contains(TEST_IDS["mode"])
+        assert tree.contains(TEST_IDS["mechanism"])
+        assert not tree.contains(TEST_IDS["cause"])
         assert not tree.contains("6.3.3.4c")
         assert not tree.contains("6.3.3.4a")
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast on cause delete.")
 
     def on_succeed_delete_mechanism(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.contains("6")
-        assert not tree.contains("6.3")
+        assert tree.contains(TEST_IDS["mode"])
+        assert not tree.contains(TEST_IDS["mechanism"])
         print(
             "\033[36m\nsucceed_retrieve_fmea topic was broadcast on mechanism delete."
         )
@@ -570,27 +594,27 @@ class TestDeleteMethods:
         assert isinstance(tree, Tree)
         assert tree.contains("4")
         assert tree.contains("5")
-        assert not tree.contains("6")
+        assert not tree.contains(TEST_IDS["mode"])
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast on mode delete.")
 
     @pytest.mark.integration
     def test_do_delete_action(self, test_viewmodel):
         """should remove the deleted action record from the records tree."""
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert test_viewmodel.tree.contains("6.3.3")
-        assert test_viewmodel.tree.contains("6.3.3.3c")
-        assert test_viewmodel.tree.contains("6.3.3.4a")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert test_viewmodel.tree.contains(TEST_IDS["cause"])
+        assert test_viewmodel.tree.contains(TEST_IDS["control"])
+        assert test_viewmodel.tree.contains(TEST_IDS["action"])
 
         pub.subscribe(self.on_succeed_delete_action, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_action", node_id=3)
 
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert test_viewmodel.tree.contains("6.3.3")
-        assert test_viewmodel.tree.contains("6.3.3.3c")
-        assert not test_viewmodel.tree.contains("6.3.3.3a")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert test_viewmodel.tree.contains(TEST_IDS["cause"])
+        assert test_viewmodel.tree.contains(TEST_IDS["control"])
+        assert not test_viewmodel.tree.contains(TEST_IDS["action"])
         assert test_viewmodel.tree.contains("6.3.3.4a")
 
         pub.unsubscribe(self.on_succeed_delete_action, "succeed_retrieve_fmea")
@@ -598,9 +622,9 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_control(self, test_viewmodel):
         """should remove the deleted control record from the records tree."""
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert test_viewmodel.tree.contains("6.3.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert test_viewmodel.tree.contains(TEST_IDS["cause"])
         assert test_viewmodel.tree.contains("6.3.3.4c")
         assert test_viewmodel.tree.contains("6.3.3.4a")
 
@@ -608,9 +632,9 @@ class TestDeleteMethods:
 
         pub.sendMessage("request_delete_control", node_id=4)
 
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert test_viewmodel.tree.contains("6.3.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert test_viewmodel.tree.contains(TEST_IDS["cause"])
         assert not test_viewmodel.tree.contains("6.3.3.4c")
         assert test_viewmodel.tree.contains("6.3.3.4a")
 
@@ -619,9 +643,9 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_cause(self, test_viewmodel):
         """should remove the deleted cause record from the records tree."""
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert test_viewmodel.tree.contains("6.3.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert test_viewmodel.tree.contains(TEST_IDS["cause"])
         assert not test_viewmodel.tree.contains("6.3.3.4c")
         assert test_viewmodel.tree.contains("6.3.3.4a")
 
@@ -629,9 +653,9 @@ class TestDeleteMethods:
 
         pub.sendMessage("request_delete_cause", node_id=3)
 
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
-        assert not test_viewmodel.tree.contains("6.3.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
+        assert not test_viewmodel.tree.contains(TEST_IDS["cause"])
         assert not test_viewmodel.tree.contains("6.3.3.4c")
         assert not test_viewmodel.tree.contains("6.3.3.4a")
 
@@ -640,27 +664,27 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_mechanism(self, test_viewmodel):
         """should remove the deleted mechanism record from the records tree."""
-        assert test_viewmodel.tree.contains("6")
-        assert test_viewmodel.tree.contains("6.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert test_viewmodel.tree.contains(TEST_IDS["mechanism"])
 
         pub.subscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_mechanism", node_id=3)
 
-        assert test_viewmodel.tree.contains("6")
-        assert not test_viewmodel.tree.contains("6.3")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
+        assert not test_viewmodel.tree.contains(TEST_IDS["mechanism"])
 
         pub.unsubscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
     def test_do_delete_mode(self, test_viewmodel):
         """should remove the deleted mode record from the records tree."""
-        assert test_viewmodel.tree.contains("6")
+        assert test_viewmodel.tree.contains(TEST_IDS["mode"])
 
         pub.subscribe(self.on_succeed_delete_mode, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_mode", node_id=6)
 
-        assert not test_viewmodel.tree.contains("6")
+        assert not test_viewmodel.tree.contains(TEST_IDS["mode"])
 
         pub.unsubscribe(self.on_succeed_delete_mode, "succeed_retrieve_fmea")

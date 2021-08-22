@@ -5,7 +5,6 @@ from typing import Tuple
 from ramstk import RAMSTKProgramManager as RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
-from ramstk.controllers import dmHazards as dmHazards
 from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
@@ -22,6 +21,7 @@ from ramstk.models import RAMSTKFailureDefinitionTable as RAMSTKFailureDefinitio
 from ramstk.models import RAMSTKFMEAView as RAMSTKFMEAView
 from ramstk.models import RAMSTKFunctionTable as RAMSTKFunctionTable
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
+from ramstk.models import RAMSTKHazardTable as RAMSTKHazardTable
 from ramstk.models import RAMSTKPoFView as RAMSTKPoFView
 from ramstk.models import RAMSTKRevisionTable as RAMSTKRevisionTable
 from ramstk.models import RAMSTKSimilarItemTable as RAMSTKSimilarItemTable
