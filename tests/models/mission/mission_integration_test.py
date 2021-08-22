@@ -179,7 +179,7 @@ class TestUpdateMethods:
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            "do_update: Attempted to save non-existent mission with " "mission ID 10."
+            "do_update: Attempted to save non-existent mission with mission ID 10."
         )
         print("\033[35m\nfail_update_mission topic was broadcast")
 
