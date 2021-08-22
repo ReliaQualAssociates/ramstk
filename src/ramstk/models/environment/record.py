@@ -1,12 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.environment.record.py is part of The RAMSTK
-#       Project
+#       ramstk.models.environment.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKEnvironment Table Module."""
+"""Environment Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
@@ -17,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKEnvironment(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_environment table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mission_phase.

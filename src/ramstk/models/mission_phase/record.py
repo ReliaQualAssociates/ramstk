@@ -67,7 +67,7 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="phase",
     )
     environment: relationship = relationship(
-        "RAMSTKEnvironment",
+        "RAMSTKEnvironmentRecord",
         back_populates="phase",
         cascade="all,delete",
     )
