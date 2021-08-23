@@ -39,6 +39,8 @@ from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
 from .reliability.record import RAMSTKReliabilityRecord
 from .reliability.table import RAMSTKReliabilityTable
+from .requirement.record import RAMSTKRequirementRecord
+from .requirement.table import RAMSTKRequirementTable
 from .revision.record import RAMSTKRevisionRecord
 from .revision.table import RAMSTKRevisionTable
 from .similar_item.record import RAMSTKSimilarItemRecord

@@ -16,6 +16,7 @@ from ramstk.models import RAMSTKMissionPhaseRecord as RAMSTKMissionPhaseRecord
 from ramstk.models import RAMSTKMissionRecord as RAMSTKMissionRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
 from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
+from ramstk.models import RAMSTKRequirementRecord as RAMSTKRequirementRecord
 from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
 from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
@@ -27,7 +28,6 @@ from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad
 from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
 from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
-from ramstk.models.programdb import RAMSTKRequirement as RAMSTKRequirement
 from ramstk.models.programdb import RAMSTKStakeholder as RAMSTKStakeholder
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
 from ramstk.models.programdb import RAMSTKValidation as RAMSTKValidation

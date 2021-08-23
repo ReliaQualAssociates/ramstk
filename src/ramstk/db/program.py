@@ -3,7 +3,7 @@
 #       ramstk.db.program.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Program Database Module."""
 
 # Third Party Imports
@@ -25,6 +25,7 @@ from ramstk.models import (
     RAMSTKMissionRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
+    RAMSTKRequirementRecord,
     RAMSTKRevisionRecord,
     RAMSTKSimilarItemRecord,
 )
@@ -38,7 +39,6 @@ from ramstk.models.programdb import (
     RAMSTKOpStress,
     RAMSTKProgramInfo,
     RAMSTKProgramStatus,
-    RAMSTKRequirement,
     RAMSTKStakeholder,
     RAMSTKTestMethod,
     RAMSTKValidation,
@@ -65,7 +65,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKFunctionRecord.__table__.create(bind=engine)
     RAMSTKHazardRecord.__table__.create(bind=engine)
 
-    RAMSTKRequirement.__table__.create(bind=engine)
+    RAMSTKRequirementRecord.__table__.create(bind=engine)
     RAMSTKStakeholder.__table__.create(bind=engine)
 
     RAMSTKHardwareRecord.__table__.create(bind=engine)

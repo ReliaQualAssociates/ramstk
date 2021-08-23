@@ -36,9 +36,10 @@ from ramstk.models import (
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
+    RAMSTKRequirementRecord,
     RAMSTKSimilarItemRecord,
 )
-from ramstk.models.programdb import RAMSTKRequirement, RAMSTKValidation
+from ramstk.models.programdb import RAMSTKValidation
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:
@@ -800,15 +801,14 @@ class Import:
 
         return _reliability
 
-    def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirement:
+    def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirementRecord:
         """Insert a new Requirement entity to the RAMSTK db.
 
-        :param row: the row from the pandas DataFrame containing the input
-            data.
+        :param row: the row from the pandas DataFrame containing the input data.
         :return: _entity
         :rtype: :class:`ramstk.models.programdb.RAMSTKRequirement`
         """
-        _requirement = RAMSTKRequirement()
+        _requirement = RAMSTKRequirementRecord()
         _map = self._dic_field_map["Requirement"]
 
         _requirement.revision_id = _get_input_value(_map, row, "Revision ID", 1)
