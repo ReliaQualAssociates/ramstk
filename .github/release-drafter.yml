@@ -1,9 +1,5 @@
 name-template: '$RESOLVED_VERSION'
 tag-template: 'v$RESOLVED_VERSION'
-template: |
-  ## What Is Changing
-
-  $CHANGES
 categories:
   - title: 'Bug Fixes'
     labels:
@@ -17,6 +13,7 @@ categories:
     labels:
       - 'type: build'
       - 'type: ci'
+      - 'type: refactor'
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 change-title-escapes: '\<*_&'
 version-resolver:
@@ -34,7 +31,11 @@ exclude-labels:
   - 'type: chore'
   - 'dependencies'
   - 'type: docs'
-  - 'duplicate'
-  - 'invalid'
-  - 'wontfix'
+  - 'endgame: duplicate'
+  - 'endgame: invalid'
+  - 'endgame: wontfix'
   - 'type: test'
+template: |
+  ## What's Changing
+
+  $CHANGES

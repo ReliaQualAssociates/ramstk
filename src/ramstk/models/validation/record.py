@@ -1,12 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKValidation.py is part of The RAMSTK
-#       Project
+#       ramstk.models.validation.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKValidation Table."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Validation Record Model."""
 
 # Standard Library Imports
 from datetime import date, timedelta
@@ -14,7 +13,6 @@ from datetime import date, timedelta
 # Third Party Imports
 # noinspection PyPackageRequirements
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.analyses.statistics import do_calculate_beta_bounds
@@ -22,7 +20,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKValidation(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_validation in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

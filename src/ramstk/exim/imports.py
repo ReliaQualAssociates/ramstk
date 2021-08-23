@@ -3,7 +3,7 @@
 #       ramstk.exim.imports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK Import module."""
 
 # Standard Library Imports
@@ -38,8 +38,8 @@ from ramstk.models import (
     RAMSTKReliabilityRecord,
     RAMSTKRequirementRecord,
     RAMSTKSimilarItemRecord,
+    RAMSTKValidationRecord,
 )
-from ramstk.models.programdb import RAMSTKValidation
 
 
 def _do_replace_nan(value: Any, default: Any) -> Any:
@@ -852,15 +852,14 @@ class Import:
 
         return _similar_item
 
-    def _do_insert_validation(self, row: pd.Series) -> RAMSTKValidation:
+    def _do_insert_validation(self, row: pd.Series) -> RAMSTKValidationRecord:
         """Insert a new Validation entity to the RAMSTK db.
 
-        :param row: the row from the pandas DataFrame containing the input
-            data.
+        :param row: the row from the pandas DataFrame containing the input data.
         :return: _entity
         :rtype: :class:`ramstk.dao.programdb.RAMSTKValidation.RAMSTKValidation`
         """
-        _validation = RAMSTKValidation()
+        _validation = RAMSTKValidationRecord()
         _map = self._dic_field_map["Validation"]
 
         _validation.revision_id = _get_input_value(_map, row, "Revision ID", 1)

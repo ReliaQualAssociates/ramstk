@@ -18,4 +18,3 @@ from .ramstkopstress import RAMSTKOpStress
 from .ramstkprograminfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
 from .ramstktestmethod import RAMSTKTestMethod
-from .ramstkvalidation import RAMSTKValidation

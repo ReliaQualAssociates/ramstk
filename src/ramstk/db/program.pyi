@@ -19,6 +19,8 @@ from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
 from ramstk.models import RAMSTKRequirementRecord as RAMSTKRequirementRecord
 from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
 from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
+from ramstk.models import RAMSTKStakeholderRecord as RAMSTKStakeholderRecord
+from ramstk.models import RAMSTKValidationRecord as RAMSTKValidationRecord
 from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKCause as RAMSTKCause
 from ramstk.models.programdb import RAMSTKControl as RAMSTKControl
@@ -28,9 +30,7 @@ from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad
 from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
 from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
-from ramstk.models.programdb import RAMSTKStakeholder as RAMSTKStakeholder
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
-from ramstk.models.programdb import RAMSTKValidation as RAMSTKValidation
 
 def do_make_programdb_tables(engine: Engine) -> None: ...
 def do_create_program_db(engine: Engine, session: scoped_session) -> None: ...
