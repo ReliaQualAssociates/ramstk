@@ -90,23 +90,27 @@ class TestUpdateMethods:
             "attributes for Preferences 1 was the wrong "
             "type."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print("\033[35m\nfail_update_preferences topic was broadcast wrong data type.")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print("\033[35m\nfail_update_preferences topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            "do_update: Attempted to save non-existent " "Program ID skullduggery."
+            "do_update: Attempted to save non-existent Program ID skullduggery."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print(
+            "\033[35m\nfail_update_preferences topic was broadcast on non-existent "
+            "ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for " "Preference 1."
+        assert error_message == ("do_update: No data package found for Preference 1.")
+        print(
+            "\033[35m\nfail_update_preferences topic was broadcast on no data "
+            "package."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
