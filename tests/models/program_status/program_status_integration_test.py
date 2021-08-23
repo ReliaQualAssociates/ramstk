@@ -218,7 +218,7 @@ class TestUpdateMethods:
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
-            "do_update: No data package found for " "program status ID 1."
+            "do_update: No data package found for program status ID 1."
         )
         print(
             "\033[35m\nfail_update_program_status topic was broadcast on no data "
@@ -318,7 +318,7 @@ class TestGetterSetter:
         assert attributes["cost_remaining"] == 0.0
         assert attributes["date_status"] == date.today() - timedelta(days=30)
         assert attributes["time_remaining"] == 0.0
-        print("\033[36m\nsucceed_get_program_status_attributes topic was " "broadcast.")
+        print("\033[36m\nsucceed_get_program_status_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
