@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.validation.validation_integration_test.py is part of
+#       tests.models.validation.validation_integration_test.py is part of
 #       The RAMSTK Project
 #
 # All rights reserved.
@@ -19,24 +19,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmValidation
-from ramstk.models.programdb import RAMSTKValidation
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "validation_id": 1,
-        "name": "New Validation Task",
-    }
+from ramstk.models import RAMSTKValidationRecord, RAMSTKValidationTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmValidation()
+    dut = RAMSTKValidationTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
 
@@ -60,33 +50,33 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
+        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidationRecord)
         print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(4).data["validation"], RAMSTKValidation)
+        assert isinstance(tree.get_node(4).data["validation"], RAMSTKValidationRecord)
         assert tree.get_node(4).data["validation"].validation_id == 4
         assert tree.get_node(4).data["validation"].name == "New Validation Task"
         print("\033[36m\nsucceed_insert_validation topic was broadcast.")
@@ -109,7 +99,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_datamanager):
+    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
         """should not add a record when passed a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
@@ -119,7 +109,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
@@ -140,13 +130,13 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
-    def test_do_delete_validation(self, test_datamanager):
+    def test_do_delete_validation(self, test_tablemodel):
         """should remove record from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_validation")
 
-        pub.sendMessage("request_delete_validation", node_id=test_datamanager.last_id)
+        pub.sendMessage("request_delete_validation", node_id=test_tablemodel.last_id)
 
-        assert test_datamanager.last_id == 2
+        assert test_tablemodel.last_id == 2
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_validation")
 
@@ -160,17 +150,17 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_validation")
 
     @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_datamanager):
+    def test_do_delete_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_validation")
 
-        test_datamanager.tree.get_node(2).data.pop("validation")
+        test_tablemodel.tree.get_node(2).data.pop("validation")
         pub.sendMessage("request_delete_validation", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_validation")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -215,11 +205,11 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_validation")
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.name = "Test Validation"
         _validation.time_maximum = 10.5
         pub.sendMessage("request_update_validation", node_id=1, table="validation")
@@ -227,41 +217,41 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_validation")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.description = "Big test validation #1"
-        _validation = test_datamanager.do_select(2)
+        _validation = test_tablemodel.do_select(2)
         _validation.description = "Big test validation #2"
 
         pub.sendMessage("request_update_all_validations")
 
-        assert test_datamanager.do_select(1).description == "Big test validation #1"
-        assert test_datamanager.do_select(2).description == "Big test validation #2"
+        assert test_tablemodel.do_select(1).description == "Big test validation #1"
+        assert test_tablemodel.do_select(2).description == "Big test validation #2"
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_validation")
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.time_mean = {1: 2}
         pub.sendMessage("request_update_validation", node_id=1, table="validation")
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_validation")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when attempting to update the root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_validation"
         )
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.time_mean = {1: 2}
         pub.sendMessage("request_update_validation", node_id=0, table="validation")
 
@@ -279,17 +269,17 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_validation")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_validation")
 
-        test_datamanager.tree.get_node(1).data.pop("validation")
+        test_tablemodel.tree.get_node(1).data.pop("validation")
         pub.sendMessage("request_update_validation", node_id=1, table="validation")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_validation")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -302,7 +292,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidation)
+        assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidationRecord)
         print("\033[36m\nsucceed_get_validation_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
@@ -352,7 +342,7 @@ class TestGetterSetter:
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_validations_tree")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
@@ -395,14 +385,14 @@ class TestAnalysisMethods:
         print("\033[36m\nsucceed_calculate_verification_plan topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_calculate_all_tasks(self, test_datamanager):
+    def test_do_calculate_all_tasks(self, test_tablemodel):
         """should calculate all the validation tasks time and cost."""
         pub.subscribe(
             self.on_succeed_calculate_all_tasks,
             "succeed_calculate_all_validation_tasks",
         )
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.time_minimum = 10.0
         _validation.time_average = 20.0
         _validation.time_maximum = 40.0
@@ -410,7 +400,7 @@ class TestAnalysisMethods:
         _validation.cost_average = 2200.0
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
-        _validation = test_datamanager.do_select(2)
+        _validation = test_tablemodel.do_select(2)
         _validation.time_minimum = 30.0
         _validation.time_average = 60.0
         _validation.time_maximum = 80.0
@@ -421,52 +411,50 @@ class TestAnalysisMethods:
 
         pub.sendMessage("request_calculate_validation_tasks")
 
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].time_ll == pytest.approx(11.86684674)
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].time_mean == pytest.approx(21.66666667)
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].time_ul == pytest.approx(31.46648659)
-        assert (
-            test_datamanager.tree.get_node(1).data["validation"].time_variance == 25.0
-        )
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data["validation"].time_variance == 25.0
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].cost_ll == pytest.approx(1659.34924016)
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].cost_mean == pytest.approx(2525.0)
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].cost_ul == pytest.approx(3390.65075984)
-        assert test_datamanager.tree.get_node(1).data[
+        assert test_tablemodel.tree.get_node(1).data[
             "validation"
         ].cost_variance == pytest.approx(195069.44444444)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].time_ll == pytest.approx(42.00030013)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].time_mean == pytest.approx(58.33333333)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].time_ul == pytest.approx(74.66636654)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].time_variance == pytest.approx(69.44444444)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].cost_ll == pytest.approx(659.34924016)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].cost_mean == pytest.approx(1525.0)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].cost_ul == pytest.approx(2390.65075984)
-        assert test_datamanager.tree.get_node(2).data[
+        assert test_tablemodel.tree.get_node(2).data[
             "validation"
         ].cost_variance == pytest.approx(195069.44444444)
 
@@ -476,13 +464,13 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_verification_plan(self, test_datamanager):
+    def test_do_calculate_verification_plan(self, test_tablemodel):
         """should calculate the planned validation effort time and cost."""
         pub.subscribe(
             self.on_succeed_calculate_plan, "succeed_calculate_verification_plan"
         )
 
-        _validation = test_datamanager.do_select(1)
+        _validation = test_tablemodel.do_select(1)
         _validation.acceptable_minimum = 55.0
         _validation.acceptable_mean = 70.0
         _validation.acceptable_maximum = 100.0
@@ -496,7 +484,7 @@ class TestAnalysisMethods:
         _validation.confidence = 95.0
         _validation.status = 0.5
         _validation.task_type = 5
-        _validation = test_datamanager.do_select(2)
+        _validation = test_tablemodel.do_select(2)
         _validation.acceptable_minimum = 125.0
         _validation.acceptable_mean = 160.0
         _validation.acceptable_maximum = 190.0
@@ -515,3 +503,36 @@ class TestAnalysisMethods:
         pub.unsubscribe(
             self.on_succeed_calculate_plan, "succeed_calculate_verification_plan"
         )
+
+    @pytest.mark.integration
+    def test_do_calculate_verification_plan_with_mean_time(self, test_tablemodel):
+        """should calculate the planned validation effort time and cost."""
+        _validation = test_tablemodel.do_select(1)
+        _validation.acceptable_minimum = 55.0
+        _validation.acceptable_mean = 70.0
+        _validation.acceptable_maximum = 100.0
+        _validation.time_minimum = 10.0
+        _validation.time_average = 20.0
+        _validation.time_maximum = 40.0
+        _validation.time_mean = 10.0
+        _validation.cost_minimum = 1850.0
+        _validation.cost_average = 2200.0
+        _validation.cost_maximum = 4500.0
+        _validation.confidence = 95.0
+        _validation.status = 0.5
+        _validation.task_type = 5
+        _validation = test_tablemodel.do_select(2)
+        _validation.acceptable_minimum = 125.0
+        _validation.acceptable_mean = 160.0
+        _validation.acceptable_maximum = 190.0
+        _validation.time_minimum = 15.0
+        _validation.time_average = 32.0
+        _validation.time_maximum = 60.0
+        _validation.time_mean = 0.0
+        _validation.cost_minimum = 750.0
+        _validation.cost_average = 1200.0
+        _validation.cost_maximum = 2500.0
+        _validation.confidence = 95.0
+        _validation.status = 0.2
+
+        pub.sendMessage("request_calculate_plan")
