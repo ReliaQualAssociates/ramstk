@@ -90,7 +90,7 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
                 pub.sendMessage(
                     "fail_create_requirement_code",
                     error_message=(
-                        "{1}: No data package found for " "requirement ID {0:s}."
+                        "{1}: No data package found for requirement ID {0:s}."
                     ).format(str(node_id), _method_name),
                 )
 

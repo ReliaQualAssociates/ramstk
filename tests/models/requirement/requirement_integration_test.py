@@ -217,24 +217,33 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for requirement "
             "ID 1 was the wrong type."
         )
-        print("\033[35m\nfail_update_requirement topic was broadcast")
+        print(
+            "\033[35m\nfail_update_requirement topic was broadcast on wrong data "
+            "type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_requirement topic was broadcast")
+        print("\033[35m\nfail_update_requirement topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent requirement with "
             "requirement ID 100."
         )
-        print("\033[35m\nfail_update_requirement topic was broadcast")
+        print(
+            "\033[35m\nfail_update_requirement topic was broadcast on non-existent "
+            "ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
             "do_update: No data package found for requirement ID 1."
         )
-        print("\033[35m\nfail_update_requirement topic was broadcast")
+        print(
+            "\033[35m\nfail_update_requirement topic was broadcast on no data "
+            "package."
+        )
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
@@ -332,25 +341,31 @@ class TestGetterSetter:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
         assert isinstance(tree.get_node(1).data["requirement"], RAMSTKRequirementRecord)
-        print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
+        print("\033[36m\nsucceed_get_requirement_tree topic was broadcast on get tree.")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(1).data["requirement"].requirement_code == "REQ-0001"
-        print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
+        print(
+            "\033[36m\nsucceed_get_requirement_tree topic was broadcast on set "
+            "attributes."
+        )
 
     def on_succeed_set_attributes_default(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(1).data["requirement"].validated_date == date.today()
-        print("\033[36m\nsucceed_get_requirement_tree topic was broadcast")
+        print(
+            "\033[36m\nsucceed_get_requirement_tree topic was broadcast on set "
+            "default attributes."
+        )
 
     def on_succeed_create_code(self, requirement_code):
         assert requirement_code == "DOYLE-0001"
-        print("\033[36m\nsucceed_create_requirement_code topic was " "broadcast")
+        print("\033[36m\nsucceed_create_requirement_code topic was broadcast")
 
     def on_fail_create_code_non_existent_id(self, error_message):
         assert error_message == (
-            "do_create_code: No data package found for " "requirement ID 10."
+            "do_create_code: No data package found for requirement ID 10."
         )
         print("\033[36m\nfail_create_requirement_code topic was broadcast")
 
