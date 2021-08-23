@@ -79,6 +79,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Push 'latest' tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -f -a -m"push latest tag" latest
+          git push -f --tags
+          
       - name: Draft 'latest' release notes
         uses: release-drafter/release-drafter@master
         with:
