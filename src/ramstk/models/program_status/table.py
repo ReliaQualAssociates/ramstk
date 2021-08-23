@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.program_status.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.program_status.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Program Status Package Data Model."""
+"""Program Status Table Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -15,11 +15,10 @@ import pandas as pd
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKProgramStatus
+from ramstk.models import RAMSTKBaseTable, RAMSTKProgramStatusRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKProgramStatusTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Program Status data manager."""
 
     # Define private dictionary class attributes.
@@ -52,7 +51,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKProgramStatus] = RAMSTKProgramStatus
+        self._record: Type[RAMSTKProgramStatusRecord] = RAMSTKProgramStatusRecord
 
         # Initialize public dictionary attributes.
 

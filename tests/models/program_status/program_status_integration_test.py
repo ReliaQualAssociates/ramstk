@@ -19,23 +19,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmProgramStatus
-from ramstk.models.programdb import RAMSTKProgramStatus
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "status_id": 1,
-    }
+from ramstk.models import RAMSTKProgramStatusRecord, RAMSTKProgramStatusTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmProgramStatus()
+    dut = RAMSTKProgramStatusTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1})
 
@@ -56,33 +47,37 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["program_status"], RAMSTKProgramStatus)
+        assert isinstance(
+            tree.get_node(1).data["program_status"], RAMSTKProgramStatusRecord
+        )
         print("\033[36m\nsucceed_retrieve_program_status topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 4
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(4).data["program_status"], RAMSTKProgramStatus)
+        assert isinstance(
+            tree.get_node(4).data["program_status"], RAMSTKProgramStatusRecord
+        )
         assert tree.get_node(4).data["program_status"].status_id == 4
         assert tree.get_node(4).data["program_status"].date_status == date.today()
         print("\033[36m\nsucceed_insert_program_status topic was broadcast.")
@@ -100,7 +95,7 @@ class TestInsertMethods:
         )
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
 
@@ -109,7 +104,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
 
     @pytest.mark.integration
-    def test_do_insert_duplicate_date(self, test_attributes, test_datamanager):
+    def test_do_insert_duplicate_date(self, test_attributes, test_tablemodel):
         """should not add a record if date is being duplicated."""
         pub.subscribe(self.on_fail_insert_duplicate_date, "fail_insert_program_status")
 
@@ -121,7 +116,7 @@ class TestInsertMethods:
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
@@ -148,22 +143,22 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_tablemodel):
         """should remove record from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_program_status")
 
-        assert test_datamanager.last_id == 3
+        assert test_tablemodel.last_id == 3
 
         pub.sendMessage(
-            "request_delete_program_status", node_id=test_datamanager.last_id
+            "request_delete_program_status", node_id=test_tablemodel.last_id
         )
 
-        assert test_datamanager.last_id == 2
+        assert test_tablemodel.last_id == 2
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_program_status")
 
     @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_datamanager):
+    def test_do_delete_non_existent_id(self, test_tablemodel):
         """should send the fail message when passed a non-existent record ID."""
         pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_program_status")
 
@@ -174,17 +169,17 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_not_in_tree(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
 
-        test_datamanager.tree.get_node(1).data.pop("program_status")
+        test_tablemodel.tree.get_node(1).data.pop("program_status")
         pub.sendMessage("request_delete_program_status", node_id=1)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -223,7 +218,7 @@ class TestUpdateMethods:
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == (
-            "do_update: No data package found for " "program status ID 1."
+            "do_update: No data package found for program status ID 1."
         )
         print(
             "\033[35m\nfail_update_program_status topic was broadcast on no data "
@@ -231,14 +226,14 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_program_status")
 
-        test_datamanager.tree.get_node(1).data[
+        test_tablemodel.tree.get_node(1).data[
             "program_status"
         ].cost_remaining = 47832.00
-        test_datamanager.tree.get_node(1).data["program_status"].time_remaining = 528.3
+        test_tablemodel.tree.get_node(1).data["program_status"].time_remaining = 528.3
 
         pub.sendMessage(
             "request_update_program_status", node_id=1, table="program_status"
@@ -247,7 +242,7 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_program_status")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
@@ -256,11 +251,11 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_program_status")
 
-        _status = test_datamanager.do_select(1)
+        _status = test_tablemodel.do_select(1)
         _status.time_remaining = {1: 2}
 
         pub.sendMessage(
@@ -272,13 +267,13 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when attempting to update the root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_program_status"
         )
 
-        _status = test_datamanager.do_select(1)
+        _status = test_tablemodel.do_select(1)
         _status.time_remaining = {1: 2}
 
         pub.sendMessage(
@@ -290,30 +285,30 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_datamanager):
+    def test_do_update_non_existent_id(self, test_tablemodel):
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_program_status")
 
-        test_datamanager.do_update(100, table="program_status")
+        test_tablemodel.do_update(100, table="program_status")
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_program_status"
         )
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_program_status")
 
-        test_datamanager.tree.get_node(1).data.pop("program_status")
-        test_datamanager.do_update(1, table="program_status")
+        test_tablemodel.tree.get_node(1).data.pop("program_status")
+        test_tablemodel.do_update(1, table="program_status")
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_program_status"
         )
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -323,11 +318,13 @@ class TestGetterSetter:
         assert attributes["cost_remaining"] == 0.0
         assert attributes["date_status"] == date.today() - timedelta(days=30)
         assert attributes["time_remaining"] == 0.0
-        print("\033[36m\nsucceed_get_program_status_attributes topic was " "broadcast.")
+        print("\033[36m\nsucceed_get_program_status_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["program_status"], RAMSTKProgramStatus)
+        assert isinstance(
+            tree.get_node(1).data["program_status"], RAMSTKProgramStatusRecord
+        )
         print("\033[36m\nsucceed_get_program_status_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
@@ -342,7 +339,7 @@ class TestGetterSetter:
         print("\033[36m\nsucceed_get_actual_status topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
+    def test_do_get_attributes(self, test_tablemodel):
         """should return the attributes dict."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_program_status_attributes"
@@ -357,7 +354,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_datamanager):
+    def test_on_get_data_manager_tree(self, test_tablemodel):
         """should return the records tree."""
         pub.subscribe(
             self.on_succeed_get_data_manager_tree, "succeed_get_program_status_tree"
@@ -370,7 +367,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self, test_datamanager):
+    def test_do_set_attributes(self, test_tablemodel):
         """should set the value of the attribute requested."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_program_status_tree")
 
@@ -385,26 +382,26 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_get_actual_status(self, test_attributes, test_datamanager):
+    def test_do_get_actual_status(self, test_attributes, test_tablemodel):
         """should update and return program status."""
         pub.subscribe(self.on_succeed_get_actual_status, "succeed_get_actual_status")
 
-        test_datamanager._do_set_attributes(
+        test_tablemodel._do_set_attributes(
             cost_remaining=14608.45, time_remaining=469.00
         )
 
-        _node_id = test_datamanager._dic_status[date.today()]
+        _node_id = test_tablemodel._dic_status[date.today()]
 
         pub.sendMessage("request_get_actual_status")
 
         assert (
-            test_datamanager.tree.get_node(_node_id)
+            test_tablemodel.tree.get_node(_node_id)
             .data["program_status"]
             .cost_remaining
             == 14608.45
         )
         assert (
-            test_datamanager.tree.get_node(_node_id)
+            test_tablemodel.tree.get_node(_node_id)
             .data["program_status"]
             .time_remaining
             == 469.00

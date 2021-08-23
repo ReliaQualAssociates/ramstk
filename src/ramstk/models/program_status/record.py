@@ -1,26 +1,24 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKProgramStatus.py is part of The RAMSTK
-#       Project
+#       ramstk.models.program_status.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKProgramStatus Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Program Status Record Model."""
 
 # Standard Library Imports
 from datetime import date
 
 # Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKProgramStatus(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class represent table ramstk_program_status in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

@@ -15,6 +15,7 @@ from ramstk.models import RAMSTKMilHdbk217FRecord as RAMSTKMilHdbk217FRecord
 from ramstk.models import RAMSTKMissionPhaseRecord as RAMSTKMissionPhaseRecord
 from ramstk.models import RAMSTKMissionRecord as RAMSTKMissionRecord
 from ramstk.models import RAMSTKNSWCRecord as RAMSTKNSWCRecord
+from ramstk.models import RAMSTKProgramStatusRecord as RAMSTKProgramStatusRecord
 from ramstk.models import RAMSTKReliabilityRecord as RAMSTKReliabilityRecord
 from ramstk.models import RAMSTKRequirementRecord as RAMSTKRequirementRecord
 from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
@@ -29,7 +30,6 @@ from ramstk.models.programdb import RAMSTKMode as RAMSTKMode
 from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad
 from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKProgramInfo as RAMSTKProgramInfo
-from ramstk.models.programdb import RAMSTKProgramStatus as RAMSTKProgramStatus
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
 
 def do_make_programdb_tables(engine: Engine) -> None: ...

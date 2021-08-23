@@ -17,5 +17,4 @@ from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions
 from .preferences.datamanager import DataManager as dmPreferences
-from .program_status.datamanager import DataManager as dmProgramStatus
 from .test_method.datamanager import DataManager as dmTestMethod

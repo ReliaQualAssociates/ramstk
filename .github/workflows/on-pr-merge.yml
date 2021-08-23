@@ -163,10 +163,10 @@ jobs:
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: Bump version files
-          title: "ci: bump version files"
-          body: Bump VERSION and pyproject.toml to next version.
-          branch: bump_version_files/${{ github.head_ref }}
+          commit-message: Release v${{ steps.versions.outputs.new_ver }}
+          title: "ci: bump version files for release"
+          body: Bump VERSION and pyproject.toml to next version; set for release.
+          branch: release/${{ github.head_ref }}
 
   todo_issue:
     name: Create Issues from TODOs
