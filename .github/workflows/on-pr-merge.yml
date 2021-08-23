@@ -92,7 +92,8 @@ jobs:
           name: "Next Release"
           tag: "latest"
           version: "latest"
-          prerelease: true
+          draft: true
+          prerelease: false
           publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

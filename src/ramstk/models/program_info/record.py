@@ -19,7 +19,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKProgramInfo(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_program_info in RAMSTK Program database.
 
     This table has a one-to-one relationship with RAMSTKProgramStatus.
