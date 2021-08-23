@@ -48,3 +48,5 @@ from .similar_item.table import RAMSTKSimilarItemTable
 from .stakeholder.record import RAMSTKStakeholderRecord
 from .stakeholder.table import RAMSTKStakeholderTable
 from .usage_profile.view import RAMSTKUsageProfileView
+from .validation.record import RAMSTKValidationRecord
+from .validation.table import RAMSTKValidationTable

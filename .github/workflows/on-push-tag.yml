@@ -15,11 +15,16 @@ jobs:
         run: |
           echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
 
-      - uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Draft release notes
+        uses: release-drafter/release-drafter@master
         with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          name: "Next Release"
+          tag: "v${{ steps.previoustag.outputs.tag }}"
+          version: "${{ steps.previoustag.outputs.tag }}"
           prerelease: false
-          title: "v${{ steps.previoustag.outputs.tag }}"
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create_new_milestone:
     name: Create New Milestone

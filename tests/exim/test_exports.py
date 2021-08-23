@@ -14,12 +14,12 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmValidation
 from ramstk.exim import Export
 from ramstk.models import (
     RAMSTKFunctionTable,
     RAMSTKHardwareTable,
     RAMSTKRequirementTable,
+    RAMSTKValidationTable,
 )
 
 
@@ -73,7 +73,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_load_output_validation(self, test_program_dao):
         """do_load_output() should return None when loading Validations for export."""
-        _validation = dmValidation()
+        _validation = RAMSTKValidationTable()
         _validation.do_connect(test_program_dao)
         _validation.do_select_all(attributes={"revision_id": 1})
 

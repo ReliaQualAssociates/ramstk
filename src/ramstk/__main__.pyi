@@ -8,7 +8,6 @@ from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfigurat
 from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
-from ramstk.controllers import dmValidation as dmValidation
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.db.common import do_load_variables as do_load_variables
 from ramstk.exim import Export as Export
@@ -26,6 +25,7 @@ from ramstk.models import RAMSTKRevisionTable as RAMSTKRevisionTable
 from ramstk.models import RAMSTKSimilarItemTable as RAMSTKSimilarItemTable
 from ramstk.models import RAMSTKStakeholderTable as RAMSTKStakeholderTable
 from ramstk.models import RAMSTKUsageProfileView as RAMSTKUsageProfileView
+from ramstk.models import RAMSTKValidationTable as RAMSTKValidationTable
 from ramstk.utilities import file_exists as file_exists
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop

@@ -215,7 +215,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     validation: relationship = relationship(
-        "RAMSTKValidation",
+        "RAMSTKValidationRecord",
         backref="revision",
         passive_deletes=True,
     )

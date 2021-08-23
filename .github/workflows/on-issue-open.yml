@@ -28,5 +28,6 @@ jobs:
                          {"keywords": ["type: fix", "type: bugfix", "type: hotfix"], "labels": ["type: fix"], "assignees": [""]},
                          {"keywords": ["type: refactor"], "labels": ["type: refactor"], "assignees": [""]},
                          {"keywords": ["type: style"], "labels": ["type: style"], "assignees": [""]},
-                         {"keywords": ["type: test", "type: tests"], "labels": ["type: test"], "assignees": [""]} ]'
+                         {"keywords": ["type: test", "type: tests"], "labels": ["type: test"], "assignees": [""]},
+                         {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"

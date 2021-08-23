@@ -26,5 +26,4 @@ from .mock_ramstkprograminfo import MockRAMSTKProgramInfo
 from .mock_ramstkprogramstatus import MockRAMSTKProgramStatus
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .mock_ramstktestmethod import MockRAMSTKTestMethod
-from .mock_ramstkvalidation import MockRAMSTKValidation
 from .MockDAO import MockDAO

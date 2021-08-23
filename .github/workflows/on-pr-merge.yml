@@ -79,14 +79,23 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Draft 'latest' release
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Push 'latest' tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -f -a -m"push latest tag" latest
+          git push -f --tags
+
+      - name: Draft 'latest' release notes
+        uses: release-drafter/release-drafter@master
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: false
-          draft: true
-          title: "Development"
+          name: "Next Release"
+          tag: "latest"
+          version: "latest"
+          prerelease: true
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   tag_master:
     name: Tag Master and Update Version Files
