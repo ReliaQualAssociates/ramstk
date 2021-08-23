@@ -17,6 +17,5 @@ from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress
 from .ramstkprograminfo import RAMSTKProgramInfo
 from .ramstkprogramstatus import RAMSTKProgramStatus
-from .ramstkstakeholder import RAMSTKStakeholder
 from .ramstktestmethod import RAMSTKTestMethod
 from .ramstkvalidation import RAMSTKValidation

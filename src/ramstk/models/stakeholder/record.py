@@ -1,22 +1,21 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.RAMSTKStakeholder.py is part of The RAMSTK Project
+#       ramstk.models.stakeholder.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKStakeholder Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Stakeholder Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKStakeholder(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKStakeholderRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_stakeholder table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

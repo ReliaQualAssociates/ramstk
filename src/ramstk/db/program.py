@@ -28,6 +28,7 @@ from ramstk.models import (
     RAMSTKRequirementRecord,
     RAMSTKRevisionRecord,
     RAMSTKSimilarItemRecord,
+    RAMSTKStakeholderRecord,
 )
 from ramstk.models.programdb import (
     RAMSTKAction,
@@ -39,7 +40,6 @@ from ramstk.models.programdb import (
     RAMSTKOpStress,
     RAMSTKProgramInfo,
     RAMSTKProgramStatus,
-    RAMSTKStakeholder,
     RAMSTKTestMethod,
     RAMSTKValidation,
 )
@@ -66,7 +66,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKHazardRecord.__table__.create(bind=engine)
 
     RAMSTKRequirementRecord.__table__.create(bind=engine)
-    RAMSTKStakeholder.__table__.create(bind=engine)
+    RAMSTKStakeholderRecord.__table__.create(bind=engine)
 
     RAMSTKHardwareRecord.__table__.create(bind=engine)
     RAMSTKAllocationRecord.__table__.create(bind=engine)
