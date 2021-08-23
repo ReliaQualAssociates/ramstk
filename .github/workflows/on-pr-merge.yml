@@ -86,7 +86,6 @@ jobs:
           tag: "latest"
           version: "latest"
           prerelease: true
-          publish: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
