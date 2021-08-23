@@ -205,7 +205,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     stakeholder: relationship = relationship(
-        "RAMSTKStakeholder",
+        "RAMSTKStakeholderRecord",
         backref="revision",
         passive_deletes=True,
     )

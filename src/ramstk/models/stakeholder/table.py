@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.stakeholder.py is part of The RAMSTK Project
+#       ramstk.models.stakeholder.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Stakeholder Package Data Model."""
+"""Stakeholder Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
@@ -14,11 +14,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import improvementfactor
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKStakeholder
+from ramstk.models import RAMSTKBaseTable, RAMSTKStakeholderRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKStakeholderTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Stakeholder data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKStakeholder] = RAMSTKStakeholder
+        self._record: Type[RAMSTKStakeholderRecord] = RAMSTKStakeholderRecord
 
         # Initialize public dictionary attributes.
 

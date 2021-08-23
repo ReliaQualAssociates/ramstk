@@ -20,13 +20,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.controllers import (
-    dmOptions,
-    dmPreferences,
-    dmProgramStatus,
-    dmStakeholder,
-    dmValidation,
-)
+from ramstk.controllers import dmOptions, dmPreferences, dmProgramStatus, dmValidation
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
@@ -42,6 +36,7 @@ from ramstk.models import (
     RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
+    RAMSTKStakeholderTable,
     RAMSTKUsageProfileView,
 )
 from ramstk.utilities import file_exists
@@ -269,7 +264,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["hazards"]["data"] = RAMSTKHazardTable()
     _program_mgr.dic_managers["requirement"]["data"] = RAMSTKRequirementTable()
     _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
-    _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
+    _program_mgr.dic_managers["stakeholder"]["data"] = RAMSTKStakeholderTable()
     _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()
     _program_mgr.dic_managers["failure_definition"][
         "data"

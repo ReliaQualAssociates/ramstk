@@ -45,4 +45,6 @@ from .revision.record import RAMSTKRevisionRecord
 from .revision.table import RAMSTKRevisionTable
 from .similar_item.record import RAMSTKSimilarItemRecord
 from .similar_item.table import RAMSTKSimilarItemTable
+from .stakeholder.record import RAMSTKStakeholderRecord
+from .stakeholder.table import RAMSTKStakeholderTable
 from .usage_profile.view import RAMSTKUsageProfileView
