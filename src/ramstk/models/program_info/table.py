@@ -11,11 +11,10 @@
 from typing import Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKProgramInfo
+from ramstk.models import RAMSTKBaseTable, RAMSTKProgramInfoRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKProgramInfoTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Options data manager.
 
     This class manages the user-configurable Preferences and Options data from
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKProgramInfo] = RAMSTKProgramInfo
+        self._record: Type[RAMSTKProgramInfoRecord] = RAMSTKProgramInfoRecord
 
         # Initialize public dictionary attributes.
 

@@ -18,15 +18,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmPreferences
-from ramstk.models.programdb import RAMSTKProgramInfo
+from ramstk.models import RAMSTKProgramInfoRecord, RAMSTKProgramInfoTable
 
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmPreferences()
+    dut = RAMSTKProgramInfoTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         {
@@ -53,7 +52,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfoRecord)
         # There should be a root node with no data package and a node with
         # the one RAMSTKProgramInfo record.
         assert len(tree.all_nodes()) == 2
@@ -91,23 +90,27 @@ class TestUpdateMethods:
             "attributes for Preferences 1 was the wrong "
             "type."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print("\033[35m\nfail_update_preferences topic was broadcast wrong data type.")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print("\033[35m\nfail_update_preferences topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
-            "do_update: Attempted to save non-existent " "Program ID skullduggery."
+            "do_update: Attempted to save non-existent Program ID skullduggery."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
+        print(
+            "\033[35m\nfail_update_preferences topic was broadcast on non-existent "
+            "ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for " "Preference 1."
+        assert error_message == ("do_update: No data package found for Preference 1.")
+        print(
+            "\033[35m\nfail_update_preferences topic was broadcast on no data "
+            "package."
         )
-        print("\033[35m\nfail_update_preferences topic was broadcast")
 
     @pytest.mark.integration
     def test_do_update(self, test_datamanager):
@@ -218,7 +221,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfoRecord)
         print("\033[36m\nsucceed_get_preferences_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):

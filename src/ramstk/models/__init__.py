@@ -37,6 +37,8 @@ from .mission_phase.table import RAMSTKMissionPhaseTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView
+from .program_info.record import RAMSTKProgramInfoRecord
+from .program_info.table import RAMSTKProgramInfoTable
 from .program_status.record import RAMSTKProgramStatusRecord
 from .program_status.table import RAMSTKProgramStatusTable
 from .reliability.record import RAMSTKReliabilityRecord
