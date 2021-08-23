@@ -24,7 +24,6 @@ from ramstk.controllers import (
     dmOptions,
     dmPreferences,
     dmProgramStatus,
-    dmRequirement,
     dmStakeholder,
     dmValidation,
 )
@@ -40,6 +39,7 @@ from ramstk.models import (
     RAMSTKHardwareBoMView,
     RAMSTKHazardTable,
     RAMSTKPoFView,
+    RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
     RAMSTKUsageProfileView,
@@ -267,7 +267,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
     _program_mgr.dic_managers["function"]["data"] = RAMSTKFunctionTable()
     _program_mgr.dic_managers["hazards"]["data"] = RAMSTKHazardTable()
-    _program_mgr.dic_managers["requirement"]["data"] = dmRequirement()
+    _program_mgr.dic_managers["requirement"]["data"] = RAMSTKRequirementTable()
     _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
     _program_mgr.dic_managers["stakeholder"]["data"] = dmStakeholder()
     _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()

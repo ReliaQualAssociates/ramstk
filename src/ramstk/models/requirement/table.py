@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.requirement.py is part of The RAMSTK Project
+#       ramstk.models.requirement.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Requirement Package Data Model."""
+"""Requirement Table Model."""
 
 # Standard Library Imports
 import inspect
@@ -14,11 +14,10 @@ from typing import Any, Dict, Type
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKRequirement
+from ramstk.models import RAMSTKBaseTable, RAMSTKRequirementRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKRequirementTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Requirement data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKRequirement] = RAMSTKRequirement
+        self._record: Type[RAMSTKRequirementRecord] = RAMSTKRequirementRecord
 
         # Initialize public dictionary attributes.
 
