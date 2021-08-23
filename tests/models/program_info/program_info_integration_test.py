@@ -18,15 +18,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmPreferences
-from ramstk.models.programdb import RAMSTKProgramInfo
+from ramstk.models import RAMSTKProgramInfoRecord, RAMSTKProgramInfoTable
 
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmPreferences()
+    dut = RAMSTKProgramInfoTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         {
@@ -53,7 +52,7 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfoRecord)
         # There should be a root node with no data package and a node with
         # the one RAMSTKProgramInfo record.
         assert len(tree.all_nodes()) == 2
@@ -218,7 +217,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfo)
+        assert isinstance(tree.get_node(1).data["preference"], RAMSTKProgramInfoRecord)
         print("\033[36m\nsucceed_get_preferences_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):

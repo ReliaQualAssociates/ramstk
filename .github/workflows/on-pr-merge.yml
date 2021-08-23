@@ -79,13 +79,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push 'latest' tag
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -f -a -m"push latest tag" latest
-          git push -f --tags
-
       - name: Draft 'latest' release notes
         uses: release-drafter/release-drafter@master
         with:
@@ -106,6 +99,10 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
 
       - name: Get version information
         id: versions
@@ -141,6 +138,8 @@ jobs:
           echo "${{ steps.versions.outputs.new_ver }}"
           echo "${{ env.do_release }}"
           echo "${{ env.do_tag }}"
+          echo "${{ steps.prlabels.outputs.labels }}"
+          echo "${{ steps.prlabels.outputs.labels-object }}"
 
       - name: Push versioned tag
         if: ${{ env.do_tag == 1 }}
