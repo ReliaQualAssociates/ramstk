@@ -10,10 +10,16 @@ jobs:
     name: Create Tagged Release
     runs-on: ubuntu-latest
     steps:
+      - name: Get previous tag
+        id: previoustag
+        run: |
+          echo "::set-output name=tag::$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)"
+
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
+          title: "v${{ steps.previoustag.outputs.tag }}"
 
   create_new_milestone:
     name: Create New Milestone

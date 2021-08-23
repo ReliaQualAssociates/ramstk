@@ -1,19 +1,17 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKRequirement.py is part of The RAMSTK
-#       Project
+#       ramstk.models.requirement.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKRequirement Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Requirement Record Model."""
 
 # Standard Library Imports
 from datetime import date
 
 # Third Party Imports
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
@@ -21,7 +19,7 @@ from ramstk.models import RAMSTKBaseRecord
 from ramstk.utilities import none_to_default
 
 
-class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_requirement table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.
@@ -160,7 +158,7 @@ class RAMSTKRequirement(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_complete_9", Integer, default=__defaults__["q_complete_9"]
     )
 
-    # Consitency of requirement questions.
+    # Consistency of requirement questions.
     q_consistent_0 = Column(
         "fld_consistent_0", Integer, default=__defaults__["q_consistent_0"]
     )

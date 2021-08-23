@@ -8,7 +8,6 @@ from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfigurat
 from ramstk.controllers import dmOptions as dmOptions
 from ramstk.controllers import dmPreferences as dmPreferences
 from ramstk.controllers import dmProgramStatus as dmProgramStatus
-from ramstk.controllers import dmRequirement as dmRequirement
 from ramstk.controllers import dmStakeholder as dmStakeholder
 from ramstk.controllers import dmValidation as dmValidation
 from ramstk.db.base import BaseDatabase as BaseDatabase
@@ -23,6 +22,7 @@ from ramstk.models import RAMSTKFunctionTable as RAMSTKFunctionTable
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
 from ramstk.models import RAMSTKHazardTable as RAMSTKHazardTable
 from ramstk.models import RAMSTKPoFView as RAMSTKPoFView
+from ramstk.models import RAMSTKRequirementTable as RAMSTKRequirementTable
 from ramstk.models import RAMSTKRevisionTable as RAMSTKRevisionTable
 from ramstk.models import RAMSTKSimilarItemTable as RAMSTKSimilarItemTable
 from ramstk.models import RAMSTKUsageProfileView as RAMSTKUsageProfileView

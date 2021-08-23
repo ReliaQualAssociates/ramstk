@@ -200,7 +200,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
     requirement: relationship = relationship(
-        "RAMSTKRequirement",
+        "RAMSTKRequirementRecord",
         backref="revision",
         passive_deletes=True,
     )
