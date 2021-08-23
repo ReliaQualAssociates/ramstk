@@ -139,17 +139,6 @@ jobs:
           git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
           git push --tags
 
-      - name: Draft versioned release notes
-        if: ${{ env.do_release == 1}}
-        uses: release-drafter/release-drafter@master
-        with:
-          name: "v${{ steps.versions.new_ver }}"
-          tag: "v${{ steps.versions.new_ver }}"
-          version: "v${{ steps.versions.new_ver }}"
-          prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Update VERSION and pyproject.toml file
         if: ${{ env.do_tag == 1 }}
         run: |

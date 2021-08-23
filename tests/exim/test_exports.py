@@ -5,7 +5,7 @@
 #       tests.exim.test_exports.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle "weibullguy" Rowland
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Exports module."""
 
 # Third Party Imports
@@ -14,9 +14,13 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmRequirement, dmValidation
+from ramstk.controllers import dmValidation
 from ramstk.exim import Export
-from ramstk.models import RAMSTKFunctionTable, RAMSTKHardwareTable
+from ramstk.models import (
+    RAMSTKFunctionTable,
+    RAMSTKHardwareTable,
+    RAMSTKRequirementTable,
+)
 
 
 @pytest.mark.usefixtures("test_program_dao")
@@ -41,7 +45,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_load_output_requirement(self, test_program_dao):
         """do_load_output() should return None when loading Requirements for export."""
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
@@ -97,7 +101,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_to_xls(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
@@ -111,7 +115,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_to_xlsx(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
@@ -125,7 +129,7 @@ class TestExport:
     @pytest.mark.unit
     def test_do_export_to_xlsm(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
@@ -142,7 +146,7 @@ class TestExport:
     ):
         """do_export() should return None when exporting to an Excel file and default
         to using the xlwt engine."""
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
@@ -188,7 +192,7 @@ class TestExport:
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
-        _requirement = dmRequirement()
+        _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
