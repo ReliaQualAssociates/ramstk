@@ -20,7 +20,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.controllers import dmOptions, dmPreferences, dmProgramStatus
+from ramstk.controllers import dmOptions, dmPreferences
 from ramstk.db.base import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
@@ -33,6 +33,7 @@ from ramstk.models import (
     RAMSTKHardwareBoMView,
     RAMSTKHazardTable,
     RAMSTKPoFView,
+    RAMSTKProgramStatusTable,
     RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
@@ -273,7 +274,7 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["fmea"]["data"] = RAMSTKFMEAView()
     _program_mgr.dic_managers["pof"]["data"] = RAMSTKPoFView()
     _program_mgr.dic_managers["preferences"]["data"] = dmPreferences()
-    _program_mgr.dic_managers["program_status"]["data"] = dmProgramStatus()
+    _program_mgr.dic_managers["program_status"]["data"] = RAMSTKProgramStatusTable()
     _program_mgr.dic_managers["usage_profile"]["data"] = RAMSTKUsageProfileView()
     _program_mgr.dic_managers["validation"]["data"] = RAMSTKValidationTable()
     _program_mgr.dic_managers["exim"]["export"] = Export()
