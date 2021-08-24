@@ -139,8 +139,8 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism = relationship(  # type: ignore
-        "RAMSTKMechanism",
+    mechanism: relationship = relationship(
+        "RAMSTKMechanismRecord",
         back_populates="mode",
         cascade="all,delete",
     )

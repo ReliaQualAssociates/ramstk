@@ -28,6 +28,8 @@ from .hardware.table import RAMSTKHardwareTable
 from .hardware.view import RAMSTKHardwareBoMView
 from .hazard.record import RAMSTKHazardRecord
 from .hazard.table import RAMSTKHazardTable
+from .mechanism.record import RAMSTKMechanismRecord
+from .mechanism.table import RAMSTKMechanismTable
 from .milhdbk217f.record import RAMSTKMilHdbk217FRecord
 from .milhdbk217f.table import RAMSTKMILHDBK217FTable
 from .mission.record import RAMSTKMissionRecord

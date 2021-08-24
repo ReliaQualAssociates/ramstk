@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Program Database Module."""
+"""RAMSTK Program Database Model."""
 
 # Third Party Imports
 from sqlalchemy.engine import Engine
@@ -20,6 +20,7 @@ from ramstk.models import (
     RAMSTKFunctionRecord,
     RAMSTKHardwareRecord,
     RAMSTKHazardRecord,
+    RAMSTKMechanismRecord,
     RAMSTKMilHdbk217FRecord,
     RAMSTKMissionPhaseRecord,
     RAMSTKMissionRecord,
@@ -38,7 +39,6 @@ from ramstk.models.programdb import (
     RAMSTKAction,
     RAMSTKCause,
     RAMSTKControl,
-    RAMSTKMechanism,
     RAMSTKOpLoad,
     RAMSTKOpStress,
     RAMSTKTestMethod,
@@ -77,7 +77,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKReliabilityRecord.__table__.create(bind=engine)
     RAMSTKSimilarItemRecord.__table__.create(bind=engine)
     RAMSTKModeRecord.__table__.create(bind=engine)
-    RAMSTKMechanism.__table__.create(bind=engine)
+    RAMSTKMechanismRecord.__table__.create(bind=engine)
     RAMSTKCause.__table__.create(bind=engine)
     RAMSTKAction.__table__.create(bind=engine)
     RAMSTKControl.__table__.create(bind=engine)

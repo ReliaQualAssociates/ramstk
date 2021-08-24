@@ -19,9 +19,9 @@ from ramstk.models import RAMSTKBaseRecord
 class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_cause in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mechanism.
-    This table shared a One-to-Many relationship with ramstk_control.
-    This table shared a One-to-Many relationship with ramstk_action.
+    This table shares a Many-to-One relationship with ramstk_mechanism. This
+    table shared a One-to-Many relationship with ramstk_control. This table
+    shared a One-to-Many relationship with ramstk_action.
     """
 
     __defaults__ = {
@@ -81,12 +81,13 @@ class RAMSTKCause(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    # mode = relationship('RAMSTKMode', back_populates='cause')
-    mechanism = relationship("RAMSTKMechanism", back_populates="cause")  # type: ignore
-    control = relationship(  # type: ignore
+    mechanism: relationship = relationship(
+        "RAMSTKMechanismRecord", back_populates="cause"
+    )
+    control: relationship = relationship(
         "RAMSTKControl", back_populates="cause", cascade="delete, delete-orphan"
     )
-    action = relationship(  # type: ignore
+    action: relationship = relationship(
         "RAMSTKAction", back_populates="cause", cascade="delete, delete-orphan"
     )
 

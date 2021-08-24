@@ -1,6 +1,9 @@
 # Standard Library Imports
 from typing import Any
 
+# Third Party Imports
+from sqlalchemy.orm import relationship
+
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
@@ -37,7 +40,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     severity_class: Any
     single_point: Any
     type_id: Any
-    mechanism: Any
+    mechanism: relationship
     is_mode: bool
     is_mechanism: bool
     is_cause: bool
