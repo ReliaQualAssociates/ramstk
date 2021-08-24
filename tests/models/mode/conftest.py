@@ -1,6 +1,3 @@
-# Standard Library Imports
-from datetime import date
-
 # Third Party Imports
 import pytest
 from mocks import MockDAO

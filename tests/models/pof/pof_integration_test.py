@@ -14,21 +14,16 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmMechanism, dmOpLoad, dmOpStress, dmTestMethod
-from ramstk.models import RAMSTKPoFView
-from ramstk.models.programdb import (
-    RAMSTKMechanism,
-    RAMSTKOpLoad,
-    RAMSTKOpStress,
-    RAMSTKTestMethod,
-)
+from ramstk.controllers import dmOpLoad, dmOpStress, dmTestMethod
+from ramstk.models import RAMSTKMechanismRecord, RAMSTKMechanismTable, RAMSTKPoFView
+from ramstk.models.programdb import RAMSTKOpLoad, RAMSTKOpStress, RAMSTKTestMethod
 
 
 @pytest.fixture(scope="class")
 def test_mechanism(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmMechanism()
+    dut = RAMSTKMechanismTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6})
 
@@ -177,7 +172,7 @@ class TestSelectMethods:
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node("3").data["pof"], RAMSTKMechanism)
+        assert isinstance(tree.get_node("3").data["pof"], RAMSTKMechanismRecord)
         assert isinstance(tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
         assert isinstance(tree.get_node("3.3.3s").data["pof"], RAMSTKOpStress)
         assert isinstance(tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod)
@@ -187,7 +182,8 @@ class TestSelectMethods:
     def test_on_select_all(
         self, test_viewmodel, test_mechanism, test_opload, test_opstress, test_method
     ):
-        """should return records tree of mechanisms, oploads, opstress, test methods."""
+        """should return records tree of mechanisms, oploads, opstress, test
+        methods."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
 
         test_mechanism.do_select_all(
@@ -221,7 +217,7 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanismRecord
         )
         assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
         assert isinstance(
@@ -269,7 +265,7 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanismRecord
         )
         assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
         assert isinstance(
@@ -284,7 +280,7 @@ class TestSelectMethods:
         test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanism
+            test_viewmodel.tree.get_node("3").data["pof"], RAMSTKMechanismRecord
         )
         assert isinstance(test_viewmodel.tree.get_node("3.3").data["pof"], RAMSTKOpLoad)
         assert isinstance(
