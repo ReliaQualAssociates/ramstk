@@ -1,12 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKMechanism.py is part of The RAMSTK
-#       Project
+#       ramstk.models.mechanism.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMechanism Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Failure Mechanism Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
@@ -17,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_mechanism in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mode. This table
@@ -84,16 +83,16 @@ class RAMSTKMechanism(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mode = relationship(  # type: ignore
+    mode: relationship = relationship(
         "RAMSTKModeRecord",
         back_populates="mechanism",
     )
-    cause = relationship(  # type: ignore
+    cause: relationship = relationship(
         "RAMSTKCause",
         back_populates="mechanism",
         cascade="all,delete",
     )
-    op_load = relationship(  # type: ignore
+    op_load: relationship = relationship(
         "RAMSTKOpLoad",
         back_populates="mechanism",
         cascade="all,delete",

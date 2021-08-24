@@ -11,7 +11,6 @@
 from .action.datamanager import DataManager as dmAction
 from .cause.datamanager import DataManager as dmCause
 from .control.datamanager import DataManager as dmControl
-from .mechanism.datamanager import DataManager as dmMechanism
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions

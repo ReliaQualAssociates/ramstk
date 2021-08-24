@@ -20,31 +20,94 @@ jobs:
         id: prlabels
         uses: joerick/pr-labels-action@v1.0.6
 
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          tag_major=$(echo $tag_version | cut -d '.' -f1)
+          tag_minor=$(echo $tag_version | cut -d '.' -f2)
+          tag_patch=$(echo $tag_version | cut -d '.' -f3)
+
+          echo "::set-output name=tag_major::$(echo $tag_major)"
+          echo "::set-output name=tag_minor::$(echo $tag_minor)"
+          echo "::set-output name=tag_patch::$(echo $tag_patch)"
+
+      - name: Determine next version
+        id: nextversion
+        run: |
+          if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
+            major_version = ${{ steps.curversion.outputs.tag_major }} + 1
+            echo "do_tag=1" >> $GITHUB_ENV
+            echo "do_release=1" >> $GITHUB_ENV
+          elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
+            minor_version = ${{ steps.curversion.outputs.tag_minor }} + 1
+            echo "do_tag=1" >> $GITHUB_ENV
+            echo "do_release=1" >> $GITHUB_ENV
+          elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
+            patch_version = ${{ steps.curversion.outputs.tag_patch }} + 1
+            echo "do_tag=1" >> $GITHUB_ENV
+          else
+            major_version = ${{ steps.curversion.outputs.tag_major }}
+            minor_version = ${{ steps.curversion.outputs.tag_minor }}
+            patch_version = ${{ steps.curversion.outputs.tag_patch }}
+            echo "do_release=0" >> $GITHUB_ENV
+            echo "do_tag=0" >> $GITHUB_ENV
+          fi
+
+          next_version = "$major_version.$minor_version.$patch_version"
+
+          echo "::set-output name=next_version::$(echo $next_version)"
+
       - name: Check
         run: |
           echo "${{ steps.prlabels.outputs.labels }}"
-          echo "${{ steps.prlabels.outputs.labels-object }}"
+          echo "${{ steps.curversion.outputs.tag_version }}"
+          echo "${{ steps.curversion.outputs.tag_major }}"
+          echo "${{ steps.curversion.outputs.tag_minor }}"
+          echo "${{ steps.curversion.outputs.tag_patch }}"
+          echo "${{ steps.nextversion.outputs.next_version }}"
+          echo "${{ env.do_release }}"
+          echo "${{ env.do_tag }}"
 
-      - name: Get current versions
-        id: versions
+      - name: Update VERSION and pyproject.toml file
+        if: ${{ env.do_tag == 1 }}
         run: |
-          tag_ver=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          file_ver=$(cat VERSION)
+          echo "${{ steps.versions.outputs.new_version }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ steps.versions.outputs.new_ver }}"/' pyproject.toml
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
 
-          tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
-          tag_major=$(echo $tag_ver | cut -d '.' -f1)
-          tag_minor=$(echo $tag_ver | cut -d '.' -f2)
-          tag_patch=$(echo $tag_ver | cut -d '.' -f3)
+      - name: Set PR variables
+        id: prvars
+        run: |
+          if [ ${{ env.do_release }} == 1 ]; then
+            echo ::set-output name=title::"ci: set for release"
+            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version; set for release."
+            echo ::set-output name=message::"ci: release v${{ steps.nextversion.outputs.next_version }}"
+            echo ::set-output name=branch::"release/${{ github.head_ref }}"
+          else
+            echo ::set-output name=title::"ci: bump version files"
+            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version."
+            echo ::set-output name=message::"ci: bump version files"
+            echo ::set-output name=branch::"ci/bump_version_files"
+          fi
 
-          file_major=$(echo $file_ver | cut -d '.' -f1)
-          file_minor=$(echo $file_ver | cut -d '.' -f2)
-          file_patch=$(echo $file_ver | cut -d '.' -f3)
+      - name: Check 2
+        run: |
+          echo "${{ steps.prvars.outputs.message }}"
+          echo "${{ steps.prvars.outputs.title }}"
+          echo "${{ steps.prvars.outputs.body }}"
+          echo "${{ steps.prvars.outputs.branch }}"
 
-          echo "Tag: $tag_ver"
-          echo "VERSION: $file_ver"
-          echo "Tag major: $tag_major"
-          echo "Tag minor: $tag_minor"
-          echo "Tag patch: $tag_patch"
-          echo "File major: $file_major"
-          echo "File minor: $file_minor"
-          echo "File patch: $file_patch"
+      - name: Cut pull request to merge updated version files
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: ${{ steps.prvars.outputs.message }}
+          title: ${{ steps.prvars.outputs.title }}
+          body: ${{ steps.prvars.outputs.body }}
+          branch: ${{ steps.prvars.outputs.branch }}

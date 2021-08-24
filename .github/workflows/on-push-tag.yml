@@ -10,6 +10,11 @@ jobs:
     name: Create Tagged Release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Get previous tag
         id: previoustag
         run: |
@@ -25,6 +30,49 @@ jobs:
           publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get version information
+        id: versions
+        run: |
+          tag_ver=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          file_ver=$(cat VERSION)
+
+          tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
+          tag_major=$(echo $tag_ver | cut -d '.' -f1)
+          tag_minor=$(echo $tag_ver | cut -d '.' -f2)
+          tag_patch=$(echo $tag_ver | cut -d '.' -f3)
+
+          file_major=$(echo $file_ver | cut -d '.' -f1)
+          file_minor=$(echo $file_ver | cut -d '.' -f2)
+          file_patch=$(echo $file_ver | cut -d '.' -f3)
+
+          echo "Tag: $tag_ver"
+          echo "VERSION: $file_ver"
+          echo "Tag major: $tag_major"
+          echo "Tag minor: $tag_minor"
+          echo "Tag patch: $tag_patch"
+          echo "File major: $file_major"
+          echo "File minor: $file_minor"
+          echo "File patch: $file_patch"
+
+          echo "::set-output name=new_ver::$(echo $file_ver)"
+
+          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]]; then echo "do_release=1" >> $GITHUB_ENV; fi
+          if [[ $file_major > $tag_major ]] || [[ $file_minor > $tag_minor ]] || [[ $file_patch > $tag_patch ]]; then echo "do_tag=1" >> $GITHUB_ENV; fi
+
+      - name: Check
+        run: |
+          echo "${{ steps.versions.outputs.new_ver }}"
+          echo "${{ env.do_release }}"
+          echo "${{ env.do_tag }}"
+
+      - name: Push versioned tag
+        if: ${{ env.do_tag == 1 }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a -m"v${{ steps.versions.outputs.new_ver }}" v${{ steps.versions.outputs.new_ver }}
+          git push --tags
 
   create_new_milestone:
     name: Create New Milestone

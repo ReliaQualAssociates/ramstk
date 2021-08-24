@@ -19,10 +19,9 @@ from ramstk.models import RAMSTKBaseRecord
 class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_op_load in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mechanism.
-    This table shares a One-to-Many relationship with ramstk_op_stress.
-    This table shares a One-to-Many relationship with
-    ramstk_test_method.
+    This table shares a Many-to-One relationship with ramstk_mechanism. This
+    table shares a One-to-Many relationship with ramstk_op_stress. This table
+    shares a One-to-Many relationship with ramstk_test_method.
     """
 
     __defaults__ = {"description": "", "damage_model": "", "priority_id": 0}
@@ -61,16 +60,16 @@ class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism = relationship(  # type: ignore
-        "RAMSTKMechanism",
+    mechanism: relationship = relationship(
+        "RAMSTKMechanismRecord",
         back_populates="op_load",
     )
-    op_stress = relationship(  # type: ignore
+    op_stress: relationship = relationship(
         "RAMSTKOpStress",
         back_populates="op_load",
         cascade="all,delete",
     )
-    test_method = relationship(  # type: ignore
+    test_method: relationship = relationship(
         "RAMSTKTestMethod",
         back_populates="op_load",
         cascade="all,delete",
