@@ -173,21 +173,21 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for mechanism ID 3 was "
             "the wrong type."
         )
-        print("\033[35m\nfail_update_mechanism topic was broadcast")
+        print("\033[35m\nfail_update_mechanism topic was broadcast on wrong data type.")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_allocation topic was broadcast")
+        print("\033[35m\nfail_update_allocation topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent mechanism with mechanism ID 100."
         )
-        print("\033[35m\nfail_update_mechanism topic was broadcast")
+        print("\033[35m\nfail_update_mechanism topic was broadcast on non-existent ID.")
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == ("do_update: No data package found for mechanism ID 3.")
-        print("\033[35m\nfail_update_mechanism topic was broadcast")
+        print("\033[35m\nfail_update_mechanism topic was broadcast on no data package.")
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
