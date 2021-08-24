@@ -18,7 +18,6 @@ from .mock_ramstkaction import MockRAMSTKAction
 from .mock_ramstkcause import MockRAMSTKCause
 from .mock_ramstkcontrol import MockRAMSTKControl
 from .mock_ramstkmechanism import MockRAMSTKMechanism
-from .mock_ramstkmode import MockRAMSTKMode
 from .mock_ramstkopload import MockRAMSTKOpLoad
 from .mock_ramstkopstress import MockRAMSTKOpStress
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
