@@ -208,3 +208,45 @@ jobs:
         uses: AndreMiras/coveralls-python-action@develop
         with:
           parallel-finished: true
+
+  bump_version:
+    name: Update Version Files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Check
+        run: |
+          echo "${{ steps.prlabels.outputs.labels }}"
+          echo "${{ steps.prlabels.outputs.labels-object }}"
+
+      - name: Get current versions
+        id: versions
+        run: |
+          tag_ver=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          file_ver=$(cat VERSION)
+
+          tag_ver=$(echo $tag_ver | cut -d 'v' -f2)
+          tag_major=$(echo $tag_ver | cut -d '.' -f1)
+          tag_minor=$(echo $tag_ver | cut -d '.' -f2)
+          tag_patch=$(echo $tag_ver | cut -d '.' -f3)
+
+          file_major=$(echo $file_ver | cut -d '.' -f1)
+          file_minor=$(echo $file_ver | cut -d '.' -f2)
+          file_patch=$(echo $file_ver | cut -d '.' -f3)
+
+          echo "Tag: $tag_ver"
+          echo "VERSION: $file_ver"
+          echo "Tag major: $tag_major"
+          echo "Tag minor: $tag_minor"
+          echo "Tag patch: $tag_patch"
+          echo "File major: $file_major"
+          echo "File minor: $file_minor"
+          echo "File patch: $file_patch"
