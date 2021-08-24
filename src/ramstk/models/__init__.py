@@ -34,6 +34,8 @@ from .mission.record import RAMSTKMissionRecord
 from .mission.table import RAMSTKMissionTable
 from .mission_phase.record import RAMSTKMissionPhaseRecord
 from .mission_phase.table import RAMSTKMissionPhaseTable
+from .mode.record import RAMSTKModeRecord
+from .mode.table import RAMSTKModeTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
 from .pof.view import RAMSTKPoFView

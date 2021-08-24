@@ -12,7 +12,6 @@ from .ramstkaction import RAMSTKAction
 from .ramstkcause import RAMSTKCause
 from .ramstkcontrol import RAMSTKControl
 from .ramstkmechanism import RAMSTKMechanism
-from .ramstkmode import RAMSTKMode
 from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress
 from .ramstktestmethod import RAMSTKTestMethod

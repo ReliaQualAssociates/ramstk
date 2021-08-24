@@ -1,11 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.ramstkmode.py is part of The RAMSTK Project
+#       ramstk.models.mode.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMode Table Module."""
+# Copyright since 2007 Doyle "weibullguy Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Mode Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
@@ -16,12 +16,12 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKMode(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_mode in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_function.
-    This table shares a Many-to-One relationship with ramstk_hardware.
-    This table shares a One-to-Many relationship with ramstk_mechanism.
+    This table shares a Many-to-One relationship with ramstk_function. This table
+    shares a Many-to-One relationship with ramstk_hardware. This table shares a
+    One-to-Many relationship with ramstk_mechanism.
     """
 
     __defaults__ = {

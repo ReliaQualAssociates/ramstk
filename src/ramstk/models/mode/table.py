@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.mode.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.mode.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mode Package Data Controller."""
+"""Mode Table Model."""
 
 # Standard Library Imports
 from collections import defaultdict
@@ -18,11 +18,10 @@ from ramstk.analyses.criticality import (
     calculate_mode_criticality,
     calculate_mode_hazard_rate,
 )
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKMode
+from ramstk.models import RAMSTKBaseTable, RAMSTKModeRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKModeTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Mode data manager."""
 
     # Define private dictionary class attributes.
@@ -55,7 +54,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKMode] = RAMSTKMode
+        self._record: Type[RAMSTKModeRecord] = RAMSTKModeRecord
 
         # Initialize public dictionary attributes.
 
