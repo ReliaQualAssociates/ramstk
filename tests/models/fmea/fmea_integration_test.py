@@ -14,8 +14,9 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmAction
 from ramstk.models import (
+    RAMSTKActionRecord,
+    RAMSTKActionTable,
     RAMSTKCauseRecord,
     RAMSTKCauseTable,
     RAMSTKControlRecord,
@@ -26,7 +27,6 @@ from ramstk.models import (
     RAMSTKModeRecord,
     RAMSTKModeTable,
 )
-from ramstk.models.programdb import RAMSTKAction
 
 TEST_IDS = {
     "mode": "6",
@@ -152,7 +152,7 @@ def test_control(test_program_dao):
 def test_action(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmAction()
+    dut = RAMSTKActionTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
@@ -234,7 +234,9 @@ class TestSelectMethods:
         assert isinstance(
             tree.get_node(TEST_IDS["control"]).data["fmea"], RAMSTKControlRecord
         )
-        assert isinstance(tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction)
+        assert isinstance(
+            tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKActionRecord
+        )
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast.")
 
     @pytest.mark.integration
@@ -298,7 +300,8 @@ class TestSelectMethods:
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            RAMSTKActionRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
@@ -363,7 +366,8 @@ class TestSelectMethods:
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            RAMSTKActionRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
@@ -387,7 +391,8 @@ class TestSelectMethods:
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            RAMSTKActionRecord,
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
