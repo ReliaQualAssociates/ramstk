@@ -21,17 +21,17 @@ jobs:
       - uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
-          parameters: '[ {"keywords": ["[X] Build"], "labels": ["type: build"], "assignees": [""]},
-                         {"keywords": ["[X] CI/CD"], "labels": ["type: ci"], "assignees": [""]},
-                         {"keywords": ["[X] Documentation"], "labels": ["type: docs"], "assignees": [""]},
-                         {"keywords": ["[X] Feature"], "labels": ["type: feature"], "assignees": [""]},
-                         {"keywords": ["[X] Fix"], "labels": ["type: fix"], "assignees": [""]},
-                         {"keywords": ["[X] Refactor"], "labels": ["type: refactor"], "assignees": [""]},
-                         {"keywords": ["[X] Style"], "labels": ["type: style"], "assignees": [""]},
-                         {"keywords": ["[X] Test"], "labels": ["type: test"], "assignees": [""]},
-                         {"keywords": ["[X] Major"], "labels": ["bump: major"], "assignees": [""]},
-                         {"keywords": ["[X] Minor"], "labels": ["bump: minor"], "assignees": [""]},
-                         {"keywords": ["[X] Patch"], "labels": ["bump: patch"], "assignees": [""]},
-                         {"keywords": ["[X] EPIC"], "labels": ["EPIC!!"], "assignees": [""]},
-                         {"keywords": ["[X] Issue Branch"], "labels": ["dobranch"], "assignees": [""]} ]'
+          parameters: '[ {"keywords": ["[x] Build"], "labels": ["type: build"], "assignees": [""]},
+                         {"keywords": ["[x] CI/CD"], "labels": ["type: ci"], "assignees": [""]},
+                         {"keywords": ["[x] Documentation"], "labels": ["type: docs"], "assignees": [""]},
+                         {"keywords": ["[x] Feature"], "labels": ["type: feature"], "assignees": [""]},
+                         {"keywords": ["[x] Fix"], "labels": ["type: fix"], "assignees": [""]},
+                         {"keywords": ["[x] Refactor"], "labels": ["type: refactor"], "assignees": [""]},
+                         {"keywords": ["[x] Style"], "labels": ["type: style"], "assignees": [""]},
+                         {"keywords": ["[x] Test"], "labels": ["type: test"], "assignees": [""]},
+                         {"keywords": ["[x] Major"], "labels": ["bump: major"], "assignees": [""]},
+                         {"keywords": ["[x] Minor"], "labels": ["bump: minor"], "assignees": [""]},
+                         {"keywords": ["[x] Patch"], "labels": ["bump: patch"], "assignees": [""]},
+                         {"keywords": ["[x] EPIC"], "labels": ["EPIC!!"], "assignees": [""]},
+                         {"keywords": ["[x] Issue Branch"], "labels": ["dobranch"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
