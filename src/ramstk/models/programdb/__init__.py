@@ -9,7 +9,6 @@
 
 # RAMSTK Local Imports
 from .ramstkaction import RAMSTKAction
-from .ramstkcause import RAMSTKCause
 from .ramstkcontrol import RAMSTKControl
 from .ramstkopload import RAMSTKOpLoad
 from .ramstkopstress import RAMSTKOpStress

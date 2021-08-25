@@ -103,7 +103,7 @@ class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship("RAMSTKCause", back_populates="action")  # type: ignore
+    cause = relationship("RAMSTKCauseRecord", back_populates="action")  # type: ignore
 
     is_mode = False
     is_mechanism = False

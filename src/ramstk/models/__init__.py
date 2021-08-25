@@ -12,6 +12,8 @@ from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isor
 # RAMSTK Local Imports
 from .allocation.record import RAMSTKAllocationRecord
 from .allocation.table import RAMSTKAllocationTable
+from .cause.record import RAMSTKCauseRecord
+from .cause.table import RAMSTKCauseTable
 from .design_electric.record import RAMSTKDesignElectricRecord
 from .design_electric.table import RAMSTKDesignElectricTable
 from .design_mechanic.record import RAMSTKDesignMechanicRecord

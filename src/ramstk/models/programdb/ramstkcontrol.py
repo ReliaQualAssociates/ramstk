@@ -63,7 +63,7 @@ class RAMSTKControl(RAMSTK_BASE, RAMSTKBaseRecord):
     type_id = Column("fld_type_id", String(512), default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship("RAMSTKCause", back_populates="control")  # type: ignore
+    cause = relationship("RAMSTKCauseRecord", back_populates="control")  # type: ignore
 
     is_mode = False
     is_mechanism = False
