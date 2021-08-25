@@ -8,7 +8,6 @@
 """The RAMSTK controllers package."""
 
 # RAMSTK Local Imports
-from .action.datamanager import DataManager as dmAction
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress
 from .options.datamanager import DataManager as dmOptions

@@ -5,4 +5,4 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK FMEA Action controllers package."""
+"""The RAMSTK failure cause Action model package."""

@@ -3,6 +3,7 @@ from sqlalchemy.engine import Engine as Engine
 from sqlalchemy.orm import scoped_session as scoped_session
 
 # RAMSTK Package Imports
+from ramstk.models import RAMSTKActionRecord as RAMSTKActionRecord
 from ramstk.models import RAMSTKAllocationRecord as RAMSTKAllocationRecord
 from ramstk.models import RAMSTKCauseRecord as RAMSTKCauseRecord
 from ramstk.models import RAMSTKControlRecord as RAMSTKControlRecord
@@ -27,7 +28,6 @@ from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
 from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
 from ramstk.models import RAMSTKStakeholderRecord as RAMSTKStakeholderRecord
 from ramstk.models import RAMSTKValidationRecord as RAMSTKValidationRecord
-from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 from ramstk.models.programdb import RAMSTKOpLoad as RAMSTKOpLoad
 from ramstk.models.programdb import RAMSTKOpStress as RAMSTKOpStress
 from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
