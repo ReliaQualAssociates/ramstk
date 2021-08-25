@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.action.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.action.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,11 +10,10 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKAction
+from ramstk.models import RAMSTKActionRecord, RAMSTKBaseTable
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKActionTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the FMEA Action data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKAction] = RAMSTKAction
+        self._record: Type[RAMSTKActionRecord] = RAMSTKActionRecord
 
         # Initialize public dictionary attributes.
 

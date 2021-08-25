@@ -2,10 +2,10 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
+from ramstk.models import RAMSTKActionRecord as RAMSTKActionRecord
 from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKAction as RAMSTKAction
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKActionTable(RAMSTKBaseTable):
     _db_id_colname: str = ...
     _db_tablename: str = ...
     _select_msg: str = ...
