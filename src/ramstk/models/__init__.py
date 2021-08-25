@@ -14,6 +14,8 @@ from .allocation.record import RAMSTKAllocationRecord
 from .allocation.table import RAMSTKAllocationTable
 from .cause.record import RAMSTKCauseRecord
 from .cause.table import RAMSTKCauseTable
+from .control.record import RAMSTKControlRecord
+from .control.table import RAMSTKControlTable
 from .design_electric.record import RAMSTKDesignElectricRecord
 from .design_electric.table import RAMSTKDesignElectricTable
 from .design_mechanic.record import RAMSTKDesignMechanicRecord

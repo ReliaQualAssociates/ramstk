@@ -21,13 +21,17 @@ jobs:
       - uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
-          parameters: '[ {"keywords": ["type: build", "type: tool"], "labels": ["type: build"], "assignees": [""]},
-                         {"keywords": ["type: ci"], "labels": ["type: ci"], "assignees": [""]},
-                         {"keywords": ["type: docs", "type: documentation"], "labels": ["type: docs"], "assignees": [""]},
-                         {"keywords": ["type: feature", "type: feat"], "labels": ["type: feature"], "assignees": [""]},
-                         {"keywords": ["type: fix", "type: bugfix", "type: hotfix"], "labels": ["type: fix"], "assignees": [""]},
-                         {"keywords": ["type: refactor"], "labels": ["type: refactor"], "assignees": [""]},
-                         {"keywords": ["type: style"], "labels": ["type: style"], "assignees": [""]},
-                         {"keywords": ["type: test", "type: tests"], "labels": ["type: test"], "assignees": [""]},
-                         {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]} ]'
+          parameters: '[ {"keywords": ["[X] Build"], "labels": ["type: build"], "assignees": [""]},
+                         {"keywords": ["[X] CI/CD"], "labels": ["type: ci"], "assignees": [""]},
+                         {"keywords": ["[X] Documentation"], "labels": ["type: docs"], "assignees": [""]},
+                         {"keywords": ["[X] Feature"], "labels": ["type: feature"], "assignees": [""]},
+                         {"keywords": ["[X] Fix"], "labels": ["type: fix"], "assignees": [""]},
+                         {"keywords": ["[X] Refactor"], "labels": ["type: refactor"], "assignees": [""]},
+                         {"keywords": ["[X] Style"], "labels": ["type: style"], "assignees": [""]},
+                         {"keywords": ["[X] Test",], "labels": ["type: test"], "assignees": [""]},
+                         {"keywords": ["[X] Major"], "labels": ["bump: major"], "assignees": [""]},
+                         {"keywords": ["[X] Minor",], "labels": ["bump: minor"], "assignees": [""]},
+                         {"keywords": ["[X] Patch",], "labels": ["bump: patch"], "assignees": [""]},
+                         {"keywords": ["[X] EPIC"], "labels": ["EPIC!!"], "assignees": [""]},
+                         {"keywords": ["[X] Issue Branch"], "labels": ["dobranch"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"

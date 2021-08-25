@@ -35,25 +35,25 @@ jobs:
           echo "::set-output name=tag_minor::$(echo $tag_minor)"
           echo "::set-output name=tag_patch::$(echo $tag_patch)"
 
-      - name: Determine next version
-        id: nextversion
+      - name: Determine next SemVer
+        id: semver
         uses: WyriHaximus/github-action-next-semvers@v1
         with:
           version: ${{ steps.curversion.outputs.tag_version }}
 
-      - name:
-        if:
+      - name: Set next version
+        id: nextversion
         run: |
           if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.major }})"
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.major }})"
             echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.minor }})"
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.minor }})"
             echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.patch }})"
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
             echo "do_tag=1" >> $GITHUB_ENV
           else
             echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
