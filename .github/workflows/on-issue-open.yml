@@ -2,7 +2,7 @@ name: Open Issue Workflow
 
 on:
   issues:
-    types: [opened]
+    types: [opened, edited]
 
 jobs:
   assign_issues_to_backlog:
