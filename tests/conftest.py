@@ -478,10 +478,9 @@ def make_shibboly():
 def test_config_dir():
     """Create a configuration directory if one doesn't exist.
 
-    This creates a configuration directory in the virtual environment
-    base to allow testing certain functions/methods that look for a user
-    configuration directory otherwise defaulting to the site-wide
-    configuration directory.
+    This creates a configuration directory in the virtual environment base to
+    allow testing certain functions/methods that look for a user configuration
+    directory otherwise defaulting to the site-wide configuration directory.
     """
     _config_dir = VIRTUAL_ENV + "/share/RAMSTK"
 
@@ -498,8 +497,24 @@ def test_config_dir():
 
 
 @pytest.fixture(scope="class")
+def test_import_dir():
+    """Create a directory for export testing."""
+    # This simply creates the base name of the file and directory to create it
+    # in.  A test would need to add the appropriate file extension.
+    _import_dir = TMP_DIR + "/test_imports"
+
+    # Setup the test import directory.
+    setup_test_directory(test_dir=_import_dir)
+
+    yield _import_dir
+
+    # Teardown the test import directory.
+    teardown_test_directory(test_dir=_import_dir)
+
+
+@pytest.fixture(scope="class")
 def test_export_dir():
-    """Create a directroy for export testing."""
+    """Create a directory for export testing."""
     # This simply creates the base name of the file and directory to create it
     # in.  A test would need to add the appropriate file extension.
     _export_dir = TMP_DIR + "/test_exports/"
@@ -515,8 +530,7 @@ def test_export_dir():
 
 @pytest.fixture(scope="session")
 def make_home_config_dir():
-    """Create a configuration directory to mimic a user's configuration
-    directory."""
+    """Create a configuration directory to mimic a user's configuration directory."""
     _config_dir = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
 
     # Setup the test home configuration directory.
@@ -839,7 +853,7 @@ def test_toml_user_configuration(make_home_config_dir):
 
 
 @pytest.fixture
-def test_csv_file_function():
+def test_csv_file_function(test_import_dir):
     """Create and populate a *.csv file for testing Function imports."""
     _test_file = TMP_DIR + "/test_inputs_functions.csv"
 
@@ -855,7 +869,7 @@ def test_csv_file_function():
 
 
 @pytest.fixture
-def test_text_file_function():
+def test_text_file_function(test_import_dir):
     """Create and populate a *.txt file for testing Function imports."""
     _test_file = TMP_DIR + "/test_inputs_functions.txt"
 
@@ -871,9 +885,8 @@ def test_text_file_function():
 
 
 @pytest.fixture
-def test_csv_file_requirement():
-    """Create and populate a *.csv file for testing Requirement import
-    mapping."""
+def test_csv_file_requirement(test_import_dir):
+    """Create and populate a *.csv file for testing Requirement import mapping."""
     _test_file = TMP_DIR + "/test_inputs_requirements.csv"
 
     with open(_test_file, "w") as _csv_file:
@@ -887,7 +900,7 @@ def test_csv_file_requirement():
 
 
 @pytest.fixture
-def test_csv_file_hardware():
+def test_csv_file_hardware(test_import_dir):
     """Create and populate a *.csv file for testing Hardware import mapping."""
     _test_file = TMP_DIR + "/test_inputs_hardware.csv"
 
@@ -902,9 +915,8 @@ def test_csv_file_hardware():
 
 
 @pytest.fixture
-def test_csv_file_validation():
-    """Create and populate a *.csv file for testing Validation import
-    mapping."""
+def test_csv_file_validation(test_import_dir):
+    """Create and populate a *.csv file for testing Validation import mapping."""
     _test_file = TMP_DIR + "/test_inputs_validation.csv"
 
     with open(_test_file, "w") as _csv_file:

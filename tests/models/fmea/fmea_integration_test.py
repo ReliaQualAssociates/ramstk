@@ -14,17 +14,19 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmAction, dmControl
+from ramstk.controllers import dmAction
 from ramstk.models import (
     RAMSTKCauseRecord,
     RAMSTKCauseTable,
+    RAMSTKControlRecord,
+    RAMSTKControlTable,
     RAMSTKFMEAView,
     RAMSTKMechanismRecord,
     RAMSTKMechanismTable,
     RAMSTKModeRecord,
     RAMSTKModeTable,
 )
-from ramstk.models.programdb import RAMSTKAction, RAMSTKControl
+from ramstk.models.programdb import RAMSTKAction
 
 TEST_IDS = {
     "mode": "6",
@@ -118,7 +120,7 @@ def test_cause(test_program_dao):
 def test_control(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmControl()
+    dut = RAMSTKControlTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
@@ -230,7 +232,7 @@ class TestSelectMethods:
             tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCauseRecord
         )
         assert isinstance(
-            tree.get_node(TEST_IDS["control"]).data["fmea"], RAMSTKControl
+            tree.get_node(TEST_IDS["control"]).data["fmea"], RAMSTKControlRecord
         )
         assert isinstance(tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction)
         print("\033[36m\nsucceed_retrieve_fmea topic was broadcast.")
@@ -293,7 +295,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
-            RAMSTKControl,
+            RAMSTKControlRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
@@ -358,7 +360,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
-            RAMSTKControl,
+            RAMSTKControlRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
@@ -382,7 +384,7 @@ class TestSelectMethods:
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
-            RAMSTKControl,
+            RAMSTKControlRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKAction
