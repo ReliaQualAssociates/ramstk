@@ -85,7 +85,7 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "RAMSTKMechanismRecord", back_populates="cause"
     )
     control: relationship = relationship(
-        "RAMSTKControl", back_populates="cause", cascade="delete, delete-orphan"
+        "RAMSTKControlRecord", back_populates="cause", cascade="delete, delete-orphan"
     )
     action: relationship = relationship(
         "RAMSTKAction", back_populates="cause", cascade="delete, delete-orphan"

@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.control.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.control.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""FMEA Control Package Data Controller."""
+"""Control Table Record."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKControl
+from ramstk.models import RAMSTKBaseTable, RAMSTKControlRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKControlTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the FMEA Control data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKControl] = RAMSTKControl
+        self._record: Type[RAMSTKControlRecord] = RAMSTKControlRecord
 
         # Initialize public dictionary attributes.
 
