@@ -28,10 +28,10 @@ jobs:
                          {"keywords": ["[X] Fix"], "labels": ["type: fix"], "assignees": [""]},
                          {"keywords": ["[X] Refactor"], "labels": ["type: refactor"], "assignees": [""]},
                          {"keywords": ["[X] Style"], "labels": ["type: style"], "assignees": [""]},
-                         {"keywords": ["[X] Test",], "labels": ["type: test"], "assignees": [""]},
+                         {"keywords": ["[X] Test"], "labels": ["type: test"], "assignees": [""]},
                          {"keywords": ["[X] Major"], "labels": ["bump: major"], "assignees": [""]},
-                         {"keywords": ["[X] Minor",], "labels": ["bump: minor"], "assignees": [""]},
-                         {"keywords": ["[X] Patch",], "labels": ["bump: patch"], "assignees": [""]},
+                         {"keywords": ["[X] Minor"], "labels": ["bump: minor"], "assignees": [""]},
+                         {"keywords": ["[X] Patch"], "labels": ["bump: patch"], "assignees": [""]},
                          {"keywords": ["[X] EPIC"], "labels": ["EPIC!!"], "assignees": [""]},
                          {"keywords": ["[X] Issue Branch"], "labels": ["dobranch"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
