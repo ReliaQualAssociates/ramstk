@@ -24,41 +24,42 @@ jobs:
         id: curversion
         run: |
           tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-
           tag_version=$(echo $tag_version | cut -d 'v' -f2)
+
           tag_major=$(echo $tag_version | cut -d '.' -f1)
           tag_minor=$(echo $tag_version | cut -d '.' -f2)
           tag_patch=$(echo $tag_version | cut -d '.' -f3)
 
+          echo "::set-output name=tag_version::$(echo $tag_version)"
           echo "::set-output name=tag_major::$(echo $tag_major)"
           echo "::set-output name=tag_minor::$(echo $tag_minor)"
           echo "::set-output name=tag_patch::$(echo $tag_patch)"
 
       - name: Determine next version
         id: nextversion
+        uses: WyriHaximus/github-action-next-semvers@v1
+        with:
+          version: ${{ steps.curversion.outputs.tag_version }}
+
+      - name:
+        if:
         run: |
           if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
-            major_version = ${{ steps.curversion.outputs.tag_major }} + 1
+            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.major }})"
             echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
-            minor_version = ${{ steps.curversion.outputs.tag_minor }} + 1
+            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.minor }})"
             echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
-            patch_version = ${{ steps.curversion.outputs.tag_patch }} + 1
+            echo "::set-output name=next_version::$(echo ${{ steps.nextversion.outputs.patch }})"
             echo "do_tag=1" >> $GITHUB_ENV
           else
-            major_version = ${{ steps.curversion.outputs.tag_major }}
-            minor_version = ${{ steps.curversion.outputs.tag_minor }}
-            patch_version = ${{ steps.curversion.outputs.tag_patch }}
+            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
             echo "do_release=0" >> $GITHUB_ENV
             echo "do_tag=0" >> $GITHUB_ENV
           fi
-
-          next_version = "$major_version.$minor_version.$patch_version"
-
-          echo "::set-output name=next_version::$(echo $next_version)"
 
       - name: Check
         run: |
@@ -74,8 +75,8 @@ jobs:
       - name: Update VERSION and pyproject.toml file
         if: ${{ env.do_tag == 1 }}
         run: |
-          echo "${{ steps.versions.outputs.new_version }}" > VERSION
-          sed -i 's/\(^version =.*$\)/version = "${{ steps.versions.outputs.new_ver }}"/' pyproject.toml
+          echo "${{ steps.nextversion.outputs.next_version }}" > VERSION
+          sed -i 's/\(^version =.*$\)/version = "${{ steps.nextversion.outputs.next_version }}"/' pyproject.toml
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
@@ -91,7 +92,7 @@ jobs:
             echo ::set-output name=branch::"release/${{ github.head_ref }}"
           else
             echo ::set-output name=title::"ci: bump version files"
-            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version."
+            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next patch version."
             echo ::set-output name=message::"ci: bump version files"
             echo ::set-output name=branch::"ci/bump_version_files"
           fi

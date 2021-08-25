@@ -9,7 +9,6 @@
 
 # RAMSTK Local Imports
 from .action.datamanager import DataManager as dmAction
-from .cause.datamanager import DataManager as dmCause
 from .control.datamanager import DataManager as dmControl
 from .opload.datamanager import DataManager as dmOpLoad
 from .opstress.datamanager import DataManager as dmOpStress

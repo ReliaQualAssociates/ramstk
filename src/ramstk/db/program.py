@@ -13,6 +13,7 @@ from sqlalchemy.orm import scoped_session
 # RAMSTK Package Imports
 from ramstk.models import (
     RAMSTKAllocationRecord,
+    RAMSTKCauseRecord,
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
     RAMSTKEnvironmentRecord,
@@ -37,7 +38,6 @@ from ramstk.models import (
 )
 from ramstk.models.programdb import (
     RAMSTKAction,
-    RAMSTKCause,
     RAMSTKControl,
     RAMSTKOpLoad,
     RAMSTKOpStress,
@@ -78,7 +78,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKSimilarItemRecord.__table__.create(bind=engine)
     RAMSTKModeRecord.__table__.create(bind=engine)
     RAMSTKMechanismRecord.__table__.create(bind=engine)
-    RAMSTKCause.__table__.create(bind=engine)
+    RAMSTKCauseRecord.__table__.create(bind=engine)
     RAMSTKAction.__table__.create(bind=engine)
     RAMSTKControl.__table__.create(bind=engine)
     RAMSTKOpLoad.__table__.create(bind=engine)

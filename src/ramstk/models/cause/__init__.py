@@ -5,4 +5,4 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK failure Cause controllers package."""
+"""The RAMSTK failure Cause model package."""

@@ -14,11 +14,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKCause
+from ramstk.models import RAMSTKBaseTable, RAMSTKCauseRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKCauseTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Cause data manager."""
 
     # Define private dictionary class attributes.
@@ -53,7 +52,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKCause] = RAMSTKCause
+        self._record: Type[RAMSTKCauseRecord] = RAMSTKCauseRecord
 
         # Initialize public dictionary attributes.
 

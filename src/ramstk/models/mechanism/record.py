@@ -88,7 +88,7 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="mechanism",
     )
     cause: relationship = relationship(
-        "RAMSTKCause",
+        "RAMSTKCauseRecord",
         back_populates="mechanism",
         cascade="all,delete",
     )
