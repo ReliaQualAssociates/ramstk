@@ -1,10 +1,10 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKAction.py is part of The RAMSTK Project
+#       ramstk.models.action.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKAction Table Module."""
 
 # Standard Library Imports
@@ -19,7 +19,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKAction(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_action in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_cause.

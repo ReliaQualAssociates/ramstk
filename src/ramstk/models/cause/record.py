@@ -1,7 +1,7 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.cause.recordpy is part of The RAMSTK Project
+#       ramstk.models.cause.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -88,7 +88,7 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "RAMSTKControlRecord", back_populates="cause", cascade="delete, delete-orphan"
     )
     action: relationship = relationship(
-        "RAMSTKAction", back_populates="cause", cascade="delete, delete-orphan"
+        "RAMSTKActionRecord", back_populates="cause", cascade="delete, delete-orphan"
     )
 
     is_mode = False

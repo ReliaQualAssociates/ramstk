@@ -10,6 +10,8 @@
 from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isort:skip
 
 # RAMSTK Local Imports
+from .action.record import RAMSTKActionRecord
+from .action.table import RAMSTKActionTable
 from .allocation.record import RAMSTKAllocationRecord
 from .allocation.table import RAMSTKAllocationTable
 from .cause.record import RAMSTKCauseRecord
