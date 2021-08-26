@@ -46,6 +46,8 @@ from .mode.record import RAMSTKModeRecord
 from .mode.table import RAMSTKModeTable
 from .nswc.record import RAMSTKNSWCRecord
 from .nswc.table import RAMSTKNSWCTable
+from .opload.record import RAMSTKOpLoadRecord
+from .opload.table import RAMSTKOpLoadTable
 from .pof.view import RAMSTKPoFView
 from .program_info.record import RAMSTKProgramInfoRecord
 from .program_info.table import RAMSTKProgramInfoTable

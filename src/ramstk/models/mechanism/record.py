@@ -93,7 +93,7 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="all,delete",
     )
     op_load: relationship = relationship(
-        "RAMSTKOpLoad",
+        "RAMSTKOpLoadRecord",
         back_populates="mechanism",
         cascade="all,delete",
     )

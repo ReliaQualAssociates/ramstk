@@ -77,7 +77,7 @@ class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load = relationship(  # type: ignore
-        "RAMSTKOpLoad",
+        "RAMSTKOpLoadRecord",
         back_populates="op_stress",
     )
 
