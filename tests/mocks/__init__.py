@@ -14,7 +14,6 @@ isort:skip_file
 
 # RAMSTK Local Imports
 from .mock_basemodel import MockRAMSTKBaseRecord
-from .mock_ramstkopstress import MockRAMSTKOpStress
 from .mock_ramstksiteinfo import MockRAMSTKSiteInfo
 from .mock_ramstktestmethod import MockRAMSTKTestMethod
 from .MockDAO import MockDAO
