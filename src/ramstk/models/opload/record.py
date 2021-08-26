@@ -1,11 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKOpLoad.py is part of The RAMSTK Project
+#       ramstk.models.opload.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKOpLoad Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Operating Load Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
@@ -16,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKOpLoad(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_op_load in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mechanism. This

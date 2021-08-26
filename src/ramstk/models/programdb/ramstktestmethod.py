@@ -70,7 +70,7 @@ class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     op_load: relationship = relationship(
-        "RAMSTKOpLoad",
+        "RAMSTKOpLoadRecord",
         back_populates="test_method",
     )
 
