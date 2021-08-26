@@ -8,5 +8,4 @@
 """The RAMSTK program database models package."""
 
 # RAMSTK Local Imports
-from .ramstkopstress import RAMSTKOpStress
 from .ramstktestmethod import RAMSTKTestMethod

@@ -4,5 +4,5 @@
 #       ramstk.models.opstress.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The Operating Stress (OpStress) controllers package."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Operating Stress model package."""
