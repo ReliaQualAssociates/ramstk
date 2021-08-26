@@ -10,11 +10,10 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKOpStress
+from ramstk.models import RAMSTKBaseTable, RAMSTKOpStressRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKOpStressTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the OpStress data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKOpStress] = RAMSTKOpStress
+        self._record: Type[RAMSTKOpStressRecord] = RAMSTKOpStressRecord
 
         # Initialize public dictionary attributes.
 
