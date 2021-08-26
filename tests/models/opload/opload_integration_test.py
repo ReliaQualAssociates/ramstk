@@ -176,7 +176,7 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(4).data["opload"].description == ("Test failure " "opload")
+        assert tree.get_node(4).data["opload"].description == ("Test failure opload")
         assert tree.get_node(4).data["opload"].priority_id == 4
         print("\033[36m\nsucceed_update_opload topic was broadcast")
 
@@ -188,21 +188,21 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for opload ID 4 was "
             "the wrong type."
         )
-        print("\033[35m\nfail_update_opload topic was broadcast")
+        print("\033[35m\nfail_update_opload topic was broadcast on wrong data type.")
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_opload topic was broadcast")
+        print("\033[35m\nfail_update_opload topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent opload with opload ID 100."
         )
-        print("\033[35m\nfail_update_opload topic was broadcast")
+        print("\033[35m\nfail_update_opload topic was broadcast on non-existent ID.")
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == ("do_update: No data package found for opload ID 4.")
-        print("\033[35m\nfail_update_opload topic was broadcast")
+        print("\033[35m\nfail_update_opload topic was broadcast on no data package.")
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
