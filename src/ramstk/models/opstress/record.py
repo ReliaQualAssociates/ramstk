@@ -16,7 +16,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKOpStress(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_op_stress in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_op_load.

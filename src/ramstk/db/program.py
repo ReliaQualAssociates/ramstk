@@ -30,6 +30,7 @@ from ramstk.models import (
     RAMSTKModeRecord,
     RAMSTKNSWCRecord,
     RAMSTKOpLoadRecord,
+    RAMSTKOpStressRecord,
     RAMSTKProgramInfoRecord,
     RAMSTKProgramStatusRecord,
     RAMSTKReliabilityRecord,
@@ -39,7 +40,7 @@ from ramstk.models import (
     RAMSTKStakeholderRecord,
     RAMSTKValidationRecord,
 )
-from ramstk.models.programdb import RAMSTKOpStress, RAMSTKTestMethod
+from ramstk.models.programdb import RAMSTKTestMethod
 
 
 def do_make_programdb_tables(engine: Engine) -> None:
@@ -79,7 +80,7 @@ def do_make_programdb_tables(engine: Engine) -> None:
     RAMSTKActionRecord.__table__.create(bind=engine)
     RAMSTKControlRecord.__table__.create(bind=engine)
     RAMSTKOpLoadRecord.__table__.create(bind=engine)
-    RAMSTKOpStress.__table__.create(bind=engine)
+    RAMSTKOpStressRecord.__table__.create(bind=engine)
     RAMSTKTestMethod.__table__.create(bind=engine)
 
     RAMSTKValidationRecord.__table__.create(bind=engine)

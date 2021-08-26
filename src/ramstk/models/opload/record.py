@@ -65,7 +65,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="op_load",
     )
     op_stress: relationship = relationship(
-        "RAMSTKOpStress",
+        "RAMSTKOpStressRecord",
         back_populates="op_load",
         cascade="all,delete",
     )
