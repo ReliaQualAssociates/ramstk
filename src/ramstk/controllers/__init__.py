@@ -9,4 +9,3 @@
 
 # RAMSTK Local Imports
 from .options.datamanager import DataManager as dmOptions
-from .test_method.datamanager import DataManager as dmTestMethod
