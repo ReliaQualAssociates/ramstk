@@ -17,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKTestMethod(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_test_method in RAMSTK Program database.
 
     This table shared a Many-to-One relationship with ramstk_op_stress.

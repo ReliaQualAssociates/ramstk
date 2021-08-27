@@ -29,8 +29,8 @@ from ramstk.models import RAMSTKRequirementRecord as RAMSTKRequirementRecord
 from ramstk.models import RAMSTKRevisionRecord as RAMSTKRevisionRecord
 from ramstk.models import RAMSTKSimilarItemRecord as RAMSTKSimilarItemRecord
 from ramstk.models import RAMSTKStakeholderRecord as RAMSTKStakeholderRecord
+from ramstk.models import RAMSTKTestMethodRecord as RAMSTKTestMethodRecord
 from ramstk.models import RAMSTKValidationRecord as RAMSTKValidationRecord
-from ramstk.models.programdb import RAMSTKTestMethod as RAMSTKTestMethod
 
 def do_make_programdb_tables(engine: Engine) -> None: ...
 def do_create_program_db(engine: Engine, session: scoped_session) -> None: ...

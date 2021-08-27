@@ -70,7 +70,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="all,delete",
     )
     test_method: relationship = relationship(
-        "RAMSTKTestMethod",
+        "RAMSTKTestMethodRecord",
         back_populates="op_load",
         cascade="all,delete",
     )

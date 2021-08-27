@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.test_method.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.test_method.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -10,11 +10,10 @@
 from typing import Any, Dict, Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.programdb import RAMSTKTestMethod
+from ramstk.models import RAMSTKBaseTable, RAMSTKTestMethodRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKTestMethodTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Test Method data manager."""
 
     # Define private dictionary class attributes.
@@ -50,7 +49,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKTestMethod] = RAMSTKTestMethod
+        self._record: Type[RAMSTKTestMethodRecord] = RAMSTKTestMethodRecord
 
         # Initialize public dictionary attributes.
 
