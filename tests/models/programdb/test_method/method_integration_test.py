@@ -15,27 +15,14 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmTestMethod
-from ramstk.models.programdb import RAMSTKTestMethod
-
-
-@pytest.fixture(scope="function")
-def test_attributes():
-    yield {
-        "revision_id": 1,
-        "hardware_id": 1,
-        "mode_id": 1,
-        "mechanism_id": 1,
-        "load_id": 1,
-        "test_id": 1,
-    }
+from ramstk.models import RAMSTKTestMethodRecord, RAMSTKTestMethodTable
 
 
 @pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
+def test_tablemodel(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmTestMethod()
+    dut = RAMSTKTestMethodTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
@@ -63,34 +50,34 @@ def test_datamanager(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(1).data["test_method"], RAMSTKTestMethodRecord)
         print("\033[36m\nsucceed_retrieve_test_method topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
+    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should return a Tree() object populated with
-        RAMSTKTestMethod instances on success."""
+        RAMSTKTestMethodRecord instances on success."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
-        test_datamanager.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_test_method")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, node_id, tree):
         assert node_id == 5
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(5).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(5).data["test_method"], RAMSTKTestMethodRecord)
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
@@ -102,7 +89,7 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
+    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """_do_insert_test_method() should send the success message after successfully
         inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
@@ -113,7 +100,7 @@ class TestInsertMethods:
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
+    def test_do_insert_no_parent(self, test_attributes, test_tablemodel):
         """_do_insert_test_method() should send the fail message if attempting to add
         an operating load to a non-existent test_method ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
@@ -141,14 +128,14 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_test_method topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_delete(self, test_datamanager):
+    def test_do_delete(self, test_tablemodel):
         """_do_delete() should send the success message with the treelib Tree when
         successfully deleting a test method."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
         pub.sendMessage("request_delete_test_method", node_id=3)
 
-        assert test_datamanager.last_id == 4
+        assert test_tablemodel.last_id == 4
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_test_method")
 
@@ -163,18 +150,18 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_test_method")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
+    def test_do_delete_not_in_tree(self, test_tablemodel):
         """_do_delete() should send the fail message when attempting to remove a node
         that doesn't exist from the tree even if it exists in the database."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_test_method")
 
-        test_datamanager.tree.remove_node(4)
+        test_tablemodel.tree.remove_node(4)
         pub.sendMessage("request_delete_test_method", node_id=4)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_test_method")
 
 
-@pytest.mark.usefixtures("test_datamanager")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -216,14 +203,14 @@ class TestUpdateMethods:
         print("\033[35m\nfail_update_test_method topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
+    def test_do_update(self, test_tablemodel):
         """do_update() should return a zero error code on success."""
         pub.subscribe(self.on_succeed_update, "succeed_update_test_method")
 
-        test_datamanager.tree.get_node(3).data[
+        test_tablemodel.tree.get_node(3).data[
             "test_method"
         ].description = "Big test test_method."
-        test_datamanager.tree.get_node(3).data[
+        test_tablemodel.tree.get_node(3).data[
             "test_method"
         ].boundary_conditions = "Big test boundary conditions."
         pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
@@ -231,7 +218,7 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_test_method")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
+    def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
 
@@ -240,12 +227,12 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_datamanager):
+    def test_do_update_wrong_data_type(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a Requirement ID
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
-        _test_method = test_datamanager.do_select(3)
+        _test_method = test_tablemodel.do_select(3)
         _test_method.boundary_conditions = {1: 2}
 
         pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
@@ -253,14 +240,14 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
+    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed the root node
         ID."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
         )
 
-        _test_method = test_datamanager.do_select(4)
+        _test_method = test_tablemodel.do_select(4)
         _test_method.boundary_conditions = {1: 2}
 
         pub.sendMessage("request_update_test_method", node_id=0, table="test_method")
@@ -280,12 +267,12 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_test_method")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_datamanager):
+    def test_do_update_no_data_package(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a FMEA ID that
         has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 
-        test_datamanager.tree.get_node(4).data.pop("test_method")
+        test_tablemodel.tree.get_node(4).data.pop("test_method")
         pub.sendMessage("request_update_test_method", node_id=4, table="test_method")
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
@@ -302,7 +289,7 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(2).data["test_method"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node(2).data["test_method"], RAMSTKTestMethodRecord)
         print("\033[36m\nsucceed_get_test_method_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):

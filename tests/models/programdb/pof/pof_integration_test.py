@@ -14,7 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.controllers import dmTestMethod
 from ramstk.models import (
     RAMSTKMechanismRecord,
     RAMSTKMechanismTable,
@@ -23,8 +22,9 @@ from ramstk.models import (
     RAMSTKOpStressRecord,
     RAMSTKOpStressTable,
     RAMSTKPoFView,
+    RAMSTKTestMethodRecord,
+    RAMSTKTestMethodTable,
 )
-from ramstk.models.programdb import RAMSTKTestMethod
 
 
 @pytest.fixture(scope="class")
@@ -118,7 +118,7 @@ def test_opstress(test_program_dao):
 def test_method(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
-    dut = dmTestMethod()
+    dut = RAMSTKTestMethodTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
         attributes={
@@ -183,7 +183,7 @@ class TestSelectMethods:
         assert isinstance(tree.get_node("3").data["pof"], RAMSTKMechanismRecord)
         assert isinstance(tree.get_node("3.3").data["pof"], RAMSTKOpLoadRecord)
         assert isinstance(tree.get_node("3.3.3s").data["pof"], RAMSTKOpStressRecord)
-        assert isinstance(tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod)
+        assert isinstance(tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethodRecord)
         print("\033[36m\nsucceed_retrieve_pof topic was broadcast.")
 
     @pytest.mark.integration
@@ -234,7 +234,7 @@ class TestSelectMethods:
             test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStressRecord
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethodRecord
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
@@ -284,7 +284,7 @@ class TestSelectMethods:
             test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStressRecord
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethodRecord
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
@@ -301,7 +301,7 @@ class TestSelectMethods:
             test_viewmodel.tree.get_node("3.3.3s").data["pof"], RAMSTKOpStressRecord
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethod
+            test_viewmodel.tree.get_node("3.3.3t").data["pof"], RAMSTKTestMethodRecord
         )
 
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
