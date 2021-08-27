@@ -5,8 +5,8 @@ from typing import Any
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
-from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
+from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
 class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __defaults__: Any
@@ -39,10 +39,8 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     program_time_sd: Any
     program_cost: Any
     program_cost_sd: Any
-    environment: relationship
-    mission: relationship
-    phase: relationship
     failures: relationship
+    mission: relationship
     function: relationship
     requirement: relationship
     stakeholder: relationship

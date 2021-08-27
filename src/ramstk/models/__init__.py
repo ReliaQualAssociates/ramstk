@@ -55,6 +55,8 @@ from .program_info.record import RAMSTKProgramInfoRecord
 from .program_info.table import RAMSTKProgramInfoTable
 from .program_status.record import RAMSTKProgramStatusRecord
 from .program_status.table import RAMSTKProgramStatusTable
+from .programdb.test_method.record import RAMSTKTestMethodRecord
+from .programdb.test_method.table import RAMSTKTestMethodTable
 from .reliability.record import RAMSTKReliabilityRecord
 from .reliability.table import RAMSTKReliabilityTable
 from .requirement.record import RAMSTKRequirementRecord

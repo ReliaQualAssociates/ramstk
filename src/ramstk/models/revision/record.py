@@ -14,7 +14,6 @@ from sqlalchemy.orm import relationship
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
-from ramstk.models.programdb import *  # pylint: disable=unused-import
 
 
 class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
