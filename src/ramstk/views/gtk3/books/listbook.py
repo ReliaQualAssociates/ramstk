@@ -43,16 +43,16 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
         # Initialize private dictionary attributes.
         self._dic_list_views = {
-            "revision": [
-                lvwUsageProfile(configuration, logger),
-                lvwFailureDefinition(configuration, logger),
-            ],
-            "function": [],
-            "requirement": [
-                lvwStakeholders(configuration, logger),
-            ],
-            "hardware": [],
-            "validation": [],
+            # "revision": [
+            #    lvwUsageProfile(configuration, logger),
+            #    lvwFailureDefinition(configuration, logger),
+            # ],
+            # "function": [],
+            # "requirement": [
+            #    lvwStakeholders(configuration, logger),
+            # ],
+            # "hardware": [],
+            # "validation": [],
         }
 
         # Initialize private list attributes.

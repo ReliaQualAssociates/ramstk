@@ -52,28 +52,28 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
 
         # Initialize public dictionary attributes.
         self.dic_work_views: Dict[str, List[RAMSTKBaseView]] = {
-            "revision": [wvwRevisionGD(configuration, logger)],
-            "function": [
-                wvwFunctionGD(configuration, logger),
-                wvwHazOps(configuration, logger),
-            ],
-            "requirement": [
-                wvwRequirementGD(configuration, logger),
-                wvwRequirementAnalysis(configuration, logger),
-            ],
-            "hardware": [
-                wvwHardwareGD(configuration, logger),
-                wvwAllocation(configuration, logger),
-                wvwSimilarItem(configuration, logger),
-                wvwHardwareAI(configuration, logger),
-                wvwHardwareAR(configuration, logger),
-                wvwFMEA(configuration, logger),
-                wvwPoF(configuration, logger),
-            ],
-            "validation": [
-                wvwValidationGD(configuration, logger),
-                wvwBurndownCurve(configuration, logger),
-            ],
+            # "revision": [wvwRevisionGD(configuration, logger)],
+            # "function": [
+            #    wvwFunctionGD(configuration, logger),
+            #    wvwHazOps(configuration, logger),
+            # ],
+            # "requirement": [
+            #    wvwRequirementGD(configuration, logger),
+            #    wvwRequirementAnalysis(configuration, logger),
+            # ],
+            # "hardware": [
+            #    wvwHardwareGD(configuration, logger),
+            #    wvwAllocation(configuration, logger),
+            #    wvwSimilarItem(configuration, logger),
+            #    wvwHardwareAI(configuration, logger),
+            #    wvwHardwareAR(configuration, logger),
+            #    wvwFMEA(configuration, logger),
+            #    wvwPoF(configuration, logger),
+            # ],
+            # "validation": [
+            #    wvwValidationGD(configuration, logger),
+            #    wvwBurndownCurve(configuration, logger),
+            # ],
         }
 
         # Initialize public list attributes.

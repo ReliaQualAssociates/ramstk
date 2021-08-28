@@ -4,8 +4,8 @@
 #       ramstk.views.gtk3.widgets.panel.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 panel Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK GTK3 Panel Class."""
 
 # Standard Library Imports
 import inspect
@@ -56,14 +56,21 @@ class RAMSTKPanel(RAMSTKFrame):
         panel.  Connect this as a listener for the 'selected_<module>' for
         the work stream module the panel is associated with.
 
-    There are three types of panels that can be created.  These are:
+    The attributes of a RAMSTKPanel are:
+
+    :cvar _module: deprecated
+    :cvar _select_msg: the PyPubSub message the panel listens for to load values into
+        it's attribute widgets.  Defaults to "selected_revision".
+    :cvar _tag: the name of the tag in the table or view model tree.  This should be
+        the same value as the _tag attribute for the table or view model the panel is
+        used to display.
+    :cvar _title: the title to display on the panel frame.
+    :cvar _type: the type of panel.  Options are:
 
         * fixed: a panel containing a Gtk.Fixed() populated with labels
             and widgets.
         * plot: a panel containing a RAMSTKPlot().
         * treeview: a panel containing a RAMSTKTreeView().
-
-    The attributes of a RAMSTKPanel are:
 
     :ivar _dic_attribute_keys: contains key:value pairs where the key is
         the nominal column number in the RAMSTKTreeView() where the attribute
@@ -78,22 +85,7 @@ class RAMSTKPanel(RAMSTKFrame):
         this is 'string' data.  The nominal index is the default position of
         the column in a RAMSTKTreeView().  Refer to the layout file for the
         nominal position of each attribute for a given work stream module.
-    :ivar _dic_attribute_updater: contains key:value pairs where the
-        key is the name of the attribute and the value is a list with the
-        method used to update a widget's display in position 0, the
-        name of the signal to block while updating the widget in position 1,
-        and the nominal column number in the RAMSTKTreeView() where the
-        attribute data is displayed in position 2.  An example entry in this
-        dict might be:
-
-            'derived': [self.chkDerived.do_update, 'toggled', 2]
-
-        which indicates the 'derived' attribute of the Requirement should use
-        the do_update() method of the RAMSTKCheckButton() when the
-        'toggled' signal is emitted and the nominal index for this
-        attribute is 2.  The nominal index is the default position of the
-        column in a RAMSTKTreeView().  Refer to the layout file for the
-        nominal position of each attribute for a given work stream module.
+    :ivar _dic_attribute_updater: deprecated, use dic_attribute_widget_map
     :ivar _dic_row_loader: contains the methods used to load the row data
         into a RAMSTKTreeView() where the key is the name of the module and
         the value is the method.  This is necessary for those views that
@@ -117,6 +109,18 @@ class RAMSTKPanel(RAMSTKFrame):
     :ivar _title: the title to place on the RAMSTKFrame() that is
         this panel's container.
 
+    :ivar dic_attribute_widget_map: a dict used to map model attributes to their
+        respective display widgets.  The key is the name of the attribute in the record
+        model and the value is a list containing the following information:
+
+            * Position 0 is the (zero-based) index of the widget.
+            * Position 1 is the widget used to display the attribute.
+            * Position 2 is the signal emitted by the widget when it is updated/edited.
+            * Position 3 is the callback method that emits the signal in position 2.
+            * Position 4 is the PyPubSub message published when the widget is updated.
+            * Position 5 is the default value to display in the widget.
+            * Position 6 is a dict containing the property values for the widget.
+
     :ivar fmt: the formatting string for displaying float values.
     :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
@@ -129,6 +133,10 @@ class RAMSTKPanel(RAMSTKFrame):
 
     # Define private scalar class attributes.
     _module: str = ""
+    _select_msg: str = "selected_revision"
+    _tag: str = ""
+    _title: str = ""
+    _type: str = ""
 
     # Define public dict class attributes.
 
@@ -145,10 +153,12 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # TODO: _dic_attribute_keys renamed to _dic_attribute_index?
+        # _dic_attribute_keys renamed to _dic_attribute_index?
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        self._dic_attribute_updater: Dict[str, Any] = {}
+        # Retire _dic_attribute_updater after dic_attribute_widget_map is fully
+        # implemented.
+        self._dic_attribute_updater: Dict[str, List[Any]] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
         # Initialize private list instance attributes.
@@ -159,23 +169,49 @@ class RAMSTKPanel(RAMSTKFrame):
         # Initialize private scalar instance attributes.
         self._parent_id: int = -1
         self._record_id: int = -1
-        self._title: str = ""
         self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
 
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
         self.fmt: str = "{0:0.6}"
+        self.tree: treelib.Tree = treelib.Tree()
 
         self.pltPlot: RAMSTKPlot = RAMSTKPlot()
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_clear_fixed, "request_clear_workviews")
+        # pub.subscribe(self.do_clear_plot, "request_clear_views")
+        pub.subscribe(self.do_clear_tree, "request_clear_workviews")
+        pub.subscribe(self.do_load_fixed, self._select_msg)
+        # pub.subscribe(self.do_load_plot, self._select_msg)
+        # pub.subscribe(self.do_load_tree, self._select_msg)
+
+    def do_clear_fixed(self) -> None:
+        """Clear the contents of the widgets on a fixed type panel.
+
+        :return: None
+        :rtype: None
+        """
+        for (
+            __,  # pylint: disable=unused-variable
+            _value,
+        ) in self.dic_attribute_widget_map.items():
+            _value[1].do_update(_value[4], signal=_value[2])
+
+    def do_clear_plot(self) -> None:
+        """Clear the contents of the RAMSTKPlot on a plot type panel.
+
+        :return: None
+        :rtype: None
+        """
 
     def do_clear_tree(self) -> None:
-        """Clear the contents of a RAMSTKTreeView().
+        """Clear the contents of the RAMSTKTreeView on a tree type panel.
 
         :return: None
         :rtype: None
@@ -206,38 +242,32 @@ class RAMSTKPanel(RAMSTKFrame):
 
             self.tvwTreeView.row_activated(_path, _column)
 
-    # noinspection PyUnusedLocal
-    # pylint: disable=unused-argument
-    def do_load_panel(
+    def do_load_fixed(
         self,
-        tree: treelib.Tree = treelib.Tree(),
-        node_id: Any = "",
-        row: Gtk.TreeIter = None,
+        attributes: Dict[str, Any],
     ) -> None:
-        """Load data into the RAMSTKPanel() widgets.
+        """Load data into the widgets on fixed type panel.
 
-        :param tree: the module's treelib Tree().
-        :param node_id: unused in this function.  Required so this method
-            can be used as the subscriber for 'succeed_insert_{0}' messages.
-        :param row: the parent row in the RAMSTKTreeView() to add the new item.
+        :param attributes: the attributes dict for the selected item.
         :return: None
         """
-        _node = tree.nodes[list(tree.nodes.keys())[0]]
+        for _key, _value in self.dic_attribute_widget_map.items():
+            _value[1].do_update(attributes.get(_key, _value[5]), signal=_value[2])
 
-        _new_row = self._do_load_row(_node, row)
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self.do_load_panel(_child_tree, row=_new_row)
-
-        self.do_expand_tree()
+        self._do_set_sensitive()
 
         pub.sendMessage("request_set_cursor_active")
 
+    def do_load_plot(self) -> None:
+        """Load data into the RAMSTKPlot on a plot type panel.
+
+        :return: None
+        :rtype: None
+        """
+
     def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Use the _do_load_row() method and populate the panel's
-        _dic_row_loader attributes with the correct method(s) to load a row's
-        data.
+        """Use the _do_load_row() method and populate the panel's _dic_row_loader
+        attributes with the correct method(s) to load a row's data.
 
         This varies depending on the work stream module.
         """
@@ -253,7 +283,7 @@ class RAMSTKPanel(RAMSTKFrame):
             _model.append(None, _data)
 
     def do_load_tree(self, tree: treelib.Tree) -> None:
-        """Load the RAMSTKTreeView().
+        """Load data into the RAMSTKTreeView on a tree type panel.
 
         :param tree: the treelib Tree containing the module to load.
         :return: None
@@ -299,7 +329,7 @@ class RAMSTKPanel(RAMSTKFrame):
                 message=_error_msg,
             )
 
-    def do_make_panel_fixed(self, **kwargs: Dict[str, Any]) -> None:
+    def do_make_fixed(self, **kwargs: Dict[str, Any]) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
 
         :return: None
@@ -316,8 +346,8 @@ class RAMSTKPanel(RAMSTKFrame):
             bold=False,  # type: ignore
             justify=_justify,
             x_pos=5,  # type: ignore
-            y_pos=5,
-        )  # type: ignore
+            y_pos=5,  # type: ignore
+        )
         for _idx, _label in enumerate(_labels):
             _fixed.put(_label, 5, _y_pos)
 
@@ -347,7 +377,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
-    def do_make_panel_plot(self) -> None:
+    def do_make_plot(self) -> None:
         """Create a panel with a RAMSTKPlot().
 
         :return: None
@@ -361,7 +391,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
-    def do_make_panel_treeview(self) -> None:
+    def do_make_tree(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
         :return: None
@@ -422,7 +452,7 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[self._dic_attribute_updater[_key][2]]
+            _position = self._lst_col_order[self._dic_attribute_widget_map[_key][0]]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set(_row, _position, _value)
@@ -456,9 +486,21 @@ class RAMSTKPanel(RAMSTKFrame):
 
         :return: None
         """
-        self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
-            "changed", self._on_row_change
-        )
+        if self._type == "fixed":
+            for (
+                __,  # pylint: disable=unused-variable
+                _value,
+            ) in self.dic_attribute_widget_map.items():
+                _value[1].dic_handler_id[_value[2]] = _value[1].connect(
+                    _value[2],
+                    _value[3],
+                    _value[0],
+                    _value[4],
+                )
+        elif self._type == "tree":
+            self.tvwTreeView.dic_handler_id[
+                "changed"
+            ] = self.tvwTreeView.selection.connect("changed", self._on_row_change)
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
@@ -506,12 +548,19 @@ class RAMSTKPanel(RAMSTKFrame):
 
         :return: None
         """
-        super().do_set_properties(**kwargs)
+        super().do_set_properties(**{"bold": True, "title": self._title})
 
-        self.tvwTreeView.set_enable_tree_lines(True)
-        self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
-        self.tvwTreeView.set_level_indentation(2)
-        self.tvwTreeView.set_rubber_banding(True)
+        if self._type == "fixed":
+            for (
+                __,  # pylint: disable=unused-variable
+                _value,
+            ) in self.dic_attribute_widget_map.items():
+                _value[1].do_set_properties(**_value[6])
+        elif self._type == "tree":
+            self.tvwTreeView.set_enable_tree_lines(True)
+            self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
+            self.tvwTreeView.set_level_indentation(2)
+            self.tvwTreeView.set_rubber_banding(True)
 
     def on_cell_edit(
         self,
@@ -776,10 +825,8 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            # pylint: disable=unused-variable
-            (_function, _signal, __) = self._dic_attribute_updater.get(
-                _key
-            )  # type: ignore
+            _signal = self._dic_attribute_widget_map[_key][2]
+            _function = self._dic_attribute_widget_map[_key][3]
             _function(_value, _signal)  # type: ignore
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
@@ -830,9 +877,12 @@ class RAMSTKPanel(RAMSTKFrame):
 
         _model, _row = selection.get_selected()
         if _row is not None:
-            for _key in self._dic_attribute_updater:
-                _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[self._dic_attribute_updater[_key][2]]
+            for _attribute in self._dic_attribute_widget_map.items():
+                _attributes[_attribute[0]] = _model.get_value(
+                    _row,
+                    self._lst_col_order[
+                        self._dic_attribute_widget_map[_attribute[0]][0]
+                    ],
                 )
 
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])

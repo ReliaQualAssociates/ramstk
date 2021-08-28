@@ -45,11 +45,11 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
 
         # Initialize private dictionary attributes.
         self._dic_module_views = {
-            "revision": mvwRevision(configuration, logger),
-            "function": mvwFunction(configuration, logger),
-            "requirement": mvwRequirement(configuration, logger),
-            "hardware": mvwHardware(configuration, logger),
-            "validation": mvwValidation(configuration, logger),
+            # "revision": mvwRevision(configuration, logger),
+            # "function": mvwFunction(configuration, logger),
+            # "requirement": mvwRequirement(configuration, logger),
+            # "hardware": mvwHardware(configuration, logger),
+            # "validation": mvwValidation(configuration, logger),
         }
 
         # Initialize private list attributes.
@@ -64,7 +64,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
         self._set_properties("modulebook")
-        self.__make_ui()
+        # self.__make_ui()
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
