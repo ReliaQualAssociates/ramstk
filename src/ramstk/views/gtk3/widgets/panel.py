@@ -153,11 +153,11 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # TODO: _dic_attribute_keys renamed to _dic_attribute_index?
+        # _dic_attribute_keys renamed to _dic_attribute_index?
         # This may be more descriptive of the information the dict holds.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        # TODO: Retire _dic_attribute_updater after dic_attribute_widget_map is
-        #  fully implemented.
+        # Retire _dic_attribute_updater after dic_attribute_widget_map is fully
+        # implemented.
         self._dic_attribute_updater: Dict[str, List[Any]] = {}
         self._dic_row_loader: Dict[str, Any] = {}
 
@@ -197,7 +197,10 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         :rtype: None
         """
-        for __, _value in self._dic_attribute_widget_map.items():
+        for (
+            __,  # pylint: disable=unused-variable
+            _value,
+        ) in self.dic_attribute_widget_map.items():
             _value[1].do_update(_value[4], signal=_value[2])
 
     def do_clear_plot(self) -> None:
@@ -248,7 +251,7 @@ class RAMSTKPanel(RAMSTKFrame):
         :param attributes: the attributes dict for the selected item.
         :return: None
         """
-        for _key, _value in self._dic_attribute_widget_map.items():
+        for _key, _value in self.dic_attribute_widget_map.items():
             _value[1].do_update(attributes.get(_key, _value[5]), signal=_value[2])
 
         self._do_set_sensitive()
@@ -449,7 +452,7 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[self._dic_attribute_updater[_key][2]]
+            _position = self._lst_col_order[self._dic_attribute_widget_map[_key][0]]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set(_row, _position, _value)
@@ -484,7 +487,10 @@ class RAMSTKPanel(RAMSTKFrame):
         :return: None
         """
         if self._type == "fixed":
-            for __, _value in self._dic_attribute_widget_map.items():
+            for (
+                __,  # pylint: disable=unused-variable
+                _value,
+            ) in self.dic_attribute_widget_map.items():
                 _value[1].dic_handler_id[_value[2]] = _value[1].connect(
                     _value[2],
                     _value[3],
@@ -545,7 +551,10 @@ class RAMSTKPanel(RAMSTKFrame):
         super().do_set_properties(**{"bold": True, "title": self._title})
 
         if self._type == "fixed":
-            for __, _value in self._dic_attribute_widget_map.items():
+            for (
+                __,  # pylint: disable=unused-variable
+                _value,
+            ) in self.dic_attribute_widget_map.items():
                 _value[1].do_set_properties(**_value[6])
         elif self._type == "tree":
             self.tvwTreeView.set_enable_tree_lines(True)
@@ -816,10 +825,8 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            # pylint: disable=unused-variable
-            (_function, _signal, __) = self._dic_attribute_updater.get(
-                _key
-            )  # type: ignore
+            _signal = self._dic_attribute_widget_map[_key][2]
+            _function = self._dic_attribute_widget_map[_key][3]
             _function(_value, _signal)  # type: ignore
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
@@ -870,9 +877,12 @@ class RAMSTKPanel(RAMSTKFrame):
 
         _model, _row = selection.get_selected()
         if _row is not None:
-            for _key in self._dic_attribute_updater:
-                _attributes[_key] = _model.get_value(
-                    _row, self._lst_col_order[self._dic_attribute_updater[_key][2]]
+            for _attribute in self._dic_attribute_widget_map.items():
+                _attributes[_attribute[0]] = _model.get_value(
+                    _row,
+                    self._lst_col_order[
+                        self._dic_attribute_widget_map[_attribute[0]][0]
+                    ],
                 )
 
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])
