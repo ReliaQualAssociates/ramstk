@@ -1317,9 +1317,6 @@ RAMSTK_TYPES: Dict[int, Tuple[str, str, str]] = {
 
 def _load_fmea_tables(session: scoped_session) -> None:
     """Load RAMSTKFailureMode and RAMSTKRPN."""
-    _cat_key: int = 0
-    _subcat_key: int = 0
-    _mode_key: int = 0
     _rpn = Tuple[str, str, str, int]
     _method = Tuple[str, str, str]
 

@@ -50,19 +50,25 @@ class TestProgramManager:
 
     def on_fail_open_program_bad_url(self, error_message):
         assert error_message == ("The database bad_database_url.ramstk does not exist.")
-        print("\033[35m\nfail_connect_program_database topic was broadcast.")
+        print("\033[35m\nfail_connect_program_database topic was broadcast on bad URL.")
 
     def on_fail_open_program_unknown_dialect(self, error_message):
         assert error_message == (
             "Unknown database dialect in database connection dict."
         )
-        print("\033[35m\nfail_connect_program_database topic was broadcast.")
+        print(
+            "\033[35m\nfail_connect_program_database topic was broadcast on unknown "
+            "dialect."
+        )
 
     def on_fail_open_program_non_string_url(self, error_message):
         assert error_message == (
             "Unknown dialect or non-string value in " "database connection dict."
         )
-        print("\033[35m\nfail_connect_program_database topic was broadcast.")
+        print(
+            "\033[35m\nfail_connect_program_database topic was broadcast on "
+            "non-string URL."
+        )
 
     def on_succeed_close_program(self):
         print("\033[36m\nsucceed_disconnect_program_database topic was broadcast")
