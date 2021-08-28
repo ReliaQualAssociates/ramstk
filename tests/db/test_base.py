@@ -22,8 +22,11 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import RAMSTKFunctionRecord, RAMSTKRevisionRecord
-from ramstk.models.commondb import RAMSTKSiteInfo
+from ramstk.models import (
+    RAMSTKFunctionRecord,
+    RAMSTKRevisionRecord,
+    RAMSTKSiteInfoRecord,
+)
 
 TEMPDIR = tempfile.gettempdir()
 
@@ -180,7 +183,7 @@ class TestInsertMethods:
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
-        _record = RAMSTKSiteInfo()
+        _record = RAMSTKSiteInfoRecord()
         _record.site_id = 1
         _record.expire_on = 0xA5
 
@@ -228,7 +231,7 @@ class TestInsertMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _record = RAMSTKSiteInfo()
+        _record = RAMSTKSiteInfoRecord()
         _record.site_id = 1
 
         with pytest.raises(DataAccessError):
@@ -298,8 +301,8 @@ class TestDeleteMethods:
         DUT.do_connect(config)
         # Why is the ramstk_site_info table not in the database???
         _record = (
-            DUT.session.query(RAMSTKSiteInfo)
-            .filter(RAMSTKSiteInfo.site_id == 1)
+            DUT.session.query(RAMSTKSiteInfoRecord)
+            .filter(RAMSTKSiteInfoRecord.site_id == 1)
             .all()[0]
         )
 
@@ -379,7 +382,7 @@ class TestUpdateMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _record = RAMSTKSiteInfo()
+        _record = RAMSTKSiteInfoRecord()
         _record.site_id = 3
         DUT.do_insert(_record)
 
@@ -393,8 +396,8 @@ class TestUpdateMethods:
         assert DUT.do_update() is None
 
         _record = (
-            DUT.session.query(RAMSTKSiteInfo)
-            .filter(RAMSTKSiteInfo.site_id == 3)
+            DUT.session.query(RAMSTKSiteInfoRecord)
+            .filter(RAMSTKSiteInfoRecord.site_id == 3)
             .all()[0]
         )
 
@@ -415,8 +418,8 @@ class TestUpdateMethods:
         assert DUT.do_update() is None
 
         _record = (
-            DUT.session.query(RAMSTKSiteInfo)
-            .filter(RAMSTKSiteInfo.site_id == 3)
+            DUT.session.query(RAMSTKSiteInfoRecord)
+            .filter(RAMSTKSiteInfoRecord.site_id == 3)
             .all()[0]
         )
 
@@ -450,8 +453,8 @@ class TestSelectMethods:
         DUT.do_connect(config)
 
         _record = (
-            DUT.session.query(RAMSTKSiteInfo)
-            .filter(RAMSTKSiteInfo.site_id == 1)
+            DUT.session.query(RAMSTKSiteInfoRecord)
+            .filter(RAMSTKSiteInfoRecord.site_id == 1)
             .all()[0]
         )
 
@@ -480,14 +483,14 @@ class TestSelectMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _record = RAMSTKSiteInfo()
+        _record = RAMSTKSiteInfoRecord()
         _record.site_id = 21
         DUT.do_insert(_record)
-        _record = RAMSTKSiteInfo()
+        _record = RAMSTKSiteInfoRecord()
         _record.site_id = 22
         DUT.do_insert(_record)
 
-        _last_id = DUT.get_last_id(RAMSTKSiteInfo.__tablename__, "fld_site_id")
+        _last_id = DUT.get_last_id(RAMSTKSiteInfoRecord.__tablename__, "fld_site_id")
 
         assert _last_id == 22
 
@@ -509,7 +512,7 @@ class TestSelectMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _last_id = DUT.get_last_id(RAMSTKSiteInfo.__tablename__, "site_id")
+        _last_id = DUT.get_last_id(RAMSTKSiteInfoRecord.__tablename__, "site_id")
 
         assert _last_id == 22
 
@@ -530,7 +533,7 @@ class TestSelectMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _last_id = DUT.get_last_id(RAMSTKSiteInfo.__tablename__, "fld_column_id")
+        _last_id = DUT.get_last_id(RAMSTKSiteInfoRecord.__tablename__, "fld_column_id")
 
         DUT.do_disconnect()
 

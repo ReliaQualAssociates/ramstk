@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.ramstk.py is part of the RAMSTK Project
+#       ramstk.models.programdb.database.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK program manager."""
+"""The RAMSTK program Database model."""
 
 # Standard Library Imports
 from typing import Dict
@@ -25,7 +25,7 @@ from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.exceptions import DataAccessError
 
 
-class RAMSTKProgramManager:
+class RAMSTKProgramDB:
     """The RAMSTK program manager class.
 
     The RAMSTK program manager is responsible for managing all the analysis,
@@ -98,18 +98,18 @@ class RAMSTKProgramManager:
         :return: None
         :rtype: None
         """
-        _sql_file = open(
+        with open(
             self.user_configuration.RAMSTK_CONF_DIR
             + "/{0}_program_db.sql".format(database["dialect"]),
             "r",
-        )
-        self.program_dao = program_db
-        do_create_program_db(database, _sql_file)
-        pub.sendMessage(
-            "succeed_create_program_database",
-            program_db=self.program_dao,
-            database=database,
-        )
+        ) as _sql_file:
+            self.program_dao = program_db
+            do_create_program_db(database, _sql_file)
+            pub.sendMessage(
+                "succeed_create_program_database",
+                program_db=self.program_dao,
+                database=database,
+            )
 
     def do_open_program(
         self, program_db: BaseDatabase, database: Dict[str, str]

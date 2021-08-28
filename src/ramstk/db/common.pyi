@@ -3,12 +3,13 @@ import gettext
 from typing import Any, Dict, Tuple
 
 # Third Party Imports
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import scoped_session
+from sqlalchemy.engine import Engine as Engine
+from sqlalchemy.orm import scoped_session as scoped_session
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase as BaseDatabase
+from ramstk.models import RAMSTKSiteInfoRecord as RAMSTKSiteInfoRecord
 from ramstk.models.commondb import RAMSTKRPN as RAMSTKRPN
 from ramstk.models.commondb import RAMSTKCategory as RAMSTKCategory
 from ramstk.models.commondb import RAMSTKCondition as RAMSTKCondition
@@ -20,7 +21,6 @@ from ramstk.models.commondb import RAMSTKManufacturer as RAMSTKManufacturer
 from ramstk.models.commondb import RAMSTKMeasurement as RAMSTKMeasurement
 from ramstk.models.commondb import RAMSTKMethod as RAMSTKMethod
 from ramstk.models.commondb import RAMSTKModel as RAMSTKModel
-from ramstk.models.commondb import RAMSTKSiteInfo as RAMSTKSiteInfo
 from ramstk.models.commondb import RAMSTKStakeholders as RAMSTKStakeholders
 from ramstk.models.commondb import RAMSTKStatus as RAMSTKStatus
 from ramstk.models.commondb import RAMSTKSubCategory as RAMSTKSubCategory

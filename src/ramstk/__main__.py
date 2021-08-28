@@ -18,10 +18,8 @@ from typing import Tuple
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk import RAMSTKProgramManager
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.controllers import dmOptions
-from ramstk.db.base import BaseDatabase
+from ramstk.db import BaseDatabase
 from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
@@ -33,11 +31,13 @@ from ramstk.models import (
     RAMSTKHardwareBoMView,
     RAMSTKHazardTable,
     RAMSTKPoFView,
+    RAMSTKProgramDB,
     RAMSTKProgramInfoTable,
     RAMSTKProgramStatusTable,
     RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
+    RAMSTKSiteInfoTable,
     RAMSTKStakeholderTable,
     RAMSTKUsageProfileView,
     RAMSTKValidationTable,
@@ -260,7 +260,7 @@ def the_one_ring() -> None:
         message="Initializing the RAMSTK application.",
     )
 
-    _program_mgr = RAMSTKProgramManager()
+    _program_mgr = RAMSTKProgramDB()
     _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
     _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
     _program_mgr.dic_managers["function"]["data"] = RAMSTKFunctionTable()
@@ -283,7 +283,7 @@ def the_one_ring() -> None:
     _program_mgr.user_configuration = user_configuration
 
     # noinspection PyTypeChecker
-    _program_mgr.dic_managers["options"]["data"] = dmOptions()
+    _program_mgr.dic_managers["options"]["data"] = RAMSTKSiteInfoTable()
     _program_mgr.dic_managers["options"]["data"].dao = site_db
     _program_mgr.dic_managers["options"]["data"].do_select_all({"site_id": 1})
 

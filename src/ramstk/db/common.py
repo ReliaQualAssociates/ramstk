@@ -22,6 +22,7 @@ from sqlalchemy.orm import scoped_session
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
+from ramstk.models import RAMSTKSiteInfoRecord
 from ramstk.models.commondb import (
     RAMSTKRPN,
     RAMSTKCategory,
@@ -34,7 +35,6 @@ from ramstk.models.commondb import (
     RAMSTKMeasurement,
     RAMSTKMethod,
     RAMSTKModel,
-    RAMSTKSiteInfo,
     RAMSTKStakeholders,
     RAMSTKStatus,
     RAMSTKSubCategory,
@@ -939,7 +939,7 @@ RAMSTK_HAZARDS = {
     165: ("Pneumatic/Hydraulic", "Pipe/Hose Whip"),
     166: ("Pneumatic/Hydraulic", "Pipe/Vessel/Duct Rupture"),
     167: ("Pneumatic/Hydraulic", "Relief Pressure Improperly Set"),
-    168: ("Thermal", "Altered Structural Properties (e.g., " "Embrittlement)"),
+    168: ("Thermal", "Altered Structural Properties (e.g., Embrittlement)"),
     169: ("Thermal", "Confined Gas/Liquid"),
     170: ("Thermal", "Elevated Flammability"),
     171: ("Thermal", "Elevated Reactivity"),
@@ -1042,7 +1042,7 @@ RAMSTK_RPNS = {
     ),
     3: (
         "Very Low",
-        "System operable with significant degradation of " "performance.",
+        "System operable with significant degradation of performance.",
         "severity",
         4,
     ),
@@ -1051,7 +1051,7 @@ RAMSTK_RPNS = {
     6: ("High", "System inoperable with system damage.", "severity", 7),
     7: (
         "Very High",
-        "System inoperable with destructive failure " "without compromising safety.",
+        "System inoperable with destructive failure without compromising safety.",
         "severity",
         8,
     ),
@@ -1323,23 +1323,18 @@ def _load_fmea_tables(session: scoped_session) -> None:
     _rpn = Tuple[str, str, str, int]
     _method = Tuple[str, str, str]
 
-    for _cat_key in RAMSTK_FAILURE_MODES:
+    for _category in RAMSTK_FAILURE_MODES.items():
         _record = RAMSTKFailureMode()
-        _record.category_id = _cat_key
-        for _subcat_key in RAMSTK_FAILURE_MODES[_cat_key]:
-            _record.subcategory_id = _subcat_key
-            for _mode_key in RAMSTK_FAILURE_MODES[_cat_key][_subcat_key]:
-                _record.mode_id = _mode_key
-                _record.description = RAMSTK_FAILURE_MODES[_cat_key][_subcat_key][
-                    _mode_key
-                ][0]
-                _record.mode_ratio = RAMSTK_FAILURE_MODES[_cat_key][_subcat_key][
-                    _mode_key
-                ][1]
-                _record.source = RAMSTK_FAILURE_MODES[_cat_key][_subcat_key][_mode_key][
-                    2
-                ]
+        _record.category_id = _category[0]
+        for _subcategory in _category[1].items():
+            _record.subcategory_id = _subcategory[0]
+            for _mode in _subcategory[1].items():
+                _record.mode_id = _mode[0]
+                _record.description = _mode[1][0]
+                _record.mode_ratio = _mode[1][1]
+                _record.source = _mode[1][2]
                 session.add(_record)
+
     # pylint: disable=unused-variable
     for __, _rpn in list(RAMSTK_RPNS.items()):
         _record = RAMSTKRPN()
@@ -1518,24 +1513,23 @@ def _load_requirements_analysis_tables(session: scoped_session) -> None:
 
 
 def _load_site_info(session: scoped_session) -> None:
-    """Load RAMSTKSiteInfo."""
+    """Load the Site Information table."""
     _cwd = os.getcwd()
     _license_key: str = "0000"
     _expire_date: date = date.today() + timedelta(days=30)
 
     try:
-        license_file = open(_cwd + "/license.key", "r")
-        _contents = license_file.readlines()
-        _license_key = _contents[0].strip("\n")
-        _expire_date = datetime.strptime(_contents[1], "%Y-%m-%d")
-        license_file.close()
+        with open(_cwd + "/license.key", "r") as license_file:
+            _contents = license_file.readlines()
+            _license_key = _contents[0].strip("\n")
+            _expire_date = datetime.strptime(_contents[1], "%Y-%m-%d")
     except IOError:
         _error_msg = (
-            "Unable to read license key file.  Defaulting to a " "30-day demo license."
+            "Unable to read license key file.  Defaulting to a 30-day demo license."
         )
         pub.sendMessage("fail_read_license", error_message=_error_msg)
 
-    _site_info = RAMSTKSiteInfo()
+    _site_info = RAMSTKSiteInfoRecord()
     _site_info.product_key = _license_key
     _site_info.expire_on = _expire_date
     session.add(_site_info)
@@ -1605,7 +1599,7 @@ def do_make_commondb_tables(engine: Engine) -> None:
     :return: None
     :rtype: None
     """
-    RAMSTKSiteInfo.__table__.create(bind=engine)
+    RAMSTKSiteInfoRecord.__table__.create(bind=engine)
     RAMSTKCategory.__table__.create(bind=engine)
     RAMSTKCondition.__table__.create(bind=engine)
     RAMSTKFailureMode.__table__.create(bind=engine)

@@ -19,7 +19,6 @@ from .ramstkmeasurement import RAMSTKMeasurement
 from .ramstkmethod import RAMSTKMethod
 from .ramstkmodel import RAMSTKModel
 from .ramstkrpn import RAMSTKRPN
-from .ramstksiteinfo import RAMSTKSiteInfo
 from .ramstkstakeholders import RAMSTKStakeholders
 from .ramstkstatus import RAMSTKStatus
 from .ramstksubcategory import RAMSTKSubCategory
