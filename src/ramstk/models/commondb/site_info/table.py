@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.options.datamanager.py is part of The RAMSTK Project
+#       ramstk.models.commondb.site_info.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Options Package Data Model."""
+"""Site Information Table Model."""
 
 # Standard Library Imports
 from typing import Type
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable
-from ramstk.models.commondb import RAMSTKSiteInfo
+from ramstk.models import RAMSTKBaseTable, RAMSTKSiteInfoRecord
 
 
-class DataManager(RAMSTKBaseTable):
+class RAMSTKSiteInfoTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Option data manager."""
 
     # Define private dict class attributes.
@@ -44,7 +43,7 @@ class DataManager(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKSiteInfo] = RAMSTKSiteInfo
+        self._record: Type[RAMSTKSiteInfoRecord] = RAMSTKSiteInfoRecord
 
         # Initialize public dictionary attributes.
 

@@ -38,7 +38,8 @@ from ramstk.db.common import (
     do_load_variables,
     do_make_commondb_tables,
 )
-from ramstk.models.commondb import RAMSTKSiteInfo, RAMSTKUser
+from ramstk.models import RAMSTKSiteInfoRecord
+from ramstk.models.commondb import RAMSTKUser
 
 TEST_COMMON_DB = BaseDatabase()
 TEST_COMMON_DB.do_connect(
@@ -61,15 +62,17 @@ def on_fail_read_license(error_message):
 
 
 def test_create_common_db_tables():
-    """do_make_commondb_tables() should return None when successfully creating the tables in the RAMSTK common database."""
+    """do_make_commondb_tables() should return None when successfully creating the
+    tables in the RAMSTK common database."""
     assert do_make_commondb_tables(TEST_COMMON_DB.engine) is None
-    assert TEST_COMMON_DB.do_insert(RAMSTKSiteInfo()) is None
+    assert TEST_COMMON_DB.do_insert(RAMSTKSiteInfoRecord()) is None
     assert TEST_COMMON_DB.get_last_id("ramstk_site_info", "fld_site_id") == 1
 
 
 @pytest.mark.usefixtures("test_license_file")
 def test_load_site_info_with_license(test_license_file):
-    """_load_site_info() should return None and load the license key information when a license key file can be read."""
+    """_load_site_info() should return None and load the license key information when a
+    license key file can be read."""
     assert _load_site_info(TEST_COMMON_DB.session) is None
 
     # Retrieve the newly create site info record (note this is site ID=2 as the
@@ -77,8 +80,8 @@ def test_load_site_info_with_license(test_license_file):
     # inserting a record before calling the _load_site_info() function, it just
     # so happens we do here because of the ordering of tests.
     _record = (
-        TEST_COMMON_DB.session.query(RAMSTKSiteInfo)
-        .filter(RAMSTKSiteInfo.site_id == 2)
+        TEST_COMMON_DB.session.query(RAMSTKSiteInfoRecord)
+        .filter(RAMSTKSiteInfoRecord.site_id == 2)
         .first()
     )
     assert _record.product_key == "apowdigfb3rh9214839qu"
@@ -86,7 +89,8 @@ def test_load_site_info_with_license(test_license_file):
 
 
 def test_load_site_info_no_license():
-    """_load_site_info() should return None and load the default 30-day license when the license key file can't be read."""
+    """_load_site_info() should return None and load the default 30-day license when
+    the license key file can't be read."""
     pub.subscribe(on_fail_read_license, "fail_read_license")
 
     assert _load_site_info(TEST_COMMON_DB.session) is None
@@ -96,8 +100,8 @@ def test_load_site_info_no_license():
     # inserting records before calling the _load_site_info() function, it just
     # so happens we do here because of the ordering of tests.
     _record = (
-        TEST_COMMON_DB.session.query(RAMSTKSiteInfo)
-        .filter(RAMSTKSiteInfo.site_id == 3)
+        TEST_COMMON_DB.session.query(RAMSTKSiteInfoRecord)
+        .filter(RAMSTKSiteInfoRecord.site_id == 3)
         .first()
     )
     assert _record.product_key == "0000"
@@ -107,27 +111,32 @@ def test_load_site_info_no_license():
 
 
 def test_load_miscellaneous_tables():
-    """_load_miscellaneous_tables() should return None when successfully populating the miscellaneous tables."""
+    """_load_miscellaneous_tables() should return None when successfully populating the
+    miscellaneous tables."""
     assert _load_miscellaneous_tables(TEST_COMMON_DB.session) is None
 
 
 def test_load_fmea_tables():
-    """_load_fmea_tables() should return None when successfully populating the FMEA-related tables."""
+    """_load_fmea_tables() should return None when successfully populating the FMEA-
+    related tables."""
     assert _load_fmea_tables(TEST_COMMON_DB.session) is None
 
 
 def test_load_hazard_analysis_tables():
-    """_load_hazard_analysis_tables() should return None when successfully populating the FHA-related tables."""
+    """_load_hazard_analysis_tables() should return None when successfully populating
+    the FHA-related tables."""
     assert _load_hazard_analysis_tables(TEST_COMMON_DB.session) is None
 
 
 def test_load_incident_report_tables():
-    """_load_incident_report_tables() should return None when successfully populating the incident report related tables."""
+    """_load_incident_report_tables() should return None when successfully populating
+    the incident report related tables."""
     assert _load_incident_report_tables(TEST_COMMON_DB.session) is None
 
 
 def test_load_pof_tables():
-    """_load_pof_tables() should return None when successfully populating the PoF-related tables."""
+    """_load_pof_tables() should return None when successfully populating the PoF-
+    related tables."""
     assert _load_pof_tables(TEST_COMMON_DB.session) is None
 
 
@@ -142,13 +151,15 @@ def test_load_pof_tables():
     ],
 )
 def test_do_add_administrator(inputs):
-    """do_add_administrator() should return None when successfully adding an administrative user to the RAMSTKUser table."""
+    """do_add_administrator() should return None when successfully adding an
+    administrative user to the RAMSTKUser table."""
     assert do_add_administrator(TEST_COMMON_DB.session) is None
 
 
 @patch("builtins.input", return_value="n")
 def test_do_add_administrator_choose_no(inputs):
-    """do_add_administrator() should return None when choosing not to add an administrative user to the RAMSTKUser table."""
+    """do_add_administrator() should return None when choosing not to add an
+    administrative user to the RAMSTKUser table."""
     assert do_add_administrator(TEST_COMMON_DB.session) is None
 
 
@@ -163,7 +174,8 @@ def test_do_add_administrator_choose_no(inputs):
     ],
 )
 def test_do_create_common_db(monkeypatch):
-    """do_create_common_db() should return None when successfully creating a RAMSTK common database."""
+    """do_create_common_db() should return None when successfully creating a RAMSTK
+    common database."""
     TEST_COMMON_DB.do_disconnect()
     TEST_COMMON_DB.do_connect(
         {
@@ -193,7 +205,8 @@ class TestLoadCommonTables:
     def test_do_load_action_variables(
         self, test_common_dao, test_toml_user_configuration
     ):
-        """_do_load_action_variables() should load global variables related to actions and return None."""
+        """_do_load_action_variables() should load global variables related to actions
+        and return None."""
         assert (
             _do_load_action_variables(test_common_dao, test_toml_user_configuration)
             is None
@@ -217,7 +230,8 @@ class TestLoadCommonTables:
     def test_do_load_hardware_variables(
         self, test_common_dao, test_toml_user_configuration
     ):
-        """_do_load_hardware_variables() should load global variables related to hardware and return None."""
+        """_do_load_hardware_variables() should load global variables related to
+        hardware and return None."""
         assert (
             _do_load_hardware_variables(test_common_dao, test_toml_user_configuration)
             is None
@@ -403,7 +417,8 @@ class TestLoadCommonTables:
     def test_do_load_incident_variables(
         self, test_common_dao, test_toml_user_configuration
     ):
-        """_do_load_incident_variables() should load global variables related to incidents and return None."""
+        """_do_load_incident_variables() should load global variables related to
+        incidents and return None."""
         assert (
             _do_load_incident_variables(test_common_dao, test_toml_user_configuration)
             is None
@@ -460,7 +475,8 @@ class TestLoadCommonTables:
     def test_do_load_miscellaneous_variables(
         self, test_common_dao, test_toml_user_configuration
     ):
-        """_do_load_miscellaneous_variables() should load global variables related to uncategorized and return None."""
+        """_do_load_miscellaneous_variables() should load global variables related to
+        uncategorized and return None."""
         assert (
             _do_load_miscellaneous_variables(
                 test_common_dao, test_toml_user_configuration
@@ -710,7 +726,8 @@ class TestLoadCommonTables:
         }
 
     def test_do_load_pof_variables(self, test_common_dao, test_toml_user_configuration):
-        """_do_load_pof_variables() should load global variables related to physics of failure analysis and return None."""
+        """_do_load_pof_variables() should load global variables related to physics of
+        failure analysis and return None."""
         assert (
             _do_load_pof_variables(test_common_dao, test_toml_user_configuration)
             is None
@@ -760,7 +777,8 @@ class TestLoadCommonTables:
         }
 
     def test_do_load_rpn_variables(self, test_common_dao, test_toml_user_configuration):
-        """_do_load_rpn_variables() should load global variables related to incidents and return None."""
+        """_do_load_rpn_variables() should load global variables related to incidents
+        and return None."""
         assert (
             _do_load_rpn_variables(test_common_dao, test_toml_user_configuration)
             is None
@@ -983,7 +1001,8 @@ class TestLoadCommonTables:
         }
 
     def test_do_load_severity(self, test_common_dao, test_toml_user_configuration):
-        """_do_load_severity() should load global variables related to severity and return None."""
+        """_do_load_severity() should load global variables related to severity and
+        return None."""
         assert _do_load_severity(test_common_dao, test_toml_user_configuration) is None
         assert test_toml_user_configuration.RAMSTK_SEVERITY == {
             11: ("INS", "Insignificant", "risk", 1),
@@ -997,7 +1016,8 @@ class TestLoadCommonTables:
     def test_do_load_user_workgroups(
         self, test_common_dao, test_toml_user_configuration
     ):
-        """_do_load_user_workgroups() should load global variables related to users and workgroups and return None."""
+        """_do_load_user_workgroups() should load global variables related to users and
+        workgroups and return None."""
         assert (
             _do_load_user_workgroups(test_common_dao, test_toml_user_configuration)
             is None

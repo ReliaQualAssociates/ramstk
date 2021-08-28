@@ -31,7 +31,6 @@ from .configuration import (
     RAMSTKUserConfiguration,
 )
 from .logger import RAMSTKLogManager
-from .ramstk import RAMSTKProgramManager
 from .utilities import (
     boolean_to_integer,
     date_to_ordinal,

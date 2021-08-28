@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKSiteInfo.py is part of the RAMSTK Project
+#       ramstk.models.commondb.site_info.record.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKSiteInfo Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Site Information Record Model."""
 
 # Standard Library Imports
 from datetime import date, timedelta
@@ -17,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKSiteInfo(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_site_info in the RAMSTK Common database."""
 
     __defaults__ = {
