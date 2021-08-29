@@ -14,8 +14,8 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3.function import FunctionModuleView
 
-# from ramstk.views.gtk3.function import mvwFunction
 # from ramstk.views.gtk3.hardware import mvwHardware
 # from ramstk.views.gtk3.requirement import mvwRequirement
 from ramstk.views.gtk3.revision import RevisionModuleView
@@ -48,7 +48,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Initialize private dictionary attributes.
         self._dic_module_views = {
             "revision": RevisionModuleView(configuration, logger),
-            # "function": mvwFunction(configuration, logger),
+            "function": FunctionModuleView(configuration, logger),
             # "requirement": mvwRequirement(configuration, logger),
             # "hardware": mvwHardware(configuration, logger),
             # "validation": mvwValidation(configuration, logger),
