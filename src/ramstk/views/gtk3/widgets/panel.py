@@ -167,7 +167,7 @@ class RAMSTKPanel(RAMSTKFrame):
         self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map: Dict[int, str] = {}
+        self.dic_attribute_index_map: Dict[int, List[str]] = {}
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
 
         # Initialize public list instance attributes.
@@ -190,6 +190,7 @@ class RAMSTKPanel(RAMSTKFrame):
         elif self._type == "tree":
             pub.subscribe(self.do_clear_tree, "request_clear_views")
             pub.subscribe(self.do_load_tree, self._select_msg)
+            pub.subscribe(self.do_load_tree, "succeed_insert_{}".format(self._tag))
             pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
             pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
 
@@ -776,7 +777,7 @@ class RAMSTKPanel(RAMSTKFrame):
         textview.handler_block(textview.dic_handler_id["changed"])
 
         _package: Dict[str, Any] = self.__do_read_text(
-            textview, self._dic_attribute_keys[index]
+            textview, self.dic_attribute_index_map[index]
         )
 
         textview.handler_unblock(textview.dic_handler_id["changed"])
@@ -848,7 +849,7 @@ class RAMSTKPanel(RAMSTKFrame):
                 "{2}: An error occurred while updating {1} data for record "
                 "ID {0} in the view.  Data for key {3} is the wrong "
                 "type."
-            ).format(self._record_id, self._module, _method_name, _key)
+            ).format(self._record_id, self._tag, _method_name, _key)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
