@@ -338,6 +338,7 @@ class RAMSTKBaseTable:
             value=[
                 self._revision_id,
             ],
+            order=self._db_id_colname,
         ):
             try:
                 self._parent_id = _record.get_attributes()["parent_id"]

@@ -28,7 +28,7 @@ from .dialog import (
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
-from .panel import RAMSTKPanel
+from .panel import RAMSTKFixedPanel, RAMSTKPanel, RAMSTKPlotPanel, RAMSTKTreePanel
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import (

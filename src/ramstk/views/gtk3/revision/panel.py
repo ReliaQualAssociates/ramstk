@@ -11,10 +11,15 @@ from pubsub import pub  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKPanel, RAMSTKTextView
+from ramstk.views.gtk3.widgets import (
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    RAMSTKTextView,
+    RAMSTKTreePanel,
+)
 
 
-class RevisionTreePanel(RAMSTKPanel):
+class RevisionTreePanel(RAMSTKTreePanel):
     """Panel to display flat list of revisions."""
 
     # Define private dictionary class attributes.
@@ -25,7 +30,6 @@ class RevisionTreePanel(RAMSTKPanel):
     _select_msg = "succeed_retrieve_revisions"
     _tag = "revision"
     _title = _("List of Revisions")
-    _type = "tree"
 
     # Define public dictionary class attributes.
 
@@ -271,7 +275,7 @@ class RevisionTreePanel(RAMSTKPanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_tree_panel()
+        super().do_make_panel()
         super().do_set_properties()
         super().do_set_callbacks()
 
@@ -317,7 +321,7 @@ class RevisionTreePanel(RAMSTKPanel):
             pub.sendMessage("request_set_title", title=_title)
 
 
-class RevisionGeneralDataPanel(RAMSTKPanel):
+class RevisionGeneralDataPanel(RAMSTKFixedPanel):
     """The panel to display general data about the selected Revision."""
 
     # Define private dictionary class attributes.
@@ -329,7 +333,6 @@ class RevisionGeneralDataPanel(RAMSTKPanel):
     _select_msg = "selected_revision"
     _tag = "revision"
     _title = _("General Revision Information")
-    _type = "fixed"
 
     # Define public dictionary class attributes.
 
@@ -409,7 +412,7 @@ class RevisionGeneralDataPanel(RAMSTKPanel):
 
         # Make a fixed type panel.
         super().do_set_properties()
-        super().do_make_fixed_panel()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
