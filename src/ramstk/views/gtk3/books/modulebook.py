@@ -16,11 +16,11 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.function import FunctionModuleView
 
-# from ramstk.views.gtk3.hardware import mvwHardware
-# from ramstk.views.gtk3.requirement import mvwRequirement
+# from ramstk.views.gtk3.hardware import HardwareModuleView
+from ramstk.views.gtk3.requirement import RequirementModuleView
 from ramstk.views.gtk3.revision import RevisionModuleView
 
-# from ramstk.views.gtk3.validation import mvwValidation
+# from ramstk.views.gtk3.validation import ValidationModuleView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -49,9 +49,9 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self._dic_module_views = {
             "revision": RevisionModuleView(configuration, logger),
             "function": FunctionModuleView(configuration, logger),
-            # "requirement": mvwRequirement(configuration, logger),
-            # "hardware": mvwHardware(configuration, logger),
-            # "validation": mvwValidation(configuration, logger),
+            "requirement": RequirementModuleView(configuration, logger),
+            # "hardware": HardwareModuleView(configuration, logger),
+            # "validation": ValidationModuleView(configuration, logger),
         }
 
         # Initialize private list attributes.

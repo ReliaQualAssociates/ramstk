@@ -92,6 +92,8 @@ class RAMSTKPanel(RAMSTKFrame):
             * Position 5 is the default value to display in the widget.
             * Position 6 is a dict containing the property values for the widget.
 
+        For a fixed panel, dict entries should be in the order they should appear in
+        the panel.
     :ivar fmt: the formatting string for displaying float values.
     """
 
@@ -229,6 +231,9 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :rtype: None
         """
         _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
+
+        # Extract the list of labels and associated widgets from the attribute-widget
+        # map.
         _lst_labels = [x[1][7] for x in self.dic_attribute_widget_map.items()]
         _lst_widgets = [x[1][1] for x in self.dic_attribute_widget_map.items()]
 
