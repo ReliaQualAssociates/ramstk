@@ -7,11 +7,11 @@
 """GTK3 Revision Panels."""
 
 # Third Party Imports
-from pubsub import pub
+from pubsub import pub  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKPanel, RAMSTKTextView
 
 
 class RevisionTreePanel(RAMSTKPanel):
@@ -22,10 +22,10 @@ class RevisionTreePanel(RAMSTKPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg: str = "succeed_retrieve_revisions"
-    _tag: str = "revision"
-    _title: str = _("Revision List")
-    _type: str = "tree"
+    _select_msg = "succeed_retrieve_revisions"
+    _tag = "revision"
+    _title = _("List of Revisions")
+    _type = "tree"
 
     # Define public dictionary class attributes.
 
@@ -313,5 +313,103 @@ class RevisionTreePanel(RAMSTKPanel):
                 str(_attributes["revision_code"]), str(_attributes["name"])
             )
 
-            # pub.sendMessage("selected_revision", attributes=_attributes)
+            pub.sendMessage("selected_revision", attributes=_attributes)
             pub.sendMessage("request_set_title", title=_title)
+
+
+class RevisionGeneralDataPanel(RAMSTKPanel):
+    """The panel to display general data about the selected Revision."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _record_field = "revision_id"
+    _select_msg = "selected_revision"
+    _tag = "revision"
+    _title = _("General Revision Information")
+    _type = "fixed"
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Revision General Data panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.txtCode: RAMSTKEntry = RAMSTKEntry()
+        self.txtName: RAMSTKEntry = RAMSTKEntry()
+        self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            17: ["name", "string"],
+            20: ["remarks", "string"],
+            22: ["revision_code", "string"],
+        }
+        self.dic_attribute_widget_map = {
+            "revision_code": [
+                22,
+                self.txtCode,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_revision",
+                "",
+                {
+                    "width": 125,
+                    "tooltip": _("A unique code for the selected revision."),
+                },
+                _("Revision Code:"),
+            ],
+            "name": [
+                17,
+                self.txtName,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_revision",
+                "",
+                {
+                    "width": 800,
+                    "tooltip": _("The name of the selected revision."),
+                },
+                _("Revision Name:"),
+            ],
+            "remarks": [
+                20,
+                self.txtRemarks,
+                "changed",
+                super().on_changed_textview,
+                "wvw_editing_revision",
+                "",
+                {
+                    "height": 100,
+                    "width": 800,
+                    "tooltip": _(
+                        "Enter any remarks associated with the selected revision."
+                    ),
+                },
+                _("Remarks:"),
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_set_properties()
+        super().do_make_fixed_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.

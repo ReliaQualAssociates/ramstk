@@ -213,7 +213,7 @@ class TestGetterSetter:
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes")
 
-        pub.sendMessage("request_get_option_attributes", node_id=1, table="option")
+        pub.sendMessage("request_get_option_attributes", attributes={"site_id": 1})
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes"

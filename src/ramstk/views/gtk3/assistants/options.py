@@ -165,7 +165,7 @@ class EditOptionsPanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel, "succeed_get_siteinfo_attributes")
 
-        pub.sendMessage("request_get_option_attributes", node_id=1, table="siteinfo")
+        pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the current options.

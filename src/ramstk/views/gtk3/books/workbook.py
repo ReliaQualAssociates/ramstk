@@ -22,7 +22,7 @@ from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardware
 from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import wvwRequirementAnalysis, wvwRequirementGD
-from ramstk.views.gtk3.revision import wvwRevisionGD
+from ramstk.views.gtk3.revision import RevisionWorkView
 from ramstk.views.gtk3.similar_item import wvwSimilarItem
 from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
@@ -52,7 +52,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
 
         # Initialize public dictionary attributes.
         self.dic_work_views: Dict[str, List[RAMSTKBaseView]] = {
-            # "revision": [wvwRevisionGD(configuration, logger)],
+            "revision": [RevisionWorkView(configuration, logger)],
             # "function": [
             #    wvwFunctionGD(configuration, logger),
             #    wvwHazOps(configuration, logger),

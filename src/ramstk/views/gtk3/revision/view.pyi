@@ -11,8 +11,11 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKMessageDialog as RAMSTKMessageDialog
 from ramstk.views.gtk3.widgets import RAMSTKModuleView as RAMSTKModuleView
+from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 
 # RAMSTK Local Imports
+from . import RevisionGeneralDataPanel as RevisionGeneralDataPanel
 from . import RevisionTreePanel as RevisionTreePanel
 
 class RevisionModuleView(RAMSTKModuleView):
@@ -31,4 +34,17 @@ class RevisionModuleView(RAMSTKModuleView):
     def _on_insert_revision(
         self, node_id: int = ..., tree: treelib.Tree = ...
     ) -> None: ...
+    def __make_ui(self) -> None: ...
+
+class RevisionWorkView(RAMSTKWorkView):
+    _module: str
+    _tablabel: Any
+    _tabtooltip: Any
+    _lst_tooltips: Any
+    _pnlGeneralData: Any
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None: ...
+    _record_id: Any
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...

@@ -23,6 +23,7 @@ class RAMSTKSiteInfoTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_site_id"
     _db_tablename = "ramstk_site_info"
+    _select_msg = "request_get_option_attributes2"
     _tag = "option"
 
     # Define public dict class attributes.

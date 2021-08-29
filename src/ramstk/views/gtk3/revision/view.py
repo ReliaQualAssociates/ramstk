@@ -7,20 +7,25 @@
 """GTK3 Revision Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
-from pubsub import pub
+from pubsub import pub  # type: ignore
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKModuleView
+from ramstk.views.gtk3.widgets import (
+    RAMSTKMessageDialog,
+    RAMSTKModuleView,
+    RAMSTKPanel,
+    RAMSTKWorkView,
+)
 
 # RAMSTK Local Imports
-from . import RevisionTreePanel
+from . import RevisionGeneralDataPanel, RevisionTreePanel
 
 
 class RevisionModuleView(RAMSTKModuleView):
@@ -154,3 +159,94 @@ class RevisionModuleView(RAMSTKModuleView):
         ] = self._pnlPanel.tvwTreeView.connect(
             "button_press_event", super().on_button_press
         )
+
+
+class RevisionWorkView(RAMSTKWorkView):
+    """Display general Revision attribute data in the RAMSTK Work Book.
+
+    The Revision Work View displays all the general data attributes for the
+    selected Revision. The attributes of a Revision General Data Work View are:
+
+    :cvar str _module: the name of the module.
+    :cvar str _tablabel: the text to display on the tab's label.
+    :cvar str _tabtooltip: the text to display as the tab's tooltip.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+
+    # Define private dict class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _module: str = "revision"
+    _tablabel = _("General\nData")
+    _tabtooltip = _("Displays general information for the selected Revision")
+
+    # Define public dict class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
+        """Initialize the Revision Work View general data page.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_tooltips: List[str] = [
+            _("Save changes to the currently selected Revision."),
+            _("Save changes to all Revisions."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._pnlGeneralData: RAMSTKPanel = RevisionGeneralDataPanel()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_record_id, "selected_revision")
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Revision's record ID.
+
+        :param attributes: the attributes dict for the selected Revision.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes["revision_id"]
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Revision General Data tab.
+
+        :return: None
+        :rtype: None
+        """
+        super().do_make_layout()
+
+        self.pack_end(self._pnlGeneralData, True, True, 0)
+        self.show_all()
