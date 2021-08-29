@@ -168,8 +168,10 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         super().do_set_properties(**kwargs)
 
         self.set_use_underline(True)
+
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)
+        self.get_child().set_property("wrap", True)
         self.get_child().set_property("height-request", self.height)
         self.get_child().set_property("width-request", self.width)
 

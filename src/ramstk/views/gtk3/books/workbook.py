@@ -23,7 +23,10 @@ from ramstk.views.gtk3.function import FunctionWorkView
 # from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
 # from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 # from ramstk.views.gtk3.pof import wvwPoF
-# from ramstk.views.gtk3.requirement import wvwRequirementAnalysis, wvwRequirementGD
+from ramstk.views.gtk3.requirement import (
+    RequirementAnalysisView,
+    RequirementGeneralDataView,
+)
 from ramstk.views.gtk3.revision import RevisionWorkView
 
 # from ramstk.views.gtk3.similar_item import wvwSimilarItem
@@ -60,10 +63,10 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 FunctionWorkView(configuration, logger),
                 #    wvwHazOps(configuration, logger),
             ],
-            # "requirement": [
-            #    wvwRequirementGD(configuration, logger),
-            #    wvwRequirementAnalysis(configuration, logger),
-            # ],
+            "requirement": [
+                RequirementGeneralDataView(configuration, logger),
+                RequirementAnalysisView(configuration, logger),
+            ],
             # "hardware": [
             #    wvwHardwareGD(configuration, logger),
             #    wvwAllocation(configuration, logger),
