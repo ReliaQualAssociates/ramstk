@@ -14,11 +14,13 @@ from treelib import Tree
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
-from ramstk.views.gtk3.function import mvwFunction
-from ramstk.views.gtk3.hardware import mvwHardware
-from ramstk.views.gtk3.requirement import mvwRequirement
+
+# from ramstk.views.gtk3.function import mvwFunction
+# from ramstk.views.gtk3.hardware import mvwHardware
+# from ramstk.views.gtk3.requirement import mvwRequirement
 from ramstk.views.gtk3.revision import RevisionModuleView
-from ramstk.views.gtk3.validation import mvwValidation
+
+# from ramstk.views.gtk3.validation import mvwValidation
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
