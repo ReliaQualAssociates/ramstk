@@ -14,12 +14,13 @@ from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
     RAMSTKEntry,
-    RAMSTKPanel,
+    RAMSTKFixedPanel,
     RAMSTKTextView,
+    RAMSTKTreePanel,
 )
 
 
-class FunctionTreePanel(RAMSTKPanel):
+class FunctionTreePanel(RAMSTKTreePanel):
     """Panel to display hierarchy of functions."""
 
     # Define private dictionary class attributes.
@@ -30,7 +31,6 @@ class FunctionTreePanel(RAMSTKPanel):
     _select_msg = "succeed_retrieve_functions"
     _tag = "function"
     _title = _("Function Tree")
-    _type = "tree"
 
     # Define public dictionary class attributes.
 
@@ -239,7 +239,7 @@ class FunctionTreePanel(RAMSTKPanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_tree_panel()
+        super().do_make_panel()
         super().do_set_properties()
         super().do_set_callbacks()
 
@@ -294,7 +294,7 @@ class FunctionTreePanel(RAMSTKPanel):
             )
 
 
-class FunctionGeneralDataPanel(RAMSTKPanel):
+class FunctionGeneralDataPanel(RAMSTKFixedPanel):
     """The panel to display general data about the selected Function."""
 
     # Define private dictionary class attributes.
@@ -306,7 +306,6 @@ class FunctionGeneralDataPanel(RAMSTKPanel):
     _select_msg = "selected_function"
     _tag = "function"
     _title = _("General Function Information")
-    _type = "fixed"
 
     # Define public dictionary class attributes.
 
@@ -405,7 +404,7 @@ class FunctionGeneralDataPanel(RAMSTKPanel):
 
         # Make a fixed type panel.
         super().do_set_properties()
-        super().do_make_fixed_panel()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
