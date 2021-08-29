@@ -33,6 +33,7 @@ def test_tablemodel(test_common_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_option_attributes")
     pub.unsubscribe(dut.do_update, "request_update_option")
     pub.unsubscribe(dut.do_get_tree, "request_get_option_tree")
+    pub.unsubscribe(dut.do_select_all, "request_get_option_attributes2")
 
     # Delete the device under test.
     del dut
