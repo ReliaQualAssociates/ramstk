@@ -18,7 +18,8 @@ from ramstk.logger import RAMSTKLogManager
 
 # from ramstk.views.gtk3.allocation import wvwAllocation
 # from ramstk.views.gtk3.fmea import wvwFMEA
-# from ramstk.views.gtk3.function import wvwFunctionGD
+from ramstk.views.gtk3.function import FunctionWorkView
+
 # from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
 # from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 # from ramstk.views.gtk3.pof import wvwPoF
@@ -55,10 +56,10 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         # Initialize public dictionary attributes.
         self.dic_work_views: Dict[str, List[RAMSTKBaseView]] = {
             "revision": [RevisionWorkView(configuration, logger)],
-            # "function": [
-            #    wvwFunctionGD(configuration, logger),
-            #    wvwHazOps(configuration, logger),
-            # ],
+            "function": [
+                FunctionWorkView(configuration, logger),
+                #    wvwHazOps(configuration, logger),
+            ],
             # "requirement": [
             #    wvwRequirementGD(configuration, logger),
             #    wvwRequirementAnalysis(configuration, logger),

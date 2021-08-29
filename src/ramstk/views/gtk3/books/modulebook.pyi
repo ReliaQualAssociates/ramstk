@@ -8,6 +8,7 @@ from treelib import Tree as Tree
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
+from ramstk.views.gtk3.function import FunctionModuleView as FunctionModuleView
 from ramstk.views.gtk3.revision import RevisionModuleView as RevisionModuleView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook as RAMSTKBaseBook
 

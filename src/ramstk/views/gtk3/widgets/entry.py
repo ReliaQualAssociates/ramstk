@@ -126,8 +126,15 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
 
         self.tag_bold = txvbuffer.create_tag("bold", weight=Pango.Weight.BOLD)
 
-    def connect(self, signal: str, callback: Callable, index: int, message: str) -> int:
-        """Connect textview's buffer.
+    # pylint: disable=arguments-differ
+    def connect(
+        self,
+        signal: str,
+        callback: Callable,
+        index: int,
+        message: str,
+    ) -> int:
+        """Connect textview's buffer to a callback method or function.
 
         :param signal:
         :param callback:
@@ -135,7 +142,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         :param message:
         """
         _buffer = self.do_get_buffer()
-        return _buffer.connect(signal, callback, index, message)
+        return _buffer.connect(signal, callback, index, message, self)
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
         """Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
