@@ -45,9 +45,7 @@ class FunctionModuleView(RAMSTKModuleView):
     # Define private scalar class attributes.
     _module: str = "function"
     _tablabel: str = "Function"
-    _tabtooltip: str = _(
-        "Displays the functional hierarchy for the selected " "Revision."
-    )
+    _tabtooltip: str = _("Displays the functional hierarchy for the selected Revision.")
 
     # Define public dictionary class attributes.
 
@@ -161,7 +159,7 @@ class FunctionWorkView(RAMSTKWorkView):
     # Define private scalar class attributes.
     _module: str = "function"
     _tablabel = _("General\nData")
-    _tabtooltip = _("Displays general information for the " "selected Function")
+    _tabtooltip = _("Displays general information for the selected Function.")
 
     # Define public dict class attributes.
 
