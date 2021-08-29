@@ -347,7 +347,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 "{2}: An error occurred while editing {1} data for record "
                 "ID {0} in the view.  Key {3} does not exist in "
                 "attribute dictionary."
-            ).format(self._record_id, self._module, _method_name, _key)
+            ).format(self._record_id, self._tag, _method_name, _key)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -513,7 +513,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 "{2}: An error occurred while updating {1} data for record "
                 "ID {0} in the view.  Key {3} does not exist in "
                 "attribute dictionary."
-            ).format(self._record_id, self._module, _method_name, _key)
+            ).format(self._record_id, self._tag, _method_name, _key)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -550,7 +550,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 "{2}: An error occurred while reading {1} data for record "
                 "ID {0} in the view.  Key {3} does not exist in "
                 "attribute dictionary."
-            ).format(self._record_id, self._module, _method_name, _key)
+            ).format(self._record_id, self._tag, _method_name, _key)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -774,7 +774,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "ID {0} into the view.  One or more values from the "
                 "database was the wrong type for the column it was trying to "
                 "load."
-            ).format(self._record_id, self._module, _method_name)
+            ).format(self._record_id, self._tag, _method_name)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -786,7 +786,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "{2}: An error occurred while loading {1:s} data for Record "
                 "ID {0:d} into the view.  One or more values from the "
                 "database was missing."
-            ).format(self._record_id, self._module, _method_name)
+            ).format(self._record_id, self._tag, _method_name)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -864,7 +864,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "{2}: An error occurred while refreshing {1} data for Record "
                 "ID {0} in the view.  Key {3} does not exist in "
                 "attribute dictionary."
-            ).format(self._record_id, self._module, _method_name, _key)
+            ).format(self._record_id, self._tag, _method_name, _key)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -876,7 +876,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "{2}: An error occurred while refreshing {1} data for Record "
                 "ID {0} in the view.  Data {4} for {3} is the wrong "
                 "type."
-            ).format(self._record_id, self._module, _method_name, _key, _value)
+            ).format(self._record_id, self._tag, _method_name, _key, _value)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -989,7 +989,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "{2}: An error occurred while editing {1} data for record "
                 "ID {0} in the view.  One or more keys could not be found in "
                 "the attribute dictionary."
-            ).format(self._record_id, self._module, _method_name)
+            ).format(self._record_id, self._tag, _method_name)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1029,7 +1029,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "{2}: An error occurred while editing {1} data for record "
                 "ID {0} in the view.  One or more keys could not be found in "
                 "the attribute dictionary."
-            ).format(self._record_id, self._module, _method_name)
+            ).format(self._record_id, self._tag, _method_name)
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1155,7 +1155,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "of the data in the package was missing, or some of the data "
                 "was the wrong type.  Row data was: {1}.  Error was: {2}."
                 ""
-            ).format(str(node.identifier), _data, _error, _method_name, self._module)
+            ).format(str(node.identifier), _data, _error, _method_name, self._tag)
             pub.sendMessage(
                 "do_log_warning_msg",
                 logger_name="WARNING",

@@ -402,7 +402,6 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar instance attributes.
 
-        # Make a fixed type panel.
         super().do_set_properties()
         super().do_make_panel()
         super().do_set_callbacks()
