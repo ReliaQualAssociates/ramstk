@@ -33,6 +33,7 @@ def test_tablemodel(test_common_dao):
     pub.unsubscribe(dut.do_set_attributes, "request_set_option_attributes")
     pub.unsubscribe(dut.do_update, "request_update_option")
     pub.unsubscribe(dut.do_get_tree, "request_get_option_tree")
+    pub.unsubscribe(dut.do_select_all, "request_get_option_attributes2")
 
     # Delete the device under test.
     del dut
@@ -213,7 +214,7 @@ class TestGetterSetter:
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes")
 
-        pub.sendMessage("request_get_option_attributes", node_id=1, table="option")
+        pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes"

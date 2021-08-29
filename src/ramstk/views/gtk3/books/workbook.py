@@ -15,16 +15,18 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3.allocation import wvwAllocation
-from ramstk.views.gtk3.fmea import wvwFMEA
-from ramstk.views.gtk3.function import wvwFunctionGD
-from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
-from ramstk.views.gtk3.hazard_analysis import wvwHazOps
-from ramstk.views.gtk3.pof import wvwPoF
-from ramstk.views.gtk3.requirement import wvwRequirementAnalysis, wvwRequirementGD
-from ramstk.views.gtk3.revision import wvwRevisionGD
-from ramstk.views.gtk3.similar_item import wvwSimilarItem
-from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
+
+# from ramstk.views.gtk3.allocation import wvwAllocation
+# from ramstk.views.gtk3.fmea import wvwFMEA
+# from ramstk.views.gtk3.function import wvwFunctionGD
+# from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
+# from ramstk.views.gtk3.hazard_analysis import wvwHazOps
+# from ramstk.views.gtk3.pof import wvwPoF
+# from ramstk.views.gtk3.requirement import wvwRequirementAnalysis, wvwRequirementGD
+from ramstk.views.gtk3.revision import RevisionWorkView
+
+# from ramstk.views.gtk3.similar_item import wvwSimilarItem
+# from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
 
 
@@ -52,7 +54,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
 
         # Initialize public dictionary attributes.
         self.dic_work_views: Dict[str, List[RAMSTKBaseView]] = {
-            # "revision": [wvwRevisionGD(configuration, logger)],
+            "revision": [RevisionWorkView(configuration, logger)],
             # "function": [
             #    wvwFunctionGD(configuration, logger),
             #    wvwHazOps(configuration, logger),
@@ -94,5 +96,8 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         for _page in self.get_children():
             self.remove(_page)
 
-        for _workspace in self.dic_work_views[module]:
-            self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+        try:
+            for _workspace in self.dic_work_views[module]:
+                self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+        except KeyError:
+            pass

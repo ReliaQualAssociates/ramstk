@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from datetime import datetime
-from typing import Any
+from typing import Any, Callable
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, Pango
@@ -125,6 +125,17 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag("bold", weight=Pango.Weight.BOLD)
+
+    def connect(self, signal: str, callback: Callable, index: int, message: str) -> int:
+        """Connect textview's buffer.
+
+        :param signal:
+        :param callback:
+        :param index:
+        :param message:
+        """
+        _buffer = self.do_get_buffer()
+        return _buffer.connect(signal, callback, index, message)
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
         """Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.

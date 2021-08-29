@@ -4,15 +4,9 @@
 #       ramstk.views.gtk3.revision.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 revision package."""
-
-ATTRIBUTE_KEYS = {
-    0: ["name", "string"],
-    1: ["remarks", "string"],
-    2: ["revision_code", "string"],
-}
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Revision Views."""
 
 # RAMSTK Local Imports
-from .moduleview import ModuleView as mvwRevision
-from .workview import GeneralData as wvwRevisionGD
+from .panel import RevisionGeneralDataPanel, RevisionTreePanel
+from .view import RevisionModuleView, RevisionWorkView

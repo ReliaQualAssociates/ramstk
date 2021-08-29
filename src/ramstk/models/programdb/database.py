@@ -128,7 +128,7 @@ class RAMSTKProgramDB:
             self.program_dao.do_connect(database)
             pub.sendMessage("succeed_connect_program_database", dao=self.program_dao)
             pub.sendMessage(
-                "request_retrieve_revisions", attributes={"revision_id", None}
+                "request_retrieve_revisions", attributes={"revision_id": None}
             )
         except NoSuchModuleError:
             _error_msg = (

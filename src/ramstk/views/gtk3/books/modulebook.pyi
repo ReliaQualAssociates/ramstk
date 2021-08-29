@@ -8,16 +8,12 @@ from treelib import Tree as Tree
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
-from ramstk.views.gtk3.function import mvwFunction as mvwFunction
-from ramstk.views.gtk3.hardware import mvwHardware as mvwHardware
-from ramstk.views.gtk3.requirement import mvwRequirement as mvwRequirement
-from ramstk.views.gtk3.revision import mvwRevision as mvwRevision
-from ramstk.views.gtk3.validation import mvwValidation as mvwValidation
+from ramstk.views.gtk3.revision import RevisionModuleView as RevisionModuleView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook as RAMSTKBaseBook
 
 class RAMSTKModuleBook(RAMSTKBaseBook):
-    _dic_module_views: Any = ...
-    icoStatus: Any = ...
+    _dic_module_views: Any
+    icoStatus: Any
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
