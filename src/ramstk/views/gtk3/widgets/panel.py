@@ -117,6 +117,7 @@ class RAMSTKPanel(RAMSTKFrame):
             * Position 1 is the widget used to display the attribute.
             * Position 2 is the signal emitted by the widget when it is updated/edited.
             * Position 3 is the callback method that emits the signal in position 2.
+                Set this to None to make widget read-only.
             * Position 4 is the PyPubSub message published when the widget is updated.
             * Position 5 is the default value to display in the widget.
             * Position 6 is a dict containing the property values for the widget.
@@ -172,6 +173,7 @@ class RAMSTKPanel(RAMSTKFrame):
         self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
+        self.dic_attribute_index_map: Dict[int, str] = {}
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
 
         # Initialize public list instance attributes.
@@ -184,12 +186,17 @@ class RAMSTKPanel(RAMSTKFrame):
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_clear_fixed, "request_clear_workviews")
-        # pub.subscribe(self.do_clear_plot, "request_clear_views")
-        pub.subscribe(self.do_clear_tree, "request_clear_workviews")
-        pub.subscribe(self.do_load_fixed, self._select_msg)
-        # pub.subscribe(self.do_load_plot, self._select_msg)
-        # pub.subscribe(self.do_load_tree, self._select_msg)
+        if self._type == "fixed":
+            pub.subscribe(self.do_clear_fixed, "request_clear_views")
+            pub.subscribe(self.do_load_fixed, self._select_msg)
+        elif self._type == "plot":
+            pub.subscribe(self.do_clear_plot, "request_clear_views")
+            pub.subscribe(self.do_load_plot, self._select_msg)
+        elif self._type == "tree":
+            pub.subscribe(self.do_clear_tree, "request_clear_views")
+            pub.subscribe(self.do_load_tree, self._select_msg)
+            pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
+            pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
 
     def do_clear_fixed(self) -> None:
         """Clear the contents of the widgets on a fixed type panel.
@@ -329,7 +336,7 @@ class RAMSTKPanel(RAMSTKFrame):
                 message=_error_msg,
             )
 
-    def do_make_fixed(self, **kwargs: Dict[str, Any]) -> None:
+    def do_make_fixed_panel(self, **kwargs: Dict[str, Any]) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
 
         :return: None
@@ -377,7 +384,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
-    def do_make_plot(self) -> None:
+    def do_make_plot_panel(self) -> None:
         """Create a panel with a RAMSTKPlot().
 
         :return: None
@@ -391,7 +398,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         self.add(_scrollwindow)
 
-    def do_make_tree(self) -> None:
+    def do_make_tree_panel(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
         :return: None
@@ -452,7 +459,7 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[self._dic_attribute_widget_map[_key][0]]
+            _position = self._lst_col_order[self.dic_attribute_widget_map[_key][0]]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set(_row, _position, _value)
@@ -501,6 +508,12 @@ class RAMSTKPanel(RAMSTKFrame):
             self.tvwTreeView.dic_handler_id[
                 "changed"
             ] = self.tvwTreeView.selection.connect("changed", self._on_row_change)
+            for (
+                __,  # pylint: disable=unused-variable
+                _value,
+            ) in self.dic_attribute_widget_map.items():
+                if _value[3] is not None:
+                    _value[1].connect(_value[2], _value[3], _value[0], _value[4])
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
@@ -672,7 +685,7 @@ class RAMSTKPanel(RAMSTKFrame):
         combo.handler_block(combo.dic_handler_id["changed"])
 
         try:
-            _key = self._dic_attribute_keys[index][0]
+            _attribute = self._dic_attribute_index_map[index][0]
 
             _new_text = int(combo.get_active())
 
@@ -683,7 +696,9 @@ class RAMSTKPanel(RAMSTKFrame):
             # is) solution.
             if _new_text > -1:
                 pub.sendMessage(
-                    message, node_id=[self._record_id, -1], package={_key: _new_text}
+                    message,
+                    node_id=[self._record_id, -1],
+                    package={_attribute: _new_text},
                 )
         except (KeyError, ValueError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
@@ -729,7 +744,7 @@ class RAMSTKPanel(RAMSTKFrame):
         entry.handler_block(entry.dic_handler_id["changed"])
 
         _package: Dict[str, Any] = self.__do_read_text(
-            entry, self._dic_attribute_keys[index]
+            entry, self._dic_attribute_index_map[index]
         )
 
         entry.handler_unblock(entry.dic_handler_id["changed"])
@@ -773,7 +788,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def on_delete(self, tree: treelib.Tree) -> None:
+    def on_delete_treerow(self, tree: treelib.Tree) -> None:
         """Update the RAMSTKTreeView after deleting a line item.
 
         :param tree: the treelib Tree() containing the workflow module data.
@@ -825,8 +840,8 @@ class RAMSTKPanel(RAMSTKFrame):
         [[_key, _value]] = package.items()
 
         try:
-            _signal = self._dic_attribute_widget_map[_key][2]
-            _function = self._dic_attribute_widget_map[_key][3]
+            _signal = self.dic_attribute_widget_map[_key][2]
+            _function = self.dic_attribute_widget_map[_key][3]
             _function(_value, _signal)  # type: ignore
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
@@ -877,11 +892,11 @@ class RAMSTKPanel(RAMSTKFrame):
 
         _model, _row = selection.get_selected()
         if _row is not None:
-            for _attribute in self._dic_attribute_widget_map.items():
+            for _attribute in self.dic_attribute_widget_map.items():
                 _attributes[_attribute[0]] = _model.get_value(
                     _row,
                     self._lst_col_order[
-                        self._dic_attribute_widget_map[_attribute[0]][0]
+                        self.dic_attribute_widget_map[_attribute[0]][0]
                     ],
                 )
 
@@ -906,13 +921,15 @@ class RAMSTKPanel(RAMSTKFrame):
         _new_text: int = -1
 
         try:
-            _key = self._dic_attribute_keys[index][0]
+            _attribute = self.dic_attribute_index_map[index][0]
 
             _new_text = int(checkbutton.get_active())
             checkbutton.do_update(_new_text, signal="toggled")
 
             pub.sendMessage(
-                message, node_id=[self._record_id, -1, ""], package={_key: _new_text}
+                message,
+                node_id=[self._record_id, -1, ""],
+                package={_attribute: _new_text},
             )
 
         except KeyError:

@@ -105,5 +105,8 @@ class RAMSTKListBook(RAMSTKBaseBook):
         for _page in self.get_children():
             self.remove(_page)
 
-        for _list in self._dic_list_views[module]:
-            self.insert_page(_list, _list.hbx_tab_label, -1)
+        try:
+            for _list in self._dic_list_views[module]:
+                self.insert_page(_list, _list.hbx_tab_label, -1)
+        except KeyError:
+            pass

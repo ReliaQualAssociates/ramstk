@@ -94,5 +94,8 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         for _page in self.get_children():
             self.remove(_page)
 
-        for _workspace in self.dic_work_views[module]:
-            self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+        try:
+            for _workspace in self.dic_work_views[module]:
+                self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+        except KeyError:
+            pass

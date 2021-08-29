@@ -31,5 +31,6 @@ jobs:
                          {"keywords": ["type: test"], "labels": ["type: test"], "assignees": [""]},
                          {"keywords": ["type: major", "BREAKING"], "labels": ["bump: major"], "assignees": [""]},
                          {"keywords": ["bump: minor"], "labels": ["bump: minor"], "assignees": [""]},
-                         {"keywords": ["bump: patch"], "labels": ["bump: patch"], "assignees": [""]} ]'
+                         {"keywords": ["bump: patch"], "labels": ["bump: patch"], "assignees": [""]},
+                         {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.revision.moduleview.py is part of The RAMSTK Project
+#       ramstk.views.gtk3.revision.view.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK Revision GTK3 module view."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Revision Views."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -46,9 +46,7 @@ class RevisionModuleView(RAMSTKModuleView):
     # Define private scalar class attributes.
     _module: str = "revision"
     _tablabel: str = "Revision"
-    _tabtooltip: str = _(
-        "Displays the list of Revisions for the open RAMSTK " "Project."
-    )
+    _tabtooltip: str = _("Displays the list of Revisions for the open RAMSTK Project.")
 
     # Define public dictionary class attributes.
 
