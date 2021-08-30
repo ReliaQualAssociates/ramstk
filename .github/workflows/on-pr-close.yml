@@ -89,7 +89,7 @@ jobs:
             echo ::set-output name=title::"ci: set for release"
             echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version; set for release."
             echo ::set-output name=message::"ci: release v${{ steps.nextversion.outputs.next_version }}"
-            echo ::set-output name=branch::"release/${{ github.head_ref }}"
+            echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
           else
             echo ::set-output name=title::"ci: bump version files"
             echo ::set-output name=body::"Bump VERSION and pyproject.toml to next patch version."

@@ -387,13 +387,18 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             by this method.
         :rtype: dict
         """
-        entry.handler_block(entry.dic_handler_id["changed"])
+        try:
+            _handler_id = entry.dic_handler_id["changed"]
+        except KeyError:
+            _handler_id = entry.dic_handler_id["value-changed"]
+
+        entry.handler_block(_handler_id)
 
         _package: Dict[str, Any] = self.__do_read_text(
             entry, self.dic_attribute_index_map[index]
         )
 
-        entry.handler_unblock(entry.dic_handler_id["changed"])
+        entry.handler_unblock(_handler_id)
 
         pub.sendMessage(message, node_id=[self._record_id, -1], package=_package)
 
