@@ -30,7 +30,7 @@ from ramstk.views.gtk3.requirement import (
 from ramstk.views.gtk3.revision import RevisionWorkView
 
 # from ramstk.views.gtk3.similar_item import wvwSimilarItem
-# from ramstk.views.gtk3.validation import wvwBurndownCurve, wvwValidationGD
+from ramstk.views.gtk3.validation import ValidationGeneralDataView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
 
 
@@ -76,10 +76,10 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             #    wvwFMEA(configuration, logger),
             #    wvwPoF(configuration, logger),
             # ],
-            # "validation": [
-            #    wvwValidationGD(configuration, logger),
-            #    wvwBurndownCurve(configuration, logger),
-            # ],
+            "validation": [
+                ValidationGeneralDataView(configuration, logger),
+                #    wvwBurndownCurve(configuration, logger),
+            ],
         }
 
         # Initialize public list attributes.

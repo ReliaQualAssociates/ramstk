@@ -1,0 +1,1218 @@
+# -*- coding: utf-8 -*-
+#
+#       ramstk.views.gtk3.validation.panel.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Validation Panels."""
+
+# Standard Library Imports
+from datetime import date
+from typing import Dict, List, Tuple
+
+# Third Party Imports
+import treelib
+from pubsub import pub
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import Gdk, Gtk, _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKButton,
+    RAMSTKComboBox,
+    RAMSTKDateSelect,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    RAMSTKSpinButton,
+    RAMSTKTextView,
+    RAMSTKTreePanel,
+)
+
+
+class ValidationTreePanel(RAMSTKTreePanel):
+    """Panel to display flat list of validation tasks."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "succeed_retrieve_validations"
+    _tag = "validation"
+    _title = _("Verification Task List")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Validation panel."""
+        super().__init__()
+
+        # Initialize private dictionary class attributes.
+        self._dic_row_loader = {
+            "validation": self.__do_load_verification,
+        }
+
+        # Initialize private list class attributes.
+        self._lst_measurement_units: List[str] = []
+        self._lst_verification_types: List[str] = []
+
+        # Initialize private scalar class attributes.
+
+        # Initialize public dictionary class attributes.
+        self.dic_attribute_index_map = {
+            2: ["acceptable_maximum", "float"],
+            3: ["acceptable_mean", "float"],
+            4: ["acceptable_minimum", "float"],
+            5: ["acceptable_variance", "float"],
+            6: ["confidence", "float"],
+            7: ["cost_average", "float"],
+            9: ["cost_maximum", "float"],
+            11: ["cost_minimum", "float"],
+            14: ["date_end", "bool"],
+            15: ["date_start", "bool"],
+            16: ["description", "string"],
+            17: ["measurement_unit", "string"],
+            18: ["name", "string"],
+            19: ["status", "string"],
+            20: ["task_specification", "string"],
+            21: ["task_type", "string"],
+            22: ["time_average", "float"],
+            24: ["time_maximum", "float"],
+            26: ["time_minimum", "float"],
+        }
+        self.dic_attribute_widget_map = {
+            "revision_id": [
+                0,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+            ],
+            "validation_id": [
+                1,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+            ],
+            "acceptable_maximum": [
+                2,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "acceptable_mean": [
+                3,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "acceptable_minimum": [
+                4,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "acceptable_variance": [
+                5,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "confidence": [
+                6,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                95.0,
+            ],
+            "cost_average": [
+                7,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_ll": [
+                8,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_maximum": [
+                9,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_mean": [
+                10,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_minimum": [
+                11,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_ul": [
+                12,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "cost_variance": [
+                13,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "date_end": [
+                14,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                date.today(),
+            ],
+            "date_start": [
+                15,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                date.today(),
+            ],
+            "description": [
+                16,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                "",
+            ],
+            "measurement_unit": [
+                17,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                "",
+            ],
+            "name": [
+                18,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                "",
+            ],
+            "status": [
+                19,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "task_specification": [
+                20,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                "",
+            ],
+            "task_type": [
+                21,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                "",
+            ],
+            "time_average": [
+                22,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_ll": [
+                23,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_maximum": [
+                24,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_mean": [
+                25,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_minimum": [
+                26,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_ul": [
+                27,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+            "time_variance": [
+                28,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                "mvw_editing_validation",
+                0.0,
+            ],
+        }
+
+        # Initialize public list class attributes.
+
+        # Initialize public scalar class attributes.
+
+        super().do_make_panel()
+        super().do_set_properties()
+        super().do_set_callbacks()
+
+        self.tvwTreeView.set_tooltip_text(
+            _("Displays the hierarchical list of validations.")
+        )
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+
+    def do_load_measurement_units(
+        self, measurement_unit: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the verification task measurement unit list.
+
+        :param measurement_unit: the dict containing the units of measure.
+        :return: None
+        """
+        self._lst_measurement_units = [""]
+
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["col17"]
+        ).get_cells()[0]
+        _cell.set_property("has-entry", False)
+        _cellmodel = _cell.get_property("model")
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(measurement_unit):
+            self._lst_measurement_units.append(measurement_unit[_key][1])
+            _cellmodel.append([measurement_unit[_key][1]])
+
+    def do_load_verification_types(
+        self, verification_type: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the verification task type list.
+
+        :param verification_type: the dict containing the verification task
+            types.
+        :return: None
+        """
+        self._lst_verification_types = [""]
+
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["col21"]
+        ).get_cells()[0]
+        _cell.set_property("has-entry", False)
+        _cellmodel = _cell.get_property("model")
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(verification_type):
+            self._lst_verification_types.append(verification_type[_key][1])
+            _cellmodel.append([verification_type[_key][1]])
+
+    def _on_module_switch(self, module: str = "") -> None:
+        """Respond to changes in selected Module View module (tab).
+
+        :param module: the name of the module that was just selected.
+        :return: None
+        """
+        _model, _row = self.tvwTreeView.selection.get_selected()
+
+        if module == "validation" and _row is not None:
+            _code = _model.get_value(_row, self._lst_col_order[5])
+            _name = _model.get_value(_row, self._lst_col_order[15])
+            _title = _("Analyzing Validation {0}: {1}").format(str(_code), str(_name))
+
+            pub.sendMessage("request_set_title", title=_title)
+
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Handle events for the Validation Module View RAMSTKTreeView().
+
+        This method is called whenever a Validation Module View
+        RAMSTKTreeView() row is activated/changed.
+
+        :param selection: the Validation class Gtk.TreeSelection().
+        :return: None
+        """
+        _attributes = super().on_row_change(selection)
+
+        if _attributes:
+            self._record_id = _attributes["validation_id"]
+
+            _title = _("Analyzing Verification Task {0}").format(
+                str(_attributes["name"])
+            )
+
+            pub.sendMessage(
+                "selected_validation",
+                attributes=_attributes,
+            )
+            pub.sendMessage(
+                "request_get_validation_attributes",
+                node_id=self._record_id,
+                table="validation",
+            )
+            pub.sendMessage(
+                "request_set_title",
+                title=_title,
+            )
+
+    def __do_load_verification(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
+        """Load a verification task into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the mode to load into the requirement
+            tree.
+        :return: _new_row; the row that was just populated with requirement
+            data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
+
+        _model = self.tvwTreeView.get_model()
+
+        _measurement_unit = self._lst_measurement_units[_entity.measurement_unit]
+        _task_type = self._lst_verification_types[_entity.task_type]
+
+        _attributes = [
+            _entity.revision_id,
+            _entity.validation_id,
+            _entity.acceptable_maximum,
+            _entity.acceptable_mean,
+            _entity.acceptable_minimum,
+            _entity.acceptable_variance,
+            _entity.confidence,
+            _entity.cost_average,
+            _entity.cost_ll,
+            _entity.cost_maximum,
+            _entity.cost_mean,
+            _entity.cost_minimum,
+            _entity.cost_ul,
+            _entity.cost_variance,
+            str(_entity.date_end),
+            str(_entity.date_start),
+            _entity.description,
+            _measurement_unit,
+            _entity.name,
+            _entity.status,
+            _entity.task_specification,
+            _task_type,
+            _entity.time_average,
+            _entity.time_ll,
+            _entity.time_maximum,
+            _entity.time_mean,
+            _entity.time_minimum,
+            _entity.time_ul,
+            _entity.time_variance,
+        ]
+
+        try:
+            _new_row = _model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _new_row = None
+            _error_msg = _(
+                "An error occurred when loading verification task {0} in the "
+                "verification task list.  This might indicate it was missing "
+                "it's data package, some of the data in the package was "
+                "missing, or some of the data was the wrong type.  Row data "
+                "was: {1}"
+            ).format(str(node.identifier), _attributes)
+            pub.sendMessage(
+                "do_log_warning_msg",
+                logger_name="WARNING",
+                message=_error_msg,
+            )
+
+        return _new_row
+
+
+class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
+    """Panel to display general data about the selected Validation task."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _record_field = "validation_id"
+    _select_msg = "selected_validation"
+    _tag = "validation"
+    _title = _("Verification Task Description")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Validation Task Description panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.btnEndDate: RAMSTKButton = RAMSTKButton()
+        self.btnStartDate: RAMSTKButton = RAMSTKButton()
+        self.cmbTaskType: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbMeasurementUnit: RAMSTKComboBox = RAMSTKComboBox()
+        self.spnStatus: RAMSTKSpinButton = RAMSTKSpinButton()
+        self.txtTaskID: RAMSTKEntry = RAMSTKEntry()
+        self.txtCode: RAMSTKEntry = RAMSTKEntry()
+        self.txtMaxAcceptable: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanAcceptable: RAMSTKEntry = RAMSTKEntry()
+        self.txtMinAcceptable: RAMSTKEntry = RAMSTKEntry()
+        self.txtVarAcceptable: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
+        self.txtTask: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtEndDate: RAMSTKEntry = RAMSTKEntry()
+        self.txtStartDate: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dict instance attributes.
+        self._dic_task_types: Dict[int, List[str]] = {}
+        self._dic_units: Dict[int, str] = {}
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            2: ["acceptable_maximum", "string"],
+            3: ["acceptable_mean", "string"],
+            4: ["acceptable_minimum", "string"],
+            5: ["acceptable_variance", "bool"],
+            14: ["date_end", "bool"],
+            15: ["date_start", "bool"],
+            16: ["description", "bool"],
+            17: ["measurement_unit", "bool"],
+            19: ["status", "bool"],
+            20: ["task_specification", "bool"],
+            21: ["task_type", "bool"],
+        }
+        self.dic_attribute_widget_map = {
+            "validation_id": [
+                1,
+                self.txtTaskID,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 50,
+                    "editable": False,
+                },
+                _("Task ID:"),
+            ],
+            "name": [
+                18,
+                self.txtCode,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                "",
+                {
+                    "width": 50,
+                    "editable": False,
+                    "tooltip": _("Displays the ID of the selected V&amp;V activity."),
+                },
+                _("Task Code:"),
+            ],
+            "description": [
+                16,
+                self.txtTask,
+                "changed",
+                super().on_changed_textview,
+                "mvw_editing_validation",
+                "",
+                {
+                    "height": 100,
+                    "width": 500,
+                    "tooltip": _(
+                        "Displays the description of the selected V&amp;V activity."
+                    ),
+                },
+                _("Task Description:"),
+            ],
+            "task_type": [
+                21,
+                self.cmbTaskType,
+                "changed",
+                super().on_changed_combo,
+                "mvw_editing_validation",
+                "",
+                {
+                    "tooltip": _(
+                        "Selects and displays the type of task for the selected "
+                        "V&amp;V activity."
+                    ),
+                },
+                _("Task Type:"),
+            ],
+            "task_specification": [
+                20,
+                self.txtSpecification,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                "",
+                {
+                    "tooltip": _(
+                        "Displays the internal or industry specification or procedure "
+                        "governing the selected V&amp;V activity."
+                    ),
+                },
+                _("Specification:"),
+            ],
+            "measurement_unit": [
+                17,
+                self.cmbMeasurementUnit,
+                "changed",
+                super().on_changed_combo,
+                "mvw_editing_validation",
+                "",
+                {
+                    "tooltip": _(
+                        "Selects and displays the measurement unit for the selected "
+                        "V&amp;V activity acceptance parameter."
+                    ),
+                },
+                _("Measurement Unit:"),
+            ],
+            "acceptable_minimum": [
+                4,
+                self.txtMinAcceptable,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the minimum acceptable value for the selected "
+                        "V&amp;V activity."
+                    ),
+                },
+                _("Min. Acceptable:"),
+            ],
+            "acceptable_maximum": [
+                2,
+                self.txtMaxAcceptable,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the maximum acceptable value for the selected "
+                        "V&amp;V activity."
+                    ),
+                },
+                _("Max. Acceptable:"),
+            ],
+            "acceptable_mean": [
+                3,
+                self.txtMeanAcceptable,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the mean acceptable value for the selected V&amp;V "
+                        "activity."
+                    ),
+                },
+                _("Mean Acceptable:"),
+            ],
+            "acceptable_variance": [
+                5,
+                self.txtVarAcceptable,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the acceptable variance for the selected V&amp;V "
+                        "activity."
+                    ),
+                },
+                _("Variance:"),
+            ],
+            "date_start": [
+                15,
+                self.txtStartDate,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                date.today(),
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the date the selected V&amp;V activity is scheduled "
+                        "to start."
+                    ),
+                },
+                _("Start Date:"),
+            ],
+            "date_end": [
+                14,
+                self.txtEndDate,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                date.today(),
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Displays the date the selected V&amp;V activity is scheduled "
+                        "to end."
+                    ),
+                },
+                _("Start End:"),
+            ],
+            "status": [
+                19,
+                self.spnStatus,
+                "value-changed",
+                super().on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "limits": [0, 0, 100, 1, 0.1],
+                    "numeric": True,
+                    "ticks": True,
+                    "tooltip": _(
+                        "Displays % complete of the selected V&amp;V activity."
+                    ),
+                },
+                _("% Complete:"),
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.btnEndDate.connect(
+            "button-release-event", self._do_select_date, self.txtEndDate
+        )
+        self.btnStartDate.connect(
+            "button-release-event", self._do_select_date, self.txtStartDate
+        )
+        self.cmbTaskType.connect("changed", self._do_make_task_code)
+
+        # Subscribe to PyPubSub messages.
+
+    def do_load_measurement_units(
+        self, measurement_unit: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the measurement units RAMSTKComboBox().
+
+        :param measurement_unit: the list of measurement units to load.  The
+            key is an integer representing the ID field in the database.  The
+            value is a tuple with a unit abbreviation, unit name, and generic
+            unit type.  For example:
+
+            ('lbf', 'Pounds Force', 'unit')
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.cmbMeasurementUnit.get_model()
+        _model.clear()
+
+        _units = []
+        for _index, _key in enumerate(measurement_unit):
+            self._dic_units[_index + 1] = measurement_unit[_key][1]
+            _units.append([measurement_unit[_key][1]])
+        self.cmbMeasurementUnit.do_load_combo(entries=_units)
+
+    def do_load_validation_types(
+        self, validation_type: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the validation task types RAMSTKComboBox().
+
+        :param validation_type: a dict of validation task types.  The key is an
+            integer representing the ID field in the database.  The value is a
+            tuple with a task code, task name, and generic task type.  For
+            example:
+
+            ('RAA', 'Reliability, Assessment', 'validation')
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.cmbTaskType.get_model()
+        _model.clear()
+
+        _task_types = []
+        for _index, _key in enumerate(validation_type):
+            self._dic_task_types[_index + 1] = [
+                validation_type[_key][0],
+                validation_type[_key][1],
+            ]
+            _task_types.append([validation_type[_key][1]])
+        self.cmbTaskType.do_load_combo(entries=_task_types)
+
+    def _do_make_task_code(self, combo: RAMSTKComboBox) -> None:
+        """Create the validation task code.
+
+        This method builds the task code based on the task type and the task
+        ID.  The code created has the form:
+
+            task type 3-letter abbreviation-task ID
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        :rtype: None
+        """
+        try:
+            _index = combo.get_active()
+
+            _task_type = self._dic_task_types[_index][0]
+            _task_code = "{0:s}-{1:04d}".format(_task_type, int(self._record_id))
+
+            self.txtCode.do_update(str(_task_code), signal="changed")
+
+            pub.sendMessage(
+                "wvw_editing_validation",
+                node_id=[self._record_id, -1, ""],
+                package={"name": _task_code},
+            )
+        except (AttributeError, KeyError):
+            pass
+
+    @staticmethod
+    def _do_select_date(
+        __button: RAMSTKButton, __event: Gdk.Event, entry: RAMSTKEntry
+    ) -> str:
+        """Request to launch a date selection dialog.
+
+        This method is used to select the validation date for the Validation.
+
+        :param __button: the ramstk.RAMSTKButton() that called this method.
+        :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
+        :param __event: the Gdk.Event() that called this method.
+        :type __event: :class:`Gdk.Event`
+        :param entry: the Gtk.Entry() that the new date should be displayed in.
+        :type entry: :class:`Gtk.Entry`
+        :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
+        :rtype: str
+        """
+        _dialog: RAMSTKDateSelect = RAMSTKDateSelect()
+
+        _date = _dialog.do_run()
+        _dialog.do_destroy()
+
+        entry.set_text(str(_date))
+
+        return _date
+
+
+class ValidationTaskEffortPanel(RAMSTKFixedPanel):
+    """Panel to display effort data about the selected Validation task."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _record_field = "validation_id"
+    _select_msg = "selected_validation"
+    _tag = "validation"
+    _title = _("Verification Task Effort")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Validation Task Effort panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.txtMinTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtExpTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtMaxTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtMinCost: RAMSTKEntry = RAMSTKEntry()
+        self.txtExpCost: RAMSTKEntry = RAMSTKEntry()
+        self.txtMaxCost: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanTimeLL: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanTime: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanTimeUL: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanCostLL: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanCost: RAMSTKEntry = RAMSTKEntry()
+        self.txtMeanCostUL: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            7: ["cost_average", "float"],
+            9: ["cost_maximum", "float"],
+            11: ["cost_minimum", "float"],
+            22: ["time_average", "float"],
+            24: ["time_maximum", "float"],
+            26: ["time_minimum", "float"],
+        }
+        self.dic_attribute_widget_map = {
+            "time_minimum": [
+                26,
+                self.txtMinTime,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Minimum person-time needed to complete the selected task."
+                    ),
+                },
+                _("Min. Task Time:"),
+            ],
+            "time_average": [
+                22,
+                self.txtExpTime,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Most likely person-time needed to complete the selected task."
+                    ),
+                },
+                _("Most Likely Task Time:"),
+            ],
+            "time_maximum": [
+                24,
+                self.txtMaxTime,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "Maximum person-time needed to complete the selected task."
+                    ),
+                },
+                _("Max. Task Time:"),
+            ],
+            "time_ll": [
+                23,
+                self.txtMeanTimeLL,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                "",
+            ],
+            "time_mean": [
+                25,
+                self.txtMeanTime,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                _("Task Time (95% Confidence):"),
+            ],
+            "time_ul": [
+                27,
+                self.txtMeanTimeUL,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                "",
+            ],
+            "cost_minimum": [
+                11,
+                self.txtMinCost,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _("Minimim cost of the selected task."),
+                },
+                _("Min. Task Cost:"),
+            ],
+            "cost_average": [
+                7,
+                self.txtExpCost,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _("Most likely cost of the selected task."),
+                },
+                _("Most Likely Task Cost:"),
+            ],
+            "cost_maximum": [
+                9,
+                self.txtMaxCost,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "tooltip": _("Maximum cost of the selected task."),
+                },
+                _("Max. Task Cost:"),
+            ],
+            "cost_ll": [
+                8,
+                self.txtMeanCostLL,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                "",
+            ],
+            "cost_mean": [
+                10,
+                self.txtMeanCost,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                _("Task Cost (95% Confidence):"),
+            ],
+            "cost_ul": [
+                12,
+                self.txtMeanCostUL,
+                "changed",
+                self.on_changed_entry,
+                "mvw_editing_validation",
+                0.0,
+                {
+                    "width": 100,
+                    "editable": False,
+                },
+                "",
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        super().do_set_properties()
+        super().do_make_panel()
+        self.__do_adjust_widgets()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+
+    def _do_load_code(self, task_code: int) -> None:
+        """Load the Validation code RAMSTKEntry().
+
+        :param task_code: the Validation code to load.
+        :return: None
+        :rtype: None
+        """
+        self.txtCode.do_update(str(task_code), signal="changed")
+
+    def _do_make_task_code(self, task_type: str) -> str:
+        """Create the validation task code.
+
+        This method builds the task code based on the task type and the task
+        ID.  The code created has the form:
+
+            task type 3-letter abbreviation-task ID
+
+        :param task_type: the three letter abbreviation for the task type.
+        :return: _code
+        :rtype: str
+        """
+        _code = ""
+
+        # Update the Validation task name for the selected Validation task.
+        _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
+        # pylint: disable=unused-variable
+        for __, _type in _types.items():
+            if _type[1] == task_type:
+                _code = "{0:s}-{1:04d}".format(_type[0], int(self._record_id))
+
+        pub.sendMessage(
+            "wvw_editing_validation",
+            node_id=[self._record_id, -1, ""],
+            package={"name": _code},
+        )
+
+        return _code
+
+    @staticmethod
+    def _do_select_date(
+        __button: RAMSTKButton, __event: Gdk.Event, entry: RAMSTKEntry
+    ) -> str:
+        """Request to launch a date selection dialog.
+
+        This method is used to select the validation date for the Validation.
+
+        :param __button: the ramstk.RAMSTKButton() that called this method.
+        :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
+        :param __event: the Gdk.Event() that called this method.
+        :type __event: :class:`Gdk.Event`
+        :param entry: the Gtk.Entry() that the new date should be displayed in.
+        :type entry: :class:`Gtk.Entry`
+        :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
+        :rtype: str
+        """
+        _dialog: RAMSTKDateSelect = RAMSTKDateSelect()
+
+        _date = _dialog.do_run()
+        _dialog.do_destroy()
+
+        entry.set_text(str(_date))
+
+        return _date
+
+    def _on_calculate_task(self, tree: treelib.Tree) -> None:
+        """Wrap _do_load_panel() on successful task calculation.
+
+        :param tree: the validation treelib.Tree().
+        :return: None
+        :rtype: None
+        """
+        _attributes = tree.get_node(self._record_id).data["validation"].get_attributes()
+        self._do_load_panel(_attributes)
+
+    def __do_adjust_widgets(self) -> None:
+        """Adjust position of some widgets.
+
+        :return: None
+        :rtype: None
+        """
+        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_children()[0]
+
+        _time_entry: RAMSTKEntry = _fixed.get_children()[9]
+        _cost_entry: RAMSTKEntry = _fixed.get_children()[21]
+
+        # We add the mean time and mean time UL to the same y position as
+        # the mean time LL widget.
+        _x_pos: int = _fixed.child_get_property(_time_entry, "x")
+        _y_pos: int = _fixed.child_get_property(_time_entry, "y")
+        _fixed.move(self.txtMeanTimeLL, _x_pos, _y_pos)
+        _fixed.move(self.txtMeanTime, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
+
+        # We add the mean cost and mean cost UL to the same y position as
+        # the mean cost LL widget.
+        _x_pos = _fixed.child_get_property(_cost_entry, "x")
+        _y_pos = _fixed.child_get_property(_cost_entry, "y")
+        _fixed.move(self.txtMeanCostLL, _x_pos, _y_pos)
+        _fixed.move(self.txtMeanCost, _x_pos + 175, _y_pos)
+        _fixed.move(self.txtMeanCostUL, _x_pos + 350, _y_pos)
