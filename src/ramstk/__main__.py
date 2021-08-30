@@ -340,7 +340,9 @@ def the_one_ring() -> None:
         message="Initializing the RAMSTK application.",
     )
 
-    _program_db = do_initialize_databases(user_configuration, site_db)
+    _program_db = do_initialize_databases(  # pylint: disable=unused-variable
+        user_configuration, site_db
+    )
 
     pub.sendMessage(
         "do_log_info_msg",
