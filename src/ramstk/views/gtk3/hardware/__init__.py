@@ -45,7 +45,8 @@ ATTRIBUTE_KEYS = {
 }
 
 # RAMSTK Local Imports
-from .moduleview import ModuleView as mvwHardware
+from .panel import HardwareTreePanel
+from .view import HardwareModuleView
 from .workview import AssessmentInputs as wvwHardwareAI
 from .workview import AssessmentResults as wvwHardwareAR
 from .workview import GeneralData as wvwHardwareGD

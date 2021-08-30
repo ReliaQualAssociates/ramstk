@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.books.workbook.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Work Book Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Work Book."""
 
 # Standard Library Imports
 from typing import Dict, List

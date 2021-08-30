@@ -298,7 +298,7 @@ dupcheck:
 # Targets for managing RAMSTK documentation.
 lintdocs:
 	$(info Linting documentation ...)
-	$(RSTCHECK) -r docs/api docs/user
+	$(RSTCHECK) --config ./pyproject.toml -r docs/api docs/user
 
 apidocs:
 	sphinx-apidoc -f -o docs/api src/ramstk

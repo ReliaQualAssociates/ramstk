@@ -25,15 +25,21 @@ from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
     RAMSTKAllocationTable,
+    RAMSTKDesignElectricTable,
+    RAMSTKDesignMechanicTable,
     RAMSTKFailureDefinitionTable,
     RAMSTKFMEAView,
     RAMSTKFunctionTable,
     RAMSTKHardwareBoMView,
+    RAMSTKHardwareTable,
     RAMSTKHazardTable,
+    RAMSTKMILHDBK217FTable,
+    RAMSTKNSWCTable,
     RAMSTKPoFView,
     RAMSTKProgramDB,
     RAMSTKProgramInfoTable,
     RAMSTKProgramStatusTable,
+    RAMSTKReliabilityTable,
     RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
@@ -268,7 +274,15 @@ def the_one_ring() -> None:
     _program_mgr.dic_managers["requirement"]["data"] = RAMSTKRequirementTable()
     _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
     _program_mgr.dic_managers["stakeholder"]["data"] = RAMSTKStakeholderTable()
-    _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()
+    _program_mgr.dic_managers["hardware"]["data"] = [
+        RAMSTKDesignElectricTable(),
+        RAMSTKDesignMechanicTable(),
+        RAMSTKHardwareTable(),
+        RAMSTKMILHDBK217FTable(),
+        RAMSTKNSWCTable(),
+        RAMSTKReliabilityTable(),
+        RAMSTKHardwareBoMView(),
+    ]
     _program_mgr.dic_managers["failure_definition"][
         "data"
     ] = RAMSTKFailureDefinitionTable()

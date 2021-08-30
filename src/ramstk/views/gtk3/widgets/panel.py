@@ -706,7 +706,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, self._select_msg)
-        pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
+        # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
         pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
         pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
 
