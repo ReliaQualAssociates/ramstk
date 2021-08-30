@@ -5,7 +5,8 @@ from typing import Any, Dict
 from ramstk.db import BaseDatabase
 
 class RAMSTKProgramDB:
-    dic_managers: Any
+    dic_tables: Any
+    dic_views: Any
     user_configuration: Any
     program_dao: Any
     def __init__(self) -> None: ...

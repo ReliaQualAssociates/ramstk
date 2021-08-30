@@ -309,7 +309,7 @@ docs: clean-docs
 
 # Targets for creating and publishing RAMSTK packages.
 packchk:
-	$(PYROMA) .
+	$(POETRY) check
 
 build: clean
 	$(info Creating source distribution and wheel ...)
