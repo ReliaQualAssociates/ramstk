@@ -199,6 +199,7 @@ persistent = true
 extension-pkg-whitelist = [
 	'pango'
 ]
+disable = ['duplicate-code']
 
 [tool.pylint.messages_control]
 disable = [

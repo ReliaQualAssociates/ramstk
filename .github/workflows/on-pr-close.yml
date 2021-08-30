@@ -7,6 +7,20 @@ on:
     types: [closed]
 
 jobs:
+  packaging_error_check:
+    name: Check for Packaging Errors
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Check for packaging errors
+        run: |
+          pip install -U pip setuptools>12.0 urllib3 poetry
+          make packchk
+
   bump_version:
     name: Update Version Files
     runs-on: ubuntu-latest
