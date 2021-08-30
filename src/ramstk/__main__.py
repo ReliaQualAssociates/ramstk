@@ -24,21 +24,38 @@ from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
+    RAMSTKActionTable,
     RAMSTKAllocationTable,
+    RAMSTKCauseTable,
+    RAMSTKControlTable,
+    RAMSTKDesignElectricTable,
+    RAMSTKDesignMechanicTable,
+    RAMSTKEnvironmentTable,
     RAMSTKFailureDefinitionTable,
     RAMSTKFMEAView,
     RAMSTKFunctionTable,
     RAMSTKHardwareBoMView,
+    RAMSTKHardwareTable,
     RAMSTKHazardTable,
+    RAMSTKMechanismTable,
+    RAMSTKMILHDBK217FTable,
+    RAMSTKMissionPhaseTable,
+    RAMSTKMissionTable,
+    RAMSTKModeTable,
+    RAMSTKNSWCTable,
+    RAMSTKOpLoadTable,
+    RAMSTKOpStressTable,
     RAMSTKPoFView,
     RAMSTKProgramDB,
     RAMSTKProgramInfoTable,
     RAMSTKProgramStatusTable,
+    RAMSTKReliabilityTable,
     RAMSTKRequirementTable,
     RAMSTKRevisionTable,
     RAMSTKSimilarItemTable,
     RAMSTKSiteInfoTable,
     RAMSTKStakeholderTable,
+    RAMSTKTestMethodTable,
     RAMSTKUsageProfileView,
     RAMSTKValidationTable,
 )
@@ -80,8 +97,8 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
     """Raise dialog to setup site database.
 
     :param configuration: the RAMSTKSiteConfiguration() instance.
-    :return: _site_db
-    :rtype: dict
+    :return: None
+    :rtype: None
     """
     _dialog = RAMSTKDatabaseSelect(
         dlgtitle=_("Set up RAMSTK Site Database Server Connection"),
@@ -109,6 +126,64 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
         sys.exit(0)
 
     _dialog.do_destroy()
+
+
+def do_initialize_databases(
+    configuration: RAMSTKUserConfiguration, site_db: BaseDatabase
+) -> RAMSTKProgramDB:
+    """Initialize the databases for the current instance of RAMSTK.
+
+    :param configuration: the instance of the user configuration object to associate
+        with this database model.
+    :param site_db: the instance of the site data access object to associate with
+        this database model.
+    :return: _program_db
+    :rtype: RAMSTKProgramDB
+    """
+    _program_db = RAMSTKProgramDB()
+    _program_db.dic_tables["action"] = RAMSTKActionTable()
+    _program_db.dic_tables["allocation"] = RAMSTKAllocationTable()
+    _program_db.dic_tables["cause"] = RAMSTKCauseTable()
+    _program_db.dic_tables["control"] = RAMSTKControlTable()
+    _program_db.dic_tables["design_electric"] = RAMSTKDesignElectricTable()
+    _program_db.dic_tables["design_mechanic"] = RAMSTKDesignMechanicTable()
+    _program_db.dic_tables["environment"] = RAMSTKEnvironmentTable()
+    _program_db.dic_tables["failure_definition"] = RAMSTKFailureDefinitionTable()
+    _program_db.dic_tables["function"] = RAMSTKFunctionTable()
+    _program_db.dic_tables["hardware"] = RAMSTKHardwareTable()
+    _program_db.dic_tables["hazards"] = RAMSTKHazardTable()
+    _program_db.dic_tables["mechanism"] = RAMSTKMechanismTable()
+    _program_db.dic_tables["milhdbk217f"] = RAMSTKMILHDBK217FTable()
+    _program_db.dic_tables["mission"] = RAMSTKMissionTable()
+    _program_db.dic_tables["mission_phase"] = RAMSTKMissionPhaseTable()
+    _program_db.dic_tables["mode"] = RAMSTKModeTable()
+    _program_db.dic_tables["nswc"] = RAMSTKNSWCTable()
+    _program_db.dic_tables["opload"] = RAMSTKOpLoadTable()
+    _program_db.dic_tables["opstress"] = RAMSTKOpStressTable()
+    _program_db.dic_tables["program_info"] = RAMSTKProgramInfoTable()
+    _program_db.dic_tables["program_status"] = RAMSTKProgramStatusTable()
+    _program_db.dic_tables["reliability"] = RAMSTKReliabilityTable()
+    _program_db.dic_tables["requirement"] = RAMSTKRequirementTable()
+    _program_db.dic_tables["revision"] = RAMSTKRevisionTable()
+    _program_db.dic_tables["similar_item"] = RAMSTKSimilarItemTable()
+    _program_db.dic_tables["stakeholder"] = RAMSTKStakeholderTable()
+    _program_db.dic_tables["test_method"] = RAMSTKTestMethodTable()
+    _program_db.dic_tables["validation"] = RAMSTKValidationTable()
+    _program_db.dic_tables["export"] = Export()
+    _program_db.dic_tables["import"] = Import()
+    _program_db.user_configuration = configuration
+
+    # noinspection PyTypeChecker
+    _program_db.dic_tables["options"] = RAMSTKSiteInfoTable()
+    _program_db.dic_tables["options"].dao = site_db
+    _program_db.dic_tables["options"].do_select_all({"site_id": 1})
+
+    _program_db.dic_views["fmea"] = RAMSTKFMEAView()
+    _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView()
+    _program_db.dic_views["pof"] = RAMSTKPoFView()
+    _program_db.dic_views["usage_profile"] = RAMSTKUsageProfileView()
+
+    return _program_db
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -170,6 +245,10 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     _configuration.set_site_directories()
     _configuration.get_site_configuration()
 
+    if _configuration.RAMSTK_COM_INFO["user"] == "first_run":
+        do_first_run(_configuration)
+        _configuration.set_site_configuration()
+
     pub.sendMessage(
         "do_log_info_msg",
         logger_name="INFO",
@@ -230,11 +309,12 @@ def the_one_ring() -> None:
     # //
     # // labels: globalbacklog, normal
     # splScreen = SplashScreen()
-    site_configuration = do_read_site_configuration()
+    # If you don't do this, the splash screen will show, but won't render it's
+    # contents
+    # while Gtk.events_pending():
+    #     Gtk.main_iteration()
 
-    if site_configuration.RAMSTK_COM_INFO["user"] == "first_run":
-        do_first_run(site_configuration)
-        site_configuration.set_site_configuration()
+    site_configuration = do_read_site_configuration()
 
     # Read the user configuration file and create a logger.  The user
     # configuration file contains information needed to create the logger so
@@ -260,32 +340,9 @@ def the_one_ring() -> None:
         message="Initializing the RAMSTK application.",
     )
 
-    _program_mgr = RAMSTKProgramDB()
-    _program_mgr.dic_managers["allocation"]["data"] = RAMSTKAllocationTable()
-    _program_mgr.dic_managers["revision"]["data"] = RAMSTKRevisionTable()
-    _program_mgr.dic_managers["function"]["data"] = RAMSTKFunctionTable()
-    _program_mgr.dic_managers["hazards"]["data"] = RAMSTKHazardTable()
-    _program_mgr.dic_managers["requirement"]["data"] = RAMSTKRequirementTable()
-    _program_mgr.dic_managers["similar_item"]["data"] = RAMSTKSimilarItemTable()
-    _program_mgr.dic_managers["stakeholder"]["data"] = RAMSTKStakeholderTable()
-    _program_mgr.dic_managers["hardware"]["data"] = RAMSTKHardwareBoMView()
-    _program_mgr.dic_managers["failure_definition"][
-        "data"
-    ] = RAMSTKFailureDefinitionTable()
-    _program_mgr.dic_managers["fmea"]["data"] = RAMSTKFMEAView()
-    _program_mgr.dic_managers["pof"]["data"] = RAMSTKPoFView()
-    _program_mgr.dic_managers["preferences"]["data"] = RAMSTKProgramInfoTable()
-    _program_mgr.dic_managers["program_status"]["data"] = RAMSTKProgramStatusTable()
-    _program_mgr.dic_managers["usage_profile"]["data"] = RAMSTKUsageProfileView()
-    _program_mgr.dic_managers["validation"]["data"] = RAMSTKValidationTable()
-    _program_mgr.dic_managers["exim"]["export"] = Export()
-    _program_mgr.dic_managers["exim"]["import"] = Import()
-    _program_mgr.user_configuration = user_configuration
-
-    # noinspection PyTypeChecker
-    _program_mgr.dic_managers["options"]["data"] = RAMSTKSiteInfoTable()
-    _program_mgr.dic_managers["options"]["data"].dao = site_db
-    _program_mgr.dic_managers["options"]["data"].do_select_all({"site_id": 1})
+    _program_db = do_initialize_databases(  # pylint: disable=unused-variable
+        user_configuration, site_db
+    )
 
     pub.sendMessage(
         "do_log_info_msg",
@@ -296,14 +353,6 @@ def the_one_ring() -> None:
         "do_log_info_msg", logger_name="INFO", message="Launching RAMSTK GUI."
     )
 
-    # If you don't do this, the splash screen will show, but won't render it's
-    # contents
-    # while Gtk.events_pending():
-    #     Gtk.main_iteration()
-
-    sleep(1)
-    # splScreen.window.destroy()
-
     # Create the RAMSTK Book.  This needs to be initialized after reading the
     # configuration and creating the logger.
     RAMSTKDesktop([user_configuration, site_configuration], _logger)
@@ -313,5 +362,8 @@ def the_one_ring() -> None:
         logger_name="INFO",
         message="Launched RAMSTK GUI.",
     )
+
+    sleep(1)
+    # splScreen.window.destroy()
 
     Gtk.main()

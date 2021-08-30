@@ -106,37 +106,37 @@ class TestProgramManager:
         )
 
     @pytest.mark.unit
-    def test_create_program_manager(self):
+    def test_create_program_manager(self, test_datamanager):
         """__init__() should create an instance of the RAMSTK program manager."""
-        DUT = RAMSTKProgramDB()
-
-        assert isinstance(DUT, RAMSTKProgramDB)
-        assert isinstance(DUT.dic_managers, dict)
-        assert DUT.dic_managers["revision"] == {"data": None}
-        assert DUT.dic_managers["function"] == {"data": None}
-        assert DUT.dic_managers["allocation"] == {"data": None}
-        assert DUT.dic_managers["requirement"] == {"data": None}
-        assert DUT.dic_managers["similar_item"] == {"data": None}
-        assert DUT.dic_managers["stakeholder"] == {"data": None}
-        assert DUT.dic_managers["hardware"] == {"data": None}
-        assert DUT.dic_managers["fmea"] == {"data": None}
-        assert DUT.dic_managers["options"] == {"data": None}
-        assert DUT.dic_managers["pof"] == {"data": None}
-        assert DUT.dic_managers["preferences"] == {"data": None}
-        assert DUT.dic_managers["program_status"] == {"data": None}
-        assert DUT.dic_managers["validation"] == {"data": None}
-        assert DUT.dic_managers["options"] == {"data": None}
-        assert isinstance(DUT.program_dao, BaseDatabase)
-        assert pub.isSubscribed(DUT.do_create_program, "request_create_program")
-        assert pub.isSubscribed(DUT.do_open_program, "request_open_program")
-        assert pub.isSubscribed(DUT.do_close_program, "request_close_program")
-        assert pub.isSubscribed(DUT.do_save_program, "request_update_program")
-
-        # Unsubscribe from pypubsub topics.
-        pub.unsubscribe(DUT.do_create_program, "request_create_program")
-        pub.unsubscribe(DUT.do_open_program, "request_open_program")
-        pub.unsubscribe(DUT.do_close_program, "request_close_program")
-        pub.unsubscribe(DUT.do_save_program, "request_update_program")
+        assert isinstance(test_datamanager, RAMSTKProgramDB)
+        assert isinstance(test_datamanager.dic_tables, dict)
+        assert test_datamanager.dic_tables["revision"] == object
+        assert test_datamanager.dic_tables["function"] == object
+        assert test_datamanager.dic_tables["allocation"] == object
+        assert test_datamanager.dic_tables["requirement"] == object
+        assert test_datamanager.dic_tables["similar_item"] == object
+        assert test_datamanager.dic_tables["stakeholder"] == object
+        assert test_datamanager.dic_tables["hardware"] == object
+        assert test_datamanager.dic_tables["options"] == object
+        assert test_datamanager.dic_tables["program_info"] == object
+        assert test_datamanager.dic_tables["program_status"] == object
+        assert test_datamanager.dic_tables["validation"] == object
+        assert test_datamanager.dic_tables["options"] == object
+        assert test_datamanager.dic_views["fmea"] == object
+        assert test_datamanager.dic_views["pof"] == object
+        assert isinstance(test_datamanager.program_dao, BaseDatabase)
+        assert pub.isSubscribed(
+            test_datamanager.do_create_program, "request_create_program"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_open_program, "request_open_program"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_close_program, "request_close_program"
+        )
+        assert pub.isSubscribed(
+            test_datamanager.do_save_program, "request_update_program"
+        )
 
     @pytest.mark.integration
     def test_do_open_program(self, test_datamanager, test_program_dao):
