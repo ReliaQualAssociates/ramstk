@@ -55,7 +55,7 @@ class ValidationModuleView(RAMSTKModuleView):
     _module: str = "validation"
     _tablabel: str = "Verification"
     _tabtooltip: str = _(
-        "Displays the list of verification tasks for the " "selected Revision."
+        "Displays the list of verification tasks for the selected Revision."
     )
 
     # Define public dictionary class attributes.
