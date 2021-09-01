@@ -19,8 +19,8 @@ from ramstk.logger import RAMSTKLogManager
 # from ramstk.views.gtk3.allocation import wvwAllocation
 # from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import FunctionWorkView
+from ramstk.views.gtk3.hardware import HardwareGeneralDataView
 
-# from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
 # from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 # from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import (
@@ -67,15 +67,15 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 RequirementGeneralDataView(configuration, logger),
                 RequirementAnalysisView(configuration, logger),
             ],
-            # "hardware": [
-            #    wvwHardwareGD(configuration, logger),
-            #    wvwAllocation(configuration, logger),
-            #    wvwSimilarItem(configuration, logger),
-            #    wvwHardwareAI(configuration, logger),
-            #    wvwHardwareAR(configuration, logger),
-            #    wvwFMEA(configuration, logger),
-            #    wvwPoF(configuration, logger),
-            # ],
+            "hardware": [
+                HardwareGeneralDataView(configuration, logger),
+                #    wvwAllocation(configuration, logger),
+                #    wvwSimilarItem(configuration, logger),
+                #    wvwHardwareAI(configuration, logger),
+                #    wvwHardwareAR(configuration, logger),
+                #    wvwFMEA(configuration, logger),
+                #    wvwPoF(configuration, logger),
+            ],
             "validation": [
                 ValidationGeneralDataView(configuration, logger),
                 #    wvwBurndownCurve(configuration, logger),
