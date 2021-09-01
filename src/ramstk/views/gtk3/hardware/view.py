@@ -14,9 +14,17 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTK_ACTIVE_ENVIRONMENTS,
+    RAMSTK_DORMANT_ENVIRONMENTS,
+    RAMSTK_HR_DISTRIBUTIONS,
+    RAMSTK_HR_MODELS,
+    RAMSTK_HR_TYPES,
+    RAMSTKUserConfiguration,
+)
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.design_electric import DesignElectricInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -394,5 +402,207 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         _vpaned_right.pack1(self._pnlLogistics, True, True)
 
         _vpaned_right.pack2(self._pnlMiscellaneous, True, True)
+
+        self.show_all()
+
+
+class HardwareAssessmentInputView(RAMSTKWorkView):
+    """Display Hardware assessment input attribute data.
+
+    The Hardware assessment input view displays all the assessment inputs for
+    the selected Hardware item.  This includes, currently, inputs for
+    MIL-HDBK-217FN2 and NSWC-11.  The attributes of a Hardware assessment
+    input view are:
+
+    :cvar list _lst_labels: the text to use for the assessment input widget
+        labels.
+    :cvar str _module: the name of the module.
+
+    :ivar dict _dic_assessment_input: dictionary of component-specific
+        AssessmentInputs classes.
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+        displayed.
+    :ivar int _hazard_rate_method_id: the ID of the hazard rate method used for
+        Hardware item.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+
+    # Define private dict attributes.
+
+    # Define private list attributes.
+    _lst_title: List[str] = [_("Operating Stresses")]
+
+    # Define private scalar class attributes.
+    _module: str = "hardware"
+    _tablabel: str = _("Assessment\nInputs")
+    _tabtooltip: str = _(
+        "Displays reliability assessment inputs for the selected hardware item."
+    )
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
+        """Initialize an instance of the Hardware assessment input view.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+        self._dic_component_panels: Dict[int, RAMSTKPanel] = {
+            # 1: integrated_circuit.AssessmentInputPanel(),
+            # 2: semiconductor.AssessmentInputPanel(),
+            # 3: resistor.AssessmentInputPanel(),
+            # 4: capacitor.AssessmentInputPanel(),
+            # 5: inductor.AssessmentInputPanel(),
+            # 6: relay.AssessmentInputPanel(),
+            # 7: switch.AssessmentInputPanel(),
+            # 8: connection.AssessmentInputPanel(),
+            # 9: meter.AssessmentInputPanel(),
+            # 10: miscellaneous.AssessmentInputPanel(),
+        }
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate,
+            super().do_request_update,
+            super().do_request_update_all,
+        ]
+        self._lst_icons = [
+            "calculate",
+            "save",
+            "save-all",
+        ]
+        self._lst_tooltips = [
+            _(
+                "Calculate the currently selected hardware item and all of "
+                "it's children."
+            ),
+            _("Save changes to the currently selected hardware item."),
+            _("Save changes to all hardware items."),
+        ]
+
+        # Initialize private scalar attributes.
+        # self._pnlAssessmentInput: RAMSTKPanel = AssessmentInputPanel()
+        self._pnlDesignElectricInput: RAMSTKPanel = DesignElectricInputPanel()
+        # self._pnlStressInput: RAMSTKStressInputPanel = RAMSTKStressInputPanel()
+
+        # We need to carry these as an attribute for this view because the
+        # lower part of each is dynamically loaded with the component panels.
+        self._vpnLeft: Gtk.VPaned = Gtk.VPaned()
+        self._vpnRight: Gtk.VPaned = Gtk.VPaned()
+
+        self._hazard_rate_method_id: int = 0
+        self._subcategory_id: int = 0
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_set_cursor_active, "succeed_calculate_hardware")
+
+        pub.subscribe(self._do_pack_component_panel, "selected_hardware")
+        pub.subscribe(self._do_set_record_id, "selected_hardware")
+
+    def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
+        """Pack panel used to display component-specific input attributes.
+
+        :param attributes: dict containing the attributes of the hardware
+            item being loaded.
+        :return: None
+        :rtype: None
+        """
+        # If there was a component selected, hide it's widgets.  We get an
+        # attribute error if no parts have been selected in the current
+        # session.
+        if self._vpnLeft.get_child2() is not None:
+            self._vpnLeft.remove(self._vpnLeft.get_child2())
+
+        # Retrieve the appropriate component-specific view.
+        if attributes["category_id"] > 0:
+            _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
+            _panel.fmt = self.fmt
+            self._vpnLeft.pack2(_panel, True, True)
+            self.show_all()
+        else:
+            self._vpnRight.get_child2().hide()
+
+    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+        """Send request to calculate the selected hardware item.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        try:
+            super().do_set_cursor_busy()
+            pub.sendMessage(
+                "request_calculate_hardware",
+                node_id=self._record_id,
+            )
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's record ID and, if any, parent ID.
+
+        :param attributes: the attributes dict for the selected work stream
+            module item.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes["hardware_id"]
+        self._parent_id = attributes["parent_id"]
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Hardware Assessment Input tab.
+
+        :return: None
+        :rtype: None
+        """
+        self._vpnLeft, self._vpnRight = super().do_make_layout_llrr()
+
+        # Top left quadrant.
+        # self._pnlAssessmentInput.fmt = self.fmt
+        # self._pnlAssessmentInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
+        # self._pnlAssessmentInput.do_load_hr_methods(RAMSTK_HR_MODELS)
+        # self._pnlAssessmentInput.do_load_hr_types(RAMSTK_HR_TYPES)
+        # self._vpnLeft.pack1(self._pnlAssessmentInput, True, True)
+
+        # Top right quadrant.
+        self._pnlDesignElectricInput.fmt = self.fmt
+        self._pnlDesignElectricInput.do_load_environment_active(
+            RAMSTK_ACTIVE_ENVIRONMENTS
+        )
+        self._pnlDesignElectricInput.do_load_environment_dormant(
+            RAMSTK_DORMANT_ENVIRONMENTS
+        )
+        self._vpnRight.pack1(self._pnlDesignElectricInput, True, True)
+
+        # Bottom right quadrant.
+        # self._pnlStressInput.fmt = self.fmt
+        # self._vpnRight.pack2(self._pnlStressInput, True, True)
 
         self.show_all()

@@ -19,7 +19,10 @@ from ramstk.logger import RAMSTKLogManager
 # from ramstk.views.gtk3.allocation import wvwAllocation
 # from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import FunctionWorkView
-from ramstk.views.gtk3.hardware import HardwareGeneralDataView
+from ramstk.views.gtk3.hardware import (
+    HardwareAssessmentInputView,
+    HardwareGeneralDataView,
+)
 
 # from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 # from ramstk.views.gtk3.pof import wvwPoF
@@ -71,7 +74,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 HardwareGeneralDataView(configuration, logger),
                 #    wvwAllocation(configuration, logger),
                 #    wvwSimilarItem(configuration, logger),
-                #    wvwHardwareAI(configuration, logger),
+                HardwareAssessmentInputView(configuration, logger),
                 #    wvwHardwareAR(configuration, logger),
                 #    wvwFMEA(configuration, logger),
                 #    wvwPoF(configuration, logger),

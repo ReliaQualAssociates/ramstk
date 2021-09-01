@@ -14,4 +14,8 @@ from .panel import (
     HardwareMiscellaneousPanel,
     HardwareTreePanel,
 )
-from .view import HardwareGeneralDataView, HardwareModuleView
+from .view import (
+    HardwareAssessmentInputView,
+    HardwareGeneralDataView,
+    HardwareModuleView,
+)
