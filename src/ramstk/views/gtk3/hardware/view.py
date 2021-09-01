@@ -24,7 +24,11 @@ from ramstk.configuration import (
 )
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.design_electric import DesignElectricInputPanel
+from ramstk.views.gtk3.design_electric import (
+    DesignElectricInputPanel,
+    ICDesignElectricInputPanel,
+)
+from ramstk.views.gtk3.milhdbk217f import MilHdbk217FInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -467,7 +471,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_component_panels: Dict[int, RAMSTKPanel] = {
-            # 1: integrated_circuit.AssessmentInputPanel(),
+            1: ICDesignElectricInputPanel(),
             # 2: semiconductor.AssessmentInputPanel(),
             # 3: resistor.AssessmentInputPanel(),
             # 4: capacitor.AssessmentInputPanel(),
@@ -500,7 +504,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        # self._pnlAssessmentInput: RAMSTKPanel = AssessmentInputPanel()
+        self._pnlAssessmentInput: RAMSTKPanel = MilHdbk217FInputPanel()
         self._pnlDesignElectricInput: RAMSTKPanel = DesignElectricInputPanel()
         # self._pnlStressInput: RAMSTKStressInputPanel = RAMSTKStressInputPanel()
 
@@ -585,11 +589,11 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self._vpnLeft, self._vpnRight = super().do_make_layout_llrr()
 
         # Top left quadrant.
-        # self._pnlAssessmentInput.fmt = self.fmt
-        # self._pnlAssessmentInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
-        # self._pnlAssessmentInput.do_load_hr_methods(RAMSTK_HR_MODELS)
-        # self._pnlAssessmentInput.do_load_hr_types(RAMSTK_HR_TYPES)
-        # self._vpnLeft.pack1(self._pnlAssessmentInput, True, True)
+        self._pnlAssessmentInput.fmt = self.fmt
+        self._pnlAssessmentInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
+        self._pnlAssessmentInput.do_load_hr_methods(RAMSTK_HR_MODELS)
+        self._pnlAssessmentInput.do_load_hr_types(RAMSTK_HR_TYPES)
+        self._vpnLeft.pack1(self._pnlAssessmentInput, True, True)
 
         # Top right quadrant.
         self._pnlDesignElectricInput.fmt = self.fmt

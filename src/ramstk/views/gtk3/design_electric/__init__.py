@@ -8,4 +8,5 @@
 """GTK3 Design Electric Package."""
 
 # RAMSTK Local Imports
+from .components.integrated_circuit import ICDesignElectricInputPanel
 from .panel import DesignElectricInputPanel

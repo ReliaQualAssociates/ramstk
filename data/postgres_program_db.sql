@@ -36,7 +36,6 @@ CREATE TABLE ramstk_failure_definition (
     PRIMARY KEY (fld_definition_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_failure_definition" VALUES(1,1,X'');
 CREATE TABLE ramstk_mission (
     fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
@@ -49,7 +48,7 @@ CREATE TABLE ramstk_mission (
 INSERT INTO "ramstk_mission" VALUES(1,1,'Default Mission',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
     fld_revision_id INTEGER NOT NULL,
-    fld_mission_id INTEGER,
+    fld_mission_id INTEGER NOT NULL,
     fld_phase_id INTEGER NOT NULL,
     fld_description VARCHAR,
     fld_name VARCHAR(256),
@@ -62,6 +61,7 @@ CREATE TABLE ramstk_mission_phase (
 INSERT INTO "ramstk_mission_phase" VALUES (1, 1,1,'Default Mission Phase 1','',0,0.0);
 CREATE TABLE ramstk_environment (
     fld_revision_id INTEGER NOT NULL,
+    fld_mission_id INTEGER NOT NULL,
     fld_phase_id INTEGER NOT NULL,
     fld_environment_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
@@ -75,6 +75,7 @@ CREATE TABLE ramstk_environment (
     fld_high_dwell_time FLOAT,
     PRIMARY KEY (fld_environment_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_environment" VALUES (1,1,1,'Environment','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
@@ -331,6 +332,7 @@ CREATE TABLE ramstk_allocation (
 );
 INSERT INTO "ramstk_allocation" VALUES(1,1,0.0,100.0,1,0,0.0,0.0,1,1,1,1.0,0.0,0.0,0,0,0,0.0,0.0,0.0,1,1,0.0);
 CREATE TABLE ramstk_design_electric (
+    fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
     fld_application_id INTEGER,
     fld_area FLOAT,
@@ -389,8 +391,9 @@ CREATE TABLE ramstk_design_electric (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_design_electric" VALUES(1,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,X'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
+INSERT INTO "ramstk_design_electric" VALUES(1,1,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,X'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
 CREATE TABLE ramstk_design_mechanic (
+    fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
     fld_altitude_operating FLOAT,
     fld_application_id INTEGER,
@@ -447,8 +450,9 @@ CREATE TABLE ramstk_design_mechanic (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_design_mechanic" VALUES(1,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_design_mechanic" VALUES(1,1,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_mil_hdbk_f (
+    fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
     fld_a_one FLOAT,
     fld_a_two FLOAT,
@@ -488,8 +492,9 @@ CREATE TABLE ramstk_mil_hdbk_f (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_nswc (
+    fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
     fld_c_ac FLOAT,
     fld_c_alt FLOAT,
@@ -551,8 +556,9 @@ CREATE TABLE ramstk_nswc (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_nswc" VALUES(1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_nswc" VALUES(1,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_reliability (
+    fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
     fld_add_adj_factor FLOAT,
     fld_availability_logistics FLOAT,
@@ -597,7 +603,7 @@ CREATE TABLE ramstk_reliability (
     PRIMARY KEY (fld_hardware_id),
     FOREIGN KEY(fld_hardware_id) REFERENCES ramstk_hardware (fld_hardware_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_reliability" VALUES(1,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,'',0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.0,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
+INSERT INTO "ramstk_reliability" VALUES(1,1,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0,0.0,'',0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.0,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
 CREATE TABLE ramstk_similar_item (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,

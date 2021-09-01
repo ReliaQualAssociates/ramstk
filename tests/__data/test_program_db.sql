@@ -40,7 +40,7 @@ CREATE TABLE ramstk_failure_definition (
 INSERT INTO "ramstk_failure_definition" VALUES(1,1,'Failure Definition');
 INSERT INTO "ramstk_failure_definition" VALUES(1,2,'Failure Definition');
 CREATE TABLE ramstk_mission (
-    fld_revision_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
     fld_description VARCHAR,
     fld_mission_time FLOAT,
@@ -52,8 +52,8 @@ INSERT INTO "ramstk_mission" VALUES(1,1,'Test Mission 1',0.0,'hours');
 INSERT INTO "ramstk_mission" VALUES(1,2,'Test Mission 2',0.0,'hours');
 INSERT INTO "ramstk_mission" VALUES(1,3,'Test Mission 3',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
-    fld_revision_id INTEGER,
-    fld_mission_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
+    fld_mission_id INTEGER NOT NULL,
     fld_phase_id INTEGER NOT NULL,
     fld_description VARCHAR,
     fld_name VARCHAR(256),
@@ -67,9 +67,9 @@ INSERT INTO "ramstk_mission_phase" VALUES(1,1,1,'Test Mission Phase 1','',0.0,0.
 INSERT INTO "ramstk_mission_phase" VALUES(1,2,2,'Test Mission Phase 2','',0.0,0.0);
 INSERT INTO "ramstk_mission_phase" VALUES(1,3,3,'Test Mission Phase 3','',0.0,0.0);
 CREATE TABLE ramstk_environment (
-    fld_revision_id INTEGER,
-    fld_mission_id INTEGER,
-    fld_phase_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
+    fld_mission_id INTEGER NOT NULL,
+    fld_phase_id INTEGER NOT NULL,
     fld_environment_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
     fld_units VARCHAR(128),
@@ -129,7 +129,7 @@ INSERT INTO "ramstk_program_status" VALUES(1,2,0.0,CURRENT_DATE-20,0.0);
 INSERT INTO "ramstk_program_status" VALUES(1,3,0.0,CURRENT_DATE-10,0.0);
 
 CREATE TABLE ramstk_function (
-    fld_revision_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
     fld_function_id INTEGER NOT NULL,
     fld_availability_logistics FLOAT,
     fld_availability_mission FLOAT,
@@ -209,7 +209,7 @@ INSERT INTO "ramstk_hazard_analysis" VALUES(1,3,3,'','','','Major','Level A - Fr
 INSERT INTO "ramstk_hazard_analysis" VALUES(1,1,4,'','','','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',4,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','Medium','Level A - Frequent',20,'','Medium','Level A - Frequent',20,'','','',0.0,0.0,0.0,0,0,0);
 
 CREATE TABLE ramstk_requirement (
-    fld_revision_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
     fld_requirement_id INTEGER NOT NULL,
     fld_derived INTEGER,
     fld_description VARCHAR,
@@ -265,7 +265,7 @@ INSERT INTO "ramstk_requirement" VALUES(1,2,0,'','',0,'',0,0,'FUN-0002','',0,0,'
 INSERT INTO "ramstk_requirement" VALUES(1,3,0,'','',0,'',0,0,'PRF-0003','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 INSERT INTO "ramstk_requirement" VALUES(1,4,0,'','',0,'',1,0,'REL-0002','',0,0,'2019-07-21',0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 CREATE TABLE ramstk_stakeholder (
-    fld_revision_id INTEGER,
+    fld_revision_id INTEGER NOT NULL,
     fld_stakeholder_id INTEGER NOT NULL,
     fld_customer_rank INTEGER,
     fld_description TEXT,
