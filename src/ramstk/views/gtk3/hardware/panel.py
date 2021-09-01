@@ -6,13 +6,27 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Hardware Panels."""
 
+# Standard Library Imports
+from datetime import date
+from typing import Dict, Tuple
+
 # Third Party Imports
 import treelib
 from pubsub import pub
 
+# noinspection PyPackageRequirements
+from sortedcontainers import SortedDict
+
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKTreePanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    RAMSTKTextView,
+    RAMSTKTreePanel,
+)
 
 
 class HardwareTreePanel(RAMSTKTreePanel):
@@ -461,3 +475,606 @@ class HardwareTreePanel(RAMSTKTreePanel):
             )
 
         return _new_row
+
+
+class HardwareGeneralDataPanel(RAMSTKFixedPanel):
+    """Panel to display general data about the selected Hardware item."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "hardware"
+    _title = _("Hardware General Information")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Hardware General Date panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.chkRepairable: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Repairable"))
+        self.cmbCategory: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbSubcategory: RAMSTKComboBox = RAMSTKComboBox()
+        self.txtAltPartNum: RAMSTKEntry = RAMSTKEntry()
+        self.txtCompRefDes: RAMSTKEntry = RAMSTKEntry()
+        self.txtDescription: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtFigureNumber: RAMSTKEntry = RAMSTKEntry()
+        self.txtLCN: RAMSTKEntry = RAMSTKEntry()
+        self.txtName: RAMSTKEntry = RAMSTKEntry()
+        self.txtPageNumber: RAMSTKEntry = RAMSTKEntry()
+        self.txtPartNumber: RAMSTKEntry = RAMSTKEntry()
+        self.txtRefDes: RAMSTKEntry = RAMSTKEntry()
+        self.txtSpecification: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dictionary instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dictionary instance attributes.
+        self.dic_attribute_index_map = {
+            2: ["alt_part_number", "string"],
+            4: ["comp_ref_des", "string"],
+            8: ["description", "string"],
+            10: ["figure_number", "string"],
+            11: ["lcn", "string"],
+            15: ["name", "string"],
+            17: ["page_number", "string"],
+            20: ["part_number", "string"],
+            22: ["ref_des", "string"],
+            24: ["repairable", "boolean"],
+            25: ["specification_number", "string"],
+            32: ["category_id", "integer"],
+            33: ["subcategory_id", "integer"],
+        }
+        self.dic_attribute_widget_map = {
+            "ref_des": [
+                22,
+                self.txtRefDes,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The reference designator of the selected hardware item."
+                    ),
+                },
+                _("Reference Designator:"),
+            ],
+            "comp_ref_des": [
+                4,
+                self.txtCompRefDes,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The composite reference designator of the selected hardware "
+                        "item."
+                    )
+                },
+                _("Composite Ref. Des."),
+            ],
+            "name": [
+                15,
+                self.txtName,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "width": 600,
+                    "tooltip": _("The name of the selected hardware item."),
+                },
+                _("Name:"),
+            ],
+            "description": [
+                8,
+                self.txtDescription,
+                "changed",
+                super().on_changed_textview,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "width": 600,
+                    "tooltip": _("The description of the selected hardware item."),
+                },
+                _("Description:"),
+            ],
+            "part_number": [
+                20,
+                self.txtPartNumber,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _("The part number of the selected hardware item."),
+                },
+                _("Part Number:"),
+            ],
+            "alt_part_number": [
+                2,
+                self.txtAltPartNum,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The alternate part number (if any) of the selected hardware "
+                        "item."
+                    )
+                },
+                _("Alternate Part Number:"),
+            ],
+            "category_id": [
+                32,
+                self.cmbCategory,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_hardware",
+                0,
+                {},
+                _("Category:"),
+            ],
+            "subcategory_id": [
+                33,
+                self.cmbSubcategory,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_hardware",
+                0,
+                {},
+                _("Subcategory:"),
+            ],
+            "specification_number": [
+                25,
+                self.txtSpecification,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The specification (if any) governing the selected hardware "
+                        "item."
+                    ),
+                },
+                _("Specification:"),
+            ],
+            "page_number": [
+                17,
+                self.txtPageNumber,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The page number in the governing specification for the "
+                        "selected hardware item."
+                    )
+                },
+                _("Page Number:"),
+            ],
+            "figure_number": [
+                10,
+                self.txtFigureNumber,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The figure number in the governing specification for the "
+                        "selected hardware item."
+                    )
+                },
+                _("Figure Number:"),
+            ],
+            "lcn": [
+                11,
+                self.txtLCN,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The Logistics Control Number (LCN) of the selected hardware "
+                        "item."
+                    )
+                },
+                _("LCN:"),
+            ],
+            "repairable": [
+                24,
+                self.chkRepairable,
+                "toggled",
+                super().on_toggled,
+                "wvw_editing_hardware",
+                0,
+                {
+                    "tooltip": _(
+                        "Indicates whether or not the selected hardware item is "
+                        "repairable."
+                    )
+                },
+                "",
+            ],
+        }
+        self.dicSubcategories: Dict[int, Dict[int, str]] = {}
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.cmbCategory.connect("changed", self._request_load_subcategories)
+        self.cmbSubcategory.connect("changed", self._request_load_component)
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_subcategories, "changed_category")
+
+    def do_load_categories(self, category: Dict[int, str]) -> None:
+        """Load the category RAMSTKComboBox().
+
+        :param category: the dictionary of hardware categories to load.
+        :return: None
+        :rtype: None
+        """
+        _model = self.cmbCategory.get_model()
+        _model.clear()
+
+        _categories = []
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(category):
+            _categories.append([category[_key]])
+        self.cmbCategory.do_load_combo(entries=_categories)
+
+    def _do_load_subcategories(self, category_id: int) -> None:
+        """Load the subcategory RAMSTKComboBox().
+
+        :param category_id: the ID of the selected category.
+        :return: None
+        """
+        _model = self.cmbSubcategory.get_model()
+        _model.clear()
+
+        if category_id > 0:
+            _subcategories = SortedDict(self.dicSubcategories[category_id])
+            _subcategory = []
+            for _key in _subcategories:
+                _subcategory.append([_subcategories[_key]])
+            self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
+
+    @staticmethod
+    def _request_load_component(combo: RAMSTKComboBox) -> None:
+        """Request to load the component widgets.
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        """
+        pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
+
+    def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
+        """Request to have the subcategory RAMSTKComboBox() loaded.
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        """
+        self._do_load_subcategories(category_id=combo.get_active())
+
+
+class HardwareLogisticsPanel(RAMSTKFixedPanel):
+    """Panel to display general data about the selected Hardware task."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "hardware"
+    _title = _("Hardware Logistics Information")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Hardware Task Description panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.cmbCostType: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbManufacturer: RAMSTKComboBox = RAMSTKComboBox(simple=False)
+        self.txtCAGECode: RAMSTKEntry = RAMSTKEntry()
+        self.txtCost: RAMSTKEntry = RAMSTKEntry()
+        self.txtNSN: RAMSTKEntry = RAMSTKEntry()
+        self.txtQuantity: RAMSTKEntry = RAMSTKEntry()
+        self.txtYearMade: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            3: ["cage_code", "string"],
+            5: ["cost", "string"],
+            13: ["manufacturer_id", "integer"],
+            16: ["nsn", "string"],
+            21: ["quantity", "integer"],
+            29: ["year_of_manufacture", "string"],
+            30: ["cost_type_id", "integer"],
+        }
+        self.dic_attribute_widget_map = {
+            "manufacturer_id": [
+                13,
+                self.cmbManufacturer,
+                "changed",
+                super().on_changed_combo,
+                "mvw_editing_hardware",
+                0,
+                {},
+                _("Manufacturer:"),
+            ],
+            "cage_code": [
+                3,
+                self.txtCAGECode,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The Commercial and Government Entity (CAGE) Code of the "
+                        "selected hardware item."
+                    ),
+                },
+                _("CAGE Code:"),
+            ],
+            "nsn": [
+                16,
+                self.txtNSN,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_hardware",
+                "",
+                {
+                    "tooltip": _(
+                        "The National Stock Number (NSN) of the selected hardware item."
+                    )
+                },
+                _("NSN:"),
+            ],
+            "year_of_manufacture": [
+                29,
+                self.txtYearMade,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_hardware",
+                date.today().year - 2,
+                {
+                    "width": 100,
+                    "tooltip": _(
+                        "The year the selected hardware item was introduced to "
+                        "the market."
+                    ),
+                },
+                _("Year Introduced:"),
+            ],
+            "quantity": [
+                21,
+                self.txtQuantity,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_hardware",
+                1,
+                {
+                    "width": 50,
+                    "tooltip": _(
+                        "The number of the selected hardware items in the design."
+                    ),
+                },
+                _("Quantity:"),
+            ],
+            "cost": [
+                5,
+                self.txtCost,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_hardware",
+                0.0,
+                {},
+                _("Unit Cost:"),
+            ],
+            "cost_type_id": [
+                30,
+                self.cmbCostType,
+                "changed",
+                super().on_changed_combo,
+                "mvw_editing_hardware",
+                0,
+                {},
+                _("Cost Method:"),
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.cmbManufacturer.connect("changed", self._do_load_cage_code)
+
+        # Subscribe to PyPubSub messages.
+
+    def do_load_cost_types(self) -> None:
+        """Load the category RAMSTKComboBox().
+
+        :return: None
+        """
+        self.cmbCostType.do_load_combo([["Assessed"], ["Specified"]])
+
+    def do_load_manufacturers(
+        self, manufacturers: Dict[int, Tuple[str, str, str]]
+    ) -> None:
+        """Load the manufacturer RAMSTKComboBox().
+
+        :param manufacturers: the dictionary with manufacturer information.
+            The key is the index from the database table.  The value is a tuple
+            with the manufacturer's name, office location, and CAGE code.  An
+            example might be:
+
+            ('Sprague', 'New Hampshire', '13606')
+
+        :return: None
+        """
+        _manufacturer = []
+        for _key in manufacturers:
+            _manufacturer.append(manufacturers[_key])
+        self.cmbManufacturer.do_load_combo(entries=_manufacturer, simple=False)
+
+    def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
+        """Load the CAGE code whenever the manufacturer is changed.
+
+        :param combo: the RAMSTKComboBox() that called this method.
+        :return: None
+        :rtype: None
+        """
+        _model = combo.get_model()
+        _row = combo.get_active_iter()
+
+        try:
+            _cage_code = str(str(_model.get(_row, 2)[0]))
+        except TypeError:
+            _cage_code = ""
+
+        self.txtCAGECode.do_update(_cage_code, signal="changed")
+        pub.sendMessage(
+            "wvw_editing_hardware",
+            node_id=[self._record_id, -1],
+            package={"cage_code": _cage_code},
+        )
+
+
+class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
+    """Panel to display general data about the selected Hardware task."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "hardware"
+    _title = _("Hardware Miscellaneous Information")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Hardware Task Description panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.chkTagged: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Tagged Part"))
+        self.txtAttachments: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+        self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            23: ["remarks", "string"],
+            26: ["tagged_part", "boolean"],
+            31: ["attachments", "string"],
+        }
+        self.dic_attribute_widget_map = {
+            "attachments": [
+                31,
+                self.txtAttachments,
+                "changed",
+                super().on_changed_textview,
+                "mvw_editing_hardware",
+                "",
+                {
+                    "height": 150,
+                    "width": 600,
+                    "tooltip": _(
+                        "Hyperlinks to any documents associated with the selected "
+                        "hardware item."
+                    ),
+                },
+                _("Attachments:"),
+            ],
+            "remarks": [
+                23,
+                self.txtRemarks,
+                "changed",
+                super().on_changed_textview,
+                "mvw_editing_hardware",
+                "",
+                {
+                    "height": 150,
+                    "width": 600,
+                    "tooltip": _(
+                        "Enter any remarks associated with the selected hardware item."
+                    ),
+                },
+                _("Remarks:"),
+            ],
+            "tagged_part": [
+                26,
+                self.chkTagged,
+                "toggled",
+                super().on_toggled,
+                "mvw_editing_hardware",
+                0,
+                {},
+                "",
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
