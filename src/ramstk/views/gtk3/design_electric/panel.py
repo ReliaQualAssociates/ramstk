@@ -19,7 +19,7 @@ from ramstk.views.gtk3.widgets import (
 )
 
 
-class DesignElectricInputPanel(RAMSTKFixedPanel):
+class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
     """Panel to display environmental data about the selected Hardware item."""
 
     # Define private dictionary class attributes.
@@ -58,12 +58,12 @@ class DesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize public dict instance attributes.
         self.dic_attribute_index_map = {
+            9: ["duty_cycle", "float"],
             12: ["environment_active_id", "integer"],
             13: ["environment_dormant_id", "integer"],
+            14: ["mission_time", "float"],
             37: ["temperature_active", "float"],
             39: ["temperature_dormant", "float"],
-            9: ["duty_cycle", "float"],
-            14: ["mission_time", "float"],
         }
         self.dic_attribute_widget_map = {
             "environment_active_id": [

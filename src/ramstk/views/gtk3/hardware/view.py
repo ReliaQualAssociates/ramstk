@@ -25,10 +25,10 @@ from ramstk.configuration import (
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.design_electric import (
-    DesignElectricInputPanel,
+    DesignElectricEnvironmentalInputPanel,
     ICDesignElectricInputPanel,
 )
-from ramstk.views.gtk3.milhdbk217f import MilHdbk217FInputPanel
+from ramstk.views.gtk3.reliability import ReliabilityInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -504,9 +504,11 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlAssessmentInput: RAMSTKPanel = MilHdbk217FInputPanel()
-        self._pnlDesignElectricInput: RAMSTKPanel = DesignElectricInputPanel()
-        # self._pnlStressInput: RAMSTKStressInputPanel = RAMSTKStressInputPanel()
+        self._pnlReliabilityInput: RAMSTKPanel = ReliabilityInputPanel()
+        self._pnlEnvironmentalInput: RAMSTKPanel = (
+            DesignElectricEnvironmentalInputPanel()
+        )
+        # self._pnlStressInput: RAMSTKPanel = DesignElectricStressInputPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -541,17 +543,17 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         # If there was a component selected, hide it's widgets.  We get an
         # attribute error if no parts have been selected in the current
         # session.
-        if self._vpnLeft.get_child2() is not None:
-            self._vpnLeft.remove(self._vpnLeft.get_child2())
+        if self._vpnRight.get_child2() is not None:
+            self._vpnRight.remove(self._vpnLeft.get_child2())
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
             _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
             _panel.fmt = self.fmt
-            self._vpnLeft.pack2(_panel, True, True)
+            self._vpnRight.pack2(_panel, True, True)
             self.show_all()
-        else:
-            self._vpnRight.get_child2().hide()
+        # else:
+        #    self._vpnRight.get_child2().hide()
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.
@@ -589,21 +591,25 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self._vpnLeft, self._vpnRight = super().do_make_layout_llrr()
 
         # Top left quadrant.
-        self._pnlAssessmentInput.fmt = self.fmt
-        self._pnlAssessmentInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
-        self._pnlAssessmentInput.do_load_hr_methods(RAMSTK_HR_MODELS)
-        self._pnlAssessmentInput.do_load_hr_types(RAMSTK_HR_TYPES)
-        self._vpnLeft.pack1(self._pnlAssessmentInput, True, True)
+        self._pnlReliabilityInput.fmt = self.fmt
+        self._pnlReliabilityInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
+        self._pnlReliabilityInput.do_load_hr_methods(RAMSTK_HR_MODELS)
+        self._pnlReliabilityInput.do_load_hr_types(RAMSTK_HR_TYPES)
+        self._vpnLeft.pack1(self._pnlReliabilityInput, True, True)
 
-        # Top right quadrant.
-        self._pnlDesignElectricInput.fmt = self.fmt
-        self._pnlDesignElectricInput.do_load_environment_active(
+        # Bottom left quadrant.
+        self._pnlEnvironmentalInput.fmt = self.fmt
+        self._pnlEnvironmentalInput.do_load_environment_active(
             RAMSTK_ACTIVE_ENVIRONMENTS
         )
-        self._pnlDesignElectricInput.do_load_environment_dormant(
+        self._pnlEnvironmentalInput.do_load_environment_dormant(
             RAMSTK_DORMANT_ENVIRONMENTS
         )
-        self._vpnRight.pack1(self._pnlDesignElectricInput, True, True)
+        self._vpnLeft.pack2(self._pnlEnvironmentalInput, True, True)
+
+        # Top right quadrant.
+        # self._pnlMilHdbk217FInput.fmt = self.fmt
+        # self._vpnRight.pack1(self._pnlMilHdbk217FInput, True, True)
 
         # Bottom right quadrant.
         # self._pnlStressInput.fmt = self.fmt

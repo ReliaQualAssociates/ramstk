@@ -385,13 +385,18 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 attributes=_attributes,
             )
             pub.sendMessage(
-                "request_get_all_hardware_attributes",
-                node_id=self._record_id,
-            )
-            pub.sendMessage(
                 "request_set_title",
                 title=_title,
             )
+            for _table in [
+                "design_electric",
+                "hardware",
+                "reliability",
+            ]:
+                pub.sendMessage(
+                    "request_get_{}_attributes".format(_table),
+                    node_id=self._record_id,
+                )
 
     def __do_load_hardware(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a hardware item into the RAMSTKTreeView().

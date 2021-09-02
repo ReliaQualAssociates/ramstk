@@ -137,6 +137,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
 
         # Initialize public dictionary attributes.
         self.dic_attribute_index_map = {

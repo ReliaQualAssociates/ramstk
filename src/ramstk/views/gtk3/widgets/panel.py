@@ -187,9 +187,26 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public scalar instance attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_clear_panel, "request_clear_views")
-        pub.subscribe(self.do_load_panel, self._select_msg)
-        pub.subscribe(self.on_edit, "mvw_editing_{}".format(self._tag))
+        pub.subscribe(
+            self.do_clear_panel,
+            "request_clear_views",
+        )
+        pub.subscribe(
+            self.do_load_panel,
+            self._select_msg,
+        )
+        pub.subscribe(
+            self.on_edit,
+            "mvw_editing_{}".format(self._tag),
+        )
+
+        try:
+            pub.subscribe(
+                self._do_set_sensitive,
+                "succeed_get_{}_attributes".format(self._tag),
+            )
+        except AttributeError:
+            pass
 
     def do_clear_panel(self) -> None:
         """Clear the contents of the widgets on a fixed type panel.
@@ -216,11 +233,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         for _key, _value in self.dic_attribute_widget_map.items():
             _value[1].do_update(attributes.get(_key, _value[5]), signal=_value[2])
-
-        try:
-            self._do_set_sensitive()
-        except AttributeError:
-            pass
 
         pub.sendMessage("request_set_cursor_active")
 
