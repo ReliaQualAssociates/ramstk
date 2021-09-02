@@ -26,6 +26,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.design_electric import (
     DesignElectricEnvironmentalInputPanel,
+    DesignElectricStressInputPanel,
     ICDesignElectricInputPanel,
 )
 from ramstk.views.gtk3.reliability import ReliabilityInputPanel
@@ -508,7 +509,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self._pnlEnvironmentalInput: RAMSTKPanel = (
             DesignElectricEnvironmentalInputPanel()
         )
-        # self._pnlStressInput: RAMSTKPanel = DesignElectricStressInputPanel()
+        self._pnlStressInput: RAMSTKPanel = DesignElectricStressInputPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -608,8 +609,8 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self._vpnLeft.pack2(self._pnlEnvironmentalInput, True, True)
 
         # Top right quadrant.
-        # self._pnlMilHdbk217FInput.fmt = self.fmt
-        # self._vpnRight.pack1(self._pnlMilHdbk217FInput, True, True)
+        self._pnlStressInput.fmt = self.fmt
+        self._vpnRight.pack1(self._pnlStressInput, True, True)
 
         # Bottom right quadrant.
         # self._pnlStressInput.fmt = self.fmt

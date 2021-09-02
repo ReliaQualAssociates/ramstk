@@ -174,3 +174,214 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         :return: None
         """
         self.cmbDormantEnviron.do_load_combo(entries=environments)
+
+
+class DesignElectricStressInputPanel(RAMSTKFixedPanel):
+    """Panel to display environmental data about the selected Hardware item."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "design_electric"
+    _title = _("Hardware Thermal &amp; Electrical Stress Inputs")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Stress Input panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.txtTemperatureRatedMin: RAMSTKEntry = RAMSTKEntry()
+        self.txtTemperatureKnee: RAMSTKEntry = RAMSTKEntry()
+        self.txtTemperatureRatedMax: RAMSTKEntry = RAMSTKEntry()
+        self.txtCurrentRated: RAMSTKEntry = RAMSTKEntry()
+        self.txtCurrentOperating: RAMSTKEntry = RAMSTKEntry()
+        self.txtPowerRated: RAMSTKEntry = RAMSTKEntry()
+        self.txtPowerOperating: RAMSTKEntry = RAMSTKEntry()
+        self.txtVoltageRated: RAMSTKEntry = RAMSTKEntry()
+        self.txtVoltageAC: RAMSTKEntry = RAMSTKEntry()
+        self.txtVoltageDC: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_index_map = {
+            10: ["current_operating", "float"],
+            11: ["current_rated", "float"],
+            31: ["power_operating", "float"],
+            32: ["power_rated", "float"],
+            43: ["temperature_knee", "float"],
+            44: ["temperature_rated_max", "float"],
+            45: ["temperature_rated_min", "float"],
+            49: ["voltage_ac_operating", "float"],
+            50: ["voltage_dc_operating", "float"],
+            52: ["voltage_rated", "float"],
+        }
+        self.dic_attribute_widget_map = {
+            "temperature_rated_min": [
+                45,
+                self.txtTemperatureRatedMin,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_design_electric",
+                25.0,
+                {
+                    "tooltip": _(
+                        "The minimum rated temperature (in \u00B0C) of the hardware "
+                        "item."
+                    ),
+                    "width": 125,
+                },
+                _("Minimum Rated Temperature (\u00B0C):"),
+            ],
+            "temperature_knee": [
+                43,
+                self.txtTemperatureKnee,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_design_electric",
+                25.0,
+                {
+                    "tooltip": _(
+                        "The break temperature (in \u00B0C) of the hardware item "
+                        "beyond which it must be derated."
+                    ),
+                    "width": 125,
+                },
+                _("Knee Temperature (\u00B0C):"),
+            ],
+            "temperature_rated_max": [
+                44,
+                self.txtTemperatureRatedMax,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_design_electric",
+                25.0,
+                {
+                    "tooltip": _(
+                        "The maximum rated temperature (in \u00B0C) of the hardware "
+                        "item."
+                    ),
+                    "width": 125,
+                },
+                _("Maximum Rated Temperature (\u00B0C):"),
+            ],
+            "current_rated": [
+                11,
+                self.txtCurrentRated,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _("The rated current (in A) of the hardware item."),
+                    "width": 125,
+                },
+                _("Rated Current (A):"),
+            ],
+            "current_operating": [
+                10,
+                self.txtCurrentOperating,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _("The operating current (in A) of the hardware item."),
+                    "width": 200,
+                },
+                _("Operating Current (A):"),
+            ],
+            "power_rated": [
+                32,
+                self.txtPowerRated,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _("The rated power (in W) of the hardware item."),
+                    "width": 125,
+                },
+                _("Rated Power (W):"),
+            ],
+            "power_operating": [
+                31,
+                self.txtPowerOperating,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _("The operating power (in W) of the hardware item."),
+                    "width": 200,
+                },
+                _("Operating Power (W):"),
+            ],
+            "voltage_rated": [
+                52,
+                self.txtVoltageRated,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _("The rated voltage (in V) of the hardware item."),
+                    "width": 125,
+                },
+                _("Rated Voltage (V):"),
+            ],
+            "voltage_ac_operating": [
+                49,
+                self.txtVoltageAC,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _(
+                        "The operating ac voltage (in V) of the hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Operating ac Voltage (V):"),
+            ],
+            "voltage_dc_operating": [
+                50,
+                self.txtVoltageDC,
+                "changed",
+                super().on_changed_entry,
+                "mvw_editing_design_electric",
+                0.0,
+                {
+                    "tooltip": _(
+                        "The operating DC voltage (in V) of the hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Operating DC Voltage (V):"),
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.

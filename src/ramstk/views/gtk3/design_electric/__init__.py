@@ -9,4 +9,4 @@
 
 # RAMSTK Local Imports
 from .components.integrated_circuit import ICDesignElectricInputPanel
-from .panel import DesignElectricEnvironmentalInputPanel
+from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel
