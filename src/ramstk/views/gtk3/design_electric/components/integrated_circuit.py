@@ -90,7 +90,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         8: [["MOS"], [_("Bipolar")]],
         9: [["MMIC"], [_("Digital")]],
     }
-
     _dic_types: Dict[int, List[Any]] = {
         9: [["MMIC"], [_("Digital")]],
         10: [[_("Logic and Custom")], [_("Gate Array")]],
@@ -99,9 +98,10 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
     _select_msg = "selected_hardware"
     _tag = "design_electric"
-    _title = _("Electronic Component Inputs")
+    _title = _("Integrated Circuit Design Inputs")
 
     # Define public dictionary class attributes.
 
@@ -178,7 +178,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbPackage,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _("The type of package housing the integrated circuit."),
@@ -190,7 +190,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtArea,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0.0,
                 {
                     "tooltip": _(
@@ -205,7 +205,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _(
@@ -220,7 +220,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtThetaJC,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0.0,
                 {
                     "tooltip": _("The junction to case thermal resistance."),
@@ -233,7 +233,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNActivePins,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _(
@@ -248,7 +248,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbTechnology,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _(
@@ -262,7 +262,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtYearsInProduction,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 2,
                 {
                     "tooltip": _(
@@ -278,7 +278,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _(
@@ -292,7 +292,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNCycles,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _(
@@ -307,7 +307,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtOperatingLife,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0.0,
                 {
                     "tooltip": _("The system lifetime operating hours."),
@@ -320,7 +320,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbECC,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _("The error correction code used by the EEPROM."),
@@ -332,7 +332,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _("The application of the integrated circuit."),
@@ -344,7 +344,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _("The type of GaAs or VLSI device."),
@@ -356,7 +356,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtFeatureSize,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0.0,
                 {
                     "tooltip": _("The feature size (in microns) of the VLSI device."),
@@ -369,7 +369,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbManufacturing,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0,
                 {
                     "tooltip": _("The manufacturing process for the VLSI device."),
@@ -381,7 +381,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageESD,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                "wvw_editing_{}".format(self._tag),
                 0.0,
                 {
                     "tooltip": _(
@@ -503,6 +503,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
+        self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",

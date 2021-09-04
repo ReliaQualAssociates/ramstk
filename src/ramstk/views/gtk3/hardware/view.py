@@ -25,6 +25,7 @@ from ramstk.configuration import (
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.design_electric import (
+    CapacitorDesignElectricInputPanel,
     DesignElectricEnvironmentalInputPanel,
     DesignElectricStressInputPanel,
     ICDesignElectricInputPanel,
@@ -475,7 +476,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             1: ICDesignElectricInputPanel(),
             # 2: semiconductor.AssessmentInputPanel(),
             # 3: resistor.AssessmentInputPanel(),
-            # 4: capacitor.AssessmentInputPanel(),
+            4: CapacitorDesignElectricInputPanel(),
             # 5: inductor.AssessmentInputPanel(),
             # 6: relay.AssessmentInputPanel(),
             # 7: switch.AssessmentInputPanel(),
@@ -542,6 +543,10 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             "succeed_get_hardware_attributes",
         )
         pub.subscribe(
+            self._do_pack_component_panel,
+            "hardware_category_changed",
+        )
+        pub.subscribe(
             self._do_set_record_id,
             "selected_hardware",
         )
@@ -558,7 +563,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         # attribute error if no parts have been selected in the current
         # session.
         if self._vpnRight.get_child2() is not None:
-            self._vpnRight.remove(self._vpnLeft.get_child2())
+            self._vpnRight.remove(self._vpnRight.get_child2())
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:

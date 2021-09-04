@@ -8,5 +8,6 @@
 """GTK3 Design Electric Package."""
 
 # RAMSTK Local Imports
+from .components.capacitor import CapacitorDesignElectricInputPanel
 from .components.integrated_circuit import ICDesignElectricInputPanel
 from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel

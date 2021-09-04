@@ -15,13 +15,13 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 # RAMSTK Local Imports
-from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
+from .panels import RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
+class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Capacitor assessment input attribute data.
 
     The Capacitor assessment input view displays all the assessment inputs for
@@ -127,7 +127,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         18: [["MIL-SPEC"], [_("Lower")]],
         19: [["MIL-SPEC"], [_("Lower")]],
     }
-
     _dic_specifications: Dict[int, List[Any]] = {
         1: [["MIL-C-25"], ["MIL-C-12889"]],
         2: [["MIL-C-11693"]],
@@ -149,7 +148,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         18: [["MIL-C-92"]],
         19: [["MIL-C-23183"]],
     }
-
     _dic_styles: Dict[int, List[Any]] = {
         1: [
             [
@@ -441,6 +439,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
+    _select_msg = "selected_hardware"
+    _tag = "design_electric"
+    _title = _("Capacitor Design Inputs")
 
     # Define public dictionary class attributes.
 
@@ -452,80 +454,143 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         """Initialize an instance of the Capacitor assessment input view."""
         super().__init__()
 
+        # Initialize widgets.
+        self.cmbConfiguration: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbSpecification: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbStyle: RAMSTKComboBox = RAMSTKComboBox()
+        self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
+        self.txtESR: RAMSTKEntry = RAMSTKEntry()
+
         # Initialize private dictionary attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ["quality_id", "integer"],
-            1: ["specification_id", "integer"],
-            2: ["type_id", "integer"],
-            3: ["configuration_id", "integer"],
-            4: ["construction_id", "integer"],
-            5: ["capacitance", "float"],
-            6: ["resistance", "float"],
-        }
 
         # Initialize private list attributes.
-        self._lst_labels: List[str] = [
-            _("Quality Level:"),
-            _("Capacitance (F):"),
-            _("Specification:"),
-            _("Style:"),
-            _("Configuration:"),
-            _("Construction:"),
-            _("Equivalent Series Resistance (\u03A9):"),
-        ]
-        self._lst_tooltips: List[str] = [
-            _("The quality level of the capacitor."),
-            _("The capacitance rating (in farads) of the capacitor."),
-            _("The governing specification for the capacitor."),
-            _("The style of the capacitor."),
-            _("The configuration of the capacitor."),
-            _("The method of construction of the capacitor."),
-            _("The equivalent series resistance of the capacitor."),
-        ]
 
         # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
+        self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
+        self.dic_attribute_index_map = {
+            32: ["quality_id", "integer"],
+            4: ["capacitance", "float"],
+            5: ["configuration_id", "integer"],
+            6: ["construction_id", "integer"],
+            35: ["resistance", "float"],
+            36: ["specification_id", "integer"],
+            48: ["type_id", "integer"],
+        }
+        self.dic_attribute_widget_map = {
+            "quality_id": [
+                32,
+                self.cmbQuality,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_reliability",
+                0,
+                {
+                    "tooltip": _("The quality level of the capacitor."),
+                },
+                _("Quality Level:"),
+            ],
+            "capacitance": [
+                4,
+                self.txtCapacitance,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _(
+                        "The capacitance rating (in farads) of the capacitor."
+                    ),
+                },
+                _("Capacitance (F):"),
+            ],
+            "specification_id": [
+                36,
+                self.cmbSpecification,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The governing specification for the capacitor."),
+                },
+                _("Specification:"),
+            ],
+            "type_id": [
+                48,
+                self.cmbStyle,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The style of the capacitor."),
+                },
+                _("Style:"),
+            ],
+            "configuration_id": [
+                5,
+                self.cmbConfiguration,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The configuration of the capacitor."),
+                },
+                _("Configuration:"),
+            ],
+            "construction_id": [
+                6,
+                self.cmbConstruction,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The method of construction of the capacitor."),
+                },
+                _("Construction:"),
+            ],
+            "resistance": [
+                35,
+                self.txtESR,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The equivalent series resistance of the capacitor."),
+                },
+                _("Equivalent Series Resistance (\u03A9):"),
+            ],
+        }
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.cmbConfiguration: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbSpecification: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbStyle: RAMSTKComboBox = RAMSTKComboBox()
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
 
-        self.txtCapacitance: RAMSTKEntry = RAMSTKEntry()
-        self.txtESR: RAMSTKEntry = RAMSTKEntry()
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
 
-        self._dic_attribute_updater = {
-            "quality_id": [self.cmbQuality.do_update, "changed", 0],
-            "specification_id": [self.cmbSpecification.do_update, "changed", 1],
-            "type_id": [self.cmbStyle.do_update, "changed", 2],
-            "configuration_id": [self.cmbConfiguration.do_update, "changed", 3],
-            "construction_id": [self.cmbConstruction.do_update, "changed", 4],
-            "capacitance": [self.txtCapacitance.do_update, "changed", 5],
-            "resistance": [self.txtESR.do_update, "changed", 6],
-        }
-        self._lst_widgets = [
-            self.cmbQuality,
-            self.txtCapacitance,
-            self.cmbSpecification,
-            self.cmbStyle,
-            self.cmbConfiguration,
-            self.cmbConstruction,
-            self.txtESR,
-        ]
-
-        # Make a fixed type panel.
-        self.__do_set_properties()
-        super().do_make_panel_fixed()
-        self.__do_set_callbacks()
+        self.cmbSpecification.connect("changed", self._do_load_styles)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_comboboxes, "changed_subcategory")
-
-        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
+        pub.subscribe(
+            self.do_load_comboboxes,
+            "changed_subcategory",
+        )
+        pub.subscribe(
+            self._do_set_reliability_attributes,
+            "succeed_get_reliability_attributes",
+        )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -538,18 +603,20 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
+        self.subcategory_id = subcategory_id
+
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
             _quality: List[Any] = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
         else:
             try:
-                _quality = self._dic_quality[self._subcategory_id]
+                _quality = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _quality = []
 
         self.cmbQuality.do_load_combo(_quality, signal="changed")
 
         try:
-            _specification: List[Any] = self._dic_specifications[self._subcategory_id]
+            _specification: List[Any] = self._dic_specifications[self.subcategory_id]
         except KeyError:
             _specification = []
 
@@ -570,35 +637,16 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         ]
         self.cmbConstruction.do_load_combo(_construction, signal="changed")
 
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Capacitor Assessment Inputs page.
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
 
-        :param attributes: the attributes dictionary for the selected
-            Capacitor.
+        :param attributes: the dict of reliability attributes.
         :return: None
         :rtype: None
         """
-        super().do_load_common(attributes)
-
-        # We don't block the callback signal otherwise the style
-        # RAMSTKComboBox() will not be loaded and set.
-        self.cmbSpecification.set_active(attributes["specification_id"])
-
-        if self._hazard_rate_method_id != 1:
-            self.cmbStyle.do_update(attributes["type_id"], signal="changed")
-            self.cmbConfiguration.do_update(
-                attributes["configuration_id"], signal="changed"
-            )
-            self.cmbConstruction.do_update(
-                attributes["construction_id"], signal="changed"
-            )
-
-            self.txtCapacitance.do_update(
-                str(self.fmt.format(attributes["capacitance"])), signal="changed"
-            )  # noqa
-            self.txtESR.do_update(
-                str(self.fmt.format(attributes["resistance"])), signal="changed"
-            )  # noqa
+        if attributes["hardware_id"] == self._record_id:
+            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+            self._quality_id = attributes["quality_id"]
 
     def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
         """Load the style RAMSTKComboBox() when the specification changes.
@@ -610,67 +658,39 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         # If the capacitor specification changed, load the capacitor style
         # RAMSTKComboBox().
         try:
-            if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
+            if self.subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
                 _idx = int(combo.get_active()) - 1
-                _styles = self._dic_styles[self._subcategory_id][_idx]
+                _styles = self._dic_styles[self.subcategory_id][_idx]
             else:
-                _styles = self._dic_styles[self._subcategory_id]
+                _styles = self._dic_styles[self.subcategory_id]
         except KeyError:
             _styles = []
         self.cmbStyle.do_load_combo(entries=_styles, signal="changed")
 
-    def _do_set_sensitive(self) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.
 
         :return: None
         :rtype: None
         """
         self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
         if self._hazard_rate_method_id == 1:
-            self.__do_set_parts_count_sensitive()
+            self.__do_set_parts_count_sensitive(attributes)
         else:
-            self.__do_set_part_stress_sensitive()
+            self.__do_set_part_stress_sensitive(attributes)
 
-    def __do_set_callbacks(self) -> None:
-        """Set callback methods for Capacitor assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        # ----- COMBOBOXES
-        self.cmbQuality.dic_handler_id["changed"] = self.cmbQuality.connect(
-            "changed", super().on_changed_combo, 0, "wvw_editing_hardware"
-        )
-        self.cmbSpecification.dic_handler_id["changed"] = self.cmbSpecification.connect(
-            "changed", super().on_changed_combo, 1, "wvw_editing_hardware"
-        )
-        self.cmbSpecification.connect("changed", self._do_load_styles)
-        self.cmbStyle.dic_handler_id["changed"] = self.cmbStyle.connect(
-            "changed", super().on_changed_combo, 2, "wvw_editing_hardware"
-        )
-        self.cmbConfiguration.dic_handler_id["changed"] = self.cmbConfiguration.connect(
-            "changed", super().on_changed_combo, 3, "wvw_editing_hardware"
-        )
-        self.cmbConstruction.dic_handler_id["changed"] = self.cmbConstruction.connect(
-            "changed", super().on_changed_combo, 4, "wvw_editing_hardware"
-        )
-
-        # ----- ENTRIES
-        self.txtCapacitance.dic_handler_id["changed"] = self.txtCapacitance.connect(
-            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
-        )
-        self.txtESR.dic_handler_id["changed"] = self.txtESR.connect(
-            "changed", super().on_changed_entry, 6, "wvw_editing_hardware"
-        )
-
-    def __do_set_parts_count_sensitive(self) -> None:
+    def __do_set_parts_count_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 1:
+        if self.subcategory_id == 1:
             self.cmbSpecification.set_sensitive(True)
         else:
             self.cmbSpecification.set_sensitive(False)
@@ -680,42 +700,54 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             self.txtCapacitance.set_sensitive(False)
             self.txtESR.set_sensitive(False)
 
-    def __do_set_part_stress_sensitive(self) -> None:
+    def __do_set_part_stress_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Part Stress.
 
         :return: None
         :rtype: None
         """
         self.cmbSpecification.set_sensitive(True)
+        self.cmbSpecification.do_update(
+            attributes["specification_id"],
+            signal="changed",
+        )
         self.cmbStyle.set_sensitive(True)
+        self.cmbStyle.do_update(
+            attributes["type_id"],
+            signal="changed",
+        )
         self.txtCapacitance.set_sensitive(True)
+        self.txtCapacitance.do_update(
+            attributes["capacitance"],
+            signal="changed",
+        )
 
-        if self._subcategory_id == 12:
+        if self.subcategory_id == 12:
             self.txtESR.set_sensitive(True)
+            self.txtESR.do_update(
+                attributes["resistance"],
+                signal="changed",
+            )
         else:
             self.txtESR.set_sensitive(False)
 
-        if self._subcategory_id == 13:
+        if self.subcategory_id == 13:
             self.cmbConstruction.set_sensitive(True)
+            self.cmbConstruction.do_update(
+                attributes["construction_id"],
+                signal="changed",
+            )
         else:
             self.cmbConstruction.set_sensitive(False)
 
-        if self._subcategory_id == 19:
+        if self.subcategory_id == 19:
             self.cmbConfiguration.set_sensitive(True)
+            self.cmbConfiguration.do_update(
+                attributes["configuration_id"],
+                signal="changed",
+            )
         else:
             self.cmbConfiguration.set_sensitive(False)
-
-    def __do_set_properties(self) -> None:
-        """Set properties for Capacitor assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties()
-
-        # ----- ENTRIES
-        self.txtCapacitance.do_set_properties(tooltip=self._lst_tooltips[1], width=125)
-        self.txtESR.do_set_properties(tooltip=self._lst_tooltips[6], width=125)
 
 
 class AssessmentResultPanel(RAMSTKAssessmentResultPanel):

@@ -353,10 +353,10 @@ class HardwareTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == "hardware" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
+            _comprefdes = _model.get_value(_row, self._lst_col_order[4])
             _name = _model.get_value(_row, self._lst_col_order[15])
             _title = _("Analyzing Hardware item {0:s}: {1:s}").format(
-                str(_code), str(_name)
+                str(_comprefdes), str(_name)
             )
 
             pub.sendMessage("request_set_title", title=_title)
@@ -792,6 +792,12 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         """
         self._do_load_subcategories(category_id=combo.get_active())
+        pub.sendMessage(
+            "hardware_category_changed",
+            attributes={
+                "category_id": combo.get_active(),
+            },
+        )
 
 
 class HardwareLogisticsPanel(RAMSTKFixedPanel):
