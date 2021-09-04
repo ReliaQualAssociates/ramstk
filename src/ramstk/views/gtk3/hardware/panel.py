@@ -768,14 +768,22 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 _subcategory.append([_subcategories[_key]])
             self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
 
-    @staticmethod
-    def _request_load_component(combo: RAMSTKComboBox) -> None:
+    def _request_load_component(self, combo: RAMSTKComboBox) -> None:
         """Request to load the component widgets.
 
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
         """
         pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
+        for _table in [
+            "design_electric",
+            "hardware",
+            "reliability",
+        ]:
+            pub.sendMessage(
+                "request_get_{}_attributes".format(_table),
+                node_id=self._record_id,
+            )
 
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
         """Request to have the subcategory RAMSTKComboBox() loaded.

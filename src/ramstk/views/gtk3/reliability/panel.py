@@ -78,7 +78,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 "changed",
                 super().on_changed_combo,
                 "wvw_editing_hardware",
-                0.0,
+                0,
                 {
                     "tooltip": _(
                         "The type of reliability assessment for the selected hardware "
@@ -94,7 +94,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 "changed",
                 super().on_changed_combo,
                 "wvw_editing_reliability",
-                0.0,
+                0,
                 {
                     "tooltip": _(
                         "The assessment method to use for the selected hardware item."
@@ -109,7 +109,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 "changed",
                 super().on_changed_entry,
                 "wvw_editing_hardware",
-                1.0,
+                0.0,
                 {
                     "tooltip": _("The stated hazard rate."),
                     "width": 125,
@@ -121,8 +121,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedHtVar,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _("The variance of the stated hazard rate."),
                     "width": 125,
@@ -134,8 +134,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedMTBF,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _("The stated mean time between failure (MTBF)."),
                     "width": 125,
@@ -147,8 +147,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedMTBFVar,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _(
                         "The variance of the stated mean time between failure (MTBF)."
@@ -163,7 +163,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 "changed",
                 super().on_changed_combo,
                 "wvw_editing_reliability",
-                0.0,
+                0,
                 {
                     "tooltip": _(
                         "The statistical failure distribution of the selected hardware "
@@ -178,8 +178,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailScale,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _(
                         "The scale parameter of the statistical failure distribution."
@@ -193,8 +193,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailShape,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _(
                         "The shape parameter of the statistical failure distribution."
@@ -208,8 +208,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailLocation,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                0.0,
                 {
                     "tooltip": _(
                         "The location parameter of the statistical failure "
@@ -239,8 +239,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtMultAdjFactor,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_reliability",
-                100.0,
+                "wvw_editing_reliability",
+                1.0,
                 {
                     "tooltip": _(
                         "An adjustment factor to multiply the assessed hazard rate."

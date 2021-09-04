@@ -487,7 +487,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks = [
             self._do_request_calculate,
-            super().do_request_update,
+            self._do_request_update,
             super().do_request_update_all,
         ]
         self._lst_icons = [
@@ -528,10 +528,23 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, "succeed_calculate_hardware")
+        pub.subscribe(
+            super().do_set_cursor_active,
+            "succeed_calculate_hardware",
+        )
 
-        pub.subscribe(self._do_pack_component_panel, "selected_hardware")
-        pub.subscribe(self._do_set_record_id, "selected_hardware")
+        pub.subscribe(
+            self._do_pack_component_panel,
+            "selected_hardware",
+        )
+        pub.subscribe(
+            self._do_pack_component_panel,
+            "succeed_get_hardware_attributes",
+        )
+        pub.subscribe(
+            self._do_set_record_id,
+            "selected_hardware",
+        )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Pack panel used to display component-specific input attributes.
@@ -551,10 +564,9 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         if attributes["category_id"] > 0:
             _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
             _panel.fmt = self.fmt
+            _panel.category_id = attributes["category_id"]
             self._vpnRight.pack2(_panel, True, True)
             self.show_all()
-        # else:
-        #    self._vpnRight.get_child2().hide()
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.
@@ -571,6 +583,23 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             )
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """Send request to update all tables for the selected hardware item.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        for _table in [
+            "design_electric",
+            "hardware",
+            "reliability",
+        ]:
+            pub.sendMessage(
+                "request_update_{}".format(_table),
+                node_id=self._record_id,
+            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
@@ -611,9 +640,5 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         # Top right quadrant.
         self._pnlStressInput.fmt = self.fmt
         self._vpnRight.pack1(self._pnlStressInput, True, True)
-
-        # Bottom right quadrant.
-        # self._pnlStressInput.fmt = self.fmt
-        # self._vpnRight.pack2(self._pnlStressInput, True, True)
 
         self.show_all()

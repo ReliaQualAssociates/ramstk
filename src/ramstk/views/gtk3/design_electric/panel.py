@@ -235,7 +235,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtTemperatureRatedMin,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_design_electric",
+                "wvw_editing_design_electric",
                 25.0,
                 {
                     "tooltip": _(
@@ -267,7 +267,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtTemperatureRatedMax,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_design_electric",
+                "wvw_editing_design_electric",
                 25.0,
                 {
                     "tooltip": _(
@@ -335,7 +335,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageRated,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_design_electric",
+                "wvw_editing_design_electric",
                 0.0,
                 {
                     "tooltip": _("The rated voltage (in V) of the hardware item."),
@@ -348,7 +348,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageAC,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_design_electric",
+                "wvw_editing_design_electric",
                 0.0,
                 {
                     "tooltip": _(
@@ -363,7 +363,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageDC,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_design_electric",
+                "wvw_editing_design_electric",
                 0.0,
                 {
                     "tooltip": _(
