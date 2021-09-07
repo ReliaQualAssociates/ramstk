@@ -7,9 +7,6 @@ from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
 
-# RAMSTK Local Imports
-from .panels import RAMSTKAssessmentResultPanel as RAMSTKAssessmentResultPanel
-
 class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     _dic_quality: Dict[int, List[Any]]
     _dic_specifications: Dict[int, List[Any]]
@@ -17,18 +14,18 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    cmbConfiguration: Any
-    cmbConstruction: Any
-    cmbQuality: Any
-    cmbSpecification: Any
-    cmbStyle: Any
-    txtCapacitance: Any
-    txtESR: Any
+    _title: str
+    cmbConfiguration: RAMSTKComboBox
+    cmbConstruction: RAMSTKComboBox
+    cmbQuality: RAMSTKComboBox
+    cmbSpecification: RAMSTKComboBox
+    cmbStyle: RAMSTKComboBox
+    txtCapacitance: RAMSTKEntry
+    txtESR: RAMSTKEntry
     _hazard_rate_method_id: int
     _quality_id: int
-    dic_attribute_index_map: Any
-    dic_attribute_widget_map: Any
+    dic_attribute_index_map: Dict[int, List[str]]
+    dic_attribute_widget_map: Dict[str, List[Any]]
     category_id: int
     subcategory_id: int
     def __init__(self) -> None: ...
@@ -38,15 +35,3 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None: ...
     def __do_set_parts_count_sensitive(self, attributes: Dict[str, Any]) -> None: ...
     def __do_set_part_stress_sensitive(self, attributes: Dict[str, Any]) -> None: ...
-
-class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
-    _dic_part_stress: Dict[int, str]
-    _lst_labels: Any
-    _lst_tooltips: Any
-    txtPiCV: Any
-    txtPiCF: Any
-    txtPiC: Any
-    _lst_widgets: Any
-    def __init__(self) -> None: ...
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None: ...
-    def _do_set_sensitive(self) -> None: ...

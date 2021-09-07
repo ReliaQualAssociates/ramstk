@@ -12,28 +12,28 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     _dic_types: Dict[int, List[Any]]
     _select_msg: str
     _tag: str
-    _title: Any
-    cmbApplication: Any
-    cmbConstruction: Any
-    cmbECC: Any
-    cmbManufacturing: Any
-    cmbPackage: Any
-    cmbQuality: Any
-    cmbTechnology: Any
-    cmbType: Any
-    txtArea: Any
-    txtFeatureSize: Any
-    txtNActivePins: Any
-    txtNCycles: Any
-    txtNElements: Any
-    txtOperatingLife: Any
-    txtThetaJC: Any
-    txtVoltageESD: Any
-    txtYearsInProduction: Any
+    _title: str
+    cmbApplication: RAMSTKComboBox
+    cmbConstruction: RAMSTKComboBox
+    cmbECC: RAMSTKComboBox
+    cmbManufacturing: RAMSTKComboBox
+    cmbPackage: RAMSTKComboBox
+    cmbQuality: RAMSTKComboBox
+    cmbTechnology: RAMSTKComboBox
+    cmbType: RAMSTKComboBox
+    txtArea: RAMSTKEntry
+    txtFeatureSize: RAMSTKEntry
+    txtNActivePins: RAMSTKEntry
+    txtNCycles: RAMSTKEntry
+    txtNElements: RAMSTKEntry
+    txtOperatingLife: RAMSTKEntry
+    txtThetaJC: RAMSTKEntry
+    txtVoltageESD: RAMSTKEntry
+    txtYearsInProduction: RAMSTKEntry
     _hazard_rate_method_id: int
     _quality_id: int
-    dic_attribute_index_map: Any
-    dic_attribute_widget_map: Any
+    dic_attribute_index_map: Dict[int, List[str]]
+    dic_attribute_widget_map: Dict[str, List[Any]]
     category_id: int
     subcategory_id: int
     def __init__(self) -> None: ...

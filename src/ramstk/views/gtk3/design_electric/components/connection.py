@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.hardware.components.connection.py is part of the
-#       RAMSTK Project.
+#       ramstk.views.gtk3.design_electric.components.connection.py is part of the RAMSTK
+#       Project.
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -16,9 +16,6 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
-
-# RAMSTK Local Imports
-from .panels import RAMSTKAssessmentResultPanel
 
 
 class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -420,13 +417,10 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             "succeed_get_reliability_attributes",
         )
 
-    # pylint: disable=unused-argument
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the connection RKTComboBox()s.
 
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
+        :param subcategory_id: the subcategory ID of the selected connection.
         :return: None
         :rtype: None
         """
@@ -648,194 +642,3 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 str(attributes["n_circuit_planes"]),
                 signal="changed",
             )
-
-
-class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
-    """Displays connection assessment results attribute data.
-
-    The connection assessment result view displays all the assessment results
-    for the selected connection.  This includes, currently, results for
-    MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
-    attributes of a connection assessment result view are:
-
-    :cvar dict _dic_part_stress: dictionary of MIL-HDBK-217F part stress
-        models.  The key is the subcategory ID attribute of the component.
-
-    :ivar list _lst_labels: list of label text to display for the capacitor
-        MIL-HDBK-217 input parameters.
-
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-
-    :ivar fmt: the formatting to use when displaying float values.
-    :ivar lblModel: displays the hazard rate model use to estimate the
-        Hardware item's hazard rate.
-    :ivar self.txtLambdaB: displays the base hazard rate for the Hardware
-        item.
-    :ivar txtPiC: displays the construction factor for the connection.
-        :ivar txtPiE: displays the environment factor for the Hardware item.
-    :ivar txtPiK: displays the capacitance factor for the connection.
-    :ivar txtPiP: displays the configuration factor for the connection.
-    :ivar txtPiQ: displays the quality factor for the Hardware item.
-    """
-
-    # Define private dict class attributes.
-    _dic_part_stress = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0"
-        "<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub>\u03C0"
-        "<sub>E</sub></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + "
-        "N<sub>2</sub>(\u03C0<sub>C</sub> + "
-        "13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        5: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-    }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
-
-    def __init__(self) -> None:
-        """Initialize an instance of the Connection assessment result view."""
-        super().__init__()
-
-        # Initialize private dict attributes.
-
-        # Initialize private list attributes.
-        self._lst_labels = [
-            "",
-            "\u03BB<sub>b</sub>:",
-            "\u03C0<sub>Q</sub>:",
-            "\u03C0<sub>E</sub>:",
-            "\u03C0<sub>K</sub>:",
-            "\u03C0<sub>P</sub>:",
-            "\u03C0<sub>C</sub>:",
-        ]
-        self._lst_tooltips: List[str] = [
-            _("The assessment model used to calculate the connection hazard " "rate."),
-            _("The base hazard rate for the connection."),
-            _("The quality factor for the connection."),
-            _("The environment factor for the connection."),
-            _("The mating/unmating factor for the connection."),
-            _("The active pins factor for the connection."),
-            _("The complexity factor for the connection."),
-        ]
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dict attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiK: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiP: RAMSTKEntry = RAMSTKEntry()
-
-        self._lst_widgets = [
-            self.lblModel,
-            self.txtLambdaB,
-            self.txtPiQ,
-            self.txtPiE,
-            self.txtPiK,
-            self.txtPiP,
-            self.txtPiC,
-        ]
-
-        super().do_set_properties()
-        super().do_make_panel_fixed()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the connection assessment results page.
-
-        :param attributes: the attributes dictionary for the selected
-                                Connection.
-        :return: None
-        :rtype: None
-        """
-        super().do_load_common(attributes)
-
-        self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))
-        self.txtPiK.do_update(str(self.fmt.format(attributes["piK"])))
-        self.txtPiP.do_update(str(self.fmt.format(attributes["piP"])))
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected connection.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-        self.txtPiK.set_sensitive(False)
-        self.txtPiP.set_sensitive(False)
-        self.txtPiC.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 2:
-            self.txtPiE.set_sensitive(True)
-            self.__do_set_circular_pwa_sensitive()
-            self.__do_set_ic_socket_sensitive()
-            self.__do_set_pth_sensitive()
-            self.__do_set_non_pth_sensitive()
-
-    def __do_set_circular_pwa_sensitive(self) -> None:
-        """Set widgets for circular and PWS connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id in [1, 2]:
-            self.txtPiK.set_sensitive(True)
-            self.txtPiQ.set_sensitive(False)
-            self.txtPiP.set_sensitive(True)
-
-    def __do_set_ic_socket_sensitive(self) -> None:
-        """Set widgets for IC socket connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 3:
-            self.txtPiP.set_sensitive(True)
-            self.txtPiQ.set_sensitive(False)
-
-    def __do_set_pth_sensitive(self) -> None:
-        """Set widgets for PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 4:
-            self.txtPiC.set_sensitive(True)
-            self.txtPiQ.set_sensitive(True)
-
-    def __do_set_non_pth_sensitive(self) -> None:
-        """Set widgets for non-PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 5:
-            self.txtPiQ.set_sensitive(True)

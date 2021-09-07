@@ -10,5 +10,6 @@
 # RAMSTK Local Imports
 from .components.capacitor import CapacitorDesignElectricInputPanel
 from .components.connection import ConnectionDesignElectricInputPanel
+from .components.inductor import InductorDesignElectricInputPanel
 from .components.integrated_circuit import ICDesignElectricInputPanel
 from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel
