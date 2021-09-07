@@ -78,7 +78,7 @@ CREATE TABLE ramstk_environment (
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
 );
-INSERT INTO "ramstk_environment" VALUES (1,1,1,'Environment','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_environment" VALUES (1,1,1,1,'Environment','',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_program_info (
     fld_revision_id INTEGER NOT NULL,
     fld_function_active INTEGER,
@@ -356,7 +356,7 @@ CREATE TABLE ramstk_design_electric (
     fld_matching_id INTEGER,
     fld_n_active_pins INTEGER,
     fld_n_circuit_planes INTEGER,
-    fld_n_cycles INTEGER,
+    fld_n_cycles FLOAT,
     fld_n_elements INTEGER,
     fld_n_hand_soldered INTEGER,
     fld_n_wave_soldered INTEGER,

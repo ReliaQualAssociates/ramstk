@@ -26,6 +26,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.design_electric import (
     CapacitorDesignElectricInputPanel,
+    ConnectionDesignElectricInputPanel,
     DesignElectricEnvironmentalInputPanel,
     DesignElectricStressInputPanel,
     ICDesignElectricInputPanel,
@@ -480,7 +481,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             # 5: inductor.AssessmentInputPanel(),
             # 6: relay.AssessmentInputPanel(),
             # 7: switch.AssessmentInputPanel(),
-            # 8: connection.AssessmentInputPanel(),
+            8: ConnectionDesignElectricInputPanel(),
             # 9: meter.AssessmentInputPanel(),
             # 10: miscellaneous.AssessmentInputPanel(),
         }

@@ -392,7 +392,7 @@ CREATE TABLE ramstk_design_electric (
     fld_matching_id INTEGER,
     fld_n_active_pins INTEGER,
     fld_n_circuit_planes INTEGER,
-    fld_n_cycles INTEGER,
+    fld_n_cycles FLOAT,
     fld_n_elements INTEGER,
     fld_n_hand_soldered INTEGER,
     fld_n_wave_soldered INTEGER,

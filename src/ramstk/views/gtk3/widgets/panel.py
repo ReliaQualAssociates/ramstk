@@ -412,7 +412,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         entry.handler_unblock(_handler_id)
 
-        pub.sendMessage(message, node_id=[self._record_id, -1], package=_package)
+        pub.sendMessage(message, node_id=self._record_id, package=_package)
 
         return _package
 

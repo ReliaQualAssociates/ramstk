@@ -4,8 +4,8 @@
 #       RAMSTK Project.
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Capacitor Work View Panels."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Capacitor Input Panel."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -439,10 +439,10 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _record_field = "hardware_id"
-    _select_msg = "selected_hardware"
-    _tag = "design_electric"
-    _title = _("Capacitor Design Inputs")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "selected_hardware"
+    _tag: str = "design_electric"
+    _title: str = _("Capacitor Design Inputs")
 
     # Define public dictionary class attributes.
 

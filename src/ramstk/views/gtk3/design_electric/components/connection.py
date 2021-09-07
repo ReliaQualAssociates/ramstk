@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
 #       ramstk.views.gtk3.hardware.components.connection.py is part of the
-#       RAMSTK Project
+#       RAMSTK Project.
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Connection Work View."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Connection Input Panel."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -14,15 +14,14 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 # RAMSTK Local Imports
-from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
+from .panels import RAMSTKAssessmentResultPanel
 
 
-class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
+class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     """Displays connection assessment input attribute data.
 
     The Connection assessment input view displays all the assessment inputs for
@@ -79,7 +78,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     # Define private dict class attributes.
 
     # Quality levels; key is the subcategory ID.
-    _dic_quality: Dict[int, List[Any]] = {
+    _dic_quality: Dict[int, List[List[str]]] = {
         1: [["MIL-SPEC"], [_("Lower")]],
         2: [["MIL-SPEC"], [_("Lower")]],
         4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
@@ -92,7 +91,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     }
 
     # Connector types; key is the subcategory ID.
-    _dic_type: Dict[int, List[Any]] = {
+    _dic_type: Dict[int, List[List[str]]] = {
         1: [
             [_("Rack and Panel")],
             [_("Circular")],
@@ -121,7 +120,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     }
 
     # Specifications; key is the type ID.
-    _dic_specification: Dict[int, List[Any]] = {
+    _dic_specification: Dict[int, List[List[str]]] = {
         1: [
             [_("MIL-C-24308")],
             [_("MIL-C-28748")],
@@ -151,12 +150,12 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         5: [[_("MIL-C-49142")]],
     }
 
-    _lst_insert_A: List[Any] = [
+    _lst_insert_A: List[List[str]] = [
         [_("Vitreous Glass")],
         [_("Alumina Ceramic")],
         [_("Polyimide")],
     ]
-    _lst_insert_B = [
+    _lst_insert_B: List[List[str]] = [
         [_("Diallylphtalate")],
         [_("Melamine")],
         [_("Flourosilicone")],
@@ -164,18 +163,18 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         [_("Polysulfone")],
         [_("Epoxy Resin")],
     ]
-    _lst_insert_C = [
+    _lst_insert_C: List[List[str]] = [
         [_("Polytetraflourethylene (Teflon)")],
         [_("Chlorotriflourethylene (Kel-f)")],
     ]
-    _lst_insert_D = [
+    _lst_insert_D: List[List[str]] = [
         [_("Polyamide (Nylon)")],
         [_("Polychloroprene (Neoprene)")],
         [_("Polyethylene")],
     ]
     # Connector insert material; first key is the type ID, second key is the
     # specification ID.
-    _dic_insert: Dict[int, Dict[int, List[Any]]] = {
+    _dic_insert: Dict[int, Dict[int, List[List[str]]]] = {
         1: {
             1: _lst_insert_B,
             2: _lst_insert_B,
@@ -208,6 +207,10 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     # Define private list attributes.
 
     # Define private scalar class attributes.
+    _record_field: str = "hardware_id"
+    _select_msg: str = "selected_hardware"
+    _tag: str = "design_electric"
+    _title: str = _("Connection Design Inputs")
 
     # Define public dictionary class attributes.
 
@@ -219,64 +222,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         """Initialize an instance of the Connection assessment input view."""
         super().__init__()
 
-        # Initialize private dictionary attributes.
-        self._dic_attribute_keys = {
-            0: ["quality_id", "integer"],
-            1: ["type_id", "integer"],
-            2: ["specification_id", "integer"],
-            3: ["insert_id", "integer"],
-            4: ["contact_gauge", "integer"],
-            5: ["n_active_pins", "integer"],
-            6: ["current_operating", "float"],
-            7: ["n_cycles", "integer"],
-            8: ["n_wave_soldered", "integer"],
-            9: ["n_hand_soldered", "integer"],
-            10: ["n_circuit_planes", "integer"],
-        }
-
-        # Initialize private list attributes.
-        self._lst_labels: List[str] = [
-            _("Quality Level:"),
-            _("Connector Type:"),
-            _("Specification:"),
-            _("Insert Material:"),
-            _("Contact Gauge:"),
-            _("Active Pins:"),
-            _("Amperes/Contact:"),
-            _("Mating/Unmating Cycles (per 1000 hours):"),
-            _("Number of Wave Soldered PTH:"),
-            _("Number of Hand Soldered PTH:"),
-            _("Number of Circuit Planes:"),
-        ]
-        self._lst_tooltips: List[str] = [
-            _("The quality level of the connector/connection."),
-            _("The type of connector/connection."),
-            _("The governing specification for the connection."),
-            _("The connector insert material."),
-            _("The gauge of the contacts in the connector."),
-            _("The number of active pins in the connector."),
-            _("The amperes per active contact."),
-            _(
-                "The number of connector mate and unmate cycles per 1000 hours "
-                "of operation."
-            ),
-            _("The number of wave soldered PTH connections."),
-            _("The number of hand soldered PTH connections."),
-            _("The number of circuit planes for wave soldered connections."),
-        ]
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize widgets.
         self.cmbInsert: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbSpecification: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
-
         self.txtContactGauge: RAMSTKEntry = RAMSTKEntry()
         self.txtActivePins: RAMSTKEntry = RAMSTKEntry()
         self.txtAmpsContact: RAMSTKEntry = RAMSTKEntry()
@@ -285,41 +235,190 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.txtNHand: RAMSTKEntry = RAMSTKEntry()
         self.txtNPlanes: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater = {
-            "quality_id": [self.cmbQuality.do_update, "changed", 0],
-            "specification_id": [self.cmbSpecification.do_update, "changed", 1],
-            "type_id": [self.cmbType.do_update, "changed", 2],
-            "insert_id": [self.cmbInsert.do_update, "changed", 3],
-            "contact_gauge": [self.txtContactGauge.do_update, "changed", 4],
-            "n_active_pins": [self.txtActivePins.do_update, "changed", 5],
-            "current_operating": [self.txtAmpsContact, "changed", 6],
-            "n_cycles": [self.txtMating, "changed", 7],
-            "n_wave_soldered": [self.txtNWave, "changed", 8],
-            "n_hand_soldered": [self.txtNHand, "changed", 9],
-            "n_circuit_planes": [self.txtNPlanes, "changed", 10],
-        }
-        self._lst_widgets = [
-            self.cmbQuality,
-            self.cmbType,
-            self.cmbSpecification,
-            self.cmbInsert,
-            self.txtContactGauge,
-            self.txtActivePins,
-            self.txtAmpsContact,
-            self.txtMating,
-            self.txtNWave,
-            self.txtNHand,
-            self.txtNPlanes,
-        ]
+        # Initialize private dictionary attributes.
 
-        self.__set_properties()
-        super().do_make_panel_fixed()
-        self.__set_callbacks()
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
+        self._quality_id: int = 0
+
+        # Initialize public dictionary attributes.
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
+            8: ["contact_gauge", "integer"],
+            10: ["current_operating", "float"],
+            18: ["insert_id", "integer"],
+            22: ["n_active_pins", "integer"],
+            23: ["n_circuit_planes", "integer"],
+            24: ["n_cycles", "float"],
+            26: ["n_hand_soldered", "integer"],
+            27: ["n_wave_soldered", "integer"],
+            32: ["quality_id", "integer"],
+            36: ["specification_id", "integer"],
+            48: ["type_id", "integer"],
+        }
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+            "quality_id": [
+                32,
+                self.cmbQuality,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_reliability",
+                0,
+                {
+                    "tooltip": _("The quality level of the connector/connection."),
+                },
+                _("Quality Level:"),
+            ],
+            "type_id": [
+                48,
+                self.cmbType,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The type of connector/connection."),
+                },
+                _("Connector Type:"),
+            ],
+            "specification_id": [
+                36,
+                self.cmbSpecification,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The governing specification for the connection."),
+                },
+                _("Specification:"),
+            ],
+            "insert_id": [
+                18,
+                self.cmbInsert,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The connector insert material."),
+                },
+                _("Insert Material:"),
+            ],
+            "contact_gauge": [
+                8,
+                self.txtContactGauge,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                22,
+                {
+                    "tooltip": _("The gauge of the contacts in the connector."),
+                },
+                _("Contact Gauge:"),
+            ],
+            "n_active_pins": [
+                22,
+                self.txtActivePins,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The number of active pins in the connector."),
+                },
+                _("Active Pins:"),
+            ],
+            "current_operating": [
+                10,
+                self.txtAmpsContact,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0.0,
+                {
+                    "tooltip": _("The amperes per active contact."),
+                },
+                _("Amperes/Contact:"),
+            ],
+            "n_cycles": [
+                24,
+                self.txtMating,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _(
+                        "The number of connector mate and unmate cycles per 1000 hours "
+                        "of operation."
+                    ),
+                },
+                _("Mating/Unmating Cycles (per 1000 hours):"),
+            ],
+            "n_wave_soldered": [
+                27,
+                self.txtNWave,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The number of wave soldered PTH connections."),
+                },
+                _("Number of Wave Soldered PTH:"),
+            ],
+            "n_hand_soldered": [
+                26,
+                self.txtNHand,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The number of hand soldered PTH connections."),
+                },
+                _("Number of Hand Soldered PTH:"),
+            ],
+            "n_circuit_planes": [
+                23,
+                self.txtNPlanes,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _(
+                        "The number of circuit planes for wave soldered connections."
+                    ),
+                },
+                _("Number of Circuit Planes:"),
+            ],
+        }
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.cmbSpecification.connect("changed", self._do_load_insert)
+        self.cmbType.connect("changed", self._do_load_specification)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_comboboxes, "changed_subcategory")
-
-        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
+        pub.subscribe(
+            self.do_load_comboboxes,
+            "changed_subcategory",
+        )
+        pub.subscribe(
+            self._do_set_reliability_attributes,
+            "succeed_get_reliability_attributes",
+        )
 
     # pylint: disable=unused-argument
     def do_load_comboboxes(self, subcategory_id: int) -> None:
@@ -331,19 +430,21 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :return: None
         :rtype: None
         """
+        self.subcategory_id = subcategory_id
+
         # Load the quality level RAMSTKComboBox().
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
             _data = [["MIL-SPEC"], [_("Lower")]]
         else:
             try:
-                _data = self._dic_quality[self._subcategory_id]
+                _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
         self.cmbQuality.do_load_combo(_data, signal="changed")
 
         # Load the connector type RAMSTKComboBox().
         try:
-            _data = self._dic_type[self._subcategory_id]
+            _data = self._dic_type[self.subcategory_id]
         except KeyError:
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
@@ -355,74 +456,6 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
 
         _model = self.cmbInsert.get_model()
         _model.clear()
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Connection assessment input widgets.
-
-        :param attributes: the attributes dictionary for the selected
-            Connection.
-        :return: None
-        :rtype: None
-        """
-        super().do_load_common(attributes)
-
-        # We don't block the callback signal otherwise the specification
-        # RAMSTKComboBox() will not be loaded and set.
-        self.cmbType.set_active(attributes["type_id"])
-
-        if self._hazard_rate_method_id == 2:
-            # We don't block the callback signal otherwise the insert
-            # RAMSTKComboBox() will not be loaded and set.
-            self.cmbSpecification.set_active(attributes["specification_id"])
-            self.cmbInsert.do_update(attributes["insert_id"], signal="changed")
-
-            self.txtContactGauge.do_update(
-                str(attributes["contact_gauge"]), signal="changed"
-            )
-            self.txtActivePins.do_update(
-                str(attributes["n_active_pins"]), signal="changed"
-            )
-            self.txtAmpsContact.do_update(
-                str(self.fmt.format(attributes["current_operating"])), signal="changed"
-            )  # noqa
-            self.txtMating.do_update(str(attributes["n_cycles"]), signal="changed")
-
-            if self._subcategory_id == 4:
-                self.txtNWave.do_update(
-                    str(attributes["n_wave_soldered"]), signal="changed"
-                )
-                self.txtNHand.do_update(
-                    str(attributes["n_hand_soldered"]), signal="changed"
-                )
-                self.txtNPlanes.do_update(
-                    str(attributes["n_circuit_planes"]), signal="changed"
-                )
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected connection.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbInsert.set_sensitive(False)
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-
-        self.txtActivePins.set_sensitive(False)
-        self.txtAmpsContact.set_sensitive(False)
-        self.txtContactGauge.set_sensitive(False)
-        self.txtMating.set_sensitive(False)
-        self.txtNHand.set_sensitive(False)
-        self.txtNPlanes.set_sensitive(False)
-        self.txtNWave.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 1:
-            self.cmbType.set_sensitive(True)
-        else:
-            self.__do_set_circular_sensitive()
-            self.__do_set_ic_socket_sensitive()
-            self.__do_set_pwa_edge_sensitive()
-            self.__do_set_pth_sensitive()
 
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
@@ -454,116 +487,167 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             _specifications = []
         self.cmbSpecification.do_load_combo(entries=_specifications, signal="changed")
 
-    def __do_set_circular_sensitive(self) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        if attributes["hardware_id"] == self._record_id:
+            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+            self._quality_id = attributes["quality_id"]
+
+    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        """Set widget sensitivity as needed for the selected connection.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
+
+        self.cmbInsert.set_sensitive(False)
+        self.cmbSpecification.set_sensitive(False)
+        self.cmbType.set_sensitive(False)
+
+        self.txtActivePins.set_sensitive(False)
+        self.txtAmpsContact.set_sensitive(False)
+        self.txtContactGauge.set_sensitive(False)
+        self.txtMating.set_sensitive(False)
+        self.txtNHand.set_sensitive(False)
+        self.txtNPlanes.set_sensitive(False)
+        self.txtNWave.set_sensitive(False)
+
+        if self._hazard_rate_method_id == 1:
+            self.cmbType.set_sensitive(True)
+            self.cmbType.do_update(
+                attributes["type_id"],
+                signal="changed",
+            )
+        else:
+            self.__do_set_circular_sensitive(attributes)
+            self.__do_set_ic_socket_sensitive(attributes)
+            self.__do_set_pwa_edge_sensitive(attributes)
+            self.__do_set_pth_sensitive(attributes)
+
+    def __do_set_circular_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the widgets for circular connectors sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 1:
-            self.cmbInsert.set_sensitive(True)
-            self.cmbSpecification.set_sensitive(True)
+        if self.subcategory_id == 1:
             self.cmbType.set_sensitive(True)
+            # We don't block the callback signal otherwise the specification
+            # RAMSTKComboBox() will not be loaded and set.
+            self.cmbType.set_active(attributes["type_id"])
+
+            self.cmbSpecification.set_sensitive(True)
+            # We don't block the callback signal otherwise the insert
+            # RAMSTKComboBox() will not be loaded and set.
+            self.cmbSpecification.set_active(attributes["specification_id"])
+
+            self.cmbInsert.set_sensitive(True)
+            self.cmbInsert.do_update(
+                attributes["insert_id"],
+                signal="changed",
+            )
 
             self.txtActivePins.set_sensitive(True)
-            self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
+            self.txtActivePins.do_update(
+                str(attributes["n_active_pins"]),
+                signal="changed",
+            )
 
-    def __do_set_ic_socket_sensitive(self) -> None:
+            self.txtAmpsContact.set_sensitive(True)
+            self.txtAmpsContact.do_update(
+                str(self.fmt.format(attributes["current_operating"])),
+                signal="changed",
+            )
+
+            self.txtContactGauge.set_sensitive(True)
+            self.txtContactGauge.do_update(
+                str(attributes["contact_gauge"]),
+                signal="changed",
+            )
+
+            self.txtMating.set_sensitive(True)
+            self.txtMating.do_update(
+                str(attributes["n_cycles"]),
+                signal="changed",
+            )
+
+    def __do_set_ic_socket_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the widgets for IC socket connectors sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 3:
+        if self.subcategory_id == 3:
             self.cmbQuality.set_sensitive(False)
             self.txtActivePins.set_sensitive(True)
+            self.txtActivePins.do_update(
+                str(attributes["n_active_pins"]),
+                signal="changed",
+            )
 
-    def __do_set_pwa_edge_sensitive(self) -> None:
+    def __do_set_pwa_edge_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the widgets for PCB/PWA edge connectors sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 2:
+        if self.subcategory_id == 2:
             self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
-            self.txtActivePins.set_sensitive(True)
+            self.txtAmpsContact.do_update(
+                str(self.fmt.format(attributes["current_operating"])),
+                signal="changed",
+            )
 
-    def __do_set_pth_sensitive(self) -> None:
+            self.txtContactGauge.set_sensitive(True)
+            self.txtContactGauge.do_update(
+                str(attributes["contact_gauge"]),
+                signal="changed",
+            )
+
+            self.txtMating.set_sensitive(True)
+            self.txtMating.do_update(
+                str(attributes["n_cycles"]),
+                signal="changed",
+            )
+
+            self.txtActivePins.set_sensitive(True)
+            self.txtActivePins.do_update(
+                str(attributes["n_active_pins"]),
+                signal="changed",
+            )
+
+    def __do_set_pth_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the widgets for PTH connections sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 4:
+        if self.subcategory_id == 4:
             self.txtNWave.set_sensitive(True)
+            self.txtNWave.do_update(
+                str(attributes["n_wave_soldered"]),
+                signal="changed",
+            )
             self.txtNHand.set_sensitive(True)
+            self.txtNHand.do_update(
+                str(attributes["n_hand_soldered"]),
+                signal="changed",
+            )
             self.txtNPlanes.set_sensitive(True)
-
-    def __set_callbacks(self) -> None:
-        """Set callback methods for Connection assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        # ----- COMBOBOXES
-        self.cmbQuality.dic_handler_id["changed"] = self.cmbQuality.connect(
-            "changed", super().on_changed_combo, 0, "wvw_editing_hardware"
-        )
-        self.cmbType.dic_handler_id["changed"] = self.cmbType.connect(
-            "changed", super().on_changed_combo, 1, "wvw_editing_hardware"
-        )
-        self.cmbType.connect("changed", self._do_load_specification)
-        self.cmbSpecification.dic_handler_id["changed"] = self.cmbSpecification.connect(
-            "changed", super().on_changed_combo, 2, "wvw_editing_hardware"
-        )
-        self.cmbSpecification.connect("changed", self._do_load_insert)
-        self.cmbInsert.dic_handler_id["changed"] = self.cmbInsert.connect(
-            "changed", super().on_changed_combo, 3, "wvw_editing_hardware"
-        )
-
-        # ----- ENTRIES
-        self.txtContactGauge.dic_handler_id["changed"] = self.txtContactGauge.connect(
-            "changed", super().on_changed_entry, 4, "wvw_editing_hardware"
-        )
-        self.txtActivePins.dic_handler_id["changed"] = self.txtActivePins.connect(
-            "changed", super().on_changed_entry, 5, "wvw_editing_hardware"
-        )
-        self.txtAmpsContact.dic_handler_id["changed"] = self.txtAmpsContact.connect(
-            "changed", super().on_changed_entry, 6, "wvw_editing_hardware"
-        )
-        self.txtMating.dic_handler_id["changed"] = self.txtMating.connect(
-            "changed", super().on_changed_entry, 7, "wvw_editing_hardware"
-        )
-        self.txtNWave.dic_handler_id["changed"] = self.txtNWave.connect(
-            "changed", super().on_changed_entry, 8, "wvw_editing_hardware"
-        )
-        self.txtNHand.dic_handler_id["changed"] = self.txtNHand.connect(
-            "changed", super().on_changed_entry, 9, "wvw_editing_hardware"
-        )
-        self.txtNPlanes.dic_handler_id["changed"] = self.txtNPlanes.connect(
-            "changed", super().on_changed_entry, 10, "wvw_editing_hardware"
-        )
-
-    def __set_properties(self) -> None:
-        """Set properties for Connection assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties()
-
-        # ----- ENTRIES
-        self.txtContactGauge.do_set_properties(tooltip=self._lst_tooltips[4], width=125)
-        self.txtActivePins.do_set_properties(tooltip=self._lst_tooltips[5], width=125)
-        self.txtAmpsContact.do_set_properties(tooltip=self._lst_tooltips[6], width=125)
-        self.txtMating.do_set_properties(tooltip=self._lst_tooltips[7], width=125)
-        self.txtNWave.do_set_properties(tooltip=self._lst_tooltips[8], width=125)
-        self.txtNHand.do_set_properties(tooltip=self._lst_tooltips[9], width=125)
-        self.txtNPlanes.do_set_properties(tooltip=self._lst_tooltips[10], width=125)
+            self.txtNPlanes.do_update(
+                str(attributes["n_circuit_planes"]),
+                signal="changed",
+            )
 
 
 class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
@@ -699,6 +783,12 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
+        self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
+
         self.txtPiK.set_sensitive(False)
         self.txtPiP.set_sensitive(False)
         self.txtPiC.set_sensitive(False)
@@ -716,7 +806,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        if self._subcategory_id in [1, 2]:
+        if self.subcategory_id in [1, 2]:
             self.txtPiK.set_sensitive(True)
             self.txtPiQ.set_sensitive(False)
             self.txtPiP.set_sensitive(True)
@@ -727,7 +817,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 3:
+        if self.subcategory_id == 3:
             self.txtPiP.set_sensitive(True)
             self.txtPiQ.set_sensitive(False)
 
@@ -737,7 +827,7 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 4:
+        if self.subcategory_id == 4:
             self.txtPiC.set_sensitive(True)
             self.txtPiQ.set_sensitive(True)
 
@@ -747,5 +837,5 @@ class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
         :return: None
         :rtype: None
         """
-        if self._subcategory_id == 5:
+        if self.subcategory_id == 5:
             self.txtPiQ.set_sensitive(True)
