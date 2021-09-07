@@ -63,7 +63,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_technology: Dict[int, List[Any]] = {
+    _dic_technology: Dict[int, List[List[str]]] = {
         1: [["MOS"], [_("Bipolar")]],
         2: [
             ["TTL"],
@@ -90,7 +90,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         8: [["MOS"], [_("Bipolar")]],
         9: [["MMIC"], [_("Digital")]],
     }
-    _dic_types: Dict[int, List[Any]] = {
+    _dic_types: Dict[int, List[List[str]]] = {
         9: [["MMIC"], [_("Digital")]],
         10: [[_("Logic and Custom")], [_("Gate Array")]],
     }
@@ -141,7 +141,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map = {
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
             32: ["quality_id", "integer"],
             2: ["application_id", "integer"],
             3: ["area", "float"],
@@ -160,7 +160,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             51: ["voltage_esd", "float"],
             55: ["years_in_production", "float"],
         }
-        self.dic_attribute_widget_map = {
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
                 self.cmbQuality,

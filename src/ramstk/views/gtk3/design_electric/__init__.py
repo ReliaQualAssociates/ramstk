@@ -12,4 +12,5 @@ from .components.capacitor import CapacitorDesignElectricInputPanel
 from .components.connection import ConnectionDesignElectricInputPanel
 from .components.inductor import InductorDesignElectricInputPanel
 from .components.integrated_circuit import ICDesignElectricInputPanel
+from .components.meter import MeterDesignElectricInputPanel
 from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel

@@ -31,6 +31,7 @@ from ramstk.views.gtk3.design_electric import (
     DesignElectricStressInputPanel,
     ICDesignElectricInputPanel,
     InductorDesignElectricInputPanel,
+    MeterDesignElectricInputPanel,
 )
 from ramstk.views.gtk3.reliability import ReliabilityInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
@@ -483,7 +484,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             # 6: relay.AssessmentInputPanel(),
             # 7: switch.AssessmentInputPanel(),
             8: ConnectionDesignElectricInputPanel(),
-            # 9: meter.AssessmentInputPanel(),
+            9: MeterDesignElectricInputPanel(),
             # 10: miscellaneous.AssessmentInputPanel(),
         }
 

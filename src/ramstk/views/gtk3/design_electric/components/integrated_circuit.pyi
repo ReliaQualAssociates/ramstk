@@ -8,8 +8,8 @@ from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
 
 class ICDesignElectricInputPanel(RAMSTKFixedPanel):
-    _dic_technology: Dict[int, List[Any]]
-    _dic_types: Dict[int, List[Any]]
+    _dic_technology: Dict[int, List[List[str]]]
+    _dic_types: Dict[int, List[List[str]]]
     _select_msg: str
     _tag: str
     _title: str
