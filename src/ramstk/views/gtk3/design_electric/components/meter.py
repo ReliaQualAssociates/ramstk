@@ -151,9 +151,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the meter assessment input RAMSTKComboBox()s.
 
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
+        :param subcategory_id: the subcategory ID of the selected meter.
         :return: None
         :rtype: None
         """

@@ -14,6 +14,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     _tag: str
     _title: str
     cmbApplication: RAMSTKComboBox
+    cmbQuality: RAMSTKComboBox
     cmbType: RAMSTKComboBox
     _hazard_rate_method_id: int
     _quality_id: int

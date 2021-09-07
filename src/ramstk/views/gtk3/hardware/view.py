@@ -32,6 +32,7 @@ from ramstk.views.gtk3.design_electric import (
     ICDesignElectricInputPanel,
     InductorDesignElectricInputPanel,
     MeterDesignElectricInputPanel,
+    MiscDesignElectricInputPanel,
 )
 from ramstk.views.gtk3.reliability import ReliabilityInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
@@ -485,7 +486,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             # 7: switch.AssessmentInputPanel(),
             8: ConnectionDesignElectricInputPanel(),
             9: MeterDesignElectricInputPanel(),
-            # 10: miscellaneous.AssessmentInputPanel(),
+            10: MiscDesignElectricInputPanel(),
         }
 
         # Initialize private list attributes.
