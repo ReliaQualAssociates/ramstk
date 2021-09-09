@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _ as _

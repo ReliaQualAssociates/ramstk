@@ -355,7 +355,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             if _new_text > -1:
                 pub.sendMessage(
                     message,
-                    node_id=[self._record_id, -1],
+                    node_id=self._record_id,
                     package={_attribute: _new_text},
                 )
         except (KeyError, ValueError):

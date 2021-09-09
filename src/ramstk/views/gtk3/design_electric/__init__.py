@@ -14,4 +14,5 @@ from .components.inductor import InductorDesignElectricInputPanel
 from .components.integrated_circuit import ICDesignElectricInputPanel
 from .components.meter import MeterDesignElectricInputPanel
 from .components.miscellaneous import MiscDesignElectricInputPanel
+from .components.relay import RelayDesignElectricInputPanel
 from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel
