@@ -7,16 +7,11 @@
 """GTK3 Design Electric Panels."""
 
 # Standard Library Imports
-from typing import List
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-    RAMSTKScrolledWindow,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
@@ -44,7 +39,6 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         # Initialize widgets.
         self.cmbActiveEnviron: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbDormantEnviron: RAMSTKComboBox = RAMSTKComboBox()
-        self.scwDesignRatings: RAMSTKScrolledWindow = RAMSTKScrolledWindow(None)
         self.txtActiveTemp: RAMSTKEntry = RAMSTKEntry()
         self.txtDormantTemp: RAMSTKEntry = RAMSTKEntry()
         self.txtDutyCycle: RAMSTKEntry = RAMSTKEntry()
@@ -57,7 +51,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
             9: ["duty_cycle", "float"],
             12: ["environment_active_id", "integer"],
             13: ["environment_dormant_id", "integer"],
@@ -65,7 +59,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
             37: ["temperature_active", "float"],
             39: ["temperature_dormant", "float"],
         }
-        self.dic_attribute_widget_map = {
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "environment_active_id": [
                 12,
                 self.cmbActiveEnviron,
@@ -217,7 +211,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
             10: ["current_operating", "float"],
             11: ["current_rated", "float"],
             31: ["power_operating", "float"],
@@ -229,7 +223,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
             50: ["voltage_dc_operating", "float"],
             52: ["voltage_rated", "float"],
         }
-        self.dic_attribute_widget_map = {
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "temperature_rated_min": [
                 45,
                 self.txtTemperatureRatedMin,
