@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.hardware.components.semiconductor.py is part of the
-#       RAMSTK Project
+#       ramstk.views.gtk3.design_electric.components.semiconductor.py is part of the
+#       RAMSTK Project.
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Semiconductor Work View."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Semiconductor Input Panel."""
 
 # Standard Library Imports
 from typing import Any, Dict, List
@@ -14,15 +14,11 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry
-
-# RAMSTK Local Imports
-from .panels import RAMSTKAssessmentInputPanel, RAMSTKAssessmentResultPanel
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
-class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
+class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Semiconductor assessment input attribute data.
 
     The Semiconductor assessment input view displays all the assessment inputs
@@ -57,7 +53,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
     """
 
     # Define private dict class attributes.
-    _dic_quality = {
+    _dic_quality: Dict[int, List[List[str]]] = {
         1: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
         2: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
         3: [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]],
@@ -77,7 +73,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         ],
     }
     # Key is subcategory ID; index is type ID.
-    _dic_types = {
+    _dic_types: Dict[int, List[List[str]]] = {
         1: [
             [_("General Purpose Analog")],
             [_("Switching")],
@@ -124,7 +120,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         13: [["GaAs/Al GaAs"], ["In GaAs/In GaAsP"]],
     }
     # Key is subcategory ID; index is application ID.
-    _dic_applications = {
+    _dic_applications: Dict[int, List[List[str]]] = {
         2: [
             [_("Varactor, Voltage Control")],
             [_("Varactor, Multiplier")],
@@ -144,13 +140,13 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         13: [["CW"], [_("Pulsed")]],
     }
     # Key is subcategory ID; index is matching ID.
-    _dic_matchings = {
+    _dic_matchings: Dict[int, List[List[str]]] = {
         7: [[_("Input and Output")], [_("Input Only")], [_("None")]],
         8: [[_("Input and Output")], [_("Input Only")], [_("None")]],
     }
 
     # Define private list class attributes.
-    _lst_packages = [
+    _lst_packages: List[List[str]] = [
         ["TO-1"],
         ["TO-3"],
         ["TO-5"],
@@ -219,9 +215,11 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         ["PY-373"],
     ]
 
-    # Define private list attributes.
-
     # Define private scalar class attributes.
+    _record_field: str = "hardware_id"
+    _select_msg: str = "selected_hardware"
+    _tag: str = "design_electric"
+    _title: str = _("Semiconductor Design Inputs")
 
     # Define public dictionary class attributes.
 
@@ -233,103 +231,181 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         """Initialize instance of the Semiconductor assessment input view."""
         super().__init__()
 
-        # Initialize private dictionary attributes.
-        self._dic_attribute_keys: Dict[int, List[str]] = {
-            0: ["quality_id", "integer"],
-            1: ["application_id", "integer"],
-            2: ["construction_id", "integer"],
-            3: ["matching_id", "integer"],
-            4: ["family_id", "integer"],
-            5: ["type_id", "integer"],
-            6: ["frequency_operating", "float"],
-            7: ["n_elements", "integer"],
-            8: ["theta_jc", "float"],
-        }
-
-        # Initialize private list attributes.
-        self._lst_labels: List[str] = [
-            _("Quality Level:"),
-            _("Package:"),
-            _("Type:"),
-            _("Application:"),
-            _("Construction:"),
-            _("Matching Network:"),
-            _("Operating Frequency (GHz):"),
-            _("Number of Characters:"),
-            "\u03B8<sub>JC</sub>:",
-        ]
-        self._lst_tooltips: List[str] = [
-            _("The quality level of the semiconductor."),
-            _("The package type for the semiconductor."),
-            _("The type of semiconductor."),
-            _("The application of the semiconductor."),
-            _("The method of construction of the semiconductor."),
-            _("The matching network of the semiconductor."),
-            _("The operating frequency of the semiconductor."),
-            _("The number of characters in the optoelectronic display."),
-            _("The junction-case thermal resistance of the semiconductor."),
-        ]
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
+        # Initialize widgets.
         self.cmbApplication: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbConstruction: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbMatching: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbPackage: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbType: RAMSTKComboBox = RAMSTKComboBox()
-
         self.txtFrequencyOperating: RAMSTKEntry = RAMSTKEntry()
         self.txtNElements: RAMSTKEntry = RAMSTKEntry()
         self.txtThetaJC: RAMSTKEntry = RAMSTKEntry()
 
-        self._dic_attribute_updater = {
-            "application_id": [self.cmbApplication.do_update, "changed", 0],
-            "construction_id": [self.cmbConstruction.do_update, "changed", 1],
-            "matching_id": [self.cmbMatching.do_update, "changed", 2],
-            "quality_id": [self.cmbQuality.do_update, "changed", 3],
-            "family_id": [self.cmbPackage.do_update, "changed", 4],
-            "type_id": [self.cmbType.do_update, "changed", 5],
-            "frequency_operating": [self.txtFrequencyOperating.do_update, "changed", 6],
-            "n_elements": [self.txtNElements.do_update, "changed", 7],
-            "theta_jc": [self.txtThetaJC.do_update, "changed", 8],
-        }
-        self._lst_widgets = [
-            self.cmbQuality,
-            self.cmbPackage,
-            self.cmbType,
-            self.cmbApplication,
-            self.cmbConstruction,
-            self.cmbMatching,
-            self.txtFrequencyOperating,
-            self.txtNElements,
-            self.txtThetaJC,
-        ]
+        # Initialize private dictionary attributes.
 
-        self.__set_properties()
-        super().do_make_panel_fixed()
-        self.__set_callbacks()
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
+        self._quality_id: int = 0
+
+        # Initialize public dictionary attributes.
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
+            2: ["application_id", "integer"],
+            6: ["construction_id", "integer"],
+            17: ["frequency_operating", "float"],
+            21: ["matching_id", "integer"],
+            25: ["n_elements", "integer"],
+            30: ["package_id", "integer"],
+            32: ["quality_id", "integer"],
+            47: ["theta_jc", "float"],
+            48: ["type_id", "integer"],
+        }
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+            "quality_id": [
+                32,
+                self.cmbQuality,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_reliability",
+                0,
+                {
+                    "tooltip": _("The quality level of the semiconductor."),
+                },
+                _("Quality Level:"),
+            ],
+            "package_id": [
+                30,
+                self.cmbPackage,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The package type for the semiconductor."),
+                },
+                _("Package:"),
+            ],
+            "type_id": [
+                48,
+                self.cmbType,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The type of semiconductor."),
+                },
+                _("Type:"),
+            ],
+            "application_id": [
+                2,
+                self.cmbApplication,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The application of the semiconductor."),
+                },
+                _("Application:"),
+            ],
+            "construction_id": [
+                6,
+                self.cmbConstruction,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The method of construction of the semiconductor."),
+                },
+                _("Construction:"),
+            ],
+            "matching_id": [
+                6,
+                self.cmbMatching,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _("The matching network of the semiconductor."),
+                },
+                _("Matching Network:"),
+            ],
+            "frequency_operating": [
+                2,
+                self.txtFrequencyOperating,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0.0,
+                {
+                    "tooltip": _("The operating frequency of the semiconductor."),
+                },
+                _("Operating Frequency (GHz):"),
+            ],
+            "n_elements": [
+                25,
+                self.txtNElements,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0,
+                {
+                    "tooltip": _(
+                        "The number of characters in the optoelectronic display."
+                    ),
+                },
+                _("Number of Characters:"),
+            ],
+            "theta_jc": [
+                47,
+                self.txtThetaJC,
+                "changed",
+                super().on_changed_entry,
+                "wvw_editing_{}".format(self._tag),
+                0.0,
+                {
+                    "tooltip": _(
+                        "The junction-case thermal resistance of the semiconductor."
+                    ),
+                },
+                "\u03B8<sub>JC</sub>:",
+            ],
+        }
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_load_comboboxes, "changed_subcategory")
+        pub.subscribe(
+            self.do_load_comboboxes,
+            "changed_subcategory",
+        )
+        pub.subscribe(
+            self._do_set_reliability_attributes,
+            "succeed_get_reliability_attributes",
+        )
 
-        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
-
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the Semiconductor RKTComboBox()s.
+        """Load the Semiconductor RAMSTKComboBox()s.
 
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
+        :param subcategory_id: the subcategory ID of the selected semiconductor.
         :return: None
         :rtype: None
         """
+        self.subcategory_id = subcategory_id
+
         self.cmbPackage.do_load_combo(self._lst_packages)
 
         self.__do_load_quality()
@@ -338,64 +414,50 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         self.__do_load_matching()
         self.__do_load_type()
 
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the Semiconductor assessment input widgets.
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
 
-        :param attributes: the attributes dictionary for the selected
-            semiconductor.
+        :param attributes: the dict of reliability attributes.
         :return: None
+        :rtype: None
         """
-        super().do_load_common(attributes)
+        if attributes["hardware_id"] == self._record_id:
+            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+            self._quality_id = attributes["quality_id"]
 
-        self.cmbType.do_update(attributes["type_id"], signal="changed")
-
-        if self._hazard_rate_method_id == 2:
-            self.cmbApplication.do_update(
-                attributes["application_id"], signal="changed"
-            )
-            self.cmbConstruction.do_update(
-                attributes["construction_id"], signal="changed"
-            )
-            self.cmbMatching.do_update(attributes["matching_id"], signal="changed")
-            self.cmbPackage.do_update(attributes["package_id"], signal="changed")
-            self.txtFrequencyOperating.do_update(
-                str(self.fmt.format(attributes["frequency_operating"])),
-                signal="changed",
-            )  # noqa
-            self.txtNElements.do_update(str(attributes["n_elements"]), signal="changed")
-            self.txtThetaJC.do_update(
-                str(self.fmt.format(attributes["theta_jc"])), signal="changed"
-            )  # noqa
-
-    def _do_set_sensitive(self) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected semiconductor.
 
         :return: None
         :rtype: None
         """
         self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
+
         self.cmbPackage.set_sensitive(False)
         self.txtThetaJC.set_sensitive(False)
 
-        self.__do_set_application_sensitive()
-        self.__do_set_construction_sensitive()
-        self.__do_set_elements_sensitive()
-        self.__do_set_matching_sensitive()
-        self.__do_set_op_freq_sensitive()
-        self.__do_set_type_sensitive()
+        self.__do_set_application_sensitive(attributes)
+        self.__do_set_construction_sensitive(attributes)
+        self.__do_set_elements_sensitive(attributes)
+        self.__do_set_matching_sensitive(attributes)
+        self.__do_set_op_freq_sensitive(attributes)
+        self.__do_set_type_sensitive(attributes)
 
-        if self._hazard_rate_method_id == 1 and self._subcategory_id in [
-            1,
-            2,
-            3,
-            8,
-            11,
-            13,
-        ]:
-            self.cmbType.set_sensitive(True)
-        elif self._hazard_rate_method_id == 2:
+        if self._hazard_rate_method_id == 2:
             self.cmbPackage.set_sensitive(True)
+            self.cmbPackage.do_update(
+                attributes["package_id"],
+                signal="changed",
+            )
             self.txtThetaJC.set_sensitive(True)
+            self.txtThetaJC.do_update(
+                str(self.fmt.format(attributes["theta_jc"])),
+                signal="changed",
+            )
 
     def __do_load_application(self) -> None:
         """Load the application RAMSTKComboBox() with selections.
@@ -404,7 +466,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         try:
-            _data = self._dic_applications[self._subcategory_id]
+            _data = self._dic_applications[self.subcategory_id]
         except KeyError:
             _data = []
         self.cmbApplication.do_load_combo(_data, signal="changed")
@@ -430,7 +492,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         try:
-            _data = self._dic_matchings[self._subcategory_id]
+            _data = self._dic_matchings[self.subcategory_id]
         except KeyError:
             _data = []
         self.cmbMatching.do_load_combo(_data, signal="changed")
@@ -442,7 +504,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            if self._subcategory_id == 13:
+            if self.subcategory_id == 13:
                 _data = [
                     [_("Hermetic Package")],
                     [_("Nonhermetic with Facet Coating")],
@@ -452,7 +514,7 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
                 _data = [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]]
         else:
             try:
-                _data = self._dic_quality[self._subcategory_id]
+                _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
         self.cmbQuality.do_load_combo(_data, signal="changed")
@@ -464,21 +526,21 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
         :rtype: None
         """
         try:
-            if self._hazard_rate_method_id == 1 and self._subcategory_id == 11:
+            if self._hazard_rate_method_id == 1 and self.subcategory_id == 11:
                 _data = [[_("Photodetector")], [_("Opto-Isolator")], [_("Emitter")]]
             else:
-                _data = self._dic_types[self._subcategory_id]
+                _data = self._dic_types[self.subcategory_id]
         except KeyError:
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
-    def __do_set_application_sensitive(self) -> None:
+    def __do_set_application_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the application RAMSTKComboBox() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
             2,
             3,
             4,
@@ -487,414 +549,106 @@ class AssessmentInputPanel(RAMSTKAssessmentInputPanel):
             13,
         ]:
             self.cmbApplication.set_sensitive(True)
+            self.cmbApplication.do_update(
+                attributes["application_id"],
+                signal="changed",
+            )
         else:
             self.cmbApplication.set_sensitive(False)
 
-    def __do_set_construction_sensitive(self) -> None:
+    def __do_set_construction_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the construction RAMSTKComboBox() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [1, 12]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [1, 12]:
             self.cmbConstruction.set_sensitive(True)
+            self.cmbConstruction.do_update(
+                attributes["construction_id"],
+                signal="changed",
+            )
         else:
             self.cmbConstruction.set_sensitive(False)
 
-    def __do_set_elements_sensitive(self) -> None:
+    def __do_set_elements_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the number of elements RAMSTKEntry() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [7, 8]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.txtNElements.set_sensitive(True)
+            self.txtNElements.do_update(
+                str(attributes["n_elements"]),
+                signal="changed",
+            )
         else:
             self.txtNElements.set_sensitive(False)
 
-    def __do_set_matching_sensitive(self) -> None:
+    def __do_set_matching_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the matching RAMSTKComboBox() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [7, 8]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.cmbMatching.set_sensitive(True)
+            self.cmbMatching.do_update(
+                attributes["matching_id"],
+                signal="changed",
+            )
         else:
             self.cmbMatching.set_sensitive(False)
 
-    def __do_set_op_freq_sensitive(self) -> None:
+    def __do_set_op_freq_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the operating frequency RAMSTKEntry() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [7, 8]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.txtFrequencyOperating.set_sensitive(True)
+            self.txtFrequencyOperating.do_update(
+                str(self.fmt.format(attributes["frequency_operating"])),
+                signal="changed",
+            )
         else:
             self.txtFrequencyOperating.set_sensitive(False)
 
-    def __do_set_type_sensitive(self) -> None:
+    def __do_set_type_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the type RAMSTKComboBox() sensitive or not.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [
-            1,
-            2,
-            4,
-            7,
-            9,
-            11,
-            12,
-            13,
-        ]:
+        if (
+            self._hazard_rate_method_id == 1
+            and self.subcategory_id
+            in [
+                1,
+                2,
+                3,
+                8,
+                11,
+                13,
+            ]
+        ) or (
+            self._hazard_rate_method_id == 2
+            and self.subcategory_id
+            in [
+                1,
+                2,
+                4,
+                7,
+                9,
+                11,
+                12,
+                13,
+            ]
+        ):
             self.cmbType.set_sensitive(True)
-
-    def __set_callbacks(self) -> None:
-        """Set callback methods for Semiconductor assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        # ----- COMBOBOXES
-        self.cmbQuality.dic_handler_id["changed"] = self.cmbQuality.connect(
-            "changed", self.on_changed_combo, 0, "wvw_editing_hardware"
-        )
-        self.cmbApplication.dic_handler_id["changed"] = self.cmbApplication.connect(
-            "changed", self.on_changed_combo, 1, "wvw_editing_hardware"
-        )
-        self.cmbConstruction.dic_handler_id["changed"] = self.cmbConstruction.connect(
-            "changed", self.on_changed_combo, 2, "wvw_editing_hardware"
-        )
-        self.cmbMatching.dic_handler_id["changed"] = self.cmbMatching.connect(
-            "changed", self.on_changed_combo, 3, "wvw_editing_hardware"
-        )
-        self.cmbPackage.dic_handler_id["changed"] = self.cmbPackage.connect(
-            "changed", self.on_changed_combo, 4, "wvw_editing_hardware"
-        )
-        self.cmbType.dic_handler_id["changed"] = self.cmbType.connect(
-            "changed", self.on_changed_combo, 5, "wvw_editing_hardware"
-        )
-
-        # ----- ENTRIES
-        self.txtFrequencyOperating.dic_handler_id[
-            "changed"
-        ] = self.txtFrequencyOperating.connect(
-            "changed", self.on_changed_entry, 6, "wvw_editing_hardware"
-        )
-        self.txtNElements.dic_handler_id["changed"] = self.txtNElements.connect(
-            "changed", self.on_changed_entry, 7, "wvw_editing_hardware"
-        )
-        self.txtThetaJC.dic_handler_id["changed"] = self.txtThetaJC.connect(
-            "changed", self.on_changed_entry, 8, "wvw_editing_hardware"
-        )
-
-    def __set_properties(self) -> None:
-        """Set properties for Semiconductor assessment input widgets.
-
-        :return: None
-        :rtype: None
-        """
-        super().do_set_properties()
-
-        # ----- ENTRIES
-        self.txtFrequencyOperating.do_set_properties(
-            tooltip=self._lst_tooltips[6], width=125
-        )
-        self.txtNElements.do_set_properties(tooltip=self._lst_tooltips[7], width=125)
-        self.txtThetaJC.do_set_properties(tooltip=self._lst_tooltips[8], width=125)
-
-
-class AssessmentResultPanel(RAMSTKAssessmentResultPanel):
-    """Display semiconductor assessment results attribute data.
-
-    The semiconductor assessment result view displays all the assessment
-    results for the selected semiconductor.  This includes, currently, results
-    for MIL-HDBK-217FN2 parts count and part stress methods.  The attributes of
-    a semiconductor assessment result view are:
-
-    :ivar txtPiT: displays the temperature factor for the semiconductor.
-    :ivar txtPiA: displays the application factor for the semiconductor.
-    :ivar txtPiC: displays the construction factor for the semiconductor.
-    :ivar txtPiI: displays the forward current factor for the semiconductor.
-    :ivar txtPiM: displays the matching network factor for the semiconductor.
-    :ivar txtPiP: displays the power degradation factor for the semiconductor.
-    :ivar txtPiR: displays the power rating factor for the semiconductor.
-    :ivar txtPiS: displays the electrical stress factor for the semiconductor.
-    """
-
-    # Define private dict class attributes.
-    _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>S</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>R"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>R"
-        "</sub>\u03C0<sub>S</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>Q"
-        "</sub>\u03C0<sub>E</sub></span>",
-        5: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        6: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        7: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>M"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        8: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>M"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        9: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        10: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
-        "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        11: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        12: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        13: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I"
-        "</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span> ",
-    }
-
-    # Define private list class attributes.
-
-    # Define private scalar class attributes.
-
-    # Define public dictionary class attributes.
-
-    # Define public list class attributes.
-
-    # Define public scalar class attributes.
-
-    def __init__(self) -> None:
-        """Initialize instance of the Semiconductor assessment result view."""
-        super().__init__()
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_labels = [
-            "",
-            "\u03BB<sub>b</sub>:",
-            "\u03C0<sub>Q</sub>:",
-            "\u03C0<sub>E</sub>:",
-            "\u03C0<sub>T</sub>:",
-            "\u03C0<sub>A</sub>:",
-            "\u03C0<sub>C</sub>:",
-            "\u03C0<sub>R</sub>:",
-            "\u03C0<sub>M</sub>:",
-            "\u03C0<sub>I</sub>:",
-            "\u03C0<sub>P</sub>:",
-            "\u03C0<sub>S</sub>:",
-        ]
-        self._lst_tooltips: List[str] = [
-            _(
-                "The assessment model used to calculate the semiconductor "
-                "hazard rate."
-            ),
-            _("The base hazard rate for the semiconductor."),
-            _("The quality factor for the semiconductor."),
-            _("The environment factor for the semiconductor."),
-            _("The temperature factor for the semiconductor."),
-            _("The application factor for the semiconductor."),
-            _("The contact construction factor for the semiconductor."),
-            _("The power rating factor for the semiconductor."),
-            _("The matching network factor for the semiconductor."),
-            _("The forward current factor for the semiconductor."),
-            _("The quality factor for the semiconductor."),
-            _("The electrical stress factor for the semiconductor."),
-        ]
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.txtPiA: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiC: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiI: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiM: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiP: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiR: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiS: RAMSTKEntry = RAMSTKEntry()
-        self.txtPiT: RAMSTKEntry = RAMSTKEntry()
-
-        self._lst_widgets = [
-            self.lblModel,
-            self.txtLambdaB,
-            self.txtPiQ,
-            self.txtPiE,
-            self.txtPiT,
-            self.txtPiA,
-            self.txtPiC,
-            self.txtPiR,
-            self.txtPiM,
-            self.txtPiI,
-            self.txtPiP,
-            self.txtPiS,
-        ]
-
-        super().do_set_properties()
-        super().do_make_panel_fixed()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "succeed_get_all_hardware_attributes")
-
-    def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
-        """Load the semiconductor assessment results page.
-
-        :param attributes: the attributes dictionary for the selected
-            Semiconductor.
-        :return: None
-        :rtype: None
-        """
-        super().do_load_common(attributes)
-
-        self.txtPiA.do_update(str(self.fmt.format(attributes["piA"])))
-        self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))
-        self.txtPiI.do_update(str(self.fmt.format(attributes["piI"])))
-        self.txtPiM.do_update(str(self.fmt.format(attributes["piM"])))
-        self.txtPiP.do_update(str(self.fmt.format(attributes["piP"])))
-        self.txtPiR.do_update(str(self.fmt.format(attributes["piR"])))
-        self.txtPiS.do_update(str(self.fmt.format(attributes["piS"])))
-        self.txtPiT.do_update(str(self.fmt.format(attributes["piT"])))
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected semiconductor.
-
-        :return: None
-        :rtype: None
-        """
-        self.txtPiQ.set_sensitive(True)
-
-        self.__do_set_pi_a_sensitive()
-        self.__do_set_pi_c_sensitive()
-        self.__do_set_pi_e_sensitive()
-        self.__do_set_pi_i_sensitive()
-        self.__do_set_pi_m_sensitive()
-        self.__do_set_pi_p_sensitive()
-        self.__do_set_pi_r_sensitive()
-        self.__do_set_pi_s_sensitive()
-        self.__do_set_pi_t_sensitive()
-
-    def __do_set_pi_a_sensitive(self) -> None:
-        """Set the PiA RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [
-            2,
-            3,
-            4,
-            7,
-            8,
-            13,
-        ]:
-            self.txtPiA.set_sensitive(True)
-        else:
-            self.txtPiA.set_sensitive(False)
-
-    def __do_set_pi_c_sensitive(self) -> None:
-        """Set the PiC RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id == 1:
-            self.txtPiC.set_sensitive(True)
-        else:
-            self.txtPiC.set_sensitive(False)
-
-    def __do_set_pi_e_sensitive(self) -> None:
-        """Set the PiE RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:
-            self.txtPiE.set_sensitive(True)
-        else:
-            self.txtPiE.set_sensitive(False)
-
-    def __do_set_pi_i_sensitive(self) -> None:
-        """Set the PiI RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id == 13:
-            self.txtPiI.set_sensitive(True)
-        else:
-            self.txtPiI.set_sensitive(False)
-
-    def __do_set_pi_m_sensitive(self) -> None:
-        """Set the PiM RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [7, 8]:
-            self.txtPiM.set_sensitive(True)
-        else:
-            self.txtPiM.set_sensitive(False)
-
-    def __do_set_pi_p_sensitive(self) -> None:
-        """Set the PiP RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id == 13:
-            self.txtPiP.set_sensitive(True)
-        else:
-            self.txtPiP.set_sensitive(False)
-
-    def __do_set_pi_r_sensitive(self) -> None:
-        """Set the PiR RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [2, 3, 6, 10]:
-            self.txtPiR.set_sensitive(True)
-        else:
-            self.txtPiR.set_sensitive(False)
-
-    def __do_set_pi_s_sensitive(self) -> None:
-        """Set the PiS RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self._subcategory_id in [1, 3, 6, 10]:
-            self.txtPiS.set_sensitive(True)
-        else:
-            self.txtPiS.set_sensitive(False)
-
-    def __do_set_pi_t_sensitive(self) -> None:
-        """Set the PiT RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:
-            self.txtPiT.set_sensitive(True)
-        else:
-            self.txtPiT.set_sensitive(False)
+            self.cmbType.do_update(
+                attributes["type_id"],
+                signal="changed",
+            )

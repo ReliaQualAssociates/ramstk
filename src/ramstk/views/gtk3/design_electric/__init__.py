@@ -16,4 +16,5 @@ from .components.meter import MeterDesignElectricInputPanel
 from .components.miscellaneous import MiscDesignElectricInputPanel
 from .components.relay import RelayDesignElectricInputPanel
 from .components.resistor import ResistorDesignElectricInputPanel
+from .components.semiconductor import SemiconductorDesignElectricInputPanel
 from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel
