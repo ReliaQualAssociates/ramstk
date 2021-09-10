@@ -34,6 +34,7 @@ from ramstk.views.gtk3.design_electric import (
     MeterDesignElectricInputPanel,
     MiscDesignElectricInputPanel,
     RelayDesignElectricInputPanel,
+    ResistorDesignElectricInputPanel,
 )
 from ramstk.views.gtk3.reliability import ReliabilityInputPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
@@ -480,7 +481,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self._dic_component_panels: Dict[int, RAMSTKPanel] = {
             1: ICDesignElectricInputPanel(),
             # 2: semiconductor.AssessmentInputPanel(),
-            # 3: resistor.AssessmentInputPanel(),
+            3: ResistorDesignElectricInputPanel(),
             4: CapacitorDesignElectricInputPanel(),
             5: InductorDesignElectricInputPanel(),
             6: RelayDesignElectricInputPanel(),
