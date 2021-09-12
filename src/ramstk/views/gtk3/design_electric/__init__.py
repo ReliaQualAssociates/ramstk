@@ -18,4 +18,8 @@ from .components.relay import RelayDesignElectricInputPanel
 from .components.resistor import ResistorDesignElectricInputPanel
 from .components.semiconductor import SemiconductorDesignElectricInputPanel
 from .components.switch import SwitchDesignElectricInputPanel
-from .panel import DesignElectricEnvironmentalInputPanel, DesignElectricStressInputPanel
+from .panel import (
+    DesignElectricEnvironmentalInputPanel,
+    DesignElectricStressInputPanel,
+    DesignElectricStressResultPanel,
+)

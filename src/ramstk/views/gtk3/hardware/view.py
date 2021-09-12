@@ -29,6 +29,7 @@ from ramstk.views.gtk3.design_electric import (
     ConnectionDesignElectricInputPanel,
     DesignElectricEnvironmentalInputPanel,
     DesignElectricStressInputPanel,
+    DesignElectricStressResultPanel,
     ICDesignElectricInputPanel,
     InductorDesignElectricInputPanel,
     MeterDesignElectricInputPanel,
@@ -752,7 +753,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
         self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
         self._pnlReliabilityResults: RAMSTKPanel = ReliabilityResultsPanel()
-        # self._pnlStressResults: RAMSTKStressResultPanel = RAMSTKStressResultPanel()
+        self._pnlStressResults: RAMSTKPanel = DesignElectricStressResultPanel()
 
         # We need to carry these as an attribute for this view because the
         # lower part of each is dynamically loaded with the component panels.
@@ -781,14 +782,14 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         # If there was a component selected, hide it's widgets.  We get an
         # attribute error if no parts have been selected in the current
         # session.
-        if self._vpnLeft.get_child2() is not None:
-            self._vpnLeft.remove(self._vpnLeft.get_child2())
+        if self._vpnRight.get_child2() is not None:
+            self._vpnRight.remove(self._vpnRight.get_child2())
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
             _panel: RAMSTKPanel = self._dic_component_results[attributes["category_id"]]
             _panel.fmt = self.fmt
-            self._vpnLeft.pack2(_panel, True, True)
+            self._vpnRight.pack2(_panel, True, True)
             self.show_all()
         else:
             self._vpnRight.get_child2().hide()
@@ -833,12 +834,12 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self._pnlReliabilityResults.fmt = self.fmt
         self._vpnLeft.pack1(self._pnlReliabilityResults, True, True)
 
-        # Top right quadrant.
+        # Bottom left quadrant.
         self._pnlAvailabilityResults.fmt = self.fmt
-        self._vpnRight.pack1(self._pnlAvailabilityResults, True, True)
+        self._vpnLeft.pack2(self._pnlAvailabilityResults, True, True)
 
-        # Bottom right quadrant.
-        # self._pnlStressResults.fmt = self.fmt
-        # self._vpnRight.pack2(self._pnlStressResults, True, True)
+        # Top right quadrant.
+        self._pnlStressResults.fmt = self.fmt
+        self._vpnRight.pack1(self._pnlStressResults, True, True)
 
         self.show_all()

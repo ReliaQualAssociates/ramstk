@@ -9,9 +9,20 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
+# Third Party Imports
+from pubsub import pub
+
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    RAMSTKPlot,
+    RAMSTKScrolledWindow,
+    RAMSTKTextView,
+)
 
 
 class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
@@ -379,3 +390,296 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
+
+
+class DesignElectricStressResultPanel(RAMSTKFixedPanel):
+    """Display Hardware stress results attribute data in the RAMSTK Work Book.
+
+    The Hardware stress result view displays all the stress results for the
+    selected hardware item.  This includes, currently, results for
+    MIL-HDBK-217FN2 parts count and part stress methods.  The attributes of a
+    Hardware stress result view are:
+
+    :cvar list _lst_labels: the text to use for the stress results widget
+        labels.
+
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+        displayed.
+    :ivar int _subcategory_id: the ID of the subcategory for the hardware item
+        currently being displayed.
+
+    :ivar str fmt: the format string for displaying numbers.
+
+    :ivar chkOverstressed: display whether or not the selected hardware item is
+        overstressed.
+    :ivar pltDerate: displays the derating curves and the design operating
+        point relative to those curves.
+    :ivar txtCurrentRatio: display the ratio of operating current to rated
+        current.
+    :ivar txtPowerRatio: display the ratio of operating power to rated power.
+    :ivar txtVoltageRatio: display the ratio of operating voltage (ac + DC) to
+        rated voltage.
+    :ivar txtReason: display the reason(s) the hardware item is overstressed.
+    """
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "design_electric"
+    _title = _("Hardware Thermal &amp; Electrical Stress Summary")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Hardware stress result view."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.chkOverstress: RAMSTKCheckButton = RAMSTKCheckButton(
+            label=_("Overstressed")
+        )
+        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
+        self.txtCurrentRatio: RAMSTKEntry = RAMSTKEntry()
+        self.txtPowerRatio: RAMSTKEntry = RAMSTKEntry()
+        self.txtVoltageRatio: RAMSTKEntry = RAMSTKEntry()
+        self.txtReason: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_derate_criteria: List[List[float]] = [
+            [0.6, 0.6, 0.0],
+            [0.9, 0.9, 0.0],
+        ]
+
+        # Initialize private scalar attributes.
+        self._category_id: int = 0
+        self._part_number: str = ""
+        self._ref_des: str = ""
+
+        # Initialize public dictionary attributes.
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+            "current_ratio": [
+                12,
+                self.txtCurrentRatio,
+                "",
+                None,
+                "",
+                0.5,
+                {
+                    "bold": True,
+                    "editable": False,
+                    "tooltip": _(
+                        "The ratio of operating current to rated current for the "
+                        "hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Current Ratio:"),
+            ],
+            "power_ratio": [
+                33,
+                self.txtPowerRatio,
+                "",
+                None,
+                "",
+                0.5,
+                {
+                    "bold": True,
+                    "editable": False,
+                    "tooltip": _(
+                        "The ratio of operating power to rated power for the "
+                        "hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Power Ratio:"),
+            ],
+            "voltage_ratio": [
+                53,
+                self.txtVoltageRatio,
+                "",
+                None,
+                "",
+                0.5,
+                {
+                    "bold": True,
+                    "editable": False,
+                    "tooltip": _(
+                        "The ratio of operating voltage to rated voltage for the "
+                        "hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Voltage Ratio:"),
+            ],
+            "overstressed": [
+                29,
+                self.chkOverstress,
+                "",
+                None,
+                "",
+                0,
+                {
+                    "tooltip": _(
+                        "Indicates whether or not the selected hardware item is "
+                        "overstressed."
+                    ),
+                    "width": 125,
+                },
+                "",
+            ],
+            "reason": [
+                34,
+                self.txtReason,
+                "",
+                None,
+                "",
+                "",
+                {
+                    "bold": True,
+                    "editable": False,
+                    "tooltip": _(
+                        "The reason(s) the selected hardware item is overstressed."
+                    ),
+                    "width": 350,
+                },
+                _("Overstress Reason:"),
+            ],
+        }
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        super().do_set_properties()
+        super().do_make_panel()
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(
+            self._do_set_hardware_attributes,
+            "succeed_get_hardware_attributes",
+        )
+
+    def _do_load_derating_curve(
+        self, attributes: Dict[str, Any], stress: str = "voltage"
+    ) -> None:
+        """Load the benign and harsh environment derating curves.
+
+        :return: None
+        :rtype: None
+        """
+        self.pltPlot.axis.cla()
+
+        _x = [
+            float(attributes["temperature_rated_min"]),
+            float(attributes["temperature_knee"]),
+            float(attributes["temperature_rated_max"]),
+        ]
+
+        self.pltPlot.axis.grid(True, which="both")
+
+        self.pltPlot.do_load_plot(
+            x_values=_x, y_values=self._lst_derate_criteria[0], marker="r.-"
+        )
+
+        self.pltPlot.do_load_plot(
+            x_values=_x, y_values=self._lst_derate_criteria[1], marker="b.-"
+        )
+
+        self.pltPlot.do_load_plot(
+            x_values=[attributes["temperature_active"]],
+            y_values=[attributes["{}_ratio".format(stress)]],
+            marker="go",
+        )
+
+        self.pltPlot.do_make_title(
+            _("{2} Derating Curve for {0} at {1}").format(
+                self._part_number, self._ref_des, stress.title()
+            ),
+            fontsize=12,
+        )
+
+        self.pltPlot.do_make_legend(
+            (
+                _("Harsh Environment"),
+                _("Mild Environment"),
+                _("{} Operating Point").format(stress.title()),
+            )
+        )
+
+        self.pltPlot.do_make_labels(
+            _("Temperature (\u2070C)"), x_pos=0, y_pos=-0.2, fontsize=10
+        )
+        self.pltPlot.do_make_labels(
+            _("{} Ratio").format(stress.title()),
+            x_pos=-1,
+            y_pos=0,
+            set_x=False,
+            fontsize=10,
+        )
+
+        self.pltPlot.figure.canvas.draw()
+
+    def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
+        """Load the stress results page widgets.
+
+        :param attributes: the attributes dict for the selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        self.txtCurrentRatio.do_update(
+            str(self.fmt.format(attributes["current_ratio"]))
+        )
+        self.txtPowerRatio.do_update(str(self.fmt.format(attributes["power_ratio"])))
+        self.txtVoltageRatio.do_update(
+            str(self.fmt.format(attributes["voltage_ratio"]))
+        )
+        self.chkOverstress.set_active(attributes["overstress"])
+        self.txtReason.do_update(attributes["reason"])
+
+        if self._category_id in [2, 4]:
+            self._do_load_derating_curve(attributes, stress="voltage")
+        elif self._category_id == 3:
+            self._do_load_derating_curve(attributes, stress="power")
+        elif self._category_id in [6, 7]:
+            self._do_load_derating_curve(attributes, stress="current")
+
+    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        if attributes["hardware_id"] == self._record_id:
+            self._category_id = attributes["category_id"]
+            self._part_number = attributes["part_number"]
+            self._ref_des = attributes["ref_des"]
+
+    def __make_ui(self) -> None:
+        """Make the Hardware stress results page.
+
+        :return: None
+        :rtype: None
+        """
+        _scrollwindow: RAMSTKScrolledWindow = self.get_child()
+        self.remove(self.get_child())
+
+        _hpaned: Gtk.HPaned = Gtk.HPaned()
+        self.add(_hpaned)
+
+        _hpaned.pack1(_scrollwindow, False, False)
+
+        _scrollwindow = RAMSTKScrolledWindow(self.pltPlot.canvas)
+        _hpaned.pack2(_scrollwindow, False, False)
+
+        self.show_all()
