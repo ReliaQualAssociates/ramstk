@@ -38,7 +38,11 @@ from ramstk.views.gtk3.design_electric import (
     SemiconductorDesignElectricInputPanel,
     SwitchDesignElectricInputPanel,
 )
-from ramstk.views.gtk3.reliability import ReliabilityInputPanel, ReliabilityResultsPanel
+from ramstk.views.gtk3.reliability import (
+    AvailabilityResultsPanel,
+    ReliabilityInputPanel,
+    ReliabilityResultsPanel,
+)
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -746,7 +750,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self._hazard_rate_method_id: int = 0
         self._subcategory_id: int = 0
 
-        # self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
+        self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
         self._pnlReliabilityResults: RAMSTKPanel = ReliabilityResultsPanel()
         # self._pnlStressResults: RAMSTKStressResultPanel = RAMSTKStressResultPanel()
 
@@ -830,8 +834,8 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self._vpnLeft.pack1(self._pnlReliabilityResults, True, True)
 
         # Top right quadrant.
-        # self._pnlAvailabilityResults.fmt = self.fmt
-        # self._vpnRight.pack1(self._pnlAvailabilityResults, True, True)
+        self._pnlAvailabilityResults.fmt = self.fmt
+        self._vpnRight.pack1(self._pnlAvailabilityResults, True, True)
 
         # Bottom right quadrant.
         # self._pnlStressResults.fmt = self.fmt

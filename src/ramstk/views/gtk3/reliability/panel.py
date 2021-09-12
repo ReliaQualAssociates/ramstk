@@ -7,7 +7,11 @@
 """GTK3 Reliability Panels."""
 
 # Standard Library Imports
+import locale
 from typing import Any, Dict, List
+
+# Third Party Imports
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
@@ -889,3 +893,274 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         _fixed.move(self.txtLogisticsRtVar, _x_pos[1], _y_pos[8])
         _fixed.move(self.txtMissionRt, _x_pos[0], _y_pos[9])
         _fixed.move(self.txtMissionRtVar, _x_pos[1], _y_pos[9])
+
+
+class AvailabilityResultsPanel(RAMSTKFixedPanel):
+    """Panel to display availability results for the selected Hardware item."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "selected_hardware"
+    _tag = "reliability"
+    _title = _("Availability Assessment Results")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Availability Results panel."""
+        super().__init__()
+
+        # Initialize widgets.
+        self.txtCostFailure: RAMSTKEntry = RAMSTKEntry()
+        self.txtCostHour: RAMSTKEntry = RAMSTKEntry()
+        self.txtLogisticsAt: RAMSTKEntry = RAMSTKEntry()
+        self.txtLogisticsAtVar: RAMSTKEntry = RAMSTKEntry()
+        self.txtMissionAt: RAMSTKEntry = RAMSTKEntry()
+        self.txtMissionAtVar: RAMSTKEntry = RAMSTKEntry()
+        self.txtPartCount: RAMSTKEntry = RAMSTKEntry()
+        self.txtTotalCost: RAMSTKEntry = RAMSTKEntry()
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+            "availability_logistics": [
+                3,
+                self.txtLogisticsAt,
+                "",
+                None,
+                "",
+                0.0,
+                {
+                    "tooltip": _(
+                        "Displays the logistics availability for the selected "
+                        "hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Logistics Availability [A(t)]:"),
+            ],
+            "avail_log_variance": [
+                5,
+                self.txtLogisticsAtVar,
+                "",
+                None,
+                "",
+                1.0,
+                {
+                    "tooltip": _(
+                        "Displays the variance on the logistics availability for the "
+                        "selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                "",
+            ],
+            "availability_mission": [
+                4,
+                self.txtMissionAt,
+                "",
+                None,
+                "",
+                0.0,
+                {
+                    "tooltip": _(
+                        "Displays the mission availability for the selected "
+                        "hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Mission A(t):"),
+            ],
+            "avail_mis_variance": [
+                6,
+                self.txtMissionAtVar,
+                "",
+                None,
+                "",
+                1.0,
+                {
+                    "tooltip": _(
+                        "Displays the variance on the mission availability for the "
+                        "selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                "",
+            ],
+            "total_cost": [
+                31,
+                self.txtTotalCost,
+                "",
+                None,
+                "",
+                0.0,
+                {
+                    "tooltip": _(
+                        "Displays the total cost of the selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Total Cost:"),
+            ],
+            "cost_failure": [
+                8,
+                self.txtCostFailure,
+                "",
+                None,
+                "",
+                0.0,
+                {
+                    "tooltip": _(
+                        "Displays the cost per failure of the selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Cost/Failure:"),
+            ],
+            "cost_hour": [
+                9,
+                self.txtCostHour,
+                "",
+                None,
+                "",
+                1.0,
+                {
+                    "tooltip": _(
+                        "Displays the failure cost per operating hour for the "
+                        "selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Cost/Hour:"),
+            ],
+            "total_part_count": [
+                32,
+                self.txtPartCount,
+                "",
+                None,
+                "",
+                0.0,
+                {
+                    "tooltip": _(
+                        "Displays the total part count for the selected hardware item."
+                    ),
+                    "width": 125,
+                },
+                _("Total # of Parts:"),
+            ],
+        }
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # Make a fixed type panel.
+        super().do_set_properties()
+        super().do_make_panel()
+        self.__do_nudge_widgets()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(
+            self._do_load_entries_hardware,
+            "succeed_get_hardware_attributes",
+        )
+
+    def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
+        """Load contents of the RAMSTKEntry() widgets.
+
+        This method ensures results RAMSTKEntry() widgets are set insensitive and
+        loads the contents.  The PyPubSub subscriber is in the metaclass.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtLogisticsAt.do_update(
+            str(self.fmt.format(attributes["availability_logistics"])),
+            signal="changed",
+        )
+        self.txtLogisticsAtVar.do_update(
+            str(self.fmt.format(attributes["avail_log_variance"])),
+            signal="changed",
+        )
+        self.txtMissionAt.do_update(
+            str(self.fmt.format(attributes["availability_mission"])),
+            signal="changed",
+        )
+        self.txtMissionAtVar.do_update(
+            str(self.fmt.format(attributes["avail_mis_variance"])),
+            signal="changed",
+        )
+
+    def _do_load_entries_hardware(self, attributes: Dict[str, Any]) -> None:
+        """Load contents of the RAMSTKEntry() widgets.
+
+        This method ensures results RAMSTKEntry() widgets are set insensitive and
+        loads the contents.  The PyPubSub subscriber is in the metaclass.
+
+        :return: None
+        :rtype: None
+        """
+        self.txtTotalCost.do_update(
+            str(locale.currency(attributes["total_cost"])),
+            signal="changed",
+        )
+        self.txtCostFailure.do_update(
+            str(locale.currency(attributes["cost_failure"])),
+            signal="changed",
+        )
+        self.txtCostHour.do_update(
+            str(locale.currency(attributes["cost_hour"])),
+            signal="changed",
+        )
+        self.txtPartCount.do_update(
+            str("{0:d}".format(attributes["total_part_count"])),
+            signal="changed",
+        )
+
+    def __do_nudge_widgets(self) -> None:
+        """Adjust widgets from their default positions.
+
+        :return: None
+        :rtype: None
+        """
+        _lst_labels: List[object] = []
+        _x_pos: List[int] = [0, self.txtLogisticsAt.get_preferred_size()[0].width + 5]
+        _y_pos: List[int] = []
+        _n_rows: int = 0
+
+        _fixed = self.get_children()[0].get_children()[0].get_children()[0]
+        _widgets = (
+            self.get_children()[0].get_children()[0].get_children()[0].get_children()
+        )
+
+        for _widget in _widgets[::2]:
+            _y_pos.append(_fixed.child_get_property(_widget, "y"))
+            if _widget.get_text() != "":
+                _lst_labels.append(_widget)
+                _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
+                _n_rows += 1
+
+        _x_pos[0] += 10
+        _x_pos[1] = _x_pos[0] + _x_pos[1] + 5
+        for _idx, _pos in enumerate(_y_pos[:_n_rows]):
+            _fixed.move(_lst_labels[_idx], 5, _pos)
+
+        _fixed.move(self.txtLogisticsAtVar, _x_pos[1], _y_pos[0])
+        _fixed.move(self.txtMissionAt, _x_pos[0], _y_pos[1])
+        _fixed.move(self.txtMissionAtVar, _x_pos[1], _y_pos[1])
+        _fixed.move(self.txtTotalCost, _x_pos[0], _y_pos[2])
+        _fixed.move(self.txtCostFailure, _x_pos[0], _y_pos[3])
+        _fixed.move(self.txtCostHour, _x_pos[0], _y_pos[4])
+        _fixed.move(self.txtPartCount, _x_pos[0], _y_pos[5])
