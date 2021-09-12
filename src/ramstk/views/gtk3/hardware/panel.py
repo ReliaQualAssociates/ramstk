@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Dict, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -61,7 +61,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         # Initialize private scalar class attributes.
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map = {
+        self.dic_attribute_index_map: Dict[int, List[str]] = {
             2: ["alt_part_number", "string"],
             3: ["cage_code", "string"],
             5: ["cost", "string"],
@@ -87,7 +87,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
             32: ["category_id", "integer"],
             33: ["subcategory_id", "integer"],
         }
-        self.dic_attribute_widget_map = {
+        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "revision_id": [
                 0,
                 Gtk.CellRendererText(),

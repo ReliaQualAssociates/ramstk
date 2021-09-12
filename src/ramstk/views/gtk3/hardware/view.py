@@ -38,7 +38,7 @@ from ramstk.views.gtk3.design_electric import (
     SemiconductorDesignElectricInputPanel,
     SwitchDesignElectricInputPanel,
 )
-from ramstk.views.gtk3.reliability import ReliabilityInputPanel
+from ramstk.views.gtk3.reliability import ReliabilityInputPanel, ReliabilityResultsPanel
 from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -653,5 +653,188 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         # Top right quadrant.
         self._pnlStressInput.fmt = self.fmt
         self._vpnRight.pack1(self._pnlStressInput, True, True)
+
+        self.show_all()
+
+
+class HardwareAssessmentResultsView(RAMSTKWorkView):
+    """Display Hardware assessment results data in the RAMSTK Work View.
+
+    The Hardware Assessment Results view displays all the assessment results
+    for the selected Hardware.  The attributes of a Hardware Assessment Results
+    View are:
+
+    :cvar list _lst_labels: the text to use for the reliability assessment
+        results widget labels.
+    :cvar str _module: the name of the module.
+
+    :ivar dict _dic_assessment_results: dictionary of component-specific
+        AssessmentResults classes.
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+
+    # Define private list class attributes.
+    _lst_title = [_("Assessment Model Results"), _("Stress Results")]
+
+    # Define private scalar class attributes.
+    _module: str = "hardware"
+    _tablabel: str = _("Assessment\nResults")
+    _tabtooltip: str = _(
+        "Displays reliability, maintainability, "
+        "and availability assessment results for "
+        "the selected Hardware item."
+    )
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
+        """Initialize an instance of the Hardware assessment output view.
+
+        :param configuration: the RAMSTK User Configuration class instance.
+        :type configuration: :class:`ramstk.configuration.UserConfiguration`
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+        self._dic_component_results: Dict[int, RAMSTKPanel] = {
+            # 1: integrated_circuit.AssessmentResultPanel(),
+            # 2: semiconductor.AssessmentResultPanel(),
+            # 3: resistor.AssessmentResultPanel(),
+            # 4: capacitor.AssessmentResultPanel(),
+            # 5: inductor.AssessmentResultPanel(),
+            # 6: relay.AssessmentResultPanel(),
+            # 7: switch.AssessmentResultPanel(),
+            # 8: connection.AssessmentResultPanel(),
+            # 9: meter.AssessmentResultPanel(),
+            # 10: miscellaneous.AssessmentResultPanel(),
+        }
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            self._do_request_calculate,
+            super().do_request_update,
+            super().do_request_update_all,
+        ]
+        self._lst_icons = [
+            "calculate",
+            "save",
+            "save-all",
+        ]
+        self._lst_tooltips = [
+            _("Calculate the currently selected Hardware item."),
+            _("Save changes to the currently selected Hardware item."),
+            _("Save changes to all Hardware items."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._hazard_rate_method_id: int = 0
+        self._subcategory_id: int = 0
+
+        # self._pnlAvailabilityResults: RAMSTKPanel = AvailabilityResultsPanel()
+        self._pnlReliabilityResults: RAMSTKPanel = ReliabilityResultsPanel()
+        # self._pnlStressResults: RAMSTKStressResultPanel = RAMSTKStressResultPanel()
+
+        # We need to carry these as an attribute for this view because the
+        # lower part of each is dynamically loaded with the component panels.
+        self._vpnLeft: Gtk.VPaned = Gtk.VPaned()
+        self._vpnRight: Gtk.VPaned = Gtk.VPaned()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        # pub.subscribe(self._do_pack_component_panel, "selected_hardware")
+        # pub.subscribe(self._do_set_record_id, "selected_hardware")
+
+    def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
+        """Load the results specific to hardware components.
+
+        :param attributes:
+        :return: None
+        :rtype: None
+        """
+        # If there was a component selected, hide it's widgets.  We get an
+        # attribute error if no parts have been selected in the current
+        # session.
+        if self._vpnLeft.get_child2() is not None:
+            self._vpnLeft.remove(self._vpnLeft.get_child2())
+
+        # Retrieve the appropriate component-specific view.
+        if attributes["category_id"] > 0:
+            _panel: RAMSTKPanel = self._dic_component_results[attributes["category_id"]]
+            _panel.fmt = self.fmt
+            self._vpnLeft.pack2(_panel, True, True)
+            self.show_all()
+        else:
+            self._vpnRight.get_child2().hide()
+
+    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+        """Send request to calculate the selected Hardware item.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :type __button: :class:Gtk.ToolButton`
+        :return: None
+        :rtype: None
+        """
+        try:
+            super().do_set_cursor_busy()
+            pub.sendMessage(
+                "request_calculate_hardware",
+                node_id=self._record_id,
+            )
+        except KeyError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's record ID and, if any, parent ID.
+
+        :param attributes: the attributes dict for the selected work stream
+            module item.
+        :return: None
+        :rtype: None
+        """
+        self._record_id = attributes["hardware_id"]
+        self._parent_id = attributes["parent_id"]
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Hardware Assessment Results tab.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        self._vpnLeft, self._vpnRight = super().do_make_layout_llrr()
+
+        # Top left quadrant.
+        self._pnlReliabilityResults.fmt = self.fmt
+        self._vpnLeft.pack1(self._pnlReliabilityResults, True, True)
+
+        # Top right quadrant.
+        # self._pnlAvailabilityResults.fmt = self.fmt
+        # self._vpnRight.pack1(self._pnlAvailabilityResults, True, True)
+
+        # Bottom right quadrant.
+        # self._pnlStressResults.fmt = self.fmt
+        # self._vpnRight.pack2(self._pnlStressResults, True, True)
 
         self.show_all()

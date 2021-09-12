@@ -8,4 +8,4 @@
 """GTK3 Design Electric Package."""
 
 # RAMSTK Local Imports
-from .panel import ReliabilityInputPanel
+from .panel import ReliabilityInputPanel, ReliabilityResultsPanel

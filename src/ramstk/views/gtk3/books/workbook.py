@@ -21,6 +21,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.function import FunctionWorkView
 from ramstk.views.gtk3.hardware import (
     HardwareAssessmentInputView,
+    HardwareAssessmentResultsView,
     HardwareGeneralDataView,
 )
 
@@ -75,7 +76,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 #    wvwAllocation(configuration, logger),
                 #    wvwSimilarItem(configuration, logger),
                 HardwareAssessmentInputView(configuration, logger),
-                #    wvwHardwareAR(configuration, logger),
+                HardwareAssessmentResultsView(configuration, logger),
                 #    wvwFMEA(configuration, logger),
                 #    wvwPoF(configuration, logger),
             ],

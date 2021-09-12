@@ -16,6 +16,7 @@ from .panel import (
 )
 from .view import (
     HardwareAssessmentInputView,
+    HardwareAssessmentResultsView,
     HardwareGeneralDataView,
     HardwareModuleView,
 )

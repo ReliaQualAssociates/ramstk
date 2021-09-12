@@ -200,9 +200,19 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             "mvw_editing_{}".format(self._tag),
         )
 
+        # Generally used with panels that accept inputs and are, thus, editable.
         try:
             pub.subscribe(
                 self._do_set_sensitive,
+                "succeed_get_{}_attributes".format(self._tag),
+            )
+        except AttributeError:
+            pass
+
+        # Generally used with panels that display results and are, thus, uneditable.
+        try:
+            pub.subscribe(
+                self._do_load_entries,
                 "succeed_get_{}_attributes".format(self._tag),
             )
         except AttributeError:
