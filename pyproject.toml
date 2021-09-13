@@ -34,7 +34,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.6.1,<4.0"
-lifelines = "^0.25.8"
+lifelines = "^0.26.0"
 matplotlib = "^3.3.4"
 numpy = [
 	{ version = "^1.19", python = "^3.6,<3.7" },
