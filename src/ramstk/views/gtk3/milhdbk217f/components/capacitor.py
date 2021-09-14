@@ -215,8 +215,6 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
 
         super().do_set_properties()
         super().do_make_panel()
@@ -235,7 +233,8 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         self.txtPiCF.set_sensitive(False)
         self.txtPiC.set_sensitive(False)
 
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Parts Stress
+        # MIL-HDBK-217F, Parts Stress
+        if self.category_id == 4 and self._hazard_rate_method_id == 2:
             self.lblModel.do_update(self._dic_part_stress[self.subcategory_id])
             self.txtPiCV.do_update(
                 str(self.fmt.format(attributes["piCV"])),

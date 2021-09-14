@@ -77,6 +77,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.category_id: int = 0
         self.subcategory_id: int = 0
 
         # Subscribe to PyPubSub messages.
@@ -124,6 +125,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if attributes["hardware_id"] == self._record_id:
+            self.category_id = attributes["category_id"]
             self.subcategory_id = attributes["subcategory_id"]
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:

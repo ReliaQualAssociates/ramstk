@@ -11,3 +11,4 @@ from .panel import MilHdbk217FResultPanel  # isort: skip
 
 # RAMSTK Local Imports
 from .components.capacitor import CapacitorMilHdbk217FResultPanel
+from .components.connection import ConnectionMilHdbk217FResultPanel

@@ -12,7 +12,5 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     txtPiCF: RAMSTKEntry
     txtPiC: RAMSTKEntry
     dic_attribute_widget_map: Dict[str, List[Any]]
-    category_id: int
-    subcategory_id: int
     def __init__(self) -> None: ...
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None: ...

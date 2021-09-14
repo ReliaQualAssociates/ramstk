@@ -16,6 +16,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
     txtPiE: RAMSTKEntry
     _hazard_rate_method_id: int
     _lambda_b: float
+    category_id: int
     subcategory_id: int
     def __init__(self) -> None: ...
     def do_load_entries(self, attributes: Dict[str, Any]) -> None: ...
