@@ -42,6 +42,7 @@ from ramstk.views.gtk3.design_electric import (
 from ramstk.views.gtk3.milhdbk217f import (
     CapacitorMilHdbk217FResultPanel,
     ConnectionMilHdbk217FResultPanel,
+    InductorMilHdbk217FResultPanel,
 )
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel,
@@ -725,7 +726,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             # 2: semiconductor.AssessmentResultPanel(),
             # 3: resistor.AssessmentResultPanel(),
             4: CapacitorMilHdbk217FResultPanel(),
-            # 5: inductor.AssessmentResultPanel(),
+            5: InductorMilHdbk217FResultPanel(),
             # 6: relay.AssessmentResultPanel(),
             # 7: switch.AssessmentResultPanel(),
             8: ConnectionMilHdbk217FResultPanel(),
