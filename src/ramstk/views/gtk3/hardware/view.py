@@ -39,6 +39,7 @@ from ramstk.views.gtk3.design_electric import (
     SemiconductorDesignElectricInputPanel,
     SwitchDesignElectricInputPanel,
 )
+from ramstk.views.gtk3.milhdbk217f import CapacitorMilHdbk217FResultPanel
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel,
     ReliabilityInputPanel,
@@ -211,7 +212,6 @@ class HardwareModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        print("Insert sibling of {1} for {0}".format(self._parent_id, self._record_id))
         pub.sendMessage("request_insert_hardware", parent_id=self._parent_id, part=0)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -721,7 +721,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             # 1: integrated_circuit.AssessmentResultPanel(),
             # 2: semiconductor.AssessmentResultPanel(),
             # 3: resistor.AssessmentResultPanel(),
-            # 4: capacitor.AssessmentResultPanel(),
+            4: CapacitorMilHdbk217FResultPanel(),
             # 5: inductor.AssessmentResultPanel(),
             # 6: relay.AssessmentResultPanel(),
             # 7: switch.AssessmentResultPanel(),
@@ -769,8 +769,18 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        # pub.subscribe(self._do_pack_component_panel, "selected_hardware")
-        # pub.subscribe(self._do_set_record_id, "selected_hardware")
+        pub.subscribe(
+            self._do_pack_component_panel,
+            "selected_hardware",
+        )
+        pub.subscribe(
+            self._do_pack_component_panel,
+            "succeed_get_hardware_attributes",
+        )
+        pub.subscribe(
+            self._do_pack_component_panel,
+            "hardware_category_changed",
+        )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the results specific to hardware components.

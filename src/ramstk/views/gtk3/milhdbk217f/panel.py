@@ -7,28 +7,36 @@
 """GTK3 MIL-HDBK-217F Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
+
+# Third Party Imports
+from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, RAMSTKLabel
 
 
-class MilHdbk217FInputPanel(RAMSTKFixedPanel):
-    """Display Hardware assessment input attribute data.
+class MilHdbk217FResultPanel(RAMSTKFixedPanel):
+    """Display Hardware assessment results attribute data.
 
-    The Hardware assessment input view displays all the assessment inputs for
-    the selected Hardware item.  This includes, currently, inputs for
-    MIL-HDBK-217FN2 parts count and part stress analyses.  The attributes of a
-    Hardware assessment input view are:
+    The Hardware assessment result view displays all the assessment results
+    for the selected hardware item.  This includes, currently, results for
+    MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
+    attributes of a Hardware assessment result view are:
 
-    :ivar _hazard_rate_method_id: the ID of the method to use for estimating
-        the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
-    :ivar _title: the text to put on the RAMSTKFrame() holding the
-        assessment input widgets.
-    :ivar cmbQuality: select and display the quality level of the hardware
-        item.
+    :cvar list _lst_labels: the text to use for the assessment results widget
+        labels.
+
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+        displayed.
+    :ivar int _subcategory_id: the ID of the subcategory for the hardware item
+        currently being displayed.
+    :ivar _lblModel: the :class:`ramstk.gui.gtk.ramstk.Label.RAMSTKLabel` to
+        display the failure rate mathematical model used.
+
+    :ivar txtLambdaB: displays the base hazard rate of the hardware item.
+    :ivar txtPiQ: displays the quality factor for the hardware item.
+    :ivar txtPiE: displays the environment factor for the hardware item.
     """
 
     # Define private dictionary class attributes.
@@ -36,9 +44,9 @@ class MilHdbk217FInputPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "mil_hdbk_217f"
-    _title = _("Design Ratings")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "selected_hardware"
+    _tag: str = "milhdbk217f"
 
     # Define public dictionary class attributes.
 
@@ -47,54 +55,103 @@ class MilHdbk217FInputPanel(RAMSTKFixedPanel):
     # Define public scalar class attributes.
 
     def __init__(self) -> None:
-        """Initialize an instance of the Hardware assessment input view."""
+        """Initialize an instance of the Hardware assessment result view."""
         super().__init__()
 
         # Initialize widgets.
-        self.cmbQuality: RAMSTKComboBox = RAMSTKComboBox()
+        self.lblModel: RAMSTKLabel = RAMSTKLabel("")
+        self.txtLambdaB: RAMSTKEntry = RAMSTKEntry()
+        self.txtPiQ: RAMSTKEntry = RAMSTKEntry()
+        self.txtPiE: RAMSTKEntry = RAMSTKEntry()
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_labels: List[str] = []
-        self._lst_tooltips: List[str] = []
 
         # Initialize private scalar attributes.
-        self._hazard_rate_method_id: int = -1
-        self._subcategory_id: int = -1
+        self._hazard_rate_method_id: int = 0
+        self._lambda_b: float = 0.0
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.subcategory_id: int = 0
 
-    def do_load_common(self, attributes: Dict[str, Any]) -> None:
-        """Load the component common widgets.
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(
+            self._do_set_hardware_attributes,
+            "succeed_get_hardware_attributes",
+        )
+        pub.subscribe(
+            self._do_set_reliability_attributes,
+            "succeed_get_reliability_attributes",
+        )
 
-        :param attributes: the attributes dictionary for the selected
-            Component.
+    def do_load_entries(self, attributes: Dict[str, Any]) -> None:
+        """Load the Hardware assessment results page.
+
+        :param attributes: the attributes dict for the selected Hardware.
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._subcategory_id = attributes["subcategory_id"]
+        self.txtLambdaB.set_sensitive(False)
+        self.txtPiE.set_sensitive(False)
+        self.txtPiQ.set_sensitive(False)
 
-        self.do_load_comboboxes(attributes["subcategory_id"])
-        self._do_set_sensitive()
+        # Display the correct calculation model.
+        self.__do_set_model_label()
 
-        self.cmbQuality.do_update(attributes["quality_id"], signal="changed")
+        self.txtLambdaB.do_update(
+            str(self.fmt.format(self._lambda_b)),
+            signal="changed",
+        )
+        self.txtPiQ.do_update(
+            str(self.fmt.format(attributes["piQ"])),
+            signal="changed",
+        )
+        self.txtPiE.do_update(
+            str(self.fmt.format(attributes["piE"])),
+            signal="changed",
+        )
 
-    def do_set_properties(self, **kwargs: Dict[str, Any]) -> None:
-        """Set properties for Hardware assessment input widgets.
+    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        if attributes["hardware_id"] == self._record_id:
+            self.subcategory_id = attributes["subcategory_id"]
+
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        if attributes["hardware_id"] == self._record_id:
+            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+            self._lambda_b = attributes["lambda_b"]
+
+    def __do_set_model_label(self) -> None:
+        """Set the text displayed in the hazard rate model RAMSTKLabel().
 
         :return: None
         :rtype: None
         """
-        super().do_set_properties(bold=True, title=self._title)
-
-        _idx = 0
-        for _widget in self._lst_widgets:
-            _widget.do_set_properties(tooltip=self._lst_tooltips[_idx])
-            _idx += 1
+        if self._hazard_rate_method_id == 1:
+            self.lblModel.set_markup(
+                '<span foreground="blue">\u03BB<sub>p</sub> = '
+                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> "
+            )
+        elif self._hazard_rate_method_id == 2:
+            try:
+                self.lblModel.set_markup(self._dic_part_stress[self.subcategory_id])
+            except KeyError:
+                self.lblModel.set_markup("No Model")
+        else:
+            self.lblModel.set_markup("No Model")

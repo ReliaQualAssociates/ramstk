@@ -589,14 +589,10 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             "succeed_get_reliability_attributes",
         )
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the capacitor assessment input RAMSTKComboBox()s.
 
         :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
         :return: None
         :rtype: None
         """
@@ -681,6 +677,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         else:
             self.__do_set_part_stress_sensitive(attributes)
 
+    # pylint: disable=unused-argument
     def __do_set_parts_count_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 

@@ -2,21 +2,23 @@
 from typing import Any, Dict
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3 import _ as _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
+from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import RAMSTKLabel as RAMSTKLabel
 
-class MilHdbk217FInputPanel(RAMSTKFixedPanel):
+class MilHdbk217FResultPanel(RAMSTKFixedPanel):
+    _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    cmbQuality: Any
-    _dic_component_panels: Any
-    _lst_labels: Any
-    _lst_tooltips: Any
+    lblModel: RAMSTKLabel
+    txtLambdaB: RAMSTKEntry
+    txtPiQ: RAMSTKEntry
+    txtPiE: RAMSTKEntry
     _hazard_rate_method_id: int
-    _subcategory_id: int
+    _lambda_b: float
+    subcategory_id: int
     def __init__(self) -> None: ...
-    _record_id: Any
-    def do_load_common(self, attributes: Dict[str, Any]) -> None: ...
-    def do_set_properties(self, **kwargs: Dict[str, Any]) -> None: ...
+    def do_load_entries(self, attributes: Dict[str, Any]) -> None: ...
+    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None: ...
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None: ...
+    def __do_set_model_label(self) -> None: ...

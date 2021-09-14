@@ -7,5 +7,7 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 MIL-HDBK-217F Package."""
 
+from .panel import MilHdbk217FResultPanel  # isort: skip
+
 # RAMSTK Local Imports
-from .panel import MilHdbk217FInputPanel
+from .components.capacitor import CapacitorMilHdbk217FResultPanel

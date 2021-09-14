@@ -391,6 +391,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
             for _table in [
                 "design_electric",
                 "hardware",
+                "milhdbk217f",
                 "reliability",
             ]:
                 pub.sendMessage(
