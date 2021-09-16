@@ -42,6 +42,7 @@ from ramstk.views.gtk3.design_electric import (
 from ramstk.views.gtk3.milhdbk217f import (
     CapacitorMilHdbk217FResultPanel,
     ConnectionMilHdbk217FResultPanel,
+    ICMilHdbk217FResultPanel,
     InductorMilHdbk217FResultPanel,
 )
 from ramstk.views.gtk3.reliability import (
@@ -722,7 +723,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_component_results: Dict[int, RAMSTKPanel] = {
-            # 1: integrated_circuit.AssessmentResultPanel(),
+            1: ICMilHdbk217FResultPanel(),
             # 2: semiconductor.AssessmentResultPanel(),
             # 3: resistor.AssessmentResultPanel(),
             4: CapacitorMilHdbk217FResultPanel(),

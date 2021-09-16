@@ -134,6 +134,7 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "\u03C0<sub>C</sub>:",
             ],
         }
+
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
