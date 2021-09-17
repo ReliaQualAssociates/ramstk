@@ -185,11 +185,39 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.on_edit_callback: str = "wvw_editing_{}".format(self._tag)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_clear_panel, "request_clear_views")
-        pub.subscribe(self.do_load_panel, self._select_msg)
-        pub.subscribe(self.on_edit, "mvw_editing_{}".format(self._tag))
+        pub.subscribe(
+            self.do_clear_panel,
+            "request_clear_views",
+        )
+        pub.subscribe(
+            self.do_load_panel,
+            self._select_msg,
+        )
+        pub.subscribe(
+            self.on_edit,
+            self.on_edit_callback,
+        )
+
+        # Generally used with panels that accept inputs and are, thus, editable.
+        try:
+            pub.subscribe(
+                self._do_set_sensitive,
+                "succeed_get_{}_attributes".format(self._tag),
+            )
+        except AttributeError:
+            pass
+
+        # Generally used with panels that display results and are, thus, uneditable.
+        try:
+            pub.subscribe(
+                self._do_load_entries,
+                "succeed_get_{}_attributes".format(self._tag),
+            )
+        except AttributeError:
+            pass
 
     def do_clear_panel(self) -> None:
         """Clear the contents of the widgets on a fixed type panel.
@@ -215,12 +243,10 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         self._record_id = attributes[self._record_field]
 
         for _key, _value in self.dic_attribute_widget_map.items():
-            _value[1].do_update(attributes.get(_key, _value[5]), signal=_value[2])
-
-        try:
-            self._do_set_sensitive()
-        except AttributeError:
-            pass
+            _value[1].do_update(
+                attributes.get(_key, _value[5]),
+                signal=_value[2],
+            )
 
         pub.sendMessage("request_set_cursor_active")
 
@@ -343,7 +369,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             if _new_text > -1:
                 pub.sendMessage(
                     message,
-                    node_id=[self._record_id, -1],
+                    node_id=self._record_id,
                     package={_attribute: _new_text},
                 )
         except (KeyError, ValueError):
@@ -400,7 +426,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         entry.handler_unblock(_handler_id)
 
-        pub.sendMessage(message, node_id=[self._record_id, -1], package=_package)
+        pub.sendMessage(message, node_id=self._record_id, package=_package)
 
         return _package
 
@@ -706,7 +732,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, self._select_msg)
-        pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
+        # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
         pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
         pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
 
