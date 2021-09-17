@@ -185,6 +185,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.on_edit_callback: str = "wvw_editing_{}".format(self._tag)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -197,7 +198,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         )
         pub.subscribe(
             self.on_edit,
-            "mvw_editing_{}".format(self._tag),
+            self.on_edit_callback,
         )
 
         # Generally used with panels that accept inputs and are, thus, editable.

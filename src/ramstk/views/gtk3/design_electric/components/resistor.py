@@ -222,7 +222,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtResistance,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The resistance (in \u03A9) of the resistor."),
@@ -234,7 +234,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The governing specification for the resistor."),
@@ -246,7 +246,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of thermistor."),
@@ -258,7 +258,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbStyle,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The style of resistor."),
@@ -270,7 +270,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The method of construction of the resistor."),

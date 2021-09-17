@@ -141,7 +141,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _(
@@ -155,7 +155,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbInsulation,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The insulation class of the inductive device."),
@@ -167,7 +167,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtArea,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _(
@@ -182,7 +182,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtWeight,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _("The transformer weight (in lbf)."),
@@ -194,7 +194,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbFamily,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The application family of the transformer."),
@@ -206,7 +206,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The method of construction of the coil."),

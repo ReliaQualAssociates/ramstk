@@ -280,7 +280,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbPackage,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The package type for the semiconductor."),
@@ -292,7 +292,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of semiconductor."),
@@ -304,7 +304,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The application of the semiconductor."),
@@ -316,7 +316,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The method of construction of the semiconductor."),
@@ -328,7 +328,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbMatching,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The matching network of the semiconductor."),
@@ -340,7 +340,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtFrequencyOperating,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _("The operating frequency of the semiconductor."),
@@ -352,7 +352,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _(
@@ -366,7 +366,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtThetaJC,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _(

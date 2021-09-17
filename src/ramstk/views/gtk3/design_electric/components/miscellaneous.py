@@ -97,7 +97,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The application of the lamp."),
@@ -109,7 +109,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of electronic filter."),
@@ -121,7 +121,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtFrequency,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _("The operating frequency of the crystal."),

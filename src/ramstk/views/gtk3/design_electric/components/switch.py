@@ -139,7 +139,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The application of the switch."),
@@ -151,7 +151,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The construction method for the switch."),
@@ -163,7 +163,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbContactForm,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The contact form and quantity of the switch."),
@@ -175,7 +175,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNCycles,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _("The number of cycles per hour of the switch."),
@@ -187,7 +187,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 1,
                 {
                     "tooltip": _("The number of active contacts in the switch."),

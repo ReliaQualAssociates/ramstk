@@ -222,7 +222,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The relay type."),
@@ -234,7 +234,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbLoadType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of load the relay is switching."),
@@ -246,7 +246,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbContactForm,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The contact form of the relay."),
@@ -258,7 +258,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbContactRating,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The rating of the relay contacts."),
@@ -270,7 +270,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of relay application."),
@@ -282,7 +282,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The method of construction of the relay."),
@@ -294,7 +294,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtCycles,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0.0,
                 {
                     "tooltip": _("The number of relay on/off cycles per hour."),

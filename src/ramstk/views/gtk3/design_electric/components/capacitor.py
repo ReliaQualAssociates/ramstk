@@ -496,7 +496,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtCapacitance,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _(
@@ -510,7 +510,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The governing specification for the capacitor."),
@@ -522,7 +522,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbStyle,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The style of the capacitor."),
@@ -534,7 +534,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConfiguration,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The configuration of the capacitor."),
@@ -546,7 +546,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The method of construction of the capacitor."),
@@ -558,7 +558,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtESR,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The equivalent series resistance of the capacitor."),

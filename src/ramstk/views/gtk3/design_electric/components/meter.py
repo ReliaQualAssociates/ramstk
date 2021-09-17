@@ -107,7 +107,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The type of meter."),
@@ -119,7 +119,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_{}".format(self._tag),
+                self.on_edit_callback,
                 0,
                 {
                     "tooltip": _("The application of the panel meter."),
