@@ -45,6 +45,7 @@ from ramstk.views.gtk3.milhdbk217f import (
     ICMilHdbk217FResultPanel,
     InductorMilHdbk217FResultPanel,
     MeterMilHdbk217FResultPanel,
+    MiscellaneousMilHdbk217FResultPanel,
 )
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel,
@@ -733,7 +734,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             # 7: switch.AssessmentResultPanel(),
             8: ConnectionMilHdbk217FResultPanel(),
             9: MeterMilHdbk217FResultPanel(),
-            # 10: miscellaneous.AssessmentResultPanel(),
+            10: MiscellaneousMilHdbk217FResultPanel(),
         }
 
         # Initialize private list attributes.

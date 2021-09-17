@@ -15,3 +15,4 @@ from .components.connection import ConnectionMilHdbk217FResultPanel
 from .components.inductor import InductorMilHdbk217FResultPanel
 from .components.integrated_circuit import ICMilHdbk217FResultPanel
 from .components.meter import MeterMilHdbk217FResultPanel
+from .components.miscellaneous import MiscellaneousMilHdbk217FResultPanel
