@@ -18,7 +18,7 @@ jobs:
 
       - name: Check for packaging errors
         run: |
-          pip install -U pip setuptools>12.0 urllib3 poetry
+          pip install -U pip poetry
           make packchk
 
   bump_version:

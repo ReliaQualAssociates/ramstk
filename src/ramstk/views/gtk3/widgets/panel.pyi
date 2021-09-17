@@ -26,23 +26,24 @@ class RAMSTKPanel(RAMSTKFrame):
     _select_msg: str
     _tag: str
     _title: str
-    _dic_attribute_keys: Any
-    _dic_attribute_updater: Any
-    _lst_labels: Any
-    _lst_widgets: Any
+    _dic_attribute_keys: Dict[int, List[str]]
+    _dic_attribute_updater: Dict[str, List[Any]]
+    _lst_labels: List[str]
+    _lst_widgets: List[object]
     _parent_id: int
     _record_id: int
     _tree_loaded: bool
-    dic_attribute_index_map: Any
-    dic_attribute_widget_map: Any
+    dic_attribute_index_map: Dict[int, List[str]]
+    dic_attribute_widget_map: Dict[str, List[Any]]
     fmt: str
-    tree: Any
+    tree: treelib.Tree
     def __init__(self) -> None: ...
 
 class RAMSTKFixedPanel(RAMSTKPanel):
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...
-    _record_id: Any
+    _record_id: int
+    on_edit_callback: str
     def do_load_panel(self, attributes: Dict[str, Any]) -> None: ...
     def do_make_panel(self, **kwargs: Dict[str, Any]) -> None: ...
     def do_set_callbacks(self) -> None: ...
@@ -78,7 +79,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...
     def do_expand_tree(self) -> None: ...
-    _record_id: Any
+    _record_id: int
     def do_load_row(self, attributes: Dict[str, Any]) -> None: ...
     def do_load_panel(self, tree: treelib.Tree) -> None: ...
     def do_make_panel(self) -> None: ...
