@@ -3,8 +3,8 @@
 #       ramstk.views.gtk3.books.workbook.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTK GTK3 Work Book Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Work Book."""
 
 # Standard Library Imports
 from typing import Dict, List
@@ -19,8 +19,12 @@ from ramstk.logger import RAMSTKLogManager
 # from ramstk.views.gtk3.allocation import wvwAllocation
 # from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import FunctionWorkView
+from ramstk.views.gtk3.hardware import (
+    HardwareAssessmentInputView,
+    HardwareAssessmentResultsView,
+    HardwareGeneralDataView,
+)
 
-# from ramstk.views.gtk3.hardware import wvwHardwareAI, wvwHardwareAR, wvwHardwareGD
 # from ramstk.views.gtk3.hazard_analysis import wvwHazOps
 # from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import (
@@ -67,15 +71,15 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 RequirementGeneralDataView(configuration, logger),
                 RequirementAnalysisView(configuration, logger),
             ],
-            # "hardware": [
-            #    wvwHardwareGD(configuration, logger),
-            #    wvwAllocation(configuration, logger),
-            #    wvwSimilarItem(configuration, logger),
-            #    wvwHardwareAI(configuration, logger),
-            #    wvwHardwareAR(configuration, logger),
-            #    wvwFMEA(configuration, logger),
-            #    wvwPoF(configuration, logger),
-            # ],
+            "hardware": [
+                HardwareGeneralDataView(configuration, logger),
+                #    wvwAllocation(configuration, logger),
+                #    wvwSimilarItem(configuration, logger),
+                HardwareAssessmentInputView(configuration, logger),
+                HardwareAssessmentResultsView(configuration, logger),
+                #    wvwFMEA(configuration, logger),
+                #    wvwPoF(configuration, logger),
+            ],
             "validation": [
                 ValidationGeneralDataView(configuration, logger),
                 #    wvwBurndownCurve(configuration, logger),
