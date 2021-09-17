@@ -43,7 +43,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _title: str = _("relay MIL-HDBK-217F Results")
+    _title: str = _("Relay MIL-HDBK-217F Results")
 
     # Define public dictionary class attributes.
 
@@ -129,7 +129,7 @@ class RelayMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 {
                     "tooltip": _("The contact form factor for the relay."),
                 },
-                "\u03C0<sub>U</sub>:",
+                "\u03C0<sub>C</sub>:",
             ],
             "pi_cyc": [
                 18,

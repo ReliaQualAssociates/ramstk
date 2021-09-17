@@ -47,6 +47,7 @@ from ramstk.views.gtk3.milhdbk217f import (
     MeterMilHdbk217FResultPanel,
     MiscellaneousMilHdbk217FResultPanel,
     RelayMilHdbk217FResultPanel,
+    ResistorMilHdbk217FResultPanel,
 )
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel,
@@ -703,9 +704,8 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
     _module: str = "hardware"
     _tablabel: str = _("Assessment\nResults")
     _tabtooltip: str = _(
-        "Displays reliability, maintainability, "
-        "and availability assessment results for "
-        "the selected Hardware item."
+        "Displays reliability, maintainability, and availability assessment results "
+        "for the selected Hardware item."
     )
 
     # Define public dictionary class attributes.
@@ -728,7 +728,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: ICMilHdbk217FResultPanel(),
             # 2: semiconductor.AssessmentResultPanel(),
-            # 3: resistor.AssessmentResultPanel(),
+            3: ResistorMilHdbk217FResultPanel(),
             4: CapacitorMilHdbk217FResultPanel(),
             5: InductorMilHdbk217FResultPanel(),
             6: RelayMilHdbk217FResultPanel(),
@@ -809,8 +809,6 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             _panel.fmt = self.fmt
             self._vpnRight.pack2(_panel, True, True)
             self.show_all()
-        else:
-            self._vpnRight.get_child2().hide()
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected Hardware item.
