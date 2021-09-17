@@ -48,6 +48,7 @@ from ramstk.views.gtk3.milhdbk217f import (
     MiscellaneousMilHdbk217FResultPanel,
     RelayMilHdbk217FResultPanel,
     ResistorMilHdbk217FResultPanel,
+    SemiconductorMilHdbk217FResultPanel,
 )
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel,
@@ -727,7 +728,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
         self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: ICMilHdbk217FResultPanel(),
-            # 2: semiconductor.AssessmentResultPanel(),
+            2: SemiconductorMilHdbk217FResultPanel(),
             3: ResistorMilHdbk217FResultPanel(),
             4: CapacitorMilHdbk217FResultPanel(),
             5: InductorMilHdbk217FResultPanel(),

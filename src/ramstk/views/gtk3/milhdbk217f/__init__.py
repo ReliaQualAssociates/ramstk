@@ -18,3 +18,4 @@ from .components.meter import MeterMilHdbk217FResultPanel
 from .components.miscellaneous import MiscellaneousMilHdbk217FResultPanel
 from .components.relay import RelayMilHdbk217FResultPanel
 from .components.resistor import ResistorMilHdbk217FResultPanel
+from .components.semiconductor import SemiconductorMilHdbk217FResultPanel
