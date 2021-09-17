@@ -3,7 +3,7 @@
 #       ramstk.views.gtk3.books.modulebook.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Module Book Module."""
 
 # Third Party Imports
@@ -15,8 +15,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk
 from ramstk.views.gtk3.function import FunctionModuleView
-
-# from ramstk.views.gtk3.hardware import HardwareModuleView
+from ramstk.views.gtk3.hardware import HardwareModuleView
 from ramstk.views.gtk3.requirement import RequirementModuleView
 from ramstk.views.gtk3.revision import RevisionModuleView
 from ramstk.views.gtk3.validation import ValidationModuleView
@@ -49,7 +48,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             "revision": RevisionModuleView(configuration, logger),
             "function": FunctionModuleView(configuration, logger),
             "requirement": RequirementModuleView(configuration, logger),
-            # "hardware": HardwareModuleView(configuration, logger),
+            "hardware": HardwareModuleView(configuration, logger),
             "validation": ValidationModuleView(configuration, logger),
         }
 

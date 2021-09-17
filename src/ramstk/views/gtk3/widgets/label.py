@@ -90,6 +90,18 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
             _text = "<b>" + _text + "</b>"
             self.set_markup(_text)
 
+    # pylint: disable=unused-argument
+    def do_update(self, text: str, signal: str = "") -> None:
+        """Update the text displayed by the label.
+
+        :param text: the information to update the RAMSTKLabel() to display.
+        :param signal: the name of the signal whose handler ID the RAMSTKLabel()
+            needs to block.  Unused in this method, but required for compatibility.
+        :return: None
+        :rtype: None
+        """
+        self.set_markup("<span>" + text + "</span>")
+
 
 def do_make_label_group(
     text: List[str], **kwargs: Dict[str, Any]
