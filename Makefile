@@ -273,6 +273,10 @@ typecheck:
 	@echo -e "\n\t\033[1;32mType checking $(SRCFILE) ...\033[0m\n"
 	$(MYPY) $(MYPY_ARGS) $(SRCFILE)
 
+typecheck.report: typecheck
+	@echo -e "\n\t\033[1;32mGenerating type check report ...\033[0m\n"
+	$(MYPY) $(MYPY_ARGS) --html-report .reports/mypy src/ramstk
+
 # This target is for use with IDE integration.
 maintain:
 	@echo -e "\n\t\033[1;32mChecking maintainability of $(SRCFILE) ...\033[0m\n"
