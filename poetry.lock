@@ -899,7 +899,7 @@ virtualenv = ">=20.0.8"
 
 [[package]]
 name = "pre-commit-hooks"
-version = "3.4.0"
+version = "4.0.1"
 description = "Some out-of-the-box hooks for pre-commit."
 category = "dev"
 optional = false
@@ -1750,7 +1750,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6.1,<4.0"
-content-hash = "88bc4becab6ab87cc9b11e037fe44efb0300bcd9db49620bc1d4b3897c379a4a"
+content-hash = "7f2c0cf32ed8722c873dde7273f0c82729001adc2dea446f06b72a1d774bafa0"
 
 [metadata.files]
 alabaster = [
@@ -2474,8 +2474,8 @@ pre-commit = [
     {file = "pre_commit-2.15.0.tar.gz", hash = "sha256:3c25add78dbdfb6a28a651780d5c311ac40dd17f160eb3954a0c59da40a505a7"},
 ]
 pre-commit-hooks = [
-    {file = "pre_commit_hooks-3.4.0-py2.py3-none-any.whl", hash = "sha256:b1d329fc712f53f56af7c4a0ac08c414a7fcfd634dbd829c3a03f39cfb9c3574"},
-    {file = "pre_commit_hooks-3.4.0.tar.gz", hash = "sha256:57e377b931aceead550e4a7bdbe8065e79e371e80f593b5b6d1129e63a77154f"},
+    {file = "pre_commit_hooks-4.0.1-py2.py3-none-any.whl", hash = "sha256:6efe92c7613c311abc7dd06817fc016f222d9289fe24b261e64412b0af96c662"},
+    {file = "pre_commit_hooks-4.0.1.tar.gz", hash = "sha256:99f1b9fc00a82e6588990b6b92edcdf4bec9c3d65c6272b8867be389055ce05e"},
 ]
 psycopg2 = [
     {file = "psycopg2-2.9.1-cp36-cp36m-win32.whl", hash = "sha256:7f91312f065df517187134cce8e395ab37f5b601a42446bdc0f0d51773621854"},
