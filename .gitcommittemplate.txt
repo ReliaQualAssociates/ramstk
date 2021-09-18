@@ -10,12 +10,14 @@
 #
 # <type> is one of:
 #
-#    * fix: a bug fix.
-#    * feat or feature: a new feature was added.
-#    * refactor: code change that doesn't add a feature or fix a bug.
-#    * test: add or correct tests.
+#    * build: changes to the build process.
+#    * ci: changes to the ci/cd.
 #    * docs: documentation only change.
-#    * chore: changes to the build process or auxiliary tools.
+#    * feat or feature: a new feature was added.
+#    * fix: a bug fix.
+#    * refactor: code change that doesn't add a feature or fix a bug.
+#    * style: change that affect code quality.
+#    * test: add or correct tests.
 #
 # Add an exclamation point (!) before the colon (:) if this is a breaking
 # change.  This should ONLY happen on fix types.
