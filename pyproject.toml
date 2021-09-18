@@ -38,7 +38,7 @@ lifelines = "^0.26.3"
 matplotlib = "^3.3.4"
 numpy = [
 	{ version = "^1.19", python = "^3.6,<3.7" },
-	{ version  = "^1.20", python = "^3.7" }]
+	{ version  = "^1.21", python = "^3.7" }]
 openpyxl = "^3.0.6"
 pandas = "1.1.5"
 psycopg2 = "^2.8.6"
@@ -70,7 +70,7 @@ docformatter = "^1.4"
 isort = "^5.7.0"
 mccabe = "^0.6.1"
 mock = "^4.0.3"
-mypy = "^0.800"
+mypy = "^0.910"
 pep8 = "^1.7.1"
 pre-commit = "^2.10.1"
 pre-commit-hooks = "^3.4.0"
