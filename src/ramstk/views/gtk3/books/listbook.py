@@ -84,6 +84,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
         """
         for _listviews in self._dic_list_views.items():
             for _listview in _listviews[1]:
+                # pylint: disable=protected-access
                 _treeview = _listview._pnlPanel.tvwTreeView
                 _model = _treeview.get_model()
                 _columns = _treeview.get_columns()
