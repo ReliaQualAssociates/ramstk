@@ -496,14 +496,24 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             the new attribute value as the value.
         :return: None
         """
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
         [[_key, _value]] = package.items()
 
         try:
             _signal = self.dic_attribute_widget_map[_key][2]
             _function = self.dic_attribute_widget_map[_key][3]
             _function(_value, _signal)  # type: ignore
+        except KeyError:
+            _error_msg = _(
+                "{2}: An error occurred while updating {1} data for record "
+                "ID {0} in the view.  No key {3} in dic_attribute_widget_map."
+            ).format(self._record_id, self._tag, _method_name, _key)
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
         except TypeError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
                 "{2}: An error occurred while updating {1} data for record "
                 "ID {0} in the view.  Data for key {3} is the wrong "
@@ -733,6 +743,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, self._select_msg)
         # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
+        pub.subscribe(self.do_refresh_tree, "lvw_editing_{}".format(self._tag))
+        pub.subscribe(self.do_refresh_tree, "mvw_editing_{}".format(self._tag))
         pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
         pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
 

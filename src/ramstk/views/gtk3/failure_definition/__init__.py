@@ -1,12 +1,12 @@
 # pylint: disable=unused-import, wrong-import-position
 # -*- coding: utf-8 -*-
 #
-#       ramstk.views.gtk3.failure_definition.__init__.py is part of The RAMSTK
-#       Project
+#       ramstk.views.gtk3.failure_definition.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 failure definition package."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Failure Definition Package."""
 
 # RAMSTK Local Imports
-from .listview import FailureDefinition as lvwFailureDefinition
+from .panel import FailureDefinitionTreePanel
+from .view import FailureDefinitionListView
