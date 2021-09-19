@@ -854,7 +854,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.cmbManufacturer,
                 "changed",
                 super().on_changed_combo,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 0,
                 {},
                 _("Manufacturer:"),
@@ -864,7 +864,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtCAGECode,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 "",
                 {
                     "tooltip": _(
@@ -879,7 +879,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtNSN,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 "",
                 {
                     "tooltip": _(
@@ -893,7 +893,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtYearMade,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 date.today().year - 2,
                 {
                     "width": 100,
@@ -909,7 +909,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtQuantity,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 1,
                 {
                     "width": 50,
@@ -924,7 +924,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtCost,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 0.0,
                 {},
                 _("Unit Cost:"),
@@ -934,7 +934,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.cmbCostType,
                 "changed",
                 super().on_changed_combo,
-                "mvw_editing_hardware",
+                self.on_edit_callback,
                 0,
                 {},
                 _("Cost Method:"),

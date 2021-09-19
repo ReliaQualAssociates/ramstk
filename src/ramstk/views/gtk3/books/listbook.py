@@ -6,14 +6,17 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK GTK3 List Book Module."""
 
+# Standard Library Imports
+from typing import Dict, List
+
 # Third Party Imports
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.failure_definition import FailureDefinitionListView
 
-# from ramstk.views.gtk3.failure_definition import lvwFailureDefinition
 # from ramstk.views.gtk3.stakeholder import lvwStakeholders
 # from ramstk.views.gtk3.usage_profile import lvwUsageProfile
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
@@ -43,11 +46,11 @@ class RAMSTKListBook(RAMSTKBaseBook):
         RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
-        self._dic_list_views = {
-            # "revision": [
-            #    lvwUsageProfile(configuration, logger),
-            #    lvwFailureDefinition(configuration, logger),
-            # ],
+        self._dic_list_views: Dict[str, List[object]] = {
+            "revision": [
+                #    lvwUsageProfile(configuration, logger),
+                FailureDefinitionListView(configuration, logger),
+            ],
             # "function": [],
             # "requirement": [
             #    lvwStakeholders(configuration, logger),
@@ -79,17 +82,13 @@ class RAMSTKListBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _key in self._dic_list_views:
-            for _listview in self._dic_list_views[_key]:
-                try:
-                    _view = _listview.treeview
-                except AttributeError:
-                    _view = _listview.matrix
-
-                _model = _view.get_model()
-                _columns = _view.get_columns()
+        for _listviews in self._dic_list_views.items():
+            for _listview in _listviews[1]:
+                _treeview = _listview._pnlPanel.tvwTreeView
+                _model = _treeview.get_model()
+                _columns = _treeview.get_columns()
                 for _column in _columns:
-                    _view.remove_column(_column)
+                    _treeview.remove_column(_column)
 
                 _model.clear()
 
