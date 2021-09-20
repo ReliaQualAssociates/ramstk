@@ -43,7 +43,7 @@ openpyxl = "^3.0.6"
 pandas = "1.1.5"
 psycopg2 = "^2.8.6"
 pycairo = "^1.20.0"
-pygobject = "^3.38"
+pygobject = "^3.42"
 pypubsub = "^4.0.3"
 scipy = [
 	{ version = "^1.5", python = "^3.6,<3.7" },
