@@ -42,6 +42,9 @@ class RevisionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
+        self._dic_row_loader = {
+            "revision": super()._do_load_treerow,
+        }
 
         # Initialize private list class attributes.
 
@@ -85,7 +88,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
                 "mvw_editing_revision",
                 0.0,
             ],
-            "cost_per_failure": [
+            "cost_failure": [
                 4,
                 Gtk.CellRendererText(),
                 "edited",
@@ -93,7 +96,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
                 "mvw_editing_revision",
                 0.0,
             ],
-            "cost_per_hour": [
+            "cost_hour": [
                 5,
                 Gtk.CellRendererText(),
                 "edited",
@@ -221,7 +224,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
                 "mvw_editing_revision",
                 "",
             ],
-            "n_parts": [
+            "total_part_count": [
                 21,
                 Gtk.CellRendererText(),
                 "edited",

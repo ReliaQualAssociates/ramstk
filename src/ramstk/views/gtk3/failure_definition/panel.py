@@ -41,13 +41,8 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_updater = {
-            "revision_id": [None, "edited", 0],
-            "definition_id": [None, "edited", 1],
-            "definition": [None, "edited", 2],
-        }
         self._dic_row_loader: Dict[str, Callable] = {
-            "definition": self.__do_load_failure_definition,
+            "failure_definition": self.__do_load_failure_definition,
         }
 
         # Initialize private list class attributes.
@@ -78,7 +73,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 2,
                 Gtk.CellRendererText(),
                 "edited",
-                None,
+                super().on_cell_edit,
                 self._on_edit_callback,
             ],
         }

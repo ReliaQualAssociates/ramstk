@@ -34,8 +34,6 @@ from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import (
     RAMSTKTreeView,
     do_make_column,
-    do_make_combo_cell,
-    do_make_spin_cell,
     do_make_text_cell,
     do_make_toggle_cell,
     do_set_cell_properties,
