@@ -111,6 +111,13 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_callback,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
             ],
             "mission_id": [
                 1,
@@ -119,6 +126,13 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_callback,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Mission ID"),
             ],
             "phase_id": [
                 2,
@@ -126,6 +140,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Phase ID"),
             ],
             "environment_id": [
                 3,
@@ -133,6 +155,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Environment ID"),
             ],
             "name": [
                 4,
@@ -140,6 +170,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission Phase Name"),
             ],
             "description": [
                 5,
@@ -147,6 +185,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Description"),
             ],
             "mission_time": [
                 6,
@@ -154,6 +200,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission Time"),
             ],
             "units": [
                 7,
@@ -161,6 +215,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Units"),
             ],
             "phase_start": [
                 8,
@@ -168,6 +230,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Phase Start"),
             ],
             "phase_end": [
                 9,
@@ -175,6 +245,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Phase End"),
             ],
             "minimum": [
                 10,
@@ -182,6 +260,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Minimum"),
             ],
             "maximum": [
                 11,
@@ -189,6 +275,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Maximum"),
             ],
             "mean": [
                 12,
@@ -196,6 +290,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mean"),
             ],
             "variance": [
                 13,
@@ -203,6 +305,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Variance"),
             ],
         }
 

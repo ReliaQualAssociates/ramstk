@@ -84,13 +84,18 @@ class RAMSTKPanel(RAMSTKFrame):
         model and the value is a list containing the following information:
 
             * Position 0 is the (zero-based) index of the widget.
-            * Position 1 is the widget used to display the attribute.
+            * Position 1 is the widget used to display the attribute.  This can be a
+                named instance of a widget (e.g., self.txtName) or a widget class from
+                which an unnamed instance will be created
+                (e.g., Gtk.CellRendererText()).
             * Position 2 is the signal emitted by the widget when it is updated/edited.
             * Position 3 is the callback method that emits the signal in position 2.
                 Set this to None to make widget read-only.
             * Position 4 is the PyPubSub message published when the widget is updated.
             * Position 5 is the default value to display in the widget.
             * Position 6 is a dict containing the property values for the widget.
+            * Position 7 is the text to use for the widget in position 1 label.  For
+                RAMSTKTreeViews this will be the column heading.
 
         For a fixed panel, dict entries should be in the order they should appear in
         the panel.
@@ -871,6 +876,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         for _key, _value in self.dic_attribute_widget_map.items():
             self.tvwTreeView.widgets[_key] = _value[1]
+            try:
+                self.tvwTreeView.headings[_key] = _value[7]
+            except IndexError:
+                pass
 
         self.tvwTreeView.do_make_columns(
             colors={"bg_color": _bg_color, "fg_color": _fg_color}

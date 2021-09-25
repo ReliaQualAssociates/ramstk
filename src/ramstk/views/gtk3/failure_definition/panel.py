@@ -58,6 +58,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
             ],
             "definition_id": [
                 1,
@@ -65,6 +73,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Definition ID"),
             ],
             "definition": [
                 2,
@@ -72,6 +88,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_callback,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Definition"),
             ],
         }
 
