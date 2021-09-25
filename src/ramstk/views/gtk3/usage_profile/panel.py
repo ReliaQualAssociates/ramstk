@@ -256,7 +256,6 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             else:
                 _level = "environment"
 
-            # Change the column headings depending on what is being selected.
             self.tvwTreeView.visible = self._dic_visible_mask[_level]
             self.tvwTreeView.do_set_visible_columns()
 
@@ -295,6 +294,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             _entity.maximum,
             _entity.mean,
             _entity.variance,
+            _icon,
         ]
 
         try:
@@ -348,6 +348,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             0.0,
             0.0,
             0.0,
+            _icon,
         ]
 
         try:
@@ -397,6 +398,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             0.0,
             0.0,
             0.0,
+            _icon,
         ]
 
         try:

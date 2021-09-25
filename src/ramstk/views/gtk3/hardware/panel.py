@@ -460,7 +460,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _entity.attachments,
             _entity.category_id,
             _entity.subcategory_id,
-            # _icon,
+            _icon,
         ]
 
         try:

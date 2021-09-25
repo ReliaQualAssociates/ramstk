@@ -336,7 +336,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                 fg_color=colors["fg_color"],
                 editable=self.editable[_key],
             )
-
             # If creating a RAMSTKTreeView() that displays icons and this is
             # the first column we're creating, add a Gtk.CellRendererPixbuf()
             # to go along with the data in the first column.
@@ -346,10 +345,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                 _pbcell.set_property("cell-background", colors["bg_color"])
                 _column = do_make_column(
                     [_pbcell, _cell],
-                    heading=self.headings[_key],  # type: ignore
-                    visible=self.visible[_key],  # type: ignore
+                    heading="",  # type: ignore
+                    visible=True,  # type: ignore
                 )
-                _column.set_attributes(_pbcell, pixbuf=self.position["pixbuf"])
+                _column.set_attributes(_pbcell, pixbuf=len(self.position.values()))
             else:
                 _column = do_make_column(
                     [_cell],
@@ -361,7 +360,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             )
 
             self._do_set_column_properties(_key, _column)
-
             self.append_column(_column)
 
     def do_make_model(self) -> None:
@@ -373,11 +371,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _types = []
 
         # Create a list of GObject data types to pass to the model.
-        for _key in self.position:
-            if self.datatypes[_key] == "pixbuf":
-                _types.append(GdkPixbuf.Pixbuf)
-            else:
-                _types.append(GObject.type_from_name(self.datatypes[_key]))
+        for _key in self.datatypes:
+            _types.append(GObject.type_from_name(self.datatypes[_key]))
+
+        if self._has_pixbuf:
+            _types.append(GdkPixbuf.Pixbuf)
 
         _model = Gtk.TreeStore(*_types)
         self.set_model(_model)
@@ -404,15 +402,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.headings = _format["usertitle"]
         self.korder = _format["key"]
         self.visible = _format["visible"]
-
-        if self._has_pixbuf:
-            self.datatypes["pixbuf"] = "pixbuf"
-            self.editable["pixbuf"] = "False"
-            self.headings["pixbuf"] = ""
-            self.korder["pixbuf"] = ""
-            self.position["pixbuf"] = len(self.position.values())
-            self.visible["pixbuf"] = "False"
-            self.widgets["pixbuf"] = "pixbuf"
 
     def do_set_columns_editable(self) -> None:
         """Set list of columns editable.
