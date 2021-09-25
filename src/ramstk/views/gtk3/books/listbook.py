@@ -18,7 +18,7 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.failure_definition import FailureDefinitionListView
 
 # from ramstk.views.gtk3.stakeholder import lvwStakeholders
-# from ramstk.views.gtk3.usage_profile import lvwUsageProfile
+from ramstk.views.gtk3.usage_profile import UsageProfileListView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -48,7 +48,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
         # Initialize private dictionary attributes.
         self._dic_list_views: Dict[str, List[object]] = {
             "revision": [
-                #    lvwUsageProfile(configuration, logger),
+                UsageProfileListView(configuration, logger),
                 FailureDefinitionListView(configuration, logger),
             ],
             # "function": [],
