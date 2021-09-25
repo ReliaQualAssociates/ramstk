@@ -100,7 +100,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_callback: str = f"lvw_editing_{self._tag}"
+        self._on_edit_message: str = f"lvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -109,7 +109,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -124,7 +124,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -139,7 +139,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -154,7 +154,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -169,7 +169,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -184,7 +184,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -199,7 +199,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -214,7 +214,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -229,7 +229,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -244,7 +244,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -259,7 +259,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -274,7 +274,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -289,7 +289,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -304,7 +304,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 1.0,
                 {
                     "bg_color": "#FFFFFF",

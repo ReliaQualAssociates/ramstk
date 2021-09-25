@@ -9,4 +9,5 @@
 """The RAMSTK GTK3 hazard analysis package."""
 
 # RAMSTK Local Imports
-from .workview import HazOps as wvwHazOps
+from .panel import HazardsTreePanel
+from .view import HazardsWorkView
