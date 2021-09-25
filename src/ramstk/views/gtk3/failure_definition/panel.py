@@ -51,9 +51,6 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         self._on_edit_callback: str = "lvw_editing_{}".format(self._tag)
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["definition", "string"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "revision_id": [
                 0,

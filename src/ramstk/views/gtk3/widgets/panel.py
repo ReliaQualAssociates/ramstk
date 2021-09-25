@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -122,8 +122,8 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # _dic_attribute_keys renamed to _dic_attribute_index?
-        # This may be more descriptive of the information the dict holds.
+        # Retire _dic_attribute_keys after dic_attribute_index_map is fully
+        # implemented.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         # Retire _dic_attribute_updater after dic_attribute_widget_map is fully
         # implemented.
@@ -725,7 +725,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_row_loader: Dict[str, Any] = {}
+        self._dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes.
         self._lst_col_order: List[int] = []
@@ -809,7 +809,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model.clear()
 
         try:
-            self.tvwTreeView.do_load_tree(tree, self._tag)
+            _row = None
+            for _node in tree.all_nodes()[1:]:
+                _row = self._dic_row_loader[_node.tag](_node, _row)
             self.tvwTreeView.expand_all()
             _row = _model.get_iter_first()
             if _row is not None:
@@ -866,6 +868,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         self.tvwTreeView.do_parse_format(_fmt_file)
         self.tvwTreeView.do_make_model()
+
+        for _key, _value in self.dic_attribute_widget_map.items():
+            self.tvwTreeView.widgets[_key] = _value[1]
+
         self.tvwTreeView.do_make_columns(
             colors={"bg_color": _bg_color, "fg_color": _fg_color}
         )
@@ -939,12 +945,13 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
             "changed", self._on_row_change
         )
-        for (
-            __,  # pylint: disable=unused-variable
-            _value,
-        ) in self.dic_attribute_widget_map.items():
-            if _value[3] is not None:
-                _value[1].connect(_value[2], _value[3], _value[0], _value[4])
+        # pylint: disable=unused-variable
+        for __, _value in self.dic_attribute_widget_map.items():
+            try:
+                if _value[3] is not None:
+                    _value[1].connect(_value[2], _value[3], _value[0], _value[4])
+            except KeyError:
+                print(self._tag, type(_value))
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
@@ -955,6 +962,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             have a callback function assigned.
         :return: None
         """
+        print(self._tag)
         for _idx in columns:
             _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
             try:

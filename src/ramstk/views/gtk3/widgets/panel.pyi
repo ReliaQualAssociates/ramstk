@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -64,7 +64,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     def __do_read_text(self, entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]: ...
 
 class RAMSTKPlotPanel(RAMSTKPanel):
-    pltPlot: Any
+    pltPlot: RAMSTKPlot
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...
     def do_load_panel(self) -> None: ...
@@ -73,9 +73,9 @@ class RAMSTKPlotPanel(RAMSTKPanel):
     def do_set_properties(self, **kwargs: Any) -> None: ...
 
 class RAMSTKTreePanel(RAMSTKPanel):
-    _dic_row_loader: Any
-    _lst_col_order: Any
-    tvwTreeView: Any
+    _dic_row_loader: Dict[str, Callable]
+    _lst_col_order: List[int]
+    tvwTreeView: RAMSTKTreeView
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...
     def do_expand_tree(self) -> None: ...
