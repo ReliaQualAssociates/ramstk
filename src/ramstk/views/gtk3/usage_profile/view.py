@@ -83,7 +83,7 @@ class UsageProfileListView(RAMSTKListView):
                 "currently selected entity."
             ),
             _("Delete the currently selected entity from the usage profile."),
-            _("Save changes to the currently selected entity in the usage " "profile."),
+            _("Save changes to the currently selected entity in the usage profile."),
             _("Save changes to all entities in the usage profile."),
         ]
 
