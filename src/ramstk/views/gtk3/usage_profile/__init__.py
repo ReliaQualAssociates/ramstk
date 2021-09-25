@@ -9,4 +9,5 @@
 """The RAMSTK GTK3 usage profile package."""
 
 # RAMSTK Local Imports
-from .listview import UsageProfile as lvwUsageProfile
+from .panel import UsageProfileTreePanel
+from .view import UsageProfileListView

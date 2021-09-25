@@ -9,7 +9,7 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
 
-class FailureDefinitionPanel(RAMSTKTreePanel):
+class FailureDefinitionTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
     _title: str

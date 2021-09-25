@@ -751,7 +751,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         # pylint: disable=unused-variable
         for __, _key in enumerate(category):
             _categories.append([category[_key]])
-        self.cmbCategory.do_load_combo(entries=_categories)
+        self.cmbCategory.do_load_combo(entries=_categories)  # type: ignore
 
     def _do_load_subcategories(self, category_id: int) -> None:
         """Load the subcategory RAMSTKComboBox().
@@ -978,7 +978,10 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         _manufacturer = []
         for _key in manufacturers:
             _manufacturer.append(manufacturers[_key])
-        self.cmbManufacturer.do_load_combo(entries=_manufacturer, simple=False)
+        self.cmbManufacturer.do_load_combo(
+            entries=_manufacturer,  # type: ignore
+            simple=False,
+        )
 
     def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
         """Load the CAGE code whenever the manufacturer is changed.

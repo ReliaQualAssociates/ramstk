@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict, List, Union
+from typing import Any, Callable, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -84,13 +84,18 @@ class RAMSTKPanel(RAMSTKFrame):
         model and the value is a list containing the following information:
 
             * Position 0 is the (zero-based) index of the widget.
-            * Position 1 is the widget used to display the attribute.
+            * Position 1 is the widget used to display the attribute.  This can be a
+                named instance of a widget (e.g., self.txtName) or a widget class from
+                which an unnamed instance will be created
+                (e.g., Gtk.CellRendererText()).
             * Position 2 is the signal emitted by the widget when it is updated/edited.
             * Position 3 is the callback method that emits the signal in position 2.
                 Set this to None to make widget read-only.
             * Position 4 is the PyPubSub message published when the widget is updated.
             * Position 5 is the default value to display in the widget.
             * Position 6 is a dict containing the property values for the widget.
+            * Position 7 is the text to use for the widget in position 1 label.  For
+                RAMSTKTreeViews this will be the column heading.
 
         For a fixed panel, dict entries should be in the order they should appear in
         the panel.
@@ -122,8 +127,8 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # _dic_attribute_keys renamed to _dic_attribute_index?
-        # This may be more descriptive of the information the dict holds.
+        # Retire _dic_attribute_keys after dic_attribute_index_map is fully
+        # implemented.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
         # Retire _dic_attribute_updater after dic_attribute_widget_map is fully
         # implemented.
@@ -725,7 +730,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_row_loader: Dict[str, Any] = {}
+        self._dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes.
         self._lst_col_order: List[int] = []
@@ -809,7 +814,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model.clear()
 
         try:
-            self.tvwTreeView.do_load_tree(tree, self._tag)
+            _row = None
+            for _node in tree.all_nodes()[1:]:
+                _row = self._dic_row_loader[_node.tag](_node, _row)
             self.tvwTreeView.expand_all()
             _row = _model.get_iter_first()
             if _row is not None:
@@ -866,6 +873,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         self.tvwTreeView.do_parse_format(_fmt_file)
         self.tvwTreeView.do_make_model()
+
+        for _key, _value in self.dic_attribute_widget_map.items():
+            self.tvwTreeView.widgets[_key] = _value[1]
+            try:
+                self.tvwTreeView.headings[_key] = _value[7]
+            except IndexError:
+                pass
+
         self.tvwTreeView.do_make_columns(
             colors={"bg_color": _bg_color, "fg_color": _fg_color}
         )
@@ -939,12 +954,13 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
             "changed", self._on_row_change
         )
-        for (
-            __,  # pylint: disable=unused-variable
-            _value,
-        ) in self.dic_attribute_widget_map.items():
-            if _value[3] is not None:
-                _value[1].connect(_value[2], _value[3], _value[0], _value[4])
+        # pylint: disable=unused-variable
+        for __, _value in self.dic_attribute_widget_map.items():
+            try:
+                if _value[3] is not None:
+                    _value[1].connect(_value[2], _value[3], _value[0], _value[4])
+            except KeyError:
+                print(self._tag, type(_value))
 
     def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
@@ -955,6 +971,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             have a callback function assigned.
         :return: None
         """
+        print(self._tag)
         for _idx in columns:
             _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
             try:

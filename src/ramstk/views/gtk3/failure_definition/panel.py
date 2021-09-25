@@ -41,13 +41,8 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_attribute_updater = {
-            "revision_id": [None, "edited", 0],
-            "definition_id": [None, "edited", 1],
-            "definition": [None, "edited", 2],
-        }
         self._dic_row_loader: Dict[str, Callable] = {
-            "definition": self.__do_load_failure_definition,
+            "failure_definition": self.__do_load_failure_definition,
         }
 
         # Initialize private list class attributes.
@@ -56,9 +51,6 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         self._on_edit_callback: str = "lvw_editing_{}".format(self._tag)
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["definition", "string"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "revision_id": [
                 0,
@@ -66,6 +58,14 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
             ],
             "definition_id": [
                 1,
@@ -73,13 +73,29 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_callback,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Definition ID"),
             ],
             "definition": [
                 2,
                 Gtk.CellRendererText(),
                 "edited",
-                None,
+                super().on_cell_edit,
                 self._on_edit_callback,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Definition"),
             ],
         }
 

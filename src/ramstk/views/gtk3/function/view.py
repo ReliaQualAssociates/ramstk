@@ -121,7 +121,6 @@ class FunctionModuleView(RAMSTKModuleView):
 
         self._pnlPanel.do_set_properties()
         self._pnlPanel.do_set_callbacks()
-        self._pnlPanel.do_set_cell_callbacks("mvw_editing_function", [5, 15, 17])
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

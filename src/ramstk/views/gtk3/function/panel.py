@@ -50,6 +50,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
+        self._on_edit_message: str = "mvw_editing_{}".format(self._tag)
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_index_map = {
@@ -64,21 +65,23 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
+                0,
             ],
             "function_id": [
                 1,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
+                0,
             ],
             "availability_logistics": [
                 2,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 1.0,
             ],
             "availability_mission": [
@@ -86,7 +89,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 1.0,
             ],
             "cost": [
@@ -94,7 +97,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "function_code": [
@@ -102,23 +105,23 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                "mvw_editing_function",
+                self._on_edit_message,
                 "",
             ],
-            "failure_rate_logistics": [
+            "hazard_rate_logistics": [
                 6,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
-            "failure_rate_mission": [
+            "hazard_rate_mission": [
                 7,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "level": [
@@ -126,7 +129,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0,
             ],
             "mmt": [
@@ -134,7 +137,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "mcmt": [
@@ -142,7 +145,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "mpmt": [
@@ -150,7 +153,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "mtbf_logistics": [
@@ -158,7 +161,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "mtbf_mission": [
@@ -166,7 +169,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "mttr": [
@@ -174,7 +177,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0.0,
             ],
             "name": [
@@ -182,7 +185,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                "mvw_editing_function",
+                self._on_edit_message,
                 "",
             ],
             "parent_id": [
@@ -190,7 +193,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0,
             ],
             "remarks": [
@@ -198,7 +201,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                "mvw_editing_function",
+                self._on_edit_message,
                 "",
             ],
             "safety_critical": [
@@ -206,7 +209,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                "mvw_editing_function",
+                self._on_edit_message,
                 1,
             ],
             "total_mode_count": [
@@ -214,7 +217,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0,
             ],
             "total_part_count": [
@@ -222,15 +225,15 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0,
             ],
-            "type": [
+            "type_id": [
                 21,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_function",
+                self._on_edit_message,
                 0,
             ],
         }
