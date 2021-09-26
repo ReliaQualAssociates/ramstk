@@ -16,7 +16,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
     _title: str
     _dic_row_loader: Dict[str, Callable]
     _dic_visible_mask: Dict[str, Dict[str, bool]]
-    _on_edit_callback: str
+    _on_edit_message: str
     dic_attribute_widget_map: Dict[str, List[Any]]
     dic_icons: Dict[str, Any]
     dic_units: Dict[str, Tuple[str, str, str]]
