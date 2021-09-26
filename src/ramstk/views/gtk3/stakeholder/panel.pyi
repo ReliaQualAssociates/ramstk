@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
