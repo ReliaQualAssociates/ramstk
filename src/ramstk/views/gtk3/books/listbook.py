@@ -16,8 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.failure_definition import FailureDefinitionListView
-
-# from ramstk.views.gtk3.stakeholder import lvwStakeholders
+from ramstk.views.gtk3.stakeholder import StakeholderListView
 from ramstk.views.gtk3.usage_profile import UsageProfileListView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
@@ -51,12 +50,12 @@ class RAMSTKListBook(RAMSTKBaseBook):
                 UsageProfileListView(configuration, logger),
                 FailureDefinitionListView(configuration, logger),
             ],
-            # "function": [],
-            # "requirement": [
-            #    lvwStakeholders(configuration, logger),
-            # ],
-            # "hardware": [],
-            # "validation": [],
+            "function": [],
+            "requirement": [
+                StakeholderListView(configuration, logger),
+            ],
+            "hardware": [],
+            "validation": [],
         }
 
         # Initialize private list attributes.

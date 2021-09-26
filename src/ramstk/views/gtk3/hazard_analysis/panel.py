@@ -128,7 +128,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 _("Potential Cause"),
             ],
             "assembly_effect": [
-                6,
+                5,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -672,8 +672,6 @@ class HazardsTreePanel(RAMSTKTreePanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-
-        # Make a fixed type panel.
 
         super().do_make_panel()
         super().do_set_properties()

@@ -1,0 +1,419 @@
+# -*- coding: utf-8 -*-
+#
+#       ramstk.views.gtk3.stakeholder.panel.py is part of the RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Stakeholder Panels."""
+
+# Standard Library Imports
+from typing import Dict, Tuple
+
+# Third Party Imports
+import treelib
+from pubsub import pub
+
+# RAMSTK Package Imports
+from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.widgets import RAMSTKTreePanel
+
+
+class StakeholderTreePanel(RAMSTKTreePanel):
+    """Panel to display list of stakeholder inputs."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _select_msg = "succeed_retrieve_stakeholders"
+    _tag = "stakeholder"
+    _title = _("Stakeholder Input List")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the stakeholder input panel."""
+        super().__init__()
+
+        # Initialize private dictionary class attributes.
+        self._dic_row_loader = {
+            "stakeholder": super()._do_load_treerow,
+        }
+
+        # Initialize private list class attributes.
+
+        # Initialize private scalar class attributes.
+        self._on_edit_message: str = f"lvw_editing_{self._tag}"
+
+        # Initialize public dictionary class attributes.
+        self.dic_attribute_widget_map = {
+            "revision_id": [
+                0,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
+            ],
+            "stakeholder_id": [
+                1,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Stakeholder ID"),
+            ],
+            "customer_rank": [
+                2,
+                Gtk.CellRendererSpin(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                    "visible": True,
+                },
+                _("Customer Ranking"),
+            ],
+            "description": [
+                3,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Description"),
+            ],
+            "group": [
+                4,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Affinity Group"),
+            ],
+            "improvement": [
+                5,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Improvement Factor"),
+            ],
+            "overall_weight": [
+                6,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Overall Weighting"),
+            ],
+            "planned_rank": [
+                7,
+                Gtk.CellRendererSpin(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                    "visible": True,
+                },
+                _("Planned Satisfaction Rating"),
+            ],
+            "priority": [
+                8,
+                Gtk.CellRendererSpin(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
+                    "visible": True,
+                },
+                _("Priority"),
+            ],
+            "requirement_id": [
+                9,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Associated Requirement"),
+            ],
+            "stakeholder": [
+                10,
+                Gtk.CellRendererCombo(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Stakeholder"),
+            ],
+            "user_float_1": [
+                11,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("User Float 1"),
+            ],
+            "user_float_2": [
+                12,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("User Float 2"),
+            ],
+            "user_float_3": [
+                13,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("User Float 3"),
+            ],
+            "user_float_4": [
+                14,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("User Float 4"),
+            ],
+            "user_float_5": [
+                15,
+                Gtk.CellRendererText(),
+                "edited",
+                super().on_cell_edit,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("User Float 5"),
+            ],
+        }
+
+        # Initialize public list class attributes.
+
+        # Initialize public scalar class attributes.
+
+        super().do_make_panel()
+        super().do_set_properties()
+        super().do_set_callbacks()
+
+        self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_requirements, "succeed_retrieve_requirements")
+
+    def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:
+        """Load the affinity group list.
+
+        :param affinities: the dict containing the affinity groups and the
+            group type (affinity in all cases).
+        :return: None
+        """
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["col4"]
+        ).get_cells()[0]
+        _cell.set_property("has-entry", True)
+        _cellmodel = _cell.get_property("model")
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(affinities):
+            _group = affinities[_key]
+            _cellmodel.append([_group[0]])
+
+    def do_load_stakeholders(self, stakeholders: Dict[int, str]) -> None:
+        """Load the stakeholder list.
+
+        :param stakeholders: the dict containing the names of the stakeholders.
+        :return: None
+        """
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["col10"]
+        ).get_cells()[0]
+        _cell.set_property("has-entry", True)
+        _cellmodel = _cell.get_property("model")
+        _cellmodel.clear()
+        _cellmodel.append([""])
+
+        # pylint: disable=unused-variable
+        for __, _key in enumerate(stakeholders):
+            _group = stakeholders[_key]
+            _cellmodel.append([_group])
+
+    def _do_load_requirements(self, tree: treelib.Tree) -> None:
+        """Load the requirement ID list when Requirements are retrieved.
+
+        :param tree: the treelib Tree() containing the Stakeholder data
+            records.
+        :return: None
+        """
+        _cell = self.tvwTreeView.get_column(self._lst_col_order[9]).get_cells()[0]
+        _model = _cell.get_property("model")
+        _model.clear()
+
+        for _node in tree.nodes:
+            if _node != 0:
+                _model.append(
+                    [str(tree.nodes[_node].data["requirement"].requirement_id)]
+                )
+
+    def _on_insert(self, tree: treelib.Tree) -> None:
+        """Wrap the do_load_panel() method when an element is inserted.
+
+        The do_set_cursor_active() method responds to the same message,
+        but one less argument in it's call.  This results in a PyPubSub
+        error and is the reason this wrapper method is needed.
+
+        :param tree: the module's treelib Tree().
+        :return: None
+        """
+        super().do_load_panel(tree)
+
+    def _on_module_switch(self, module: str = "") -> None:
+        """Respond to changes in selected Module View module (tab).
+
+        :param module: the name of the module that was just selected.
+        :return: None
+        """
+        _model, _row = self.tvwTreeView.selection.get_selected()
+
+        if module == "stakeholder" and _row is not None:
+            _code = _model.get_value(_row, self._lst_col_order[1])
+            _name = _model.get_value(_row, self._lst_col_order[3])
+            _title = _("Analyzing Stakeholder {0:s}: {1:s}").format(
+                str(_code), str(_name)
+            )
+
+            pub.sendMessage("request_set_title", title=_title)
+
+    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+        """Handle events for the List View RAMSTKTreeView().
+
+        This method is called whenever a Stakeholder List View
+        RAMSTKTreeView() row is activated/changed.
+
+        :param selection: the Stakeholder class Gtk.TreeSelection().
+        :return: None
+        """
+        _attributes = super().on_row_change(selection)
+
+        if _attributes:
+            self._record_id = _attributes["stakeholder_id"]
+            self._parent_id = _attributes["requirement_id"]
+
+            pub.sendMessage("selected_stakeholder", attributes=_attributes)
