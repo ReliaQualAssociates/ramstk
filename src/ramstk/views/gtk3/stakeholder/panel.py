@@ -93,6 +93,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": False,
                     "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
                     "visible": True,
                 },
                 _("Customer Ranking"),
@@ -168,6 +171,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
                     "visible": True,
                 },
                 _("Planned Satisfaction Rating"),
@@ -183,6 +189,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": False,
                     "fg_color": "#000000",
+                    "lower": 1,
+                    "step": 1,
+                    "upper": 5,
                     "visible": True,
                 },
                 _("Priority"),
@@ -303,14 +312,6 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
-        # Set the spin button cells to have a range of [1, 5] with a step of 1.
-        for _idx in [2, 7, 8]:
-            _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_idx])
-            _cell = _column.get_cells()[0]
-            _adjustment = _cell.get_property("adjustment")
-            _adjustment.set_lower(1)
-            _adjustment.set_step_increment(1)
-            _adjustment.set_upper(5)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_requirements, "succeed_retrieve_requirements")
