@@ -5,8 +5,8 @@
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 hazard analysis package."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Hazard Analysis Views."""
 
 # RAMSTK Local Imports
 from .panel import HazardsTreePanel
