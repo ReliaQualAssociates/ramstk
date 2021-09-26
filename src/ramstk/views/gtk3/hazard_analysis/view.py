@@ -51,7 +51,7 @@ class HazardsWorkView(RAMSTKWorkView):
     # Define private scalar class attributes.
     _module: str = "hazard"
     _tablabel: str = _("HazOps")
-    _tabtooltip: str = _("Displays the HazOps analysis for the selected " "Function.")
+    _tabtooltip: str = _("Displays the HazOps analysis for the selected Function.")
 
     # Define public dict class attributes.
 
