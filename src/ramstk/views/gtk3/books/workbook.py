@@ -15,8 +15,8 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.views.gtk3.allocation import AllocationWorkView
 
-# from ramstk.views.gtk3.allocation import wvwAllocation
 # from ramstk.views.gtk3.fmea import wvwFMEA
 from ramstk.views.gtk3.function import FunctionWorkView
 from ramstk.views.gtk3.hardware import (
@@ -73,7 +73,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             ],
             "hardware": [
                 HardwareGeneralDataView(configuration, logger),
-                #    wvwAllocation(configuration, logger),
+                AllocationWorkView(configuration, logger),
                 #    wvwSimilarItem(configuration, logger),
                 HardwareAssessmentInputView(configuration, logger),
                 HardwareAssessmentResultsView(configuration, logger),
