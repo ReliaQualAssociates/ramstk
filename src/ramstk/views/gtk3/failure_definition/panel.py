@@ -48,7 +48,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_callback: str = "lvw_editing_{}".format(self._tag)
+        self._on_edit_message: str = "lvw_editing_{}".format(self._tag)
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -57,7 +57,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -72,7 +72,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_callback,
+                self._on_edit_message,
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -87,7 +87,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_callback,
+                self._on_edit_message,
                 "",
                 {
                     "bg_color": "#FFFFFF",

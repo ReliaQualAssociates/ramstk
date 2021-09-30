@@ -4,8 +4,9 @@
 #       ramstk.views.gtk3.allocation.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007-2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 allocation package."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""GTK3 Allocation Views."""
 
 # RAMSTK Local Imports
-from .workview import Allocation as wvwAllocation
+from .panel import AllocationGoalMethodPanel, AllocationTreePanel
+from .view import AllocationWorkView
