@@ -7,7 +7,7 @@
 """GTK3 Allocation Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -259,8 +259,8 @@ class AllocationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_hardware_attrs: Dict[int, Any] = {}
-        self._dic_reliability_attrs: Dict[int, Any] = {}
+        self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
+        self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self._dic_row_loader = {
             "allocation": self.__do_load_allocation,
         }
@@ -595,7 +595,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Current Failure Rate"),
+                _("Current Hazard Rate"),
             ],
             "hazard_rate_alloc": [
                 15,
