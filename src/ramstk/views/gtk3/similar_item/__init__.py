@@ -9,3 +9,4 @@
 
 # RAMSTK Local Imports
 from .panel import SimilarItemMethodPanel, SimilarItemTreePanel
+from .view import SimilarItemWorkView

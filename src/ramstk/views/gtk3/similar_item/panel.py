@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK SimilarItem Work View."""
+"""GTK3 Similar Item Panels."""
 
 # Standard Library Imports
 from typing import Any, Dict, List, Union
@@ -94,15 +94,17 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
             [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal="changed"
         )
 
-    def _on_method_changed(self, combo: RAMSTKComboBox) -> None:
-        """Wrap the _do_set_sensitive() method when goal combo changes.
+    @staticmethod
+    def _on_method_changed(combo: RAMSTKComboBox) -> None:
+        """Let others know when similar item method combo changes.
 
-        :param combo: the allocation calculation method RAMSTKComboBox().
+        :param combo: the similar item calculation method RAMSTKComboBox().
         :return: None
         :rtype: None
         """
-        self._method_id = combo.get_active()
-        pub.sendMessage("succeed_change_similar_item_method", method_id=self._method_id)
+        pub.sendMessage(
+            "succeed_change_similar_item_method", method_id=combo.get_active()
+        )
 
 
 class SimilarItemTreePanel(RAMSTKTreePanel):
@@ -152,6 +154,63 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "similar_item": self.__do_load_similar_item,
         }
         self._dic_visible_mask: Dict[int, Dict[str, str]] = {
+            0: {
+                "col0": "False",
+                "col1": "False",
+                "col2": "True",
+                "col3": "True",
+                "col4": "False",
+                "col5": "False",
+                "col6": "False",
+                "col7": "False",
+                "col8": "False",
+                "col9": "False",
+                "col10": "False",
+                "col11": "False",
+                "col12": "False",
+                "col13": "False",
+                "col14": "False",
+                "col15": "False",
+                "col16": "False",
+                "col17": "False",
+                "col18": "False",
+                "col19": "False",
+                "col20": "False",
+                "col21": "False",
+                "col22": "False",
+                "col23": "False",
+                "col24": "False",
+                "col25": "False",
+                "col26": "False",
+                "col27": "False",
+                "col28": "False",
+                "col29": "False",
+                "col30": "False",
+                "col31": "False",
+                "col32": "False",
+                "col33": "False",
+                "col34": "False",
+                "col35": "True",
+                "col36": "False",
+                "col37": "False",
+                "col38": "False",
+                "col39": "False",
+                "col40": "False",
+                "col41": "False",
+                "col42": "False",
+                "col43": "False",
+                "col44": "False",
+                "col45": "False",
+                "col46": "False",
+                "col47": "False",
+                "col48": "False",
+                "col49": "False",
+                "col50": "False",
+                "col51": "False",
+                "col52": "False",
+                "col53": "False",
+                "col54": "False",
+            },
             1: {
                 "col0": "False",
                 "col1": "False",
@@ -208,7 +267,6 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "col52": "False",
                 "col53": "False",
                 "col54": "False",
-                "col55": "False",
             },
             2: {
                 "col0": "False",
@@ -266,7 +324,6 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "col52": "True",
                 "col53": "True",
                 "col54": "True",
-                "col55": "True",
             },
         }
 
@@ -446,7 +503,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "change_factor_1": [
                 11,
                 Gtk.CellRendererText(),
-                "toggled",
+                "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
                 1.0,
@@ -1089,7 +1146,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 _("User Integer 4"),
             ],
             "user_int_5": [
-                55,
+                54,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -1128,7 +1185,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         )
         pub.subscribe(self._on_method_changed, "succeed_change_similar_item_method")
 
-    def do_load_combobox(self) -> None:
+    def do_load_comboboxes(self) -> None:
         """Load Similar Item analysis RAMSTKComboBox()s.
 
         :return: None

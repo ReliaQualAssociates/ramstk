@@ -32,8 +32,7 @@ from ramstk.views.gtk3.requirement import (
     RequirementGeneralDataView,
 )
 from ramstk.views.gtk3.revision import RevisionWorkView
-
-# from ramstk.views.gtk3.similar_item import wvwSimilarItem
+from ramstk.views.gtk3.similar_item import SimilarItemWorkView
 from ramstk.views.gtk3.validation import ValidationGeneralDataView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
 
@@ -74,7 +73,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             "hardware": [
                 HardwareGeneralDataView(configuration, logger),
                 AllocationWorkView(configuration, logger),
-                #    wvwSimilarItem(configuration, logger),
+                SimilarItemWorkView(configuration, logger),
                 HardwareAssessmentInputView(configuration, logger),
                 HardwareAssessmentResultsView(configuration, logger),
                 #    wvwFMEA(configuration, logger),
