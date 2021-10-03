@@ -7,7 +7,7 @@
 """GTK3 Allocation Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -259,12 +259,36 @@ class AllocationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_hardware_attrs: Dict[int, Any] = {}
-        self._dic_reliability_attrs: Dict[int, Any] = {}
+        self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
+        self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self._dic_row_loader = {
             "allocation": self.__do_load_allocation,
         }
         self._dic_visible_mask: Dict[int, Dict[str, str]] = {
+            0: {
+                "col0": "False",
+                "col1": "False",
+                "col2": "True",
+                "col3": "False",
+                "col4": "False",
+                "col5": "False",
+                "col6": "False",
+                "col7": "False",
+                "col8": "False",
+                "col9": "False",
+                "col10": "False",
+                "col11": "False",
+                "col12": "False",
+                "col13": "False",
+                "col14": "True",
+                "col15": "False",
+                "col16": "True",
+                "col17": "False",
+                "col18": "True",
+                "col19": "False",
+                "col20": "True",
+                "col21": "False",
+            },
             1: {
                 "col0": "False",
                 "col1": "False",
@@ -595,7 +619,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Current Failure Rate"),
+                _("Current Hazard Rate"),
             ],
             "hazard_rate_alloc": [
                 15,

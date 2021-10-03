@@ -149,8 +149,8 @@ class HardwareModuleView(RAMSTKModuleView):
                 "Adds a new hardware component/piece-part to the the selected hardware "
                 "assembly."
             ),
-            _("Remove the currently selected hardware item " "and any children."),
-            _("Calculate the selected hardware item and all of it's " "children."),
+            _("Remove the currently selected hardware item and any children."),
+            _("Calculate the selected hardware item and all of it's children."),
             _("Calculate the entire system."),
             _("Save changes to the selected hardware item."),
             _("Save changes to the entire system."),
