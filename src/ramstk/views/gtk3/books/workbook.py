@@ -25,6 +25,7 @@ from ramstk.views.gtk3.hardware import (
     HardwareGeneralDataView,
 )
 from ramstk.views.gtk3.hazard_analysis import HazardsWorkView
+from ramstk.views.gtk3.program_status import ProgramStatusWorkView
 
 # from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import (
@@ -81,7 +82,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             ],
             "validation": [
                 ValidationGeneralDataView(configuration, logger),
-                #    wvwBurndownCurve(configuration, logger),
+                ProgramStatusWorkView(configuration, logger),
             ],
         }
 
