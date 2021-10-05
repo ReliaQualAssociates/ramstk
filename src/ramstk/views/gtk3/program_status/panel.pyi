@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third Party Imports
 import pandas as pd
@@ -8,7 +8,7 @@ import pandas as pd
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKPlotPanel as RAMSTKPlotPanel
 
-class BurndownCurvePanel(RAMSTKPlotPanel):
+class ProgramStatusPlotPanel(RAMSTKPlotPanel):
     _record_field: str
     _select_msg: str
     _tag: str

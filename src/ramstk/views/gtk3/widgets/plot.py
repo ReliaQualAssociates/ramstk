@@ -8,7 +8,7 @@
 """RAMSTK GTK3 Plot Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, Gtk, _
