@@ -8,7 +8,7 @@
 """RAMSTK GTK3 Plot Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import Any, Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gdk, Gtk, _
@@ -37,10 +37,10 @@ except RuntimeError:
 class RAMSTKPlot:
     """The RAMSTKPlot class.
 
-    This module contains RAMSTK plot class.  This class is derived from
-    the applicable pyGTK widgets and matplotlib plots, but are provided
-    with RAMSTK specific property values and methods.  This ensures a
-    consistent look and feel to widgets in the RAMSTK application.
+    This module contains RAMSTK plot class.  This class is derived from the
+    applicable pyGTK widgets and matplotlib plots, but are provided with RAMSTK
+    specific property values and methods.  This ensures a consistent look and
+    feel to widgets in the RAMSTK application.
     """
 
     def __init__(self) -> None:
@@ -222,7 +222,7 @@ class RAMSTKPlot:
         return _label
 
     # pylint: disable=too-many-arguments
-    def do_make_legend(self, text: Union[Any], **kwargs: Any) -> None:
+    def do_make_legend(self, text: List[str], **kwargs: Any) -> None:
         """Make a legend on the RAMSTKPlot.
 
         Accepts keyword arguments:
@@ -257,7 +257,7 @@ class RAMSTKPlot:
                 string.
             * *lwd* (float) -- the linewidth of the box around the legend.
 
-        :param tuple text: the text to display in the legend.
+        :param text: the text to display in the legend.
         :return: None
         :rtype: None
         """

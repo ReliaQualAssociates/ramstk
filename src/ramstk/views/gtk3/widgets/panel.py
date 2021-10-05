@@ -639,6 +639,9 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         """
         super().__init__()
 
+        # Initialize widgets.
+        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
+
         # Initialize private dict instance attributes.
 
         # Initialize private list instance attributes.
@@ -648,13 +651,14 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         # Initialize public dict instance attributes.
 
         # Initialize public list instance attributes.
+        self.lst_axis_labels: List[str] = [_("abscissa"), _("ordinate")]
+        self.lst_legend: List[str] = []
 
         # Initialize public scalar instance attributes.
-        self.pltPlot: RAMSTKPlot = RAMSTKPlot()
+        self.plot_title: str = ""
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
-        pub.subscribe(self.do_load_panel, self._select_msg)
 
     def do_clear_panel(self) -> None:
         """Clear the contents of the RAMSTKPlot on a plot type panel.
@@ -662,6 +666,9 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        self.pltPlot.axis.cla()
+        self.pltPlot.figure.clf()
+        self.pltPlot.plot.draw()
 
     def do_load_panel(self) -> None:
         """Load data into the RAMSTKPlot on a plot type panel.
@@ -669,6 +676,13 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        self.pltPlot.do_make_title(self.plot_title)
+        self.pltPlot.do_make_labels(
+            self.lst_axis_labels[1], x_pos=-0.5, y_pos=0, set_x=False
+        )
+
+        self.pltPlot.do_make_legend(self.lst_legend)
+        self.pltPlot.figure.canvas.draw()
 
     def do_make_panel(self) -> None:
         """Create a panel with a RAMSTKPlot().
@@ -676,8 +690,6 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        self._lst_widgets.append(self.pltPlot)
-
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         _scrollwindow.add(self.pltPlot.canvas)
@@ -729,6 +741,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """
         super().__init__()
 
+        # Initialize widgets.
+        self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
+
         # Initialize private dict instance attributes.
         self._dic_row_loader: Dict[str, Callable] = {}
 
@@ -742,7 +757,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
