@@ -337,7 +337,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
 
-    def do_load_combobox(self) -> None:
+    def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
 
         :return: None
