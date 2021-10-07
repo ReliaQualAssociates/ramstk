@@ -1324,6 +1324,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: :class:`Gtk.TreeIter`
         """
         _new_row = None
+        _date_format = "%Y-%m-%d"
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
@@ -1366,13 +1367,13 @@ class FMEATreePanel(RAMSTKTreePanel):
             0,
             _entity.action_category,
             _entity.action_owner,
-            _entity.action_due_date.strftime("%Y-%m-%d"),
+            _entity.action_due_date.strftime(_date_format),
             _entity.action_status,
             _entity.action_taken,
             _entity.action_approved,
-            _entity.action_approve_date.strftime("%Y-%m-%d"),
+            _entity.action_approve_date.strftime(_date_format),
             _entity.action_closed,
-            _entity.action_close_date.strftime("%Y-%m-%d"),
+            _entity.action_close_date.strftime(_date_format),
             "",
             "",
             "",
