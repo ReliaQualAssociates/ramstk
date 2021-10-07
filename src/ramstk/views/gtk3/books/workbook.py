@@ -16,8 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.allocation import AllocationWorkView
-
-# from ramstk.views.gtk3.fmea import wvwFMEA
+from ramstk.views.gtk3.fmea import FMEAWorkView
 from ramstk.views.gtk3.function import FunctionWorkView
 from ramstk.views.gtk3.hardware import (
     HardwareAssessmentInputView,
@@ -77,7 +76,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 SimilarItemWorkView(configuration, logger),
                 HardwareAssessmentInputView(configuration, logger),
                 HardwareAssessmentResultsView(configuration, logger),
-                #    wvwFMEA(configuration, logger),
+                FMEAWorkView(configuration, logger),
                 #    wvwPoF(configuration, logger),
             ],
             "validation": [
