@@ -277,6 +277,16 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.set_cursor(_path, None, False)
         self.row_activated(_path, _column)
 
+    def do_load_combo_cell(self, index: int, items: List[str]) -> None:
+        """Load items into cell with combobox.
+
+        :return: None
+        :rtype: None
+        """
+        _model = self.get_cell_model(index)
+        for _item in items:
+            _model.append([_item])
+
     def do_load_tree(
         self, tree: treelib.Tree, tag: str, row: Gtk.TreeIter = None
     ) -> None:

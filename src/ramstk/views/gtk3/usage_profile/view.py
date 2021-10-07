@@ -222,7 +222,7 @@ class UsageProfileListView(RAMSTKListView):
         )
 
         self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_load_combobox()
+        self._pnlPanel.do_load_comboboxes()
         self._pnlPanel.do_set_callbacks()
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
