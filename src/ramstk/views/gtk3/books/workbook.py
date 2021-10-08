@@ -24,9 +24,8 @@ from ramstk.views.gtk3.hardware import (
     HardwareGeneralDataView,
 )
 from ramstk.views.gtk3.hazard_analysis import HazardsWorkView
+from ramstk.views.gtk3.pof import PoFWorkView
 from ramstk.views.gtk3.program_status import ProgramStatusWorkView
-
-# from ramstk.views.gtk3.pof import wvwPoF
 from ramstk.views.gtk3.requirement import (
     RequirementAnalysisView,
     RequirementGeneralDataView,
@@ -77,7 +76,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 HardwareAssessmentInputView(configuration, logger),
                 HardwareAssessmentResultsView(configuration, logger),
                 FMEAWorkView(configuration, logger),
-                #    wvwPoF(configuration, logger),
+                PoFWorkView(configuration, logger),
             ],
             "validation": [
                 ValidationGeneralDataView(configuration, logger),

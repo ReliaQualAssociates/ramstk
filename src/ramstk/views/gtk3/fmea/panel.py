@@ -450,7 +450,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         self._lst_missions: List[str] = [""]
 
         # Initialize private scalar attributes.
-        self._on_edit_message: str = f"lvw_editing_{self._tag}"
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -1190,8 +1190,8 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
 
         self.tvwTreeView.set_tooltip_text(
             _(
@@ -1200,9 +1200,6 @@ class FMEATreePanel(RAMSTKTreePanel):
                 "currently selected Hardware item."
             )
         )
-
-        _cell = self.tvwTreeView.get_column(self._lst_col_order[8]).get_cells()
-        _cell[0].connect("edited", self._on_mission_change)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_retrieve_hardware_fmea")
@@ -1235,6 +1232,10 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.__do_load_rpn_severity()
         self.__do_load_severity_class()
         self.__do_load_users()
+
+        _idx = self.dic_attribute_widget_map["mission"][0]
+        _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
+        _cell[0].connect("edited", self._on_mission_change)
 
     # noinspection PyUnusedLocal
     def _on_insert(
@@ -1877,7 +1878,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         for _key in ["rpn_detection", "rpn_detection_new"]:
             _idx = self.dic_attribute_widget_map[_key][0]
             _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.dic_rpn_detection)
+            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_detection)
 
     def __do_load_rpn_occurrence(self) -> None:
         """Load the RPN occurrence Gtk.CellRendererCombo().
@@ -1888,7 +1889,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         for _key in ["rpn_occurrence", "rpn_occurrence_new"]:
             _idx = self.dic_attribute_widget_map[_key][0]
             _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.dic_rpn_occurrence)
+            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_occurrence)
 
     def __do_load_rpn_severity(self) -> None:
         """Load the RPN severity Gtk.CellRendererCombo().
@@ -1899,7 +1900,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         for _key in ["rpn_severity", "rpn_severity_new"]:
             _idx = self.dic_attribute_widget_map[_key][0]
             _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.dic_rpn_severity)
+            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_severity)
 
     def __do_load_severity_class(self) -> None:
         """Load the severity classification Gtk.CellRendererCombo().

@@ -291,7 +291,7 @@ class FMEAWorkView(RAMSTKWorkView):
         """
         self._item_hazard_rate = attributes["hazard_rate_active"]
 
-    def __do_load_action_combos(self):
+    def __do_load_action_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
 
         :return: None
@@ -310,7 +310,7 @@ class FMEAWorkView(RAMSTKWorkView):
         ]
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
-    def __do_load_rpn_combos(self):
+    def __do_load_rpn_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with RPNs.
 
         :return: None
@@ -332,7 +332,7 @@ class FMEAWorkView(RAMSTKWorkView):
         ]
         self._pnlPanel.lst_rpn_severity.insert(0, "")
 
-    def __do_load_severity_combos(self):
+    def __do_load_severity_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with CA risk.
 
         :return: None
@@ -352,9 +352,10 @@ class FMEAWorkView(RAMSTKWorkView):
         self._pnlPanel.dic_icons = self._dic_icons
 
         super().do_embed_treeview_panel()
-        self.__do_load_action_combos()
-        self.__do_load_rpn_combos()
-        self.__do_load_severity_combos()
+        self.__do_load_action_lists()
+        self.__do_load_rpn_lists()
+        self.__do_load_severity_lists()
+        self._pnlPanel.do_load_comboboxes()
         self._pnlPanel.do_set_callbacks()
 
         self.remove(self.get_children()[-1])

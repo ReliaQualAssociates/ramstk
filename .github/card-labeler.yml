@@ -1,10 +1,3 @@
-Working:
-  To Do:
-    - "status: backlog"
-  In Progress:
-    - "status: inprogress"
-  Done:
-    - "status: closed"
 Backlog:
   Needs Triage:
     - "status: backlog"
@@ -17,3 +10,6 @@ Backlog:
   High Priority:
     - "status: backlog"
     - "priority: high"
+  Critical Priority:
+    - "status: backlog"
+    - "priority: blocker"

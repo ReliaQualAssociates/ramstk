@@ -130,9 +130,6 @@ class RAMSTKPanel(RAMSTKFrame):
         # Retire _dic_attribute_keys after dic_attribute_index_map is fully
         # implemented.
         self._dic_attribute_keys: Dict[int, List[str]] = {}
-        # Retire _dic_attribute_updater after dic_attribute_widget_map is fully
-        # implemented.
-        self._dic_attribute_updater: Dict[str, List[Any]] = {}
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = []
