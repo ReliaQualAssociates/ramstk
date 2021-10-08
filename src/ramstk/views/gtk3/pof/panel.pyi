@@ -16,7 +16,7 @@ class PoFTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
     _title: str
-    _dic_row_loader: DSict[str, Callable]
+    _dic_row_loader: Dict[str, Callable]
     _dic_visible_mask: Dict[str, List[str]]
     _on_edit_message: str
     dic_attribute_widget_map: Dict[str, List[Any]]

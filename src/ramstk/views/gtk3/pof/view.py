@@ -101,10 +101,10 @@ class PoFWorkView(RAMSTKWorkView):
         self._lst_mnu_labels.insert(2, _("Delete Selected"))
         self._lst_tooltips: List[str] = [
             _(
-                "Add a new PoF entity at the same level as the "
-                "currently selected entity."
+                "Add a new PoF entity at the same level as the currently selected "
+                "entity."
             ),
-            _("Add a new PoF entity one level below the currently " "selected entity."),
+            _("Add a new PoF entity one level below the currently selected entity."),
             _("Remove the selected entity from the PoF."),
             _("Save changes to the currently selected PoF line."),
             _("Save changes to all PoF lines."),
