@@ -127,9 +127,6 @@ class RAMSTKPanel(RAMSTKFrame):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        # Retire _dic_attribute_keys after dic_attribute_index_map is fully
-        # implemented.
-        self._dic_attribute_keys: Dict[int, List[str]] = {}
 
         # Initialize private list instance attributes.
         self._lst_labels: List[str] = []
@@ -554,7 +551,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 node_id=[self._record_id, -1, ""],
                 package={_attribute: _new_text},
             )
-
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(

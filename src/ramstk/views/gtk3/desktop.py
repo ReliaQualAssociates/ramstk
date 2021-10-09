@@ -20,13 +20,13 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
     CreateProject,
-    EditOptions,
     EditPreferences,
     ExportProject,
     ImportProject,
     OpenProject,
 )
 from ramstk.views.gtk3.books import RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+from ramstk.views.gtk3.options import OptionsDialog
 
 Tconfiguration = TypeVar(
     "Tconfiguration", RAMSTKUserConfiguration, RAMSTKSiteConfiguration
@@ -151,7 +151,7 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        _dialog = EditOptions(parent=self)
+        _dialog = OptionsDialog(parent=self)
 
         # ISSUE: Make Site DB available without connecting to program DB.
         #

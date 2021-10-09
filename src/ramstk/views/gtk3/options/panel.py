@@ -88,9 +88,9 @@ class OptionsPanel(RAMSTKFixedPanel):
             "site_id": [
                 0,
                 self.txtSiteID,
-                "edited",
-                None,
-                self._on_edit_message,
+                "changed",
+                super().on_changed_entry,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -103,9 +103,9 @@ class OptionsPanel(RAMSTKFixedPanel):
             "site_name": [
                 1,
                 self.txtSiteName,
-                "edited",
-                None,
-                self._on_edit_message,
+                "changed",
+                super().on_changed_entry,
+                "",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -118,9 +118,9 @@ class OptionsPanel(RAMSTKFixedPanel):
             "product_key": [
                 2,
                 self.txtProductKey,
-                "edited",
-                None,
-                self._on_edit_message,
+                "changed",
+                super().on_changed_entry,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -133,9 +133,9 @@ class OptionsPanel(RAMSTKFixedPanel):
             "expire_on": [
                 3,
                 self.txtExpireDate,
-                "edited",
-                None,
-                self._on_edit_message,
+                "changed",
+                super().on_changed_entry,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -150,7 +150,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkFunctions,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -165,7 +165,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkRequirements,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -180,7 +180,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkHardware,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -195,7 +195,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkValidation,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -210,7 +210,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkHazards,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -225,7 +225,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                 self.chkStakeholder,
                 "toggled",
                 super().on_toggled,
-                self._on_edit_message,
+                "",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -233,14 +233,14 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Mode Probability"),
+                _(""),
             ],
             "allocation_enabled": [
                 10,
                 self.chkAllocation,
                 "toggled",
-                super().on_cell_toggled,
-                self._on_edit_message,
+                super().on_toggled,
+                "",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -254,8 +254,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                 11,
                 self.chkSimilarItem,
                 "toggled",
-                super().on_cell_toggled,
-                self._on_edit_message,
+                super().on_toggled,
+                "",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -269,8 +269,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                 12,
                 self.chkFMEA,
                 "toggled",
-                super().on_cell_toggled,
-                self._on_edit_message,
+                super().on_toggled,
+                "",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -278,14 +278,14 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Load History Method"),
+                _(""),
             ],
             "pof_enabled": [
                 13,
                 self.chkPoF,
                 "toggled",
-                super().on_cell_toggled,
-                self._on_edit_message,
+                super().on_toggled,
+                "",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -293,7 +293,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Boundary Conditions"),
+                _(""),
             ],
         }
 
@@ -307,4 +307,4 @@ class OptionsPanel(RAMSTKFixedPanel):
 
         # Subscribe to PyPubSub messages.
 
-        pub.sendMessage("request_get_option_attributes", attributes={"site_id": 1})
+        pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
