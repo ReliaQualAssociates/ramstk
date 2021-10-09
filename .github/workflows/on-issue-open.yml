@@ -33,6 +33,6 @@ jobs:
                          {"keywords": ["bump: minor"], "labels": ["bump: minor"], "assignees": [""]},
                          {"keywords": ["bump: patch"], "labels": ["bump: patch"], "assignees": [""]},
                          {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]},
-                         {"keywords": ["Epic"], "labels": ["Epic"], "assignees": [""]}
+                         {"keywords": ["Epic"], "labels": ["Epic"], "assignees": [""]},
                          {"keywords": ["Release"], "labels": ["Release"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
