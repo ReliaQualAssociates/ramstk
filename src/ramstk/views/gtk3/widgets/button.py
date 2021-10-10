@@ -192,6 +192,43 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.handler_unblock(_handler_id)
 
 
+class RAMSTKFileChooserButton(Gtk.FileChooserButton, RAMSTKWidget):
+    """The RAMSTK File Chooser Button class."""
+
+    def __init__(self, label: str = "...") -> None:
+        """Initialize an instance of the RAMSTK FileChooserButton.
+
+        :param label: the text for the button's label.
+        :return: None
+        :rtype: None
+        """
+        RAMSTKWidget.__init__(self)
+
+        self.set_title(label)
+        self.show_all()
+
+    def do_set_properties(self, **kwargs: Any) -> None:
+        """Set the properties of the RAMSTKFileChooserButton.
+
+        Accepts the following keyword arguments:
+
+            * *height* (int) -- height of the RAMSTKFileChooserButton() widget.
+                Default is 30.
+            * *select-action*  -- the Gtk.FileChooserAction to set for the button.
+            * *tooltip* (str) -- the tooltip, if any, for the RAMSTKFileChooserButton().
+                Default is a message to file a QA-type issue to have one added.
+            * *width* (int) -- width of the RAMSTKFileChooserButton() widget.
+                Default is 200.
+        :return: None
+        :rtype: None
+        """
+        super().do_set_properties(**kwargs)
+
+        _select_action = kwargs.get("select-action", None)
+
+        self.set_action(_select_action)
+
+
 class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
     """The RAMSTK Option Button class."""
 
