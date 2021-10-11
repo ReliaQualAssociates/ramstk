@@ -340,7 +340,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col4"]
+            self.tvwTreeView.position["group"]
         ).get_cells()[0]
         _cell.set_property("has-entry", True)
         _cellmodel = _cell.get_property("model")
@@ -359,7 +359,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col10"]
+            self.tvwTreeView.position["stakeholder"]
         ).get_cells()[0]
         _cell.set_property("has-entry", True)
         _cellmodel = _cell.get_property("model")

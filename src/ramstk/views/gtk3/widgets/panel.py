@@ -96,6 +96,7 @@ class RAMSTKPanel(RAMSTKFrame):
             * Position 6 is a dict containing the property values for the widget.
             * Position 7 is the text to use for the widget in position 1 label.  For
                 RAMSTKTreeViews this will be the column heading.
+            * Position 8 is the Gobject data type to display in the widget.
 
         For a fixed panel, dict entries should be in the order they should appear in
         the panel.
@@ -184,7 +185,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.on_edit_callback: str = "wvw_editing_{}".format(self._tag)
+        self.on_edit_callback: str = f"wvw_editing_{self._tag}"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -202,19 +203,13 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         # Generally used with panels that accept inputs and are, thus, editable.
         try:
-            pub.subscribe(
-                self._do_set_sensitive,
-                "succeed_get_{}_attributes".format(self._tag),
-            )
+            pub.subscribe(self._do_set_sensitive, f"succeed_get_{self._tag}_attributes")
         except AttributeError:
             pass
 
         # Generally used with panels that display results and are, thus, uneditable.
         try:
-            pub.subscribe(
-                self._do_load_entries,
-                "succeed_get_{}_attributes".format(self._tag),
-            )
+            pub.subscribe(self._do_load_entries, f"succeed_get_{self._tag}_attributes")
         except AttributeError:
             pass
 
@@ -754,10 +749,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
-        pub.subscribe(self.do_refresh_tree, "lvw_editing_{}".format(self._tag))
-        pub.subscribe(self.do_refresh_tree, "mvw_editing_{}".format(self._tag))
-        pub.subscribe(self.do_refresh_tree, "wvw_editing_{}".format(self._tag))
-        pub.subscribe(self.on_delete_treerow, "succeed_delete_{}".format(self._tag))
+        pub.subscribe(self.do_refresh_tree, f"lvw_editing_{self._tag}")
+        pub.subscribe(self.do_refresh_tree, f"mvw_editing_{self._tag}")
+        pub.subscribe(self.do_refresh_tree, f"wvw_editing_{self._tag}")
+        pub.subscribe(self.on_delete_treerow, f"succeed_delete_{self._tag}")
         if self._select_msg is not None:
             pub.subscribe(self.do_load_panel, self._select_msg)
 
@@ -792,25 +787,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             self.tvwTreeView.set_cursor(_path, None, False)
 
             self.tvwTreeView.row_activated(_path, _column)
-
-    def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Use the _do_load_row() method and populate the panel's _dic_row_loader
-        attributes with the correct method(s) to load a row's data.
-
-        This varies depending on the work stream module.
-        """
-        self._record_id = attributes[self._record_field]
-
-        _model = self.tvwTreeView.get_model()
-
-        _data = []
-        for _key in self.tvwTreeView.korder:
-            _data.append(attributes[self.tvwTreeView.korder[_key]])
-
-        # Only load items that are immediate children of the selected item and
-        # prevent loading the selected item itself in the worksheet.
-        if not _data[1] == self._record_id and not self._tree_loaded:
-            _model.append(None, _data)
 
     def do_load_panel(self, tree: treelib.Tree) -> None:
         """Load data into the RAMSTKTreeView on a tree type panel.
@@ -856,12 +832,38 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 message=_error_msg,
             )
 
+    def do_load_row(self, attributes: Dict[str, Any]) -> None:
+        """Use the _do_load_row() method and populate the panel's _dic_row_loader
+        attributes with the correct method(s) to load a row's data.
+
+        This varies depending on the work stream module.
+        """
+        self._record_id = attributes[self._record_field]
+
+        _model = self.tvwTreeView.get_model()
+
+        _data = []
+        for _key in self.tvwTreeView.position:
+            _data.append(attributes[self.tvwTreeView.position[_key]])
+
+        # Only load items that are immediate children of the selected item and
+        # prevent loading the selected item itself in the worksheet.
+        if not _data[1] == self._record_id and not self._tree_loaded:
+            _model.append(None, _data)
+
     def do_make_panel(self) -> None:
         """Create a panel with a RAMSTKTreeView().
 
         :return: None
         """
         self._lst_widgets.append(self.tvwTreeView)
+
+        self.tvwTreeView.datatypes = {
+            _key: _value[8] for _key, _value in self.dic_attribute_widget_map.items()
+        }
+        self.tvwTreeView.widgets = {
+            _key: _value[1] for _key, _value in self.dic_attribute_widget_map.items()
+        }
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
         _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -979,7 +981,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             have a callback function assigned.
         :return: None
         """
-        print(self._tag)
         for _idx in columns:
             _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
             try:
@@ -1047,7 +1048,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _keys = list(self.tvwTreeView.position.keys())
             _vals = list(self.tvwTreeView.position.values())
             _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.korder[_col]
+            _key = self.tvwTreeView.position[_col]
             _position = self.tvwTreeView.position[_col]
 
             _new_text = self.tvwTreeView.do_edit_cell(cell, path, new_text, _position)
@@ -1090,7 +1091,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _keys = list(self.tvwTreeView.position.keys())
             _vals = list(self.tvwTreeView.position.values())
             _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.korder[_col]
+            _key = self.tvwTreeView.position[_col]
 
             if not self.tvwTreeView.do_edit_cell(cell, path, _new_text, position):
                 pub.sendMessage(
@@ -1215,20 +1216,19 @@ class RAMSTKTreePanel(RAMSTKPanel):
             [[__, _entity]] = node.data.items()
             _attributes = _entity.get_attributes()
             _model = self.tvwTreeView.get_model()
-            for _col, _attr in self.tvwTreeView.korder.items():
-                _pos = self.tvwTreeView.position[_col]
-                _data.insert(_pos, _attributes[_attr])
+            for _key, _pos in self.tvwTreeView.position.items():
+                _data.insert(_pos, _attributes[_key])
 
             _new_row = _model.append(row, _data)
         except (AttributeError, TypeError, ValueError) as _error:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = (
-                "{3}: An error occurred when loading {4} {0}.  "
-                "This might indicate it was missing it's data package, some "
-                "of the data in the package was missing, or some of the data "
-                "was the wrong type.  Row data was: {1}.  Error was: {2}."
-                ""
-            ).format(str(node.identifier), _data, _error, _method_name, self._tag)
+                f"{_method_name}: An error occurred when loading "
+                f"{self._tag} {node.identifier}.  This might indicate it was missing "
+                f"it's data package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: {_data}.  Error "
+                f"was: {_error}."
+            )
             pub.sendMessage(
                 "do_log_warning_msg",
                 logger_name="WARNING",

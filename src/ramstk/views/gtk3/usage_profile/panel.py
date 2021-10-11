@@ -48,52 +48,52 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         }
         self._dic_visible_mask: Dict[str, Dict[str, bool]] = {
             "mission": {
-                "col0": False,
-                "col1": True,
-                "col2": False,
-                "col3": False,
-                "col4": False,
-                "col5": True,
-                "col6": True,
-                "col7": True,
-                "col8": False,
-                "col9": False,
-                "col10": False,
-                "col11": False,
-                "col12": False,
-                "col13": False,
+                "revision_id": False,
+                "mission_id": True,
+                "phase_id": False,
+                "environment_id": False,
+                "name": False,
+                "description": True,
+                "mission_time": True,
+                "units": True,
+                "phase_start": False,
+                "phase_end": False,
+                "minimum": False,
+                "maximum": False,
+                "mean": False,
+                "variance": False,
             },
             "phase": {
-                "col0": False,
-                "col1": False,
-                "col2": True,
-                "col3": False,
-                "col4": True,
-                "col5": True,
-                "col6": False,
-                "col7": False,
-                "col8": True,
-                "col9": True,
-                "col10": False,
-                "col11": False,
-                "col12": False,
-                "col13": False,
+                "revision_id": False,
+                "mission_id": False,
+                "phase_id": True,
+                "environment_id": False,
+                "name": True,
+                "description": True,
+                "mission_time": False,
+                "units": False,
+                "phase_start": True,
+                "phase_end": True,
+                "minimum": False,
+                "maximum": False,
+                "mean": False,
+                "variance": False,
             },
             "environment": {
-                "col0": False,
-                "col1": False,
-                "col2": False,
-                "col3": True,
-                "col4": True,
-                "col5": False,
-                "col6": False,
-                "col7": True,
-                "col8": False,
-                "col9": False,
-                "col10": True,
-                "col11": True,
-                "col12": True,
-                "col13": True,
+                "revision_id": False,
+                "mission_id": False,
+                "phase_id": False,
+                "environment_id": True,
+                "name": True,
+                "description": False,
+                "mission_time": False,
+                "units": True,
+                "phase_start": False,
+                "phase_end": False,
+                "minimum": True,
+                "maximum": True,
+                "mean": True,
+                "variance": True,
             },
         }
 
@@ -182,7 +182,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mission Phase Name"),
-                "gchararry",
+                "gchararray",
             ],
             "description": [
                 5,
@@ -198,7 +198,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
-                "gchararry",
+                "gchararray",
             ],
             "mission_time": [
                 6,
@@ -230,7 +230,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Units"),
-                "gchararry",
+                "gchararray",
             ],
             "phase_start": [
                 8,
@@ -399,9 +399,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         _model = self.tvwTreeView.get_model()
 
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["environment"], 22, 22
-        )
+        _pixbuf = GdkPixbuf.Pixbuf()
+        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["environment"], 22, 22)
 
         _attributes = [
             _entity.revision_id,
@@ -453,9 +452,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         _model = self.tvwTreeView.get_model()
 
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["mission"], 22, 22
-        )
+        _pixbuf = GdkPixbuf.Pixbuf()
+        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission"], 22, 22)
 
         _attributes = [
             _entity.revision_id,
@@ -506,7 +504,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         _model = self.tvwTreeView.get_model()
 
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["phase"], 22, 22)
+        _pixbuf = GdkPixbuf.Pixbuf()
+        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["phase"], 22, 22)
+
         _attributes = [
             _entity.revision_id,
             _entity.mission_id,

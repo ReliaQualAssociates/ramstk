@@ -576,7 +576,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         self._lst_measurement_units = [""]
 
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col17"]
+            self.tvwTreeView.position["measurement_unit"]
         ).get_cells()[0]
         _cell.set_property("has-entry", False)
         _cellmodel = _cell.get_property("model")
@@ -600,7 +600,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         self._lst_verification_types = [""]
 
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col21"]
+            self.tvwTreeView.position["task_type"]
         ).get_cells()[0]
         _cell.set_property("has-entry", False)
         _cellmodel = _cell.get_property("model")
