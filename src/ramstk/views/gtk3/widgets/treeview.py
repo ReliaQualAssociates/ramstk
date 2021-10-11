@@ -451,9 +451,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # that is the one that will be returned.
             _cell = _column.get_cells()[-1]
 
-            if self.widgets[_key] == "toggle":
+            if isinstance(self.widgets[self.korder[_key]], Gtk.CellRendererToggle):
                 _cell.connect("toggled", method, None, self.position[_key])
-            elif self.widgets[_key] in ["spin", "text"]:
+            elif isinstance(
+                self.widgets[self.korder[_key]], Gtk.CellRendererSpin
+            ) or isinstance(self.widgets[self.korder[_key]], Gtk.CellRendererText):
                 _cell.connect("edited", method, self.position[_key])
 
     def do_set_visible_columns(self) -> None:
