@@ -33,3 +33,8 @@ labels:
     color: "#C2E0C6"
     description: "Pull Request has been merged successfully"
     ignore: false
+  closed:
+    name: "status: closed"
+    color: "#0E8A16"
+    description: "Pull Request is complete and integrated or closed for anther reason."
+    ignore: false

@@ -13,6 +13,7 @@ from .baseview import RAMSTKBaseView, RAMSTKListView, RAMSTKModuleView, RAMSTKWo
 from .button import (
     RAMSTKButton,
     RAMSTKCheckButton,
+    RAMSTKFileChooserButton,
     RAMSTKOptionButton,
     RAMSTKSpinButton,
     do_make_buttonbox,

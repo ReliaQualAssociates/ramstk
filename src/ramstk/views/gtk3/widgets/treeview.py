@@ -451,9 +451,12 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # that is the one that will be returned.
             _cell = _column.get_cells()[-1]
 
-            if self.widgets[_key] == "toggle":
+            if isinstance(self.widgets[self.korder[_key]], Gtk.CellRendererToggle):
                 _cell.connect("toggled", method, None, self.position[_key])
-            elif self.widgets[_key] in ["spin", "text"]:
+            elif isinstance(
+                self.widgets[self.korder[_key]],
+                (Gtk.CellRendererSpin, Gtk.CellRendererText),
+            ):
                 _cell.connect("edited", method, self.position[_key])
 
     def do_set_visible_columns(self) -> None:
@@ -562,7 +565,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :param tuple data: a tuple containing the position and the data type.
         """
         if data[1] == "gfloat":  # type: ignore
-            # fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
             fmt = "{0:0.6g}"
         elif data[1] == "gint":  # type: ignore
             fmt = "{0:0d}"
@@ -623,7 +625,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _width = column.get_width()
 
         if _width <= 0:
-            pass
+            _width = 25
         else:
             _width += 10
 
@@ -726,8 +728,6 @@ class CellRendererML(Gtk.CellRendererText):
 
             (iter_first, iter_last) = self.textbuffer.get_bounds()
             text = self.textbuffer.get_text(iter_first, iter_last)
-
-            # self.treestore[path][2] = text
 
             treeview.set_cursor(path, None, False)
 

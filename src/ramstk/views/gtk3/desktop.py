@@ -20,13 +20,13 @@ from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
     CreateProject,
-    EditPreferences,
     ExportProject,
     ImportProject,
     OpenProject,
 )
 from ramstk.views.gtk3.books import RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
 from ramstk.views.gtk3.options import OptionsDialog
+from ramstk.views.gtk3.preferences import PreferencesDialog
 
 Tconfiguration = TypeVar(
     "Tconfiguration", RAMSTKUserConfiguration, RAMSTKSiteConfiguration
@@ -40,7 +40,7 @@ def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
     corner is pressed or if this function is called as a callback.
 
     :param __widget: the Gtk.Widget() that called this method.
-    :keyword __event: the Gdk.Event() that called this method.
+    :param __event: the Gdk.Event() that called this method.
     :return: None
     :rtype: None
     """
@@ -76,8 +76,8 @@ class RAMSTKDesktop(Gtk.Window):
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_SITE_CONFIGURATION: RAMSTKSiteConfiguration = None  # type: ignore
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
+    RAMSTK_SITE_CONFIGURATION: RAMSTKSiteConfiguration = RAMSTKSiteConfiguration()
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
     def __init__(self, configuration: Tconfiguration, logger: RAMSTKLogManager) -> None:
         """Initialize an instance of the RAMSTK Book.
@@ -98,12 +98,12 @@ class RAMSTKDesktop(Gtk.Window):
         # Initialize private scalar attributes.
         self._logger = logger
         try:
-            _screen = Gdk.Screen.get_default()
-            _display = _screen.get_display()
+            _screen: Gdk.Screen = Gdk.Screen()
+            _display = _screen.get_default().get_display()
             _monitor = _display.get_monitor(0)
-            self._height = _monitor.get_geometry().height
-            self._n_screens = _display.get_n_monitors()
-            self._width = _monitor.get_geometry().width
+            self._height: float = _monitor.get_geometry().height
+            self._n_screens: int = _display.get_n_monitors()
+            self._width: float = _monitor.get_geometry().width
         except AttributeError:
             # When running on CI servers, there will be no monitor.  We also
             # don't need one.
@@ -116,16 +116,22 @@ class RAMSTKDesktop(Gtk.Window):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.menubar = Gtk.MenuBar()
-        self.progressbar = Gtk.ProgressBar()
-        self.statusbar = Gtk.Statusbar()
-        self.toolbar = Gtk.Toolbar()
+        self.menubar: Gtk.MenuBar = Gtk.MenuBar()
+        self.progressbar: Gtk.ProgressBar = Gtk.ProgressBar()
+        self.statusbar: Gtk.Statusbar = Gtk.Statusbar()
+        self.toolbar: Gtk.Toolbar = Gtk.Toolbar()
 
-        self.icoStatus = Gtk.StatusIcon()
+        self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
-        self.nbkListBook = RAMSTKListBook(self.RAMSTK_USER_CONFIGURATION, logger)
-        self.nbkModuleBook = RAMSTKModuleBook(self.RAMSTK_USER_CONFIGURATION, logger)
-        self.nbkWorkBook = RAMSTKWorkBook(self.RAMSTK_USER_CONFIGURATION, logger)
+        self.nbkListBook: RAMSTKListBook = RAMSTKListBook(
+            self.RAMSTK_USER_CONFIGURATION, logger
+        )
+        self.nbkModuleBook: RAMSTKModuleBook = RAMSTKModuleBook(
+            self.RAMSTK_USER_CONFIGURATION, logger
+        )
+        self.nbkWorkBook: RAMSTKWorkBook = RAMSTKWorkBook(
+            self.RAMSTK_USER_CONFIGURATION, logger
+        )
         self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = self.RAMSTK_SITE_CONFIGURATION
 
         try:
@@ -169,18 +175,19 @@ class RAMSTKDesktop(Gtk.Window):
         _dialog.do_destroy()
 
     def _do_request_preferences_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
-        """Request the EditPreferences assistant be launched.
+        """Request the PreferencesDialog assistant be launched.
 
         :param __widget: the Gtk.ImageMenuItem() that called this class.
         :return: None
         :rtype: None
         """
         _assistant = Gtk.Window()
-        _preferences = EditPreferences(self.RAMSTK_USER_CONFIGURATION, self._logger)
+        _preferences = PreferencesDialog(self.RAMSTK_USER_CONFIGURATION, self._logger)
 
-        _n_screens = Gdk.Screen.get_default().get_n_monitors()
-        _width = Gdk.Screen.width() / _n_screens
-        _height = Gdk.Screen.height()
+        _screen: Gdk.Screen = Gdk.Screen()
+        _n_screens = _screen.get_default().get_n_monitors()
+        _width = _screen.width() / _n_screens
+        _height = _screen.height()
 
         _assistant.set_border_width(5)
         _assistant.set_default_size(_width - 450, (4 * _height / 7))
@@ -376,12 +383,9 @@ class RAMSTKDesktop(Gtk.Window):
                 _("Create a new RAMSTK Program Database."),
                 _("Connect to an existing RAMSTK Program Database."),
                 _("Closes the open RAMSTK Program Database."),
-                _("Save the currently open RAMSTK Project " "Database."),
-                _("Save the currently open RAMSTK Program Database " "then quits."),
-                _(
-                    "Quits without saving the currently open RAMSTK "
-                    "Program Database."
-                ),
+                _("Save the currently open RAMSTK Project Database."),
+                _("Save the currently open RAMSTK Program Database then quits."),
+                _("Quits without saving the currently open RAMSTK Program Database."),
             ],
         )
 
@@ -508,31 +512,26 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
+        _pixbuf: GdkPixbuf.Pixbuf = GdkPixbuf.Pixbuf()
+
         if connected:
-            _icon = (
+            _icon: str = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + "/32x32/db-connected.png"
             )
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
-            self.icoStatus.set_from_pixbuf(_icon)
-            self.icoStatus.set_tooltip_markup(
-                _(
-                    "RAMSTK is connected to program database "
-                    "{0:s}.".format(
-                        self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
-                    )
-                )
+            _tooltip: str = _(
+                f"RAMSTK is connected to program database "
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}."
             )
         else:
             _icon = (
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + "/32x32/db-disconnected.png"
             )
-            _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(_icon, 22, 22)
-            self.icoStatus.set_from_pixbuf(_icon)
-            self.icoStatus.set_tooltip_markup(
-                _("RAMSTK is not currently connected to a " "project database.")
-            )
+            _tooltip = _("RAMSTK is not currently connected to a project database.")
+
+        self.icoStatus.set_from_pixbuf(_pixbuf.new_from_file_at_size(_icon, 22, 22))
+        self.icoStatus.set_tooltip_markup(_tooltip)
 
     def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None:
         """Handle mouse clicks on the RAMSTKBook.
@@ -562,14 +561,17 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        _message = _("Opening Program Database {0:s}").format(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
+        _message = _(
+            f"Opening Program Database "
+            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
         )
+
         # noinspection PyDeepBugsSwappedArgs
         self.statusbar.push(1, _message)
         self.set_title(
-            _("RAMSTK - Analyzing {0:s}").format(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
+            _(
+                f"RAMSTK - Analyzing "
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
             )
         )
 

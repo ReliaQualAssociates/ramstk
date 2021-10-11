@@ -12,6 +12,5 @@ from .export import ExportProject
 from .fmea import AddControlAction
 from .imports import ImportProject
 from .pof import AddStressTestMethod
-from .preferences import EditPreferences
 from .project import CreateProject, OpenProject
 from .similaritem import EditFunction
