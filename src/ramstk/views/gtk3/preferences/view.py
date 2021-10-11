@@ -187,7 +187,7 @@ class PreferencesDialog(RAMSTKBaseView):
             width=-1,
             justify=Gtk.Justification.CENTER,
             tooltip=_(
-                "Allows setting general preferences for the " "open RAMSTK program."
+                "Allows setting general preferences for the open RAMSTK program."
             ),
         )
         self._notebook.insert_page(
