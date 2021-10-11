@@ -90,6 +90,15 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_validation",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
+                "gint",
             ],
             "validation_id": [
                 1,
@@ -97,6 +106,15 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_validation",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Validation ID"),
+                "gint",
             ],
             "acceptable_maximum": [
                 2,
@@ -105,6 +123,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Acceptable Max."),
+                "gfloat",
             ],
             "acceptable_mean": [
                 3,
@@ -113,6 +139,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Acceptable Mean"),
+                "gfloat",
             ],
             "acceptable_minimum": [
                 4,
@@ -121,6 +155,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Acceptable Min."),
+                "gfloat",
             ],
             "acceptable_variance": [
                 5,
@@ -129,6 +171,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Acceptable Variance"),
+                "gfloat",
             ],
             "confidence": [
                 6,
@@ -137,6 +187,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 95.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Confidence"),
+                "gfloat",
             ],
             "cost_average": [
                 7,
@@ -145,6 +203,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Expected Cost"),
+                "gfloat",
             ],
             "cost_ll": [
                 8,
@@ -153,6 +219,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Cost LCL"),
+                "gfloat",
             ],
             "cost_maximum": [
                 9,
@@ -161,6 +235,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Maximum Cost"),
+                "gfloat",
             ],
             "cost_mean": [
                 10,
@@ -169,6 +251,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mean Cost"),
+                "gfloat",
             ],
             "cost_minimum": [
                 11,
@@ -177,6 +267,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Minimum Cost"),
+                "gfloat",
             ],
             "cost_ul": [
                 12,
@@ -185,6 +283,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Cost UCL"),
+                "gfloat",
             ],
             "cost_variance": [
                 13,
@@ -193,6 +299,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Cost Vaiance"),
+                "gfloat",
             ],
             "date_end": [
                 14,
@@ -201,6 +315,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 date.today(),
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("End Date"),
+                "gchararray",
             ],
             "date_start": [
                 15,
@@ -209,6 +331,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 date.today(),
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Start Date"),
+                "gchararray",
             ],
             "description": [
                 16,
@@ -217,6 +347,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Description"),
+                "gchararray",
             ],
             "measurement_unit": [
                 17,
@@ -225,6 +363,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Unit of Measure"),
+                "gchararray",
             ],
             "name": [
                 18,
@@ -233,6 +379,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Code"),
+                "gchararray",
             ],
             "status": [
                 19,
@@ -241,6 +395,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("% Complete"),
+                "gfloat",
             ],
             "task_specification": [
                 20,
@@ -249,6 +411,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Specification"),
+                "gchararray",
             ],
             "task_type": [
                 21,
@@ -257,6 +427,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Type"),
+                "gchararray",
             ],
             "time_average": [
                 22,
@@ -265,6 +443,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Expected Task Time"),
+                "gfloat",
             ],
             "time_ll": [
                 23,
@@ -273,6 +459,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Time LCL"),
+                "gfloat",
             ],
             "time_maximum": [
                 24,
@@ -281,6 +475,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Maximum Task Time"),
+                "gfloat",
             ],
             "time_mean": [
                 25,
@@ -289,6 +491,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mean Task Time"),
+                "gfloat",
             ],
             "time_minimum": [
                 26,
@@ -297,6 +507,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Minimum Task Time"),
+                "gfloat",
             ],
             "time_ul": [
                 27,
@@ -305,6 +523,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Time UCL"),
+                "gfloat",
             ],
             "time_variance": [
                 28,
@@ -313,6 +539,14 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 None,
                 "mvw_editing_validation",
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Task Time Variance"),
+                "gfloat",
             ],
         }
 

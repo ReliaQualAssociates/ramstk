@@ -142,6 +142,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Mode ID"),
+                "gint",
             ],
             "mechanism_id": [
                 1,
@@ -157,6 +158,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Mechanism ID"),
+                "gint",
             ],
             "load_id": [
                 2,
@@ -172,6 +174,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Load ID"),
+                "gint",
             ],
             "stress_id": [
                 3,
@@ -187,6 +190,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Stress ID"),
+                "gint",
             ],
             "test_id": [
                 4,
@@ -202,6 +206,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Test ID"),
+                "gint",
             ],
             "description": [
                 5,
@@ -217,6 +222,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
+                "gchararray",
             ],
             "effect_end": [
                 6,
@@ -232,6 +238,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("End Effect"),
+                "gchararray",
             ],
             "severity_class": [
                 7,
@@ -247,6 +254,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Severity"),
+                "gchararray",
             ],
             "mode_probability": [
                 8,
@@ -262,6 +270,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mode Probability"),
+                "gfloat",
             ],
             "damage_model": [
                 9,
@@ -277,6 +286,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Damage Model"),
+                "gchararray",
             ],
             "measurable_parameter": [
                 10,
@@ -292,6 +302,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Measurable Parameter"),
+                "gchararray",
             ],
             "load_history": [
                 11,
@@ -307,6 +318,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Load History Method"),
+                "gchararray",
             ],
             "boundary_conditions": [
                 12,
@@ -322,6 +334,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Boundary Conditions"),
+                "gchararray",
             ],
             "priority_id": [
                 13,
@@ -337,6 +350,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Priority"),
+                "gint",
             ],
             "remarks": [
                 14,
@@ -352,6 +366,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Remarks"),
+                "gchararray",
             ],
         }
         self.dic_icons: Dict[str, str] = {}

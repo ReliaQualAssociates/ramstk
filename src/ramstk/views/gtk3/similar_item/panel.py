@@ -349,6 +349,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "hardware_id": [
                 1,
@@ -364,6 +365,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Hardware ID"),
+                "gint",
             ],
             "name": [
                 2,
@@ -379,6 +381,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly"),
+                "gchararray",
             ],
             "hazard_rate_active": [
                 3,
@@ -394,6 +397,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Current Hazard Rate"),
+                "gfloat",
             ],
             "quality_from_id": [
                 4,
@@ -401,7 +405,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                0,
+                "",
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -409,6 +413,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("From Quality"),
+                "gchararray",
             ],
             "quality_to_id": [
                 5,
@@ -416,7 +421,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                0,
+                "",
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -424,6 +429,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("To Quality"),
+                "gchararray",
             ],
             "environment_from_id": [
                 6,
@@ -431,7 +437,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                0,
+                "",
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -439,6 +445,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("From Environment"),
+                "gchararray",
             ],
             "environment_to_id": [
                 7,
@@ -446,7 +453,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                0,
+                "",
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -454,6 +461,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("To Environment"),
+                "gchararray",
             ],
             "temperature_from": [
                 8,
@@ -469,6 +477,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("From Temperature"),
+                "gfloat",
             ],
             "temperature_to": [
                 9,
@@ -484,6 +493,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("To Temperature"),
+                "gfloat",
             ],
             "change_description_1": [
                 10,
@@ -499,6 +509,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 1"),
+                "gchararray",
             ],
             "change_factor_1": [
                 11,
@@ -514,6 +525,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Change Factor 1"),
+                "gfloat",
             ],
             "change_description_2": [
                 12,
@@ -529,6 +541,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 2"),
+                "gchararray",
             ],
             "change_factor_2": [
                 13,
@@ -544,6 +557,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 2"),
+                "gfloat",
             ],
             "change_description_3": [
                 14,
@@ -559,6 +573,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 3"),
+                "gchararray",
             ],
             "change_factor_3": [
                 15,
@@ -574,6 +589,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 3"),
+                "gfloat",
             ],
             "change_description_4": [
                 16,
@@ -589,6 +605,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 4"),
+                "gchararray",
             ],
             "change_factor_4": [
                 17,
@@ -604,6 +621,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 4"),
+                "gfloat",
             ],
             "change_description_5": [
                 18,
@@ -619,6 +637,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 5"),
+                "gchararray",
             ],
             "change_factor_5": [
                 19,
@@ -634,6 +653,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 5"),
+                "gfloat",
             ],
             "change_description_6": [
                 20,
@@ -649,6 +669,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 6"),
+                "gchararray",
             ],
             "change_factor_6": [
                 21,
@@ -664,6 +685,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 6"),
+                "gfloat",
             ],
             "change_description_7": [
                 22,
@@ -679,6 +701,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 7"),
+                "gchararray",
             ],
             "change_factor_7": [
                 23,
@@ -694,6 +717,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 7"),
+                "gfloat",
             ],
             "change_description_8": [
                 24,
@@ -709,6 +733,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 8"),
+                "gchararray",
             ],
             "change_factor_8": [
                 25,
@@ -724,6 +749,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 8"),
+                "gfloat",
             ],
             "change_description_9": [
                 26,
@@ -739,6 +765,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 9"),
+                "gchararray",
             ],
             "change_factor_9": [
                 27,
@@ -754,6 +781,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 9"),
+                "gfloat",
             ],
             "change_description_10": [
                 28,
@@ -769,6 +797,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Description 10"),
+                "gchararray",
             ],
             "change_factor_10": [
                 29,
@@ -784,6 +813,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Change Factor 10"),
+                "gfloat",
             ],
             "function_1": [
                 30,
@@ -799,6 +829,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 1"),
+                "gchararray",
             ],
             "function_2": [
                 31,
@@ -814,6 +845,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 2"),
+                "gchararray",
             ],
             "function_3": [
                 32,
@@ -829,6 +861,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 3"),
+                "gchararray",
             ],
             "function_4": [
                 33,
@@ -844,6 +877,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 4"),
+                "gchararray",
             ],
             "function_5": [
                 34,
@@ -859,6 +893,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 5"),
+                "gchararray",
             ],
             "result_1": [
                 35,
@@ -874,6 +909,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 1"),
+                "gfloat",
             ],
             "result_2": [
                 36,
@@ -889,6 +925,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 2"),
+                "gfloat",
             ],
             "result_3": [
                 37,
@@ -904,6 +941,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 3"),
+                "gfloat",
             ],
             "result_4": [
                 38,
@@ -919,6 +957,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 4"),
+                "gfloat",
             ],
             "result_5": [
                 39,
@@ -934,6 +973,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 5"),
+                "gfloat",
             ],
             "user_blob_1": [
                 40,
@@ -949,6 +989,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 1"),
+                "gchararray",
             ],
             "user_blob_2": [
                 41,
@@ -964,6 +1005,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 2"),
+                "gchararray",
             ],
             "user_blob_3": [
                 42,
@@ -979,6 +1021,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 3"),
+                "gchararray",
             ],
             "user_blob_4": [
                 43,
@@ -994,6 +1037,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 4"),
+                "gchararray",
             ],
             "user_blob_5": [
                 44,
@@ -1009,6 +1053,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 5"),
+                "gchararray",
             ],
             "user_float_1": [
                 45,
@@ -1024,6 +1069,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 1"),
+                "gfloat",
             ],
             "user_float_2": [
                 46,
@@ -1039,6 +1085,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 2"),
+                "gfloat",
             ],
             "user_float_3": [
                 47,
@@ -1054,6 +1101,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 3"),
+                "gfloat",
             ],
             "user_float_4": [
                 48,
@@ -1069,6 +1117,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 4"),
+                "gfloat",
             ],
             "user_float_5": [
                 49,
@@ -1084,6 +1133,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 5"),
+                "gfloat",
             ],
             "user_int_1": [
                 50,
@@ -1099,6 +1149,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 1"),
+                "gint",
             ],
             "user_int_2": [
                 51,
@@ -1114,6 +1165,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 2"),
+                "gint",
             ],
             "user_int_3": [
                 52,
@@ -1129,6 +1181,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 3"),
+                "gint",
             ],
             "user_int_4": [
                 53,
@@ -1144,6 +1197,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 4"),
+                "gint",
             ],
             "user_int_5": [
                 54,
@@ -1159,6 +1213,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 5"),
+                "gint",
             ],
         }
 

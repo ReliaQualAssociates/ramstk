@@ -67,6 +67,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
+                "gint",
             ],
             "function_id": [
                 1,
@@ -75,6 +83,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Function ID"),
+                "gint",
             ],
             "availability_logistics": [
                 2,
@@ -83,6 +99,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Logistics A(t)"),
+                "gfloat",
             ],
             "availability_mission": [
                 3,
@@ -91,6 +115,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission A(t)"),
+                "gfloat",
             ],
             "cost": [
                 4,
@@ -99,6 +131,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Cost"),
+                "gfloat",
             ],
             "function_code": [
                 5,
@@ -107,6 +147,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 self._on_edit_message,
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Function Code"),
+                "gchararray",
             ],
             "hazard_rate_logistics": [
                 6,
@@ -115,6 +163,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Logistcs h(t)"),
+                "gfloat",
             ],
             "hazard_rate_mission": [
                 7,
@@ -123,6 +179,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission h(t)"),
+                "gfloat",
             ],
             "level": [
                 8,
@@ -131,6 +195,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Level"),
+                "gint",
             ],
             "mmt": [
                 9,
@@ -139,6 +211,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("MMT"),
+                "gfloat",
             ],
             "mcmt": [
                 10,
@@ -147,6 +227,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("MCMT"),
+                "gfloat",
             ],
             "mpmt": [
                 11,
@@ -155,6 +243,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("MPMT"),
+                "gfloat",
             ],
             "mtbf_logistics": [
                 12,
@@ -163,6 +259,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Logistics MTBF"),
+                "gfloat",
             ],
             "mtbf_mission": [
                 13,
@@ -171,6 +275,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission MTBF"),
+                "gfloat",
             ],
             "mttr": [
                 14,
@@ -179,6 +291,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("MTTR"),
+                "gfloat",
             ],
             "name": [
                 15,
@@ -187,6 +307,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 self._on_edit_message,
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Name"),
+                "gchararray",
             ],
             "parent_id": [
                 16,
@@ -195,6 +323,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Parent ID"),
+                "gint",
             ],
             "remarks": [
                 17,
@@ -203,6 +339,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 super().on_cell_edit,
                 self._on_edit_message,
                 "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Remarks"),
+                "gchararray",
             ],
             "safety_critical": [
                 18,
@@ -211,6 +355,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 super().on_cell_toggled,
                 self._on_edit_message,
                 1,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Safety Critical"),
+                "gint",
             ],
             "total_mode_count": [
                 19,
@@ -219,6 +371,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Mode Count"),
+                "gint",
             ],
             "total_part_count": [
                 20,
@@ -227,6 +387,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Part Count"),
+                "gint",
             ],
             "type_id": [
                 21,
@@ -235,6 +403,14 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 None,
                 self._on_edit_message,
                 0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Type"),
+                "gint",
             ],
         }
 

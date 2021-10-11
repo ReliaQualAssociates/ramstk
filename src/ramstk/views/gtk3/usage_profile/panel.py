@@ -118,6 +118,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "mission_id": [
                 1,
@@ -133,6 +134,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Mission ID"),
+                "gint",
             ],
             "phase_id": [
                 2,
@@ -148,6 +150,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Phase ID"),
+                "gint",
             ],
             "environment_id": [
                 3,
@@ -163,6 +166,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Environment ID"),
+                "gint",
             ],
             "name": [
                 4,
@@ -178,6 +182,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mission Phase Name"),
+                "gchararry",
             ],
             "description": [
                 5,
@@ -193,6 +198,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
+                "gchararry",
             ],
             "mission_time": [
                 6,
@@ -208,6 +214,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mission Time"),
+                "gfloat",
             ],
             "units": [
                 7,
@@ -223,6 +230,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Units"),
+                "gchararry",
             ],
             "phase_start": [
                 8,
@@ -238,6 +246,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Phase Start"),
+                "gfloat",
             ],
             "phase_end": [
                 9,
@@ -253,6 +262,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Phase End"),
+                "gfloat",
             ],
             "minimum": [
                 10,
@@ -268,6 +278,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Minimum"),
+                "gfloat",
             ],
             "maximum": [
                 11,
@@ -283,6 +294,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Maximum"),
+                "gfloat",
             ],
             "mean": [
                 12,
@@ -298,6 +310,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mean"),
+                "gfloat",
             ],
             "variance": [
                 13,
@@ -313,6 +326,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Variance"),
+                "gfloat",
             ],
         }
 

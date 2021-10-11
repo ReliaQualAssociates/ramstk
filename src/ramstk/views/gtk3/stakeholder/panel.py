@@ -66,6 +66,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "stakeholder_id": [
                 1,
@@ -81,6 +82,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Stakeholder ID"),
+                "gint",
             ],
             "customer_rank": [
                 2,
@@ -99,6 +101,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Customer Ranking"),
+                "gint",
             ],
             "description": [
                 3,
@@ -114,6 +117,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
+                "gchararray",
             ],
             "group": [
                 4,
@@ -129,6 +133,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Affinity Group"),
+                "gchararray",
             ],
             "improvement": [
                 5,
@@ -144,6 +149,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Improvement Factor"),
+                "gfloat",
             ],
             "overall_weight": [
                 6,
@@ -159,6 +165,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Overall Weighting"),
+                "gfloat",
             ],
             "planned_rank": [
                 7,
@@ -166,7 +173,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                "",
+                1,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -177,6 +184,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Planned Satisfaction Rating"),
+                "gint",
             ],
             "priority": [
                 8,
@@ -195,6 +203,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Priority"),
+                "gint",
             ],
             "requirement_id": [
                 9,
@@ -210,6 +219,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Associated Requirement"),
+                "gint",
             ],
             "stakeholder": [
                 10,
@@ -225,6 +235,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Stakeholder"),
+                "gchararray",
             ],
             "user_float_1": [
                 11,
@@ -240,6 +251,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 1"),
+                "gfloat",
             ],
             "user_float_2": [
                 12,
@@ -255,6 +267,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 2"),
+                "gfloat",
             ],
             "user_float_3": [
                 13,
@@ -270,6 +283,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 3"),
+                "gfloat",
             ],
             "user_float_4": [
                 14,
@@ -285,6 +299,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 4"),
+                "gfloat",
             ],
             "user_float_5": [
                 15,
@@ -300,6 +315,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 5"),
+                "gfloat",
             ],
         }
 

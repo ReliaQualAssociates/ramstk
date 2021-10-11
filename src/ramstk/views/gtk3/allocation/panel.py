@@ -410,6 +410,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "hardware_id": [
                 1,
@@ -425,6 +426,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Hardware ID"),
+                "gint",
             ],
             "name": [
                 2,
@@ -440,6 +442,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly"),
+                "gchararray",
             ],
             "included": [
                 3,
@@ -455,6 +458,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Included?"),
+                "gint",
             ],
             "n_sub_systems": [
                 4,
@@ -470,6 +474,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Number of Sub-Systems"),
+                "gint",
             ],
             "n_sub_elements": [
                 5,
@@ -485,6 +490,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Number of Sub-Elements"),
+                "gint",
             ],
             "mission_time": [
                 6,
@@ -500,6 +506,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Operating Time"),
+                "gfloat",
             ],
             "duty_cycle": [
                 7,
@@ -515,6 +522,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Duty Cycle"),
+                "gfloat",
             ],
             "int_factor": [
                 8,
@@ -530,6 +538,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Intricacy (1-10)"),
+                "gint",
             ],
             "soa_factor": [
                 9,
@@ -545,6 +554,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("State of the Art (1-10)"),
+                "gint",
             ],
             "op_time_factor": [
                 10,
@@ -560,6 +570,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Operating Time (1-10)"),
+                "gint",
             ],
             "env_factor": [
                 11,
@@ -575,6 +586,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Environment (1-10)"),
+                "gint",
             ],
             "weight_factor": [
                 12,
@@ -590,6 +602,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Weighting Factor"),
+                "gfloat",
             ],
             "percent_weight_factor": [
                 13,
@@ -605,6 +618,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Percent Weighting Factor"),
+                "gfloat",
             ],
             "hazard_rate_logistics": [
                 14,
@@ -620,6 +634,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Current Hazard Rate"),
+                "gfloat",
             ],
             "hazard_rate_alloc": [
                 15,
@@ -635,6 +650,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Allocated Failure Rate"),
+                "gfloat",
             ],
             "mtbf_logistics": [
                 16,
@@ -650,6 +666,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Current MTBF"),
+                "gfloat",
             ],
             "mtbf_alloc": [
                 17,
@@ -665,6 +682,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Allocation MTBF"),
+                "gfloat",
             ],
             "reliability_logistics": [
                 18,
@@ -680,6 +698,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Current Reliability"),
+                "gfloat",
             ],
             "reliability_alloc": [
                 19,
@@ -695,6 +714,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Allocated Reliability"),
+                "gfloat",
             ],
             "availability_logistics": [
                 20,
@@ -710,6 +730,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Current Availability"),
+                "gfloat",
             ],
             "availability_alloc": [
                 21,
@@ -725,6 +746,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Allocation Availability"),
+                "gfloat",
             ],
         }
 
