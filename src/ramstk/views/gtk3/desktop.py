@@ -562,14 +562,16 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         _message = _(
-            f"Opening Program Database {self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
+            f"Opening Program Database "
+            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
         )
 
         # noinspection PyDeepBugsSwappedArgs
         self.statusbar.push(1, _message)
         self.set_title(
             _(
-                f"RAMSTK - Analyzing {self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
+                f"RAMSTK - Analyzing "
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
             )
         )
 
