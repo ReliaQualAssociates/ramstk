@@ -383,12 +383,9 @@ class RAMSTKDesktop(Gtk.Window):
                 _("Create a new RAMSTK Program Database."),
                 _("Connect to an existing RAMSTK Program Database."),
                 _("Closes the open RAMSTK Program Database."),
-                _("Save the currently open RAMSTK Project " "Database."),
-                _("Save the currently open RAMSTK Program Database " "then quits."),
-                _(
-                    "Quits without saving the currently open RAMSTK "
-                    "Program Database."
-                ),
+                _("Save the currently open RAMSTK Project Database."),
+                _("Save the currently open RAMSTK Program Database then quits."),
+                _("Quits without saving the currently open RAMSTK Program Database."),
             ],
         )
 
@@ -564,14 +561,15 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        _message = _("Opening Program Database {0:s}").format(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
+        _message = _(
+            f"Opening Program Database {self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
         )
+
         # noinspection PyDeepBugsSwappedArgs
         self.statusbar.push(1, _message)
         self.set_title(
-            _("RAMSTK - Analyzing {0:s}").format(
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
+            _(
+                f"RAMSTK - Analyzing {self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
             )
         )
 
