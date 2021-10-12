@@ -61,32 +61,6 @@ class HardwareTreePanel(RAMSTKTreePanel):
         # Initialize private scalar class attributes.
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["alt_part_number", "string"],
-            3: ["cage_code", "string"],
-            5: ["cost", "string"],
-            8: ["description", "string"],
-            9: ["duty_cycle", "float"],
-            10: ["figure_number", "string"],
-            11: ["lcn", "string"],
-            13: ["manufacturer_id", "integer"],
-            14: ["mission_time", "float"],
-            15: ["name", "string"],
-            16: ["nsn", "string"],
-            17: ["page_number", "string"],
-            19: ["part", "boolean"],
-            20: ["part_number", "string"],
-            21: ["quantity", "integer"],
-            22: ["ref_des", "string"],
-            23: ["remarks", "string"],
-            24: ["repairable", "boolean"],
-            25: ["specification_number", "string"],
-            26: ["tagged_part", "boolean"],
-            29: ["year_of_manufacture", "string"],
-            30: ["cost_type_id", "integer"],
-            32: ["category_id", "integer"],
-            33: ["subcategory_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "revision_id": [
                 0,
@@ -833,21 +807,6 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
-        self.dic_attribute_index_map = {
-            2: ["alt_part_number", "string"],
-            4: ["comp_ref_des", "string"],
-            8: ["description", "string"],
-            10: ["figure_number", "string"],
-            11: ["lcn", "string"],
-            15: ["name", "string"],
-            17: ["page_number", "string"],
-            20: ["part_number", "string"],
-            22: ["ref_des", "string"],
-            24: ["repairable", "boolean"],
-            25: ["specification_number", "string"],
-            32: ["category_id", "integer"],
-            33: ["subcategory_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "ref_des": [
                 22,
@@ -862,6 +821,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Reference Designator:"),
+                "gchararray",
             ],
             "comp_ref_des": [
                 4,
@@ -877,6 +837,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Composite Ref. Des."),
+                "gchararray",
             ],
             "name": [
                 15,
@@ -890,6 +851,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The name of the selected hardware item."),
                 },
                 _("Name:"),
+                "gchararray",
             ],
             "description": [
                 8,
@@ -903,6 +865,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The description of the selected hardware item."),
                 },
                 _("Description:"),
+                "gchararray",
             ],
             "part_number": [
                 20,
@@ -915,6 +878,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The part number of the selected hardware item."),
                 },
                 _("Part Number:"),
+                "gchararray",
             ],
             "alt_part_number": [
                 2,
@@ -930,6 +894,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Alternate Part Number:"),
+                "gchararray",
             ],
             "category_id": [
                 32,
@@ -940,6 +905,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Category:"),
+                "gint",
             ],
             "subcategory_id": [
                 33,
@@ -950,6 +916,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Subcategory:"),
+                "gint",
             ],
             "specification_number": [
                 25,
@@ -965,6 +932,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Specification:"),
+                "gchararray",
             ],
             "page_number": [
                 17,
@@ -980,6 +948,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Page Number:"),
+                "gchararray",
             ],
             "figure_number": [
                 10,
@@ -995,6 +964,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Figure Number:"),
+                "gchararray",
             ],
             "lcn": [
                 11,
@@ -1010,6 +980,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("LCN:"),
+                "gchararray",
             ],
             "repairable": [
                 24,
@@ -1025,6 +996,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 "",
+                "gint",
             ],
         }
         self.dicSubcategories: Dict[int, Dict[int, str]] = {}
@@ -1145,15 +1117,6 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            3: ["cage_code", "string"],
-            5: ["cost", "string"],
-            13: ["manufacturer_id", "integer"],
-            16: ["nsn", "string"],
-            21: ["quantity", "integer"],
-            29: ["year_of_manufacture", "string"],
-            30: ["cost_type_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "manufacturer_id": [
                 13,
@@ -1164,6 +1127,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Manufacturer:"),
+                "gint",
             ],
             "cage_code": [
                 3,
@@ -1179,6 +1143,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("CAGE Code:"),
+                "gchararray",
             ],
             "nsn": [
                 16,
@@ -1193,6 +1158,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("NSN:"),
+                "gchararray",
             ],
             "year_of_manufacture": [
                 29,
@@ -1209,6 +1175,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Year Introduced:"),
+                "gchararray",
             ],
             "quantity": [
                 21,
@@ -1224,6 +1191,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Quantity:"),
+                "gint",
             ],
             "cost": [
                 5,
@@ -1234,6 +1202,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0.0,
                 {},
                 _("Unit Cost:"),
+                "gfloat",
             ],
             "cost_type_id": [
                 30,
@@ -1244,6 +1213,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Cost Method:"),
+                "gint",
             ],
         }
 
@@ -1346,11 +1316,6 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            23: ["remarks", "string"],
-            26: ["tagged_part", "boolean"],
-            31: ["attachments", "string"],
-        }
         self.dic_attribute_widget_map = {
             "attachments": [
                 31,
@@ -1368,6 +1333,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Attachments:"),
+                "gchararray",
             ],
             "remarks": [
                 23,
@@ -1384,6 +1350,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Remarks:"),
+                "gchararray",
             ],
             "tagged_part": [
                 26,
@@ -1394,6 +1361,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 "",
+                "gint",
             ],
         }
 

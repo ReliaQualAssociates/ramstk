@@ -22,7 +22,6 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
     txtDormantTemp: RAMSTKEntry
     txtDutyCycle: RAMSTKEntry
     txtMissionTime: RAMSTKEntry
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def do_load_environment_active(self, environments: List[str]) -> None: ...
@@ -42,7 +41,6 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
     txtVoltageRated: RAMSTKEntry
     txtVoltageAC: RAMSTKEntry
     txtVoltageDC: RAMSTKEntry
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
 

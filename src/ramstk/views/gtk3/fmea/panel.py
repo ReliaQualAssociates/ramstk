@@ -63,10 +63,6 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         self._on_edit_message = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map = {
-            27: ["type_id", "integer"],
-            28: ["item_criticality", "string"],
-        }
         self.dic_attribute_widget_map = {
             "type_id": [
                 27,
@@ -82,6 +78,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Calculate Criticality"),
+                "gint",
             ],
             "rpn": [
                 27,
@@ -97,6 +94,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Calculate RPN"),
+                "gint",
             ],
             "item_criticality": [
                 28,
@@ -115,6 +113,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Item Criticality:"),
+                "gchararray",
             ],
         }
 

@@ -52,11 +52,6 @@ class RevisionTreePanel(RAMSTKTreePanel):
         self._on_edit_message: str = f"mvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map = {
-            17: ["name", "string"],
-            20: ["remarks", "string"],
-            22: ["revision_code", "string"],
-        }
         self.dic_attribute_widget_map = {
             "revision_id": [
                 0,
@@ -577,11 +572,6 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            17: ["name", "string"],
-            20: ["remarks", "string"],
-            22: ["revision_code", "string"],
-        }
         self.dic_attribute_widget_map = {
             "revision_code": [
                 22,
@@ -595,6 +585,7 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("A unique code for the selected revision."),
                 },
                 _("Revision Code:"),
+                "gchararray",
             ],
             "name": [
                 17,
@@ -608,6 +599,7 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The name of the selected revision."),
                 },
                 _("Revision Name:"),
+                "gchararray",
             ],
             "remarks": [
                 20,
@@ -624,6 +616,7 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Remarks:"),
+                "gchararray",
             ],
         }
 

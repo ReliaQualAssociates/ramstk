@@ -66,19 +66,6 @@ class RAMSTKPanel(RAMSTKFrame):
     :ivar _record_id: the work stream module ID whose attributes
         this panel is displaying.
 
-    :ivar dic_attribute_index_map: contains key:value pairs where the key is
-        the nominal column number in the RAMSTKTreeView() where the attribute
-        data is displayed.  The value is a list with the name of the attribute
-        in position 0 and the attribute's data type in position 1.  An example
-        entry in this dict might be:
-
-            15: ['name', 'string']
-
-        which indicates the nominal index of the Hardware RAMSTKTreeView()
-        column at position 15 contains the data for attribute 'name' and
-        this is 'string' data.  The nominal index is the default position of
-        the column in a RAMSTKTreeView().  Refer to the layout file for the
-        nominal position of each attribute for a given work stream module.
     :ivar dic_attribute_widget_map: a dict used to map model attributes to their
         respective display widgets.  The key is the name of the attribute in the record
         model and the value is a list containing the following information:
@@ -139,7 +126,6 @@ class RAMSTKPanel(RAMSTKFrame):
         self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {}
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
 
         # Initialize public list instance attributes.
@@ -303,13 +289,13 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :return: None
         """
         for (
-            __,  # pylint: disable=unused-variable
+            _key,
             _value,
         ) in self.dic_attribute_widget_map.items():
             _value[1].dic_handler_id[_value[2]] = _value[1].connect(
                 _value[2],
                 _value[3],
-                _value[0],
+                _key,
                 _value[4],
             )
 
@@ -327,7 +313,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _value[1].do_set_properties(**_value[6])
 
     def on_changed_combo(
-        self, combo: RAMSTKComboBox, index: int, message: str
+        self, combo: RAMSTKComboBox, key: str, message: str
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKComboBox() widgets.
 
@@ -351,8 +337,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         combo.handler_block(combo.dic_handler_id["changed"])
 
         try:
-            _attribute = self.dic_attribute_index_map[index][0]
-
             _new_text = int(combo.get_active())
 
             # Only if something is selected should we send the message.
@@ -364,15 +348,15 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 pub.sendMessage(
                     message,
                     node_id=self._record_id,
-                    package={_attribute: _new_text},
+                    package={key: _new_text},
                 )
         except (KeyError, ValueError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while editing {1} data for record "
-                "ID {0} in the view.  Key {3} does not exist in "
-                "attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  Key {key} does not "
+                f"exist in attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -384,7 +368,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         return {_key: _new_text}
 
     def on_changed_entry(
-        self, entry: RAMSTKEntry, index: int, message: str
+        self, entry: RAMSTKEntry, key: str, message: str
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKEntry() widgets.
 
@@ -415,7 +399,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         entry.handler_block(_handler_id)
 
         _package: Dict[str, Any] = self.__do_read_text(
-            entry, self.dic_attribute_index_map[index]
+            entry, key, self.dic_attribute_widget_map[key][8]
         )
 
         entry.handler_unblock(_handler_id)
@@ -427,7 +411,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, index: int, message: str, textview: RAMSTKTextView
+        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKTextView() widgets.
 
@@ -448,7 +432,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         textview.handler_block(textview.dic_handler_id["changed"])
 
         _package: Dict[str, Any] = self.__do_read_text(
-            textview, self.dic_attribute_index_map[index]
+            textview, key, self.dic_attribute_widget_map[key][8]
         )
 
         textview.handler_unblock(textview.dic_handler_id["changed"])
@@ -520,7 +504,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             )
 
     def on_toggled(
-        self, checkbutton: RAMSTKCheckButton, index: int, message: str
+        self, checkbutton: RAMSTKCheckButton, key: str, message: str
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKCheckButton() widgets.
 
@@ -532,36 +516,35 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             new value from the RAMSTKEntry() or RAMSTKTextView(). The value
             {'': -1} will be returned when a KeyError is raised by this method.
         """
-        _key: str = ""
         _new_text: int = -1
 
         try:
-            _attribute = self.dic_attribute_index_map[index][0]
-
             _new_text = int(checkbutton.get_active())
             checkbutton.do_update(_new_text, signal="toggled")
 
             pub.sendMessage(
                 message,
                 node_id=[self._record_id, -1, ""],
-                package={_attribute: _new_text},
+                package={key: _new_text},
             )
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while updating {1} data for record "
-                "ID {0} in the view.  Key {3} does not exist in "
-                "attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while updating {self._tag} data "
+                f"for record ID {self._record_id} in the view.  Key {key} does not "
+                f"exist in attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=_error_msg,
             )
 
-        return {_key: _new_text}
+        return {key: _new_text}
 
-    def __do_read_text(self, entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]:
+    def __do_read_text(
+        self, entry: RAMSTKEntry, key: str, datatype: str
+    ) -> Dict[str, Any]:
         """Read the text in a RAMSTKEntry() or Gtk.TextBuffer().
 
         :param entry: the RAMSTKEntry() or Gtk.TextBuffer() to read.
@@ -570,33 +553,29 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :return: {_key, _new_text}; a dict containing the attribute key and
             the new value (text) for that key.
         """
-        _key: str = ""
         _new_text: Any = ""
 
         try:
-            _key = str(keys[0])
-
-            if str(keys[1]) == "float":
+            if str(datatype) == "gfloat":
                 _new_text = float(entry.do_get_text())
-            elif str(keys[1]) == "integer":
+            elif str(datatype) == "gint":
                 _new_text = int(entry.do_get_text())
-            elif str(keys[1]) == "string":
+            elif str(datatype) == "gchararray":
                 _new_text = str(entry.do_get_text())
-
         except (KeyError, ValueError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while reading {1} data for record "
-                "ID {0} in the view.  Key {3} does not exist in "
-                "attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while reading {self._tag} data for "
+                f"record ID {self._record_id} in the view.  Key {key} does not exist "
+                f"in attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=_error_msg,
             )
 
-        return {_key: _new_text}
+        return {key: _new_text}
 
 
 class RAMSTKPlotPanel(RAMSTKPanel):
@@ -768,26 +747,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except AttributeError:
             pass
 
-    def do_expand_tree(self) -> None:
-        """Expand the RAMSTKTreeView.
-
-        :return: None
-        :rtype: None
-        """
-        _model = self.tvwTreeView.get_model()
-        try:
-            _row = _model.get_iter_first()
-        except AttributeError:
-            _row = None
-
-        self.tvwTreeView.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.tvwTreeView.get_column(0)
-            self.tvwTreeView.set_cursor(_path, None, False)
-
-            self.tvwTreeView.row_activated(_path, _column)
-
     def do_load_panel(self, tree: treelib.Tree) -> None:
         """Load data into the RAMSTKTreeView on a tree type panel.
 
@@ -843,8 +802,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model = self.tvwTreeView.get_model()
 
         _data = []
-        for _key in self.tvwTreeView.position:
-            _data.append(attributes[self.tvwTreeView.position[_key]])
+        for _key, __ in self.tvwTreeView.position.items():
+            _data.append(attributes[_key])
 
         # Only load items that are immediate children of the selected item and
         # prevent loading the selected item itself in the worksheet.
@@ -1184,30 +1143,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         return _attributes
 
-    def _do_load_row(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
-        """Determine which type of row to load and loads the data.
-
-        :param node: the usage profile treelib Node() whose data is to be
-            loaded.
-        :param row: the parent row for the row to be loaded.
-        :return: _new_row; the row that was just added to the usage profile
-            treeview.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-
-        # The root node will have no data package, so this indicates the need
-        # to clear the tree in preparation for the load.
-        try:
-            _method = self._dic_row_loader[node.tag]
-            # noinspection PyArgumentList
-            _new_row = _method(node, row)
-        except KeyError:
-            self.do_clear_tree()
-
-        return _new_row
-
-    # pylint: disable=unused-variable
     def _do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a row into the RAMSTKTreeView().
 

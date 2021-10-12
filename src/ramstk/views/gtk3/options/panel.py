@@ -98,7 +98,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": False,
                 },
-                _("Site ID: "),
+                _("Site ID:"),
+                "gint",
             ],
             "site_name": [
                 1,
@@ -113,7 +114,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": False,
                 },
-                _("Site Name: "),
+                _("Site Name:"),
+                "gchararray",
             ],
             "product_key": [
                 2,
@@ -128,7 +130,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": False,
                 },
-                _("Product Key: "),
+                _("Product Key:"),
+                "gchararray",
             ],
             "expire_on": [
                 3,
@@ -143,7 +146,8 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": False,
                 },
-                _("Expire Date: "),
+                _("Expire Date:"),
+                "gchararray",
             ],
             "function_enabled": [
                 4,
@@ -159,6 +163,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": False,
                 },
                 _(""),
+                "gint",
             ],
             "requirement_enabled": [
                 5,
@@ -174,6 +179,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "hardware_enabled": [
                 6,
@@ -189,6 +195,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "validation_enabled": [
                 7,
@@ -204,6 +211,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": False,
                 },
                 _(""),
+                "gint",
             ],
             "hazard_enabled": [
                 8,
@@ -219,6 +227,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "stakeholder_enabled": [
                 9,
@@ -234,6 +243,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "allocation_enabled": [
                 10,
@@ -249,6 +259,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "similar_item_enabled": [
                 11,
@@ -264,6 +275,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "fmea_enabled": [
                 12,
@@ -279,6 +291,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
             "pof_enabled": [
                 13,
@@ -294,6 +307,7 @@ class OptionsPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _(""),
+                "gint",
             ],
         }
 

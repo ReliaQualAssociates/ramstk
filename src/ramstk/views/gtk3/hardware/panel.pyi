@@ -20,7 +20,6 @@ class HardwareTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: Any
     _dic_row_loader: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     dic_icons: Any
     def __init__(self) -> None: ...
@@ -49,7 +48,6 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
     txtPartNumber: Any
     txtRefDes: Any
     txtSpecification: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     dicSubcategories: Any
     def __init__(self) -> None: ...
@@ -69,7 +67,6 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
     txtNSN: Any
     txtQuantity: Any
     txtYearMade: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def do_load_cost_types(self) -> None: ...
@@ -85,6 +82,5 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
     chkTagged: Any
     txtAttachments: Any
     txtRemarks: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...

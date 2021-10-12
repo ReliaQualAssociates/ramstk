@@ -26,7 +26,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     txtResistance: RAMSTKEntry
     _hazard_rate_method_id: int
     _quality_id: int
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     category_id: int
     subcategory_id: int

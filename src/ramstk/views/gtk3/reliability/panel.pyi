@@ -23,7 +23,6 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
     txtSpecifiedHtVar: RAMSTKEntry
     txtSpecifiedMTBF: RAMSTKEntry
     txtSpecifiedMTBFVar: RAMSTKEntry
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def do_load_hr_distributions(self, distributions: List[str]) -> None: ...

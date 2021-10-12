@@ -62,14 +62,6 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            9: ["duty_cycle", "float"],
-            12: ["environment_active_id", "integer"],
-            13: ["environment_dormant_id", "integer"],
-            14: ["mission_time", "float"],
-            37: ["temperature_active", "float"],
-            39: ["temperature_dormant", "float"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "environment_active_id": [
                 12,
@@ -83,6 +75,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Active Environment:"),
+                "gint",
             ],
             "temperature_active": [
                 37,
@@ -98,6 +91,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Active Temperature (\u00B0C):"),
+                "gfloat",
             ],
             "environment_dormant_id": [
                 13,
@@ -111,6 +105,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Dormant Environment:"),
+                "gint",
             ],
             "temperature_dormant": [
                 39,
@@ -124,6 +119,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Dormant Temperature (\u00B0C):"),
+                "gfloat",
             ],
             "mission_time": [
                 14,
@@ -137,6 +133,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Mission Time:"),
+                "gfloat",
             ],
             "duty_cycle": [
                 9,
@@ -150,6 +147,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Duty Cycle:"),
+                "gfloat",
             ],
         }
 
@@ -222,18 +220,6 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            10: ["current_operating", "float"],
-            11: ["current_rated", "float"],
-            31: ["power_operating", "float"],
-            32: ["power_rated", "float"],
-            43: ["temperature_knee", "float"],
-            44: ["temperature_rated_max", "float"],
-            45: ["temperature_rated_min", "float"],
-            49: ["voltage_ac_operating", "float"],
-            50: ["voltage_dc_operating", "float"],
-            52: ["voltage_rated", "float"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "temperature_rated_min": [
                 45,
@@ -250,6 +236,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Minimum Rated Temperature (\u00B0C):"),
+                "gfloat",
             ],
             "temperature_knee": [
                 43,
@@ -266,6 +253,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Knee Temperature (\u00B0C):"),
+                "gfloat",
             ],
             "temperature_rated_max": [
                 44,
@@ -282,6 +270,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Maximum Rated Temperature (\u00B0C):"),
+                "gfloat",
             ],
             "current_rated": [
                 11,
@@ -295,6 +284,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Rated Current (A):"),
+                "gfloat",
             ],
             "current_operating": [
                 10,
@@ -308,6 +298,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Operating Current (A):"),
+                "gfloat",
             ],
             "power_rated": [
                 32,
@@ -321,6 +312,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Rated Power (W):"),
+                "gfloat",
             ],
             "power_operating": [
                 31,
@@ -334,6 +326,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Operating Power (W):"),
+                "gfloat",
             ],
             "voltage_rated": [
                 52,
@@ -347,6 +340,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Rated Voltage (V):"),
+                "gfloat",
             ],
             "voltage_ac_operating": [
                 49,
@@ -362,6 +356,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Operating ac Voltage (V):"),
+                "gfloat",
             ],
             "voltage_dc_operating": [
                 50,
@@ -377,6 +372,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Operating DC Voltage (V):"),
+                "gfloat",
             ],
         }
 
@@ -483,6 +479,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Current Ratio:"),
+                "gfloat",
             ],
             "power_ratio": [
                 33,
@@ -501,6 +498,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Power Ratio:"),
+                "gfloat",
             ],
             "voltage_ratio": [
                 53,
@@ -519,6 +517,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Voltage Ratio:"),
+                "gfloat",
             ],
             "overstressed": [
                 29,
@@ -535,6 +534,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gint",
             ],
             "reason": [
                 34,
@@ -552,6 +552,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
                     "width": 350,
                 },
                 _("Overstress Reason:"),
+                "gchararray",
             ],
         }
 

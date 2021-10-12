@@ -84,11 +84,6 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["application_id", "integer"],
-            32: ["quality_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -101,6 +96,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the meter."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -113,6 +109,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of meter."),
                 },
                 _("Meter Type:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -125,6 +122,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application of the panel meter."),
                 },
                 _("Meter Function:"),
+                "gint",
             ],
         }
 

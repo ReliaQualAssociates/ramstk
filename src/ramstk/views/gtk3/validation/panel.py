@@ -62,27 +62,6 @@ class ValidationTreePanel(RAMSTKTreePanel):
         # Initialize private scalar class attributes.
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map = {
-            2: ["acceptable_maximum", "float"],
-            3: ["acceptable_mean", "float"],
-            4: ["acceptable_minimum", "float"],
-            5: ["acceptable_variance", "float"],
-            6: ["confidence", "float"],
-            7: ["cost_average", "float"],
-            9: ["cost_maximum", "float"],
-            11: ["cost_minimum", "float"],
-            14: ["date_end", "bool"],
-            15: ["date_start", "bool"],
-            16: ["description", "string"],
-            17: ["measurement_unit", "string"],
-            18: ["name", "string"],
-            19: ["status", "string"],
-            20: ["task_specification", "string"],
-            21: ["task_type", "string"],
-            22: ["time_average", "float"],
-            24: ["time_maximum", "float"],
-            26: ["time_minimum", "float"],
-        }
         self.dic_attribute_widget_map = {
             "revision_id": [
                 0,
@@ -781,19 +760,6 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            2: ["acceptable_maximum", "string"],
-            3: ["acceptable_mean", "string"],
-            4: ["acceptable_minimum", "string"],
-            5: ["acceptable_variance", "bool"],
-            14: ["date_end", "bool"],
-            15: ["date_start", "bool"],
-            16: ["description", "bool"],
-            17: ["measurement_unit", "bool"],
-            19: ["status", "bool"],
-            20: ["task_specification", "bool"],
-            21: ["task_type", "bool"],
-        }
         self.dic_attribute_widget_map = {
             "validation_id": [
                 1,
@@ -807,6 +773,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 _("Task ID:"),
+                "gint",
             ],
             "name": [
                 18,
@@ -821,6 +788,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     "tooltip": _("Displays the ID of the selected V&amp;V activity."),
                 },
                 _("Task Code:"),
+                "gchararray",
             ],
             "description": [
                 16,
@@ -837,6 +805,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Task Description:"),
+                "gchararray",
             ],
             "task_type": [
                 21,
@@ -852,6 +821,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Task Type:"),
+                "gint",
             ],
             "task_specification": [
                 20,
@@ -867,6 +837,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Specification:"),
+                "gchararray",
             ],
             "measurement_unit": [
                 17,
@@ -882,6 +853,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Measurement Unit:"),
+                "gint",
             ],
             "acceptable_minimum": [
                 4,
@@ -898,6 +870,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Min. Acceptable:"),
+                "gfloat",
             ],
             "acceptable_maximum": [
                 2,
@@ -914,6 +887,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Max. Acceptable:"),
+                "gfloat",
             ],
             "acceptable_mean": [
                 3,
@@ -930,6 +904,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Mean Acceptable:"),
+                "gfloat",
             ],
             "acceptable_variance": [
                 5,
@@ -946,6 +921,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Variance:"),
+                "gfloat",
             ],
             "date_start": [
                 15,
@@ -962,6 +938,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Start Date:"),
+                "gchararray",
             ],
             "date_end": [
                 14,
@@ -978,6 +955,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Start End:"),
+                "gchararray",
             ],
             "status": [
                 19,
@@ -995,6 +973,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("% Complete:"),
+                "gfloat",
             ],
         }
 
@@ -1166,14 +1145,6 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            7: ["cost_average", "float"],
-            9: ["cost_maximum", "float"],
-            11: ["cost_minimum", "float"],
-            22: ["time_average", "float"],
-            24: ["time_maximum", "float"],
-            26: ["time_minimum", "float"],
-        }
         self.dic_attribute_widget_map = {
             "time_minimum": [
                 26,
@@ -1189,6 +1160,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Min. Task Time:"),
+                "gfloat",
             ],
             "time_average": [
                 22,
@@ -1204,6 +1176,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Most Likely Task Time:"),
+                "gfloat",
             ],
             "time_maximum": [
                 24,
@@ -1219,6 +1192,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Max. Task Time:"),
+                "gfloat",
             ],
             "time_ll": [
                 23,
@@ -1232,6 +1206,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 "",
+                "gfloat",
             ],
             "time_mean": [
                 25,
@@ -1245,6 +1220,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 _("Task Time (95% Confidence):"),
+                "gfloat",
             ],
             "time_ul": [
                 27,
@@ -1258,6 +1234,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 "",
+                "gfloat",
             ],
             "cost_minimum": [
                 11,
@@ -1271,6 +1248,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "tooltip": _("Minimim cost of the selected task."),
                 },
                 _("Min. Task Cost:"),
+                "gfloat",
             ],
             "cost_average": [
                 7,
@@ -1284,6 +1262,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "tooltip": _("Most likely cost of the selected task."),
                 },
                 _("Most Likely Task Cost:"),
+                "gfloat",
             ],
             "cost_maximum": [
                 9,
@@ -1297,6 +1276,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "tooltip": _("Maximum cost of the selected task."),
                 },
                 _("Max. Task Cost:"),
+                "gfloat",
             ],
             "cost_ll": [
                 8,
@@ -1310,6 +1290,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 "",
+                "gfloat",
             ],
             "cost_mean": [
                 10,
@@ -1323,6 +1304,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 _("Task Cost (95% Confidence):"),
+                "gfloat",
             ],
             "cost_ul": [
                 12,
@@ -1336,6 +1318,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                     "editable": False,
                 },
                 "",
+                "gfloat",
             ],
         }
 

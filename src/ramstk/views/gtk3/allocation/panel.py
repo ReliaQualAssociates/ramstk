@@ -62,13 +62,6 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         self._on_edit_message = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary instance attributes.
-        self.dic_attribute_index_map = {
-            5: ["goal_measure_id", "integer"],
-            7: ["hazard_rate_goal", "float"],
-            10: ["allocation_method_id", "integer"],
-            13: ["mtbf_goal", "float"],
-            19: ["reliability_goal", "float"],
-        }
         self.dic_attribute_widget_map = {
             "allocation_method_id": [
                 10,
@@ -83,7 +76,8 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                         "the selected hardware assembly."
                     ),
                 },
-                _("Select Allocation Method "),
+                _("Select Allocation Method:"),
+                "gint",
             ],
             "goal_measure_id": [
                 5,
@@ -97,7 +91,8 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                         "Selects the goal measure for the selected hardware assembly."
                     ),
                 },
-                _("Select Goal Metric "),
+                _("Select Goal Metric:"),
+                "gint",
             ],
             "reliability_goal": [
                 19,
@@ -112,7 +107,8 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("R(t) Goal "),
+                _("R(t) Goal:"),
+                "gfloat",
             ],
             "hazard_rate_goal": [
                 7,
@@ -127,7 +123,8 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("h(t) Goal "),
+                _("h(t) Goal:"),
+                "gfloat",
             ],
             "mtbf_goal": [
                 13,
@@ -142,7 +139,8 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
                     ),
                     "width": 125,
                 },
-                _("MTBF Goal "),
+                _("MTBF Goal:"),
+                "gfloat",
             ],
         }
 

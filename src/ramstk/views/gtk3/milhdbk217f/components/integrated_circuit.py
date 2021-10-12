@@ -46,42 +46,39 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     :ivar txtPiA: displays the application factor for the integrated circuit.
     """
 
+    _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+
     # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + "
-        "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub"
-        "></span>",
-        2: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + "
-        "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub"
-        "></span>",
-        3: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + "
-        "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub"
-        "></span>",
-        4: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + "
-        "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub"
-        "></span>",
-        5: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
+        1: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
+        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
+        2: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
+        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
+        3: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
+        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
+        4: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
+        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
+        5: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
         "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        6: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
+        6: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
         "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        7: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
+        7: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
         "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        8: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
+        8: _lambda_p
+        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
         "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        9: '<span foreground="blue">\u03BB<sub>p</sub> = ('
-        "C<sub>1</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub> + "
+        9: _lambda_p + "(C<sub>1</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub> + "
         "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>L</sub>\u03C0<sub>Q</sub"
         "></span>",
-        10: '<span foreground="blue">\u03BB<sub>p</sub> = '
-        "\u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub"
+        10: _lambda_p
+        + "\u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub"
         ">CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub"
         ">\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span> ",
     }

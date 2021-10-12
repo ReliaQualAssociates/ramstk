@@ -53,9 +53,6 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         self._on_edit_message = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary instance attributes.
-        self.dic_attribute_index_map = {
-            29: ["similar_item_method_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "similar_item_method_id": [
                 29,
@@ -68,6 +65,7 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
                     "tooltip": _("Select the similar item analysis method."),
                 },
                 _("Select Similar Item Method "),
+                "gint",
             ],
         }
 

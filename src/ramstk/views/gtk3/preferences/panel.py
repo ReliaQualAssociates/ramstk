@@ -96,7 +96,8 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Module Book Tab Position: "),
+                _("Module Book Tab Position:"),
+                "gchararray",
             ],
             "work_book_tab_pos": [
                 1,
@@ -112,6 +113,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Work Book Tab Position:"),
+                "gchararray",
             ],
             "list_book_tab_pos": [
                 2,
@@ -127,6 +129,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("List Book Tab Position:"),
+                "gchararray",
             ],
             "report_size": [
                 3,
@@ -142,6 +145,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Report Paper Size:"),
+                "gchararray",
             ],
             "fr_multiplier": [
                 4,
@@ -158,6 +162,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "width": 75,
                 },
                 _("Failure Rate Multiplier:"),
+                "gfloat",
             ],
             "decimals": [
                 5,
@@ -174,6 +179,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "width": 75,
                 },
                 _("Decimal Places:"),
+                "gint",
             ],
             "mission_time": [
                 6,
@@ -189,6 +195,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Reliability Mission Time:"),
+                "gfloat",
             ],
             "config_file_path": [
                 7,
@@ -206,6 +213,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Path to RAMSTK Configuration Files:"),
+                "gchararray",
             ],
             "data_file_path": [
                 8,
@@ -223,6 +231,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Path to RAMSTK Data Files:"),
+                "gchararray",
             ],
             "icon_file_path": [
                 9,
@@ -240,6 +249,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Path to RAMSTK Icon Files:"),
+                "gchararray",
             ],
             "log_file_path": [
                 10,
@@ -257,6 +267,7 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
                     "visible": True,
                 },
                 _("Path to RAMSTK Log Files:"),
+                "gchararray",
             ],
         }
 

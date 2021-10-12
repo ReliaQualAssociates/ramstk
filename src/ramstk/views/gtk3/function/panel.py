@@ -53,12 +53,6 @@ class FunctionTreePanel(RAMSTKTreePanel):
         self._on_edit_message: str = "mvw_editing_{}".format(self._tag)
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map = {
-            5: ["function_code", "string"],
-            15: ["name", "string"],
-            17: ["remarks", "string"],
-            18: ["safety_critical", "bool"],
-        }
         self.dic_attribute_widget_map = {
             "revision_id": [
                 0,
@@ -511,12 +505,6 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            5: ["function_code", "string"],
-            15: ["name", "string"],
-            17: ["remarks", "string"],
-            18: ["safety_critical", "bool"],
-        }
         self.dic_attribute_widget_map = {
             "function_code": [
                 5,
@@ -530,6 +518,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("A unique code for the selected function."),
                 },
                 _("Function Code:"),
+                "gchararray",
             ],
             "name": [
                 15,
@@ -543,6 +532,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The name of the selected function."),
                 },
                 _("Function Description:"),
+                "gchararray",
             ],
             "remarks": [
                 17,
@@ -559,6 +549,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Remarks:"),
+                "gchararray",
             ],
             "safety_critical": [
                 18,
@@ -574,6 +565,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 "",
+                "gint",
             ],
         }
 
