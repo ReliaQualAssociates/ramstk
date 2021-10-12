@@ -1150,7 +1150,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 26,
                 self.txtMinTime,
                 "changed",
-                self.on_changed_entry,
+                super().on_changed_entry,
                 "mvw_editing_validation",
                 0.0,
                 {
@@ -1166,7 +1166,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 22,
                 self.txtExpTime,
                 "changed",
-                self.on_changed_entry,
+                super().on_changed_entry,
                 "mvw_editing_validation",
                 0.0,
                 {
@@ -1182,7 +1182,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 24,
                 self.txtMaxTime,
                 "changed",
-                self.on_changed_entry,
+                super().on_changed_entry,
                 "mvw_editing_validation",
                 0.0,
                 {

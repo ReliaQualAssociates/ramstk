@@ -42,7 +42,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         # Initialize private dict instance attributes.
         self._dic_row_loader = {
-            "hazard": super()._do_load_treerow,
+            "hazard": super().do_load_treerow,
         }
 
         # Initialize private list instance attributes.

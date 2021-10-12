@@ -42,7 +42,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self._dic_row_loader = {
-            "stakeholder": super()._do_load_treerow,
+            "stakeholder": super().do_load_treerow,
         }
 
         # Initialize private list class attributes.

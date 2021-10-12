@@ -44,7 +44,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self._dic_row_loader = {
-            "function": super()._do_load_treerow,
+            "function": super().do_load_treerow,
         }
 
         # Initialize private list class attributes.

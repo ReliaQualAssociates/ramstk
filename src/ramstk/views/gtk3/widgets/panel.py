@@ -791,24 +791,43 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 message=_error_msg,
             )
 
-    def do_load_row(self, attributes: Dict[str, Any]) -> None:
-        """Use the _do_load_row() method and populate the panel's _dic_row_loader
-        attributes with the correct method(s) to load a row's data.
+    def do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+        """Load a row into the RAMSTKTreeView().
 
-        This varies depending on the work stream module.
+        :param node: the treelib Node() with the data to load.
+        :param row: the parent row of the row to load.
+        :return: _new_row; the row that was just populated with data.
+        :rtype: :class:`Gtk.TreeIter`
         """
-        self._record_id = attributes[self._record_field]
+        _new_row = None
+        _data: List[Any] = []
 
-        _model = self.tvwTreeView.get_model()
+        try:
+            # pylint: disable=unused-variable
+            [[__, _entity]] = node.data.items()
+            _attributes = _entity.get_attributes()
+            _model = self.tvwTreeView.get_model()
+            for _key, _pos in self.tvwTreeView.position.items():
+                _data.insert(_pos, _attributes[_key])
 
-        _data = []
-        for _key, __ in self.tvwTreeView.position.items():
-            _data.append(attributes[_key])
+            _new_row = _model.append(row, _data)
+        except (AttributeError, TypeError, ValueError) as _error:
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg = (
+                f"{_method_name}: An error occurred when loading "
+                f"{self._tag} {node.identifier}.  This might indicate it was missing "
+                f"it's data package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: {_data}.  Error "
+                f"was: {_error}."
+            )
+            pub.sendMessage(
+                "do_log_warning_msg",
+                logger_name="WARNING",
+                message=_error_msg,
+            )
+            _new_row = None
 
-        # Only load items that are immediate children of the selected item and
-        # prevent loading the selected item itself in the worksheet.
-        if not _data[1] == self._record_id and not self._tree_loaded:
-            _model.append(None, _data)
+        return _new_row
 
     def do_make_panel(self) -> None:
         """Create a panel with a RAMSTKTreeView().
@@ -931,11 +950,11 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
             "changed", self._on_row_change
         )
-        # pylint: disable=unused-variable
-        for __, _value in self.dic_attribute_widget_map.items():
+
+        for _key, _value in self.dic_attribute_widget_map.items():
             try:
                 if _value[3] is not None:
-                    _value[1].connect(_value[2], _value[3], _value[0], _value[4])
+                    _value[1].connect(_value[2], _value[3], _key, _value[4])
             except KeyError:
                 print(self._tag, type(_value))
 
@@ -1142,41 +1161,3 @@ class RAMSTKTreePanel(RAMSTKPanel):
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])
 
         return _attributes
-
-    def _do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
-        """Load a row into the RAMSTKTreeView().
-
-        :param node: the treelib Node() with the data to load.
-        :param row: the parent row of the row to load.
-        :return: _new_row; the row that was just populated with data.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-        _data: List[Any] = []
-
-        try:
-            # pylint: disable=unused-variable
-            [[__, _entity]] = node.data.items()
-            _attributes = _entity.get_attributes()
-            _model = self.tvwTreeView.get_model()
-            for _key, _pos in self.tvwTreeView.position.items():
-                _data.insert(_pos, _attributes[_key])
-
-            _new_row = _model.append(row, _data)
-        except (AttributeError, TypeError, ValueError) as _error:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = (
-                f"{_method_name}: An error occurred when loading "
-                f"{self._tag} {node.identifier}.  This might indicate it was missing "
-                f"it's data package, some of the data in the package was missing, or "
-                f"some of the data was the wrong type.  Row data was: {_data}.  Error "
-                f"was: {_error}."
-            )
-            pub.sendMessage(
-                "do_log_warning_msg",
-                logger_name="WARNING",
-                message=_error_msg,
-            )
-            _new_row = None
-
-        return _new_row

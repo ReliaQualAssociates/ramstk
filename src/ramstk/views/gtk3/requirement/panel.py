@@ -1285,7 +1285,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         _dialog.do_destroy()
 
         entry.do_update(_date)
-        super().on_changed_entry(entry, 13, "wvw_editing_requirement")
+        super().on_changed_entry(entry, "validated_date", "wvw_editing_requirement")
 
         return _date
 
