@@ -858,11 +858,19 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """
         self._lst_widgets.append(self.tvwTreeView)
 
-        self.tvwTreeView.datatypes = {
-            _key: _value[8] for _key, _value in self.dic_attribute_widget_map.items()
-        }
         self.tvwTreeView.widgets = {
             _key: _value[1] for _key, _value in self.dic_attribute_widget_map.items()
+        }
+        self.tvwTreeView.editable = {
+            _key: _value[6]["editable"]
+            for _key, _value in self.dic_attribute_widget_map.items()
+        }
+        self.tvwTreeView.visible = {
+            _key: _value[6]["visible"]
+            for _key, _value in self.dic_attribute_widget_map.items()
+        }
+        self.tvwTreeView.datatypes = {
+            _key: _value[8] for _key, _value in self.dic_attribute_widget_map.items()
         }
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()

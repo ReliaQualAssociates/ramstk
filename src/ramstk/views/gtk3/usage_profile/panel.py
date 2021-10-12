@@ -357,7 +357,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _model = self.tvwTreeView.get_cell_model(self._lst_col_order[7])
+        _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["units"])
         for __, _unit in self.dic_units.items():  # pylint: disable=unused-variable
             _model.append([_unit[1]])
 

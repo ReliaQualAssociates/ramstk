@@ -152,15 +152,14 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self._has_pixbuf: bool = False
 
         # Initialize public dictionary instance attributes.
-
-        # Initialize public list instance attributes.
         self.datatypes: Dict[str, str] = {}
         self.editable: Dict[str, str] = {}
         self.headings: Dict[str, str] = {}
-        self.korder: Dict[str, str] = {}
         self.position: Dict[str, int] = {}
         self.visible: Dict[str, str] = {}
         self.widgets: Dict[str, str] = {}
+
+        # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
         self.selection = self.get_selection()
@@ -267,8 +266,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _data = []
         _model, _row = self.selection.get_selected()
 
-        for _key in self.korder:
-            _data.append(data[self.korder[_key]])
+        for _key in self.position:
+            _data.append(data[_key])
 
         _row = _model.append(prow, _data)
 
@@ -339,7 +338,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :rtype: None
         """
         for _key, _position in self.position.items():
-            _cell = self.widgets[self.korder[_key]]
+            _cell = self.widgets[_key]
             do_set_cell_properties(
                 _cell,
                 bg_color=colors["bg_color"],
@@ -406,12 +405,14 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _keys = sorted(_format["position"], key=_format["position"].get)
         for _key in _keys:
             self.position[_key] = _format["position"][_key]
+            self.editable[_key] = self.editable[_key] or string_to_boolean(
+                _format["editable"][_key]
+            )
+            self.visible[_key] = self.visible[_key] or string_to_boolean(
+                _format["visible"][_key]
+            )
 
-        self.datatypes = _format["datatype"]
-        self.editable = _format["editable"]
         self.headings = _format["usertitle"]
-        self.korder = _format["key"]
-        self.visible = _format["visible"]
 
     def do_set_columns_editable(self) -> None:
         """Set list of columns editable.
@@ -451,10 +452,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # that is the one that will be returned.
             _cell = _column.get_cells()[-1]
 
-            if isinstance(self.widgets[self.korder[_key]], Gtk.CellRendererToggle):
+            if isinstance(self.widgets[_key], Gtk.CellRendererToggle):
                 _cell.connect("toggled", method, None, self.position[_key])
             elif isinstance(
-                self.widgets[self.korder[_key]],
+                self.widgets[_key],
                 (Gtk.CellRendererSpin, Gtk.CellRendererText),
             ):
                 _cell.connect("edited", method, self.position[_key])
@@ -481,7 +482,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         _attributes = []
         try:
-            for _key in self.korder:
+            for _key in self.position:
                 if _key == "dict":
                     _attributes.append(str(entity))
                 else:
@@ -529,16 +530,14 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _attributes = []
         _temp = entity.get_attributes()  # type: ignore
 
-        for _key in self.korder:
+        for _key in self.position:
             try:
-                if isinstance(_temp[self.korder[_key]], datetime.date):
-                    _temp[self.korder[_key]] = _temp[self.korder[_key]].strftime(
-                        "%Y-%m-%d"
-                    )
-                _temp[self.korder[_key]] = _temp[self.korder[_key]].decode("utf-8")
+                if isinstance(_temp[_key], datetime.date):
+                    _temp[_key] = _temp[_key].strftime("%Y-%m-%d")
+                _temp[_key] = _temp[_key].decode("utf-8")
             except (AttributeError, KeyError):
                 pass
-            _attributes.append(_temp[self.korder[_key]])
+            _attributes.append(_temp[_key])
 
         return _attributes
 
@@ -584,16 +583,15 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         :param key: the value of the key in the widgets and position dicts.
         :param column: the Gtk.TreeViewColumn() to set properties.
-        :type column: :class:`Gtk.TreeViewColumn`
         :return: None
         :rtype: None
         """
         _cell = column.get_cells()[-1]
 
-        if isinstance(self.widgets[self.korder[key]], Gtk.CellRendererToggle):
+        if isinstance(self.widgets[key], Gtk.CellRendererToggle):
             column.set_attributes(_cell, active=self.position[key])
         elif isinstance(
-            self.widgets[self.korder[key]],
+            self.widgets[key],
             (
                 Gtk.CellRendererCombo,
                 Gtk.CellRendererSpin,
@@ -602,7 +600,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         ):
             column.set_attributes(_cell, text=self.position[key])
 
-        if key != "col0":
+        if self.position[key] > 0:
             column.set_reorderable(True)
 
     @staticmethod
