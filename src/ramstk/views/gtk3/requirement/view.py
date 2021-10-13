@@ -156,7 +156,19 @@ class RequirementModuleView(RAMSTKModuleView):
         super().make_ui()
 
         self._pnlPanel.do_set_cell_callbacks(
-            "mvw_editing_requirement", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            "mvw_editing_requirement",
+            [
+                "derived",
+                "description",
+                "figure_number",
+                "owner",
+                "page_number",
+                "priority",
+                "specification",
+                "requirement_type",
+                "validated",
+                "validated_date",
+            ],
         )
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"

@@ -1281,8 +1281,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.__do_load_severity_class()
         self.__do_load_users()
 
-        _idx = self.dic_attribute_widget_map["mission"][0]
-        _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["mission"]
+        ).get_cells()
         _cell[0].connect("edited", self._on_mission_change)
 
     # noinspection PyUnusedLocal
@@ -1315,7 +1316,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.__do_load_mission_phases(new_text)
 
         _model = self.tvwTreeView.get_model()
-        _model[path][self._lst_col_order[9]] = ""
+        _model[path][self.tvwTreeView.position["mission_phase"]] = ""
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the FMEA Work View RAMSTKTreeView().
@@ -1457,9 +1458,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["action_category"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_action_category)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["action_category"], self.lst_action_category
+        )
 
     def __do_load_action_status(self) -> None:
         """Load the action status Gtk.CellRendererCombo().
@@ -1467,9 +1468,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["action_status"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_action_status)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["action_status"], self.lst_action_status
+        )
 
     def __do_load_cause(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a failure cause record into the RAMSTKTreeView().
@@ -1554,11 +1555,11 @@ class FMEATreePanel(RAMSTKTreePanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure cause {0:s} in the "
-                "FMEA.  This might indicate it was missing it's data package, "
-                "some of the data in the package was missing, or some of the "
-                "data was the wrong type.  Row data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure cause {node.identifier} in "
+                f"the FMEA.  This might indicate it was missing it's data package, "
+                f"some of the data in the package was missing, or some of the "
+                f"data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -1643,11 +1644,11 @@ class FMEATreePanel(RAMSTKTreePanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure cause control {0:s} "
-                "in the FMEA.  This might indicate it was missing it's data "
-                "package, some of the data in the package was missing, or "
-                "some of the data was the wrong type.  Row data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure cause control "
+                f"{node.identifier} in the FMEA.  This might indicate it was missing "
+                f"it's data package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -1660,9 +1661,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["type_id"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_control_types)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["type_id"], self.lst_control_types
+        )
 
     def __do_load_mechanism(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -1751,11 +1752,11 @@ class FMEATreePanel(RAMSTKTreePanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure mechanism {0:s} in "
-                "the FMEA.  This might indicate it was missing it's data "
-                "package, some of the data in the package was missing, or "
-                "some of the data was the wrong type.  Row data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure mechanism {node.identifier} "
+                f"in the FMEA.  This might indicate it was missing it's data "
+                f"package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -1782,8 +1783,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["mission"][0]
-        _model = self.tvwTreeView.get_cell_model(self._lst_col_order[_idx])
+        _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["mission"])
 
         self._lst_missions = []
         _model.append([""])
@@ -1808,8 +1808,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["mission_phase"][0]
-        _model = self.tvwTreeView.get_cell_model(self._lst_col_order[_idx])
+        _model = self.tvwTreeView.get_cell_model(
+            self.tvwTreeView.position["mission_Phase"]
+        )
         _model.clear()
         _model.append([""])
 
@@ -1896,11 +1897,11 @@ class FMEATreePanel(RAMSTKTreePanel):
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure mode {0} in the "
-                "FMEA.  This might indicate it was missing it's data package, "
-                "some of the data in the package was missing, or some of the "
-                "data was the wrong type.  Row data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure mode {node.identifier} in the "
+                f"FMEA.  This might indicate it was missing it's data package, "
+                f"some of the data in the package was missing, or some of the "
+                f"data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -1913,9 +1914,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["mode_probability"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_mode_probability)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["mode_probability"], self.lst_mode_probability
+        )
 
     def __do_load_rpn_detection(self) -> None:
         """Load the RPN detection Gtk.CellRendererCombo().
@@ -1924,9 +1925,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         for _key in ["rpn_detection", "rpn_detection_new"]:
-            _idx = self.dic_attribute_widget_map[_key][0]
-            _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_detection)
+            self.tvwTreeView.do_load_combo_cell(
+                self.tvwTreeView.position[_key], self.lst_rpn_detection
+            )
 
     def __do_load_rpn_occurrence(self) -> None:
         """Load the RPN occurrence Gtk.CellRendererCombo().
@@ -1935,9 +1936,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         for _key in ["rpn_occurrence", "rpn_occurrence_new"]:
-            _idx = self.dic_attribute_widget_map[_key][0]
-            _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_occurrence)
+            self.tvwTreeView.do_load_combo_cell(
+                self.tvwTreeView.position[_key], self.lst_rpn_occurrence
+            )
 
     def __do_load_rpn_severity(self) -> None:
         """Load the RPN severity Gtk.CellRendererCombo().
@@ -1946,9 +1947,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         for _key in ["rpn_severity", "rpn_severity_new"]:
-            _idx = self.dic_attribute_widget_map[_key][0]
-            _idx = self._lst_col_order[_idx]
-            self.tvwTreeView.do_load_combo_cell(_idx, self.lst_rpn_severity)
+            self.tvwTreeView.do_load_combo_cell(
+                self.tvwTreeView.position[_key], self.lst_rpn_severity
+            )
 
     def __do_load_severity_class(self) -> None:
         """Load the severity classification Gtk.CellRendererCombo().
@@ -1956,9 +1957,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["severity_class"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_severity_class)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["severity_class"], self.lst_severity_class
+        )
 
     def __do_load_users(self) -> None:
         """Load the RAMSTK users Gtk.CellRendererCombo().
@@ -1966,6 +1967,6 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["action_owner"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_users)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["action_owner"], self.lst_users
+        )

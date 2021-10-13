@@ -255,7 +255,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
             ],
             "validated": [
                 12,
-                Gtk.CellRendererText(),
+                Gtk.CellRendererToggle(),
                 "edited",
                 None,
                 "mvw_editing_requirement",
@@ -855,11 +855,11 @@ class RequirementTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
-                str(_code), str(_name)
+            _code = _model.get_value(
+                _row, self.tvwTreeView.position["requirement_code"]
             )
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _title = _(f"Analyzing Requirement {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 

@@ -413,8 +413,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         # Set the priority Gtk.CellRendererSpin()'s adjustment limits and
         # step increments.
-        _idx = self.dic_attribute_widget_map["priority_id"][0]
-        _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()[0]
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["priority_id"]
+        ).get_cells()[0]
         _adjustment = _cell.get_property("adjustment")
         _adjustment.configure(5, 1, 5, -1, 0, 0)
 
@@ -464,9 +465,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         :return: None
         """
-        _idx = self.dic_attribute_widget_map["damage_model"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_damage_models)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["damage_model"], self.lst_damage_models
+        )
 
     def __do_load_load_history(self) -> None:
         """Load the operating load history CellRendererCombo().
@@ -474,18 +475,19 @@ class PoFTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _idx = self.dic_attribute_widget_map["load_history"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_load_history)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["load_history"], self.lst_load_history
+        )
 
     def __do_load_measureable_parameters(self) -> None:
         """Load the measureable parameters CellRendererCombo().
 
         :return: None
         """
-        _idx = self.dic_attribute_widget_map["measurable_parameter"][0]
-        _idx = self._lst_col_order[_idx]
-        self.tvwTreeView.do_load_combo_cell(_idx, self.lst_measurable_parameters)
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["measurable_parameter"],
+            self.lst_measurable_parameters,
+        )
 
     def __do_load_mechanism(
         self, node: treelib.Node, row: Gtk.TreeIter

@@ -323,7 +323,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         if this information is needed by the child class.
 
         :param combo: the RAMSTKComboBox() that called the method.
-        :param index: the position in the class' Gtk.TreeModel() associated
+        :param key: the name in the class' Gtk.TreeModel() associated
             with the attribute from the calling Gtk.Widget().
         :param message: the PyPubSub message to publish.
         :return: {_key: _new_text}; the work stream module's attribute name
@@ -382,7 +382,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         if this information is needed by the child class.
 
         :param entry: the RAMSTKEntry() that called the method.
-        :param index: the position in the class' Gtk.TreeModel() associated
+        :param key: the name in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKEntry() or RAMSTKTextView().
         :param message: the PyPubSub message to publish.
         :return: {_key: _new_text}; the child module attribute name and the
@@ -421,7 +421,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         :param buffer: the Gtk.TextBuffer() calling this method.  This
             parameter is unused in this method.
-        :param index: the position in the class' Gtk.TreeModel() associated
+        :param key: the name in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKTextView().
         :param message: the PyPubSub message to broadcast.
         :param textview: the RAMSTKTextView() calling this method.
@@ -509,7 +509,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         """Retrieve changes made in RAMSTKCheckButton() widgets.
 
         :param checkbutton: the RAMSTKCheckButton() that was toggled.
-        :param index: the position in the class' Gtk.TreeModel() associated
+        :param key: the name in the class' Gtk.TreeModel() associated
             with the data from the calling RAMSTKCheckButton().
         :param message: the PyPubSub message to broadcast.
         :return: {_key: _new_text}; the child module attribute name and the
@@ -548,8 +548,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         """Read the text in a RAMSTKEntry() or Gtk.TextBuffer().
 
         :param entry: the RAMSTKEntry() or Gtk.TextBuffer() to read.
-        :param keys: the list containing the key and data type for the entry to
-            be read.
+        :param key: the key for the entry to be read.
         :return: {_key, _new_text}; a dict containing the attribute key and
             the new value (text) for that key.
         """
@@ -682,8 +681,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     The attributes of a RAMSTKTreePanel are:
 
-    :ivar _lst_col_order: a list containing the order of the columns in the
-        RAMSTKTreeView().
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
         treeview.
     """
@@ -715,7 +712,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self._dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes.
-        self._lst_col_order: List[int] = []
 
         # Initialize private scalar instance attributes.
 
@@ -881,8 +877,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             colors={"bg_color": _bg_color, "fg_color": _fg_color}
         )
 
-        self._lst_col_order = list(self.tvwTreeView.position.values())
-
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
@@ -913,7 +907,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         [[_key, _value]] = package.items()
 
         try:
-            _position = self._lst_col_order[self.dic_attribute_widget_map[_key][0]]
+            _position = self.tvwTreeView.position[_key]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set(_row, _position, _value)
@@ -958,7 +952,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             except KeyError:
                 print(self._tag, type(_value))
 
-    def do_set_cell_callbacks(self, message: str, columns: List[int]) -> None:
+    def do_set_cell_callbacks(self, message: str, columns: List[str]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
 
         :param message: the PyPubSub message to broadcast on a
@@ -967,12 +961,24 @@ class RAMSTKTreePanel(RAMSTKPanel):
             have a callback function assigned.
         :return: None
         """
-        for _idx in columns:
-            _cell = self.tvwTreeView.get_column(self._lst_col_order[_idx]).get_cells()
+        for _key in columns:
+            _cell = self.tvwTreeView.get_column(
+                self.tvwTreeView.position[_key]
+            ).get_cells()
             try:
-                _cell[0].connect("edited", self.on_cell_edit, _idx, message)
+                _cell[0].connect(
+                    "edited",
+                    self.on_cell_edit,
+                    self.tvwTreeView.position[_key],
+                    message,
+                )
             except TypeError:
-                _cell[0].connect("toggled", self.on_cell_toggled, _idx, message)
+                _cell[0].connect(
+                    "toggled",
+                    self.on_cell_toggled,
+                    self.tvwTreeView.position[_key],
+                    message,
+                )
 
     def do_set_headings(self) -> None:
         """Set the treeview headings depending on the selected row.
@@ -1150,12 +1156,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         _model, _row = selection.get_selected()
         if _row is not None:
-            for _attribute in self.dic_attribute_widget_map.items():
-                _attributes[_attribute[0]] = _model.get_value(
+            for _key, __ in self.dic_attribute_widget_map.items():
+                _attributes[_key] = _model.get_value(
                     _row,
-                    self._lst_col_order[
-                        self.dic_attribute_widget_map[_attribute[0]][0]
-                    ],
+                    self.tvwTreeView.position[_key],
                 )
 
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])

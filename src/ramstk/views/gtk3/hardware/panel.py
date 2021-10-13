@@ -632,12 +632,12 @@ class HardwareTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "hardware" and _row is not None:
-            _comprefdes = _model.get_value(_row, self._lst_col_order[4])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Hardware item {0:s}: {1:s}").format(
-                str(_comprefdes), str(_name)
+        if module == self._tag and _row is not None:
+            _comprefdes = _model.get_value(
+                _row, self.tvwTreeView.position["comp_ref_des"]
             )
+            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _title = _(f"Analyzing Hardware item {_comprefdes}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
@@ -675,7 +675,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "reliability",
             ]:
                 pub.sendMessage(
-                    "request_get_{}_attributes".format(_table),
+                    f"request_get_{_table}_attributes",
                     node_id=self._record_id,
                 )
 
@@ -1060,7 +1060,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
             "reliability",
         ]:
             pub.sendMessage(
-                "request_get_{}_attributes".format(_table),
+                f"request_get_{_table}_attributes",
                 node_id=self._record_id,
             )
 

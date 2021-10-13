@@ -50,7 +50,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_message: str = "mvw_editing_{}".format(self._tag)
+        self._on_edit_message: str = f"mvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map = {
@@ -431,10 +431,10 @@ class FunctionTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "functions" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Function {0:s}: {1:s}").format(str(_code), str(_name))
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["function_code"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _title = _(f"Analyzing Function {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 

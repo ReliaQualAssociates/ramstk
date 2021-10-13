@@ -508,10 +508,10 @@ class RevisionTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "revision" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Revision {0:s}: {1:s}").format(str(_code), str(_name))
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["revision_code"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _title = _(f"Analyzing Revision {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 

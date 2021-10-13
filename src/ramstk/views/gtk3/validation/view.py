@@ -155,7 +155,27 @@ class ValidationModuleView(RAMSTKModuleView):
 
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_validation",
-            [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
+            [
+                "acceptable_maximum",
+                "acceptable_mean",
+                "acceptable_minimum",
+                "acceptable_variance",
+                "confidence",
+                "cost_average",
+                "cost_maximum",
+                "cost_minimum",
+                "date_end",
+                "date_start",
+                "description",
+                "measurement_unit",
+                "name",
+                "status",
+                "task_specification",
+                "task_type",
+                "time_average",
+                "time_maximum",
+                "time_minimum",
+            ],
         )
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
@@ -318,6 +338,9 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         _hpaned.pack1(self._pnlTaskDescription, True, True)
 
         self._pnlTaskEffort.fmt = self.fmt
+        self._pnlTaskEffort.do_load_validation_types(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
+        )
         # self._pnlProgramEffort.fmt = self.fmt
         _vpaned_right.pack1(self._pnlTaskEffort, True, True)
         # _vpaned_right.pack2(self._pnlProgramEffort, True, True)

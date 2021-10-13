@@ -378,7 +378,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
             records.
         :return: None
         """
-        _cell = self.tvwTreeView.get_column(self._lst_col_order[9]).get_cells()[0]
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["requirement_id"]
+        ).get_cells()[0]
         _model = _cell.get_property("model")
         _model.clear()
 
@@ -408,12 +410,10 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "stakeholder" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[1])
-            _name = _model.get_value(_row, self._lst_col_order[3])
-            _title = _("Analyzing Stakeholder {0:s}: {1:s}").format(
-                str(_code), str(_name)
-            )
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["stakeholder_id"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _title = _(f"Analyzing Stakeholder {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
