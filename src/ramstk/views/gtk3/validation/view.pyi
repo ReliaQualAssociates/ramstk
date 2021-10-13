@@ -17,7 +17,7 @@ from . import ValidationTaskEffortPanel as ValidationTaskEffortPanel
 from . import ValidationTreePanel as ValidationTreePanel
 
 class ValidationModuleView(RAMSTKModuleView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -32,7 +32,7 @@ class ValidationModuleView(RAMSTKModuleView):
     def __make_ui(self) -> None: ...
 
 class ValidationGeneralDataView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_callbacks: Any

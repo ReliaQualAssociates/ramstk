@@ -13,7 +13,7 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel
 from . import UsageProfileTreePanel as UsageProfileTreePanel
 
 class UsageProfileListView(RAMSTKListView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_col_order: List[int]

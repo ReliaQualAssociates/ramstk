@@ -28,7 +28,7 @@ class HazardsWorkView(RAMSTKWorkView):
     The WorkView displays all the attributes for the Hazards Analysis (HazOps).
     The attributes of a HazOps Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar list _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -49,7 +49,7 @@ class HazardsWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "hazard"
+    _tag: str = "hazard"
     _tablabel: str = _("HazOps")
     _tabtooltip: str = _("Displays the HazOps analysis for the selected Function.")
 

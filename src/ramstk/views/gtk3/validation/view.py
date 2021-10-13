@@ -38,7 +38,7 @@ class ValidationModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  The attributes of a Validation
     Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -52,7 +52,7 @@ class ValidationModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "validation"
+    _tag: str = "validation"
     _tablabel: str = "Verification"
     _tabtooltip: str = _(
         "Displays the list of verification tasks for the selected Revision."
@@ -105,7 +105,7 @@ class ValidationModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
+        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKValidation table.
@@ -174,7 +174,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
 
     :cvar dict _dic_keys:
     :cvar list _lst_labels: the list of label text.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar list _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -194,7 +194,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "validation"
+    _tag: str = "validation"
     _tablabel: str = _("General\nData")
     _tabtooltip: str = _(
         "Displays general information for the selected Verification task."

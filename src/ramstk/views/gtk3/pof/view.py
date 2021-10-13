@@ -40,7 +40,7 @@ class PoFWorkView(RAMSTKWorkView):
     :cvar list _lst_labels: the list of labels for the widgets on the work
         view.  The PoF work stream module has no labels, but an empty list
         is required to prevent an AttributeError when creating the UI.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
     :cvar bool _pixbuf: indicates whether or icons are displayed in the
         RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
         creating the RAMSTKTreeView.  Default is True.
@@ -63,7 +63,7 @@ class PoFWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "pof"
+    _tag: str = "pof"
     _pixbuf: bool = True
     _tablabel = _("PoF")
     _tabtooltip = _(
@@ -139,7 +139,7 @@ class PoFWorkView(RAMSTKWorkView):
             "You are about to delete {1} item {0} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
-        ).format(_node_id, self._module.title())
+        ).format(_node_id, self._tag.title())
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")

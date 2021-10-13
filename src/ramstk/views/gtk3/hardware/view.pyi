@@ -102,7 +102,7 @@ from . import HardwareMiscellaneousPanel as HardwareMiscellaneousPanel
 from . import HardwareTreePanel as HardwareTreePanel
 
 class HardwareModuleView(RAMSTKModuleView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -122,7 +122,7 @@ class HardwareModuleView(RAMSTKModuleView):
     def __make_ui(self) -> None: ...
 
 class HardwareGeneralDataView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _pnlGeneralData: Any
@@ -143,7 +143,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
 
 class HardwareAssessmentInputView(RAMSTKWorkView):
     _lst_title: List[str]
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _dic_component_panels: Any
@@ -170,7 +170,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
 class HardwareAssessmentResultsView(RAMSTKWorkView):
     _lst_title: Any
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _dic_component_results: Any

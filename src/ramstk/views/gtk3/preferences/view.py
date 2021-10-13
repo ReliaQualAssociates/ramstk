@@ -46,7 +46,7 @@ class PreferencesDialog(RAMSTKBaseView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = "preferences"
+    _tag = "preferences"
     _pixbuf: bool = True
     _tablabel: str = _("")
     _tabtooltip: str = _("")

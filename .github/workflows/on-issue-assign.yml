@@ -10,7 +10,7 @@ jobs:
     name: Create Branch for Issue
     runs-on: ubuntu-latest
     steps:
-      - name: Is Issue Epic
+      - name: Is Issue dobranch
         id: getlabel
         uses: renanmav/match-label-action@v3
         with:
@@ -22,3 +22,11 @@ jobs:
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  label_issue_in_progress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add In Progress Label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: inprogress"
+          remove-labels: "status: backlog"
