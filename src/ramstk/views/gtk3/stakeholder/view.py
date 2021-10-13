@@ -183,14 +183,13 @@ class StakeholderListView(RAMSTKListView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_load_affinity_groups(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS
         )
         self._pnlPanel.do_load_stakeholders(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_STAKEHOLDERS
         )
-        self._pnlPanel.do_set_callbacks()
+
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

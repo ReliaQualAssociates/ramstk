@@ -242,7 +242,6 @@ class PoFWorkView(RAMSTKWorkView):
         super().do_embed_treeview_panel()
         self.__do_load_test_method_lists()
         self._pnlPanel.do_load_comboboxes()
-        self._pnlPanel.do_set_callbacks()
 
         self.show_all()
 

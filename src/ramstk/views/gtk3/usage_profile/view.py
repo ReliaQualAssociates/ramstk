@@ -220,10 +220,8 @@ class UsageProfileListView(RAMSTKListView):
         self._pnlPanel.dic_units = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
         )
-
-        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_load_comboboxes()
-        self._pnlPanel.do_set_callbacks()
+
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

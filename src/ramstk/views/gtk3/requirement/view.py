@@ -155,8 +155,6 @@ class RequirementModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_requirement", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         )

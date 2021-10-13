@@ -323,8 +323,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
