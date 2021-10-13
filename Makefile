@@ -53,7 +53,7 @@ DOCFORMATTER_ARGS	= --in-place --config ./pyproject.toml
 ISORT_ARGS	= --settings-file ./pyproject.toml --atomic
 MYPY_ARGS	= --config-file ./pyproject.toml
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
-PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
+PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 
 PYVERS		= 3.6 3.7 3.8

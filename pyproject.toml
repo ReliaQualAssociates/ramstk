@@ -269,3 +269,11 @@ report = "warning"
 ignore_directives = [
 	"automodule"
 ]
+
+[tool.pydocstyle]
+ignore = [
+	'D203',
+	'D204',
+	'D213',
+]
+match = 'src/ramstk/*.py'
