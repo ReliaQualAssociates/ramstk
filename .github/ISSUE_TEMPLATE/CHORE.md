@@ -2,10 +2,10 @@
 name: Chore
 about: Build tools, CI workflow, refactoring, and code styling issues.
 labels:
-  - globalbacklog
+  - status: backlog
 
 ---
 
 **Describe the chore that needs to be addressed.**
 
-- [ ] This issue is an epic issue which subsumes the following:
+- [ ] This issue subsumes the following issues:
