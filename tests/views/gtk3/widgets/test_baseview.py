@@ -35,7 +35,6 @@ class TestRAMSTKBaseView:
         assert DUT.dic_tab_position["right"] == Gtk.PositionType.RIGHT
         assert DUT.dic_tab_position["top"] == Gtk.PositionType.TOP
         assert DUT.dic_tab_position["bottom"] == Gtk.PositionType.BOTTOM
-        assert isinstance(DUT._lst_col_order, list)
         # assert DUT._mission_time == 100.0
         assert isinstance(DUT._notebook, Gtk.Notebook)
         assert DUT._revision_id == 0

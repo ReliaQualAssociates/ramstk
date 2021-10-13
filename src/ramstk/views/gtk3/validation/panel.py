@@ -599,10 +599,10 @@ class ValidationTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "validation" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Validation {0}: {1}").format(str(_code), str(_name))
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["validation_id"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _title = _(f"Analyzing Validation {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
@@ -1062,7 +1062,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
             _index = combo.get_active()
 
             _task_type = self._dic_task_types[_index][0]
-            _task_code = "{0:s}-{1:04d}".format(_task_type, int(self._record_id))
+            _task_code = f"{_task_type}-{self._record_id:04d}"
 
             self.txtCode.do_update(str(_task_code), signal="changed")
 
@@ -1139,6 +1139,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         self.txtMeanCostUL: RAMSTKEntry = RAMSTKEntry()
 
         # Initialize private dict instance attributes.
+        self._dic_task_types: Dict[int, List[str]] = {}
 
         # Initialize private list instance attributes.
 
@@ -1333,6 +1334,27 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
 
         # Subscribe to PyPubSub messages.
 
+    def do_load_validation_types(
+        self, validation_type: Dict[int, Tuple[str, str]]
+    ) -> None:
+        """Load the validation task types RAMSTKComboBox().
+
+        :param validation_type: a dict of validation task types.  The key is an
+            integer representing the ID field in the database.  The value is a
+            tuple with a task code, task name, and generic task type.  For
+            example:
+
+            ('RAA', 'Reliability, Assessment', 'validation')
+
+        :return: None
+        :rtype: None
+        """
+        for _index, _key in enumerate(validation_type):
+            self._dic_task_types[_index + 1] = [
+                validation_type[_key][0],
+                validation_type[_key][1],
+            ]
+
     def _do_load_code(self, task_code: int) -> None:
         """Load the Validation code RAMSTKEntry().
 
@@ -1356,12 +1378,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         """
         _code = ""
 
-        # Update the Validation task name for the selected Validation task.
-        _types = self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         # pylint: disable=unused-variable
-        for __, _type in _types.items():
+        for __, _type in self._dic_task_types.items():
             if _type[1] == task_type:
-                _code = "{0:s}-{1:04d}".format(_type[0], int(self._record_id))
+                _code = f"{_type[0]}-{self._record_id:04d}"
 
         pub.sendMessage(
             "wvw_editing_validation",

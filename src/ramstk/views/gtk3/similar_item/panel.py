@@ -1267,11 +1267,11 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _model = self.tvwTreeView.get_model()
 
-        _model.set_value(row, self._lst_col_order[30], function[0])
-        _model.set_value(row, self._lst_col_order[31], function[1])
-        _model.set_value(row, self._lst_col_order[32], function[2])
-        _model.set_value(row, self._lst_col_order[33], function[3])
-        _model.set_value(row, self._lst_col_order[34], function[4])
+        _model.set_value(row, self.tvwTreeView.position["function_1"], function[0])
+        _model.set_value(row, self.tvwTreeView.position["function_2"], function[1])
+        _model.set_value(row, self.tvwTreeView.position["function_3"], function[2])
+        _model.set_value(row, self.tvwTreeView.position["function_4"], function[3])
+        _model.set_value(row, self.tvwTreeView.position["function_5"], function[4])
 
     def _do_set_hardware_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the hardware tree is retrieved.
@@ -1336,6 +1336,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
+        if self._method_id == -1:
+            self._method_id = 0
         self.tvwTreeView.visible = self._dic_visible_mask[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 

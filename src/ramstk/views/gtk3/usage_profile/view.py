@@ -62,7 +62,6 @@ class UsageProfileListView(RAMSTKListView):
         self._lst_callbacks[0] = self._do_request_insert_sibling
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
-        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         self._lst_icons[0] = "insert_sibling"
         self._lst_icons.insert(1, "insert_child")
         self._lst_icons.insert(2, "remove")
