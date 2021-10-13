@@ -32,54 +32,40 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     """
 
     _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _function_1 = (
+        "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>"
+        "\u03C0<sub>E</sub></span>"
+    )
+    _function_2 = (
+        "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>"
+        "\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+    )
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        2: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        3: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
+        1: _lambda_p + _function_1,
+        2: _lambda_p + _function_1,
+        3: _lambda_p + _function_1,
         4: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>NR</sub>\u03C0<sub>Q"
         "</sub>\u03C0<sub>E</sub></span>",
-        5: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        6: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        7: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>R</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
+        5: _lambda_p + _function_1,
+        6: _lambda_p + _function_1,
+        7: _lambda_p + _function_1,
         8: _lambda_p + "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        9: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        9: _lambda_p + _function_2,
         10: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>C</sub>\u03C0<sub"
         ">R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
         "></span>",
-        11: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        11: _lambda_p + _function_2,
         12: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
         ">V</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub"
         "></span>",
-        13: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        14: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        15: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub"
-        ">V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span> ",
+        13: _lambda_p + _function_2,
+        14: _lambda_p + _function_2,
+        15: _lambda_p + _function_2,
     }
 
     # Define private list class attributes.

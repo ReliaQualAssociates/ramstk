@@ -47,33 +47,20 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     """
 
     _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _function_1 = "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
+    _function_2 = "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>"
+    _function_3 = "\u03BB<sub>CYC</sub>)" + _function_2
 
     # Define private class dict class attributes.
     _dic_part_stress: Dict[int, str] = {
-        1: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        2: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        3: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        4: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-        "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        5: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
-        "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        6: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
-        "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        7: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
-        "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
-        8: _lambda_p
-        + "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub> + "
-        "\u03BB<sub>CYC</sub>)\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>",
+        1: _lambda_p + _function_1 + _function_2,
+        2: _lambda_p + _function_1 + _function_2,
+        3: _lambda_p + _function_1 + _function_2,
+        4: _lambda_p + _function_1 + _function_2,
+        5: _lambda_p + _function_1 + _function_3,
+        6: _lambda_p + _function_1 + _function_3,
+        7: _lambda_p + _function_1 + _function_3,
+        8: _lambda_p + _function_1 + _function_3,
         9: _lambda_p + "(C<sub>1</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub> + "
         "C<sub>2</sub>\u03C0<sub>E</sub>)\u03C0<sub>L</sub>\u03C0<sub>Q</sub"
         "></span>",

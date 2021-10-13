@@ -35,6 +35,10 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     """
 
     _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
+    _function_1 = (
+        "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>"
+        "\u03C0<sub>E</sub></span>"
+    )
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
@@ -50,9 +54,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         4: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>Q"
         "</sub>\u03C0<sub>E</sub></span>",
-        5: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
+        5: _lambda_p + _function_1,
         6: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
         "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
@@ -62,18 +64,12 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         8: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>A</sub>\u03C0<sub>M"
         "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        9: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
+        9: _lambda_p + _function_1,
         10: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>R</sub>\u03C0<sub>S"
         "</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-        11: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
-        12: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>E"
-        "</sub></span>",
+        11: _lambda_p + _function_1,
+        12: _lambda_p + _function_1,
         13: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>Q</sub>\u03C0<sub>I"
         "</sub>\u03C0<sub>A</sub>\u03C0<sub>P</sub>\u03C0<sub>E</sub></span> ",
