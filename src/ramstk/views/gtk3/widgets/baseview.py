@@ -118,8 +118,6 @@ class RAMSTKBaseView(Gtk.HBox):
             _("Save All"),
         ]
         self._lst_tooltips: List[str] = []
-
-        self._lst_col_order: List[int] = []
         self._lst_handler_id: List[int] = []
         self._lst_layouts: List[str] = [
             "allocation",
@@ -225,8 +223,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.make_toolbuttons(
             icons=self._lst_icons,  # type: ignore
             tooltips=self._lst_tooltips,  # type: ignore
-            callbacks=self._lst_callbacks,
-        )  # type: ignore
+            callbacks=self._lst_callbacks,  # type: ignore
+        )
 
     def do_make_layout_lr(self) -> Gtk.HPaned:
         """Create a view with the following layout.

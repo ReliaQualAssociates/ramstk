@@ -1156,7 +1156,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         _model, _row = selection.get_selected()
         if _row is not None:
-            for _key, __ in self.dic_attribute_widget_map.items():
+            for (
+                _key,
+                __,  # pylint: disable=unused-variable
+            ) in self.dic_attribute_widget_map.items():
                 _attributes[_key] = _model.get_value(
                     _row,
                     self.tvwTreeView.position[_key],
