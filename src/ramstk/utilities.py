@@ -3,16 +3,18 @@
 #       ramstk.utilities.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Utility functions for interacting with the RAMSTK application."""
 
 # Standard Library Imports
+import functools
 import gettext
 import os
 import os.path
 import sys
+import warnings
 from datetime import datetime
-from typing import Any, List
+from typing import Any, Callable, List
 
 # Third Party Imports
 from dateutil.parser import parse
@@ -31,6 +33,23 @@ def date_to_ordinal(date: str) -> int:
         return parse(str(date)).toordinal()
     except (ValueError, TypeError):
         return parse("01/01/1970").toordinal()
+
+
+def deprecated(func: Callable) -> Callable:
+    """This is a decorator to mark functions as deprecated."""
+
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        warnings.simplefilter("always", DeprecationWarning)  # turn off filter
+        warnings.warn(
+            f"Call to deprecated function {func.__name__}.",
+            category=DeprecationWarning,
+            stacklevel=2,
+        )
+        warnings.simplefilter("default", DeprecationWarning)  # reset filter
+        return func(*args, **kwargs)
+
+    return new_func
 
 
 def dir_exists(directory: str) -> bool:

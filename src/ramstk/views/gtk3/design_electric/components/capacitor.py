@@ -55,7 +55,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private dictionary class attributes.
     _dic_quality: Dict[int, List[Any]] = {
         1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["M"], [_("Non-Established Reliability")], [_("Lower")]],
+        2: [["M"], [_("MIL-C-11693 Non-Established Reliability")], [_("Lower")]],
         3: [
             "S",
             "R",
@@ -106,7 +106,14 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("MIL-C-11015 Non-Established Reliability")],
             [_("Lower")],
         ],
-        11: ["S", "R", "P", "M", [_("Non-Established Reliability")], [_("Lower")]],
+        11: [
+            "S",
+            "R",
+            "P",
+            "M",
+            [_("MIL-C-20 Non-Established Reliability")],
+            [_("Lower")],
+        ],
         12: ["D", "C", "S", "B", "R", "P", "M", "L", [_("Lower")]],
         13: [
             "S",
@@ -117,7 +124,14 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("MIL-C-3965 Non-Established Reliability")],
             [_("Lower")],
         ],
-        14: ["S", "R", "P", "M", [_("Non-Established Reliability")], [_("Lower")]],
+        14: [
+            "S",
+            "R",
+            "P",
+            "M",
+            [_("MIL-C-39018 Non-Established Reliability")],
+            [_("Lower")],
+        ],
         15: [["MIL-SPEC"], [_("Lower")]],
         16: [["MIL-SPEC"], [_("Lower")]],
         17: [["MIL-SPEC"], [_("Lower")]],
@@ -469,15 +483,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map = {
-            32: ["quality_id", "integer"],
-            4: ["capacitance", "float"],
-            5: ["configuration_id", "integer"],
-            6: ["construction_id", "integer"],
-            35: ["resistance", "float"],
-            36: ["specification_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "quality_id": [
                 32,
@@ -490,6 +495,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the capacitor."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "capacitance": [
                 4,
@@ -504,6 +510,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Capacitance (F):"),
+                "gfloat",
             ],
             "specification_id": [
                 36,
@@ -516,6 +523,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The governing specification for the capacitor."),
                 },
                 _("Specification:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -528,6 +536,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The style of the capacitor."),
                 },
                 _("Style:"),
+                "gint",
             ],
             "configuration_id": [
                 5,
@@ -540,6 +549,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The configuration of the capacitor."),
                 },
                 _("Configuration:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -552,6 +562,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The method of construction of the capacitor."),
                 },
                 _("Construction:"),
+                "gint",
             ],
             "resistance": [
                 35,
@@ -564,6 +575,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The equivalent series resistance of the capacitor."),
                 },
                 _("Equivalent Series Resistance (\u03A9):"),
+                "gfloat",
             ],
         }
 

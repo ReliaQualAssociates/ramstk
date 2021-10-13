@@ -12,7 +12,7 @@ from typing import Callable, List, Tuple
 
 # Third Party Imports
 import numpy as np
-import scipy.misc as misc
+from scipy import misc
 from scipy.stats import norm
 
 

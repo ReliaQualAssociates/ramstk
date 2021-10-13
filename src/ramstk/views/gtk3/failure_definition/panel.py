@@ -66,6 +66,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "definition_id": [
                 1,
@@ -81,6 +82,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Definition ID"),
+                "gint",
             ],
             "definition": [
                 2,
@@ -96,6 +98,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Definition"),
+                "gchararray",
             ],
         }
 

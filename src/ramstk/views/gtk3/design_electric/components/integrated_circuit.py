@@ -141,25 +141,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            32: ["quality_id", "integer"],
-            2: ["application_id", "integer"],
-            3: ["area", "float"],
-            6: ["construction_id", "integer"],
-            15: ["family_id", "integer"],
-            16: ["feature_size", "float"],
-            20: ["manufacturing_id", "integer"],
-            22: ["n_active_pins", "integer"],
-            24: ["n_cycles", "integer"],
-            25: ["n_elements", "integer"],
-            28: ["operating_life", "float"],
-            30: ["package_id", "integer"],
-            37: ["technology_id", "integer"],
-            47: ["theta_jc", "float"],
-            48: ["type_id", "integer"],
-            51: ["voltage_esd", "float"],
-            55: ["years_in_production", "float"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -172,6 +153,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the integrated circuit."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "package_id": [
                 30,
@@ -184,6 +166,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of package housing the integrated circuit."),
                 },
                 _("Package:"),
+                "gint",
             ],
             "area": [
                 3,
@@ -199,6 +182,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Die Area:"),
+                "gfloat",
             ],
             "n_elements": [
                 25,
@@ -214,6 +198,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("N Elements:"),
+                "gint",
             ],
             "theta_jc": [
                 47,
@@ -227,6 +212,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("\u0398<sub>JC</sub>:"),
+                "gfloat",
             ],
             "n_active_pins": [
                 22,
@@ -242,6 +228,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Active Pins:"),
+                "gint",
             ],
             "technology_id": [
                 37,
@@ -256,6 +243,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Technology:"),
+                "gint",
             ],
             "years_in_production": [
                 55,
@@ -272,6 +260,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Years in Production:"),
+                "gfloat",
             ],
             "construction_id": [
                 6,
@@ -285,7 +274,8 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                         "The method of construction of the integrated circuit."
                     ),
                 },
-                _("Construction"),
+                _("Construction:"),
+                "gint",
             ],
             "n_cycles": [
                 24,
@@ -301,6 +291,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Programming Cycles:"),
+                "gint",
             ],
             "operating_life": [
                 28,
@@ -314,6 +305,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Operating Life:"),
+                "gfloat",
             ],
             "family_id": [
                 15,
@@ -326,6 +318,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The error correction code used by the EEPROM."),
                 },
                 _("Error Correction Code:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -338,6 +331,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application of the integrated circuit."),
                 },
                 _("Application:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -350,6 +344,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of GaAs or VLSI device."),
                 },
                 _("Device Type:"),
+                "gint",
             ],
             "feature_size": [
                 16,
@@ -363,6 +358,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Feature Size:"),
+                "gfloat",
             ],
             "manufacturing_id": [
                 20,
@@ -375,6 +371,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The manufacturing process for the VLSI device."),
                 },
                 _("Manufacturing Process:"),
+                "gint",
             ],
             "voltage_esd": [
                 51,
@@ -390,6 +387,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("ESD Threshold Voltage:"),
+                "gfloat",
             ],
         }
 

@@ -42,6 +42,14 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     :ivar txtCycles: enter and display the number of relay cycles per hour.
     """
 
+    _balanced_armature: str = _("Balanced Armature")
+    _dry_reed: str = _("Dry Reed")
+    _magnetic_latching: str = _("Magnetic Latching")
+    _mechanical_latching: str = _("Mechanical Latching")
+    _mercury_wetted: str = _("Mercury Wetted")
+    _meter_movement: str = _("Meter Movement")
+    _solenoid: str = _("Solenoid")
+
     # Define private dict class attributes.
     _dic_quality: Dict[int, List[List[str]]] = {
         1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
@@ -55,7 +63,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("Latching")],
             [_("Reed")],
             [_("Thermal, Bi-Metal")],
-            [_("Meter Movement")],
+            [_meter_movement],
         ],
         2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]],
     }
@@ -75,7 +83,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("High Speed")],
             [_("Thermal Time Delay")],
             [_("Electronic Time Delay, Non-Thermal")],
-            [_("Latching, Magnetic")],
+            [_magnetic_latching],
         ],
         3: [[_("High Voltage")], [_("Medium Power")]],
         4: [[_("Contactors, High Current")]],
@@ -86,49 +94,49 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         1: {
             1: [
                 [_("Armature (Long)")],
-                [_("Dry Reed")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
+                [_dry_reed],
+                [_mercury_wetted],
+                [_magnetic_latching],
+                [_balanced_armature],
+                [_solenoid],
             ]
         },
         2: {
-            1: [[_("Armature (Long)")], [_("Balanced Armature")], [_("Solenoid")]],
+            1: [[_("Armature (Long)")], [_balanced_armature], [_solenoid]],
             2: [
-                [_("Armature (LOng and Short)")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Meter Movement")],
-                [_("Balanced Armature")],
+                [_("Armature (Long and Short)")],
+                [_mercury_wetted],
+                [_magnetic_latching],
+                [_meter_movement],
+                [_balanced_armature],
             ],
-            3: [[_("Armature (Short)")], [_("Meter Movement")]],
-            4: [[_("Dry Reed")], [_("Mercury Wetted")]],
-            5: [[_("Armature (Balanced and Short)")], [_("Dry Reed")]],
+            3: [[_("Armature (Short)")], [_meter_movement]],
+            4: [[_dry_reed], [_mercury_wetted]],
+            5: [[_("Armature (Balanced and Short)")], [_dry_reed]],
             6: [[_("Bimetal")]],
             8: [
-                [_("Dry Reed")],
-                [_("Mercury Wetted")],
-                [_("Balanced Armature")],
+                [_dry_reed],
+                [_mercury_wetted],
+                [_balanced_armature],
             ],
         },
         3: {
             1: [[_("Vacuum (Glass)")], [_("Vacuum (Ceramic)")]],
             2: [
                 [_("Armature (Long and Short)")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Mechanical Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
+                [_mercury_wetted],
+                [_magnetic_latching],
+                [_mechanical_latching],
+                [_balanced_armature],
+                [_solenoid],
             ],
         },
         4: {
             1: [
                 [_("Armature (Short)")],
-                [_("Mechanical Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
+                [_mechanical_latching],
+                [_balanced_armature],
+                [_solenoid],
             ]
         },
     }
@@ -194,16 +202,6 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["application_id", "integer"],
-            6: ["construction_id", "integer"],
-            7: ["contact_form_id", "integer"],
-            9: ["contact_rating_id", "integer"],
-            24: ["n_cycles", "float"],
-            32: ["quality_id", "integer"],
-            37: ["technology_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -216,6 +214,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -228,6 +227,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The relay type."),
                 },
                 _("Type:"),
+                "gint",
             ],
             "technology_id": [
                 37,
@@ -239,7 +239,8 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 {
                     "tooltip": _("The type of load the relay is switching."),
                 },
-                _("Load Type"),
+                _("Load Type:"),
+                "gint",
             ],
             "contact_form_id": [
                 7,
@@ -252,6 +253,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The contact form of the relay."),
                 },
                 _("Contact Form:"),
+                "gint",
             ],
             "contact_rating_id": [
                 9,
@@ -264,6 +266,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The rating of the relay contacts."),
                 },
                 _("Contact Rating:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -276,6 +279,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of relay application."),
                 },
                 _("Application:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -288,6 +292,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The method of construction of the relay."),
                 },
                 _("Construction:"),
+                "gint",
             ],
             "n_cycles": [
                 2,
@@ -300,6 +305,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of relay on/off cycles per hour."),
                 },
                 _("Number of Cycles/Hour:"),
+                "gfloat",
             ],
         }
 

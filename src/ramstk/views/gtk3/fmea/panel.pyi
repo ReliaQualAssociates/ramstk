@@ -25,7 +25,6 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
     chkRPN: RAMSTKCheckButton
     txtItemCriticality: RAMSTKTextView
     _on_edit_message: str
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def _do_load_item_criticality(self, item_criticality: Dict[str, float]) -> None: ...

@@ -242,19 +242,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            8: ["contact_gauge", "integer"],
-            10: ["current_operating", "float"],
-            18: ["insert_id", "integer"],
-            22: ["n_active_pins", "integer"],
-            23: ["n_circuit_planes", "integer"],
-            24: ["n_cycles", "float"],
-            26: ["n_hand_soldered", "integer"],
-            27: ["n_wave_soldered", "integer"],
-            32: ["quality_id", "integer"],
-            36: ["specification_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -267,6 +254,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the connector/connection."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -279,6 +267,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of connector/connection."),
                 },
                 _("Connector Type:"),
+                "gint",
             ],
             "specification_id": [
                 36,
@@ -291,6 +280,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The governing specification for the connection."),
                 },
                 _("Specification:"),
+                "gint",
             ],
             "insert_id": [
                 18,
@@ -303,6 +293,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The connector insert material."),
                 },
                 _("Insert Material:"),
+                "gint",
             ],
             "contact_gauge": [
                 8,
@@ -315,6 +306,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The gauge of the contacts in the connector."),
                 },
                 _("Contact Gauge:"),
+                "gint",
             ],
             "n_active_pins": [
                 22,
@@ -327,6 +319,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of active pins in the connector."),
                 },
                 _("Active Pins:"),
+                "gint",
             ],
             "current_operating": [
                 10,
@@ -339,6 +332,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The amperes per active contact."),
                 },
                 _("Amperes/Contact:"),
+                "gfloat",
             ],
             "n_cycles": [
                 24,
@@ -354,6 +348,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Mating/Unmating Cycles (per 1000 hours):"),
+                "gfloat",
             ],
             "n_wave_soldered": [
                 27,
@@ -366,6 +361,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of wave soldered PTH connections."),
                 },
                 _("Number of Wave Soldered PTH:"),
+                "gint",
             ],
             "n_hand_soldered": [
                 26,
@@ -378,6 +374,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of hand soldered PTH connections."),
                 },
                 _("Number of Hand Soldered PTH:"),
+                "gint",
             ],
             "n_circuit_planes": [
                 23,
@@ -392,6 +389,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Number of Circuit Planes:"),
+                "gint",
             ],
         }
 

@@ -33,7 +33,6 @@ class RAMSTKPanel(RAMSTKFrame):
     _parent_id: int
     _record_id: int
     _tree_loaded: bool
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     fmt: str
     tree: treelib.Tree

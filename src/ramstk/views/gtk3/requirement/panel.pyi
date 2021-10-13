@@ -22,7 +22,6 @@ class RequirementTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: Any
     _dic_row_loader: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
@@ -50,7 +49,6 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
     txtPageNum: Any
     txtSpecification: Any
     txtValidatedDate: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def do_load_priorities(self) -> None: ...
@@ -78,7 +76,6 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
     chkClarityQ6: Any
     chkClarityQ7: Any
     chkClarityQ8: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
 
@@ -97,7 +94,6 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
     chkCompleteQ7: Any
     chkCompleteQ8: Any
     chkCompleteQ9: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
 
@@ -115,7 +111,6 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
     chkConsistentQ6: Any
     chkConsistentQ7: Any
     chkConsistentQ8: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
 
@@ -130,6 +125,5 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
     chkVerifiableQ3: Any
     chkVerifiableQ4: Any
     chkVerifiableQ5: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...

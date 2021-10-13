@@ -72,13 +72,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["application_id", "integer"],
-            12: ["duty_cycle", "float"],
-            17: ["frequency_operating", "float"],
-            32: ["quality_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -91,6 +84,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -103,6 +97,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application of the lamp."),
                 },
                 _("Application:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -115,6 +110,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of electronic filter."),
                 },
                 _("Type:"),
+                "gint",
             ],
             "frequency_operating": [
                 17,
@@ -127,6 +123,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The operating frequency of the crystal."),
                 },
                 _("Operating Frequency:"),
+                "gfloat",
             ],
             "duty_cycle": [
                 12,
@@ -142,6 +139,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Utilization:"),
+                "gfloat",
             ],
         }
 

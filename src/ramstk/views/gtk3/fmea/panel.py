@@ -63,10 +63,6 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         self._on_edit_message = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map = {
-            27: ["type_id", "integer"],
-            28: ["item_criticality", "string"],
-        }
         self.dic_attribute_widget_map = {
             "type_id": [
                 27,
@@ -82,6 +78,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Calculate Criticality"),
+                "gint",
             ],
             "rpn": [
                 27,
@@ -97,6 +94,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Calculate RPN"),
+                "gint",
             ],
             "item_criticality": [
                 28,
@@ -115,6 +113,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Item Criticality:"),
+                "gchararray",
             ],
         }
 
@@ -468,6 +467,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "hardware_id": [
                 1,
@@ -483,6 +483,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Hardware ID"),
+                "gint",
             ],
             "mode_id": [
                 2,
@@ -498,6 +499,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Mode ID"),
+                "gint",
             ],
             "mechanism_id": [
                 3,
@@ -513,6 +515,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Mechanism ID"),
+                "gint",
             ],
             "cause_id": [
                 4,
@@ -528,6 +531,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Cause ID"),
+                "gint",
             ],
             "control_id": [
                 5,
@@ -543,6 +547,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Control ID"),
+                "gint",
             ],
             "action_id": [
                 6,
@@ -558,6 +563,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Action ID"),
+                "gint",
             ],
             "description": [
                 7,
@@ -573,6 +579,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
+                "gchararray",
             ],
             "mission": [
                 8,
@@ -588,6 +595,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Applicable Mission"),
+                "gchararray",
             ],
             "mission_phase": [
                 9,
@@ -603,6 +611,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Applicable Mission Phase"),
+                "gchararray",
             ],
             "effect_local": [
                 10,
@@ -618,6 +627,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Local Effect"),
+                "gchararray",
             ],
             "effect_next": [
                 11,
@@ -633,6 +643,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Next Effect"),
+                "gchararray",
             ],
             "effect_end": [
                 12,
@@ -648,6 +659,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("End Effect"),
+                "gchararray",
             ],
             "detection_method": [
                 13,
@@ -663,6 +675,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Detection Method"),
+                "gchararray",
             ],
             "other_indications": [
                 14,
@@ -678,6 +691,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Other Indications"),
+                "gchararray",
             ],
             "isolation_method": [
                 15,
@@ -693,6 +707,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Isolation Method"),
+                "gchararray",
             ],
             "design_provisions": [
                 16,
@@ -708,6 +723,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Design Provisions"),
+                "gchararray",
             ],
             "operator_actions": [
                 17,
@@ -723,6 +739,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Operator Actions"),
+                "gchararray",
             ],
             "severity_class": [
                 18,
@@ -738,6 +755,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Safety Severity"),
+                "gchararray",
             ],
             "hazard_rate_source": [
                 19,
@@ -753,6 +771,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Hazard Rate Data Source"),
+                "gchararray",
             ],
             "mode_probability": [
                 20,
@@ -768,6 +787,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Failure Probability"),
+                "gchararray",
             ],
             "effect_probability": [
                 21,
@@ -783,6 +803,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Effect Probability (beta)"),
+                "gfloat",
             ],
             "mode_ratio": [
                 22,
@@ -798,6 +819,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mode Ratio (alpha)"),
+                "gfloat",
             ],
             "mode_hazard_rate": [
                 23,
@@ -813,6 +835,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mode Hazard Rate"),
+                "gfloat",
             ],
             "mode_op_time": [
                 24,
@@ -828,6 +851,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mode Operating Time"),
+                "gfloat",
             ],
             "mode_criticality": [
                 25,
@@ -843,6 +867,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Mode Criticality (Cm)"),
+                "gfloat",
             ],
             "type_id": [
                 26,
@@ -858,6 +883,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Control Type"),
+                "gchararray",
             ],
             "rpn_severity": [
                 27,
@@ -873,6 +899,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Severity"),
+                "gint",
             ],
             "rpn_occurrence": [
                 28,
@@ -888,6 +915,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Occurrence"),
+                "gint",
             ],
             "rpn_detection": [
                 29,
@@ -903,6 +931,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Detection"),
+                "gint",
             ],
             "rpn": [
                 30,
@@ -918,6 +947,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN"),
+                "gint",
             ],
             "action_category": [
                 31,
@@ -933,6 +963,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Category"),
+                "gchararray",
             ],
             "action_owner": [
                 32,
@@ -948,6 +979,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Owner"),
+                "gchararray",
             ],
             "action_due_date": [
                 33,
@@ -963,6 +995,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Due Date"),
+                "gchararray",
             ],
             "action_status": [
                 34,
@@ -978,6 +1011,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Status"),
+                "gchararray",
             ],
             "action_taken": [
                 35,
@@ -993,6 +1027,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Taken"),
+                "gchararray",
             ],
             "action_approved": [
                 36,
@@ -1008,6 +1043,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Approved"),
+                "gint",
             ],
             "action_approve_date": [
                 37,
@@ -1023,6 +1059,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Approval Date"),
+                "gchararray",
             ],
             "action_closed": [
                 38,
@@ -1038,6 +1075,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Closed"),
+                "gint",
             ],
             "action_close_date": [
                 39,
@@ -1053,6 +1091,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Action Closure Date"),
+                "gchararray",
             ],
             "rpn_severity_new": [
                 40,
@@ -1068,6 +1107,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Severity"),
+                "gint",
             ],
             "rpn_occurrence_new": [
                 41,
@@ -1083,6 +1123,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Occurence"),
+                "gint",
             ],
             "rpn_detection_new": [
                 42,
@@ -1098,6 +1139,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Detection"),
+                "gint",
             ],
             "rpn_new": [
                 43,
@@ -1113,6 +1155,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN"),
+                "gint",
             ],
             "critical_item": [
                 44,
@@ -1128,6 +1171,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Critical Item"),
+                "gint",
             ],
             "single_point": [
                 45,
@@ -1143,6 +1187,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Single Point"),
+                "gint",
             ],
             "pof_include": [
                 46,
@@ -1158,6 +1203,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Include in PoF"),
+                "gint",
             ],
             "remarks": [
                 47,
@@ -1173,6 +1219,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Remarks"),
+                "gchararray",
             ],
         }
         self.dic_icons: Dict[str, str] = {}
