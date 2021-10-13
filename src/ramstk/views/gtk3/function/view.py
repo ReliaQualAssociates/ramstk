@@ -29,7 +29,7 @@ class FunctionModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  The attributes of a Function
     Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -43,7 +43,7 @@ class FunctionModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "function"
+    _tag: str = "function"
     _tablabel: str = "Function"
     _tabtooltip: str = _("Displays the functional hierarchy for the selected Revision.")
 
@@ -99,7 +99,7 @@ class FunctionModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
+        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
@@ -134,7 +134,7 @@ class FunctionWorkView(RAMSTKWorkView):
     The Function Work View displays all the general data attributes for the
     selected Function. The attributes of a Function General Data Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
     :cvar str _tablabel: the text to display on the tab's label.
     :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
@@ -156,7 +156,7 @@ class FunctionWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "function"
+    _tag: str = "function"
     _tablabel = _("General\nData")
     _tabtooltip = _("Displays general information for the selected Function.")
 

@@ -15,7 +15,7 @@ from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 from . import PoFTreePanel as PoFTreePanel
 
 class PoFWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _pixbuf: bool
     _tablabel: str
     _tabtooltip: str

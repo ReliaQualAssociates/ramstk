@@ -69,7 +69,7 @@ class FMEAWorkView(RAMSTKWorkView):
     :cvar bool _pixbuf: indicates whether or icons are displayed in the
         RAMSTKTreeView.  If true, a GDKPixbuf column will be appended when
         creating the RAMSTKTreeView.  Default is True.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar list _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -95,7 +95,7 @@ class FMEAWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "fmea"
+    _tag: str = "fmea"
     _pixbuf: bool = True
     _tablabel: str = _("FMEA")
     _tabtooltip: str = _(
@@ -202,7 +202,7 @@ class FMEAWorkView(RAMSTKWorkView):
             "You are about to delete {1} item {0} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
-        ).format(_node_id, self._module.title())
+        ).format(_node_id, self._tag.title())
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")

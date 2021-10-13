@@ -74,7 +74,7 @@ class HardwareModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  The attributes of a Hardware
     Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -88,7 +88,7 @@ class HardwareModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = "Hardware"
     _tabtooltip: str = _(
         "Displays the hardware hierarchy (BoM) for the selected Revision."
@@ -168,7 +168,7 @@ class HardwareModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
+        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.

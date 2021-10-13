@@ -24,7 +24,7 @@ class UsageProfileListView(RAMSTKListView):
 
     The attributes of a Usage Profile List View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -36,7 +36,7 @@ class UsageProfileListView(RAMSTKListView):
     # Define private dict class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "usage_profile"
+    _tag: str = "usage_profile"
     _tablabel: str = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
     _tabtooltip: str = _("Displays usage profiles for the selected revision.")
 

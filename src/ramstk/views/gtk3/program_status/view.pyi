@@ -14,7 +14,7 @@ from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 from . import ProgramStatusPlotPanel as ProgramStatusPlotPanel
 
 class ProgramStatusWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_callbacks: List[Callable]

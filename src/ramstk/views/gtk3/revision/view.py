@@ -35,7 +35,7 @@ class RevisionModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  The attributes of a Revision
     Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -49,7 +49,7 @@ class RevisionModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "revision"
+    _tag: str = "revision"
     _tablabel: str = "Revision"
     _tabtooltip: str = _("Displays the list of Revisions for the open RAMSTK Project.")
 
@@ -167,7 +167,7 @@ class RevisionWorkView(RAMSTKWorkView):
     The Revision Work View displays all the general data attributes for the
     selected Revision. The attributes of a Revision General Data Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
     :cvar str _tablabel: the text to display on the tab's label.
     :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
@@ -189,7 +189,7 @@ class RevisionWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "revision"
+    _tag: str = "revision"
     _tablabel = _("General\nData")
     _tabtooltip = _("Displays general information for the selected Revision")
 
