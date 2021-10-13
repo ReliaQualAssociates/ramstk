@@ -311,7 +311,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _types = []
 
         # Create a list of GObject data types to pass to the model.
-        for __, _datatype in self.datatypes.items():
+        for __, _datatype in self.datatypes.items():  # pylint: disable=unused-variable
             _types.append(GObject.type_from_name(_datatype))
 
         if self._has_pixbuf:

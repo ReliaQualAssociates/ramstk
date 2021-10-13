@@ -74,8 +74,11 @@ class Export:
         :return: None
         :rtype: None
         """
-        for _key in self._dic_output_data:
-            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
+        for (
+            __,  # pylint: disable=unused-variable
+            _data,
+        ) in self._dic_output_data.items():
+            self._df_output_data = pd.DataFrame(_data)
 
             self._df_output_data.to_csv(file_name, sep=separator, index=True)
 
@@ -89,14 +92,15 @@ class Export:
         """
         _file, _extension = os.path.splitext(file_name)
 
-        for _key in self._dic_output_data:
-            self._df_output_data = pd.DataFrame(self._dic_output_data[_key])
+        for (
+            _key,
+            _data,
+        ) in self._dic_output_data.items():
+            self._df_output_data = pd.DataFrame(_data)
             if _extension == ".xls":
                 # xlwt can't write each module to a separate sheet so we'll
                 # have to make a separate workbook for each work stream module.
-                _writer = pd.ExcelWriter(
-                    "{0:s}_{1:s}.xls".format(_file, _key), engine="xlwt"
-                )
+                _writer = pd.ExcelWriter(f"{_file}_{_key}.xls", engine="xlwt")
             elif _extension in [".xlsx", ".xlsm"]:
                 _writer = pd.ExcelWriter(file_name, engine="openpyxl")
                 # Set the writer workbook if it already exists, otherwise
@@ -111,7 +115,7 @@ class Export:
             else:
                 file_name = _file + ".xls"
                 _writer = pd.ExcelWriter(file_name, engine="xlwt")
-            self._df_output_data.to_excel(_writer, "{0:s}".format(_key), index=True)
+            self._df_output_data.to_excel(_writer, f"{_key}", index=True)
             _writer.save()
 
             _writer.close()

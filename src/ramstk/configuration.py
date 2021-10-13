@@ -232,7 +232,7 @@ class RAMSTKSiteConfiguration:
 
         # Initialize public scalar attributes.
         self.RAMSTK_COM_BACKEND = ""
-        if sys.platform == "linux" or sys.platform == "linux2":
+        if sys.platform in ["linux", "linux2"]:
             self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
         elif sys.platform == "win32":
             self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
@@ -258,11 +258,12 @@ class RAMSTKSiteConfiguration:
         }
 
         try:
-            toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
+            with open(self.RAMSTK_SITE_CONF, "w", encoding="utf-8") as _site_conf:
+                toml.dump(_dic_site_configuration, _site_conf)
             pub.sendMessage("succeed_create_site_configuration")
         except FileNotFoundError:
-            _error_msg = "Failed to write site configuration file {0:s}.".format(
-                self.RAMSTK_SITE_CONF
+            _error_msg = (
+                f"Failed to write site configuration file {self.RAMSTK_SITE_CONF}."
             )
             pub.sendMessage("fail_create_site_configuration", error_message=_error_msg)
 
@@ -284,8 +285,8 @@ class RAMSTKSiteConfiguration:
             self.RAMSTK_COM_INFO["password"] = _config["backend"]["password"]
 
         else:
-            _error_msg = ("Failed to read Site configuration file {0:s}.").format(
-                self.RAMSTK_SITE_CONF
+            _error_msg = (
+                f"Failed to read Site configuration file {self.RAMSTK_SITE_CONF}."
             )
             pub.sendMessage("fail_get_site_configuration", error_message=_error_msg)
 
@@ -302,7 +303,8 @@ class RAMSTKSiteConfiguration:
                 "password": str(self.RAMSTK_COM_INFO["password"]),
             },
         }
-        toml.dump(_dic_site_configuration, open(self.RAMSTK_SITE_CONF, "w"))
+        with open(self.RAMSTK_SITE_CONF, "w", encoding="utf-8") as _site_conf:
+            toml.dump(_dic_site_configuration, _site_conf)
 
     def set_site_directories(self) -> None:
         """Set the site-wide RAMSTK directories.
@@ -596,7 +598,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
         self.RAMSTK_LOCALE = "en_US.UTF8"
         self.RAMSTK_LOGLEVEL = "INFO"
-        if sys.platform == "linux" or sys.platform == "linux2":
+        if sys.platform in ["linux", "linux2"]:
             self.RAMSTK_OS = "Linux"
             self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
             self.RAMSTK_HOME_DIR = environ["HOME"]
@@ -629,10 +631,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
             except OSError:
                 _error_msg = (
-                    "User's configuration directory {0:s} does not "
-                    "exist and could not be created when attempting "
-                    "to create a new user configuration "
-                    "file.".format(self.RAMSTK_CONF_DIR)
+                    f"User's configuration directory {self.RAMSTK_CONF_DIR} does not "
+                    f"exist and could not be created when attempting to create a new "
+                    f"user configuration file."
                 )
                 pub.sendMessage(
                     "fail_create_user_configuration", error_message=_error_msg
@@ -650,9 +651,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 makedirs(self.RAMSTK_DATA_DIR)
             except OSError:
                 _error_msg = (
-                    "User's data directory {0:s} does not exist and "
-                    "could not be created when attempting to create "
-                    "a new user configuration file.".format(self.RAMSTK_DATA_DIR)
+                    f"User's data directory {self.RAMSTK_DATA_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
                 )
                 pub.sendMessage(
                     "fail_create_user_configuration", error_message=_error_msg
@@ -671,9 +672,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 makedirs(self.RAMSTK_ICON_DIR)
             except OSError:
                 _error_msg = (
-                    "User's icon directory {0:s} does not exist and "
-                    "could not be created when attempting to create "
-                    "a new user configuration file.".format(self.RAMSTK_ICON_DIR)
+                    f"User's icon directory {self.RAMSTK_ICON_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
                 )
                 pub.sendMessage(
                     "fail_create_user_configuration", error_message=_error_msg
@@ -692,9 +693,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 makedirs(self.RAMSTK_LOG_DIR)
             except OSError:
                 _error_msg = (
-                    "User's log directory {0:s} does not exist and "
-                    "could not be created when attempting to create "
-                    "a new user configuration file.".format(self.RAMSTK_LOG_DIR)
+                    f"User's log directory {self.RAMSTK_LOG_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
                 )
                 pub.sendMessage(
                     "fail_create_user_configuration", error_message=_error_msg
@@ -711,9 +712,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 makedirs(self.RAMSTK_PROG_DIR)
             except OSError:
                 _error_msg = (
-                    "Program directory {0:s} does not exist and "
-                    "could not be created when attempting to create "
-                    "a new user configuration file.".format(self.RAMSTK_PROG_DIR)
+                    f"Program directory {self.RAMSTK_PROG_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
                 )
                 pub.sendMessage(
                     "fail_create_user_configuration", error_message=_error_msg
@@ -747,11 +748,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             )
         except DistutilsFileError:
             _error_msg = (
-                "Attempt to copy RAMSTK icons from site-wide icon "
-                "directory {0:s} to user's icon directory {1:s} "
-                "failed.".format(
-                    self._INSTALL_PREFIX + "/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
-                )
+                f"Attempt to copy RAMSTK icons from site-wide icon directory "
+                f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/ to user's icon "
+                f"directory {self.RAMSTK_ICON_DIR} failed."
             )
             pub.sendMessage("fail_copy_icons_to_user", error_message=_error_msg)
 
@@ -851,11 +850,12 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         }
 
         try:
-            toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
+            with open(self.RAMSTK_PROG_CONF, "w", encoding="utf-8") as _user_conf:
+                toml.dump(_dic_user_configuration, _user_conf)
             pub.sendMessage("succeed_create_user_configuration")
         except TypeError:
-            _error_msg = "User configuration file {0} is not a file.".format(
-                self.RAMSTK_PROG_CONF
+            _error_msg = (
+                f"User configuration file {self.RAMSTK_PROG_CONF} is not a file."
             )
             pub.sendMessage("fail_create_user_configuration", error_message=_error_msg)
 
@@ -915,8 +915,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
 
         else:
-            _error_msg = ("Failed to read User configuration file {0:s}.").format(
-                self.RAMSTK_PROG_CONF
+            _error_msg = (
+                f"Failed to read User configuration file {self.RAMSTK_PROG_CONF}."
             )
             pub.sendMessage("fail_get_user_configuration", error_message=_error_msg)
 
@@ -1008,7 +1008,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
         }
 
-        toml.dump(_dic_user_configuration, open(self.RAMSTK_PROG_CONF, "w"))
+        with open(self.RAMSTK_PROG_CONF, "w", encoding="utf-8") as _user_conf:
+            toml.dump(_dic_user_configuration, _user_conf)
 
     def set_user_directories(self) -> None:
         """Set the user-specific configuration directories.
