@@ -613,8 +613,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
@@ -1221,7 +1221,6 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar instance attributes.
 
-        # Make a fixed type panel.
         super().do_set_properties()
         super().do_make_panel()
         super().do_set_callbacks()
@@ -1369,7 +1368,6 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar instance attributes.
 
-        # Make a fixed type panel.
         super().do_set_properties()
         super().do_make_panel()
         super().do_set_callbacks()

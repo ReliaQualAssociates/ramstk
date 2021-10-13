@@ -356,7 +356,6 @@ class FMEAWorkView(RAMSTKWorkView):
         self.__do_load_rpn_lists()
         self.__do_load_severity_lists()
         self._pnlPanel.do_load_comboboxes()
-        self._pnlPanel.do_set_callbacks()
 
         self.remove(self.get_children()[-1])
         _hpaned.pack1(self._pnlMethods, True, True)

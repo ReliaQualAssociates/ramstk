@@ -243,8 +243,6 @@ class HardwareModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_hardware",
             [
@@ -316,7 +314,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("General\nData")
     _tabtooltip: str = _("Displays general information for the selected Hardware")
 
@@ -446,7 +444,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the assessment input widget
         labels.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar dict _dic_assessment_input: dictionary of component-specific
         AssessmentInputs classes.
@@ -473,7 +471,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
     _lst_title: List[str] = [_("Operating Stresses")]
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("Assessment\nInputs")
     _tabtooltip: str = _(
         "Displays reliability assessment inputs for the selected hardware item."
@@ -682,7 +680,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the reliability assessment
         results widget labels.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar dict _dic_assessment_results: dictionary of component-specific
         AssessmentResults classes.
@@ -703,7 +701,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
     _lst_title = [_("Assessment Model Results"), _("Stress Results")]
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("Assessment\nResults")
     _tabtooltip: str = _(
         "Displays reliability, maintainability, and availability assessment results "

@@ -341,8 +341,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(

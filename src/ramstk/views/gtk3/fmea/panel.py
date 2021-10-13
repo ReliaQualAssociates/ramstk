@@ -121,8 +121,8 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         # Move the item criticality RAMSTKTextView() below it's label.
@@ -1239,6 +1239,7 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         super().do_set_properties()
         super().do_make_panel()
+        super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
             _(

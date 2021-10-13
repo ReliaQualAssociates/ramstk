@@ -146,14 +146,13 @@ class ValidationModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_load_measurement_units(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
         )
         self._pnlPanel.do_load_verification_types(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
-        self._pnlPanel.do_set_callbacks()
+
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_validation",
             [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],

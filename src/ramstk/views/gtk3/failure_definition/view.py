@@ -140,8 +140,6 @@ class FailureDefinitionListView(RAMSTKListView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

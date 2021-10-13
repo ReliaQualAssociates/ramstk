@@ -211,8 +211,6 @@ class SimilarItemWorkView(RAMSTKWorkView):
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
-        self._pnlMethod.do_load_comboboxes()
-
         super().do_embed_treeview_panel()
         self._pnlPanel.do_load_comboboxes()
 
