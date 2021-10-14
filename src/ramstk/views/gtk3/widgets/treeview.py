@@ -9,10 +9,11 @@
 
 # Standard Library Imports
 import datetime
-from typing import Any, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # Third Party Imports
 import toml
+import treelib
 
 # RAMSTK Package Imports
 from ramstk.utilities import deprecated, string_to_boolean
@@ -23,9 +24,7 @@ from .label import RAMSTKLabel
 from .widget import RAMSTKWidget
 
 
-def do_make_column(
-    cells: List[Gtk.CellRenderer], **kwargs: Dict[str, Any]
-) -> Gtk.TreeViewColumn:
+def do_make_column(cells: List[object], **kwargs: Dict[str, Any]) -> Gtk.TreeViewColumn:
     """Make a Gtk.TreeViewColumn().
 
     :param list cells: list of Gtk.CellRenderer()s that are to be packed in
@@ -55,7 +54,7 @@ def do_make_column(
 
 
 # noinspection PyUnresolvedReferences
-def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None:
+def do_set_cell_properties(cell: object, **kwargs) -> None:
     """Set common properties of Gtk.CellRenderers().
 
     :param cell: the cell whose properties are to be set.
@@ -116,6 +115,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         GObject.GObject.__init__(self)
 
         # Initialize private dictionary instance attributes:
+        self.dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes:
 
@@ -230,6 +230,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """Insert a new row in the treeview.
 
         :param data: the data dictionary for the new row to insert.
+        :param prow: the parent row of the row to insert.
         :return: None
         :rtype: None
         """
@@ -255,6 +256,18 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _model = self.get_cell_model(index)
         for _item in items:
             _model.append([_item])
+
+    def do_load_tree(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> None:
+        """Load the RAMSTKTreeView with the contents of the tree."""
+        _row = None
+        _model = self.get_model()
+        _node = tree.get_node(tree.root)
+
+        if _node.data is not None:
+            _row = self.dic_row_loader[_node.tag](_node, row)
+
+        for _n in tree.children(_node.identifier):
+            self.do_load_tree(tree.subtree(_n.identifier), _row)
 
     # noinspection PyDefaultArgument
     # pylint: disable=dangerous-default-value

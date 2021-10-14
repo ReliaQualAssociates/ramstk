@@ -52,7 +52,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "hardware": self.__do_load_hardware,
         }
 

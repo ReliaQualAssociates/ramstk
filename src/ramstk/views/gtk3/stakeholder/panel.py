@@ -41,7 +41,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "stakeholder": super().do_load_treerow,
         }
 

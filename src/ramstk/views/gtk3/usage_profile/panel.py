@@ -41,7 +41,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "mission": self.__do_load_mission,
             "mission_phase": self.__do_load_phase,
             "environment": self.__do_load_environment,

@@ -155,7 +155,7 @@ ifdef OS
 	@echo -e "\n\tRAMSTK cannot be installed on Windows at this time.  Sorry."
 else
 	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
-	pip install . --prefix=$(PREFIX) --use-feature=in-tree-build
+	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/16x16"

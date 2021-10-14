@@ -41,7 +41,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary instance attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "mode": self.__do_load_mode,
             "mechanism": self.__do_load_mechanism,
             "opload": self.__do_load_opload,

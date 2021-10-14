@@ -179,7 +179,7 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary attributes.
         self._dic_mission_phases: Dict[str, List[str]] = {"": [""]}
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "mode": self.__do_load_mode,
             "mechanism": self.__do_load_mechanism,
             "cause": self.__do_load_cause,

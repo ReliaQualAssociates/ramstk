@@ -104,8 +104,7 @@ class FunctionModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
 
-        :param attributes: the attributes dict for the selected stakeholder
-            input.
+        :param attributes: the attributes dict for the selected function.
         :return: None
         :rtype: None
         """

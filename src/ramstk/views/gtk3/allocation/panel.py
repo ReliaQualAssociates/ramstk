@@ -259,7 +259,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         # Initialize private dictionary attributes.
         self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "allocation": self.__do_load_allocation,
         }
         self._dic_visible_mask: Dict[int, Dict[str, str]] = {

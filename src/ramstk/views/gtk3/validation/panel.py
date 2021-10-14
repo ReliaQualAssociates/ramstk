@@ -51,7 +51,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "validation": self.__do_load_verification,
         }
 

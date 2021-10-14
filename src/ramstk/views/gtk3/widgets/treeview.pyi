@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.utilities import deprecated as deprecated
@@ -15,12 +15,13 @@ from .label import RAMSTKLabel as RAMSTKLabel
 from .widget import RAMSTKWidget as RAMSTKWidget
 
 def do_make_column(
-    cells: List[Gtk.CellRenderer], **kwargs: Dict[str, Any]
+    cells: List[object], **kwargs: Dict[str, Any]
 ) -> Gtk.TreeViewColumn: ...
-def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None: ...
+def do_set_cell_properties(cell: object, **kwargs) -> None: ...
 
 class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     _has_pixbuf: bool
+    dic_row_loader: Dict[str, Callable]
     datatypes: Dict[str, str]
     editable: Dict[str, bool]
     headings: Dict[str, str]

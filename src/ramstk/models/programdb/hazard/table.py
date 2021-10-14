@@ -29,7 +29,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     _db_id_colname = "fld_hazard_id"
     _db_tablename = "ramstk_hazard_analysis"
     _select_msg = "selected_revision"
-    _tag = "hazard"
+    _tag = "hazards"
 
     # Define public dictionary class attributes.
 

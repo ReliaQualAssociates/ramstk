@@ -403,16 +403,22 @@ class RAMSTKBaseView(Gtk.HBox):
         _sibling = kwargs.get("sibling", True)
 
         self.do_set_cursor_busy()
-
+        print(self._parent_id, self._revision_id, _sibling)
         if _sibling:
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                parent_id=self._parent_id,
+                attributes={
+                    "parent_id": self._parent_id,
+                    "revision_id": self._revision_id,
+                },
             )
         else:
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                parent_id=self._record_id,
+                attributes={
+                    "parent_id": self._record_id,
+                    "revision_id": self._revision_id,
+                },
             )  # noqa
 
     def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:

@@ -41,7 +41,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader: Dict[str, Callable] = {
+        self.tvwTreeView.dic_row_loader: Dict[str, Callable] = {
             "failure_definition": self.__do_load_failure_definition,
         }
 

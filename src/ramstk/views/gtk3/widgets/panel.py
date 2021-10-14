@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -47,18 +47,6 @@ class RAMSTKPanel(RAMSTKFrame):
         the same value as the _tag attribute for the table or view model the panel is
         used to display.
     :cvar _title: the title to display on the panel frame.
-
-    :ivar _dic_row_loader: contains the methods used to load the row data
-        into a RAMSTKTreeView() where the key is the name of the module and
-        the value is the method.  This is necessary for those views that
-        combine different tables such as the usage profile or FMEA.  Having
-        different loader methods for each type of entity may be needed to
-        load the data for each entity in the correct order.  Most work
-        stream modules will simple use the do_load_row() method of this
-        meta-class.  Example entries in this dict might be:
-
-        'mission': self.__do_load_mission
-        'function': super().do_load_row
 
     :ivar _parent_id: the ID of the parent entity for the selected work stream
         entity.  This is needed for hierarchical modules such as the
@@ -709,7 +697,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Initialize private dict instance attributes.
-        self._dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes.
 
@@ -753,9 +740,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model.clear()
 
         try:
-            _row = None
-            for _node in tree.all_nodes()[1:]:
-                _row = self._dic_row_loader[_node.tag](_node, _row)
+            self.tvwTreeView.do_load_tree(tree, None)
             self.tvwTreeView.expand_all()
             _row = _model.get_iter_first()
             if _row is not None:
@@ -764,11 +749,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while loading {1} data for Record "
-                "ID {0} into the view.  One or more values from the "
-                "database was the wrong type for the column it was trying to "
-                "load."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while loading {self._tag} data for "
+                f"Record ID {self._record_id} into the view.  One or more values from "
+                f"the database was the wrong type for the column it was trying to load."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -777,10 +761,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except ValueError:
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while loading {1:s} data for Record "
-                "ID {0:d} into the view.  One or more values from the "
-                "database was missing."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while loading {self._tag} data "
+                f"for Record ID {self._record_id} into the view.  One or more values "
+                f"from the database was missing."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -914,10 +898,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while refreshing {1} data for Record "
-                "ID {0} in the view.  Key {3} does not exist in "
-                "attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while refreshing {self._tag} data "
+                f"for Record ID {self._record_id} in the view.  Key {_key} does not "
+                f"exist in attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -926,10 +910,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while refreshing {1} data for Record "
-                "ID {0} in the view.  Data {4} for {3} is the wrong "
-                "type."
-            ).format(self._record_id, self._tag, _method_name, _key, _value)
+                f"{_method_name}: An error occurred while refreshing {self._tag} data "
+                f"for Record ID {self._record_id} in the view.  Data {_value} for "
+                f"{_key} is the wrong type."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1052,10 +1036,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while editing {1} data for record "
-                "ID {0} in the view.  One or more keys could not be found in "
-                "the attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1092,10 +1076,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while editing {1} data for record "
-                "ID {0} in the view.  One or more keys could not be found in "
-                "the attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
