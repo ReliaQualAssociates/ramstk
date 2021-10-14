@@ -124,17 +124,18 @@ class RequirementModuleView(RAMSTKModuleView):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _prompt = _(
-            "You are about to delete Requirement {0:d} and all "
-            "data associated with it.  Is this really what "
-            "you want to do?"
-        ).format(self._record_id)
+            f"You are about to delete Requirement {self.dic_pkeys['record_id']} and "
+            f"all data associated with it.  Is this really what you want to do?"
+        )
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage("request_delete_requirement", node_id=self._record_id)
+            pub.sendMessage(
+                "request_delete_requirement", node_id=self.dic_pkeys["record_id"]
+            )
 
         _dialog.do_destroy()
 
@@ -145,8 +146,8 @@ class RequirementModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["requirement_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the requirement module view.
@@ -275,7 +276,9 @@ class RequirementGeneralDataView(RAMSTKWorkView):
 
         super().do_set_cursor_busy()
         pub.sendMessage(
-            "request_create_requirement_code", node_id=self._record_id, prefix=_prefix
+            "request_create_requirement_code",
+            node_id=self.dic_pkey["record_id"],
+            prefix=_prefix,
         )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -285,8 +288,8 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["requirement_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkey["record_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement General Data tab.
@@ -398,8 +401,8 @@ class RequirementAnalysisView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["requirement_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkey["record_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.

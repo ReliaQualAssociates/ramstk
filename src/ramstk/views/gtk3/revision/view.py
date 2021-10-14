@@ -132,7 +132,7 @@ class RevisionModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["revision_id"]
+        self.dic_pkeys["record_id"] = attributes["revision_id"]
 
     def _on_insert_revision(self, node_id: int = 0, tree: treelib.Tree = "") -> None:
         """Add row to module view for newly added revision.
@@ -236,7 +236,7 @@ class RevisionWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["revision_id"]
+        self.dic_pkeys["record_id"] = attributes["revision_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.

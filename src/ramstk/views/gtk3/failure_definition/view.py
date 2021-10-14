@@ -107,10 +107,10 @@ class FailureDefinitionListView(RAMSTKListView):
         _dialog = super().do_raise_dialog(parent=_parent)
         _dialog.do_set_message(
             message=_(
-                "You are about to delete Failure Definition {0:d} and "
-                "all data associated with it.  Is this really what you "
-                "want to do?"
-            ).format(self._record_id)
+                f"You are about to delete Failure Definition "
+                f"{self.dic_pkeys['record_id']} and all data associated with it.  Is "
+                f"this really what you want to do?"
+            )
         )
         _dialog.do_set_message_type(message_type="question")
 
@@ -118,7 +118,7 @@ class FailureDefinitionListView(RAMSTKListView):
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_delete_failure_definitions",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -131,7 +131,7 @@ class FailureDefinitionListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["definition_id"]
+        self.dic_pkeys["record_id"] = attributes["definition_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the failure definition list view.

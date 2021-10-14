@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
@@ -27,7 +26,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
     # Define private scalar class attributes.
     _select_msg = "succeed_retrieve_hazards"
-    _tag = "hazards"
+    _tag = "hazard"
     _title: str = _("Hazards Analysis")
 
     # Define public dictionary class attributes.
@@ -42,7 +41,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         # Initialize private dict instance attributes.
         self.tvwTreeView.dic_row_loader = {
-            "hazards": super().do_load_treerow,
+            "hazard": super().do_load_treerow,
         }
 
         # Initialize private list instance attributes.
@@ -761,18 +760,6 @@ class HazardsTreePanel(RAMSTKTreePanel):
             _model = self.tvwTreeView.get_cell_model(i)
             for _probability in probabilities:
                 _model.append((_probability[0],))
-
-    def _on_insert(self, tree: Tree) -> None:
-        """Wrap the do_load_panel() method when an element is inserted.
-
-        The do_set_cursor_active() method responds to the same message,
-        but one less argument in it's call.  This results in a PyPubSub
-        error and is the reason this wrapper method is needed.
-
-        :param tree: the module's treelib Tree().
-        :return: None
-        """
-        super().do_load_panel(tree)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the HazOps Tree View RAMSTKTreeView().

@@ -141,13 +141,12 @@ class RAMSTKBaseView(Gtk.HBox):
         self._img_tab: Gtk.Image = Gtk.Image()
         self._mission_time: float = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._notebook: Gtk.Notebook = Gtk.Notebook()
-        self._parent_id: int = 0
         self._pnlPanel: RAMSTKPanel = RAMSTKPanel()
-        self._record_id: int = -1
         self._revision_id: int = 0
         self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys: Dict[str, int] = {"revision_id": 0}
 
         # Initialize public list attributes.
 
@@ -381,7 +380,7 @@ class RAMSTKBaseView(Gtk.HBox):
             "You are about to delete {1} {0} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
-        ).format(self._record_id, self._tag.title())
+        ).format(self.dic_pkeys["record_id"], self._tag.title())
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
@@ -390,7 +389,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self.do_set_cursor_busy()
             pub.sendMessage(
                 f"request_delete_{self._tag}",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -407,19 +406,16 @@ class RAMSTKBaseView(Gtk.HBox):
         if _sibling:
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                attributes={
-                    "parent_id": self._parent_id,
-                    "revision_id": self._revision_id,
-                },
+                attributes=self.dic_pkeys,
             )
         else:
+            _parent_id = self.dic_pkeys["parent_id"]
+            self.dic_pkeys["parent_id"] = self.dic_pkeys["record_id"]
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                attributes={
-                    "parent_id": self._record_id,
-                    "revision_id": self._revision_id,
-                },
+                attributes=self.dic_pkeys,
             )  # noqa
+            self.dic_pkeys["parent_id"] = _parent_id
 
     def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child entity of the selected entity.
@@ -444,7 +440,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_{self._tag}", node_id=self._record_id)
+        pub.sendMessage(
+            f"request_update_{self._tag}", node_id=self.dic_pkeys["record_id"]
+        )
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to save all the records to RAMSTK program database.
@@ -630,6 +628,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self._revision_id = attributes["revision_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
 
     def __set_icons(self) -> Dict[str, str]:
         """Set the dict of icons.

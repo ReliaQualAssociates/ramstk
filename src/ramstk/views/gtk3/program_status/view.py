@@ -151,7 +151,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["validation_id"]
+        self.dic_pkeys["record_id"] = attributes["validation_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Verification Status tab.

@@ -106,8 +106,8 @@ class AllocationWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Calculate the Allocation reliability metrics.
@@ -117,7 +117,9 @@ class AllocationWorkView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_calculate_allocation", node_id=self._record_id)
+        pub.sendMessage(
+            "request_calculate_allocation", node_id=self.dic_pkeys["record_id"]
+        )
 
     def __make_ui(self) -> None:
         """Build the user interface for the allocation tab.

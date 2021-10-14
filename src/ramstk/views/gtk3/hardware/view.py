@@ -179,7 +179,7 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_calculate_hardware",
-            node_id=self._record_id,
+            node_id=self.dic_pkeys["record_id"],
         )
 
     def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None:
@@ -203,7 +203,7 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
-            parent_id=self._record_id,
+            parent_id=self.dic_pkeys["record_id"],
             part=0,
         )
 
@@ -214,7 +214,9 @@ class HardwareModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_insert_hardware", parent_id=self._record_id, part=1)
+        pub.sendMessage(
+            "request_insert_hardware", parent_id=self.dic_pkeys["record_id"], part=1
+        )
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """Send request to insert a new sibling Hardware item.
@@ -223,7 +225,9 @@ class HardwareModuleView(RAMSTKModuleView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_insert_hardware", parent_id=self._parent_id, part=0)
+        pub.sendMessage(
+            "request_insert_hardware", parent_id=self.dic_pkeys["parent_id"], part=0
+        )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
@@ -233,8 +237,8 @@ class HardwareModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
@@ -383,7 +387,9 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_make_comp_ref_des", node_id=self._record_id)
+        pub.sendMessage(
+            "request_make_comp_ref_des", node_id=self.dic_pkeys["record_id"]
+        )
         super().do_set_cursor_active()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -394,8 +400,8 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware General Data tab.
@@ -597,7 +603,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_calculate_hardware",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -615,8 +621,8 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             "reliability",
         ]:
             pub.sendMessage(
-                "request_update_{}".format(_table),
-                node_id=self._record_id,
+                f"request_update_{_table}",
+                node_id=self.dic_pkeys["record_id"],
             )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -627,8 +633,8 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Input tab.
@@ -813,7 +819,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_calculate_hardware",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -826,8 +832,8 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Results tab.
