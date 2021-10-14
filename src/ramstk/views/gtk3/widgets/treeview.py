@@ -58,7 +58,6 @@ def do_set_cell_properties(cell: object, **kwargs) -> None:
     """Set common properties of Gtk.CellRenderers().
 
     :param cell: the cell whose properties are to be set.
-    :type cell: :class:`Gtk.CellRenderer`
     :return: None
     :rtype: None
     """
@@ -72,10 +71,10 @@ def do_set_cell_properties(cell: object, **kwargs) -> None:
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
         _fg_color = "#000000"
-        cell.set_property("cell-background-rgba", _color)
+        cell.set_property("cell-background-rgba", _color)  # type: ignore
 
-    cell.set_property("visible", _visible)
-    cell.set_property("yalign", 0.1)
+    cell.set_property("visible", _visible)  # type: ignore
+    cell.set_property("yalign", 0.1)  # type: ignore
 
     if isinstance(cell, Gtk.CellRendererCombo):
         _cellmodel = Gtk.ListStore(GObject.TYPE_STRING)
@@ -133,7 +132,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.filt_model: Gtk.TreeModelFilter = Gtk.TreeModelFilter()
         self.selection = self.get_selection()
+        self.unfilt_model = self.get_model()
 
     def do_edit_cell(
         self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
@@ -330,8 +331,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         if self._has_pixbuf:
             _types.append(GdkPixbuf.Pixbuf)
 
-        _model = Gtk.TreeStore(*_types)
-        self.set_model(_model)
+        self.unfilt_model = Gtk.TreeStore(*_types)
+        self.set_model(self.unfilt_model)
 
     # noinspection PyTypeChecker
     def do_parse_format(self, fmt_file: str) -> None:

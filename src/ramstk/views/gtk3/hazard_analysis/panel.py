@@ -47,6 +47,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dict instance attributes.
@@ -722,6 +723,20 @@ class HazardsTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._on_select_function, "selected_function")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def filter_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any) -> bool:
+        """Filter Hazards to show only those associated with the selected Function.
+
+        :param model: the filtered model for the Hazard RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][1] == self._parent_id
 
     def do_load_severity(self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
         """Load the Gtk.CellRendererCombo() containing severities.
@@ -731,6 +746,12 @@ class HazardsTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
+        # ISSUE: Replace Hazards Panel Integer Position List with String Key List
+        #
+        # The list of column positions should be replaced with a list of column keys
+        # and the position should be taken from self.tvwTreeView.position[_key].
+        # This needs to be done for all the methods that load a Gtk.CellRendererCombo().
+        # labels: type: refactor
         for i in [6, 10, 14, 18]:
             _model = self.tvwTreeView.get_cell_model(i)
             for _key in criticalities:
@@ -773,10 +794,19 @@ class HazardsTreePanel(RAMSTKTreePanel):
         _attributes = super().on_row_change(selection)
 
         if _attributes:
-            self._parent_id = _attributes["function_id"]
             self._record_id = _attributes["hazard_id"]
 
             pub.sendMessage(
                 "selected_hazard",
                 attributes=_attributes,
             )
+
+    def _on_select_function(self, attributes: Dict[str, Any]) -> None:
+        """Filter hazards list when Function is selected.
+
+        :param attributes: the dict of Function attributes for the selected Function.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["function_id"]
+        self.tvwTreeView.filt_model.refilter()

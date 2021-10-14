@@ -75,6 +75,7 @@ class RAMSTKPlotPanel(RAMSTKPanel):
 
 class RAMSTKTreePanel(RAMSTKPanel):
     _dic_row_loader: Dict[str, Callable]
+    _filtered_tree: bool
     tvwTreeView: RAMSTKTreeView
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...

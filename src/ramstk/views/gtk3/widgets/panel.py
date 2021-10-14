@@ -702,6 +702,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree: bool = False
 
         # Initialize public dict instance attributes.
 
@@ -738,10 +739,18 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         """
         _model = self.tvwTreeView.get_model()
-        _model.clear()
+        try:
+            _model.clear()
+        except AttributeError:
+            pass
 
         try:
             self.tvwTreeView.do_load_tree(tree, None)
+            if self._filtered_tree:
+                self.tvwTreeView.filt_model = self.tvwTreeView.unfilt_model.filter_new()
+                self.tvwTreeView.filt_model.set_visible_func(self.filter_tree)
+                self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
+
             self.tvwTreeView.expand_all()
             _row = _model.get_iter_first()
             if _row is not None:

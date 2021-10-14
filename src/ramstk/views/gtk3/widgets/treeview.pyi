@@ -29,6 +29,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     visible: Dict[str, bool]
     widgets: Dict[str, object]
     selection: Gtk.TreeSelection
+    filt_model: Gtk.TreeModelFilter
+    unfilt_model: Gtk.TreeModel
     def __init__(self) -> None: ...
     def do_edit_cell(
         self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
