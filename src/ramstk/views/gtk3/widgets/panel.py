@@ -159,7 +159,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.on_edit_callback: str = f"wvw_editing_{self._tag}"
+        self.on_edit_callback: str = f"mvw_editing_{self._tag}"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -466,14 +466,15 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         [[_key, _value]] = package.items()
 
         try:
+            _widget = self.dic_attribute_widget_map[_key][1]
             _signal = self.dic_attribute_widget_map[_key][2]
-            _function = self.dic_attribute_widget_map[_key][3]
-            _function(_value, _signal)  # type: ignore
+            _widget.do_update(_value, _signal)  # type: ignore
         except KeyError:
             _error_msg = _(
-                "{2}: An error occurred while updating {1} data for record "
-                "ID {0} in the view.  No key {3} in dic_attribute_widget_map."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while updating {self._tag} data "
+                f"for record ID {self._record_id} in the view.  No key {_key} in "
+                f"dic_attribute_widget_map."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -481,10 +482,10 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             )
         except TypeError:
             _error_msg = _(
-                "{2}: An error occurred while updating {1} data for record "
-                "ID {0} in the view.  Data for key {3} is the wrong "
-                "type."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while updating {self._tag} data "
+                f"for record ID {self._record_id} in the view.  Data for key {_key} is "
+                f"the wrong type."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -710,7 +711,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
-        # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
+        pub.subscribe(self.do_load_panel, f"succeed_insert_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"wvw_editing_{self._tag}")
@@ -1006,7 +1007,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         cell: Gtk.CellRenderer,
         path: str,
         new_text: str,
-        position: int,
+        key: str,
         message: str,
     ) -> None:
         """Handle edits of the RAMSTKTreeview() in a treeview panel.
@@ -1015,23 +1016,19 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
-        :param position: the column position of the edited
-            Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
         """
         try:
-            _keys = list(self.tvwTreeView.position.keys())
-            _vals = list(self.tvwTreeView.position.values())
-            _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.position[_col]
-            _position = self.tvwTreeView.position[_col]
+            self.tvwTreeView.do_edit_cell(
+                cell, path, new_text, self.tvwTreeView.position[key]
+            )
 
-            _new_text = self.tvwTreeView.do_edit_cell(cell, path, new_text, _position)
             pub.sendMessage(
                 message,
-                node_id=[self._record_id, ""],
-                package={_key: _new_text},
+                node_id=self._record_id,
+                package={key: new_text},
             )
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
@@ -1048,15 +1045,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     # pylint: disable=unused-argument
     def on_cell_toggled(
-        self, cell: Gtk.CellRenderer, path: str, position: int, message: str
+        self, cell: Gtk.CellRenderer, path: str, key: str, message: str
     ) -> None:
         """Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
 
         :param cell: the Gtk.CellRenderer() that was toggled.
         :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was toggled.
-        :param position: the column position of the toggled
-            Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
         :rtype: None
@@ -1064,14 +1060,11 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _new_text = boolean_to_integer(cell.get_active())
 
         try:
-            _keys = list(self.tvwTreeView.position.keys())
-            _vals = list(self.tvwTreeView.position.values())
-            _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.position[_col]
-
-            if not self.tvwTreeView.do_edit_cell(cell, path, _new_text, position):
+            if not self.tvwTreeView.do_edit_cell(
+                cell, path, _new_text, self.tvwTreeView.position[key]
+            ):
                 pub.sendMessage(
-                    message, node_id=[self._record_id, ""], package={_key: _new_text}
+                    message, node_id=self._record_id, package={key: _new_text}
                 )
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore

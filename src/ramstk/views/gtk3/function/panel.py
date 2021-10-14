@@ -143,7 +143,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
                 "",
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": False,
+                    "editable": True,
                     "fg_color": "#000000",
                     "visible": True,
                 },

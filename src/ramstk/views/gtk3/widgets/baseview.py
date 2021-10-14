@@ -403,7 +403,7 @@ class RAMSTKBaseView(Gtk.HBox):
         _sibling = kwargs.get("sibling", True)
 
         self.do_set_cursor_busy()
-        print(self._parent_id, self._revision_id, _sibling)
+
         if _sibling:
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
