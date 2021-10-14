@@ -1257,11 +1257,11 @@ class FMEATreePanel(RAMSTKTreePanel):
         pub.subscribe(super().do_load_panel, "succeed_delete_control")
         pub.subscribe(super().do_load_panel, "succeed_delete_mechanism")
         pub.subscribe(super().do_load_panel, "succeed_delete_mode")
-        pub.subscribe(self._on_insert, "succeed_insert_action")
-        pub.subscribe(self._on_insert, "succeed_insert_cause")
-        pub.subscribe(self._on_insert, "succeed_insert_control")
-        pub.subscribe(self._on_insert, "succeed_insert_mechanism")
-        pub.subscribe(self._on_insert, "succeed_insert_mode")
+        pub.subscribe(super().do_load_panel, "succeed_insert_action")
+        pub.subscribe(super().do_load_panel, "succeed_insert_cause")
+        pub.subscribe(super().do_load_panel, "succeed_insert_control")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mechanism")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mode")
 
         pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
 
@@ -1285,21 +1285,6 @@ class FMEATreePanel(RAMSTKTreePanel):
             self.tvwTreeView.position["mission"]
         ).get_cells()
         _cell[0].connect("edited", self._on_mission_change)
-
-    # noinspection PyUnusedLocal
-    def _on_insert(
-        self, node_id: int, tree: treelib.Tree  # pylint: disable=unused-argument
-    ) -> None:
-        """This is a wrapper method for the metaclass' do_load_panel().
-
-        The do_insert() method sends a message with node_id and the updated tree as
-        data packages.  The metaclass' do_load_panel() only wants the tree passed to
-        it.
-
-        :return: None
-        :rtype:
-        """
-        return super().do_load_panel(tree)
 
     def _on_mission_change(
         self, __combo: Gtk.CellRendererCombo, path: str, new_text: str

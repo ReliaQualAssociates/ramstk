@@ -395,11 +395,11 @@ class PoFTreePanel(RAMSTKTreePanel):
         pub.subscribe(super().do_load_panel, "succeed_delete_opload")
         pub.subscribe(super().do_load_panel, "succeed_delete_mechanism")
         pub.subscribe(super().do_load_panel, "succeed_delete_mode")
-        pub.subscribe(self._on_insert, "succeed_insert_test_method")
-        pub.subscribe(self._on_insert, "succeed_insert_opstress")
-        pub.subscribe(self._on_insert, "succeed_insert_opload")
-        pub.subscribe(self._on_insert, "succeed_insert_mechanism")
-        pub.subscribe(self._on_insert, "succeed_insert_mode")
+        pub.subscribe(super().do_load_panel, "succeed_insert_test_method")
+        pub.subscribe(super().do_load_panel, "succeed_insert_opstress")
+        pub.subscribe(super().do_load_panel, "succeed_insert_opload")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mechanism")
+        pub.subscribe(super().do_load_panel, "succeed_insert_mode")
 
     def do_load_comboboxes(self) -> None:
         """Load the RAMSTKComboBox() widgets.
@@ -418,21 +418,6 @@ class PoFTreePanel(RAMSTKTreePanel):
         ).get_cells()[0]
         _adjustment = _cell.get_property("adjustment")
         _adjustment.configure(5, 1, 5, -1, 0, 0)
-
-    # noinspection PyUnusedLocal
-    def _on_insert(
-        self, node_id: int, tree: treelib.Tree  # pylint: disable=unused-argument
-    ) -> None:
-        """This is a wrapper method for the metaclass' do_load_panel().
-
-        The do_insert() method sends a message with node_id and the updated tree as
-        data packages.  The metaclass' do_load_panel() only wants the tree passed to
-        it.
-
-        :return: None
-        :rtype:
-        """
-        return super().do_load_panel(tree)
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the PoF Work View RAMSTKTreeView().
