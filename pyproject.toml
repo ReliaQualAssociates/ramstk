@@ -189,6 +189,7 @@ markers = [
 	'unit: mark the test as a unit test.',
 	'integration: mark the test as an integration test.',
 	'calculation: mark the test as test of a calculation method/function.',
+	'gui: mark the as a GUI test.',
 ]
 
 [tool.pylint.master]

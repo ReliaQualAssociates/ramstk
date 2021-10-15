@@ -27,11 +27,11 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mode")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_cause")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_control")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_action")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mode")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_cause")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_control")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_action")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_modes")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_causes")
@@ -60,11 +60,11 @@ class TestCreateControllers:
         assert test_viewmodel._tag == "fmea"
         assert test_viewmodel._root == 0
         assert test_viewmodel._revision_id == 0
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_mode")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_mechanism")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_cause")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_control")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_action")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mode")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mechanism")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_cause")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_control")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_action")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_modes")
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_retrieve_mechanisms"

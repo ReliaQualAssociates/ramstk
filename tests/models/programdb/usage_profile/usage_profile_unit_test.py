@@ -29,9 +29,9 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_environment")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mission")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mission_phase")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_environment")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission_phase")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_environments")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_missions")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mission_phases")
@@ -69,10 +69,12 @@ class TestCreateControllers:
             "mission_phase",
             "environment",
         ]
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_environment")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_mission")
         assert pub.isSubscribed(
-            test_viewmodel.on_insert, "succeed_insert_mission_phase"
+            test_viewmodel.do_set_tree, "succeed_insert_environment"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mission")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_mission_phase"
         )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_retrieve_environments"

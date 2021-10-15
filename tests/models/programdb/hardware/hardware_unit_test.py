@@ -62,12 +62,12 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_hardware")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_electric")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_mechanic")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_milhdbk217f")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_nswc")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_reliability")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_reliability")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
@@ -165,16 +165,20 @@ class TestCreateModels:
             "nswc",
             "reliability",
         ]
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_hardware")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_hardware")
         assert pub.isSubscribed(
-            test_viewmodel.on_insert, "succeed_insert_design_electric"
+            test_viewmodel.do_set_tree, "succeed_insert_design_electric"
         )
         assert pub.isSubscribed(
-            test_viewmodel.on_insert, "succeed_insert_design_mechanic"
+            test_viewmodel.do_set_tree, "succeed_insert_design_mechanic"
         )
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_milhdbk217f")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_nswc")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_reliability")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_milhdbk217f"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_nswc")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_reliability"
+        )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_retrieve_hardwares"
         )
