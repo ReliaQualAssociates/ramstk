@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.analyses import fha as fha
@@ -11,8 +11,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     _db_tablename: str
     _select_msg: str
     _tag: str
-    _lst_id_columns: Any
-    _record: Any
+    _lst_id_columns: List[str]
+    _record: RAMSTKHazardRecord
     pkey: str
     def __init__(self, **kwargs: Dict[Any, Any]) -> None: ...
     def do_get_new_record(self, attributes: Dict[str, Any]) -> object: ...

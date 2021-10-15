@@ -45,6 +45,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
 
         # Initialize private list attributes.
         self._lst_id_columns = [
+            "parent_id",
+            "record_id",
             "revision_id",
             "function_id",
             "hazard_id",
@@ -72,10 +74,14 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        attributes["hazard_id"] = self.last_id + 1
+        attributes["parent_id"] = attributes["function_id"]
+        attributes["record_id"] = attributes["hazard_id"]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.function_id = attributes["function_id"]
-        _new_record.hazard_id = self.last_id + 1
+        _new_record.hazard_id = attributes["hazard_id"]
 
         return _new_record
 

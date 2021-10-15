@@ -244,7 +244,6 @@ class RAMSTKBaseTable:
             _record = self.do_get_new_record(attributes)
             for _id in self._lst_id_columns:
                 attributes.pop(_id)
-            attributes.pop("record_id")
 
             _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1

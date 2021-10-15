@@ -113,6 +113,8 @@ class TestCreateModels:
         assert test_tablemodel._tag == "hazard"
         assert test_tablemodel._root == 0
         assert test_tablemodel._lst_id_columns == [
+            "parent_id",
+            "record_id",
             "revision_id",
             "function_id",
             "hazard_id",
