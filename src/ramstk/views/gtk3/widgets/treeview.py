@@ -261,7 +261,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_load_tree(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> None:
         """Load the RAMSTKTreeView with the contents of the tree."""
         _row = None
-        _model = self.get_model()
         _node = tree.get_node(tree.root)
 
         if _node.data is not None:

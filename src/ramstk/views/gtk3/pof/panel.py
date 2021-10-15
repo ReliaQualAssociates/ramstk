@@ -395,11 +395,6 @@ class PoFTreePanel(RAMSTKTreePanel):
         pub.subscribe(super().do_load_panel, "succeed_delete_opload")
         pub.subscribe(super().do_load_panel, "succeed_delete_mechanism")
         pub.subscribe(super().do_load_panel, "succeed_delete_mode")
-        pub.subscribe(super().do_load_panel, "succeed_insert_test_method")
-        pub.subscribe(super().do_load_panel, "succeed_insert_opstress")
-        pub.subscribe(super().do_load_panel, "succeed_insert_opload")
-        pub.subscribe(super().do_load_panel, "succeed_insert_mechanism")
-        pub.subscribe(super().do_load_panel, "succeed_insert_mode")
 
     def do_load_comboboxes(self) -> None:
         """Load the RAMSTKComboBox() widgets.

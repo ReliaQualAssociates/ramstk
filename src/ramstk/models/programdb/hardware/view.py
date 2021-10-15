@@ -82,12 +82,12 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_insert, "succeed_insert_hardware")
-        pub.subscribe(super().on_insert, "succeed_insert_design_electric")
-        pub.subscribe(super().on_insert, "succeed_insert_design_mechanic")
-        pub.subscribe(super().on_insert, "succeed_insert_milhdbk217f")
-        pub.subscribe(super().on_insert, "succeed_insert_nswc")
-        pub.subscribe(super().on_insert, "succeed_insert_reliability")
+        pub.subscribe(super().do_set_tree, "succeed_insert_hardware")
+        pub.subscribe(super().do_set_tree, "succeed_insert_design_electric")
+        pub.subscribe(super().do_set_tree, "succeed_insert_design_mechanic")
+        pub.subscribe(super().do_set_tree, "succeed_insert_milhdbk217f")
+        pub.subscribe(super().do_set_tree, "succeed_insert_nswc")
+        pub.subscribe(super().do_set_tree, "succeed_insert_reliability")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_hardwares")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_design_electrics")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_design_mechanics")

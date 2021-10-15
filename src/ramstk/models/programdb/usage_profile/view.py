@@ -70,9 +70,9 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_insert, "succeed_insert_environment")
-        pub.subscribe(super().on_insert, "succeed_insert_mission")
-        pub.subscribe(super().on_insert, "succeed_insert_mission_phase")
+        pub.subscribe(super().do_set_tree, "succeed_insert_environment")
+        pub.subscribe(super().do_set_tree, "succeed_insert_mission")
+        pub.subscribe(super().do_set_tree, "succeed_insert_mission_phase")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_environments")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_missions")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_mission_phases")
@@ -90,7 +90,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["environment"].all_nodes()[1:]:
             _environment = _node.data["environment"]
-            _node_id = "{}.{}".format(parent_id, _environment.environment_id)
+            _node_id = f"{parent_id}.{_environment.environment_id}"
 
             if _environment.phase_id == phase_id:
                 self.tree.create_node(
@@ -108,7 +108,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mission"].all_nodes()[1:]:
             _mission = _node.data["mission"]
-            _node_id = "{}".format(_mission.mission_id)
+            _node_id = f"{_mission.mission_id}"
 
             self.tree.create_node(
                 tag="mission",
@@ -131,13 +131,13 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mission_phase"].all_nodes()[1:]:
             _mission_phase = _node.data["mission_phase"]
-            _node_id = "{}.{}".format(mission_id, _mission_phase.phase_id)
+            _node_id = f"{mission_id}.{_mission_phase.phase_id}"
 
             if _mission_phase.mission_id == mission_id:
                 self.tree.create_node(
                     tag="mission_phase",
                     identifier=_node_id,
-                    parent="{}".format(mission_id),
+                    parent=f"{mission_id}",
                     data={"usage_profile": _mission_phase},
                 )
 

@@ -572,20 +572,6 @@ class RAMSTKBaseView:
         self._dic_trees[tree.get_node(0).tag] = tree
         self.on_select_all()
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def on_insert(self, tree: treelib.Tree) -> None:
-        """Wrap _do_set_<module>_tree() on insert.
-
-        succeed_insert_<module> messages have node_id in the broadcast data
-        so this method is needed to wrap the _do_set_tree() method.
-
-        :param tree: the treelib Tree() passed by the calling message.
-        :return: None
-        :rtype: None
-        """
-        return self.do_set_tree(tree)
-
     def on_select_all(self) -> None:
         """Build the usage profile treelib Tree().
 

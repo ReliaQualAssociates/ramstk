@@ -45,11 +45,11 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
 
         # Initialize private list attributes.
         self._lst_id_columns = [
-            "parent_id",
-            "record_id",
             "revision_id",
             "function_id",
             "hazard_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.

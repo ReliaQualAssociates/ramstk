@@ -781,6 +781,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 message=_error_msg,
             )
 
+        pub.sendMessage("request_set_cursor_active")
+
     def do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a row into the RAMSTKTreeView().
 
@@ -796,11 +798,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
             # pylint: disable=unused-variable
             [[__, _entity]] = node.data.items()
             _attributes = _entity.get_attributes()
-            _model = self.tvwTreeView.get_model()
             for _key, _pos in self.tvwTreeView.position.items():
                 _data.insert(_pos, _attributes[_key])
 
-            _new_row = _model.append(row, _data)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _data)
         except (AttributeError, TypeError, ValueError) as _error:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = (

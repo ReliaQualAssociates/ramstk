@@ -73,10 +73,10 @@ class RAMSTKPoFView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_insert, "succeed_insert_mechanism")
-        pub.subscribe(super().on_insert, "succeed_insert_opload")
-        pub.subscribe(super().on_insert, "succeed_insert_opstress")
-        pub.subscribe(super().on_insert, "succeed_insert_test_method")
+        pub.subscribe(super().do_set_tree, "succeed_insert_mechanism")
+        pub.subscribe(super().do_set_tree, "succeed_insert_opload")
+        pub.subscribe(super().do_set_tree, "succeed_insert_opstress")
+        pub.subscribe(super().do_set_tree, "succeed_insert_test_method")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_mechanisms")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_oploads")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_opstresss")
@@ -94,7 +94,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mechanism"].all_nodes()[1:]:
             _mechanism = _node.data["mechanism"]
-            _node_id = "{}".format(_mechanism.mechanism_id)
+            _node_id = f"{_mechanism.mechanism_id}"
 
             self.tree.create_node(
                 tag="mechanism",
@@ -117,13 +117,13 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["opload"].all_nodes()[1:]:
             _opload = _node.data["opload"]
-            _node_id = "{}.{}".format(mechanism_id, _opload.load_id)
+            _node_id = f"{mechanism_id}.{_opload.load_id}"
 
             if _opload.mechanism_id == mechanism_id:
                 self.tree.create_node(
                     tag="opload",
                     identifier=_node_id,
-                    parent="{}".format(mechanism_id),
+                    parent=f"{mechanism_id}",
                     data={self._tag: _opload},
                 )
 
@@ -149,7 +149,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["opstress"].all_nodes()[1:]:
             _opstress = _node.data["opstress"]
-            _node_id = "{}.{}s".format(parent_id, _opstress.stress_id)
+            _node_id = f"{parent_id}.{_opstress.stress_id}s"
 
             if _opstress.load_id == load_id:
                 self.tree.create_node(
@@ -169,7 +169,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["test_method"].all_nodes()[1:]:
             _test_method = _node.data["test_method"]
-            _node_id = "{}.{}t".format(parent_id, _test_method.test_id)
+            _node_id = f"{parent_id}.{_test_method.test_id}t"
 
             if _test_method.load_id == load_id:
                 self.tree.create_node(
