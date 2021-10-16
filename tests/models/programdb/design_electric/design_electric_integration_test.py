@@ -70,13 +70,12 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["design_electric"], RAMSTKDesignElectricRecord
+            tree.get_node(8).data["design_electric"], RAMSTKDesignElectricRecord
         )
-        assert tree.get_node(node_id).data["design_electric"].hardware_id == 8
+        assert tree.get_node(8).data["design_electric"].hardware_id == 8
         print("\033[36m\nsucceed_insert_design_electric topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):

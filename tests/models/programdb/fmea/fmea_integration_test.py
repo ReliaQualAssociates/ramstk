@@ -189,11 +189,11 @@ def test_viewmodel(test_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mode")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_cause")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_control")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_action")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mode")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_cause")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_control")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_action")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_modes")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_causes")

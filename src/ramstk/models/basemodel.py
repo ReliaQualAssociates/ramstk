@@ -465,7 +465,7 @@ class RAMSTKBaseTable:
             )
         except KeyError:
             _error_msg = (
-                f"{_method_name,}: No data package found for "
+                f"{_method_name}: No data package found for "
                 f"{self._tag.replace('_', ' ')} ID {node_id}."
             )
             pub.sendMessage(

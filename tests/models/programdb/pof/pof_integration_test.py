@@ -155,10 +155,10 @@ def test_viewmodel(test_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_opload")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_opstress")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_test_method")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_opload")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_opstress")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_test_method")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_oploads")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_opstresss")

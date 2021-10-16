@@ -64,12 +64,12 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_hardware")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_electric")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_mechanic")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_milhdbk217f")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_nswc")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_reliability")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_reliability")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
@@ -317,11 +317,10 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 9
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["hardware"], RAMSTKHardwareRecord)
-        assert tree.get_node(node_id).data["hardware"].hardware_id == 9
+        assert isinstance(tree.get_node(9).data["hardware"], RAMSTKHardwareRecord)
+        assert tree.get_node(9).data["hardware"].hardware_id == 9
         print("\033[36m\nsucceed_insert_hardware topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):

@@ -74,8 +74,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class to test data controller insert methods using actual database."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree[3].data["failure_definition"], RAMSTKFailureDefinitionRecord

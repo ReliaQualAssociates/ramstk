@@ -73,8 +73,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 4
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(4).data["validation"], RAMSTKValidationRecord)
         assert tree.get_node(4).data["validation"].validation_id == 4

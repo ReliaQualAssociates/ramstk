@@ -72,15 +72,14 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["similar_item"], RAMSTKSimilarItemRecord
+            tree.get_node(8).data["similar_item"], RAMSTKSimilarItemRecord
         )
-        assert tree.get_node(node_id).data["similar_item"].revision_id == 1
-        assert tree.get_node(node_id).data["similar_item"].hardware_id == 8
-        assert tree.get_node(node_id).data["similar_item"].parent_id == 2
+        assert tree.get_node(8).data["similar_item"].revision_id == 1
+        assert tree.get_node(8).data["similar_item"].hardware_id == 8
+        assert tree.get_node(8).data["similar_item"].parent_id == 2
         print("\033[36m\nsucceed_insert_similar_item topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):

@@ -67,8 +67,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 5
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["cause"], RAMSTKCauseRecord)
         print("\033[36m\nsucceed_insert_cause topic was broadcast.")
