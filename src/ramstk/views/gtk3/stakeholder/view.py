@@ -49,7 +49,7 @@ class StakeholderListView(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = "stakeholders"
+    _tag = "stakeholder"
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
     _view_type = "list"

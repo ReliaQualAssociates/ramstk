@@ -44,7 +44,7 @@ class FailureDefinitionListView(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag: str = "failure_definitions"
+    _tag: str = "failure_definition"
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the selected revision.")
 
@@ -117,7 +117,7 @@ class FailureDefinitionListView(RAMSTKListView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_failure_definitions",
+                "request_delete_failure_definition",
                 node_id=self.dic_pkeys["record_id"],
             )
 

@@ -313,8 +313,7 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_initialize_site_configuration(self):
-        """__init__() should create an instance of the site configuration
-        class."""
+        """__init__() should create an instance of the site configuration class."""
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
@@ -336,8 +335,7 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_initialize_user_configuration(self):
-        """__init__() should create an instance of the user configuration
-        class."""
+        """__init__() should create an instance of the user configuration class."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
 
@@ -429,8 +427,8 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_create_site_configuration(self):
-        """do_create_site_configuration() should broadcast the succcess message
-        on success."""
+        """do_create_site_configuration() should broadcast the succcess message on
+        success."""
         pub.subscribe(
             self.on_create_site_configuration, "succeed_create_site_configuration"
         )
@@ -526,8 +524,8 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_do_make_configuration_dir(self):
-        """_do_make_configuration_dir() should create a configuration directory
-        and set the RAMSTK_PROG_CONF file os.path."""
+        """_do_make_configuration_dir() should create a configuration directory and set
+        the RAMSTK_PROG_CONF file os.path."""
         _temp_dir = VIRTUAL_ENV + "/tmp/" + tempfile.mkdtemp()
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
@@ -657,8 +655,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_get_site_configuration_no_conf_file(self):
-        """get_site_configuration() should broadcase the fail message when
-        there is no configuration file."""
+        """get_site_configuration() should broadcase the fail message when there is no
+        configuration file."""
         pub.subscribe(
             self.on_fail_get_site_configuration, "fail_get_site_configuration"
         )
@@ -684,8 +682,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_site_directories_no_site_conf_file(self):
-        """set_site_directories() should return None on success and create a
-        new site configuration file if one doesn't exist."""
+        """set_site_directories() should return None on success and create a new site
+        configuration file if one doesn't exist."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
@@ -700,8 +698,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_site_configuration(self):
-        """set_site_configuration() should return None and update the contents
-        of Site.conf on success."""
+        """set_site_configuration() should return None and update the contents of
+        Site.conf on success."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
@@ -766,7 +764,7 @@ class TestGetterSetter:
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
             "allocation": "allocation.toml",
-            "failure_definitions": "failure_definition.toml",
+            "failure_definition": "failure_definition.toml",
             "fmea": "fmea.toml",
             "function": "function.toml",
             "hardware": "hardware.toml",
@@ -775,7 +773,7 @@ class TestGetterSetter:
             "requirement": "requirement.toml",
             "revision": "revision.toml",
             "similar_item": "similar_item.toml",
-            "stakeholders": "stakeholder.toml",
+            "stakeholder": "stakeholder.toml",
             "usage_profile": "usage_profile.toml",
             "validation": "validation.toml",
         }
@@ -815,8 +813,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
-        """get_user_configuration() should broadcase the fail message when
-        there is no configuration file."""
+        """get_user_configuration() should broadcase the fail message when there is no
+        configuration file."""
         pub.subscribe(
             self.on_fail_get_user_configuration, "fail_get_user_configuration"
         )
@@ -832,8 +830,8 @@ class TestGetterSetter:
 
     @pytest.mark.skip
     def test_get_user_configuration_no_log_dir(self, test_toml_user_configuration):
-        """get_user_configuration() should set the log files relative to the
-        current directory when RAMSTK_LOG_DIR is an empty string."""
+        """get_user_configuration() should set the log files relative to the current
+        directory when RAMSTK_LOG_DIR is an empty string."""
         print(test_toml_user_configuration.RAMSTK_PROG_CONF)
         DUT = test_toml_user_configuration
 
@@ -885,8 +883,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories(self):
-        """set_user_variables() should return None on success when
-        configuration directory structure exists in user's $HOME."""
+        """set_user_variables() should return None on success when configuration
+        directory structure exists in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
         DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
 
@@ -903,8 +901,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories_no_home(self):
-        """set_user_variables() should return None on success when
-        configuration directory structure does NOT exist in user's $HOME."""
+        """set_user_variables() should return None on success when configuration
+        directory structure does NOT exist in user's $HOME."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
         DUT.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/home"
@@ -920,8 +918,8 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories_no_user_conf_sub_dirs(self):
-        """set_user_variables() should return None and set the default
-        directories when the user's doesn't exist."""
+        """set_user_variables() should return None and set the default directories when
+        the user's doesn't exist."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV

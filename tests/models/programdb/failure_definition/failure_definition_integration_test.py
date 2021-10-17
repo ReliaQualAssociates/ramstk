@@ -306,7 +306,7 @@ class TestUpdateMethods:
         pub.sendMessage(
             "request_update_failure_definition",
             node_id=100,
-            table="failure_definitions",
+            table="failure_definition",
         )
 
         pub.unsubscribe(

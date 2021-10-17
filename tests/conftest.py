@@ -793,7 +793,7 @@ def test_toml_user_configuration(make_home_config_dir):
         },
         "layouts": {
             "allocation": "allocation.toml",
-            "failure_definitions": "failure_definition.toml",
+            "failure_definition": "failure_definition.toml",
             "fmea": "fmea.toml",
             "function": "function.toml",
             "hardware": "hardware.toml",
@@ -802,7 +802,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "requirement": "requirement.toml",
             "revision": "revision.toml",
             "similar_item": "similar_item.toml",
-            "stakeholders": "stakeholder.toml",
+            "stakeholder": "stakeholder.toml",
             "usage_profile": "usage_profile.toml",
             "validation": "validation.toml",
         },

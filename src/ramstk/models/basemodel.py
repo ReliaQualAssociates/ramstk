@@ -497,6 +497,8 @@ class RAMSTKBaseTable:
                 error_message=_error_msg,
             )
 
+        pub.sendMessage("request_set_cursor_active")
+
     # noinspection PyUnresolvedReferences
     # pylint: disable=no-value-for-parameter
     def do_update_all(self) -> None:

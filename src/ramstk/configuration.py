@@ -492,7 +492,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         ]
         self._lst_format_files = [
             "allocation",
-            "failure_definitions",
+            "failure_definition",
             "fmea",
             "function",
             "hardware",
@@ -501,7 +501,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "requirement",
             "revision",
             "similar_item",
-            "stakeholders",
+            "stakeholder",
             "usage_profile",
             "validation",
         ]
@@ -785,7 +785,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": "allocation.toml",
-                "failure_definitions": "failure_definition.toml",
+                "failure_definition": "failure_definition.toml",
                 "fmea": "fmea.toml",
                 "function": "function.toml",
                 "hardware": "hardware.toml",
@@ -794,7 +794,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "requirement": "requirement.toml",
                 "revision": "revision.toml",
                 "similar_item": "similar_item.toml",
-                "stakeholders": "stakeholder.toml",
+                "stakeholder": "stakeholder.toml",
                 "usage_profile": "usage_profile.toml",
                 "validation": "validation.toml",
             },
@@ -955,7 +955,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": self.RAMSTK_FORMAT_FILE["allocation"],
-                "failure_definitions": self.RAMSTK_FORMAT_FILE["failure_definitions"],
+                "failure_definition": self.RAMSTK_FORMAT_FILE["failure_definition"],
                 "fmea": self.RAMSTK_FORMAT_FILE["fmea"],
                 "function": self.RAMSTK_FORMAT_FILE["function"],
                 "hardware": self.RAMSTK_FORMAT_FILE["hardware"],
@@ -964,7 +964,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "requirement": self.RAMSTK_FORMAT_FILE["requirement"],
                 "revision": self.RAMSTK_FORMAT_FILE["revision"],
                 "similar_item": self.RAMSTK_FORMAT_FILE["similar_item"],
-                "stakeholders": self.RAMSTK_FORMAT_FILE["stakeholders"],
+                "stakeholder": self.RAMSTK_FORMAT_FILE["stakeholder"],
                 "usage_profile": self.RAMSTK_FORMAT_FILE["usage_profile"],
                 "validation": self.RAMSTK_FORMAT_FILE["validation"],
             },

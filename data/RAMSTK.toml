@@ -27,7 +27,7 @@ progdir = ""
 
 [layouts]
 allocation = "allocation.toml"
-failure_definitions = "failure_definition.toml"
+failure_definition = "failure_definition.toml"
 fmea = "fmea.toml"
 function = "function.toml"
 hardware = "hardware.toml"
@@ -36,7 +36,7 @@ pof = "pof.toml"
 requirement = "requirement.toml"
 revision = "revision.toml"
 similar_item = "similar_item.toml"
-stakeholders = "stakeholder.toml"
+stakeholder = "stakeholder.toml"
 usage_profile = "usage_profile.toml"
 validation = "validation.toml"
 
