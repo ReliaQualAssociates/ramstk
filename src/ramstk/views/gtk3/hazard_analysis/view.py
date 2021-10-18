@@ -125,6 +125,7 @@ class HazardsWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["hazard_id"] = attributes["hazard_id"]
         self.dic_pkeys["record_id"] = attributes["hazard_id"]
 

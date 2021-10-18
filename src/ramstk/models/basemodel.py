@@ -132,7 +132,7 @@ class RAMSTKBaseTable:
         )
         pub.subscribe(self.do_set_tree, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_update, f"request_update_{self._tag}")
-        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}")
+        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}s")
         pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
@@ -431,11 +431,10 @@ class RAMSTKBaseTable:
         """
         self.tree = tree
 
-    def do_update(self, node_id: int, table: str = "") -> None:
+    def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node ID of the record to save.
-        :param table: the table in the database to update.
         :return: None
         :rtype: None
         """
@@ -508,13 +507,10 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            try:
-                self.do_update(_node.identifier, table=self._tag[:-1])  # type: ignore
-            except TypeError:
-                self.do_update(_node.identifier)  # type: ignore
+            self.do_update(_node.identifier)  # type: ignore
 
-        pub.sendMessage("succeed_update_all")
         pub.sendMessage("request_set_cursor_active")
+        pub.sendMessage("succeed_update_all")
 
 
 class RAMSTKBaseView:
