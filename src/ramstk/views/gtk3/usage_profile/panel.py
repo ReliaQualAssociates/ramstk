@@ -63,7 +63,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 "mean": False,
                 "variance": False,
             },
-            "phase": {
+            "mission_phase": {
                 "revision_id": False,
                 "mission_id": False,
                 "phase_id": True,
@@ -332,7 +332,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         self.dic_icons: Dict[str, Any] = {
             "mission": None,
-            "phase": None,
+            "mission_phase": None,
             "environment": None,
         }
         self.dic_units: Dict[str, Tuple[str, str, str]] = {}
@@ -350,6 +350,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super()._do_set_attributes, f"lvw_editing_{self._tag}")
 
     def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -370,18 +371,28 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         :param selection: the Usage Profile class Gtk.TreeSelection().
         :return: None
         """
+        _attributes = super().on_row_change(selection)
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            if _model.get_value(_row, 2) == 0:
-                _level = "mission"
-            elif _model.get_value(_row, 3) == 0:
-                _level = "phase"
+            if (
+                _attributes["mission_id"]
+                * _attributes["phase_id"]
+                * _attributes["environment_id"]
+            ) > 0:
+                self._tag = "environment"
+                self._record_id = _attributes["environment_id"]
+            elif (_attributes["mission_id"] * _attributes["phase_id"]) > 0:
+                self._tag = "mission_phase"
+                self._record_id = _attributes["phase_id"]
             else:
-                _level = "environment"
+                self._tag = "mission"
+                self._record_id = _attributes["mission_id"]
 
-            self.tvwTreeView.visible = self._dic_visible_mask[_level]
+            self.tvwTreeView.visible = self._dic_visible_mask[self._tag]
             self.tvwTreeView.do_set_visible_columns()
+
+            pub.sendMessage(f"selected_{self._tag}", attributes=_attributes)
 
     def __do_load_environment(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -505,7 +516,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         _model = self.tvwTreeView.get_model()
 
         _pixbuf = GdkPixbuf.Pixbuf()
-        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["phase"], 22, 22)
+        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission_phase"], 22, 22)
 
         _attributes = [
             _entity.revision_id,

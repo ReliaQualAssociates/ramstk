@@ -69,10 +69,6 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        attributes["definition_id"] = self.last_id + 1
-        attributes["parent_id"] = 0
-        attributes["record_id"] = attributes["definition_id"]
-
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.definition_id = self.last_id + 1

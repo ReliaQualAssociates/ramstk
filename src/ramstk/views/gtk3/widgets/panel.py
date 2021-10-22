@@ -950,10 +950,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
     def do_set_cell_callbacks(self, message: str, columns: List[str]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
 
-        :param message: the PyPubSub message to broadcast on a
-            successful edit.
-        :param columns: the list of column numbers whose cells should
-            have a callback function assigned.
+        :param message: the PyPubSub message to broadcast on a successful edit.
+        :param columns: the list of column numbers whose cells should have a callback
+            function assigned.
         :return: None
         """
         for _key in columns:
@@ -1155,3 +1154,24 @@ class RAMSTKTreePanel(RAMSTKPanel):
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])
 
         return _attributes
+
+    def _do_set_attributes(self, node_id, package) -> None:
+        """Set the attributes of the record associated with node ID.
+
+        This is a helper method to use with database view models.  Since database
+        view models are comprised of an aggregate of database tables, the selected
+        row in the RAMSTKTreeView will determine which table needs updating.  This
+        method susses that out and sends the correct message to cause the correct
+        table to be updated.
+
+        :param node_id: the ID of the record in the RAMSTK Program database table whose
+            attributes are to be set.
+        :param package: the key:value pair of the attribute to set.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            f"lvw_editing_{self._tag}",
+            node_id=node_id,
+            package=package,
+        )

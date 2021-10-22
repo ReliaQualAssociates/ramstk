@@ -133,6 +133,7 @@ class FailureDefinitionListView(RAMSTKListView):
         """
         self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["definition_id"] = attributes["definition_id"]
+        self.dic_pkeys["parent_id"] = 0
         self.dic_pkeys["record_id"] = attributes["definition_id"]
 
     def __make_ui(self) -> None:
