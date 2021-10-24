@@ -139,7 +139,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_design_mechanic"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_design_mechanic"
+            test_tablemodel.do_update_all, "request_update_all_design_mechanics"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_design_mechanic_tree"

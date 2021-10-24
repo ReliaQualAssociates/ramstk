@@ -221,7 +221,7 @@ class TestUpdateMethods:
         _milhdbk217f = test_tablemodel.do_select(2)
         _milhdbk217f.PiA = 5
         _milhdbk217f.lambdaBD = 0.0045
-        pub.sendMessage("request_update_milhdbk217f", node_id=2, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_milhdbk217f")
 
@@ -253,7 +253,7 @@ class TestUpdateMethods:
 
         _milhdbk217f = test_tablemodel.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
-        pub.sendMessage("request_update_milhdbk217f", node_id=1, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_milhdbk217f")
 
@@ -266,7 +266,7 @@ class TestUpdateMethods:
 
         _milhdbk217f = test_tablemodel.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
-        pub.sendMessage("request_update_milhdbk217f", node_id=0, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_milhdbk217f"
@@ -277,7 +277,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
 
-        pub.sendMessage("request_update_milhdbk217f", node_id=100, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
 
@@ -287,7 +287,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
 
         test_tablemodel.tree.get_node(1).data.pop("milhdbk217f")
-        pub.sendMessage("request_update_milhdbk217f", node_id=1, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
 

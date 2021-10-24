@@ -277,7 +277,7 @@ class TestUpdateMethods:
         _allocation = test_datamanager.do_select(2)
         _allocation.percent_weight_factor = 0.9832
         _allocation.mtbf_goal = 12000
-        pub.sendMessage("request_update_allocation", node_id=2, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_allocation")
 
@@ -315,7 +315,7 @@ class TestUpdateMethods:
 
         _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=1, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
@@ -328,7 +328,7 @@ class TestUpdateMethods:
 
         _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=0, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
@@ -339,7 +339,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
-        pub.sendMessage("request_update_allocation", node_id=100, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
@@ -349,7 +349,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 
         test_datamanager.tree.get_node(1).data.pop("allocation")
-        pub.sendMessage("request_update_allocation", node_id=1, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 

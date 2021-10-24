@@ -132,4 +132,4 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
             node_id=[_node_id], package={"time_remaining": time_remaining}
         )
 
-        self.do_update(_node_id, table="program_status")
+        self.do_update(_node_id)

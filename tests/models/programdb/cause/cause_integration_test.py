@@ -191,7 +191,7 @@ class TestUpdateMethods:
             "cause"
         ].description = "Test failure cause"
         test_tablemodel.tree.get_node(3).data["cause"].rpn_detection = 4
-        pub.sendMessage("request_update_cause", node_id=3, table="cause")
+        pub.sendMessage("request_update_cause", node_id=3)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_cause")
 
@@ -230,7 +230,7 @@ class TestUpdateMethods:
 
         _cause = test_tablemodel.do_select(3)
         _cause.rpn_detection = {1: 2}
-        pub.sendMessage("request_update_cause", node_id=3, table="cause")
+        pub.sendMessage("request_update_cause", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_cause")
 
@@ -243,7 +243,7 @@ class TestUpdateMethods:
 
         _cause = test_tablemodel.do_select(4)
         _cause.rpn_detection_new = {1: 2}
-        pub.sendMessage("request_update_cause", node_id=0, table="cause")
+        pub.sendMessage("request_update_cause", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_cause"
@@ -254,7 +254,7 @@ class TestUpdateMethods:
         """should send fail message when node ID does not exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_cause")
 
-        pub.sendMessage("request_update_cause", node_id=100, table="cause")
+        pub.sendMessage("request_update_cause", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_cause")
 
@@ -264,7 +264,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_cause")
 
         test_tablemodel.tree.get_node(3).data.pop("cause")
-        pub.sendMessage("request_update_cause", node_id=3, table="cause")
+        pub.sendMessage("request_update_cause", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_cause")
 

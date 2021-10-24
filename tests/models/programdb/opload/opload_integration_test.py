@@ -213,7 +213,7 @@ class TestUpdateMethods:
         ].description = "Test failure opload"
         test_tablemodel.tree.get_node(4).data["opload"].priority_id = 4
 
-        pub.sendMessage("request_update_opload", node_id=4, table="opload")
+        pub.sendMessage("request_update_opload", node_id=4)
 
         assert (
             test_tablemodel.tree.get_node(4).data["opload"].description
@@ -241,7 +241,7 @@ class TestUpdateMethods:
         _opload = test_tablemodel.do_select(4)
         _opload.priority_id = {1: 2}
 
-        pub.sendMessage("request_update_opload", node_id=4, table="opload")
+        pub.sendMessage("request_update_opload", node_id=4)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_opload")
 
@@ -256,7 +256,7 @@ class TestUpdateMethods:
         _opload = test_tablemodel.do_select(4)
         _opload.priority_id = {1: 2}
 
-        pub.sendMessage("request_update_opload", node_id=0, table="opload")
+        pub.sendMessage("request_update_opload", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opload"
@@ -268,7 +268,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_opload")
 
-        pub.sendMessage("request_update_opload", node_id=100, table="opload")
+        pub.sendMessage("request_update_opload", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_opload")
 
@@ -279,7 +279,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_opload")
 
         test_tablemodel.tree.get_node(4).data.pop("opload")
-        pub.sendMessage("request_update_opload", node_id=4, table="opload")
+        pub.sendMessage("request_update_opload", node_id=4)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_opload")
 

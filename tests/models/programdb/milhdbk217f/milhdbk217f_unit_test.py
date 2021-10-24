@@ -120,7 +120,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_milhdbk217f"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_milhdbk217f"
+            test_tablemodel.do_update_all, "request_update_all_milhdbk217fs"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_milhdbk217f_tree"

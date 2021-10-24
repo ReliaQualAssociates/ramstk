@@ -175,6 +175,8 @@ def test_attributes():
         "total_part_count": 0,
         "total_power_dissipation": 0.0,
         "year_of_manufacture": 2019,
+        "parent_id": 1,
+        "record_id": 1,
     }
 
 

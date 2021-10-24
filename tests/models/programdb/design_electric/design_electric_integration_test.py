@@ -244,9 +244,7 @@ class TestUpdateMethods:
         _design_electric = test_tablemodel.do_select(2)
         _design_electric.n_active_pins = 5
         _design_electric.temperature_active = 81
-        pub.sendMessage(
-            "request_update_design_electric", node_id=2, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_design_electric")
 
@@ -290,9 +288,7 @@ class TestUpdateMethods:
 
         _design_electric = test_tablemodel.do_select(1)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage(
-            "request_update_design_electric", node_id=1, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_wrong_data_type, "fail_update_design_electric"
@@ -307,9 +303,7 @@ class TestUpdateMethods:
 
         _design_electric = test_tablemodel.do_select(1)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage(
-            "request_update_design_electric", node_id=0, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_design_electric"
@@ -322,9 +316,7 @@ class TestUpdateMethods:
             self.on_fail_update_non_existent_id, "fail_update_design_electric"
         )
 
-        pub.sendMessage(
-            "request_update_design_electric", node_id=100, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=100)
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_design_electric"
@@ -338,9 +330,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data.pop("design_electric")
-        pub.sendMessage(
-            "request_update_design_electric", node_id=1, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_design_electric"

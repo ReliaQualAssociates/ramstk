@@ -210,7 +210,7 @@ class TestUpdateMethods:
             "opstress"
         ].measurable_parameter = "Parameter"
 
-        pub.sendMessage("request_update_opstress", node_id=3, table="opstress")
+        pub.sendMessage("request_update_opstress", node_id=3)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_opstress")
 
@@ -232,7 +232,7 @@ class TestUpdateMethods:
         _opstress = test_tablemodel.do_select(3)
         _opstress.measurable_parameter = {1: 2}
 
-        pub.sendMessage("request_update_opstress", node_id=3, table="opstress")
+        pub.sendMessage("request_update_opstress", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_opstress")
 
@@ -247,7 +247,7 @@ class TestUpdateMethods:
         _opstress = test_tablemodel.do_select(3)
         _opstress.measurable_parameter = {1: 2}
 
-        pub.sendMessage("request_update_opstress", node_id=0, table="opstress")
+        pub.sendMessage("request_update_opstress", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_opstress"
@@ -259,7 +259,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_opstress")
 
-        pub.sendMessage("request_update_opstress", node_id=100, table="opstress")
+        pub.sendMessage("request_update_opstress", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_opstress")
 
@@ -270,7 +270,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_opstress")
 
         test_tablemodel.tree.get_node(3).data.pop("opstress")
-        pub.sendMessage("request_update_opstress", node_id=3, table="opstress")
+        pub.sendMessage("request_update_opstress", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_opstress")
 

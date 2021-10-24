@@ -217,7 +217,7 @@ class TestUpdateMethods:
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = "Big test environment"
-        pub.sendMessage("request_update_environment", node_id=1, table="environment")
+        pub.sendMessage("request_update_environment", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_environment")
 
@@ -242,7 +242,7 @@ class TestUpdateMethods:
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
-        pub.sendMessage("request_update_environment", node_id=1, table="environment")
+        pub.sendMessage("request_update_environment", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
 
@@ -255,7 +255,7 @@ class TestUpdateMethods:
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
-        pub.sendMessage("request_update_environment", node_id=0, table="environment")
+        pub.sendMessage("request_update_environment", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_environment"
@@ -266,7 +266,7 @@ class TestUpdateMethods:
         """should send the fail message when the environment ID does not exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_environment")
 
-        pub.sendMessage("request_update_environment", node_id=10, table="environment")
+        pub.sendMessage("request_update_environment", node_id=10)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_environment")
 
@@ -276,7 +276,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_environment")
 
         test_tablemodel.tree.get_node(1).data.pop("environment")
-        pub.sendMessage("request_update_environment", node_id=1, table="environment")
+        pub.sendMessage("request_update_environment", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_environment")
 

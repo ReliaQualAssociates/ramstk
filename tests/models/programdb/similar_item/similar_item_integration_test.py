@@ -255,7 +255,7 @@ class TestUpdateMethods:
 
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_description_1 = "This is a description of the change."
-        pub.sendMessage("request_update_similar_item", node_id=2, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=2)
 
         assert (
             test_tablemodel.do_select(1).change_description_1
@@ -310,7 +310,7 @@ class TestUpdateMethods:
 
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
-        pub.sendMessage("request_update_similar_item", node_id=1, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
@@ -324,8 +324,7 @@ class TestUpdateMethods:
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
-        pub.sendMessage("request_update_similar_item", node_id=0, table="similar_item")
-
+        pub.sendMessage("request_update_similar_item", node_id=0)
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
         )
@@ -335,9 +334,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
-        pub.sendMessage(
-            "request_update_similar_item", node_id=100, table="similar_item"
-        )
+        pub.sendMessage("request_update_similar_item", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
@@ -347,7 +344,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 
         test_tablemodel.tree.get_node(1).data.pop("similar_item")
-        pub.sendMessage("request_update_similar_item", node_id=1, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 

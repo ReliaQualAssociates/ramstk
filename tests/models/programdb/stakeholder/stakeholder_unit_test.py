@@ -91,7 +91,7 @@ class TestCreateModels:
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_stakeholder")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_stakeholder"
+            test_tablemodel.do_update_all, "request_update_all_stakeholders"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_attributes, "request_get_stakeholder_attributes"

@@ -83,7 +83,7 @@ class TestCreateModels:
             test_tablemodel.do_update, "request_update_mission_phase"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_mission_phase"
+            test_tablemodel.do_update_all, "request_update_all_mission_phases"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_delete, "request_delete_mission_phase"
@@ -185,6 +185,8 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("phase_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -197,6 +199,8 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("phase_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["phase_start"] == 0.0
 
@@ -208,5 +212,7 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("phase_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

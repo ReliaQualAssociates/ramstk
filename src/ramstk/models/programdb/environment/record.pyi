@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # Third Party Imports
 from sqlalchemy.orm import relationship
@@ -9,24 +9,24 @@ from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
 class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
-    __defaults__: Any
+    __defaults__: Dict[str, Any]
     __tablename__: str
-    __table_args__: Any
-    revision_id: Any
-    mission_id: Any
-    phase_id: Any
-    environment_id: Any
-    name: Any
-    units: Any
-    minimum: Any
-    maximum: Any
-    mean: Any
-    variance: Any
-    ramp_rate: Any
-    low_dwell_time: Any
-    high_dwell_time: Any
+    __table_args__: Dict[str, bool]
+    revision_id: int
+    mission_id: int
+    phase_id: int
+    environment_id: int
+    name: str
+    units: str
+    minimum: float
+    maximum: float
+    mean: float
+    variance: float
+    ramp_rate: float
+    low_dwell_time: float
+    high_dwell_time: float
     phase: relationship
     is_mission: bool
     is_phase: bool
     is_env: bool
-    def get_attributes(self): ...
+    def get_attributes(self) -> Dict[str, Any]: ...

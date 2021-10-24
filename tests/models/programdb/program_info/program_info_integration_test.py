@@ -120,7 +120,7 @@ class TestUpdateMethods:
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = 0
         test_datamanager.tree.get_node(1).data["preference"].vandv_active = 0
 
-        pub.sendMessage("request_update_preference", node_id=1, table="preference")
+        pub.sendMessage("request_update_preference", node_id=1)
 
         assert test_datamanager.tree.get_node(1).data["preference"].hardware_active == 0
         assert test_datamanager.tree.get_node(1).data["preference"].vandv_active == 0
@@ -130,7 +130,7 @@ class TestUpdateMethods:
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = 1
         test_datamanager.tree.get_node(1).data["preference"].vandv_active = 1
 
-        pub.sendMessage("request_update_preference", node_id=1, table="preference")
+        pub.sendMessage("request_update_preference", node_id=1)
 
         assert test_datamanager.tree.get_node(1).data["preference"].hardware_active == 1
         assert test_datamanager.tree.get_node(1).data["preference"].vandv_active == 1
@@ -150,7 +150,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
-        pub.sendMessage("request_update_preference", node_id=1, table="preference")
+        pub.sendMessage("request_update_preference", node_id=1)
 
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
@@ -161,7 +161,7 @@ class TestUpdateMethods:
 
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
 
-        pub.sendMessage("request_update_preference", node_id=1, table="preference")
+        pub.sendMessage("request_update_preference", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
 
@@ -171,9 +171,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
 
-        pub.sendMessage(
-            "request_update_preference", node_id="skullduggery", table="preference"
-        )
+        pub.sendMessage("request_update_preference", node_id="skullduggery")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
 
@@ -185,7 +183,7 @@ class TestUpdateMethods:
 
         test_datamanager.tree.get_node(1).data.pop("preference")
 
-        pub.sendMessage("request_update_preference", node_id=1, table="preference")
+        pub.sendMessage("request_update_preference", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
 

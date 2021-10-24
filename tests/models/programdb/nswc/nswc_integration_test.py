@@ -204,7 +204,7 @@ class TestUpdateMethods:
         _nswc = test_tablemodel.do_select(2)
         _nswc.Cac = 5
         _nswc.Calt = 81
-        pub.sendMessage("request_update_nswc", node_id=2, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_nswc")
 
@@ -236,7 +236,7 @@ class TestUpdateMethods:
 
         _nswc = test_tablemodel.do_select(1)
         _nswc.Cac = {1: 2}
-        pub.sendMessage("request_update_nswc", node_id=1, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_nswc")
 
@@ -247,7 +247,7 @@ class TestUpdateMethods:
 
         _nswc = test_tablemodel.do_select(1)
         _nswc.Calt = {1: 2}
-        pub.sendMessage("request_update_nswc", node_id=0, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_nswc"
@@ -258,7 +258,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_nswc")
 
-        pub.sendMessage("request_update_nswc", node_id=100, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_nswc")
 
@@ -268,7 +268,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_nswc")
 
         test_tablemodel.tree.get_node(1).data.pop("nswc")
-        pub.sendMessage("request_update_nswc", node_id=1, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_nswc")
 

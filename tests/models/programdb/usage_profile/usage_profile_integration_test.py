@@ -276,7 +276,13 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_mission, "succeed_retrieve_usage_profile")
 
         pub.sendMessage(
-            "request_insert_mission", attributes={"revision_id": 1, "mission_id": 1}
+            "request_insert_mission",
+            attributes={
+                "revision_id": 1,
+                "mission_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
+            },
         )
 
         pub.unsubscribe(
@@ -304,6 +310,8 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "mission_id": 1,
                 "phase_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
             },
         )
 
@@ -337,6 +345,8 @@ class TestInsertMethods:
                 "mission_id": 1,
                 "phase_id": 1,
                 "environment_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
                 "name": "Condition Name",
             },
         )

@@ -346,6 +346,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert isinstance(
@@ -363,6 +365,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 9
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(10) is None
@@ -552,7 +556,7 @@ class TestUpdateMethods:
         _hardware = test_tablemodel.do_select(2)
         _hardware.total_power_dissipation = 0.5
         _hardware.specification_number = "Big Specification"
-        pub.sendMessage("request_update_hardware", node_id=2, table="hardware")
+        pub.sendMessage("request_update_hardware", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_hardware")
 
@@ -596,7 +600,7 @@ class TestUpdateMethods:
 
         _hardware = test_tablemodel.do_select(1)
         _hardware.specification_number = {1: 2}
-        pub.sendMessage("request_update_hardware", node_id=1, table="hardware")
+        pub.sendMessage("request_update_hardware", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hardware")
 
@@ -609,7 +613,7 @@ class TestUpdateMethods:
 
         _hardware = test_tablemodel.do_select(1)
         _hardware.specification_number = {1: 2}
-        pub.sendMessage("request_update_hardware", node_id=0, table="hardware")
+        pub.sendMessage("request_update_hardware", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_hardware"
@@ -620,7 +624,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_hardware")
 
-        pub.sendMessage("request_update_hardware", node_id=100, table="hardware")
+        pub.sendMessage("request_update_hardware", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_hardware")
 
@@ -630,7 +634,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_hardware")
 
         test_tablemodel.tree.get_node(1).data.pop("hardware")
-        pub.sendMessage("request_update_hardware", node_id=1, table="hardware")
+        pub.sendMessage("request_update_hardware", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_hardware")
 

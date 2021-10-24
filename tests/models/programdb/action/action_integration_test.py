@@ -202,7 +202,7 @@ class TestUpdateMethods:
             "action"
         ].action_recommended = "Get a clue."
         test_tablemodel.tree.get_node(3).data["action"].action_closed = 1
-        pub.sendMessage("request_update_action", node_id=3, table="action")
+        pub.sendMessage("request_update_action", node_id=3)
 
         assert (
             test_tablemodel.tree.get_node(3).data["action"].action_recommended
@@ -247,7 +247,7 @@ class TestUpdateMethods:
 
         _action = test_tablemodel.do_select(3)
         _action.action_approved = {1: 2}
-        pub.sendMessage("request_update_action", node_id=3, table="action")
+        pub.sendMessage("request_update_action", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_action")
 
@@ -260,7 +260,7 @@ class TestUpdateMethods:
 
         _action = test_tablemodel.do_select(4)
         _action.action_closed = {1: 2}
-        pub.sendMessage("request_update_action", node_id=0, table="action")
+        pub.sendMessage("request_update_action", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_action"
@@ -271,7 +271,7 @@ class TestUpdateMethods:
         """should send fail message when node ID does not exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_action")
 
-        pub.sendMessage("request_update_action", node_id=100, table="action")
+        pub.sendMessage("request_update_action", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_action")
 
@@ -281,7 +281,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_action")
 
         test_tablemodel.tree.get_node(3).data.pop("action")
-        pub.sendMessage("request_update_action", node_id=3, table="action")
+        pub.sendMessage("request_update_action", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_action")
 

@@ -135,7 +135,7 @@ class TestCreateModels:
         )
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_hazard")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_hazard"
+            test_tablemodel.do_update_all, "request_update_all_hazards"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_calculate_fha, "request_calculate_fha"
