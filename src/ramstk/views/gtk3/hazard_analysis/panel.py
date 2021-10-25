@@ -723,6 +723,8 @@ class HazardsTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, f"succeed_calculate_{self._tag}")
+
         pub.subscribe(self._on_select_function, "selected_function")
 
     # pylint: disable=unused-argument

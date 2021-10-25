@@ -738,9 +738,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param tree: the treelib Tree containing the module to load.
         :return: None
         """
-        _model = self.tvwTreeView.get_model()
         try:
-            _model.clear()
+            self.tvwTreeView.unfilt_model.clear()
         except AttributeError:
             pass
 
@@ -752,7 +751,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
 
             self.tvwTreeView.expand_all()
-            _row = _model.get_iter_first()
+            _row = self.tvwTreeView.unfilt_model.get_iter_first()
             if _row is not None:
                 self.tvwTreeView.selection.select_iter(_row)
                 self.show_all()
@@ -905,7 +904,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _position = self.tvwTreeView.position[_key]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
-            _model.set(_row, _position, _value)
+            _model.set_value(_row, _position, _value)
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
@@ -1097,12 +1096,18 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
-        _model.remove(_row)
 
-        _row = _model.get_iter_first()
-        if _row is not None:
-            self.tvwTreeView.selection.select_iter(_row)
-            self.show_all()
+        if self._filtered_tree:
+            _model = self.tvwTreeView.filt_model.get_model()
+            _row = self.tvwTreeView.filt_model.convert_iter_to_child_iter(_row)
+            self.tvwTreeView.unfilt_model.remove(_row)
+            self.tvwTreeView.filt_model.refilter()
+        else:
+            self.tvwTreeView.unfilt_model.remove(_row)
+            _row = _model.get_iter_first()
+            if _row is not None:
+                self.tvwTreeView.selection.select_iter(_row)
+                self.show_all()
 
         pub.sendMessage("request_set_cursor_active")
 

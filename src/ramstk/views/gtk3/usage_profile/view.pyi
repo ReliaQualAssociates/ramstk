@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, List
+from typing import List
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration

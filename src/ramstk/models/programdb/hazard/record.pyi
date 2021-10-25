@@ -1,53 +1,53 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
 class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
-    __defaults__: Any
+    __defaults__: Dict[str, Any]
     __tablename__: str
-    __table_args__: Any
-    revision_id: Any
-    function_id: Any
-    hazard_id: Any
-    potential_hazard: Any
-    potential_cause: Any
-    assembly_effect: Any
-    assembly_severity: Any
-    assembly_probability: Any
-    assembly_hri: Any
-    assembly_mitigation: Any
-    assembly_severity_f: Any
-    assembly_probability_f: Any
-    assembly_hri_f: Any
-    function_1: Any
-    function_2: Any
-    function_3: Any
-    function_4: Any
-    function_5: Any
-    remarks: Any
-    result_1: Any
-    result_2: Any
-    result_3: Any
-    result_4: Any
-    result_5: Any
-    system_effect: Any
-    system_severity: Any
-    system_probability: Any
-    system_hri: Any
-    system_mitigation: Any
-    system_severity_f: Any
-    system_probability_f: Any
-    system_hri_f: Any
-    user_blob_1: Any
-    user_blob_2: Any
-    user_blob_3: Any
-    user_float_1: Any
-    user_float_2: Any
-    user_float_3: Any
-    user_int_1: Any
-    user_int_2: Any
-    user_int_3: Any
-    def get_attributes(self): ...
+    __table_args__: Dict[str, bool]
+    revision_id: int
+    function_id: int
+    hazard_id: int
+    potential_hazard: str
+    potential_cause: str
+    assembly_effect: str
+    assembly_severity: str
+    assembly_probability: str
+    assembly_hri: int
+    assembly_mitigation: str
+    assembly_severity_f: str
+    assembly_probability_f: str
+    assembly_hri_f: int
+    function_1: str
+    function_2: str
+    function_3: str
+    function_4: str
+    function_5: str
+    remarks: str
+    result_1: float
+    result_2: float
+    result_3: float
+    result_4: float
+    result_5: float
+    system_effect: str
+    system_severity: str
+    system_probability: str
+    system_hri: int
+    system_mitigation: str
+    system_severity_f: str
+    system_probability_f: str
+    system_hri_f: int
+    user_blob_1: str
+    user_blob_2: str
+    user_blob_3: str
+    user_float_1: float
+    user_float_2: float
+    user_float_3: float
+    user_int_1: int
+    user_int_2: int
+    user_int_3: int
+    def get_attributes(self) -> Dict[str, Any]: ...
