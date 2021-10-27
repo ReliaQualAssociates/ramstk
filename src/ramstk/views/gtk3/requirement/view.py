@@ -146,8 +146,10 @@ class RequirementModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
         self.dic_pkeys["record_id"] = attributes["requirement_id"]
+        self.dic_pkeys["requirement_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the requirement module view.
@@ -155,6 +157,32 @@ class RequirementModuleView(RAMSTKModuleView):
         :return: None
         """
         super().make_ui()
+
+        for __, _key in enumerate(self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS):
+            self._pnlPanel.lst_owner.append(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS[_key][0]
+            )
+
+        for __, _key in enumerate(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
+        ):
+            self._pnlPanel.lst_type.append(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE[_key][1]
+            )
+
+        # pylint: disable=unused-variable
+        self._pnlPanel.tvwTreeView.do_load_combo_cell(
+            self._pnlPanel.tvwTreeView.position["owner"],
+            self._pnlPanel.lst_owner,
+        )
+        self._pnlPanel.tvwTreeView.do_load_combo_cell(
+            self._pnlPanel.tvwTreeView.position["priority"],
+            ["", "1", "2", "3", "4", "5"],
+        )
+        self._pnlPanel.tvwTreeView.do_load_combo_cell(
+            self._pnlPanel.tvwTreeView.position["requirement_type"],
+            self._pnlPanel.lst_type,
+        )
 
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_requirement",
@@ -277,7 +305,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_create_requirement_code",
-            node_id=self.dic_pkey["record_id"],
+            node_id=self.dic_pkeys["record_id"],
             prefix=_prefix,
         )
 
@@ -288,8 +316,10 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
-        self.dic_pkey["record_id"] = attributes["requirement_id"]
+        self.dic_pkeys["record_id"] = attributes["requirement_id"]
+        self.dic_pkeys["requirement_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement General Data tab.
@@ -401,8 +431,10 @@ class RequirementAnalysisView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
-        self.dic_pkey["record_id"] = attributes["requirement_id"]
+        self.dic_pkeys["record_id"] = attributes["requirement_id"]
+        self.dic_pkeys["requirement_id"] = attributes["requirement_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Requirement Analysis tab.

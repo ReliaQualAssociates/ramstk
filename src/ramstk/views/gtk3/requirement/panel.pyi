@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -20,13 +20,13 @@ from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
 class RequirementTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
-    _title: Any
-    _dic_row_loader: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    _dic_row_loader: Dict[str, Callable]
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
     def __do_load_requirement(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -36,20 +36,20 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    btnValidateDate: Any
-    chkDerived: Any
-    chkValidated: Any
-    cmbOwner: Any
-    cmbRequirementType: Any
-    cmbPriority: Any
-    txtCode: Any
-    txtFigNum: Any
-    txtName: Any
-    txtPageNum: Any
-    txtSpecification: Any
-    txtValidatedDate: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    btnValidateDate: RAMSTKButton
+    chkDerived: RAMSTKCheckButton
+    chkValidated: RAMSTKCheckButton
+    cmbOwner: RAMSTKComboBox
+    cmbRequirementType: RAMSTKComboBox
+    cmbPriority: RAMSTKComboBox
+    txtCode: RAMSTKEntry
+    txtFigNum: RAMSTKEntry
+    txtName: RAMSTKEntry
+    txtPageNum: RAMSTKEntry
+    txtSpecification: RAMSTKEntry
+    txtValidatedDate: RAMSTKEntry
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def do_load_priorities(self) -> None: ...
     def do_load_requirement_types(
@@ -66,64 +66,64 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    chkClarityQ0: Any
-    chkClarityQ1: Any
-    chkClarityQ2: Any
-    chkClarityQ3: Any
-    chkClarityQ4: Any
-    chkClarityQ5: Any
-    chkClarityQ6: Any
-    chkClarityQ7: Any
-    chkClarityQ8: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    chkClarityQ0: RAMSTKCheckButton
+    chkClarityQ1: RAMSTKCheckButton
+    chkClarityQ2: RAMSTKCheckButton
+    chkClarityQ3: RAMSTKCheckButton
+    chkClarityQ4: RAMSTKCheckButton
+    chkClarityQ5: RAMSTKCheckButton
+    chkClarityQ6: RAMSTKCheckButton
+    chkClarityQ7: RAMSTKCheckButton
+    chkClarityQ8: RAMSTKCheckButton
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
 
 class RequirementCompletenessPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    chkCompleteQ0: Any
-    chkCompleteQ1: Any
-    chkCompleteQ2: Any
-    chkCompleteQ3: Any
-    chkCompleteQ4: Any
-    chkCompleteQ5: Any
-    chkCompleteQ6: Any
-    chkCompleteQ7: Any
-    chkCompleteQ8: Any
-    chkCompleteQ9: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    chkCompleteQ0: RAMSTKCheckButton
+    chkCompleteQ1: RAMSTKCheckButton
+    chkCompleteQ2: RAMSTKCheckButton
+    chkCompleteQ3: RAMSTKCheckButton
+    chkCompleteQ4: RAMSTKCheckButton
+    chkCompleteQ5: RAMSTKCheckButton
+    chkCompleteQ6: RAMSTKCheckButton
+    chkCompleteQ7: RAMSTKCheckButton
+    chkCompleteQ8: RAMSTKCheckButton
+    chkCompleteQ9: RAMSTKCheckButton
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
 
 class RequirementConsistencyPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    chkConsistentQ0: Any
-    chkConsistentQ1: Any
-    chkConsistentQ2: Any
-    chkConsistentQ3: Any
-    chkConsistentQ4: Any
-    chkConsistentQ5: Any
-    chkConsistentQ6: Any
-    chkConsistentQ7: Any
-    chkConsistentQ8: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    chkConsistentQ0: RAMSTKCheckButton
+    chkConsistentQ1: RAMSTKCheckButton
+    chkConsistentQ2: RAMSTKCheckButton
+    chkConsistentQ3: RAMSTKCheckButton
+    chkConsistentQ4: RAMSTKCheckButton
+    chkConsistentQ5: RAMSTKCheckButton
+    chkConsistentQ6: RAMSTKCheckButton
+    chkConsistentQ7: RAMSTKCheckButton
+    chkConsistentQ8: RAMSTKCheckButton
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
 
 class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
     _record_field: str
     _select_msg: str
     _tag: str
-    _title: Any
-    chkVerifiableQ0: Any
-    chkVerifiableQ1: Any
-    chkVerifiableQ2: Any
-    chkVerifiableQ3: Any
-    chkVerifiableQ4: Any
-    chkVerifiableQ5: Any
-    dic_attribute_widget_map: Any
+    _title: str
+    chkVerifiableQ0: RAMSTKCheckButton
+    chkVerifiableQ1: RAMSTKCheckButton
+    chkVerifiableQ2: RAMSTKCheckButton
+    chkVerifiableQ3: RAMSTKCheckButton
+    chkVerifiableQ4: RAMSTKCheckButton
+    chkVerifiableQ5: RAMSTKCheckButton
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...

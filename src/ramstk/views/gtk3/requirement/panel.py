@@ -145,7 +145,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 5,
                 Gtk.CellRendererCombo(),
                 "changed",
-                super().on_cell_edit,
+                super().on_cell_change,
                 "mvw_editing_requirement",
                 "",
                 {
@@ -155,7 +155,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Owner"),
-                "gint",
+                "gchararray",
             ],
             "page_number": [
                 6,
@@ -193,7 +193,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 8,
                 Gtk.CellRendererCombo(),
                 "changed",
-                super().on_cell_edit,
+                super().on_cell_change,
                 "mvw_editing_requirement",
                 0,
                 {
@@ -241,7 +241,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 11,
                 Gtk.CellRendererCombo(),
                 "changed",
-                super().on_cell_edit,
+                super().on_cell_change,
                 "mvw_editing_requirement",
                 0,
                 {
@@ -251,12 +251,12 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Type"),
-                "gint",
+                "gchararray",
             ],
             "validated": [
                 12,
                 Gtk.CellRendererToggle(),
-                "edited",
+                "toggled",
                 None,
                 "mvw_editing_requirement",
                 0,
@@ -832,6 +832,8 @@ class RequirementTreePanel(RAMSTKTreePanel):
         }
 
         # Initialize public list class attributes.
+        self.lst_owner: List[str] = [""]
+        self.lst_type: List[str] = [""]
 
         # Initialize public scalar class attributes.
 
@@ -877,6 +879,10 @@ class RequirementTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["requirement_id"]
             self._parent_id = _attributes["parent_id"]
+            _attributes["owner"] = self.lst_owner.index(_attributes["owner"])
+            _attributes["requirement_type"] = self.lst_type.index(
+                _attributes["requirement_type"]
+            )
 
             _title = _("Analyzing Requirement {0:s}: {1:s}").format(
                 str(_attributes["requirement_code"]), str(_attributes["description"])
@@ -909,13 +915,13 @@ class RequirementTreePanel(RAMSTKTreePanel):
             _entity.derived,
             _entity.description,
             _entity.figure_number,
-            _entity.owner,
+            self.lst_owner[_entity.owner],
             _entity.page_number,
             _entity.parent_id,
             _entity.priority,
             _entity.requirement_code,
             _entity.specification,
-            _entity.requirement_type,
+            self.lst_type[_entity.requirement_type],
             _entity.validated,
             str(_entity.validated_date),
             _entity.q_clarity_0,
@@ -1204,6 +1210,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_load_code, "succeed_create_requirement_code")
 
     def do_load_priorities(self) -> None:
         """Load the priority RAMSTKComboBox().

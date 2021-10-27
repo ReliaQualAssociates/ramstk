@@ -146,7 +146,12 @@ class RAMSTKBaseView(Gtk.HBox):
         self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
-        self.dic_pkeys: Dict[str, int] = {"revision_id": 0}
+        self.dic_pkeys: Dict[str, int] = {
+            "revision_id": 0,
+            f"{self._tag}_id": 0,
+            "parent_id": 0,
+            "record_id": 0,
+        }
 
         # Initialize public list attributes.
 

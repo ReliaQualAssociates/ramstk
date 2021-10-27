@@ -136,6 +136,42 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self.selection = self.get_selection()
         self.unfilt_model = self.get_model()
 
+    def do_change_cell(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_row: Gtk.TreeIter,
+        position: int,
+    ) -> Any:
+        """Handle Gtk.CellRenderer() edits.
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
+            was edited.
+        :param new_row: the new Gtk.TreeIter() selected in the
+            Gtk.CellRendererCombo().  This is relative to the cell renderer's model,
+            not the RAMSTKTreeView() model.
+        :param position: the column position of the edited
+            Gtk.CellRenderer().
+        :return: new_text; the value of the new text converted to the
+            correct data type for the attribute being edited.
+        """
+        _model = self.get_model()
+        _cell_model = cell.get_property("model")
+
+        _new_text = _cell_model.get_value(new_row, 0)
+
+        _idx = 0
+        _iter = _cell_model.get_iter_first()
+        while _iter is not None:
+            if _cell_model.get_value(_iter, 0) == _new_text:
+                _model[path][position] = _idx
+                break
+            _iter = _cell_model.iter_next(_iter)
+            _idx += 1
+
+        return _idx
+
     def do_edit_cell(
         self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
     ) -> Any:
@@ -167,16 +203,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             new_text = float(new_text)
 
         _model[path][position] = new_text
-
-        if isinstance(cell, Gtk.CellRendererCombo):
-            _cell_model = cell.get_property("model")
-            _iter = _cell_model.get_iter_first()
-            _idx = 0
-            while _iter is not None:
-                if _cell_model.get_value(_iter, 0) == new_text:
-                    new_text = _idx
-                _iter = _cell_model.iter_next(_iter)
-                _idx += 1
 
         return new_text
 
@@ -251,6 +277,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_load_combo_cell(self, index: int, items: List[str]) -> None:
         """Load items into cell with combobox.
 
+        :param index: the index in the RAMSTKTreeView() model of the
+            Gtk.CellRendererCombo() to load.
+        :param items: the list of entries to load into the Gtk.CellRendererCombo().
         :return: None
         :rtype: None
         """

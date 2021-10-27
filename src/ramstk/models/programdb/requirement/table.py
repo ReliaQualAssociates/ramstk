@@ -46,6 +46,8 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "requirement_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -90,8 +92,9 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
                 pub.sendMessage(
                     "fail_create_requirement_code",
                     error_message=(
-                        "{1}: No data package found for requirement ID {0:s}."
-                    ).format(str(node_id), _method_name),
+                        f"{_method_name}: No data package found for requirement "
+                        f"ID {node_id}."
+                    ),
                 )
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -103,9 +106,13 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.requirement_id = self.last_id + 1
-        _new_record.parent_id = attributes["parent_id"]
+        _new_record.parent_id = attributes.get("parent_id", 0)
 
         return _new_record

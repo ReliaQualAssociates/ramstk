@@ -171,6 +171,7 @@ def test_attributes():
         "q_verifiable_3": 0,
         "q_verifiable_4": 0,
         "q_verifiable_5": 0,
+        "record_id": 1,
     }
 
 

@@ -898,6 +898,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param package: the key:value for the data being updated.
         :return: None
         """
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
         [[_key, _value]] = package.items()
 
         try:
@@ -906,7 +908,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set_value(_row, _position, _value)
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
                 f"{_method_name}: An error occurred while refreshing {self._tag} data "
                 f"for Record ID {self._record_id} in the view.  Key {_key} does not "
@@ -918,7 +919,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 message=_error_msg,
             )
         except TypeError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
                 f"{_method_name}: An error occurred while refreshing {self._tag} data "
                 f"for Record ID {self._record_id} in the view.  Data {_value} for "
@@ -1010,6 +1010,52 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.set_level_indentation(2)
         self.tvwTreeView.set_rubber_banding(True)
 
+    def on_cell_change(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: Gtk.TreeIter,
+        key: str,
+        message: str,
+    ) -> None:
+        """Handle edits of a Gtk.CellRendererCombo() in the panel's RAMSTKTreeview().
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param new_text: the new Gtk.TreeIter() selected in the
+            Gtk.CellRendererCombo().  This is relative to the cell renderer's model,
+            not the RAMSTKTreeView() model.
+        :param key: the column key of the edited Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        """
+        try:
+            _new_text = self.tvwTreeView.do_change_cell(
+                cell,
+                path,
+                new_text,
+                self.tvwTreeView.position[key],
+            )
+
+            pub.sendMessage(
+                message,
+                node_id=self._record_id,
+                package={key: _new_text},
+            )
+        except KeyError:
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg = _(
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+
     def on_cell_edit(
         self,
         cell: Gtk.CellRenderer,
@@ -1018,7 +1064,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         key: str,
         message: str,
     ) -> None:
-        """Handle edits of the RAMSTKTreeview() in a treeview panel.
+        """Handle edits of Gtk.CellRendererText() in the panel's RAMSTKTreeview().
 
         :param cell: the Gtk.CellRenderer() that was edited.
         :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
@@ -1030,7 +1076,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """
         try:
             self.tvwTreeView.do_edit_cell(
-                cell, path, new_text, self.tvwTreeView.position[key]
+                cell,
+                path,
+                new_text,
+                self.tvwTreeView.position[key],
             )
 
             pub.sendMessage(
