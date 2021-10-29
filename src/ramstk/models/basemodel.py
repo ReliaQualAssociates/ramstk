@@ -240,6 +240,8 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
+        _method_name = inspect.currentframe().f_code.co_name  # type: ignore
+
         try:
             _record = self.do_get_new_record(attributes)
             for _id in self._lst_id_columns:
@@ -263,16 +265,18 @@ class RAMSTKBaseTable:
                 tree=self.tree,
             )
         except DataAccessError as _error:
+            _error_msg = f"{_method_name}: {_error.msg}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error.msg,
+                message=_error_msg,
             )
             pub.sendMessage(
                 f"fail_insert_{self._tag}",
                 error_message=_error.msg,
             )
         except NodeIDAbsentError as _error:
+            _error_msg = f"{_method_name}: {_error}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -280,7 +284,7 @@ class RAMSTKBaseTable:
             )
             pub.sendMessage(
                 f"fail_insert_{self._tag}",
-                error_message=str(_error),
+                error_message=_error_msg,
             )
 
     def do_select(self, node_id: Any) -> Any:

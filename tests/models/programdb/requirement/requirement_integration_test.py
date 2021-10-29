@@ -92,10 +92,7 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "_do_insert_requirement: Attempted to insert child requirement "
-            "under non-existent requirement ID 32."
-        )
+        assert error_message == ("do_insert: Parent node '32' is not in the tree")
         print("\033[35m\nfail_insert_requirement topic was broadcast")
 
     def on_fail_insert_no_revision(self, error_message):

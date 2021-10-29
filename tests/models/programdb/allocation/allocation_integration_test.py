@@ -88,7 +88,7 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_allocation topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == ("Parent node '9' is not in the tree")
+        assert error_message == ("do_insert: Parent node '9' is not in the tree")
         print("\033[35m\nfail_insert_allocation topic was broadcast on no parent.")
 
     def on_fail_insert_no_revision(self, error_message):
