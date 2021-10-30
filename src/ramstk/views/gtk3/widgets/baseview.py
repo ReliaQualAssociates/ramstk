@@ -199,7 +199,10 @@ class RAMSTKBaseView(Gtk.HBox):
             _fg_color = "#000000"
 
         self._pnlPanel.do_make_treeview(
-            bg_color=_bg_color, fg_color=_fg_color, fmt_file=_fmt_file
+            bg_color=_bg_color,
+            fg_color=_fg_color,
+            fmt_file=_fmt_file,
+            attrs=self._pnlPanel.dic_attribute_widget_map,
         )
 
         self.pack_end(self._pnlPanel, True, True, 0)

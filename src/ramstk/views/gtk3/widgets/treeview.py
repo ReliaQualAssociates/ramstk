@@ -4,7 +4,7 @@
 #       ramstk.views.gtk3.widgets.treeview.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKTreeView Module."""
 
 # Standard Library Imports
@@ -53,20 +53,24 @@ def do_make_column(cells: List[object], **kwargs: Dict[str, Any]) -> Gtk.TreeVie
     return _column
 
 
-# noinspection PyUnresolvedReferences
-def do_set_cell_properties(cell: object, **kwargs) -> None:
+def do_set_cell_properties(cell: object, properties: Dict[str, Any]) -> None:
     """Set common properties of Gtk.CellRenderers().
 
     :param cell: the cell whose properties are to be set.
+    :param properties: the properties for the cell.
     :return: None
     :rtype: None
     """
-    _bg_color = kwargs.get("bg_color", "#FFFFFF")
-    _editable = kwargs.get("editable", False)
-    _fg_color = kwargs.get("fg_color", "#000000")
-    _visible = kwargs.get("visible", True)
-    _weight = kwargs.get("weight", 400)
-    _weight_set = kwargs.get("weight_set", False)
+    _bg_color = properties.get("bg_color", "#FFFFFF")
+    _digits = properties.get("digits", 2)
+    _editable = properties.get("editable", False)
+    _fg_color = properties.get("fg_color", "#000000")
+    _lower = properties.get("lower", 1)
+    _step = properties.get("step", 1)
+    _upper = properties.get("upper", 10)
+    _visible = properties.get("visible", True)
+    _weight = properties.get("weight", 400)
+    _weight_set = properties.get("weight_set", False)
 
     if not _editable:
         _color = Gdk.RGBA(255.0, 255.0, 255.0, 1.0)
@@ -84,9 +88,10 @@ def do_set_cell_properties(cell: object, **kwargs) -> None:
         cell.set_property("model", _cellmodel)
         cell.set_property("text-column", 0)
     elif isinstance(cell, Gtk.CellRendererSpin):
-        _adjustment = Gtk.Adjustment(upper=5.0, step_incr=0.05)
+        _adjustment = Gtk.Adjustment(lower=_lower, upper=_upper, step_incr=_step)
         cell.set_property("adjustment", _adjustment)
-        cell.set_property("digits", 2)
+        cell.set_property("digits", _digits)
+        cell.set_property("editable", _editable)
     elif isinstance(cell, Gtk.CellRendererText):
         cell.set_property("background", _bg_color)
         cell.set_property("editable", _editable)
@@ -122,6 +127,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         self._has_pixbuf: bool = False
 
         # Initialize public dictionary instance attributes.
+        self.cellprops: Dict[str, Any] = {}
         self.datatypes: Dict[str, str] = {}
         self.editable: Dict[str, bool] = {}
         self.headings: Dict[str, str] = {}
@@ -298,25 +304,18 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         for _n in tree.children(_node.identifier):
             self.do_load_tree(tree.subtree(_n.identifier), _row)
 
-    # noinspection PyDefaultArgument
-    # pylint: disable=dangerous-default-value
-    def do_make_columns(
-        self, colors: Dict[str, str] = {"bg_color": "#000000", "fg_color": "#FFFFFF"}
-    ) -> None:
+    def do_make_columns(self) -> None:
         """Make the columns for the RAMSTKTreeView().
 
-        :param colors: the background and foreground (text) color to use for each row.
-            Defaults to white and black.
         :return: None
         :rtype: None
         """
         for _key, _position in self.position.items():
             _cell = self.widgets[_key]
+            _properties = {"editable": self.editable[_key], **self.cellprops[_key]}
             do_set_cell_properties(
                 _cell,
-                bg_color=colors["bg_color"],
-                fg_color=colors["fg_color"],
-                editable=self.editable[_key],
+                properties=_properties,
             )
             # If creating a RAMSTKTreeView() that displays icons and this is
             # the first column we're creating, add a Gtk.CellRendererPixbuf()
@@ -324,7 +323,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             if self._has_pixbuf and _key == "col0":
                 _pbcell = Gtk.CellRendererPixbuf()
                 _pbcell.set_property("xalign", 0.5)
-                _pbcell.set_property("cell-background", colors["bg_color"])
+                _pbcell.set_property("cell-background", _properties["bg_color"])
                 _column = do_make_column(
                     [_pbcell, _cell],
                     heading="",  # type: ignore

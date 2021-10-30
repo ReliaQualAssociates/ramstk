@@ -856,20 +856,22 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _bg_color: str = kwargs.get("bg_color", "#FFFFFF")  # type: ignore
         _fg_color: str = kwargs.get("fg_color", "#000000")  # type: ignore
         _fmt_file: str = kwargs.get("fmt_file", "")  # type: ignore
+        _attrs = kwargs.get("attrs", {})
 
         self.tvwTreeView.do_parse_format(_fmt_file)
         self.tvwTreeView.do_make_model()
 
         for _key, _value in self.dic_attribute_widget_map.items():
             self.tvwTreeView.widgets[_key] = _value[1]
+            self.tvwTreeView.cellprops[_key] = _attrs[_key][6]
+            self.tvwTreeView.cellprops[_key]["bg_color"] = _bg_color
+            self.tvwTreeView.cellprops[_key]["fg_color"] = _fg_color
             try:
                 self.tvwTreeView.headings[_key] = _value[7]
             except IndexError:
                 pass
 
-        self.tvwTreeView.do_make_columns(
-            colors={"bg_color": _bg_color, "fg_color": _fg_color}
-        )
+        self.tvwTreeView.do_make_columns()
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
