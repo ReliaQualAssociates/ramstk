@@ -365,8 +365,11 @@ class TestGetterSetter:
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
-    def on_succeed_calculate_stakeholder(self, node_id):
-        assert node_id == 1
+    def on_succeed_calculate_stakeholder(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
+        assert tree.get_node(1).data["improvement"] == 1.2
+        assert tree.get_node(1).data["overall_weight"] == 12.48
         print("\033[36m\nsucceed_calculate_stakeholder topic was broadcast.")
 
     @pytest.mark.integration

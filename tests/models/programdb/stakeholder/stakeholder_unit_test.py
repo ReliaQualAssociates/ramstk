@@ -83,6 +83,8 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "stakeholder_id",
+            "parent_id",
+            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKStakeholderRecord
@@ -222,6 +224,8 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -234,6 +238,8 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["overall_weight"] == 0.0
 
@@ -245,6 +251,8 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 

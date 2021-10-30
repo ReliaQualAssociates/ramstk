@@ -46,6 +46,8 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "stakeholder_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -87,8 +89,8 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         self._do_calculate_improvement(node_id)
 
         pub.sendMessage(
-            "succeed_calculate_stakeholder2",
-            node_id=node_id,
+            "succeed_calculate_stakeholder",
+            tree=self.tree,
         )
 
     def _do_calculate_improvement(self, node_id: int) -> None:

@@ -178,6 +178,9 @@ class StakeholderListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["parent_id"] = 0
+        self.dic_pkeys["stakeholder_id"] = attributes["requirement_id"]
         self.dic_pkeys["record_id"] = attributes["stakeholder_id"]
 
     def __make_ui(self) -> None:
