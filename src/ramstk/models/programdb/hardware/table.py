@@ -46,6 +46,8 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -75,9 +77,15 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
-        _new_record.hardware_id = attributes["hardware_id"]
+        _new_record.hardware_id = self.last_id + 1
+        _new_record.parent_id = attributes["parent_id"]
+        _new_record.part = attributes["part"]
 
         return _new_record
 
