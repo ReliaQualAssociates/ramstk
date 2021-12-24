@@ -169,7 +169,10 @@ class HardwareModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
+        )
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.
@@ -467,7 +470,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_hardware")
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
+        )
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """Send request to create the composite reference designator.
@@ -659,7 +665,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         )
         pub.subscribe(
             self._do_set_record_id,
-            "selected_hardware",
+            f"selected_{self._tag}",
         )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
@@ -879,6 +885,10 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         pub.subscribe(
             self._do_pack_component_panel,
             "hardware_category_changed",
+        )
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
         )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
