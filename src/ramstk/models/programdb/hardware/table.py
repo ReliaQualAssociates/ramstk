@@ -181,3 +181,7 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
             node_id=node_id,
             package={"comp_ref_des": _hardware.comp_ref_des},
         )
+        pub.sendMessage(
+            "succeed_make_comp_ref_des",
+            comp_ref_des=_hardware.comp_ref_des,
+        )
