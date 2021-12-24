@@ -132,7 +132,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The application of the switch."),
@@ -145,7 +145,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The construction method for the switch."),
@@ -158,7 +158,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbContactForm,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The contact form and quantity of the switch."),
@@ -171,7 +171,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNCycles,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The number of cycles per hour of the switch."),
@@ -184,7 +184,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 1,
                 {
                     "tooltip": _("The number of active contacts in the switch."),
@@ -261,18 +261,23 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected switch.
 
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         self.cmbApplication.set_sensitive(False)
         self.cmbConstruction.set_sensitive(False)
         self.cmbContactForm.set_sensitive(False)

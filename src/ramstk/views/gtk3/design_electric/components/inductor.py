@@ -133,7 +133,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -148,7 +148,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbInsulation,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The insulation class of the inductive device."),
@@ -161,7 +161,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtArea,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -177,7 +177,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtWeight,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The transformer weight (in lbf)."),
@@ -190,7 +190,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbFamily,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The application family of the transformer."),
@@ -203,7 +203,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The method of construction of the coil."),
@@ -289,18 +289,23 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected inductor.
 
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         self.cmbSpecification.set_sensitive(False)
         self.cmbInsulation.set_sensitive(False)
         self.cmbFamily.set_sensitive(False)

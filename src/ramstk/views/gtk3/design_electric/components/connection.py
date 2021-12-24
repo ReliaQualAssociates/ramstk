@@ -238,7 +238,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Initialize private scalar attributes.
         self._hazard_rate_method_id: int = 0
-        self._on_edit_callback: str = "wvw_editing_{}".format(self._tag)
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
@@ -261,7 +260,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The type of connector/connection."),
@@ -274,7 +273,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The governing specification for the connection."),
@@ -287,7 +286,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbInsert,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The connector insert material."),
@@ -300,7 +299,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtContactGauge,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 22,
                 {
                     "tooltip": _("The gauge of the contacts in the connector."),
@@ -313,7 +312,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtActivePins,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The number of active pins in the connector."),
@@ -326,7 +325,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtAmpsContact,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The amperes per active contact."),
@@ -339,7 +338,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtMating,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -355,7 +354,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNWave,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The number of wave soldered PTH connections."),
@@ -368,7 +367,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNHand,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The number of hand soldered PTH connections."),
@@ -381,7 +380,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNPlanes,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -491,18 +490,23 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected connection.
 
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         self.cmbInsert.set_sensitive(False)
         self.cmbSpecification.set_sensitive(False)
         self.cmbType.set_sensitive(False)
