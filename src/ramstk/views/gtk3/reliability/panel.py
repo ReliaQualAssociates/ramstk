@@ -19,16 +19,44 @@ from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPa
 
 
 class ReliabilityInputPanel(RAMSTKFixedPanel):
-    """Panel to display hazard rate inputs about the selected Hardware item."""
+    """Panel to display hazard rate inputs about the selected Hardware item.
+
+    The widgets of a Reliability input panel are:
+
+    :ivar cmbFailureDist: the RAMSTKComboBox() used to select and display the failure
+        distribution for the selected hardware item.
+    :ivar cmbHRMethod: the RAMSTKComboBox() used to select and display the method
+        used to calculate the hazard rate for the selected hardware item.
+    :ivar cmbHRType: the RAMSTKComboBox() used to select and display the
+    :ivar txtAddAdjFactor: the RAMSTKEntry() used to input and display the
+        hazard rate additive adjustment factor for the selected hardware item.
+    :ivar txtFailLocation: the RAMSTKEntry() used to input and display the location
+        parameter for the selected failure distribution.
+    :ivar txtFailScale: the RAMSTKEntry() used to input and display the scale
+        parameter for the selected failure distribution.
+    :ivar txtFailShape: the RAMSTKEntry() used to input and display the shape
+        parameter for the selected failure distribution.
+    :ivar txtMultAdjFactor: the RAMSTKEntry() used to input and display the hazard
+        rate multiplicative adjustment factor for the selected hardware item.
+    :ivar txtSpecifiedHt: the RAMSTKEntry() used to input and display the specified
+        hazard rate for the selected hardware item.
+    :ivar txtSpecifiedHtVar: the RAMSTKEntry() used to input and display the variance of
+        the specified hazard rate for the selected hardware item.
+    :ivar txtSpecifiedMTBF: the RAMSTKEntry() used to input and display the specified
+        MTBF for the selected hardware item.
+    :ivar txtSpecifiedMTBFVar: the RAMSTKEntry() used to input and display the
+        variance of the specified MTBF for the selected hardware item.
+    """
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "reliability"
-    _title = _("Reliability Assessment Inputs")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_reliability_attributes"
+    _tag: str = "reliability"
+    _title: str = _("Reliability Assessment Inputs")
 
     # Define public dictionary class attributes.
 
@@ -67,7 +95,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.cmbHRType,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -84,7 +112,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.cmbHRMethod,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -100,7 +128,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedHt,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The stated hazard rate."),
@@ -114,7 +142,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedHtVar,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The variance of the stated hazard rate."),
@@ -128,7 +156,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedMTBF,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The stated mean time between failure (MTBF)."),
@@ -142,7 +170,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtSpecifiedMTBFVar,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -158,7 +186,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.cmbFailureDist,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -175,7 +203,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailScale,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -191,7 +219,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailShape,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -207,7 +235,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtFailLocation,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -224,7 +252,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtAddAdjFactor,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -240,7 +268,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 self.txtMultAdjFactor,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_reliability",
+                f"wvw_editing_{self._tag}",
                 1.0,
                 {
                     "tooltip": _(
@@ -266,8 +294,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
     def do_load_hr_distributions(self, distributions: List[str]) -> None:
         """Load the hazard rate distribution RAMSTKComboBox().
 
-        :param distributions: the list of s-distribution names RAMSTK
-            currently supports.
+        :param distributions: the list of s-distribution names RAMSTK currently
+            supports.
         :return: None
         """
         self.cmbFailureDist.do_load_combo(entries=distributions)
@@ -397,9 +425,10 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "reliability"
-    _title = _("Reliability Assessment Results")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_reliability_attributes"
+    _tag: str = "reliability"
+    _title: str = _("Reliability Assessment Results")
 
     # Define public dictionary class attributes.
 
@@ -778,43 +807,43 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.txtActiveHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_active"])),
+            str(self.fmt.format(attributes["hazard_rate_active"] or 0.0)),
             signal="changed",
         )
         self.txtActiveHtVar.do_update(
-            str(self.fmt.format(attributes["hr_active_variance"])),
+            str(self.fmt.format(attributes["hr_active_variance"] or 0.0)),
             signal="changed",
         )
         self.txtDormantHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_dormant"])),
+            str(self.fmt.format(attributes["hazard_rate_dormant"] or 0.0)),
             signal="changed",
         )
         self.txtDormantHtVar.do_update(
-            str(self.fmt.format(attributes["hr_dormant_variance"])),
+            str(self.fmt.format(attributes["hr_dormant_variance"] or 0.0)),
             signal="changed",
         )
         self.txtSoftwareHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_software"])),
+            str(self.fmt.format(attributes["hazard_rate_software"] or 0.0)),
             signal="changed",
         )
         self.txtLogisticsHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_logistics"])),
+            str(self.fmt.format(attributes["hazard_rate_logistics"] or 0.0)),
             signal="changed",
         )
         self.txtLogisticsHtVar.do_update(
-            str(self.fmt.format(attributes["hr_logistics_variance"])),
+            str(self.fmt.format(attributes["hr_logistics_variance"] or 0.0)),
             signal="changed",
         )
         self.txtMissionHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_mission"])),
+            str(self.fmt.format(attributes["hazard_rate_mission"] or 0.0)),
             signal="changed",
         )
         self.txtMissionHtVar.do_update(
-            str(self.fmt.format(attributes["hr_mission_variance"])),
+            str(self.fmt.format(attributes["hr_mission_variance"] or 0.0)),
             signal="changed",
         )
         self.txtPercentHt.do_update(
-            str(self.fmt.format(attributes["hazard_rate_percent"])),
+            str(self.fmt.format(attributes["hazard_rate_percent"] or 0.0)),
             signal="changed",
         )
 
@@ -825,19 +854,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.txtLogisticsMTBF.do_update(
-            str(self.fmt.format(attributes["mtbf_logistics"])),
+            str(self.fmt.format(attributes["mtbf_logistics"] or 0.0)),
             signal="changed",
         )
         self.txtLogisticsMTBFVar.do_update(
-            str(self.fmt.format(attributes["mtbf_logistics_variance"])),
+            str(self.fmt.format(attributes["mtbf_logistics_variance"] or 0.0)),
             signal="changed",
         )
         self.txtMissionMTBF.do_update(
-            str(self.fmt.format(attributes["mtbf_mission"])),
+            str(self.fmt.format(attributes["mtbf_mission"] or 0.0)),
             signal="changed",
         )
         self.txtMissionMTBFVar.do_update(
-            str(self.fmt.format(attributes["mtbf_mission_variance"])),
+            str(self.fmt.format(attributes["mtbf_mission_variance"] or 0.0)),
             signal="changed",
         )
 
@@ -848,19 +877,19 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.txtLogisticsRt.do_update(
-            str(self.fmt.format(attributes["reliability_logistics"])),
+            str(self.fmt.format(attributes["reliability_logistics"] or 1.0)),
             signal="changed",
         )
         self.txtLogisticsRtVar.do_update(
-            str(self.fmt.format(attributes["reliability_log_variance"])),
+            str(self.fmt.format(attributes["reliability_log_variance"] or 0.0)),
             signal="changed",
         )
         self.txtMissionRt.do_update(
-            str(self.fmt.format(attributes["reliability_mission"])),
+            str(self.fmt.format(attributes["reliability_mission"] or 1.0)),
             signal="changed",
         )
         self.txtMissionRtVar.do_update(
-            str(self.fmt.format(attributes["reliability_miss_variance"])),
+            str(self.fmt.format(attributes["reliability_miss_variance"] or 0.0)),
             signal="changed",
         )
 
@@ -919,9 +948,10 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "reliability"
-    _title = _("Availability Assessment Results")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_reliability_attributes"
+    _tag: str = "reliability"
+    _title: str = _("Availability Assessment Results")
 
     # Define public dictionary class attributes.
 
@@ -1111,19 +1141,19 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.txtLogisticsAt.do_update(
-            str(self.fmt.format(attributes["availability_logistics"])),
+            str(self.fmt.format(attributes["availability_logistics"] or 1.0)),
             signal="changed",
         )
         self.txtLogisticsAtVar.do_update(
-            str(self.fmt.format(attributes["avail_log_variance"])),
+            str(self.fmt.format(attributes["avail_log_variance"] or 0.0)),
             signal="changed",
         )
         self.txtMissionAt.do_update(
-            str(self.fmt.format(attributes["availability_mission"])),
+            str(self.fmt.format(attributes["availability_mission"] or 1.0)),
             signal="changed",
         )
         self.txtMissionAtVar.do_update(
-            str(self.fmt.format(attributes["avail_mis_variance"])),
+            str(self.fmt.format(attributes["avail_mis_variance"] or 0.0)),
             signal="changed",
         )
 

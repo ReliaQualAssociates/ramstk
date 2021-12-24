@@ -609,7 +609,6 @@ class RAMSTKBaseView(Gtk.HBox):
                 _menu_item.connect(
                     "activate",
                     self._lst_callbacks[_idx],
-                    self.RAMSTK_USER_CONFIGURATION,
                 )
                 _menu_item.show()
                 _menu.append(_menu_item)

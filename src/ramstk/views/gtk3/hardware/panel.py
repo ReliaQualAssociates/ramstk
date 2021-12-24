@@ -37,6 +37,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
     _select_msg = "succeed_retrieve_hardwares"
     _tag = "hardware"
     _title = _("Hardware BoM")
@@ -67,7 +68,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -83,7 +84,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -99,7 +100,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -115,7 +116,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -131,7 +132,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -147,7 +148,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -163,7 +164,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -179,7 +180,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -195,7 +196,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -211,7 +212,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -227,7 +228,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -243,7 +244,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -259,7 +260,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -275,7 +276,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -291,7 +292,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -307,7 +308,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -323,7 +324,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -339,7 +340,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -355,7 +356,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -371,7 +372,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -387,7 +388,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -403,7 +404,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 1,
                 {
                     "bg_color": "#FFFFFF",
@@ -419,7 +420,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -435,7 +436,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -451,7 +452,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 1,
                 {
                     "bg_color": "#FFFFFF",
@@ -467,7 +468,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -483,7 +484,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -499,7 +500,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -515,7 +516,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -531,7 +532,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 date.today(),
                 {
                     "bg_color": "#FFFFFF",
@@ -547,7 +548,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -563,7 +564,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -579,7 +580,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -595,7 +596,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -622,7 +623,10 @@ class HardwareTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+        pub.subscribe(
+            self._on_module_switch,
+            "mvwSwitchedPage",
+        )
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).
@@ -771,6 +775,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
     _select_msg = "selected_hardware"
     _tag = "hardware"
     _title = _("Hardware General Information")
@@ -813,7 +818,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtRefDes,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -828,7 +833,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtCompRefDes,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -844,7 +849,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtName,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "width": 600,
@@ -858,7 +863,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtDescription,
                 "changed",
                 super().on_changed_textview,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "width": 600,
@@ -872,7 +877,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtPartNumber,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _("The part number of the selected hardware item."),
@@ -885,7 +890,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtAltPartNum,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -901,7 +906,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.cmbCategory,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0,
                 {},
                 _("Category:"),
@@ -912,7 +917,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.cmbSubcategory,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0,
                 {},
                 _("Subcategory:"),
@@ -923,7 +928,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtSpecification,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -939,7 +944,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtPageNumber,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -955,7 +960,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtFigureNumber,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -971,7 +976,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtLCN,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -987,7 +992,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 self.chkRepairable,
                 "toggled",
                 super().on_toggled,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -1013,7 +1018,14 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         self.cmbSubcategory.connect("changed", self._request_load_component)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_subcategories, "changed_category")
+        pub.subscribe(
+            self._do_load_subcategories,
+            "changed_category",
+        )
+        pub.subscribe(
+            self._do_set_comp_ref_des,
+            "succeed_make_comp_ref_des",
+        )
 
     def do_load_categories(self, category: Dict[int, str]) -> None:
         """Load the category RAMSTKComboBox().
@@ -1046,6 +1058,18 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
             for _key in _subcategories:
                 _subcategory.append([_subcategories[_key]])
             self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
+
+    def _do_set_comp_ref_des(self, comp_ref_des: str) -> None:
+        """Set the value in the composite reference designator RAMSTKEntry().
+
+        :param comp_ref_des: the composite reference designator value.
+        :return: None
+        :rtype: None
+        """
+        self.txtCompRefDes.do_update(
+            comp_ref_des,
+            signal="changed",
+        )
 
     def _request_load_component(self, combo: RAMSTKComboBox) -> None:
         """Request to load the component widgets.
@@ -1087,6 +1111,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
     _select_msg = "selected_hardware"
     _tag = "hardware"
     _title = _("Hardware Logistics Information")
@@ -1123,7 +1148,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.cmbManufacturer,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {},
                 _("Manufacturer:"),
@@ -1134,7 +1159,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtCAGECode,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -1150,7 +1175,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtNSN,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "tooltip": _(
@@ -1165,7 +1190,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtYearMade,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 date.today().year - 2,
                 {
                     "width": 100,
@@ -1182,7 +1207,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtQuantity,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 1,
                 {
                     "width": 50,
@@ -1198,7 +1223,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.txtCost,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {},
                 _("Unit Cost:"),
@@ -1209,7 +1234,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 self.cmbCostType,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {},
                 _("Cost Method:"),
@@ -1275,7 +1300,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         self.txtCAGECode.do_update(_cage_code, signal="changed")
         pub.sendMessage(
-            "wvw_editing_hardware",
+            f"wvw_editing_{self._tag}",
             node_id=[self._record_id, -1],
             package={"cage_code": _cage_code},
         )
@@ -1289,6 +1314,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field = "hardware_id"
     _select_msg = "selected_hardware"
     _tag = "hardware"
     _title = _("Hardware Miscellaneous Information")
@@ -1321,7 +1347,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                 self.txtAttachments,
                 "changed",
                 super().on_changed_textview,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "height": 150,
@@ -1339,7 +1365,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                 self.txtRemarks,
                 "changed",
                 super().on_changed_textview,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 "",
                 {
                     "height": 150,
@@ -1356,7 +1382,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                 self.chkTagged,
                 "toggled",
                 super().on_toggled,
-                "mvw_editing_hardware",
+                f"mvw_editing_{self._tag}",
                 0,
                 {},
                 "",

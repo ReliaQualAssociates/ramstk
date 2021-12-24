@@ -48,11 +48,11 @@ class RAMSTKPanel(RAMSTKFrame):
         used to display.
     :cvar _title: the title to display on the panel frame.
 
-    :ivar _parent_id: the ID of the parent entity for the selected work stream
-        entity.  This is needed for hierarchical modules such as the
-        function module.  For flat modules, this will always be zero.
-    :ivar _record_id: the work stream module ID whose attributes
-        this panel is displaying.
+    :ivar _parent_id: the ID of the parent entity for the selected work stream entity.
+        This is needed for hierarchical modules such as the function module.  For flat
+        modules, this will always be zero.
+    :ivar _record_id: the work stream module ID whose attributes this panel is
+        displaying.
 
     :ivar dic_attribute_widget_map: a dict used to map model attributes to their
         respective display widgets.  The key is the name of the attribute in the record
@@ -75,6 +75,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         For a fixed panel, dict entries should be in the order they should appear in
         the panel.
+
     :ivar fmt: the formatting string for displaying float values.
     """
 
@@ -83,7 +84,7 @@ class RAMSTKPanel(RAMSTKFrame):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _record_field: str = "revision_id"
+    _record_field: str = ""
     _select_msg: str = "selected_revision"
     _tag: str = ""
     _title: str = ""
@@ -105,13 +106,10 @@ class RAMSTKPanel(RAMSTKFrame):
         # Initialize private dict instance attributes.
 
         # Initialize private list instance attributes.
-        self._lst_labels: List[str] = []
-        self._lst_widgets: List[object] = []
 
         # Initialize private scalar instance attributes.
         self._parent_id: int = -1
         self._record_id: int = -1
-        self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
@@ -120,7 +118,6 @@ class RAMSTKPanel(RAMSTKFrame):
 
         # Initialize public scalar instance attributes.
         self.fmt: str = "{0:0.6}"
-        self.tree: treelib.Tree = treelib.Tree()
 
         # Subscribe to PyPubSub messages.
 
@@ -159,7 +156,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.on_edit_callback: str = f"mvw_editing_{self._tag}"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -170,20 +166,23 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             self.do_load_panel,
             self._select_msg,
         )
-        pub.subscribe(
-            self.on_edit,
-            self.on_edit_callback,
-        )
+        pub.subscribe(self.on_edit, f"mvw_editing_{self._tag}")
 
         # Generally used with panels that accept inputs and are, thus, editable.
         try:
-            pub.subscribe(self._do_set_sensitive, f"succeed_get_{self._tag}_attributes")
+            pub.subscribe(
+                self._do_set_sensitive,
+                f"succeed_get_{self._tag}_attributes",
+            )
         except AttributeError:
             pass
 
         # Generally used with panels that display results and are, thus, uneditable.
         try:
-            pub.subscribe(self._do_load_entries, f"succeed_get_{self._tag}_attributes")
+            pub.subscribe(
+                self._do_load_entries,
+                f"succeed_get_{self._tag}_attributes",
+            )
         except AttributeError:
             pass
 
@@ -280,11 +279,12 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _key,
             _value,
         ) in self.dic_attribute_widget_map.items():
+            # Value[1] is the widget who's callback is being set.
             _value[1].dic_handler_id[_value[2]] = _value[1].connect(
-                _value[2],
-                _value[3],
-                _key,
-                _value[4],
+                _value[2],  # Widget's callback signal.
+                _value[3],  # Callback function/method.
+                _key,  # Attribute name.
+                _value[4],  # Message to for callback to emit on success.
             )
 
     def do_set_properties(self, **kwargs: Any) -> None:
@@ -328,7 +328,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _new_text = int(combo.get_active())
 
             # Only if something is selected should we send the message.
-            # Otherwise attributes get updated to a value of -1 which isn't
+            # Otherwise, attributes get updated to a value of -1 which isn't
             # correct.  And it sucks trying to figure out why, so leave the
             # conditional unless you have a more elegant (and there prolly
             # is) solution.
@@ -572,6 +572,10 @@ class RAMSTKPlotPanel(RAMSTKPanel):
     The attributes of a RAMSTKPlotPanel are:
 
     :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
+    :ivar lst_axis_labels: a list containing the labels for the plot's axes.  Index 0 is
+        the abscissa (x-axis) and index 1 is the ordinate (y-axis).
+    :ivar lst_legend: a list containing the text to display in the plot's legend.
+    :ivar plot_title: the title of the plot.
     """
 
     # Define private dict class attributes.
@@ -670,8 +674,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     The attributes of a RAMSTKTreePanel are:
 
-    :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
-        treeview.
+    :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a treeview.
+    :ivar _filtered_tree: boolean indicating whether or not to display the filtered
+        RAMSTKTreeView() or the full RAMSTKTreeView().
     """
 
     # Define private dict class attributes.
@@ -824,8 +829,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         :return: None
         """
-        self._lst_widgets.append(self.tvwTreeView)
-
         self.tvwTreeView.widgets = {
             _key: _value[1] for _key, _value in self.dic_attribute_widget_map.items()
         }

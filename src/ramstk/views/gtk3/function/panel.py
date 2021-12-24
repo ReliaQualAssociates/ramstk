@@ -511,7 +511,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtCode,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_function",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "width": 125,
@@ -525,7 +525,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtName,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_function",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "width": 800,
@@ -539,7 +539,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                 self.txtRemarks,
                 "changed",
                 super().on_changed_textview,
-                "mvw_editing_function",
+                f"wvw_editing_{self._tag}",
                 "",
                 {
                     "height": 100,
@@ -556,7 +556,7 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
                 self.chkSafetyCritical,
                 "toggled",
                 super().on_toggled,
-                "mvw_editing_function",
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(

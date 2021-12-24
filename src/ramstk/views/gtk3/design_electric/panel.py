@@ -26,16 +26,35 @@ from ramstk.views.gtk3.widgets import (
 
 
 class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
-    """Panel to display environmental data about the selected Hardware item."""
+    """Panel to display environmental data about the selected hardware item.
+
+    The widgets of a Design Electric environmental input panel are:
+
+    :ivar cmbActiveEnviron: the RAMSTKComboBox() used to select the active (operating)
+        environment for the selected hardware item.  These are the MIL-HDBK-217
+        environments.
+    :ivar cmbDormantEnviron: the RAMSTKComboBox() used to select the dormant (storage)
+        environment for the selected hardware item.  These are the MIL-HDBK-338
+        environments.
+    :ivar txtActiveTemp: the RAMSTKEntry() used to input and display the active
+        (operating) temperature of the selected hardware item.
+    :ivar txtDormantTemp: the RAMSTKEntry() used to input and display the dormant
+        (storage) temperature of the selected hardware item.
+    :ivar txtDutyCycle: the RAMSTKEntry() used to input and display the duty cycle of
+        the selected hardware item.
+    :ivar txtMissionTime: the RAMSTKEntry() used to input and display the mission
+        time of the selected hardware item.
+    """
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "design_electric"
-    _title = _("Hardware Environmental Inputs")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_design_electric_attributes"
+    _tag: str = "design_electric"
+    _title: str = _("Hardware Environmental Inputs")
 
     # Define public dictionary class attributes.
 
@@ -68,7 +87,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.cmbActiveEnviron,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The operating environment for the hardware item."),
@@ -82,7 +101,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.txtActiveTemp,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -98,7 +117,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.cmbDormantEnviron,
                 "changed",
                 super().on_changed_combo,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The storage environment for the hardware item."),
@@ -112,7 +131,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.txtDormantTemp,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The ambient temperature in the storage environment."),
@@ -126,7 +145,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.txtMissionTime,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 1.0,
                 {
                     "tooltip": _("The mission time of the selected hardware item."),
@@ -140,7 +159,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 self.txtDutyCycle,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_hardware",
+                f"wvw_editing_{self._tag}",
                 100.0,
                 {
                     "tooltip": _("The duty cycle of the selected hardware item."),
@@ -180,16 +199,41 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
 
 
 class DesignElectricStressInputPanel(RAMSTKFixedPanel):
-    """Panel to display environmental data about the selected Hardware item."""
+    """Panel to display environmental data about the selected Hardware item.
+
+    The widgets of a Design Electric electrical stress input panel are:
+
+    :ivar txtTemperatureRatedMin: the RAMSTKEntry() used to input and display the
+        minimum rated temperature of the selected hardware item.
+    :ivar txtTemperatureKnee: the RAMSTKEntry() used to input and display the knee
+        temperature of the selected hardware item.
+    :ivar txtTemperatureRatedMax: the RAMSTKEntry() used to input and display the
+        maximum rated temperature of the selected hardware item.
+    :ivar txtCurrentRated: the RAMSTKEntry() used to input and display the rated
+        current of the selected hardware item.
+    :ivar txtCurrentOperating: the RAMSTKEntry() used to input and display the
+        operating current of the selected hardware item.
+    :ivar txtPowerRated: the RAMSTKEntry() used to input and display the rated power of
+        the selected hardware item.
+    :ivar txtPowerOperating: the RAMSTKEntry() used to input and display the
+        operating power of the selected hardware item.
+    :ivar txtVoltageRated: the RAMSTKEntry() used to input and display the rated
+        voltage of the selected hardware item.
+    :ivar txtVoltageAC: the RAMSTKEntry() used to input and display the operating AC
+        voltage of the selected hardware item.
+    :ivar txtVoltageDC: the RAMSTKEntry() used to input and display the operating DC
+        voltage of the selected hardware item.
+    """
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "design_electric"
-    _title = _("Hardware Thermal &amp; Electrical Stress Inputs")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_design_electric_attributes"
+    _tag: str = "design_electric"
+    _title: str = _("Hardware Thermal &amp; Electrical Stress Inputs")
 
     # Define public dictionary class attributes.
 
@@ -226,7 +270,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtTemperatureRatedMin,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 25.0,
                 {
                     "tooltip": _(
@@ -243,7 +287,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtTemperatureKnee,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 25.0,
                 {
                     "tooltip": _(
@@ -260,7 +304,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtTemperatureRatedMax,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 25.0,
                 {
                     "tooltip": _(
@@ -277,7 +321,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtCurrentRated,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The rated current (in A) of the hardware item."),
@@ -291,7 +335,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtCurrentOperating,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The operating current (in A) of the hardware item."),
@@ -305,7 +349,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtPowerRated,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The rated power (in W) of the hardware item."),
@@ -319,7 +363,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtPowerOperating,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The operating power (in W) of the hardware item."),
@@ -333,7 +377,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageRated,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The rated voltage (in V) of the hardware item."),
@@ -347,7 +391,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageAC,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -363,7 +407,7 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 self.txtVoltageDC,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_design_electric",
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -391,31 +435,27 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
 class DesignElectricStressResultPanel(RAMSTKFixedPanel):
     """Display Hardware stress results attribute data in the RAMSTK Work Book.
 
-    The Hardware stress result view displays all the stress results for the
-    selected hardware item.  This includes, currently, results for
-    MIL-HDBK-217FN2 parts count and part stress methods.  The attributes of a
-    Hardware stress result view are:
+    The widgets of a Design Electric electrical stress results panel are:
 
-    :cvar list _lst_labels: the text to use for the stress results widget
-        labels.
+    :ivar chkOverstress: the RAMSTKCheckButton() used to indicate whether the selected
+        hardware item is electrically or thermally overstressed.
+    :ivar pltPlot: the RAMSTKPlot() used to display the derating curve and operating
+        point of the selected component.
+    :ivar txtCurrentRatio: the RAMSTKEntry() used to display the ratio of operating
+        to rated current for the selected component.
+    :ivar txtPowerRatio: the RAMSTKEntry() used to display the ratio of operating to
+        rated power for the selected component.
+    :ivar txtVoltageRatio: the RAMSTKEntry() used to display the ratio of operating
+        to rated voltage for the selected component.
+    :ivar txtReason: the RAMSTKTextView() used to display the reason(s), if any,
+        the selected hardware item is overstressed.
 
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-        displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the hardware item
-        currently being displayed.
+    The attributes of a Design Electricl electrical stress results panel are:
 
-    :ivar str fmt: the format string for displaying numbers.
-
-    :ivar chkOverstressed: display whether or not the selected hardware item is
-        overstressed.
-    :ivar pltDerate: displays the derating curves and the design operating
-        point relative to those curves.
-    :ivar txtCurrentRatio: display the ratio of operating current to rated
-        current.
-    :ivar txtPowerRatio: display the ratio of operating power to rated power.
-    :ivar txtVoltageRatio: display the ratio of operating voltage (ac + DC) to
-        rated voltage.
-    :ivar txtReason: display the reason(s) the hardware item is overstressed.
+    :ivar list _lst_derate_criteria: the derating criteria for the selected component.
+    :ivar _category_id: the hardware category ID of the selected component.
+    :ivar _part_number: the part number of the selected component.
+    :ivar _ref_des: the reference designator of the selected component.
     """
 
     # Define private dictionary class attributes.
@@ -423,9 +463,10 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "selected_hardware"
-    _tag = "design_electric"
-    _title = _("Hardware Thermal &amp; Electrical Stress Summary")
+    _record_field: str = "hardware_id"
+    _select_msg: str = "succeed_get_design_electric_attributes"
+    _tag: str = "design_electric"
+    _title: str = _("Hardware Thermal &amp; Electrical Stress Summary")
 
     # Define public dictionary class attributes.
 
@@ -598,13 +639,14 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
 
         self.pltPlot.do_load_plot(
             x_values=[attributes["temperature_active"]],
-            y_values=[attributes["{}_ratio".format(stress)]],
+            y_values=[attributes[f"{stress}_ratio"]],
             marker="go",
         )
 
         self.pltPlot.do_make_title(
-            _("{2} Derating Curve for {0} at {1}").format(
-                self._part_number, self._ref_des, stress.title()
+            _(
+                f"{stress.title()} Derating Curve for {self._part_number} at "
+                f"{self._ref_des}"
             ),
             fontsize=12,
         )
@@ -613,7 +655,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
             (
                 _("Harsh Environment"),
                 _("Mild Environment"),
-                _("{} Operating Point").format(stress.title()),
+                _(f"{stress.title()} Operating Point"),
             )
         )
 
@@ -621,7 +663,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
             _("Temperature (\u2070C)"), x_pos=0, y_pos=-0.2, fontsize=10
         )
         self.pltPlot.do_make_labels(
-            _("{} Ratio").format(stress.title()),
+            _(f"{stress.title()} Ratio"),
             x_pos=-1,
             y_pos=0,
             set_x=False,
@@ -633,19 +675,21 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the stress results page widgets.
 
-        :param attributes: the attributes dict for the selected Hardware.
+        :param attributes: the attribute dict for the selected Hardware.
         :return: None
         :rtype: None
         """
         self.txtCurrentRatio.do_update(
-            str(self.fmt.format(attributes["current_ratio"]))
+            str(self.fmt.format(attributes["current_ratio"] or 0.0))
         )
-        self.txtPowerRatio.do_update(str(self.fmt.format(attributes["power_ratio"])))
+        self.txtPowerRatio.do_update(
+            str(self.fmt.format(attributes["power_ratio"] or 0.0))
+        )
         self.txtVoltageRatio.do_update(
-            str(self.fmt.format(attributes["voltage_ratio"]))
+            str(self.fmt.format(attributes["voltage_ratio"] or 0.0))
         )
-        self.chkOverstress.set_active(attributes["overstress"])
-        self.txtReason.do_update(attributes["reason"])
+        self.chkOverstress.set_active(attributes["overstress"] or 0)
+        self.txtReason.do_update(attributes["reason"] or "")
 
         if self._category_id in [2, 4]:
             self._do_load_derating_curve(attributes, stress="voltage")
