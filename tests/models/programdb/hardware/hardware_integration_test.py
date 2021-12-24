@@ -326,7 +326,8 @@ class TestInsertMethods:
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_hardware_id)=(1) already exists."
+            "returned:\n\tKey (fld_revision_id)=(9) is not present in table "
+            '"ramstk_revision".'
         )
         print("\033[35m\nfail_insert_hardware topic was broadcast on no hardware.")
 
@@ -346,8 +347,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert isinstance(
@@ -365,8 +364,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 9
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(10) is None
@@ -401,7 +398,14 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_hardware, "succeed_retrieve_hardware_bom")
 
         pub.sendMessage(
-            "request_insert_hardware", attributes={"revision_id": 1, "hardware_id": 1}
+            "request_insert_hardware",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "parent_id": 0,
+                "record_id": 1,
+                "part": 0,
+            },
         )
 
         pub.unsubscribe(
