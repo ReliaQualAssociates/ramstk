@@ -179,7 +179,9 @@ def do_calculate_dormant_hazard_rate(
     :rtype: float
     :raise: IndexError if an indexing argument asks for a non-existent index.
     """
-    if hw_info[0] == 2:
+    if hw_info[0] > 8:
+        _dormant_hr_mult = 1
+    elif hw_info[0] == 2:
         if hw_info[1] in [1, 2]:
             _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
                 env_info[1] - 1

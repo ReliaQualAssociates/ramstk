@@ -821,6 +821,11 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         """
         super().__init__(configuration, logger)
 
+        # Create a logger specifically for this class.
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL, to_tty=False
+        )
+
         # Initialize private dictionary attributes.
         self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: ICMilHdbk217FResultPanel(),
@@ -925,13 +930,33 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
                 "request_calculate_hardware",
                 node_id=self.dic_pkeys["record_id"],
             )
-        except KeyError as _error:
+            pub.sendMessage(
+                f"succeed_calculate_{self._tag}",
+                tree="",
+            )
+        except (IndexError, KeyError) as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            _parent = self.get_parent().get_parent().get_parent().get_parent()
+            _dialog = super().do_raise_dialog(parent=_parent)
+            _dialog.do_set_message(
+                _(
+                    f"One or more inputs necessary to calculate "
+                    f'hardware ID {self.dic_pkeys["hardware_id"]} is '
+                    f"missing."
+                )
+            )
+            _dialog.do_set_message_type("warning")
+            _dialog.do_run()
+            _dialog.do_destroy()
+            pub.sendMessage(
+                "fail_calculate_hardware",
+                error_message=_error,
+            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
 
-        :param attributes: the attributes dict for the selected work stream
+        :param attributes: the attribute dict for the selected work stream
             module item.
         :return: None
         :rtype: None

@@ -31,7 +31,7 @@ from .treeview import RAMSTKTreeView
 
 # noinspection PyUnresolvedReferences
 class RAMSTKBaseView(Gtk.HBox):
-    """Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
+    """Metaclass for all RAMSTK ListView, ModuleView, and WorkView classes.
 
     Attributes of the RAMSTKBaseView are:
 
@@ -174,6 +174,7 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, "succeed_update_all")
+        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}")
@@ -362,7 +363,7 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_raise_dialog(**kwargs: Any) -> RAMSTKMessageDialog:
         """Raise a dialog in response to information, warnings, and errors.
 
-        This method will display an message dialog of the appropriate severity
+        This method will display a message dialog of the appropriate severity
         information, warning, or error containing a message to the user.
 
         :return: _dialog
