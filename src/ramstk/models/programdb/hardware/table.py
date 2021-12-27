@@ -96,6 +96,22 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         :return: _total_cost; the total cost.
         :rtype: float
         """
+        # ISSUE: Move Hardware table calculation methods to Hardware record class
+        #
+        # The first thing the table methods do is retrieve the record to be calculated.
+        # It then uses the record attributes to calculate the desired values.  The
+        # better way to do this is retrieve the record and then call the record's
+        # calculate methods.  This eliminates the need to send the
+        # "request_set_hardware_attributes" message and allows the Hardware view
+        # class to eliminate the various messages requesting the calculations.  In
+        # the Hardware view, this use of messages instead of direct calls to the
+        # record's calculation methods causes the calculations to run in an arbitrary
+        # order when many need to be run in a specific order.
+        #
+        # This is applicable to the calculation methods in the Hardware table, the
+        # Design Electric table, and the Reliability table.
+        #
+        # labels: type: fix
         _node = self.tree.get_node(node_id)
         _record = _node.data[self._tag]
         _total_cost: float = 0.0

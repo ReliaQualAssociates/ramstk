@@ -179,7 +179,9 @@ def do_initialize_databases(
     _program_db.dic_tables["options"].do_select_all({"site_id": 1})
 
     _program_db.dic_views["fmea"] = RAMSTKFMEAView()
-    _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView()
+    _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView(
+        hr_multiplier=configuration.RAMSTK_HR_MULTIPLIER
+    )
     _program_db.dic_views["pof"] = RAMSTKPoFView()
     _program_db.dic_views["usage_profile"] = RAMSTKUsageProfileView()
 

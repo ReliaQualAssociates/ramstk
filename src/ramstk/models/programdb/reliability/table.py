@@ -178,7 +178,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
             * _record.mult_adj_factor
             * (duty_cycle / 100.0)
             * quantity
-            * multiplier
+            / multiplier
         )
 
         pub.sendMessage(
@@ -268,20 +268,17 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
             package={"hazard_rate_mission": _record.hazard_rate_mission},
         )
 
-    def do_calculate_mtbf(self, node_id: int, multiplier: float) -> None:
+    def do_calculate_mtbf(self, node_id: int) -> None:
         """Calculate the logistics and mission MTBF.
 
         :param node_id: the record ID to calculate.
-        :param multiplier: the time multiplier for MTBF.  Typically set to
-            1.0 to work with hours/failure or 1000000.0 to work with 10^6 hours/failure.
-            Set the value in RAMSTK.toml.
         :return: None
         :rtype: None
         """
         _record = self.tree.get_node(node_id).data[self._tag]
 
         try:
-            _record.mtbf_logistics = multiplier / _record.hazard_rate_logistics
+            _record.mtbf_logistics = 1.0 / _record.hazard_rate_logistics
         except ZeroDivisionError:
             _record.mtbf_logistics = 0.0
 
@@ -292,7 +289,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         )
 
         try:
-            _record.mtbf_mission = multiplier / _record.hazard_rate_mission
+            _record.mtbf_mission = 1.0 / _record.hazard_rate_mission
         except ZeroDivisionError:
             _record.mtbf_mission = 0.0
 
