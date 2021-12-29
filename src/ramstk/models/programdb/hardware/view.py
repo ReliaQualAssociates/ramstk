@@ -15,7 +15,6 @@ from sqlalchemy.orm.exc import ObjectDeletedError
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.models import RAMSTKBaseView
 
 
@@ -136,14 +135,22 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         _record = self.tree.get_node(node_id)
-
-        self.do_calculate_power_dissipation(node_id)
+        _attributes = {
+            **_record.data["hardware"].get_attributes(),
+            **_record.data["design_mechanic"].get_attributes(),
+            **_record.data["design_electric"].get_attributes(),
+            **_record.data["milhdbk217f"].get_attributes(),
+            **_record.data["nswc"].get_attributes(),
+            **_record.data["reliability"].get_attributes(),
+        }
 
         _hardware = _record.data["hardware"]
         _design_electric = _record.data["design_electric"]
+        _reliability = _record.data["reliability"]
 
         self.do_calculate_cost(node_id)
         self.do_calculate_part_count(node_id)
+        self.do_calculate_power_dissipation(node_id)
         pub.sendMessage(
             "request_stress_analysis",
             node_id=node_id,
@@ -154,37 +161,21 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             node_id=node_id,
             category_id=_hardware.category_id,
         )
-        pub.sendMessage(
-            "request_calculate_hazard_rate_active",
-            node_id=node_id,
-            duty_cycle=_hardware.duty_cycle,
-            quantity=_hardware.quantity,
-            multiplier=self._hr_multiplier,
-            time=_hardware.mission_time,
+        _reliability.do_calculate_hazard_rate_active(
+            self._hr_multiplier,
+            _attributes,
+            time=_attributes["mission_time"],
         )
-        pub.sendMessage(
-            "request_calculate_hazard_rate_dormant",
-            node_id=node_id,
-            category_id=_hardware.category_id,
-            subcategory_id=_hardware.subcategory_id,
-            env_active=_design_electric.environment_active_id,
-            env_dormant=_design_electric.environment_dormant_id,
+        _reliability.do_calculate_hazard_rate_dormant(
+            _attributes["category_id"],
+            _attributes["subcategory_id"],
+            _attributes["environment_active_id"],
+            _attributes["environment_dormant_id"],
         )
-        pub.sendMessage("request_calculate_hazard_rate_logistics", node_id=node_id)
-        pub.sendMessage(
-            "request_calculate_hazard_rate_mission",
-            node_id=node_id,
-            duty_cycle=_hardware.duty_cycle,
-        )
-        pub.sendMessage(
-            "request_calculate_mtbf",
-            node_id=node_id,
-        )
-        pub.sendMessage(
-            "request_calculate_reliability",
-            node_id=node_id,
-            time=_hardware.mission_time,
-        )
+        _reliability.do_calculate_hazard_logistics()
+        _reliability.do_calculate_hazard_rate_mission(_attributes["duty_cycle"])
+        _reliability.do_calculate_mtbf()
+        _reliability.do_calculate_reliability(_attributes["mission_time"])
 
     def do_calculate_part_count(self, node_id: int) -> None:
         """Calculate the total part count of a hardware item.
@@ -273,40 +264,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             "succeed_make_comp_ref_des",
             comp_ref_des=_record.comp_ref_des,
         )
-
-    def do_predict_active_hazard_rate(self, node_id: int) -> float:
-        """Request that the hazard rate prediction be performed.
-
-        :param node_id: the record ID to calculate.
-        :return: None
-        :rtype: None
-        """
-        _node = self.tree.get_node(node_id)
-        _hazard_rate_active: float = _node.data["reliability"].hazard_rate_active
-
-        if _node.data["hardware"].part == 1 and _node.data[
-            "reliability"
-        ].hazard_rate_method_id in [1, 2]:
-            _attributes = {
-                **_node.data["hardware"].get_attributes(),
-                **_node.data["design_mechanic"].get_attributes(),
-                **_node.data["design_electric"].get_attributes(),
-                **_node.data["milhdbk217f"].get_attributes(),
-                **_node.data["nswc"].get_attributes(),
-                **_node.data["reliability"].get_attributes(),
-            }
-
-            _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
-                **_attributes
-            )
-
-            pub.sendMessage(
-                "request_set_reliability_attributes",
-                node_id=node_id,
-                package={"hazard_rate_active": _hazard_rate_active},
-            )
-
-        return _hazard_rate_active
 
     def _do_load_hardware(self) -> None:
         """Load the hardware data into the tree.

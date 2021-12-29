@@ -19,26 +19,6 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     _record: RAMSTKReliabilityRecord
     pkey: str
     def __init__(self, **kwargs: Dict[Any, Any]) -> None: ...
-    def do_get_new_record(self, attributes: Dict[str, Any]) -> object: ...
-    def do_calculate_hazard_rate_active(
-        self,
-        node_id: int,
-        duty_cycle: float,
-        quantity: int,
-        multiplier: float,
-        time: float = ...,
-    ) -> None: ...
-    def do_calculate_hazard_rate_dormant(
-        self,
-        node_id: int,
-        category_id: int,
-        subcategory_id: int,
-        env_active: int,
-        env_dormant: int,
-    ) -> None: ...
-    def do_calculate_hazard_rate_logistics(self, node_id: int) -> None: ...
-    def do_calculate_hazard_rate_mission(
-        self, node_id: int, duty_cycle: float
-    ) -> None: ...
-    def do_calculate_mtbf(self, node_id: int) -> None: ...
-    def do_calculate_reliability(self, node_id: int, time: float) -> None: ...
+    def do_get_new_record(
+        self, attributes: Dict[str, Any]
+    ) -> RAMSTKReliabilityRecord: ...

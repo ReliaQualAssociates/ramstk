@@ -1,7 +1,10 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # RAMSTK Package Imports
+from ramstk.analyses import dormancy
+from ramstk.analyses.milhdbk217f import milhdbk217f
+from ramstk.analyses.statistics import exponential, lognormal, normal, weibull
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
@@ -51,4 +54,22 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     scale_parameter: Any
     shape_parameter: Any
     survival_analysis_id: Any
-    def get_attributes(self): ...
+    def get_attributes(self) -> Dict[str, Any]: ...
+    def do_calculate_hazard_rate_active(
+        self,
+        multiplier: float,
+        attributes: Dict[str, Any],
+        time: float = 1.0,
+    ) -> None: ...
+    def do_calculate_hazard_rate_dormant(
+        self,
+        category_id: int,
+        subcategory_id: int,
+        env_active: int,
+        env_dormant: int,
+    ) -> None: ...
+    def do_calculate_hazard_rate_logistics(self) -> None: ...
+    def do_calculate_hazard_rate_mission(self, duty_cycle: float) -> None: ...
+    def do_calculate_mtbf(self) -> None: ...
+    def do_calculate_reliability(self, time: float) -> None: ...
+    def do_predict_active_hazard_rate(self, attributes: Dict[str, Any]) -> None: ...
