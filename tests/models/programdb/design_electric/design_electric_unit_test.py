@@ -40,8 +40,6 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
-    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
 
     # Delete the device under test.
     del dut
@@ -124,7 +122,6 @@ class TestCreateModels:
         assert test_tablemodel._select_msg == "selected_revision"
         assert test_tablemodel._root == 0
         assert test_tablemodel._tag == "design_electric"
-        assert test_tablemodel._dic_stress_limits == {}
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
@@ -371,7 +368,7 @@ class TestAnalysisMethods:
         _design_electric.current_rated = 0.5
         _design_electric.current_operating = 0.0032
 
-        test_tablemodel.do_calculate_current_ratio(1)
+        _design_electric.do_calculate_current_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["current_ratio"] == pytest.approx(0.0064)
@@ -386,7 +383,7 @@ class TestAnalysisMethods:
         _design_electric.power_rated = 0.1
         _design_electric.power_operating = 0.00009
 
-        test_tablemodel.do_calculate_power_ratio(1)
+        _design_electric.do_calculate_power_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["power_ratio"] == pytest.approx(0.0009)
@@ -402,7 +399,7 @@ class TestAnalysisMethods:
         _design_electric.voltage_ac_operating = 0.005
         _design_electric.voltage_dc_operating = 3.3
 
-        test_tablemodel.do_calculate_voltage_ratio(1)
+        _design_electric.do_calculate_voltage_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["voltage_ratio"] == pytest.approx(0.0661)
@@ -423,7 +420,16 @@ class TestAnalysisMethods:
         _design_electric.power_ratio = 0.55
         _design_electric.voltage_ratio = 0.58
 
-        test_tablemodel.do_derating_analysis(1, 3)
+        _design_electric.do_derating_analysis(
+            [
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+                1.0,
+                1.0,
+            ]
+        )
         assert _design_electric.overstress
         assert (
             _design_electric.reason
@@ -433,7 +439,16 @@ class TestAnalysisMethods:
             "environment.\n"
         )
 
-        test_tablemodel.do_derating_analysis(1, 5)
+        _design_electric.do_derating_analysis(
+            [
+                0.6,
+                0.9,
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+            ]
+        )
         assert _design_electric.overstress
         assert (
             _design_electric.reason
@@ -458,7 +473,16 @@ class TestAnalysisMethods:
         _design_electric.power_ratio = -0.55
         _design_electric.voltage_ratio = -0.58
 
-        test_tablemodel.do_derating_analysis(1, 3)
+        _design_electric.do_derating_analysis(
+            [
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+                1.0,
+                1.0,
+            ]
+        )
         assert _design_electric.overstress
         assert (
             _design_electric.reason
@@ -485,12 +509,12 @@ class TestAnalysisMethods:
         _design_electric.voltage_ac_operating = 0.005
         _design_electric.voltage_dc_operating = 3.3
 
-        test_tablemodel.do_stress_analysis(1, 3)
+        _design_electric.do_stress_analysis(3)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["power_ratio"] == pytest.approx(0.0009)
 
-        test_tablemodel.do_stress_analysis(1, 5)
+        _design_electric.do_stress_analysis(5)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["current_ratio"] == pytest.approx(0.0064)

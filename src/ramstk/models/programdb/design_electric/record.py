@@ -7,12 +7,57 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKDesignElectric Table Module."""
 
+# Standard Library Imports
+from typing import Any, Dict, List, Tuple
+
 # Third Party Imports
+from pubsub import pub
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
+from ramstk.analyses import derating, stress
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
+
+
+def do_check_overstress(
+    overstress: Dict[str, List[float]], stress_type: str
+) -> Tuple[bool, str]:
+    """Check the overstress condition and build a reason message.
+
+    :param overstress: the dict containing the results of the
+        overstress analysis.
+    :param stress_type: the overstress type being checked.
+    :return: (_overstress, _reason); whether a component is overstressed and the reason.
+    :rtype: tuple
+    """
+    _overstress = False
+    _reason = ""
+
+    if overstress["harsh"][0]:
+        _overstress = True
+        _reason = _reason + (
+            f"Operating {stress_type} is less than limit in a " f"harsh environment.\n"
+        )
+    if overstress["harsh"][1]:
+        _overstress = True
+        _reason = _reason + (
+            f"Operating {stress_type} is greater than limit "
+            f"in a harsh environment.\n"
+        )
+    if overstress["mild"][0]:
+        _overstress = True
+        _reason = _reason + (
+            f"Operating {stress_type} is less than limit in a " f"mild environment.\n"
+        )
+    if overstress["mild"][1]:
+        _overstress = True
+        _reason = _reason + (
+            f"Operating {stress_type} is greater than limit "
+            f"in a mild environment.\n"
+        )
+
+    return _overstress, _reason
 
 
 # pylint: disable=R0902
@@ -236,7 +281,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Any]:
         """Retrieve current values of RAMSTKDesignElectric model attributes.
 
         :return: {hardware_id, application_id, area, capacitance,
@@ -317,3 +362,144 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         }
 
         return _attributes
+
+    def do_calculate_current_ratio(self) -> None:
+        """Calculate the current ratio.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.current_ratio = stress.calculate_stress_ratio(
+                self.current_operating,
+                self.current_rated,
+            )
+        except ZeroDivisionError:
+            _error_msg: str = (
+                f"Failed to calculate current ratio for hardware ID "
+                f"{self.hardware_id}.  Rated current={self.current_rated}, operating "
+                f"current={self.current_operating}."
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_calculate_current_stress",
+                error_message=_error_msg,
+            )
+
+    def do_calculate_power_ratio(self) -> None:
+        """Calculate the power ratio.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.power_ratio = stress.calculate_stress_ratio(
+                self.power_operating,
+                self.power_rated,
+            )
+        except ZeroDivisionError:
+            _error_msg: str = (
+                f"Failed to calculate power ratio for hardware ID {self.hardware_id}.  "
+                f"Rated power={self.power_rated}, operating "
+                f"power={self.power_operating}."
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_calculate_power_stress",
+                error_message=_error_msg,
+            )
+
+    def do_calculate_voltage_ratio(self) -> None:
+        """Calculate the voltage ratio.
+
+        :return: None
+        :rtype: None
+        """
+        _voltage_operating = self.voltage_ac_operating + self.voltage_dc_operating
+
+        try:
+            self.voltage_ratio = stress.calculate_stress_ratio(
+                _voltage_operating, self.voltage_rated
+            )
+        except ZeroDivisionError:
+            _error_msg: str = (
+                f"Failed to calculate voltage ratio for hardware ID "
+                f"{self.hardware_id}.  Rated voltage={self.voltage_rated}, "
+                f"operating ac voltage={self.voltage_ac_operating}, operating DC "
+                f"voltage={self.voltage_dc_operating}."
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+            pub.sendMessage(
+                "fail_calculate_voltage_stress",
+                error_message=_error_msg,
+            )
+
+    def do_derating_analysis(self, stress_limits: List[float]) -> None:
+        """Perform a derating analysis.
+
+        :param stress_limits: the list of stress limits for the selected record.
+        :return: None
+        :rtype: None
+        """
+        _overstress = False
+        _reason = ""
+
+        _current_limits = {
+            "harsh": [0.0, stress_limits[0]],
+            "mild": [0.0, stress_limits[1]],
+        }
+        _power_limits = {
+            "harsh": [0.0, stress_limits[2]],
+            "mild": [0.0, stress_limits[3]],
+        }
+        _voltage_limits = {
+            "harsh": [0.0, stress_limits[4]],
+            "mild": [0.0, stress_limits[5]],
+        }
+
+        _ostress, _rsn = do_check_overstress(
+            derating.check_overstress(self.current_ratio, _current_limits),
+            "current",
+        )
+        _overstress = _overstress or _ostress
+        _reason = _reason + _rsn
+
+        _ostress, _rsn = do_check_overstress(
+            derating.check_overstress(self.power_ratio, _power_limits), "power"
+        )
+        _overstress = _overstress or _ostress
+        _reason = _reason + _rsn
+
+        _ostress, _rsn = do_check_overstress(
+            derating.check_overstress(self.voltage_ratio, _voltage_limits), "voltage"
+        )
+        self.overstress = _overstress or _ostress
+        self.reason = _reason + _rsn
+
+    def do_stress_analysis(self, category_id: int) -> None:
+        """Perform a stress analysis.
+
+        :param category_id: the component category ID of the record to calculate.
+        :return: None
+        :rtype: None
+        """
+        if category_id in [1, 2, 5, 6, 7, 8]:
+            self.do_calculate_current_ratio()
+
+        if category_id == 3:
+            self.do_calculate_power_ratio()
+
+        if category_id in [4, 5, 8]:
+            self.do_calculate_voltage_ratio()

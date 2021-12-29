@@ -38,8 +38,6 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
-    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
 
     # Delete the device under test.
     del dut
@@ -510,7 +508,7 @@ class TestAnalysisMethods:
         _design_electric.current_rated = 0.0
         _design_electric.current_operating = 0.0032
 
-        test_tablemodel.do_calculate_current_ratio(1)
+        _design_electric.do_calculate_current_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["current_ratio"] == 0.0
@@ -532,7 +530,7 @@ class TestAnalysisMethods:
         _design_electric.power_rated = 0.0
         _design_electric.power_operating = 0.0032
 
-        test_tablemodel.do_calculate_power_ratio(1)
+        _design_electric.do_calculate_power_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["power_ratio"] == 0.0
@@ -554,7 +552,7 @@ class TestAnalysisMethods:
         _design_electric.voltage_rated = 0.0
         _design_electric.voltage_dc_operating = 0.0032
 
-        test_tablemodel.do_calculate_voltage_ratio(1)
+        _design_electric.do_calculate_voltage_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["voltage_ratio"] == 0.0

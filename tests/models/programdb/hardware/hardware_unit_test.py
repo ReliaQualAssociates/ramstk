@@ -78,12 +78,6 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
     pub.unsubscribe(dut.do_calculate_hardware, "request_calculate_hardware")
-    pub.unsubscribe(
-        dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
-    )
-    pub.unsubscribe(
-        dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
-    )
     pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
@@ -151,6 +145,88 @@ class TestCreateModels:
             "milhdbk217f": test_viewmodel._do_load_milhdbk217f,
             "nswc": test_viewmodel._do_load_nswc,
             "reliability": test_viewmodel._do_load_reliability,
+        }
+        assert test_viewmodel._dic_stress_limits == {
+            1: [
+                0.8,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            2: [
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+            ],
+            3: [
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+                1.0,
+                1.0,
+            ],
+            4: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                0.6,
+                0.9,
+            ],
+            5: [
+                0.6,
+                0.9,
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+            ],
+            6: [
+                0.75,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            7: [
+                0.75,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            8: [
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+            ],
+            9: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            10: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
         }
         assert isinstance(test_viewmodel._dic_trees["hardware"], Tree)
         assert isinstance(test_viewmodel._dic_trees["design_electric"], Tree)

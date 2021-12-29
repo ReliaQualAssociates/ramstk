@@ -211,8 +211,6 @@ def test_design_electric(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
-    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
 
     # Delete the device under test.
     del dut
@@ -313,22 +311,6 @@ def test_reliability(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_reliability")
     pub.unsubscribe(dut.do_insert, "request_insert_reliability")
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_active, "request_calculate_hazard_rate_active"
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_dormant,
-        "request_calculate_hazard_rate_dormant",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_logistics,
-        "request_calculate_hazard_rate_logistics",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_mission, "request_calculate_hazard_rate_mission"
-    )
-    pub.unsubscribe(dut.do_calculate_mtbf, "request_calculate_mtbf")
-    pub.unsubscribe(dut.do_calculate_reliability, "request_calculate_reliability")
 
     # Delete the device under test.
     del dut

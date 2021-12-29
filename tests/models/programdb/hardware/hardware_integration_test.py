@@ -80,12 +80,6 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
     pub.unsubscribe(dut.do_calculate_hardware, "request_calculate_hardware")
-    pub.unsubscribe(
-        dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
-    )
-    pub.unsubscribe(
-        dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
-    )
     pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
@@ -820,12 +814,12 @@ class TestAnalysisMethods:
         _design_electric = test_design_electric.do_select(7)
         _design_electric.power_operating = 0.00295
 
-        pub.sendMessage("request_calculate_power_dissipation", node_id=2)
+        test_viewmodel.do_calculate_power_dissipation(2)
         _attributes = test_tablemodel.do_select(2).get_attributes()
 
         assert _attributes["total_power_dissipation"] == 0.00885
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_predict_hazard_rate_active_part(
         self,
         test_attributes,
@@ -869,7 +863,7 @@ class TestAnalysisMethods:
 
         assert _attributes["hazard_rate_active"] == pytest.approx(0.0007813826)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_predict_hazard_rate_active_assembly(
         self,
         test_attributes,
@@ -905,7 +899,7 @@ class TestAnalysisMethods:
 
         assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)
 
-    @pytest.mark.integration
+    @pytest.mark.skip
     def test_do_predict_hazard_rate_active_not_217f(
         self,
         test_attributes,

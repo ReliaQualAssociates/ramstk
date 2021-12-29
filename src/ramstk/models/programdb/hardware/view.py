@@ -7,7 +7,7 @@
 """Hardware Package View Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -52,6 +52,91 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             "nswc": self._do_load_nswc,
             "reliability": self._do_load_reliability,
         }
+        self._dic_stress_limits: Dict[int, List[float]] = kwargs.get(
+            "stress_limits",
+            {
+                1: [
+                    0.8,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                2: [
+                    1.0,
+                    1.0,
+                    0.7,
+                    0.9,
+                    1.0,
+                    1.0,
+                ],
+                3: [
+                    1.0,
+                    1.0,
+                    0.5,
+                    0.9,
+                    1.0,
+                    1.0,
+                ],
+                4: [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.6,
+                    0.9,
+                ],
+                5: [
+                    0.6,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.5,
+                    0.9,
+                ],
+                6: [
+                    0.75,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                7: [
+                    0.75,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                8: [
+                    0.7,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.7,
+                    0.9,
+                ],
+                9: [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+                10: [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                ],
+            },
+        )
         self._dic_trees = {
             "hardware": Tree(),
             "design_electric": Tree(),
@@ -100,12 +185,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_nswc")
         pub.subscribe(super().do_set_tree, "succeed_delete_reliability")
         pub.subscribe(self.do_calculate_hardware, "request_calculate_hardware")
-        pub.subscribe(
-            self.do_calculate_power_dissipation, "request_calculate_power_dissipation"
-        )
-        pub.subscribe(
-            self.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
-        )
         pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     def do_calculate_cost(self, node_id: int) -> None:
@@ -151,15 +230,9 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         self.do_calculate_cost(node_id)
         self.do_calculate_part_count(node_id)
         self.do_calculate_power_dissipation(node_id)
-        pub.sendMessage(
-            "request_stress_analysis",
-            node_id=node_id,
-            category_id=_hardware.category_id,
-        )
-        pub.sendMessage(
-            "request_derating_analysis",
-            node_id=node_id,
-            category_id=_hardware.category_id,
+        _design_electric.do_stress_analysis(_attributes["category_id"])
+        _design_electric.do_derating_analysis(
+            self._dic_stress_limits[_attributes["category_id"]]
         )
         _reliability.do_calculate_hazard_rate_active(
             self._hr_multiplier,
@@ -172,7 +245,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             _attributes["environment_active_id"],
             _attributes["environment_dormant_id"],
         )
-        _reliability.do_calculate_hazard_logistics()
+        _reliability.do_calculate_hazard_rate_logistics()
         _reliability.do_calculate_hazard_rate_mission(_attributes["duty_cycle"])
         _reliability.do_calculate_mtbf()
         _reliability.do_calculate_reliability(_attributes["mission_time"])
@@ -214,19 +287,15 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _design_electric.power_operating * _hardware.quantity
             )
         else:
+            print("calculating assembly")
             for _node_id in _node.successors(self.tree.identifier):
+                print(_node_id)
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
             _total_power_dissipation = _total_power_dissipation * _hardware.quantity
 
-        _hardware.total_power_dissipation = _total_power_dissipation
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_power_dissipation": _total_power_dissipation},
-        )
+        _hardware.set_attributes({"total_power_dissipation": _total_power_dissipation})
 
         return _total_power_dissipation
 
