@@ -557,6 +557,24 @@ class TestAnalysisMethods:
         assert _attributes["total_cost"] == 38.94
 
     @pytest.mark.unit
+    def test_do_calculate_cost_no_type_id(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
+        """should calculate the total cost for a part."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _hardware = test_tablemodel.do_select(3)
+        _hardware.cost_type_id = 0
+        _hardware.part = 1
+        _hardware.cost = 12.98
+        _hardware.quantity = 2
+
+        test_viewmodel.do_calculate_cost(3)
+        _attributes = test_tablemodel.do_select(3).get_attributes()
+
+        assert _attributes["total_cost"] == 0.0
+
+    @pytest.mark.unit
     def test_do_calculate_part_count_part(
         self, test_attributes, test_tablemodel, test_viewmodel
     ):

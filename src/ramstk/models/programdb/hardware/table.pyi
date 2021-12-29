@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
@@ -14,4 +14,6 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
     _record: RAMSTKHardwareRecord
     pkey: str
     def __init__(self, **kwargs: Dict[Any, Any]) -> None: ...
-    def do_get_new_record(self, attributes: Dict[str, Any]) -> object: ...
+    def do_get_new_record(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> object: ...

@@ -316,6 +316,72 @@ class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
+    def test_do_calculate_hazard_rate_active_predicted(
+        self, test_attributes, test_tablemodel
+    ):
+        """should calculate the active hazard rate when hazard rate is specified."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _reliability = test_tablemodel.do_select(1)
+        _reliability.hardware_id = 1
+        _reliability.hazard_rate_method_id = 2
+        _reliability.hazard_rate_type_id = 1
+        _reliability.add_adj_factor = 0.0
+        _reliability.mult_adj_factor = 1.0
+        test_attributes["hazard_rate_method_id"] = 2
+        test_attributes["hazard_rate_type_id"] = 1
+        test_attributes["category_id"] = 1
+        test_attributes["subcategory_id"] = 1
+        test_attributes["application_id"] = 2
+        test_attributes["area"] = 0.5
+        test_attributes["environment_active_id"] = 3
+        test_attributes["family_id"] = 2
+        test_attributes["feature_size"] = 0.8
+        test_attributes["manufacturing_id"] = 1
+        test_attributes["n_elements"] = 100
+        test_attributes["n_active_pins"] = 32
+        test_attributes["package_id"] = 1
+        test_attributes["power_operating"] = 0.038
+        test_attributes["technology_id"] = 1
+        test_attributes["temperature_case"] = 48.3
+        test_attributes["theta_jc"] = 125
+        test_attributes["type_id"] = 1
+        test_attributes["voltage_esd"] = 2000
+        test_attributes["years_in_production"] = 3
+        test_attributes["piE"] = 1.0
+        test_attributes["piQ"] = 2.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["part"] = 1
+        test_attributes["quantity"] = 1
+
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
+
+        assert _reliability.hazard_rate_active == pytest.approx(0.08514244)
+
+    @pytest.mark.unit
+    def test_do_calculate_hazard_rate_active_predicted_assembly(
+        self, test_attributes, test_tablemodel
+    ):
+        """should calculate the active hazard rate when hazard rate is specified."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _reliability = test_tablemodel.do_select(1)
+        _reliability.hardware_id = 1
+        _reliability.hazard_rate_method_id = 2
+        _reliability.hazard_rate_type_id = 1
+        _reliability.add_adj_factor = 0.0
+        _reliability.mult_adj_factor = 1.0
+        test_attributes["hazard_rate_method_id"] = 2
+        test_attributes["hazard_rate_type_id"] = 1
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["part"] = 0
+        test_attributes["quantity"] = 1
+
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
+
+        assert _reliability.hazard_rate_active == 0.0
+
+    @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_specified_ht(
         self, test_attributes, test_tablemodel
     ):

@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
@@ -207,7 +207,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
 
-    def get_attributes(self) -> Dict[str, Any]:
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve the current values of RAMSTKHardware data model attributes.
 
         :return: {revision_id, hardware_id, alt_part_number, attachments,

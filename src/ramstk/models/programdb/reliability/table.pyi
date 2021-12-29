@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.analyses import dormancy as dormancy
@@ -20,5 +20,5 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     pkey: str
     def __init__(self, **kwargs: Dict[Any, Any]) -> None: ...
     def do_get_new_record(
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Union[float, int, str]]
     ) -> RAMSTKReliabilityRecord: ...

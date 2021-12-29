@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -232,7 +232,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self) -> Dict[str, Any]:
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve RAMSTKReliability attributes from RAMSTK Program database.
 
         :return: {hardware_id, add_adj_factor, availability_logistics,
@@ -303,7 +303,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def do_calculate_hazard_rate_active(
         self,
         multiplier: float,
-        attributes: Dict[str, Any],
+        attributes: Dict[str, Union[float, int, str]],
         time: float = 1.0,
     ) -> None:
         """Calculate the active hazard rate.
@@ -321,7 +321,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.hazard_rate_active = 0.0
 
         if self.hazard_rate_type_id == 1:
-            self.do_predict_active_hazard_rate(attributes)
+            self.hazard_rate_active = self.do_predict_active_hazard_rate(attributes)
         elif self.hazard_rate_type_id == 2:
             self.hazard_rate_active = self.hazard_rate_specified
         elif self.hazard_rate_type_id == 3:
@@ -455,7 +455,9 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.reliability_logistics = exp(-1.0 * self.hazard_rate_logistics * time)
         self.reliability_mission = exp(-1.0 * self.hazard_rate_mission * time)
 
-    def do_predict_active_hazard_rate(self, attributes: Dict[str, Any]) -> None:
+    def do_predict_active_hazard_rate(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> float:
         """Request that the hazard rate prediction be performed.
 
         :param attributes: the aggregate attribute dict for the Hardware ID
@@ -463,7 +465,11 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
+        _hazard_rate_active = 0.0
+
         if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]:
-            self.hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
+            _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
                 **attributes
             )
+
+        return _hazard_rate_active
