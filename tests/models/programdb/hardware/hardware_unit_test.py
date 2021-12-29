@@ -45,9 +45,6 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_hardware")
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
-    pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
-    pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
-    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -56,7 +53,7 @@ def test_tablemodel(mock_program_dao):
 @pytest.fixture(scope="function")
 def test_viewmodel():
     """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
+    # Create the device under test (dut).
     dut = RAMSTKHardwareBoMView()
 
     yield dut
@@ -87,6 +84,8 @@ def test_viewmodel():
     pub.unsubscribe(
         dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
     )
+    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
+
     # Delete the device under test.
     del dut
 
@@ -211,6 +210,9 @@ class TestCreateModels:
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_delete_reliability"
         )
+        assert pub.isSubscribed(
+            test_viewmodel.do_make_composite_ref_des, "request_make_comp_ref_des"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -285,7 +287,9 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(4).data["hardware"].hardware_id == 4
 
     @pytest.mark.unit
-    def test_do_make_comp_ref_des(self, test_attributes, test_tablemodel):
+    def test_do_make_comp_ref_des(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should create the composite reference designator."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -295,7 +299,7 @@ class TestInsertMethods:
         _hardware = test_tablemodel.do_select(2)
         _hardware.ref_des = "A9"
 
-        test_tablemodel.do_make_composite_ref_des(1)
+        test_viewmodel.do_make_composite_ref_des(1)
 
         assert test_tablemodel.do_select(1).comp_ref_des == "SS8"
         assert test_tablemodel.do_select(2).comp_ref_des == "SS8:A9"
@@ -429,12 +433,14 @@ class TestGetterSetterMethods:
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel", "test_viewmodel")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_cost_part(self, test_attributes, test_tablemodel):
+    def test_do_calculate_cost_part(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total cost for a part."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -444,13 +450,15 @@ class TestAnalysisMethods:
         _hardware.cost = 12.98
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_cost(3)
+        test_viewmodel.do_calculate_cost(3)
         _attributes = test_tablemodel.do_select(3).get_attributes()
 
         assert _attributes["total_cost"] == 25.96
 
     @pytest.mark.unit
-    def test_do_calculate_cost_assembly(self, test_attributes, test_tablemodel):
+    def test_do_calculate_cost_assembly(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total cost of an assembly."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -465,15 +473,17 @@ class TestAnalysisMethods:
         _hardware = test_tablemodel.do_select(3)
         _hardware.cost_type_id = 1
         _hardware.part = 1
-        _hardware.total_cost = 25.96
+        _hardware.cost = 12.98
 
-        test_tablemodel.do_calculate_cost(1)
+        test_viewmodel.do_calculate_cost(1)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
-        assert _attributes["total_cost"] == 77.88
+        assert _attributes["total_cost"] == 38.94
 
     @pytest.mark.unit
-    def test_do_calculate_part_count_part(self, test_attributes, test_tablemodel):
+    def test_do_calculate_part_count_part(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total part count of a part."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -481,13 +491,15 @@ class TestAnalysisMethods:
         _hardware.part = 1
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_part_count(3)
+        test_viewmodel.do_calculate_part_count(3)
         _attributes = test_tablemodel.do_select(3).get_attributes()
 
         assert _attributes["total_part_count"] == 2
 
     @pytest.mark.unit
-    def test_do_calculate_part_count_assembly(self, test_attributes, test_tablemodel):
+    def test_do_calculate_part_count_assembly(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total part count of an assembly."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -501,7 +513,7 @@ class TestAnalysisMethods:
         _hardware.part = 1
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_part_count(1)
+        test_viewmodel.do_calculate_part_count(1)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["total_part_count"] == 6

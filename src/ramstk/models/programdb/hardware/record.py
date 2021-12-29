@@ -9,6 +9,7 @@
 
 # Standard Library Imports
 from datetime import date
+from typing import Any, Dict
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
@@ -206,7 +207,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         passive_deletes=True,
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Any]:
         """Retrieve the current values of RAMSTKHardware data model attributes.
 
         :return: {revision_id, hardware_id, alt_part_number, attachments,
@@ -258,3 +259,10 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         }
 
         return _attributes
+
+    def do_calculate_total_cost(self) -> None:
+        """Calculate the total cost of the hardware item."""
+        if self.cost_type_id == 1:
+            self.total_cost = self.cost
+        elif self.cost_type_id == 2:
+            self.total_cost = self.cost * self.quantity

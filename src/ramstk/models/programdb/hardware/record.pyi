@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # Third Party Imports
 from sqlalchemy.orm import relationship
@@ -54,4 +54,5 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     nswc: relationship
     design_electric: relationship
     design_mechanic: relationship
-    def get_attributes(self): ...
+    def get_attributes(self) -> Dict[str, Any]: ...
+    def do_calculate_total_cost(self) -> None: ...

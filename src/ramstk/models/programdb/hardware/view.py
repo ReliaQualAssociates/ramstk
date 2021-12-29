@@ -107,6 +107,26 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(
             self.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
         )
+        pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
+
+    def do_calculate_cost(self, node_id: int) -> None:
+        """Calculate the cost related metrics.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data["hardware"]
+        _total_cost: float = 0.0
+
+        if _record.part == 1:
+            _record.do_calculate_total_cost()
+        else:
+            for _node in self.tree.children(node_id):
+                self.do_calculate_cost(_node.identifier)
+                _total_cost += _node.data["hardware"].total_cost
+                _total_cost = _total_cost * _record.quantity
+            _record.set_attributes({"total_cost": _total_cost})
 
     def do_calculate_hardware(self, node_id: int) -> None:
         """Calculate all metrics for the hardware associated with node ID.
@@ -122,8 +142,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         _hardware = _record.data["hardware"]
         _design_electric = _record.data["design_electric"]
 
-        pub.sendMessage("request_calculate_total_cost", node_id=node_id)
-        pub.sendMessage("request_calculate_total_part_count", node_id=node_id)
+        self.do_calculate_cost(node_id)
+        self.do_calculate_part_count(node_id)
         pub.sendMessage(
             "request_stress_analysis",
             node_id=node_id,
@@ -159,13 +179,32 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.sendMessage(
             "request_calculate_mtbf",
             node_id=node_id,
-            multiplier=self._hr_multiplier,
         )
         pub.sendMessage(
             "request_calculate_reliability",
             node_id=node_id,
             time=_hardware.mission_time,
         )
+
+    def do_calculate_part_count(self, node_id: int) -> None:
+        """Calculate the total part count of a hardware item.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id).data["hardware"]
+        _total_part_count: int = 0
+
+        if _record.part == 1:
+            _record.total_part_count = _record.quantity
+        else:
+            for _node in self.tree.children(node_id):
+                self.do_calculate_part_count(_node.identifier)
+                _total_part_count += _node.data["hardware"].total_part_count
+                _total_part_count = _total_part_count * _record.quantity
+
+            _record.set_attributes({"total_part_count": _total_part_count})
 
     def do_calculate_power_dissipation(self, node_id: int) -> float:
         """Calculate the total power dissipation of a hardware item.
@@ -199,6 +238,41 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         )
 
         return _total_power_dissipation
+
+    def do_make_composite_ref_des(self, node_id: int = 1) -> None:
+        """Make the composite reference designators.
+
+        :param node_id: the record ID to start making the composite reference
+            designators.
+        :return: None
+        :rtype: None
+        """
+        # Retrieve the parent hardware item's composite reference designator.
+        _node = self.tree.get_node(node_id)
+        _record = _node.data["hardware"]
+
+        if self.tree.parent(node_id).identifier != 0:
+            _p_comp_ref_des = self.tree.parent(node_id).data["hardware"].comp_ref_des
+        else:
+            _p_comp_ref_des = ""
+
+        if _p_comp_ref_des != "":
+            _record.comp_ref_des = _p_comp_ref_des + ":" + _record.ref_des
+            _node.tag = _p_comp_ref_des + ":" + _record.ref_des
+        else:
+            _record.comp_ref_des = _record.ref_des
+            _node.tag = _record.ref_des
+
+        # Now make the composite reference designator for all the child nodes.
+        for _child_node in self.tree.children(node_id):
+            self.do_make_composite_ref_des(node_id=_child_node.identifier)
+
+        _record.set_attributes({"comp_ref_des": _record.comp_ref_des})
+
+        pub.sendMessage(
+            "succeed_make_comp_ref_des",
+            comp_ref_des=_record.comp_ref_des,
+        )
 
     def do_predict_active_hazard_rate(self, node_id: int) -> float:
         """Request that the hazard rate prediction be performed.

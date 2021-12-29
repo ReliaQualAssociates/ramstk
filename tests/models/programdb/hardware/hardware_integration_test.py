@@ -47,9 +47,6 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_hardware")
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
-    pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
-    pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
-    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -89,6 +86,7 @@ def test_viewmodel():
     pub.unsubscribe(
         dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
     )
+    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -748,72 +746,6 @@ class TestGetterSetter:
 )
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
-
-    @pytest.mark.integration
-    def test_do_calculate_cost_part(self, test_tablemodel):
-        """should calculate the total cost for a part."""
-        _hardware = test_tablemodel.do_select(3)
-        _hardware.cost_type_id = 2
-        _hardware.part = 1
-        _hardware.cost = 12.98
-        _hardware.quantity = 2
-
-        pub.sendMessage("request_calculate_total_cost", node_id=3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
-
-        assert _attributes["total_cost"] == 25.96
-
-    @pytest.mark.integration
-    def test_do_calculate_cost_assembly(self, test_tablemodel):
-        """should calculate the total cost of an assembly."""
-        _hardware = test_tablemodel.do_select(1)
-        _hardware.cost_type_id = 2
-        _hardware.part = 0
-        _hardware.quantity = 1
-        _hardware = test_tablemodel.do_select(2)
-        _hardware.cost_type_id = 2
-        _hardware.part = 1
-        _hardware.quantity = 3
-        _hardware.cost = 5.16
-        _hardware = test_tablemodel.do_select(3)
-        _hardware.cost_type_id = 1
-        _hardware.part = 1
-        _hardware.total_cost = 25.96
-
-        pub.sendMessage("request_calculate_total_cost", node_id=1)
-        _attributes = test_tablemodel.do_select(1).get_attributes()
-
-        assert _attributes["total_cost"] == 41.44
-
-    @pytest.mark.integration
-    def test_do_calculate_part_count_part(self, test_tablemodel):
-        """should calculate the total part count of a part."""
-        _hardware = test_tablemodel.do_select(3)
-        _hardware.part = 1
-        _hardware.quantity = 2
-
-        pub.sendMessage("request_calculate_total_part_count", node_id=3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
-
-        assert _attributes["total_part_count"] == 2
-
-    @pytest.mark.integration
-    def test_do_calculate_part_count_assembly(self, test_tablemodel):
-        """should calculate the total part count of an assembly."""
-        _hardware = test_tablemodel.do_select(1)
-        _hardware.part = 0
-        _hardware.quantity = 1
-        _hardware = test_tablemodel.do_select(2)
-        _hardware.part = 0
-        _hardware.quantity = 4
-        _hardware = test_tablemodel.do_select(3)
-        _hardware.part = 1
-        _hardware.quantity = 3
-
-        pub.sendMessage("request_calculate_total_part_count", node_id=1)
-        _attributes = test_tablemodel.do_select(1).get_attributes()
-
-        assert _attributes["total_part_count"] == 7
 
     @pytest.mark.integration
     def test_do_calculate_power_dissipation_part(

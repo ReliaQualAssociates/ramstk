@@ -10,9 +10,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable, RAMSTKHardwareRecord
 
@@ -62,11 +59,6 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_calculate_cost, "request_calculate_total_cost")
-        pub.subscribe(
-            self.do_calculate_part_count, "request_calculate_total_part_count"
-        )
-        pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -88,116 +80,3 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         _new_record.part = attributes["part"]
 
         return _new_record
-
-    def do_calculate_cost(self, node_id: int) -> float:
-        """Calculate the cost related metrics.
-
-        :param node_id: the record ID to calculate.
-        :return: _total_cost; the total cost.
-        :rtype: float
-        """
-        # ISSUE: Move Hardware table calculation methods to Hardware record class
-        #
-        # The first thing the table methods do is retrieve the record to be calculated.
-        # It then uses the record attributes to calculate the desired values.  The
-        # better way to do this is retrieve the record and then call the record's
-        # calculate methods.  This eliminates the need to send the
-        # "request_set_hardware_attributes" message and allows the Hardware view
-        # class to eliminate the various messages requesting the calculations.  In
-        # the Hardware view, this use of messages instead of direct calls to the
-        # record's calculation methods causes the calculations to run in an arbitrary
-        # order when many need to be run in a specific order.
-        #
-        # This is applicable to the calculation methods in the Hardware table, the
-        # Design Electric table, and the Reliability table.
-        #
-        # labels: type: fix
-        _node = self.tree.get_node(node_id)
-        _record = _node.data[self._tag]
-        _total_cost: float = 0.0
-
-        if _record.cost_type_id == 2:
-            if _record.part == 1:
-                _total_cost = _record.cost * _record.quantity
-            else:
-                for _node_id in _node.successors(self.tree.identifier):
-                    _total_cost += self.do_calculate_cost(_node_id)
-                _total_cost = _total_cost * _record.quantity
-        else:
-            _total_cost = _record.total_cost
-
-        _record.total_cost = _total_cost
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_cost": _total_cost},
-        )
-
-        return _total_cost
-
-    def do_calculate_part_count(self, node_id: int) -> int:
-        """Calculate the total part count of a hardware item.
-
-        :param node_id: the record ID to calculate.
-        :return: _part_count
-        :rtype: int
-        """
-        _node = self.tree.get_node(node_id)
-        _record = _node.data[self._tag]
-        _total_part_count: int = 0
-
-        if _record.part == 1:
-            _total_part_count = _record.quantity
-        else:
-            for _node_id in _node.successors(self.tree.identifier):
-                _total_part_count += self.do_calculate_part_count(_node_id)
-            _total_part_count = _total_part_count * _record.quantity
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_part_count": _total_part_count},
-        )
-
-        return _total_part_count
-
-    def do_make_composite_ref_des(self, node_id: int = 1) -> None:
-        """Make the composite reference designators.
-
-        :param node_id: the record ID to start making the composite reference
-            designators.
-        :return: None
-        :rtype: None
-        """
-        # Retrieve the parent hardware item's composite reference designator.
-        _node = self.tree.get_node(node_id)
-        _hardware = _node.data["hardware"]
-
-        if _node.predecessor(self.tree.identifier) != 0:
-            _p_comp_ref_des = self.do_select(
-                _node.predecessor(self.tree.identifier)
-            ).comp_ref_des
-        else:
-            _p_comp_ref_des = ""
-
-        if _p_comp_ref_des != "":
-            _hardware.comp_ref_des = _p_comp_ref_des + ":" + _hardware.ref_des
-            _node.tag = _p_comp_ref_des + ":" + _hardware.ref_des
-        else:
-            _hardware.comp_ref_des = _hardware.ref_des
-            _node.tag = _hardware.ref_des
-
-        # Now make the composite reference designator for all the child nodes.
-        for _child_node in self.tree.children(node_id):
-            self.do_make_composite_ref_des(node_id=_child_node.identifier)
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"comp_ref_des": _hardware.comp_ref_des},
-        )
-        pub.sendMessage(
-            "succeed_make_comp_ref_des",
-            comp_ref_des=_hardware.comp_ref_des,
-        )
