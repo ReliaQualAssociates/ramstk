@@ -930,10 +930,6 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
                 "request_calculate_hardware",
                 node_id=self.dic_pkeys["record_id"],
             )
-            pub.sendMessage(
-                f"succeed_calculate_{self._tag}",
-                tree="",
-            )
         except (IndexError, KeyError) as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
             _parent = self.get_parent().get_parent().get_parent().get_parent()

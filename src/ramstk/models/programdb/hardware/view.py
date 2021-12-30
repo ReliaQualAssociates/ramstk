@@ -250,6 +250,15 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         _reliability.do_calculate_mtbf()
         _reliability.do_calculate_reliability(_attributes["mission_time"])
 
+        pub.sendMessage(
+            "request_get_milhdbk217f_attributes",
+            node_id=node_id,
+        )
+        pub.sendMessage(
+            "request_get_reliability_attributes",
+            node_id=node_id,
+        )
+
     def do_calculate_part_count(self, node_id: int) -> None:
         """Calculate the total part count of a hardware item.
 
@@ -287,9 +296,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _design_electric.power_operating * _hardware.quantity
             )
         else:
-            print("calculating assembly")
             for _node_id in _node.successors(self.tree.identifier):
-                print(_node_id)
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
