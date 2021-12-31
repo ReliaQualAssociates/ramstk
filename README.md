@@ -96,53 +96,23 @@ RAMSTK is built on the concept of modules where a module is a collection of
 
 ## 💾&nbsp; Installing
 
-These instructions will get RAMSTK up and running on your local machine
-. Note that the Makefile contains all the commands needed to install or work
- with RAMSTK.  You should consult the help output for more information.
+These instructions will hopefully get RAMSTK up and running on your local
+machine.  RAMSTK uses a Makefile to install/uninstall itself because there are
+various icon, data, and configuration files that also need to be installed
+outside site-packages.  Thus, only the actual RAMSTK application is available
+at PyPi and the initial installation must be done using the source asset at
+GitHub for the release you wish to install or cloning the RAMSTK repository if
+you'd like the latest code.
 
-### Prerequisites
-
-I use [pip-tools](https://github.com/jazzband/pip-tools) to manage the
- dependencies for RAMSTK while I'm developing so the requirements.txt file
-  is formated for use with the pip-sync command.  However, it will also work
-   with pip.
-
-```shell
-$ make requirements
-$ pip install -r requirements.txt
-```
-
-should get all the needed runtime requirements installed if they're not
-already.  The first command is needed to ensure the requirements.txt file is
-updated for your Python version; some dependency versions differ with Python
-version.
-
-If you're planning to do some development work on RAMSTK, the following
- would be the better approach:
-
-```shell
-$ pip install pyenv
-$ make mkvenv
-$ make usevenv ramstk-venv
-$ pip install pip-tools
-$ make requirements
-$ make depends
-```
-
-This will install [pyenv](https://github.com/pyenv/pyenv), create a virtual
- environment with the default name of ramstk-venv, activate that virtual
-  environment, install pip-tools, and then install all the RAMSTK
-   dependencies needed for testing, development, and runtime.
-
-RAMSTK uses [postgresql](https://www.postgresql.org/) for it's database
+RAMSTK uses [postgresql](https://www.postgresql.org/) for its database
  engine.  You'll need to have a user with read/write access to a postgresql
   server to use RAMSTK.
 
-### Download
+### Download and Install
 
 Install any missing RAMSTK dependencies using pip, your package manager, and/or
 build from source.  Then download the \<version> of RAMSTK source from GitHub
-Releases you wish to install.
+you wish to install.
 
 ```shell
 $ wget https://github.com/ReliaQualAssociates/ramstk/archive/v<version>.tar.gz
@@ -163,11 +133,32 @@ $ cd ramstk-<version>
 $ make PREFIX=$VIRTUAL_ENV install
 ```
 
-RAMSTK is also available from PyPi so you can use pip to install as well.
+When upgrading RAMSTK, you can simply:
 
 ```shell
 $ pip install
 ```
+
+This will only install the latest RAMSTK version from PyPi and will leave
+configuration, data, and icon files untouched.  If you are using the latest
+code from GitHub, you can also use the Makefile:
+
+```shell
+$ make install.dev
+```
+
+### Development Dependencies
+
+I use [poetry](https://github.com/python-poetry/poetry) to manage the
+dependencies for RAMSTK while I'm developing.  Using the Makefile, install as
+follows:
+
+```shell
+$ make depends
+```
+
+This should get all the needed development and runtime requirements installed
+if they're not already.
 
 ### Running the Tests
 

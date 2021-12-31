@@ -213,6 +213,13 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
+        # ISSUE: Assembly hazard rates not rolling up
+        #
+        # When calculating assemblies, the hazard rate, MTBF, reliability,
+        # etc. metrics are not being calculated for each assembly.
+        #
+        # priority: high
+        # bump: patch
         _record = self.tree.get_node(node_id)
         _attributes = {
             **_record.data["hardware"].get_attributes(),
@@ -223,32 +230,38 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             **_record.data["reliability"].get_attributes(),
         }
 
-        _hardware = _record.data["hardware"]
-        _design_electric = _record.data["design_electric"]
-        _reliability = _record.data["reliability"]
-
         self.do_calculate_cost(node_id)
         self.do_calculate_part_count(node_id)
         self.do_calculate_power_dissipation(node_id)
-        _design_electric.do_stress_analysis(_attributes["category_id"])
-        _design_electric.do_derating_analysis(
-            self._dic_stress_limits[_attributes["category_id"]]
-        )
-        _reliability.do_calculate_hazard_rate_active(
+        if _attributes["part"] == 1:
+            _record.data["design_electric"].do_stress_analysis(
+                _attributes["category_id"]
+            )
+            _record.data["design_electric"].do_derating_analysis(
+                self._dic_stress_limits[_attributes["category_id"]]
+            )
+
+        _record.data["reliability"].do_calculate_hazard_rate_active(
             self._hr_multiplier,
             _attributes,
             time=_attributes["mission_time"],
         )
-        _reliability.do_calculate_hazard_rate_dormant(
-            _attributes["category_id"],
-            _attributes["subcategory_id"],
-            _attributes["environment_active_id"],
-            _attributes["environment_dormant_id"],
+
+        if _attributes["part"] == 1:
+            _record.data["reliability"].do_calculate_hazard_rate_dormant(
+                _attributes["category_id"],
+                _attributes["subcategory_id"],
+                _attributes["environment_active_id"],
+                _attributes["environment_dormant_id"],
+            )
+        _record.data["reliability"].do_calculate_hazard_rate_logistics()
+        _record.data["reliability"].do_calculate_hazard_rate_mission(
+            _attributes["duty_cycle"]
         )
-        _reliability.do_calculate_hazard_rate_logistics()
-        _reliability.do_calculate_hazard_rate_mission(_attributes["duty_cycle"])
-        _reliability.do_calculate_mtbf()
-        _reliability.do_calculate_reliability(_attributes["mission_time"])
+        _record.data["reliability"].do_calculate_mtbf()
+        _record.data["reliability"].do_calculate_reliability(
+            _attributes["mission_time"]
+        )
 
         pub.sendMessage(
             "request_get_milhdbk217f_attributes",
@@ -286,23 +299,26 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :return: _total_power_dissipation; the total power dissipation.
         :rtype: float
         """
-        _node = self.tree.get_node(node_id)
-        _design_electric = _node.data["design_electric"]
-        _hardware = _node.data["hardware"]
+        _record = self.tree.get_node(node_id)
         _total_power_dissipation: float = 0.0
 
-        if _hardware.part == 1:
+        if _record.data["hardware"].part == 1:
             _total_power_dissipation = (
-                _design_electric.power_operating * _hardware.quantity
+                _record.data["design_electric"].power_operating
+                * _record.data["hardware"].quantity
             )
         else:
-            for _node_id in _node.successors(self.tree.identifier):
+            for _node_id in _record.successors(self.tree.identifier):
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
-            _total_power_dissipation = _total_power_dissipation * _hardware.quantity
+            _total_power_dissipation = (
+                _total_power_dissipation * _record.data["hardware"].quantity
+            )
 
-        _hardware.set_attributes({"total_power_dissipation": _total_power_dissipation})
+        _record.data["hardware"].set_attributes(
+            {"total_power_dissipation": _total_power_dissipation}
+        )
 
         return _total_power_dissipation
 

@@ -92,7 +92,8 @@ help:
 	@echo ""
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
-	@echo "	install 				install RAMSTK in the current (virtualenv) environment."
+	@echo "	install 				install RAMSTK and all data files in the current (virtualenv) environment."
+	@echo "	install.dev				install only the RAMSTK code in the current (virtualenv) environment."
 	@echo "	uninstall 				remove RAMSTK from the current (virtualenv) environment."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi."
@@ -155,7 +156,7 @@ install: clean-build clean-pyc
 ifdef OS
 	@echo -e "\n\tRAMSTK cannot be installed on Windows at this time.  Sorry."
 else
-	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
+	@echo -e "\n\t\033[1;32mInstalling RAMSTK and all data files to $(PREFIX) ...\033[0m\n"
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
@@ -184,6 +185,10 @@ else
 	${COPY} "./data/Site.toml" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
 endif
+
+install.dev:
+	@echo -e "\n\t\033[1;32mInstalling RAMSTK only to $(PREFIX) ...\033[0m\n"
+	pip install . --prefix=$(PREFIX)
 
 uninstall:
 	@echo -e "\n\t\033[1;31mUninstalling RAMSTK :( ...\033[0m\n"
