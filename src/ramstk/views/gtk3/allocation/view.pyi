@@ -14,7 +14,7 @@ from . import AllocationGoalMethodPanel as AllocationGoalMethodPanel
 from . import AllocationTreePanel as AllocationTreePanel
 
 class AllocationWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_tooltips: List[str]

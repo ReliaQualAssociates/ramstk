@@ -8,4 +8,4 @@
 'type: refactor': ['refactor/*']
 'type: style': ['style/*']
 'type: test': ['test/*', 'tests/*']
-'RELEASEIT!': ['release/*']
+'Release': ['release/*']

@@ -23,7 +23,7 @@ from . import FMEATreePanel as FMEATreePanel
 def do_request_insert(level: str, parent_id: str) -> None: ...
 
 class FMEAWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _pixbuf: bool
     _tablabel: str
     _tabtooltip: str

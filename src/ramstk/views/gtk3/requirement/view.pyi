@@ -21,7 +21,7 @@ from . import RequirementTreePanel as RequirementTreePanel
 from . import RequirementVerifiabilityPanel as RequirementVerifiabilityPanel
 
 class RequirementModuleView(RAMSTKModuleView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -37,7 +37,7 @@ class RequirementModuleView(RAMSTKModuleView):
     def __make_ui(self) -> None: ...
 
 class RequirementGeneralDataView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -53,7 +53,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     def __make_ui(self) -> None: ...
 
 class RequirementAnalysisView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _pnlClarity: Any

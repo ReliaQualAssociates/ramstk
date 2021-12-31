@@ -42,7 +42,7 @@ class RequirementModuleView(RAMSTKModuleView):
     the connected RAMSTK Program in a flat list.  The attributes of a
     Requirement Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -56,7 +56,7 @@ class RequirementModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "requirement"
+    _tag: str = "requirement"
     _tablabel: str = "Requirement"
     _tabtooltip: str = _(
         "Displays the requirements hierarchy for the selected Revision."
@@ -114,7 +114,7 @@ class RequirementModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
+        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRequirement table.
@@ -155,10 +155,20 @@ class RequirementModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.do_set_cell_callbacks(
-            "mvw_editing_requirement", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+            "mvw_editing_requirement",
+            [
+                "derived",
+                "description",
+                "figure_number",
+                "owner",
+                "page_number",
+                "priority",
+                "specification",
+                "requirement_type",
+                "validated",
+                "validated_date",
+            ],
         )
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
@@ -173,7 +183,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     The Requirement Work View displays all the general data attributes for the
     selected Requirement.  The attributes of a requirement Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
     :cvar str _tablabel: the text to display on the tab's label.
     :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
@@ -195,7 +205,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "requirement"
+    _tag: str = "requirement"
     _tablabel: str = _("General\nData")
     _tabtooltip: str = _("Displays general information for the selected Requirement.")
 
@@ -315,7 +325,7 @@ class RequirementAnalysisView(RAMSTKWorkView):
     answers for the selected Requirement. The attributes of a Requirement
     Analysis Work View are:
 
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
     :cvar str _tablabel: the text to display on the tab's label.
     :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
@@ -337,7 +347,7 @@ class RequirementAnalysisView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "requirement"
+    _tag: str = "requirement"
     _tablabel: str = "<span weight='bold'>" + _("Analysis") + "</span>"
     _tabtooltip: str = _("Analyzes the selected requirement.")
 

@@ -33,7 +33,7 @@ class SimilarItemWorkView(RAMSTKWorkView):
         a Topic 633 analysis.
     :cvar dict _dic_environment: the environments and associated index to use
         in a Topic 633 analysis.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar dict _dic_hardware: dict to hold information from the Hardware
         module.
@@ -57,7 +57,7 @@ class SimilarItemWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "similar_item"
+    _tag: str = "similar_item"
     _tablabel: str = _("Similar Item")
     _tabtooltip: str = _(
         "Displays the Similar Item analysis for the selected hardware item."
@@ -210,8 +210,6 @@ class SimilarItemWorkView(RAMSTKWorkView):
         :rtype: None
         """
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
-
-        self._pnlMethod.do_load_comboboxes()
 
         super().do_embed_treeview_panel()
         self._pnlPanel.do_load_comboboxes()

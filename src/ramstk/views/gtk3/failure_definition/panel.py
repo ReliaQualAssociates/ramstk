@@ -48,7 +48,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_message: str = "lvw_editing_{}".format(self._tag)
+        self._on_edit_message: str = f"lvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -66,6 +66,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "definition_id": [
                 1,
@@ -81,6 +82,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Definition ID"),
+                "gint",
             ],
             "definition": [
                 2,
@@ -96,6 +98,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Definition"),
+                "gchararray",
             ],
         }
 
@@ -103,8 +106,8 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
@@ -122,9 +125,9 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "failure_definition" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[1])
-            _title = _("Analyzing Failure Definition {0:s}").format(str(_code))
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["definition_id"])
+            _title = _(f"Analyzing Failure Definition {_code}")
 
             pub.sendMessage("request_set_title", title=_title)
 

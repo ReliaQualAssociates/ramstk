@@ -251,17 +251,6 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["application_id", "integer"],
-            6: ["construction_id", "integer"],
-            17: ["frequency_operating", "float"],
-            21: ["matching_id", "integer"],
-            25: ["n_elements", "integer"],
-            30: ["package_id", "integer"],
-            32: ["quality_id", "integer"],
-            47: ["theta_jc", "float"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -274,6 +263,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the semiconductor."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "package_id": [
                 30,
@@ -286,6 +276,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The package type for the semiconductor."),
                 },
                 _("Package:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -298,6 +289,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of semiconductor."),
                 },
                 _("Type:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -310,6 +302,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application of the semiconductor."),
                 },
                 _("Application:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -322,6 +315,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The method of construction of the semiconductor."),
                 },
                 _("Construction:"),
+                "gint",
             ],
             "matching_id": [
                 6,
@@ -334,6 +328,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The matching network of the semiconductor."),
                 },
                 _("Matching Network:"),
+                "gint",
             ],
             "frequency_operating": [
                 2,
@@ -346,6 +341,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The operating frequency of the semiconductor."),
                 },
                 _("Operating Frequency (GHz):"),
+                "gfloat",
             ],
             "n_elements": [
                 25,
@@ -360,6 +356,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Number of Characters:"),
+                "gint",
             ],
             "theta_jc": [
                 47,
@@ -374,6 +371,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 "\u03B8<sub>JC</sub>:",
+                "gfloat",
             ],
         }
 

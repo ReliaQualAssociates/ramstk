@@ -14,7 +14,7 @@ from . import FunctionGeneralDataPanel as FunctionGeneralDataPanel
 from . import FunctionTreePanel as FunctionTreePanel
 
 class FunctionModuleView(RAMSTKModuleView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -29,7 +29,7 @@ class FunctionModuleView(RAMSTKModuleView):
     def __make_ui(self) -> None: ...
 
 class FunctionWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: Any
     _tabtooltip: Any
     _lst_mnu_labels: Any

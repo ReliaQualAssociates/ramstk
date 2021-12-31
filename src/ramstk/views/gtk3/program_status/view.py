@@ -32,7 +32,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
     solid line) for all tasks in the V&V plan as well as the actual progress
     (points).  The attributes of a Verification burn down curve view are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -52,7 +52,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = "validation"
+    _tag = "validation"
     _tablabel = (
         "<span weight='bold'>" + _("Program\nVerification\nProgress") + "</span>"
     )

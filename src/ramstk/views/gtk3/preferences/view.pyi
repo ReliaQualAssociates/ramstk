@@ -16,7 +16,7 @@ from . import LookFeelPreferencesPanel as LookFeelPreferencesPanel
 from . import TreeLayoutPreferencesPanel as TreeLayoutPreferencesPanel
 
 class PreferencesDialog(RAMSTKBaseView):
-    _module: str
+    _tag: str
     _pixbuf: bool
     _tablabel: str
     _tabtooltip: str

@@ -24,7 +24,6 @@ class ValidationTreePanel(RAMSTKTreePanel):
     _dic_row_loader: Any
     _lst_measurement_units: Any
     _lst_verification_types: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def do_load_measurement_units(
@@ -62,7 +61,6 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
     txtStartDate: Any
     _dic_task_types: Any
     _dic_units: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def do_load_measurement_units(
@@ -94,7 +92,6 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
     txtMeanCostLL: Any
     txtMeanCost: Any
     txtMeanCostUL: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def _do_load_code(self, task_code: int) -> None: ...

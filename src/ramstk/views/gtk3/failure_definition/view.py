@@ -27,7 +27,7 @@ class FailureDefinitionListView(RAMSTKListView):
 
     The attributes of the failure definition list view are:
 
-    :cvar _module: the name of the module.  Spaces are replaced with single
+    :cvar _tag: the name of the module.  Spaces are replaced with single
         underscores if the name is more than one word.
     :cvar _tablabel: the text to display on the view's tab.
     :cvar _tabtooltip: the text to display in the tooltip for the view's tab.
@@ -44,7 +44,7 @@ class FailureDefinitionListView(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "failure_definitions"
+    _tag: str = "failure_definitions"
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the selected revision.")
 
@@ -140,8 +140,6 @@ class FailureDefinitionListView(RAMSTKListView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

@@ -14,7 +14,6 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: str
     _dic_row_loader: Dict[str, Callable]
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...

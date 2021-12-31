@@ -29,7 +29,7 @@ class StakeholderListView(RAMSTKListView):
     with the selected Requirement.  The attributes of the Stakeholder List
     View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -49,7 +49,7 @@ class StakeholderListView(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module = "stakeholders"
+    _tag = "stakeholders"
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
     _view_type = "list"
@@ -183,14 +183,13 @@ class StakeholderListView(RAMSTKListView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_load_affinity_groups(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS
         )
         self._pnlPanel.do_load_stakeholders(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_STAKEHOLDERS
         )
-        self._pnlPanel.do_set_callbacks()
+
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

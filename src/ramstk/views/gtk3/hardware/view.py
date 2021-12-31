@@ -74,7 +74,7 @@ class HardwareModuleView(RAMSTKModuleView):
     connected RAMSTK Program in a flat list.  The attributes of a Hardware
     Module View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -88,7 +88,7 @@ class HardwareModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = "Hardware"
     _tabtooltip: str = _(
         "Displays the hardware hierarchy (BoM) for the selected Revision."
@@ -168,7 +168,7 @@ class HardwareModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_{0}".format(self._module))
+        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.
@@ -243,41 +243,30 @@ class HardwareModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.do_set_properties()
-        self._pnlPanel.do_set_callbacks()
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_hardware",
             [
-                2,
-                3,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10,
-                11,
-                13,
-                14,
-                15,
-                16,
-                17,
-                18,
-                19,
-                20,
-                21,
-                22,
-                23,
-                24,
-                25,
-                26,
-                27,
-                28,
-                29,
-                30,
-                31,
-                32,
-                33,
+                "alt_part_number",
+                "cage_code",
+                "cost",
+                "description",
+                "duty_cycle",
+                "figure_number",
+                "lcn",
+                "manufacturer_id",
+                "mission_time",
+                "name",
+                "nsn",
+                "page_number",
+                "part",
+                "part_number",
+                "quantity",
+                "ref_des",
+                "remarks",
+                "repairable",
+                "specification_number",
+                "tagged_part",
+                "year_of_manufacture",
             ],
         )
         self._pnlPanel.tvwTreeView.dic_handler_id[
@@ -316,7 +305,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("General\nData")
     _tabtooltip: str = _("Displays general information for the selected Hardware")
 
@@ -446,7 +435,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the assessment input widget
         labels.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar dict _dic_assessment_input: dictionary of component-specific
         AssessmentInputs classes.
@@ -473,7 +462,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
     _lst_title: List[str] = [_("Operating Stresses")]
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("Assessment\nInputs")
     _tabtooltip: str = _(
         "Displays reliability assessment inputs for the selected hardware item."
@@ -682,7 +671,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
     :cvar list _lst_labels: the text to use for the reliability assessment
         results widget labels.
-    :cvar str _module: the name of the module.
+    :cvar str _tag: the name of the module.
 
     :ivar dict _dic_assessment_results: dictionary of component-specific
         AssessmentResults classes.
@@ -703,7 +692,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
     _lst_title = [_("Assessment Model Results"), _("Stress Results")]
 
     # Define private scalar class attributes.
-    _module: str = "hardware"
+    _tag: str = "hardware"
     _tablabel: str = _("Assessment\nResults")
     _tabtooltip: str = _(
         "Displays reliability, maintainability, and availability assessment results "

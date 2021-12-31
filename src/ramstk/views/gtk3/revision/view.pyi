@@ -19,7 +19,7 @@ from . import RevisionGeneralDataPanel as RevisionGeneralDataPanel
 from . import RevisionTreePanel as RevisionTreePanel
 
 class RevisionModuleView(RAMSTKModuleView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: Any
@@ -37,7 +37,7 @@ class RevisionModuleView(RAMSTKModuleView):
     def __make_ui(self) -> None: ...
 
 class RevisionWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: Any
     _tabtooltip: Any
     _lst_tooltips: Any

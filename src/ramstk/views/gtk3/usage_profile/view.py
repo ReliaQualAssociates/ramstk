@@ -24,7 +24,7 @@ class UsageProfileListView(RAMSTKListView):
 
     The attributes of a Usage Profile List View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_mnu_labels: the list of labels for the view's pop-up
         menu.  The labels are listed in the order they appear in the menu.
@@ -36,7 +36,7 @@ class UsageProfileListView(RAMSTKListView):
     # Define private dict class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "usage_profile"
+    _tag: str = "usage_profile"
     _tablabel: str = "<span weight='bold'>" + _("Usage\nProfiles") + "</span>"
     _tabtooltip: str = _("Displays usage profiles for the selected revision.")
 
@@ -62,7 +62,6 @@ class UsageProfileListView(RAMSTKListView):
         self._lst_callbacks[0] = self._do_request_insert_sibling
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
-        self._lst_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8]
         self._lst_icons[0] = "insert_sibling"
         self._lst_icons.insert(1, "insert_child")
         self._lst_icons.insert(2, "remove")
@@ -220,10 +219,8 @@ class UsageProfileListView(RAMSTKListView):
         self._pnlPanel.dic_units = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS
         )
-
-        self._pnlPanel.do_set_properties()
         self._pnlPanel.do_load_comboboxes()
-        self._pnlPanel.do_set_callbacks()
+
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(

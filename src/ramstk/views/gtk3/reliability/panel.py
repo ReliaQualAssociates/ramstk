@@ -61,20 +61,6 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["add_adj_factor", "float"],
-            7: ["failure_distribution_id", "integer"],
-            11: ["hazard_rate_method_id", "integer"],
-            17: ["hazard_rate_type_id", "integer"],
-            16: ["hazard_rate_specified", "float"],
-            22: ["hr_specified_variance", "float"],
-            24: ["location_parameter", "float"],
-            27: ["mtbf_specified", "float"],
-            30: ["mtbf_specified_variance", "float"],
-            31: ["mult_adj_factor", "float"],
-            39: ["scale_parameter", "float"],
-            40: ["shape_parameter", "float"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "hazard_rate_type_id": [
                 17,
@@ -91,6 +77,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Assessment Type:"),
+                "gint",
             ],
             "hazard_rate_method_id": [
                 11,
@@ -106,6 +93,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Assessment Method:"),
+                "gint",
             ],
             "hazard_rate_specified": [
                 16,
@@ -119,6 +107,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Stated Hazard Rate [h(t)]:"),
+                "gfloat",
             ],
             "hr_specified_variance": [
                 22,
@@ -132,6 +121,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Stated h(t) Variance:"),
+                "gfloat",
             ],
             "mtbf_specified": [
                 26,
@@ -145,6 +135,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Stated MTBF:"),
+                "gfloat",
             ],
             "mtbf_specified_variance": [
                 30,
@@ -160,6 +151,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Stated MTBF Variance:"),
+                "gfloat",
             ],
             "failure_distribution_id": [
                 7,
@@ -176,6 +168,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 200,
                 },
                 _("Failure Distribution:"),
+                "gint",
             ],
             "scale_parameter": [
                 39,
@@ -191,6 +184,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Scale Parameter:"),
+                "gfloat",
             ],
             "shape_parameter": [
                 40,
@@ -206,6 +200,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Shape Parameter:"),
+                "gfloat",
             ],
             "location_parameter": [
                 24,
@@ -222,6 +217,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Location Parameter:"),
+                "gfloat",
             ],
             "add_adj_factor": [
                 2,
@@ -237,6 +233,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Additive Adjustment Factor:"),
+                "gfloat",
             ],
             "mult_adj_factor": [
                 31,
@@ -252,6 +249,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Multiplicative Adjustment Factor:"),
+                "gfloat",
             ],
         }
 
@@ -456,6 +454,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Active Failure Intensity [\u03BB(t)]:"),
+                "gfloat",
             ],
             "hr_active_variance": [
                 18,
@@ -472,6 +471,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "hazard_rate_dormant": [
                 9,
@@ -488,6 +488,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Dormant \u03BB(t):"),
+                "gfloat",
             ],
             "hr_dormant_variance": [
                 19,
@@ -504,6 +505,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "hazard_rate_software": [
                 15,
@@ -520,6 +522,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Software \u03BB(t):"),
+                "gfloat",
             ],
             "hazard_rate_logistics": [
                 10,
@@ -537,6 +540,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Logistics \u03BB(t):"),
+                "gfloat",
             ],
             "hr_logistics_variance": [
                 20,
@@ -553,6 +557,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "hazard_rate_mission": [
                 12,
@@ -569,6 +574,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Mission \u03BB(t):"),
+                "gfloat",
             ],
             "hr_mission_variance": [
                 21,
@@ -585,6 +591,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "hazard_rate_percent": [
                 14,
@@ -601,6 +608,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Percent \u03BB(t):"),
+                "gfloat",
             ],
             "mtbf_logistics": [
                 25,
@@ -617,6 +625,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Logistics MTBF:"),
+                "gfloat",
             ],
             "mtbf_logistics_variance": [
                 28,
@@ -633,6 +642,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "mtbf_mission": [
                 26,
@@ -649,6 +659,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Mission MTBF:"),
+                "gfloat",
             ],
             "mtbf_mission_variance": [
                 29,
@@ -665,6 +676,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "reliability_logistics": [
                 35,
@@ -681,6 +693,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Logistics Reliability [R(t)]:"),
+                "gfloat",
             ],
             "reliability_log_variance": [
                 37,
@@ -697,6 +710,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "reliability_mission": [
                 36,
@@ -713,6 +727,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Mission R(t):"),
+                "gfloat",
             ],
             "reliability_miss_variance": [
                 38,
@@ -729,6 +744,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
         }
 
@@ -950,6 +966,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Logistics Availability [A(t)]:"),
+                "gfloat",
             ],
             "avail_log_variance": [
                 5,
@@ -966,6 +983,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "availability_mission": [
                 4,
@@ -982,6 +1000,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Mission A(t):"),
+                "gfloat",
             ],
             "avail_mis_variance": [
                 6,
@@ -998,6 +1017,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 "",
+                "gfloat",
             ],
             "total_cost": [
                 31,
@@ -1013,6 +1033,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Total Cost:"),
+                "gfloat",
             ],
             "cost_failure": [
                 8,
@@ -1028,6 +1049,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Cost/Failure:"),
+                "gfloat",
             ],
             "cost_hour": [
                 9,
@@ -1038,12 +1060,13 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                 1.0,
                 {
                     "tooltip": _(
-                        "Displays the failure cost per operating hour for the "
+                        "Displays the failure cost per life time hour for the "
                         "selected hardware item."
                     ),
                     "width": 125,
                 },
                 _("Cost/Hour:"),
+                "gfloat",
             ],
             "total_part_count": [
                 32,
@@ -1059,6 +1082,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
                     "width": 125,
                 },
                 _("Total # of Parts:"),
+                "gint",
             ],
         }
 

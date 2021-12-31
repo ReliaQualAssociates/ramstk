@@ -15,7 +15,7 @@ from . import SimilarItemMethodPanel as SimilarItemMethodPanel
 from . import SimilarItemTreePanel as SimilarItemTreePanel
 
 class SimilarItemWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: List[str]

@@ -34,6 +34,7 @@ from .logger import RAMSTKLogManager
 from .utilities import (
     boolean_to_integer,
     date_to_ordinal,
+    deprecated,
     dir_exists,
     file_exists,
     get_install_prefix,

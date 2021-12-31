@@ -60,15 +60,6 @@ class RequirementTreePanel(RAMSTKTreePanel):
         # Initialize private scalar class attributes.
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map = {
-            3: ["description", "string"],
-            4: ["figure_number", "string"],
-            5: ["owner", "string"],
-            6: ["page_number", "string"],
-            8: ["priority", "string"],
-            10: ["specification", "string"],
-            11: ["requirement_type", "string"],
-        }
         self.dic_attribute_widget_map = {
             "revision_id": [
                 0,
@@ -76,6 +67,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
+                "gint",
             ],
             "requirement_id": [
                 1,
@@ -83,6 +83,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Requirement ID"),
+                "gint",
             ],
             "derived": [
                 2,
@@ -90,6 +99,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 super().on_cell_toggled,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Derived?"),
+                "gint",
             ],
             "description": [
                 3,
@@ -97,6 +115,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Description"),
+                "gchararray",
             ],
             "figure_number": [
                 4,
@@ -104,6 +131,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Figure Number"),
+                "gchararray",
             ],
             "owner": [
                 5,
@@ -111,6 +147,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "changed",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Owner"),
+                "gint",
             ],
             "page_number": [
                 6,
@@ -118,6 +163,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Page Number"),
+                "gchararray",
             ],
             "parent_id": [
                 7,
@@ -125,6 +179,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Parent ID"),
+                "gint",
             ],
             "priority": [
                 8,
@@ -132,6 +195,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "changed",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Priority"),
+                "gint",
             ],
             "requirement_code": [
                 9,
@@ -139,6 +211,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Code"),
+                "gchararray",
             ],
             "specification": [
                 10,
@@ -146,6 +227,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Specification"),
+                "gchararray",
             ],
             "requirement_type": [
                 11,
@@ -153,13 +243,31 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "changed",
                 super().on_cell_edit,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Type"),
+                "gint",
             ],
             "validated": [
                 12,
-                Gtk.CellRendererText(),
+                Gtk.CellRendererToggle(),
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Validated?"),
+                "gint",
             ],
             "validated_date": [
                 13,
@@ -167,6 +275,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_requirement",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Validated Date"),
+                "gchararray",
             ],
             "q_clarity_0": [
                 14,
@@ -174,6 +291,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q1"),
+                "gint",
             ],
             "q_clarity_1": [
                 15,
@@ -181,6 +307,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q2"),
+                "gint",
             ],
             "q_clarity_2": [
                 16,
@@ -188,6 +323,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q3"),
+                "gint",
             ],
             "q_clarity_3": [
                 17,
@@ -195,6 +339,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q4"),
+                "gint",
             ],
             "q_clarity_4": [
                 18,
@@ -202,6 +355,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q5"),
+                "gint",
             ],
             "q_clarity_5": [
                 19,
@@ -209,6 +371,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q6"),
+                "gint",
             ],
             "q_clarity_6": [
                 20,
@@ -216,6 +387,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q7"),
+                "gint",
             ],
             "q_clarity_7": [
                 21,
@@ -223,6 +403,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q8"),
+                "gint",
             ],
             "q_clarity_8": [
                 22,
@@ -230,6 +419,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Clarity Q9"),
+                "gint",
             ],
             "q_complete_0": [
                 23,
@@ -237,6 +435,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q1"),
+                "gint",
             ],
             "q_complete_1": [
                 24,
@@ -244,6 +451,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q2"),
+                "gint",
             ],
             "q_complete_2": [
                 25,
@@ -251,6 +467,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q3"),
+                "gint",
             ],
             "q_complete_3": [
                 26,
@@ -258,6 +483,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q4"),
+                "gint",
             ],
             "q_complete_4": [
                 27,
@@ -265,6 +499,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q5"),
+                "gint",
             ],
             "q_complete_5": [
                 28,
@@ -272,6 +515,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q6"),
+                "gint",
             ],
             "q_complete_6": [
                 29,
@@ -279,6 +531,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q7"),
+                "gint",
             ],
             "q_complete_7": [
                 30,
@@ -286,6 +547,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q8"),
+                "gint",
             ],
             "q_complete_8": [
                 31,
@@ -293,6 +563,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q9"),
+                "gint",
             ],
             "q_complete_9": [
                 32,
@@ -300,6 +579,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Complete Q10"),
+                "gint",
             ],
             "q_consistent_0": [
                 33,
@@ -307,6 +595,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q1"),
+                "gint",
             ],
             "q_consistent_1": [
                 34,
@@ -314,6 +611,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q2"),
+                "gint",
             ],
             "q_consistent_2": [
                 35,
@@ -321,6 +627,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q3"),
+                "gint",
             ],
             "q_consistent_3": [
                 36,
@@ -328,6 +643,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q4"),
+                "gint",
             ],
             "q_consistent_4": [
                 37,
@@ -335,6 +659,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q5"),
+                "gint",
             ],
             "q_consistent_5": [
                 38,
@@ -342,6 +675,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q6"),
+                "gint",
             ],
             "q_consistent_6": [
                 39,
@@ -349,6 +691,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q7"),
+                "gint",
             ],
             "q_consistent_7": [
                 40,
@@ -356,6 +707,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q8"),
+                "gint",
             ],
             "q_consistent_8": [
                 41,
@@ -363,6 +723,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Consistent Q9"),
+                "gint",
             ],
             "q_verifiable_0": [
                 42,
@@ -370,6 +739,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q1"),
+                "gint",
             ],
             "q_verifiable_1": [
                 43,
@@ -377,6 +755,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q2"),
+                "gint",
             ],
             "q_verifiable_2": [
                 44,
@@ -384,6 +771,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q3"),
+                "gint",
             ],
             "q_verifiable_3": [
                 45,
@@ -391,6 +787,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q4"),
+                "gint",
             ],
             "q_verifiable_4": [
                 46,
@@ -398,6 +803,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q5"),
+                "gint",
             ],
             "q_verifiable_5": [
                 47,
@@ -405,6 +819,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_requirement",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Verifiable Q6"),
+                "gint",
             ],
         }
 
@@ -412,8 +835,8 @@ class RequirementTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
@@ -432,11 +855,11 @@ class RequirementTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[5])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Requirement {0:s}: {1:s}").format(
-                str(_code), str(_name)
+            _code = _model.get_value(
+                _row, self.tvwTreeView.position["requirement_code"]
             )
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _title = _(f"Analyzing Requirement {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
@@ -600,18 +1023,6 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            2: ["derived", "boolean"],
-            3: ["description", "string"],
-            4: ["figure_number", "string"],
-            5: ["owner", "string"],
-            6: ["page_number", "string"],
-            8: ["priority", "string"],
-            10: ["specification", "string"],
-            11: ["requirement_type", "string"],
-            12: ["validated", "boolean"],
-            13: ["validated_date", "string"],
-        }
         self.dic_attribute_widget_map = {
             "requirement_code": [
                 9,
@@ -625,6 +1036,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("A unique code for the selected requirement."),
                 },
                 _("Requirement Code:"),
+                "gchararray",
             ],
             "description": [
                 3,
@@ -639,6 +1051,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The description of the selected requirement."),
                 },
                 _("Requirement Description:"),
+                "gchararray",
             ],
             "requirement_type": [
                 11,
@@ -651,6 +1064,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of requirement."),
                 },
                 _("Requirement Type:"),
+                "gint",
             ],
             "derived": [
                 2,
@@ -666,6 +1080,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "width": 400,
                 },
                 "",
+                "gint",
             ],
             "specification": [
                 10,
@@ -680,6 +1095,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Specification:"),
+                "gchararray",
             ],
             "page_number": [
                 6,
@@ -694,6 +1110,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Page Number:"),
+                "gchararray",
             ],
             "figure_number": [
                 4,
@@ -708,6 +1125,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Figure Number:"),
+                "gchararray",
             ],
             "priority": [
                 8,
@@ -720,6 +1138,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "width": 50,
                 },
                 _("Priority:"),
+                "gint",
             ],
             "owner": [
                 5,
@@ -732,6 +1151,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The organization responsible for the requirement."),
                 },
                 _("Owner:"),
+                "gint",
             ],
             "validated": [
                 12,
@@ -748,6 +1168,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "width": 400,
                 },
                 "",
+                "gint",
             ],
             "validated_date": [
                 13,
@@ -760,6 +1181,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The date the selected requirement was validated."),
                 },
                 _("Validated Date:"),
+                "gchararray",
             ],
         }
 
@@ -863,7 +1285,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         _dialog.do_destroy()
 
         entry.do_update(_date)
-        super().on_changed_entry(entry, 13, "wvw_editing_requirement")
+        super().on_changed_entry(entry, "validated_date", "wvw_editing_requirement")
 
         return _date
 
@@ -909,17 +1331,6 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            14: ["q_clarity_0", "boolean"],
-            15: ["q_clarity_1", "boolean"],
-            16: ["q_clarity_2", "boolean"],
-            17: ["q_clarity_3", "boolean"],
-            18: ["q_clarity_4", "boolean"],
-            19: ["q_clarity_5", "boolean"],
-            20: ["q_clarity_6", "boolean"],
-            21: ["q_clarity_7", "boolean"],
-            22: ["q_clarity_8", "boolean"],
-        }
         self.dic_attribute_widget_map = {
             "q_clarity_0": [
                 14,
@@ -932,6 +1343,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("1. The requirement clearly states what is needed or desired."),
+                "gint",
             ],
             "q_clarity_1": [
                 15,
@@ -944,6 +1356,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("2. The requirement is unambiguous and not open to interpretation."),
+                "gint",
             ],
             "q_clarity_2": [
                 16,
@@ -959,6 +1372,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "3. All terms that can have more than one meaning are qualified so "
                     "that the desired meaning is readily apparent."
                 ),
+                "gint",
             ],
             "q_clarity_3": [
                 17,
@@ -974,6 +1388,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "4. Diagrams, drawings, etc. are used to increase understanding of "
                     "the requirement."
                 ),
+                "gint",
             ],
             "q_clarity_4": [
                 18,
@@ -986,6 +1401,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("5. The requirement is free from spelling and grammatical errors."),
+                "gint",
             ],
             "q_clarity_5": [
                 19,
@@ -1001,6 +1417,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "6. The requirement is written in non-technical language using the "
                     "vocabulary of the stakeholder."
                 ),
+                "gint",
             ],
             "q_clarity_6": [
                 20,
@@ -1013,6 +1430,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("7. Stakeholders understand the requirement as written."),
+                "gint",
             ],
             "q_clarity_7": [
                 21,
@@ -1028,6 +1446,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "8. The requirement is clear enough to be turned over to an "
                     "independent group and still be understood."
                 ),
+                "gint",
             ],
             "q_clarity_8": [
                 22,
@@ -1043,6 +1462,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                     "9. The requirement avoids stating how the problem is "
                     "to be solved or what techniques are to be used."
                 ),
+                "gint",
             ],
         }
 
@@ -1099,18 +1519,6 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            23: ["q_complete_0", "boolean"],
-            24: ["q_complete_1", "boolean"],
-            25: ["q_complete_2", "boolean"],
-            26: ["q_complete_3", "boolean"],
-            27: ["q_complete_4", "boolean"],
-            28: ["q_complete_5", "boolean"],
-            29: ["q_complete_6", "boolean"],
-            30: ["q_complete_7", "boolean"],
-            31: ["q_complete_8", "boolean"],
-            32: ["q_complete_9", "boolean"],
-        }
         self.dic_attribute_widget_map = {
             "q_complete_0": [
                 23,
@@ -1126,6 +1534,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "1. Performance objectives are properly documented from the "
                     "user's point of view."
                 ),
+                "gint",
             ],
             "q_complete_1": [
                 24,
@@ -1138,6 +1547,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("2. No necessary information is missing from the requirement."),
+                "gint",
             ],
             "q_complete_2": [
                 25,
@@ -1150,6 +1560,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("3. The requirement has been assigned a priority."),
+                "gint",
             ],
             "q_complete_3": [
                 26,
@@ -1165,6 +1576,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "4. The requirement is realistic given the technology that will "
                     "be used to implement the system."
                 ),
+                "gint",
             ],
             "q_complete_4": [
                 27,
@@ -1180,6 +1592,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "5. The requirement is feasible to implement given the defined "
                     "project time frame, scope, structure and budget."
                 ),
+                "gint",
             ],
             "q_complete_5": [
                 28,
@@ -1195,6 +1608,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "6. If the requirement describes something as a 'standard' the "
                     "specific source is cited."
                 ),
+                "gint",
             ],
             "q_complete_6": [
                 29,
@@ -1207,6 +1621,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("7. The requirement is relevant to the problem and its solution."),
+                "gint",
             ],
             "q_complete_7": [
                 30,
@@ -1219,6 +1634,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("8. The requirement contains no implied design details."),
+                "gint",
             ],
             "q_complete_8": [
                 31,
@@ -1234,6 +1650,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "9. The requirement contains no implied implementation "
                     "constraints."
                 ),
+                "gint",
             ],
             "q_complete_9": [
                 32,
@@ -1249,6 +1666,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                     "10. The requirement contains no implied project management "
                     "constraints."
                 ),
+                "gint",
             ],
         }
 
@@ -1304,17 +1722,6 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            33: ["q_consistent_0", "boolean"],
-            34: ["q_consistent_1", "boolean"],
-            35: ["q_consistent_2", "boolean"],
-            36: ["q_consistent_3", "boolean"],
-            37: ["q_consistent_4", "boolean"],
-            38: ["q_consistent_5", "boolean"],
-            39: ["q_consistent_6", "boolean"],
-            40: ["q_consistent_7", "boolean"],
-            41: ["q_consistent_8", "boolean"],
-        }
         self.dic_attribute_widget_map = {
             "q_consistent_0": [
                 33,
@@ -1330,6 +1737,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "1. The requirement describes a single need or want; it could not "
                     "be broken into several different requirements."
                 ),
+                "gint",
             ],
             "q_consistent_1": [
                 34,
@@ -1345,6 +1753,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "2. The requirement requires non-standard hardware or must use "
                     "software to implement."
                 ),
+                "gint",
             ],
             "q_consistent_2": [
                 35,
@@ -1357,6 +1766,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("3. The requirement can be implemented within known constraints."),
+                "gint",
             ],
             "q_consistent_3": [
                 36,
@@ -1372,6 +1782,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "4. The requirement provides an adequate basis for design and "
                     "testing."
                 ),
+                "gint",
             ],
             "q_consistent_4": [
                 37,
@@ -1387,6 +1798,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "5. The requirement adequately supports the business goal of the "
                     "project."
                 ),
+                "gint",
             ],
             "q_consistent_5": [
                 38,
@@ -1402,6 +1814,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "6. The requirement does not conflict with some constraint, policy "
                     "or regulation."
                 ),
+                "gint",
             ],
             "q_consistent_6": [
                 39,
@@ -1414,6 +1827,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("7. The requirement does not conflict with another requirement."),
+                "gint",
             ],
             "q_consistent_7": [
                 40,
@@ -1426,6 +1840,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("8. The requirement is not a duplicate of another requirement."),
+                "gint",
             ],
             "q_consistent_8": [
                 41,
@@ -1438,6 +1853,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                     "height": 30,
                 },
                 _("9. The requirement is in scope for the project."),
+                "gint",
             ],
         }
 
@@ -1490,14 +1906,6 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            42: ["q_verifiable_0", "boolean"],
-            43: ["q_verifiable_1", "boolean"],
-            44: ["q_verifiable_2", "boolean"],
-            45: ["q_verifiable_3", "boolean"],
-            46: ["q_verifiable_4", "boolean"],
-            47: ["q_verifiable_5", "boolean"],
-        }
         self.dic_attribute_widget_map = {
             "q_verifiable_0": [
                 42,
@@ -1513,6 +1921,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "1. The requirement is verifiable by testing, demonstration, "
                     "review, or analysis."
                 ),
+                "gint",
             ],
             "q_verifiable_1": [
                 43,
@@ -1529,6 +1938,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "suitable, integrate, maybe, consistent, robust, modular, "
                     "user-friendly, superb, good)."
                 ),
+                "gint",
             ],
             "q_verifiable_2": [
                 44,
@@ -1544,6 +1954,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "3. Any performance criteria are quantified such that they are "
                     "testable."
                 ),
+                "gint",
             ],
             "q_verifiable_3": [
                 45,
@@ -1559,6 +1970,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "4. Independent testing would be able to determine whether the "
                     "requirement has been satisfied."
                 ),
+                "gint",
             ],
             "q_verifiable_4": [
                 46,
@@ -1574,6 +1986,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "5. The task(s) that will validate and verify the final design "
                     "satisfies the requirement have been identified."
                 ),
+                "gint",
             ],
             "q_verifiable_5": [
                 47,
@@ -1589,6 +2002,7 @@ class RequirementVerifiabilityPanel(RAMSTKFixedPanel):
                     "6. The identified V&amp;V task(s) have been added to the "
                     "validation plan (e.g., DVP)"
                 ),
+                "gint",
             ],
         }
 

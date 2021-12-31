@@ -61,32 +61,6 @@ class HardwareTreePanel(RAMSTKTreePanel):
         # Initialize private scalar class attributes.
 
         # Initialize public dictionary class attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["alt_part_number", "string"],
-            3: ["cage_code", "string"],
-            5: ["cost", "string"],
-            8: ["description", "string"],
-            9: ["duty_cycle", "float"],
-            10: ["figure_number", "string"],
-            11: ["lcn", "string"],
-            13: ["manufacturer_id", "integer"],
-            14: ["mission_time", "float"],
-            15: ["name", "string"],
-            16: ["nsn", "string"],
-            17: ["page_number", "string"],
-            19: ["part", "boolean"],
-            20: ["part_number", "string"],
-            21: ["quantity", "integer"],
-            22: ["ref_des", "string"],
-            23: ["remarks", "string"],
-            24: ["repairable", "boolean"],
-            25: ["specification_number", "string"],
-            26: ["tagged_part", "boolean"],
-            29: ["year_of_manufacture", "string"],
-            30: ["cost_type_id", "integer"],
-            32: ["category_id", "integer"],
-            33: ["subcategory_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "revision_id": [
                 0,
@@ -94,6 +68,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Revision ID"),
+                "gint",
             ],
             "hardware_id": [
                 1,
@@ -101,6 +84,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Hardware ID"),
+                "gint",
             ],
             "alt_part_number": [
                 2,
@@ -108,6 +100,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Alt. Part Num."),
+                "gchararray",
             ],
             "cage_code": [
                 3,
@@ -115,6 +116,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("CAGE Code"),
+                "gchararray",
             ],
             "comp_ref_des": [
                 4,
@@ -122,6 +132,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Comp. Ref. Des."),
+                "gchararray",
             ],
             "cost": [
                 5,
@@ -129,6 +148,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Cost"),
+                "gfloat",
             ],
             "cost_failure": [
                 6,
@@ -136,6 +164,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Cost/Failure"),
+                "gfloat",
             ],
             "cost_hour": [
                 7,
@@ -143,6 +180,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Cost/Hour"),
+                "gfloat",
             ],
             "description": [
                 8,
@@ -150,6 +196,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Description"),
+                "gchararray",
             ],
             "duty_cycle": [
                 9,
@@ -157,6 +212,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Duty Cycle"),
+                "gfloat",
             ],
             "figure_number": [
                 10,
@@ -164,6 +228,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Figure Number"),
+                "gchararray",
             ],
             "lcn": [
                 11,
@@ -171,6 +244,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("LCN"),
+                "gchararray",
             ],
             "level": [
                 12,
@@ -178,6 +260,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Level"),
+                "gint",
             ],
             "manufacturer_id": [
                 13,
@@ -185,6 +276,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Manufacturer"),
+                "gint",
             ],
             "mission_time": [
                 14,
@@ -192,6 +292,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                1.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Mission Time"),
+                "gfloat",
             ],
             "name": [
                 15,
@@ -199,6 +308,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Name"),
+                "gchararray",
             ],
             "nsn": [
                 16,
@@ -206,6 +324,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("NSN"),
+                "gchararray",
             ],
             "page_number": [
                 17,
@@ -213,6 +340,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Page Number"),
+                "gchararray",
             ],
             "parent_id": [
                 18,
@@ -220,6 +356,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Parent ID"),
+                "gint",
             ],
             "part": [
                 19,
@@ -227,6 +372,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Part?"),
+                "gint",
             ],
             "part_number": [
                 20,
@@ -234,6 +388,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Part Number"),
+                "gchararray",
             ],
             "quantity": [
                 21,
@@ -241,6 +404,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                1,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Quantity"),
+                "gint",
             ],
             "ref_des": [
                 22,
@@ -248,6 +420,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Ref. Des."),
+                "gchararray",
             ],
             "remarks": [
                 23,
@@ -255,6 +436,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Remarks"),
+                "gchararray",
             ],
             "repairable": [
                 24,
@@ -262,6 +452,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_hardware",
+                1,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Repairable?"),
+                "gint",
             ],
             "specification_number": [
                 25,
@@ -269,6 +468,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Specification"),
+                "gchararray",
             ],
             "tagged_part": [
                 26,
@@ -276,6 +484,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "toggled",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Tagged Part"),
+                "gint",
             ],
             "total_part_count": [
                 27,
@@ -283,6 +500,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Part Count"),
+                "gint",
             ],
             "total_power_dissipation": [
                 28,
@@ -290,6 +516,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0.0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Power Dissipation"),
+                "gfloat",
             ],
             "year_of_manufacture": [
                 29,
@@ -297,6 +532,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                date.today(),
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": True,
+                },
+                _("Year of Manufacture"),
+                "gint",
             ],
             "cost_type_id": [
                 30,
@@ -304,6 +548,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Cost Type"),
+                "gint",
             ],
             "attachments": [
                 31,
@@ -311,6 +564,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                "",
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Attachments"),
+                "gchararray",
             ],
             "category_id": [
                 32,
@@ -318,6 +580,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Category"),
+                "gint",
             ],
             "subcategory_id": [
                 33,
@@ -325,6 +596,15 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 "mvw_editing_hardware",
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": True,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Subcategory"),
+                "gint",
             ],
         }
         self.dic_icons = {"assembly": None, "part": None}
@@ -333,8 +613,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
@@ -352,12 +632,12 @@ class HardwareTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "hardware" and _row is not None:
-            _comprefdes = _model.get_value(_row, self._lst_col_order[4])
-            _name = _model.get_value(_row, self._lst_col_order[15])
-            _title = _("Analyzing Hardware item {0:s}: {1:s}").format(
-                str(_comprefdes), str(_name)
+        if module == self._tag and _row is not None:
+            _comprefdes = _model.get_value(
+                _row, self.tvwTreeView.position["comp_ref_des"]
             )
+            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
+            _title = _(f"Analyzing Hardware item {_comprefdes}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
@@ -395,7 +675,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "reliability",
             ]:
                 pub.sendMessage(
-                    "request_get_{}_attributes".format(_table),
+                    f"request_get_{_table}_attributes",
                     node_id=self._record_id,
                 )
 
@@ -527,21 +807,6 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
-        self.dic_attribute_index_map = {
-            2: ["alt_part_number", "string"],
-            4: ["comp_ref_des", "string"],
-            8: ["description", "string"],
-            10: ["figure_number", "string"],
-            11: ["lcn", "string"],
-            15: ["name", "string"],
-            17: ["page_number", "string"],
-            20: ["part_number", "string"],
-            22: ["ref_des", "string"],
-            24: ["repairable", "boolean"],
-            25: ["specification_number", "string"],
-            32: ["category_id", "integer"],
-            33: ["subcategory_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "ref_des": [
                 22,
@@ -556,6 +821,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Reference Designator:"),
+                "gchararray",
             ],
             "comp_ref_des": [
                 4,
@@ -571,6 +837,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Composite Ref. Des."),
+                "gchararray",
             ],
             "name": [
                 15,
@@ -584,6 +851,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The name of the selected hardware item."),
                 },
                 _("Name:"),
+                "gchararray",
             ],
             "description": [
                 8,
@@ -597,6 +865,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The description of the selected hardware item."),
                 },
                 _("Description:"),
+                "gchararray",
             ],
             "part_number": [
                 20,
@@ -609,6 +878,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     "tooltip": _("The part number of the selected hardware item."),
                 },
                 _("Part Number:"),
+                "gchararray",
             ],
             "alt_part_number": [
                 2,
@@ -624,6 +894,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Alternate Part Number:"),
+                "gchararray",
             ],
             "category_id": [
                 32,
@@ -634,6 +905,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Category:"),
+                "gint",
             ],
             "subcategory_id": [
                 33,
@@ -644,6 +916,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Subcategory:"),
+                "gint",
             ],
             "specification_number": [
                 25,
@@ -659,6 +932,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Specification:"),
+                "gchararray",
             ],
             "page_number": [
                 17,
@@ -674,6 +948,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Page Number:"),
+                "gchararray",
             ],
             "figure_number": [
                 10,
@@ -689,6 +964,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("Figure Number:"),
+                "gchararray",
             ],
             "lcn": [
                 11,
@@ -704,6 +980,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("LCN:"),
+                "gchararray",
             ],
             "repairable": [
                 24,
@@ -719,6 +996,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                     )
                 },
                 "",
+                "gint",
             ],
         }
         self.dicSubcategories: Dict[int, Dict[int, str]] = {}
@@ -782,7 +1060,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
             "reliability",
         ]:
             pub.sendMessage(
-                "request_get_{}_attributes".format(_table),
+                f"request_get_{_table}_attributes",
                 node_id=self._record_id,
             )
 
@@ -839,15 +1117,6 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            3: ["cage_code", "string"],
-            5: ["cost", "string"],
-            13: ["manufacturer_id", "integer"],
-            16: ["nsn", "string"],
-            21: ["quantity", "integer"],
-            29: ["year_of_manufacture", "string"],
-            30: ["cost_type_id", "integer"],
-        }
         self.dic_attribute_widget_map = {
             "manufacturer_id": [
                 13,
@@ -858,6 +1127,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Manufacturer:"),
+                "gint",
             ],
             "cage_code": [
                 3,
@@ -873,6 +1143,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("CAGE Code:"),
+                "gchararray",
             ],
             "nsn": [
                 16,
@@ -887,6 +1158,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     )
                 },
                 _("NSN:"),
+                "gchararray",
             ],
             "year_of_manufacture": [
                 29,
@@ -903,6 +1175,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Year Introduced:"),
+                "gchararray",
             ],
             "quantity": [
                 21,
@@ -918,6 +1191,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Quantity:"),
+                "gint",
             ],
             "cost": [
                 5,
@@ -928,6 +1202,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0.0,
                 {},
                 _("Unit Cost:"),
+                "gfloat",
             ],
             "cost_type_id": [
                 30,
@@ -938,6 +1213,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 _("Cost Method:"),
+                "gint",
             ],
         }
 
@@ -945,7 +1221,6 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar instance attributes.
 
-        # Make a fixed type panel.
         super().do_set_properties()
         super().do_make_panel()
         super().do_set_callbacks()
@@ -1040,11 +1315,6 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
         # Initialize private scalar instance attributes.
 
         # Initialize public dict instance attributes.
-        self.dic_attribute_index_map = {
-            23: ["remarks", "string"],
-            26: ["tagged_part", "boolean"],
-            31: ["attachments", "string"],
-        }
         self.dic_attribute_widget_map = {
             "attachments": [
                 31,
@@ -1062,6 +1332,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Attachments:"),
+                "gchararray",
             ],
             "remarks": [
                 23,
@@ -1078,6 +1349,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Remarks:"),
+                "gchararray",
             ],
             "tagged_part": [
                 26,
@@ -1088,6 +1360,7 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
                 0,
                 {},
                 "",
+                "gint",
             ],
         }
 
@@ -1095,7 +1368,6 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
 
         # Initialize public scalar instance attributes.
 
-        # Make a fixed type panel.
         super().do_set_properties()
         super().do_make_panel()
         super().do_set_callbacks()
