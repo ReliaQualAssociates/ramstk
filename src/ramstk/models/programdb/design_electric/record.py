@@ -37,7 +37,7 @@ def do_check_overstress(
     if overstress["harsh"][0]:
         _overstress = True
         _reason = _reason + (
-            f"Operating {stress_type} is less than limit in a " f"harsh environment.\n"
+            f"Operating {stress_type} is less than limit in a harsh environment.\n"
         )
     if overstress["harsh"][1]:
         _overstress = True
@@ -48,7 +48,7 @@ def do_check_overstress(
     if overstress["mild"][0]:
         _overstress = True
         _reason = _reason + (
-            f"Operating {stress_type} is less than limit in a " f"mild environment.\n"
+            f"Operating {stress_type} is less than limit in a mild environment.\n"
         )
     if overstress["mild"][1]:
         _overstress = True

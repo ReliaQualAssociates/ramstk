@@ -372,7 +372,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _attributes = super().on_row_change(selection)
-        _model, _row = selection.get_selected()
+        __, _row = selection.get_selected()  # pylint: disable=unused-variable
 
         if _row is not None:
             if (

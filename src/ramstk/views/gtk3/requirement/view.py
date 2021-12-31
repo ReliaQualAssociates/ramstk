@@ -158,12 +158,14 @@ class RequirementModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        for __, _key in enumerate(self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS):
+        for (__, _key) in enumerate(  # pylint: disable=unused-variable
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS
+        ):
             self._pnlPanel.lst_owner.append(
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_WORKGROUPS[_key][0]
             )
 
-        for __, _key in enumerate(
+        for (__, _key) in enumerate(  # pylint: disable=unused-variable
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_REQUIREMENT_TYPE
         ):
             self._pnlPanel.lst_type.append(

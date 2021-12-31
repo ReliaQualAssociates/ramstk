@@ -488,7 +488,7 @@ class RAMSTKBaseTable:
                 )
             else:
                 _error_msg = (
-                    f"{_method_name}: Attempting to update the root node " f"{node_id}."
+                    f"{_method_name}: Attempting to update the root node {node_id}."
                 )
             pub.sendMessage(
                 "do_log_debug",

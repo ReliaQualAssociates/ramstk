@@ -44,7 +44,7 @@ jobs:
       - name: Install RAMSTK dependencies and test with coverage
         run: |
           source $VIRTUAL_ENV/bin/activate
-          pip install -U pip setuptools>12.0 urllib3 poetry
+          pip install -U pip setuptools>12.0 urllib3 poetry coverage[toml]
           make depends
           make PREFIX=$VIRTUAL_ENV install
           xvfb-run --auto-servernum make coverage
