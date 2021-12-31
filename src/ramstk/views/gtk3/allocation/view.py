@@ -29,7 +29,7 @@ class AllocationWorkView(RAMSTKWorkView):
     the selected hardware item. The attributes of an Allocation General Data
     Work View are:
 
-    :cvar _module: the name of the module.
+    :cvar _tag: the name of the module.
 
     :ivar _lst_callbacks: the list of callback methods for the view's
         toolbar buttons and pop-up menu.  The methods are listed in the order
@@ -49,7 +49,7 @@ class AllocationWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _module: str = "allocation"
+    _tag: str = "allocation"
     _tablabel: str = _("Allocation")
     _tabtooltip: str = _(
         "Displays the Allocation analysis for the selected hardware item."
@@ -131,7 +131,6 @@ class AllocationWorkView(RAMSTKWorkView):
         self._pnlGoalMethods.do_load_comboboxes()
 
         super().do_embed_treeview_panel()
-        self._pnlPanel.do_set_callbacks()
 
         self.remove(self.get_children()[-1])
         _hpaned.pack1(self._pnlGoalMethods, True, True)

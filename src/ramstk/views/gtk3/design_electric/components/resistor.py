@@ -195,15 +195,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            6: ["construction_id", "integer"],
-            15: ["family_id", "integer"],
-            25: ["n_elements", "integer"],
-            32: ["quality_id", "integer"],
-            35: ["resistance", "float"],
-            36: ["specification_id", "integer"],
-            48: ["type_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -216,6 +207,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the resistor."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "resistance": [
                 35,
@@ -228,6 +220,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The resistance (in \u03A9) of the resistor."),
                 },
                 _("Resistance (\u03A9):"),
+                "gfloat",
             ],
             "specification_id": [
                 36,
@@ -240,6 +233,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The governing specification for the resistor."),
                 },
                 _("Specification:"),
+                "gint",
             ],
             "type_id": [
                 48,
@@ -252,6 +246,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The type of thermistor."),
                 },
                 _("Type:"),
+                "gint",
             ],
             "family_id": [
                 15,
@@ -264,6 +259,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The style of resistor."),
                 },
                 _("Style:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -276,6 +272,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The method of construction of the resistor."),
                 },
                 _("Construction:"),
+                "gint",
             ],
             "n_elements": [
                 2,
@@ -291,6 +288,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Number of Elements:"),
+                "gint",
             ],
         }
 

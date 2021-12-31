@@ -118,8 +118,6 @@ class RAMSTKBaseView(Gtk.HBox):
             _("Save All"),
         ]
         self._lst_tooltips: List[str] = []
-
-        self._lst_col_order: List[int] = []
         self._lst_handler_id: List[int] = []
         self._lst_layouts: List[str] = [
             "allocation",
@@ -169,22 +167,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, "request_set_cursor_active")
-        pub.subscribe(
-            self.do_set_cursor_active, "succeed_update_{0}".format(self._module)
-        )
-        pub.subscribe(
-            self.do_set_cursor_active, "succeed_calculate_{0}".format(self._module)
-        )
+        pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
+        pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, "succeed_update_all")
-        pub.subscribe(
-            self.do_set_cursor_active_on_fail, "fail_delete_{0}".format(self._module)
-        )
-        pub.subscribe(
-            self.do_set_cursor_active_on_fail, "fail_insert_{0}".format(self._module)
-        )
-        pub.subscribe(
-            self.do_set_cursor_active_on_fail, "fail_update_{0}".format(self._module)
-        )
+        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
+        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
+        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}")
 
         pub.subscribe(self.on_select_revision, "selected_revision")
 
@@ -196,16 +184,12 @@ class RAMSTKBaseView(Gtk.HBox):
         _fmt_file = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
             + "/layouts/"
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._module]
+            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._tag]
         )
 
         try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + "bg"
-            ]
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
-                self._module + "fg"
-            ]
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[self._tag + "bg"]
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[self._tag + "fg"]
         except KeyError:
             _bg_color = "#FFFFFF"
             _fg_color = "#000000"
@@ -239,8 +223,8 @@ class RAMSTKBaseView(Gtk.HBox):
         self.make_toolbuttons(
             icons=self._lst_icons,  # type: ignore
             tooltips=self._lst_tooltips,  # type: ignore
-            callbacks=self._lst_callbacks,
-        )  # type: ignore
+            callbacks=self._lst_callbacks,  # type: ignore
+        )
 
     def do_make_layout_lr(self) -> Gtk.HPaned:
         """Create a view with the following layout.
@@ -397,7 +381,7 @@ class RAMSTKBaseView(Gtk.HBox):
             "You are about to delete {1} {0} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
-        ).format(self._record_id, self._module.title())
+        ).format(self._record_id, self._tag.title())
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
@@ -405,7 +389,7 @@ class RAMSTKBaseView(Gtk.HBox):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             self.do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_{0}".format(self._module),
+                f"request_delete_{self._tag}",
                 node_id=self._record_id,
             )
 
@@ -422,12 +406,12 @@ class RAMSTKBaseView(Gtk.HBox):
 
         if _sibling:
             pub.sendMessage(
-                "request_insert_{0:s}".format(self._module.lower()),
+                f"request_insert_{self._tag.lower()}",
                 parent_id=self._parent_id,
             )
         else:
             pub.sendMessage(
-                "request_insert_{0:s}".format(self._module.lower()),
+                f"request_insert_{self._tag.lower()}",
                 parent_id=self._record_id,
             )  # noqa
 
@@ -454,9 +438,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(
-            "request_update_{0:s}".format(self._module), node_id=self._record_id
-        )
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._record_id)
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to save all the records to RAMSTK program database.
@@ -465,7 +447,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage("request_update_all_{0:s}s".format(self._module))
+        pub.sendMessage(f"request_update_all_{self._tag}s")
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """Set the cursor for the Module, List, and Work Book Gdk.Window().
@@ -632,7 +614,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         :rtype: None
         """
-        _data = tree.get_node(node_id).data[self._module].get_attributes()
+        _data = tree.get_node(node_id).data[self._tag].get_attributes()
         self._pnlPanel.on_insert(_data)
 
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
@@ -767,7 +749,7 @@ class RAMSTKListView(RAMSTKBaseView):
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to update the matrix."""
         super().do_set_cursor_busy()
-        pub.sendMessage("request_update_all_{0:s}s".format(self._module))
+        pub.sendMessage(f"request_update_all_{self._tag}s")
 
     def make_ui(self) -> None:
         """Build the list view user interface.
@@ -781,8 +763,8 @@ class RAMSTKListView(RAMSTKBaseView):
 class RAMSTKModuleView(RAMSTKBaseView):
     """Display data in the RAMSTK Module Book.
 
-    This is the meta class for all RAMSTK Module View classes.
-    Attributes of the RAMSTKModuleView are:
+    This is the meta class for all RAMSTK Module View classes. Attributes of the
+    RAMSTKModuleView are:
     """
 
     def __init__(

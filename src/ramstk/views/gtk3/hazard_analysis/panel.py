@@ -42,7 +42,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         # Initialize private dict instance attributes.
         self._dic_row_loader = {
-            "hazard": super()._do_load_treerow,
+            "hazard": super().do_load_treerow,
         }
 
         # Initialize private list instance attributes.
@@ -66,6 +66,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "function_id": [
                 1,
@@ -81,6 +82,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Function ID"),
+                "gint",
             ],
             "hazard_id": [
                 2,
@@ -96,6 +98,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Hazard ID"),
+                "gint",
             ],
             "potential_hazard": [
                 3,
@@ -111,6 +114,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Potential Hazard"),
+                "gchararray",
             ],
             "potential_cause": [
                 4,
@@ -126,6 +130,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Potential Cause"),
+                "gchararray",
             ],
             "assembly_effect": [
                 5,
@@ -141,6 +146,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly Effect"),
+                "gchararray",
             ],
             "assembly_severity": [
                 6,
@@ -156,6 +162,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly Severity"),
+                "gchararray",
             ],
             "assembly_probability": [
                 7,
@@ -171,6 +178,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly Probability"),
+                "gchararray",
             ],
             "assembly_hri": [
                 8,
@@ -186,6 +194,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly HRI"),
+                "gint",
             ],
             "assembly_mitigation": [
                 9,
@@ -201,6 +210,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Assembly Mitigation"),
+                "gchararray",
             ],
             "assembly_severity_f": [
                 10,
@@ -216,6 +226,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final Assembly Severity"),
+                "gchararray",
             ],
             "assembly_probability_f": [
                 11,
@@ -231,6 +242,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final Assembly Probability"),
+                "gchararray",
             ],
             "assembly_hri_f": [
                 12,
@@ -246,6 +258,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final Assembly HRI"),
+                "gint",
             ],
             "system_effect": [
                 13,
@@ -261,6 +274,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("System Effect"),
+                "gchararray",
             ],
             "system_severity": [
                 14,
@@ -276,6 +290,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("System Severity"),
+                "gchararray",
             ],
             "system_probability": [
                 15,
@@ -291,6 +306,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("System Probability"),
+                "gchararray",
             ],
             "system_hri": [
                 16,
@@ -306,6 +322,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("System HRI"),
+                "gint",
             ],
             "system_mitigation": [
                 17,
@@ -321,6 +338,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("System Mitigation"),
+                "gchararray",
             ],
             "system_severity_f": [
                 18,
@@ -336,6 +354,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final System Severity"),
+                "gchararray",
             ],
             "system_probability_f": [
                 19,
@@ -351,6 +370,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final System Probability"),
+                "gchararray",
             ],
             "system_hri_f": [
                 20,
@@ -366,6 +386,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Final System HRI"),
+                "gint",
             ],
             "remarks": [
                 21,
@@ -381,6 +402,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Remarks"),
+                "gchararray",
             ],
             "function_1": [
                 22,
@@ -396,6 +418,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 1"),
+                "gchararray",
             ],
             "function_2": [
                 23,
@@ -411,6 +434,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 2"),
+                "gchararray",
             ],
             "function_3": [
                 24,
@@ -426,6 +450,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 3"),
+                "gchararray",
             ],
             "function_4": [
                 25,
@@ -441,6 +466,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 4"),
+                "gchararray",
             ],
             "function_5": [
                 26,
@@ -456,6 +482,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Function 5"),
+                "gchararray",
             ],
             "result_1": [
                 27,
@@ -463,7 +490,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_message,
-                "",
+                0.0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": False,
@@ -471,6 +498,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 1"),
+                "gfloat",
             ],
             "result_2": [
                 28,
@@ -478,7 +506,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_message,
-                "",
+                0.0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": False,
@@ -486,6 +514,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 2"),
+                "gfloat",
             ],
             "result_3": [
                 29,
@@ -493,7 +522,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_message,
-                "",
+                0.0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": False,
@@ -501,6 +530,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 3"),
+                "gfloat",
             ],
             "result_4": [
                 30,
@@ -508,7 +538,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_message,
-                "",
+                0.0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": False,
@@ -516,6 +546,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 4"),
+                "gfloat",
             ],
             "result_5": [
                 31,
@@ -523,7 +554,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                 "edited",
                 None,
                 self._on_edit_message,
-                "",
+                0.0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": False,
@@ -531,6 +562,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Result 5"),
+                "gfloat",
             ],
             "user_blob_1": [
                 32,
@@ -546,6 +578,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 1"),
+                "gchararray",
             ],
             "user_blob_2": [
                 33,
@@ -561,6 +594,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 2"),
+                "gchararray",
             ],
             "user_blob_3": [
                 34,
@@ -576,6 +610,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Text 3"),
+                "gchararray",
             ],
             "user_float_1": [
                 35,
@@ -591,6 +626,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 1"),
+                "gfloat",
             ],
             "user_float_2": [
                 36,
@@ -606,6 +642,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 2"),
+                "gfloat",
             ],
             "user_float_3": [
                 37,
@@ -621,6 +658,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 3"),
+                "gfloat",
             ],
             "user_int_1": [
                 38,
@@ -636,6 +674,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 1"),
+                "gint",
             ],
             "user_int_2": [
                 39,
@@ -651,6 +690,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 2"),
+                "gint",
             ],
             "user_int_3": [
                 40,
@@ -666,6 +706,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Integer 3"),
+                "gint",
             ],
         }
 
@@ -673,8 +714,8 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar instance attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(

@@ -13,7 +13,7 @@ from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 from . import HazardsTreePanel as HazardsTreePanel
 
 class HazardsWorkView(RAMSTKWorkView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: List[str]

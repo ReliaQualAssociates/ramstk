@@ -14,7 +14,6 @@ class RevisionTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: Any
     _type: str
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
@@ -30,6 +29,5 @@ class RevisionGeneralDataPanel(RAMSTKFixedPanel):
     txtCode: Any
     txtName: Any
     txtRemarks: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...

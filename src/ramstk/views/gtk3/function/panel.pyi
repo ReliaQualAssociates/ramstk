@@ -16,7 +16,6 @@ class FunctionTreePanel(RAMSTKTreePanel):
     _title: Any
     _type: str
     _dic_row_loader: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
@@ -34,6 +33,5 @@ class FunctionGeneralDataPanel(RAMSTKFixedPanel):
     txtCode: Any
     txtName: Any
     txtRemarks: Any
-    dic_attribute_index_map: Any
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...

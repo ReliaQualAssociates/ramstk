@@ -33,7 +33,6 @@ class RAMSTKPanel(RAMSTKFrame):
     _parent_id: int
     _record_id: int
     _tree_loaded: bool
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     fmt: str
     tree: treelib.Tree
@@ -49,19 +48,21 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     def do_set_callbacks(self) -> None: ...
     def do_set_properties(self, **kwargs: Any) -> None: ...
     def on_changed_combo(
-        self, combo: RAMSTKComboBox, index: int, message: str
+        self, combo: RAMSTKComboBox, key: str, message: str
     ) -> Dict[Union[str, Any], Any]: ...
     def on_changed_entry(
-        self, entry: RAMSTKEntry, index: int, message: str
+        self, entry: RAMSTKEntry, key: str, message: str
     ) -> Dict[Union[str, Any], Any]: ...
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, index: int, message: str, textview: RAMSTKTextView
+        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
     ) -> Dict[Union[str, Any], Any]: ...
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None: ...
     def on_toggled(
-        self, checkbutton: RAMSTKCheckButton, index: int, message: str
+        self, checkbutton: RAMSTKCheckButton, key: str, message: str
     ) -> Dict[Union[str, Any], Any]: ...
-    def __do_read_text(self, entry: RAMSTKEntry, keys: List[str]) -> Dict[str, Any]: ...
+    def __do_read_text(
+        self, entry: RAMSTKEntry, keys: str, datatype: str
+    ) -> Dict[str, Any]: ...
 
 class RAMSTKPlotPanel(RAMSTKPanel):
     pltPlot: RAMSTKPlot
@@ -74,7 +75,6 @@ class RAMSTKPlotPanel(RAMSTKPanel):
 
 class RAMSTKTreePanel(RAMSTKPanel):
     _dic_row_loader: Dict[str, Callable]
-    _lst_col_order: List[int]
     tvwTreeView: RAMSTKTreeView
     def __init__(self) -> None: ...
     def do_clear_panel(self) -> None: ...

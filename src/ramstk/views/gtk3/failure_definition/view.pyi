@@ -13,7 +13,7 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from . import FailureDefinitionTreePanel as FailureDefinitionTreePanel
 
 class FailureDefinitionListView(RAMSTKListView):
-    _module: str
+    _tag: str
     _tablabel: str
     _tabtooltip: str
     _lst_mnu_labels: List[str]

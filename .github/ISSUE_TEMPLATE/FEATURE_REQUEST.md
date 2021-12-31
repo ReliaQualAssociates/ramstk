@@ -2,8 +2,8 @@
 name: Feature Request
 about: If you'd like to make a suggestion please fill out the form below.
 labels:
-  - globalbacklog
-  - feature
+  - status: backlog
+  - type: feature
 
 ---
 
@@ -23,4 +23,4 @@ labels:
 
 > Add any other context about the feature request here.
 
-- [ ] This issue is an epic issue which subsumes the following:
+- [ ] This issue subsumes the following issues:

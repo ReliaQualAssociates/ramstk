@@ -42,7 +42,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self._dic_row_loader = {
-            "stakeholder": super()._do_load_treerow,
+            "stakeholder": super().do_load_treerow,
         }
 
         # Initialize private list class attributes.
@@ -66,6 +66,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Revision ID"),
+                "gint",
             ],
             "stakeholder_id": [
                 1,
@@ -81,6 +82,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": False,
                 },
                 _("Stakeholder ID"),
+                "gint",
             ],
             "customer_rank": [
                 2,
@@ -99,6 +101,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Customer Ranking"),
+                "gint",
             ],
             "description": [
                 3,
@@ -114,6 +117,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Description"),
+                "gchararray",
             ],
             "group": [
                 4,
@@ -129,6 +133,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Affinity Group"),
+                "gchararray",
             ],
             "improvement": [
                 5,
@@ -144,6 +149,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Improvement Factor"),
+                "gfloat",
             ],
             "overall_weight": [
                 6,
@@ -159,6 +165,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Overall Weighting"),
+                "gfloat",
             ],
             "planned_rank": [
                 7,
@@ -166,7 +173,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
-                "",
+                1,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
@@ -177,6 +184,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Planned Satisfaction Rating"),
+                "gint",
             ],
             "priority": [
                 8,
@@ -195,6 +203,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Priority"),
+                "gint",
             ],
             "requirement_id": [
                 9,
@@ -210,6 +219,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Associated Requirement"),
+                "gint",
             ],
             "stakeholder": [
                 10,
@@ -225,6 +235,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Stakeholder"),
+                "gchararray",
             ],
             "user_float_1": [
                 11,
@@ -240,6 +251,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 1"),
+                "gfloat",
             ],
             "user_float_2": [
                 12,
@@ -255,6 +267,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 2"),
+                "gfloat",
             ],
             "user_float_3": [
                 13,
@@ -270,6 +283,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 3"),
+                "gfloat",
             ],
             "user_float_4": [
                 14,
@@ -285,6 +299,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 4"),
+                "gfloat",
             ],
             "user_float_5": [
                 15,
@@ -300,6 +315,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("User Float 5"),
+                "gfloat",
             ],
         }
 
@@ -307,8 +323,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Initialize public scalar class attributes.
 
-        super().do_make_panel()
         super().do_set_properties()
+        super().do_make_panel()
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
@@ -324,7 +340,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col4"]
+            self.tvwTreeView.position["group"]
         ).get_cells()[0]
         _cell.set_property("has-entry", True)
         _cellmodel = _cell.get_property("model")
@@ -343,7 +359,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
-            self.tvwTreeView.position["col10"]
+            self.tvwTreeView.position["stakeholder"]
         ).get_cells()[0]
         _cell.set_property("has-entry", True)
         _cellmodel = _cell.get_property("model")
@@ -362,7 +378,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
             records.
         :return: None
         """
-        _cell = self.tvwTreeView.get_column(self._lst_col_order[9]).get_cells()[0]
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["requirement_id"]
+        ).get_cells()[0]
         _model = _cell.get_property("model")
         _model.clear()
 
@@ -392,12 +410,10 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
 
-        if module == "stakeholder" and _row is not None:
-            _code = _model.get_value(_row, self._lst_col_order[1])
-            _name = _model.get_value(_row, self._lst_col_order[3])
-            _title = _("Analyzing Stakeholder {0:s}: {1:s}").format(
-                str(_code), str(_name)
-            )
+        if module == self._tag and _row is not None:
+            _code = _model.get_value(_row, self.tvwTreeView.position["stakeholder_id"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
+            _title = _(f"Analyzing Stakeholder {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 

@@ -113,14 +113,6 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            2: ["application_id", "integer"],
-            6: ["construction_id", "integer"],
-            7: ["contact_form_id", "integer"],
-            24: ["n_cycles", "float"],
-            25: ["n_elements", "integer"],
-            32: ["quality_id", "integer"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -133,6 +125,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the switch."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "application_id": [
                 2,
@@ -145,6 +138,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application of the switch."),
                 },
                 _("Application:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -157,6 +151,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The construction method for the switch."),
                 },
                 _("Construction:"),
+                "gint",
             ],
             "contact_form_id": [
                 7,
@@ -169,6 +164,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The contact form and quantity of the switch."),
                 },
                 _("Contact Form:"),
+                "gint",
             ],
             "n_cycles": [
                 24,
@@ -181,6 +177,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of cycles per hour of the switch."),
                 },
                 _("Number of Cycles/Hour:"),
+                "gfloat",
             ],
             "n_elements": [
                 25,
@@ -193,6 +190,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The number of active contacts in the switch."),
                 },
                 _("Number of Active Contacts:"),
+                "gint",
             ],
         }
 

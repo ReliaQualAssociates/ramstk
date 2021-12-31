@@ -114,15 +114,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_index_map: Dict[int, List[str]] = {
-            3: ["area", "float"],
-            6: ["construction_id", "integer"],
-            15: ["family_id", "integer"],
-            19: ["insulation_id", "integer"],
-            32: ["quality_id", "integer"],
-            36: ["specification_id", "integer"],
-            54: ["weight", "float"],
-        }
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
             "quality_id": [
                 32,
@@ -135,6 +126,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The quality level of the inductive device."),
                 },
                 _("Quality Level:"),
+                "gint",
             ],
             "specification_id": [
                 36,
@@ -149,6 +141,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Specification:"),
+                "gint",
             ],
             "insulation_id": [
                 19,
@@ -161,6 +154,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The insulation class of the inductive device."),
                 },
                 _("Insulation Class:"),
+                "gint",
             ],
             "area": [
                 3,
@@ -176,6 +170,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     ),
                 },
                 _("Area:"),
+                "gfloat",
             ],
             "weight": [
                 54,
@@ -188,6 +183,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The transformer weight (in lbf)."),
                 },
                 _("Weight:"),
+                "gfloat",
             ],
             "family_id": [
                 15,
@@ -200,6 +196,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The application family of the transformer."),
                 },
                 _("Family:"),
+                "gint",
             ],
             "construction_id": [
                 6,
@@ -212,6 +209,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     "tooltip": _("The method of construction of the coil."),
                 },
                 _("Construction:"),
+                "gint",
             ],
         }
 

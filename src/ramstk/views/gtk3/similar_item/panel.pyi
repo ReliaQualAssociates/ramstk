@@ -19,7 +19,6 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
     cmbSimilarItemMethod: RAMSTKComboBox
     _method_id: int
     _on_edit_message: str
-    dic_attribute_index_map: Dict[int, List[str]]
     dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def do_load_comboboxes(self) -> None: ...
