@@ -117,8 +117,8 @@ def test_get_part_count_quality_factor(category_id, subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
 def test_do_calculate_part_count_integrated_circuit(subcategory_id):
-    """_do_calculate_part_count() should return the integratedcircuit attribute
-    dict with updated values on success."""
+    """_do_calculate_part_count() should return the integratedcircuit attribute dict
+    with updated values on success."""
     ATTRIBUTES["category_id"] = 1
     ATTRIBUTES["technology_id"] = 2
     if subcategory_id in [1, 2, 9]:
@@ -150,8 +150,8 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
 def test_do_calculate_part_count_semiconductor(subcategory_id):
-    """_do_calculate_part_count() should return the Semiconductor attribute
-    dict with updated values on success."""
+    """_do_calculate_part_count() should return the Semiconductor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 2
     ATTRIBUTES["type_id"] = 1
     ATTRIBUTES["quality_id"] = 2
@@ -197,8 +197,8 @@ def test_do_calculate_part_count_semiconductor(subcategory_id):
     "subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
 def test_do_calculate_part_count_resistor(subcategory_id):
-    """_do_calculate_part_count() should return the Resistor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_count() should return the Resistor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 3
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -230,8 +230,8 @@ def test_do_calculate_part_count_resistor(subcategory_id):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
 def test_do_calculate_part_count_capacitor(subcategory_id):
-    """_do_calculate_part_count() should return the Capacitor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_count() should return the Capacitor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 4
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -264,8 +264,8 @@ def test_do_calculate_part_count_capacitor(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_count_inductor(subcategory_id):
-    """_do_calculate_part_count() should return the Inductor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_count() should return the Inductor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 5
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -281,8 +281,8 @@ def test_do_calculate_part_count_inductor(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_count_relay(subcategory_id):
-    """_do_calculate_part_count() should return the Relay attribute dict with
-    updated values on success."""
+    """_do_calculate_part_count() should return the Relay attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 6
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -298,8 +298,8 @@ def test_do_calculate_part_count_relay(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
 def test_do_calculate_part_count_switch(subcategory_id):
-    """_do_calculate_part_count() should return the Switch attribute dict with
-    updated values on success."""
+    """_do_calculate_part_count() should return the Switch attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 7
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -318,8 +318,8 @@ def test_do_calculate_part_count_switch(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
 def test_do_calculate_part_count_connection(subcategory_id):
-    """_do_calculate_part_count() should return the Connection attribute dict
-    with updated values on success."""
+    """_do_calculate_part_count() should return the Connection attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 8
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -338,8 +338,8 @@ def test_do_calculate_part_count_connection(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_count_meter(subcategory_id):
-    """_do_calculate_part_count() should return the Meter attribute dict with
-    updated values on success."""
+    """_do_calculate_part_count() should return the Meter attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 9
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -355,8 +355,8 @@ def test_do_calculate_part_count_meter(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
 def test_do_calculate_part_count_miscellaneous(subcategory_id):
-    """_do_calculate_part_count() should return the misscellaneous component
-    attribute dict with updated values on success."""
+    """_do_calculate_part_count() should return the misscellaneous component attribute
+    dict with updated values on success."""
     ATTRIBUTES["category_id"] = 10
     ATTRIBUTES["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**ATTRIBUTES)
@@ -489,8 +489,8 @@ def test_get_part_stress_quality_factor(category_id, subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
 def test_do_calculate_part_stress_integrated_circuit(subcategory_id):
-    """_do_calculate_part_stress() should return the integratedcircuit
-    attribute dict with updated values on success."""
+    """_do_calculate_part_stress() should return the integratedcircuit attribute dict
+    with updated values on success."""
     ATTRIBUTES["category_id"] = 1
     ATTRIBUTES["technology_id"] = 2
     if subcategory_id in [1, 2, 9]:
@@ -524,8 +524,8 @@ def test_do_calculate_part_stress_integrated_circuit(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
 def test_do_calculate_part_stress_semiconductor(subcategory_id):
-    """_do_calculate_stress_count() should return the Semiconductor attribute
-    dict with updated values on success."""
+    """_do_calculate_stress_count() should return the Semiconductor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 2
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -554,8 +554,8 @@ def test_do_calculate_part_stress_semiconductor(subcategory_id):
     "subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
 def test_do_calculate_part_stress_resistor(subcategory_id):
-    """_do_calculate_part_stress() should return the Resistor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_stress() should return the Resistor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 3
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -589,8 +589,8 @@ def test_do_calculate_part_stress_resistor(subcategory_id):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
 def test_do_calculate_part_stress_capacitor(subcategory_id):
-    """_do_calculate_part_stress() should return the Capacitor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_stress() should return the Capacitor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 4
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -625,8 +625,8 @@ def test_do_calculate_part_stress_capacitor(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_stress_inductor(subcategory_id):
-    """_do_calculate_part_stress() should return the Inductor attribute dict
-    with updated values on success."""
+    """_do_calculate_part_stress() should return the Inductor attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 5
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -641,8 +641,8 @@ def test_do_calculate_part_stress_inductor(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_stress_relay(subcategory_id):
-    """_do_calculate_part_stress() should return the Relay attribute dict with
-    updated values on success."""
+    """_do_calculate_part_stress() should return the Relay attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 6
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -657,8 +657,8 @@ def test_do_calculate_part_stress_relay(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 5])
 def test_do_calculate_part_stress_switch(subcategory_id):
-    """_do_calculate_part_stress() should return the Switch attribute dict with
-    updated values on success."""
+    """_do_calculate_part_stress() should return the Switch attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 7
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -671,8 +671,8 @@ def test_do_calculate_part_stress_switch(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
 def test_do_calculate_part_stress_connection(subcategory_id):
-    """_do_calculate_part_stress() should return the Connection attribute dict
-    with updated values on success."""
+    """_do_calculate_part_stress() should return the Connection attribute dict with
+    updated values on success."""
     ATTRIBUTES["category_id"] = 8
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -689,8 +689,8 @@ def test_do_calculate_part_stress_connection(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_stress_meter(subcategory_id):
-    """_do_calculate_part_stress() should return the Meter attribute dict with
-    updated values on success."""
+    """_do_calculate_part_stress() should return the Meter attribute dict with updated
+    values on success."""
     ATTRIBUTES["category_id"] = 9
     ATTRIBUTES["subcategory_id"] = subcategory_id
     _attributes = milhdbk217f._do_calculate_part_stress(**ATTRIBUTES)
@@ -703,8 +703,8 @@ def test_do_calculate_part_stress_meter(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
 def test_do_calculate_part_stress_miscellaneous(subcategory_id):
-    """_do_calculate_part_stress() should return the misscellaneous component
-    attribute dict with updated values on success."""
+    """_do_calculate_part_stress() should return the misscellaneous component attribute
+    dict with updated values on success."""
     ATTRIBUTES["category_id"] = 10
     ATTRIBUTES["piE"] = 10.0
     ATTRIBUTES["subcategory_id"] = subcategory_id
@@ -720,8 +720,8 @@ def test_do_calculate_part_stress_miscellaneous(subcategory_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("hazard_rate_method_id", [1, 2])
 def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
-    """do_calculate_active_hazard_rate() should return the component attribute
-    dict with updated values on success."""
+    """do_calculate_active_hazard_rate() should return the component attribute dict
+    with updated values on success."""
     ATTRIBUTES["hazard_rate_method_id"] = hazard_rate_method_id
 
     def on_message(attributes):
@@ -739,8 +739,8 @@ def test_do_calculate_active_hazard_rate(hazard_rate_method_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_do_calculate_active_hazard_rate_negative_input():
-    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when
-    passed a negative input for various components."""
+    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed a
+    negative input for various components."""
     ATTRIBUTES["category_id"] = 2
     ATTRIBUTES["subcategory_id"] = 2
     ATTRIBUTES["type_id"] = 4
@@ -753,7 +753,7 @@ def test_do_calculate_active_hazard_rate_negative_input():
             "hardware ID 12; one or more inputs has a "
             "negative or missing value. Hardware item "
             "category ID=2, subcategory ID=2, rated "
-            "power=-0.050000, number of elements=1000."
+            "power=-0.05, number of elements=1000."
         )
 
     pub.subscribe(on_message, "fail_predict_reliability")
@@ -764,8 +764,8 @@ def test_do_calculate_active_hazard_rate_negative_input():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_do_calculate_active_hazard_rate_zero_input():
-    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when
-    passed an input equal to 0.0 for various components."""
+    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed
+    an input equal to 0.0 for various components."""
     ATTRIBUTES["category_id"] = 4
     ATTRIBUTES["subcategory_id"] = 4
     ATTRIBUTES["voltage_ac_operating"] = 0.0
