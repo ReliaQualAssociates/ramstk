@@ -8,9 +8,10 @@
 """The RAMSTK database models package."""
 
 from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isort:skip
+from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip
 
 # RAMSTK Local Imports
-from .commondb.site_info.record import RAMSTKSiteInfoRecord
+from .commondb.database import RAMSTKCommonDB
 from .commondb.site_info.table import RAMSTKSiteInfoTable
 from .programdb.action.record import RAMSTKActionRecord
 from .programdb.action.table import RAMSTKActionTable

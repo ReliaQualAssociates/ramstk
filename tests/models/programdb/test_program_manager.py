@@ -321,8 +321,7 @@ class TestProgramManager:
     def test_do_create_postgres_program(
         self, test_datamanager, test_bald_dao, test_toml_user_configuration
     ):
-        """do_create_program() should broadcast the success message when a postgres
-        database is created."""
+        """do_create_program() should broadcast the success message."""
         pub.subscribe(
             self.on_succeed_create_postgres_program, "succeed_create_program_database"
         )
@@ -341,5 +340,3 @@ class TestProgramManager:
         pub.unsubscribe(
             self.on_succeed_create_postgres_program, "succeed_create_program_database"
         )
-
-        test_datamanager.do_close_program()
