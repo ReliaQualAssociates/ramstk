@@ -324,6 +324,7 @@ packchk:
 build: clean
 	$(info Creating source distribution and wheel ...)
 	$(POETRY) build
+	$(TWINE) check dist/*
 
 release: packchk build
 	$(info Build and upload artifacts to PyPi ...)
