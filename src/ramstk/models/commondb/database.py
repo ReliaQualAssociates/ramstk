@@ -15,10 +15,26 @@ from typing import Dict, Union
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKSiteConfiguration
+from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.models import RAMSTKSiteInfoRecord
-from ramstk.models.commondb import RAMSTKUser
+from ramstk.models.commondb import (
+    RAMSTKRPN,
+    RAMSTKCategory,
+    RAMSTKFailureMode,
+    RAMSTKGroup,
+    RAMSTKHazards,
+    RAMSTKLoadHistory,
+    RAMSTKManufacturer,
+    RAMSTKMeasurement,
+    RAMSTKMethod,
+    RAMSTKModel,
+    RAMSTKStakeholders,
+    RAMSTKStatus,
+    RAMSTKSubCategory,
+    RAMSTKType,
+    RAMSTKUser,
+)
 
 _ = gettext.gettext
 
@@ -50,6 +66,9 @@ class RAMSTKCommonDB:
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
+        self.dic_tables: Dict[str, object] = {
+            "options": object,
+        }
 
         # Initialize public list attributes.
 
@@ -83,6 +102,7 @@ class RAMSTKCommonDB:
             self.site_configuration.RAMSTK_SITE_DIR
             + f'/{database["dialect"]}_common_db.sql',
             "r",
+            encoding="utf-8",
         ) as _sql_file:
             self.common_dao = common_db
             do_create_program_db(database, _sql_file)
@@ -158,7 +178,11 @@ class RAMSTKCommonDB:
         _site_id: int = -1
 
         try:
-            with open(license_file, "r") as _license_file:
+            with open(
+                license_file,
+                "r",
+                encoding="UTF-8",
+            ) as _license_file:
                 _contents = _license_file.readlines()
                 _site_id = int(_contents[0].strip("\n"))
                 _dic_site_info["product_key"] = _contents[1].strip("\n")
@@ -195,3 +219,419 @@ class RAMSTKCommonDB:
 
         self.common_dao.session.add(_site_info)
         self.common_dao.session.commit()
+
+    def do_load_site_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTKUserConfiguration global variables from the site db.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        pub.sendMessage(
+            "do_log_info_msg",
+            logger_name="INFO",
+            message="Loading global RAMSTK configuration variables.",
+        )
+
+        user_configuration = self._do_load_action_variables(user_configuration)
+        user_configuration = self._do_load_hardware_variables(user_configuration)
+        user_configuration = self._do_load_incident_variables(user_configuration)
+        user_configuration = self._do_load_miscellaneous_variables(user_configuration)
+        user_configuration = self._do_load_pof_variables(user_configuration)
+        user_configuration = self._do_load_requirement_variables(user_configuration)
+        user_configuration = self._do_load_rpn_variables(user_configuration)
+        user_configuration = self._do_load_severity(user_configuration)
+        user_configuration = self._do_load_user_workgroups(user_configuration)
+
+        pub.sendMessage(
+            "do_log_info_msg",
+            logger_name="INFO",
+            message="Loaded global RAMSTK configuration variables.",
+        )
+
+        return user_configuration
+
+    def _do_load_action_variables(
+        self,
+        user_configuration: RAMSTKUserConfiguration,
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTK_ACTION_CATEGORY variable.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKCategory)
+            .filter(RAMSTKCategory.category_type == "action")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_ACTION_CATEGORY[_record.category_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["category_type"],
+                _attributes["value"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKStatus)
+            .filter(RAMSTKStatus.status_type == "action")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_ACTION_STATUS[_record.status_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["status_type"],
+            )
+
+        return user_configuration
+
+    def _do_load_hardware_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load variables associated with hardware categories and failure modes.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :param site_db: the RAMSTK Site Database to read the values of the
+            global variables.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKCategory)
+            .filter(RAMSTKCategory.category_type == "hardware")
+            .all()
+        ):
+
+            _subcats = {}
+            user_configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
+            user_configuration.RAMSTK_STRESS_LIMITS[_record.category_id] = (
+                _record.harsh_ir_limit,
+                _record.mild_ir_limit,
+                _record.harsh_pr_limit,
+                _record.mild_pr_limit,
+                _record.harsh_vr_limit,
+                _record.mild_vr_limit,
+                _record.harsh_deltat_limit,
+                _record.mild_deltat_limit,
+                _record.harsh_maxt_limit,
+                _record.mild_maxt_limit,
+            )
+            for _subcat in (
+                self.common_dao.session.query(RAMSTKSubCategory)
+                .filter(RAMSTKSubCategory.category_id == _record.category_id)
+                .all()
+            ):
+                _subcats[_subcat.subcategory_id] = _subcat.description
+
+                _modes = {}
+                user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
+                    _subcat.subcategory_id
+                ] = {}
+                for _mode in (
+                    self.common_dao.session.query(RAMSTKFailureMode)
+                    .filter(RAMSTKFailureMode.category_id == _record.category_id)
+                    .filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id)
+                    .all()
+                ):
+                    _modes[_mode.mode_id] = [
+                        _mode.description,
+                        _mode.mode_ratio,
+                        _mode.source,
+                    ]
+
+                user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
+                    _subcat.subcategory_id
+                ] = _modes
+
+            user_configuration.RAMSTK_CATEGORIES[
+                _record.category_id
+            ] = _record.description
+            user_configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
+
+        return user_configuration
+
+    def _do_load_incident_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTK_INCIDENT_CATEGORY variable.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKCategory)
+            .filter(RAMSTKCategory.category_type == "incident")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["category_type"],
+                _attributes["value"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKStatus)
+            .filter(RAMSTKStatus.status_type == "incident")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_INCIDENT_STATUS[_record.status_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["status_type"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKType)
+            .filter(RAMSTKType.type_type == "incident")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_INCIDENT_TYPE[_record.type_id] = (
+                _attributes["code"],
+                _attributes["description"],
+                _attributes["type_type"],
+            )
+
+        return user_configuration
+
+    def _do_load_miscellaneous_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load miscellaneous variables that don't fit in another grouping.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKMethod)
+            .filter(RAMSTKMethod.method_type == "detection")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_DETECTION_METHODS[_record.method_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["method_type"],
+            )
+        for _record in self.common_dao.session.query(RAMSTKHazards).all():
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
+                _attributes["hazard_category"],
+                _attributes["hazard_subcategory"],
+            )
+        for _record in self.common_dao.session.query(RAMSTKManufacturer).all():
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
+                _attributes["description"],
+                _attributes["location"],
+                _attributes["cage_code"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKMeasurement)
+            .filter(RAMSTKMeasurement.measurement_type == "unit")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
+                _attributes["code"],
+                _attributes["description"],
+                _attributes["measurement_type"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKType)
+            .filter(RAMSTKType.type_type == "validation")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_VALIDATION_TYPE[_record.type_id] = (
+                _attributes["code"],
+                _attributes["description"],
+                _attributes["type_type"],
+            )
+
+        return user_configuration
+
+    def _do_load_pof_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTK_DAMAGE_MODELS variable.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKModel)
+            .filter(RAMSTKModel.model_type == "damage")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = _attributes[
+                "description"
+            ]
+        for _record in self.common_dao.session.query(RAMSTKLoadHistory).all():
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = _attributes[
+                "description"
+            ]
+        for _record in (
+            self.common_dao.session.query(RAMSTKMeasurement)
+            .filter(RAMSTKMeasurement.measurement_type == "damage")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_MEASURABLE_PARAMETERS[_record.measurement_id] = (
+                _attributes["code"],
+                _attributes["description"],
+                _attributes["measurement_type"],
+            )
+
+        return user_configuration
+
+    def _do_load_requirement_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load variables related to requiremetents and stakeholders.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKGroup)
+            .filter(RAMSTKGroup.group_type == "affinity")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_AFFINITY_GROUPS[_record.group_id] = (
+                _attributes["description"],
+                _attributes["group_type"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKType)
+            .filter(RAMSTKType.type_type == "requirement")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_REQUIREMENT_TYPE[_record.type_id] = (
+                _attributes["code"],
+                _attributes["description"],
+                _attributes["type_type"],
+            )
+        for _record in self.common_dao.session.query(RAMSTKStakeholders).all():
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_STAKEHOLDERS[
+                _record.stakeholders_id
+            ] = _attributes["stakeholder"]
+
+        return user_configuration
+
+    def _do_load_rpn_variables(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RPN detection, occurremce, and severity variables.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKRPN)
+            .filter(RAMSTKRPN.rpn_type == "detection")
+            .all()
+        ):
+            user_configuration.RAMSTK_RPN_DETECTION[
+                _record.value
+            ] = _record.get_attributes()
+
+        for _record in (
+            self.common_dao.session.query(RAMSTKRPN)
+            .filter(RAMSTKRPN.rpn_type == "occurrence")
+            .all()
+        ):
+            user_configuration.RAMSTK_RPN_OCCURRENCE[
+                _record.value
+            ] = _record.get_attributes()
+
+        for _record in (
+            self.common_dao.session.query(RAMSTKRPN)
+            .filter(RAMSTKRPN.rpn_type == "severity")
+            .all()
+        ):
+            user_configuration.RAMSTK_RPN_SEVERITY[
+                _record.value
+            ] = _record.get_attributes()
+
+        return user_configuration
+
+    def _do_load_severity(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTK_SEVERITY variable.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in (
+            self.common_dao.session.query(RAMSTKCategory)
+            .filter(RAMSTKCategory.category_type == "risk")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_SEVERITY[_record.category_id] = (
+                _attributes["name"],
+                _attributes["description"],
+                _attributes["category_type"],
+                _attributes["value"],
+            )
+
+        return user_configuration
+
+    def _do_load_user_workgroups(
+        self, user_configuration: RAMSTKUserConfiguration
+    ) -> RAMSTKUserConfiguration:
+        """Load the RAMSTK_USERS and RAMSTK_WORKGROUPS variables.
+
+        :param user_configuration: the RAMSTKUserConfiguration instance whose
+            variable is to be loaded.
+        :return: user_configuration
+        :rtype: RAMSTKUserConfiguration
+        """
+        for _record in self.common_dao.session.query(RAMSTKUser).all():
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_USERS[_record.user_id] = (
+                _attributes["user_lname"],
+                _attributes["user_fname"],
+                _attributes["user_email"],
+                _attributes["user_phone"],
+                _attributes["user_group_id"],
+            )
+        for _record in (
+            self.common_dao.session.query(RAMSTKGroup)
+            .filter(RAMSTKGroup.group_type == "workgroup")
+            .all()
+        ):
+            _attributes = _record.get_attributes()
+            user_configuration.RAMSTK_WORKGROUPS[_record.group_id] = (
+                _attributes["description"],
+                _attributes["group_type"],
+            )
+
+        return user_configuration

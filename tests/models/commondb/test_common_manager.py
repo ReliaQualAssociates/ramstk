@@ -44,6 +44,7 @@ def test_datamanager(test_common_dao):
     "test_datamanager",
     "test_license_file",
     "test_toml_site_configuration",
+    "test_toml_user_configuration",
     "test_common_dao",
 )
 class TestCommonManager:
@@ -197,3 +198,141 @@ class TestCommonManager:
         assert _record.expire_on == date.today() + timedelta(days=30)
 
         pub.unsubscribe(self.on_fail_read_license, "fail_read_license")
+
+    @pytest.mark.integration
+    def test_do_load_site_variables(
+        self,
+        test_datamanager,
+        test_toml_user_configuration,
+    ):
+        """do_load_site_variables() should return a populated user configuration."""
+        _user_configuration = test_datamanager.do_load_site_variables(
+            test_toml_user_configuration
+        )
+
+        assert _user_configuration.RAMSTK_ACTION_CATEGORY[38] == (
+            "" "ENGD",
+            "Engineering, Design",
+            "action",
+            1,
+        )
+        assert _user_configuration.RAMSTK_ACTION_STATUS[11] == (
+            "Initiated",
+            "Action has been initiated.",
+            "action",
+        )
+        assert _user_configuration.RAMSTK_CATEGORIES[1] == "Integrated Circuit"
+        assert _user_configuration.RAMSTK_SUBCATEGORIES[1][1] == "Linear"
+        assert _user_configuration.RAMSTK_FAILURE_MODES[1][1] == {}
+        assert _user_configuration.RAMSTK_STRESS_LIMITS[1] == (
+            0.8,
+            0.9,
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            0.0,
+            0.0,
+            125.0,
+            125.0,
+        )
+        assert _user_configuration.RAMSTK_INCIDENT_CATEGORY[35] == (
+            "HW",
+            "Hardware",
+            "incident",
+            1,
+        )
+        assert _user_configuration.RAMSTK_INCIDENT_STATUS[1] == (
+            "Initiated",
+            "Incident has been initiated.",
+            "incident",
+        )
+        assert _user_configuration.RAMSTK_INCIDENT_TYPE[1] == (
+            "PLN",
+            "Planning",
+            "incident",
+        )
+        assert _user_configuration.RAMSTK_DETECTION_METHODS[1] == (
+            "Code Reviews",
+            "",
+            "detection",
+        )
+        assert _user_configuration.RAMSTK_HAZARDS[1] == (
+            "Acceleration/Gravity",
+            "Falls",
+        )
+        assert _user_configuration.RAMSTK_MANUFACTURERS[1] == (
+            "Sprague",
+            "New Hampshire",
+            "13606",
+        )
+        assert _user_configuration.RAMSTK_MEASUREMENT_UNITS[1] == (
+            "lbf",
+            "Pounds Force",
+            "unit",
+        )
+        assert _user_configuration.RAMSTK_VALIDATION_TYPE[17] == (
+            "DOE",
+            "Manufacturing Test, DOE",
+            "validation",
+        )
+        assert (
+            _user_configuration.RAMSTK_DAMAGE_MODELS[1]
+            == "Adhesion Wear Model for Bearings"
+        )
+        assert _user_configuration.RAMSTK_LOAD_HISTORY[1] == "Cycle Counts"
+        assert _user_configuration.RAMSTK_MEASURABLE_PARAMETERS[11] == (
+            "CN",
+            "Contamination, Concentration",
+            "damage",
+        )
+        assert _user_configuration.RAMSTK_AFFINITY_GROUPS[7] == (
+            "Reliability",
+            "affinity",
+        )
+        assert _user_configuration.RAMSTK_REQUIREMENT_TYPE[10] == (
+            "FUN",
+            "Functional",
+            "requirement",
+        )
+        assert _user_configuration.RAMSTK_STAKEHOLDERS[1] == "Customer"
+        assert _user_configuration.RAMSTK_RPN_DETECTION[1] == {
+            ""
+            "description": "Design control will almost certainly detect a potential "
+            "mechanism/cause and subsequent failure mode.",
+            "name": "Almost Certain",
+            "rpn_id": 21,
+            "rpn_type": "detection",
+            "value": 1,
+        }
+        assert _user_configuration.RAMSTK_RPN_OCCURRENCE[1] == {
+            "" "description": "Failure rate is 1 in 1,500,000.",
+            "name": "Remote",
+            "rpn_id": 11,
+            "rpn_type": "occurrence",
+            "value": 1,
+        }
+        assert _user_configuration.RAMSTK_RPN_SEVERITY[1] == {
+            "" "description": "No effect.",
+            "name": "None",
+            "rpn_id": 1,
+            "rpn_type": "severity",
+            "value": 1,
+        }
+        assert _user_configuration.RAMSTK_SEVERITY[11] == (
+            "INS",
+            "Insignificant",
+            "risk",
+            1,
+        )
+        assert _user_configuration.RAMSTK_USERS[1] == (
+            "Tester",
+            "Johnny",
+            "tester.johnny@reliaqual.com",
+            "+1.269.867.5309",
+            "1",
+        )
+        assert _user_configuration.RAMSTK_WORKGROUPS[1] == (
+            "Engineering, Design",
+            "workgroup",
+        )
