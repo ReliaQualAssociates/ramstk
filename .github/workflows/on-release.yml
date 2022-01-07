@@ -45,6 +45,73 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  build-deploy:
+    needs: tagged-release
+    name: Build and Deploy RAMSTK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Build release
+        id: build
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        run: |
+          pip install -U pip poetry
+          make build
+
+      - name: Publish to Test PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Test install from TestPyPI
+        run: |
+          pip install \
+          --index-url https://test.pypi.org/simple/ \
+          --extra-index-url https://pypi.org/simple \
+          ramstk
+
+      - name: Publish to PyPi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  build_documentation:
+    name: Build RAMSTK Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation Changes
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
+
+      - name: Push RAMSTK Documentation Changes
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   create_new_milestone:
     name: Create New Milestone
     runs-on: ubuntu-latest
@@ -75,30 +142,3 @@ jobs:
           title: "${{ steps.nextversion.outputs.v_minor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build_documentation:
-    name: Build RAMSTK Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
-
-      - name: Commit RAMSTK Documentation Changes
-        run: |
-          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
-          cp -fr docs/_build/html/* gh-pages/
-          cd gh-pages
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
-
-      - name: Push RAMSTK Documentation Changes
-        if: env.do_push == 1
-        uses: ad-m/github-push-action@master
-        with:
-          branch: gh-pages
-          directory: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}

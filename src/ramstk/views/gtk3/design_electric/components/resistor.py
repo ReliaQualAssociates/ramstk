@@ -214,7 +214,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtResistance,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The resistance (in \u03A9) of the resistor."),
@@ -227,7 +227,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The governing specification for the resistor."),
@@ -240,7 +240,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The type of thermistor."),
@@ -253,7 +253,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbStyle,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The style of resistor."),
@@ -266,7 +266,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The method of construction of the resistor."),
@@ -279,7 +279,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                "wvw_editing_{}".format(self._tag),
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -340,22 +340,28 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected resistor.
 
+        :param attributes: the dict of design electric attributes.
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         if self._hazard_rate_method_id == 2:
             self.txtResistance.set_sensitive(True)
             self.txtResistance.do_update(
-                str(self.fmt.format(attributes["resistance"])),
+                str(self.fmt.format(attributes["resistance"] or 0.0)),
                 signal="changed",
             )
         else:

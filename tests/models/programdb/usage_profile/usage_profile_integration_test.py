@@ -107,9 +107,9 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_environment")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mission")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mission_phase")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_environment")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission_phase")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_environments")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_missions")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mission_phases")
@@ -276,7 +276,13 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_mission, "succeed_retrieve_usage_profile")
 
         pub.sendMessage(
-            "request_insert_mission", attributes={"revision_id": 1, "mission_id": 1}
+            "request_insert_mission",
+            attributes={
+                "revision_id": 1,
+                "mission_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
+            },
         )
 
         pub.unsubscribe(
@@ -304,6 +310,8 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "mission_id": 1,
                 "phase_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
             },
         )
 
@@ -337,6 +345,8 @@ class TestInsertMethods:
                 "mission_id": 1,
                 "phase_id": 1,
                 "environment_id": 1,
+                "parent_id": 1,
+                "record_id": 1,
                 "name": "Condition Name",
             },
         )

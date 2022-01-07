@@ -41,7 +41,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "stakeholder": super().do_load_treerow,
         }
 
@@ -77,7 +77,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 0,
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": True,
+                    "editable": False,
                     "fg_color": "#000000",
                     "visible": False,
                 },
@@ -93,7 +93,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 0,
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": False,
+                    "digits": 0,
+                    "editable": True,
                     "fg_color": "#000000",
                     "lower": 1,
                     "step": 1,
@@ -105,7 +106,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
             ],
             "description": [
                 3,
-                Gtk.CellRendererCombo(),
+                Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
                 self._on_edit_message,
@@ -144,7 +145,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": True,
+                    "editable": False,
                     "fg_color": "#000000",
                     "visible": True,
                 },
@@ -160,7 +161,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 "",
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": True,
+                    "editable": False,
                     "fg_color": "#000000",
                     "visible": True,
                 },
@@ -176,6 +177,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 1,
                 {
                     "bg_color": "#FFFFFF",
+                    "digits": 0,
                     "editable": True,
                     "fg_color": "#000000",
                     "lower": 1,
@@ -195,7 +197,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                 0,
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": False,
+                    "digits": 0,
+                    "editable": True,
                     "fg_color": "#000000",
                     "lower": 1,
                     "step": 1,
@@ -248,7 +251,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": True,
+                    "visible": False,
                 },
                 _("User Float 1"),
                 "gfloat",
@@ -264,7 +267,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": True,
+                    "visible": False,
                 },
                 _("User Float 2"),
                 "gfloat",
@@ -280,7 +283,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": True,
+                    "visible": False,
                 },
                 _("User Float 3"),
                 "gfloat",
@@ -296,7 +299,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": True,
+                    "visible": False,
                 },
                 _("User Float 4"),
                 "gfloat",
@@ -312,7 +315,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": True,
+                    "visible": False,
                 },
                 _("User Float 5"),
                 "gfloat",
@@ -330,6 +333,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, "succeed_calculate_stakeholder")
         pub.subscribe(self._do_load_requirements, "succeed_retrieve_requirements")
 
     def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:

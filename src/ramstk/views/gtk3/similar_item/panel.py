@@ -148,7 +148,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         # Initialize private dict instance attributes.
         self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "similar_item": self.__do_load_similar_item,
         }
         self._dic_visible_mask: Dict[int, Dict[str, bool]] = {

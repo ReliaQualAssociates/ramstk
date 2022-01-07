@@ -74,8 +74,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 5
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["requirement"], RAMSTKRequirementRecord)
         assert tree.get_node(5).data["requirement"].parent_id == 0
@@ -84,8 +83,7 @@ class TestInsertMethods:
 
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
-    def on_succeed_insert_child(self, node_id, tree):
-        assert node_id == 6
+    def on_succeed_insert_child(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(6).data["requirement"], RAMSTKRequirementRecord)
         assert tree.get_node(6).data["requirement"].parent_id == 1
@@ -94,10 +92,7 @@ class TestInsertMethods:
         print("\033[36m\nsucceed_insert_requirement topic was broadcast")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
-            "_do_insert_requirement: Attempted to insert child requirement "
-            "under non-existent requirement ID 32."
-        )
+        assert error_message == ("do_insert: Parent node '32' is not in the tree")
         print("\033[35m\nfail_insert_requirement topic was broadcast")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -253,7 +248,7 @@ class TestUpdateMethods:
         _requirement = test_tablemodel.do_select(1)
         _requirement.description = "Test Requirement"
 
-        pub.sendMessage("request_update_requirement", node_id=1, table="requirement")
+        pub.sendMessage("request_update_requirement", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_requirement")
 
@@ -283,7 +278,7 @@ class TestUpdateMethods:
         _requirement = test_tablemodel.do_select(1)
         _requirement.priority = {1: 2}
 
-        pub.sendMessage("request_update_requirement", node_id=1, table="requirement")
+        pub.sendMessage("request_update_requirement", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_requirement")
 
@@ -298,7 +293,7 @@ class TestUpdateMethods:
         _requirement = test_tablemodel.do_select(1)
         _requirement.priority = {1: 2}
 
-        pub.sendMessage("request_update_requirement", node_id=0, table="requirement")
+        pub.sendMessage("request_update_requirement", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_requirement"
@@ -310,7 +305,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_requirement")
 
-        pub.sendMessage("request_update_requirement", node_id=100, table="requirement")
+        pub.sendMessage("request_update_requirement", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_requirement")
 
@@ -321,7 +316,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_requirement")
 
         test_tablemodel.tree.get_node(1).data.pop("requirement")
-        pub.sendMessage("request_update_requirement", node_id=1, table="requirement")
+        pub.sendMessage("request_update_requirement", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_requirement")
 

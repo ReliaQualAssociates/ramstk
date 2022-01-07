@@ -19,24 +19,19 @@ from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, RAMSTKLabel
 class MilHdbk217FResultPanel(RAMSTKFixedPanel):
     """Display Hardware assessment results attribute data.
 
-    The Hardware assessment result view displays all the assessment results
-    for the selected hardware item.  This includes, currently, results for
-    MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
-    attributes of a Hardware assessment result view are:
-
-    :cvar list _lst_labels: the text to use for the assessment results widget
-        labels.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-        displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the hardware item
-        currently being displayed.
-    :ivar _lblModel: the :class:`ramstk.gui.gtk.ramstk.Label.RAMSTKLabel` to
-        display the failure rate mathematical model used.
+    The widgets of a MIL-HDBK-217F result panel are:
 
     :ivar txtLambdaB: displays the base hazard rate of the hardware item.
     :ivar txtPiQ: displays the quality factor for the hardware item.
     :ivar txtPiE: displays the environment factor for the hardware item.
+
+    The attributes of a MIL-HDBK-217F result panel are:
+
+    :ivar _hazard_rate_method_id: the ID of the method selected to calculate the
+        hazard rate of the selected component.
+    :ivar _lambda_b: the base hazard rate of the selected component.
+    :ivar category_id: the hardware category ID of the selected component.
+    :ivar subcategory_id: the hardware subcategory ID of the selected component.
     """
 
     # Define private dictionary class attributes.
@@ -93,7 +88,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
     def do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the Hardware assessment results page.
 
-        :param attributes: the attributes dict for the selected Hardware.
+        :param attributes: the attribute dict for the selected Hardware.
         :return: None
         :rtype: None
         """
@@ -105,15 +100,15 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         self.__do_set_model_label()
 
         self.txtLambdaB.do_update(
-            str(self.fmt.format(self._lambda_b)),
+            str(self.fmt.format(self._lambda_b or 0.0)),
             signal="changed",
         )
         self.txtPiQ.do_update(
-            str(self.fmt.format(attributes["piQ"])),
+            str(self.fmt.format(attributes["piQ"] or 1.0)),
             signal="changed",
         )
         self.txtPiE.do_update(
-            str(self.fmt.format(attributes["piE"])),
+            str(self.fmt.format(attributes["piE"] or 1.0)),
             signal="changed",
         )
 
@@ -138,6 +133,11 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         if attributes["hardware_id"] == self._record_id:
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._lambda_b = attributes["lambda_b"]
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
 
     def __do_set_model_label(self) -> None:
         """Set the text displayed in the hazard rate model RAMSTKLabel().

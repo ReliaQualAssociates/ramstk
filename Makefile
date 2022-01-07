@@ -53,7 +53,7 @@ DOCFORMATTER_ARGS	= --in-place --config ./pyproject.toml
 ISORT_ARGS	= --settings-file ./pyproject.toml --atomic
 MYPY_ARGS	= --config-file ./pyproject.toml
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
-PYDOCSTYLE_ARGS	= --count --config=./setup.cfg
+PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 
 PYVERS		= 3.6 3.7 3.8
@@ -70,17 +70,18 @@ help:
 	@echo "	test.unit				run the unit tests without coverage."
 	@echo "	test.integration			run the integration tests without coverage."
 	@echo "	test					run the complete RAMSTK test suite without coverage."
-	@echo "	test-all				run the complete RAMSTK test suite using Python version(s) $(PYVERS)."
+	@echo "	test.all				run the complete RAMSTK test suite using Python version(s) $(PYVERS)."
 	@echo "	coverage.unit				run the unit tests with coverage."
 	@echo "	coverage.integration			run integration unit tests with coverage."
 	@echo "	coverage				run the complete RAMSTK test suite with coverage."
-	@echo "	coverage-all				run the complete RAMSTK test suite with coverage using Python version(s) $(PYVERS)."
+	@echo "	coverage.all				run the complete RAMSTK test suite with coverage using Python version(s) $(PYVERS)."
 	@echo "	coverage.report				create an html report of files with less than 100% coverage."
 	@echo "	"
 	@echo "Targets related to static code checking tools (good for IDE integration):"
 	@echo "	format SRCFILE=<file>			format using black, isort, and docformatter.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
 	@echo "	typecheck SRCFILE=<file>		check using mypy.  Helpful to keymap in IDE or editor."
+	@echo "	typecheck.report			create an html report of source file typing coverage."
 	@echo "	lint SRCFILE=<file>			lint using pylint.  Helpful to keymap in IDE or editor."
 	@echo "						If passing a directory, all files will be recusively checked."
 	@echo "	maintain SRCFILE=<file>			check maintainability using mccabe and radon.  Helpful to keymap in IDE or editor."
@@ -91,7 +92,8 @@ help:
 	@echo ""
 	@echo "Other targets:"
 	@echo "	clean					removes all build, test, coverage, and Python artifacts."
-	@echo "	install 				install RAMSTK in the current (virtualenv) environment."
+	@echo "	install 				install RAMSTK and all data files in the current (virtualenv) environment."
+	@echo "	install.dev				install only the RAMSTK code in the current (virtualenv) environment."
 	@echo "	uninstall 				remove RAMSTK from the current (virtualenv) environment."
 	@echo "	dist					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi."
@@ -154,8 +156,8 @@ install: clean-build clean-pyc
 ifdef OS
 	@echo -e "\n\tRAMSTK cannot be installed on Windows at this time.  Sorry."
 else
-	@echo -e "\n\t\033[1;32mInstalling RAMSTK to $(PREFIX) ...\033[0m\n"
-	pip install . --prefix=$(PREFIX) --use-feature=in-tree-build
+	@echo -e "\n\t\033[1;32mInstalling RAMSTK and all data files to $(PREFIX) ...\033[0m\n"
+	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/layouts"
 	${MKDIR} "$(PREFIX)/share/RAMSTK/icons/16x16"
@@ -183,6 +185,10 @@ else
 	${COPY} "./data/Site.toml" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
 endif
+
+install.dev:
+	@echo -e "\n\t\033[1;32mInstalling RAMSTK only to $(PREFIX) ...\033[0m\n"
+	pip install . --prefix=$(PREFIX)
 
 uninstall:
 	@echo -e "\n\t\033[1;31mUninstalling RAMSTK :( ...\033[0m\n"
@@ -318,6 +324,7 @@ packchk:
 build: clean
 	$(info Creating source distribution and wheel ...)
 	$(POETRY) build
+	$(TWINE) check dist/*
 
 release: packchk build
 	$(info Build and upload artifacts to PyPi ...)

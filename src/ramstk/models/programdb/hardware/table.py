@@ -10,9 +10,6 @@
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable, RAMSTKHardwareRecord
 
@@ -46,6 +43,8 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -60,11 +59,6 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_calculate_cost, "request_calculate_total_cost")
-        pub.subscribe(
-            self.do_calculate_part_count, "request_calculate_total_part_count"
-        )
-        pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -75,101 +69,14 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
-        _new_record.hardware_id = attributes["hardware_id"]
+        _new_record.hardware_id = self.last_id + 1
+        _new_record.parent_id = attributes["parent_id"]
+        _new_record.part = attributes["part"]
 
         return _new_record
-
-    def do_calculate_cost(self, node_id: int) -> float:
-        """Calculate the cost related metrics.
-
-        :param node_id: the record ID to calculate.
-        :return: _total_cost; the total cost.
-        :rtype: float
-        """
-        _node = self.tree.get_node(node_id)
-        _record = _node.data[self._tag]
-        _total_cost: float = 0.0
-
-        if _record.cost_type_id == 2:
-            if _record.part == 1:
-                _total_cost = _record.cost * _record.quantity
-            else:
-                for _node_id in _node.successors(self.tree.identifier):
-                    _total_cost += self.do_calculate_cost(_node_id)
-                _total_cost = _total_cost * _record.quantity
-        else:
-            _total_cost = _record.total_cost
-
-        _record.total_cost = _total_cost
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_cost": _total_cost},
-        )
-
-        return _total_cost
-
-    def do_calculate_part_count(self, node_id: int) -> int:
-        """Calculate the total part count of a hardware item.
-
-        :param node_id: the record ID to calculate.
-        :return: _part_count
-        :rtype: int
-        """
-        _node = self.tree.get_node(node_id)
-        _record = _node.data[self._tag]
-        _total_part_count: int = 0
-
-        if _record.part == 1:
-            _total_part_count = _record.quantity
-        else:
-            for _node_id in _node.successors(self.tree.identifier):
-                _total_part_count += self.do_calculate_part_count(_node_id)
-            _total_part_count = _total_part_count * _record.quantity
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"total_part_count": _total_part_count},
-        )
-
-        return _total_part_count
-
-    def do_make_composite_ref_des(self, node_id: int = 1) -> None:
-        """Make the composite reference designators.
-
-        :param node_id: the record ID to start making the composite reference
-            designators.
-        :return: None
-        :rtype: None
-        """
-        # Retrieve the parent hardware item's composite reference designator.
-        _node = self.tree.get_node(node_id)
-        _hardware = _node.data["hardware"]
-
-        if _node.predecessor(self.tree.identifier) != 0:
-            _p_comp_ref_des = self.do_select(
-                _node.predecessor(self.tree.identifier)
-            ).comp_ref_des
-        else:
-            _p_comp_ref_des = ""
-
-        if _p_comp_ref_des != "":
-            _hardware.comp_ref_des = _p_comp_ref_des + ":" + _hardware.ref_des
-            _node.tag = _p_comp_ref_des + ":" + _hardware.ref_des
-        else:
-            _hardware.comp_ref_des = _hardware.ref_des
-            _node.tag = _hardware.ref_des
-
-        # Now make the composite reference designator for all the child nodes.
-        for _child_node in self.tree.children(node_id):
-            self.do_make_composite_ref_des(node_id=_child_node.identifier)
-
-        pub.sendMessage(
-            "request_set_hardware_attributes",
-            node_id=node_id,
-            package={"comp_ref_des": _hardware.comp_ref_des},
-        )

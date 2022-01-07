@@ -104,13 +104,14 @@ class FunctionModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
 
-        :param attributes: the attributes dict for the selected stakeholder
-            input.
+        :param attributes: the attributes dict for the selected function.
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["function_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["function_id"] = attributes["function_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["function_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
@@ -208,8 +209,8 @@ class FunctionWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["function_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["function_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function General Data tab.

@@ -117,26 +117,22 @@ class RAMSTKBaseTable:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
-        pub.subscribe(self.do_delete, "request_delete_{}".format(self._tag))
-        pub.subscribe(
-            self.do_get_attributes, "request_get_{}_attributes".format(self._tag)
-        )
-        pub.subscribe(self.do_get_tree, "request_get_{}_tree".format(self._tag))
-        pub.subscribe(self.do_insert, "request_insert_{}".format(self._tag))
+        pub.subscribe(self.do_delete, f"request_delete_{self._tag}")
+        pub.subscribe(self.do_get_attributes, f"request_get_{self._tag}_attributes")
+        pub.subscribe(self.do_get_tree, f"request_get_{self._tag}_tree")
+        pub.subscribe(self.do_insert, f"request_insert_{self._tag}")
         pub.subscribe(self.do_select_all, self._select_msg)
-        pub.subscribe(
-            self.do_set_attributes, "request_set_{}_attributes".format(self._tag)
-        )
-        pub.subscribe(self.do_set_attributes, "lvw_editing_{}".format(self._tag))
-        pub.subscribe(self.do_set_attributes, "mvw_editing_{}".format(self._tag))
-        pub.subscribe(self.do_set_attributes, "wvw_editing_{}".format(self._tag))
+        pub.subscribe(self.do_set_attributes, f"request_set_{self._tag}_attributes")
+        pub.subscribe(self.do_set_attributes, f"lvw_editing_{self._tag}")
+        pub.subscribe(self.do_set_attributes, f"mvw_editing_{self._tag}")
+        pub.subscribe(self.do_set_attributes, f"wvw_editing_{self._tag}")
         pub.subscribe(
             self.do_set_attributes_all,
-            "request_set_all_{}_attributes".format(self._tag),
+            f"request_set_all_{self._tag}_attributes",
         )
-        pub.subscribe(self.do_set_tree, "succeed_calculate_{}".format(self._tag))
-        pub.subscribe(self.do_update, "request_update_{}".format(self._tag))
-        pub.subscribe(self.do_update_all, "request_update_all_{}".format(self._tag))
+        pub.subscribe(self.do_set_tree, f"succeed_calculate_{self._tag}")
+        pub.subscribe(self.do_update, f"request_update_{self._tag}")
+        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}s")
         pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
@@ -178,12 +174,13 @@ class RAMSTKBaseTable:
             self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
             pub.sendMessage(
-                "succeed_delete_{}".format(self._tag),
+                f"succeed_delete_{self._tag}",
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _error_msg: str = "Attempted to delete non-existent {1} ID {0}.".format(
-                str(node_id), self._tag.replace("_", " ").title()
+            _error_msg: str = (
+                f"Attempted to delete non-existent "
+                f"{self._tag.replace('_', ' ').title()} ID {node_id}."
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -191,7 +188,7 @@ class RAMSTKBaseTable:
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_delete_{}".format(self._tag),
+                f"fail_delete_{self._tag}",
                 error_message=_error_msg,
             )
 
@@ -206,14 +203,14 @@ class RAMSTKBaseTable:
         """
         try:
             pub.sendMessage(
-                "succeed_get_{0}_attributes".format(self._tag),
+                f"succeed_get_{self._tag}_attributes",
                 attributes=self.do_select(node_id).get_attributes(),
             )
         except AttributeError:
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = (
-                "{0}: No attributes found for record ID {1} in "
-                "{2} table.".format(_method_name, node_id, self._tag)
+                f"{_method_name}: No attributes found for record ID {node_id} in "
+                f"{self._tag} table."
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -221,7 +218,7 @@ class RAMSTKBaseTable:
                 message=_error_msg,
             )
             pub.sendMessage(
-                "fail_get_{0}_attributes".format(table),
+                f"fail_get_{table}_attributes",
                 error_message=_error_msg,
             )
 
@@ -232,7 +229,7 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         pub.sendMessage(
-            "succeed_get_{}_tree".format(self._tag),
+            f"succeed_get_{self._tag}_tree",
             tree=self.tree,
         )
 
@@ -243,10 +240,13 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
+        _method_name = inspect.currentframe().f_code.co_name  # type: ignore
+
         try:
             _record = self.do_get_new_record(attributes)
             for _id in self._lst_id_columns:
                 attributes.pop(_id)
+
             _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1
 
@@ -261,29 +261,30 @@ class RAMSTKBaseTable:
             )
 
             pub.sendMessage(
-                "succeed_insert_{}".format(self._tag),
-                node_id=_identifier,
+                f"succeed_insert_{self._tag}",
                 tree=self.tree,
             )
         except DataAccessError as _error:
+            _error_msg = f"{_method_name}: {_error.msg}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error.msg,
+                message=_error_msg,
             )
             pub.sendMessage(
-                "fail_insert_{}".format(self._tag),
+                f"fail_insert_{self._tag}",
                 error_message=_error.msg,
             )
         except NodeIDAbsentError as _error:
+            _error_msg = f"{_method_name}: {_error}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=str(_error),
             )
             pub.sendMessage(
-                "fail_insert_{}".format(self._tag),
-                error_message=str(_error),
+                f"fail_insert_{self._tag}",
+                error_message=_error_msg,
             )
 
     def do_select(self, node_id: Any) -> Any:
@@ -300,9 +301,8 @@ class RAMSTKBaseTable:
         except (AttributeError, KeyError, treelib.tree.NodeIDAbsentError, TypeError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                "{2}: No data package for node ID {0} in module {1}.".format(
-                    node_id, self._tag, _method_name
-                )
+                f"{_method_name}: No data package for node ID {node_id} in module "
+                f"{self._tag}."
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -354,7 +354,7 @@ class RAMSTKBaseTable:
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
         pub.sendMessage(
-            "succeed_retrieve_{}s".format(self._tag),
+            f"succeed_retrieve_{self._tag}s",
             tree=self.tree,
         )
 
@@ -385,8 +385,8 @@ class RAMSTKBaseTable:
         except (AttributeError, KeyError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                "{2}: No data package for node ID {0} in module "
-                "{1}.".format(_node_id, self._tag, _method_name)
+                f"{_method_name}: No data package for node ID {_node_id} in module "
+                f"{self._tag}."
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -435,27 +435,28 @@ class RAMSTKBaseTable:
         """
         self.tree = tree
 
-    def do_update(self, node_id: int, table: str = "") -> None:
+    def do_update(self, node_id: int) -> None:
         """Update record associated with node ID in RAMSTK Program database.
 
         :param node_id: the node ID of the record to save.
-        :param table: the table in the database to update.
         :return: None
         :rtype: None
         """
-        _fail_topic = "fail_update_{}".format(self._tag)
+        _fail_topic = f"fail_update_{self._tag}"
         _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
 
         try:
             self.dao.do_update(self.tree.get_node(node_id).data[self._tag])
             pub.sendMessage(
-                "succeed_update_{}".format(self._tag),
+                f"succeed_update_{self._tag}",
                 tree=self.tree,
             )
         except AttributeError:
             _error_msg: str = (
-                "{1}: Attempted to save non-existent {2} with {2} ID {0}."
-            ).format(str(node_id), _method_name, self._tag.replace("_", " "))
+                f"{_method_name}: Attempted to save non-existent "
+                f"{self._tag.replace('_', ' ')} with {self._tag.replace('_', ' ')} "
+                f"ID {node_id}."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -466,8 +467,9 @@ class RAMSTKBaseTable:
                 error_message=_error_msg,
             )
         except KeyError:
-            _error_msg = "{1}: No data package found for {2} ID {0}.".format(
-                str(node_id), _method_name, self._tag.replace("_", " ")
+            _error_msg = (
+                f"{_method_name}: No data package found for "
+                f"{self._tag.replace('_', ' ')} ID {node_id}."
             )
             pub.sendMessage(
                 "do_log_debug",
@@ -481,12 +483,12 @@ class RAMSTKBaseTable:
         except (DataAccessError, TypeError):
             if node_id != 0:
                 _error_msg = (
-                    "{1}: The value for one or more attributes for "
-                    "{2} ID {0} was the wrong type."
-                ).format(str(node_id), _method_name, self._tag.replace("_", " "))
+                    f"{_method_name}: The value for one or more attributes for "
+                    f"{self._tag.replace('_', ' ')} ID {node_id} was the wrong type."
+                )
             else:
-                _error_msg = "{1}: Attempting to update the root node {0}.".format(
-                    str(node_id), _method_name
+                _error_msg = (
+                    f"{_method_name}: Attempting to update the root node {node_id}."
                 )
             pub.sendMessage(
                 "do_log_debug",
@@ -498,6 +500,8 @@ class RAMSTKBaseTable:
                 error_message=_error_msg,
             )
 
+        pub.sendMessage("request_set_cursor_active")
+
     # noinspection PyUnresolvedReferences
     # pylint: disable=no-value-for-parameter
     def do_update_all(self) -> None:
@@ -507,11 +511,9 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            try:
-                self.do_update(_node.identifier, table=self._tag[:-1])  # type: ignore
-            except TypeError:
-                self.do_update(_node.identifier)  # type: ignore
+            self.do_update(_node.identifier)  # type: ignore
 
+        pub.sendMessage("request_set_cursor_active")
         pub.sendMessage("succeed_update_all")
 
 
@@ -572,23 +574,6 @@ class RAMSTKBaseView:
         self._dic_trees[tree.get_node(0).tag] = tree
         self.on_select_all()
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
-    def on_insert(self, tree: treelib.Tree, node_id: int) -> None:
-        """Wrap _do_set_<module>_tree() on insert.
-
-        succeed_insert_<module> messages have node_id in the broadcast data
-        so this method is needed to wrap the _do_set_tree() method.
-
-        :param tree: the treelib Tree() passed by the calling message.
-        :param node_id: the node ID of the element that was inserted.
-            Unused in this method but required for compatibility with the
-            'succeed_insert_<module>' message data.
-        :return: None
-        :rtype: None
-        """
-        return self.do_set_tree(tree)
-
     def on_select_all(self) -> None:
         """Build the usage profile treelib Tree().
 
@@ -605,6 +590,6 @@ class RAMSTKBaseView:
             self._dic_load_functions[self._lst_modules[0]]()  # type: ignore
 
             pub.sendMessage(
-                "succeed_retrieve_{}".format(self._tag),
+                f"succeed_retrieve_{self._tag}",
                 tree=self.tree,
             )

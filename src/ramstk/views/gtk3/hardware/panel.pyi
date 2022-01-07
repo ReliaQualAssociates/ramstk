@@ -34,39 +34,40 @@ class HardwareTreePanel(RAMSTKTreePanel):
 class HardwareGeneralDataPanel(RAMSTKFixedPanel):
     _select_msg: str
     _tag: str
-    _title: Any
-    chkRepairable: Any
-    cmbCategory: Any
-    cmbSubcategory: Any
-    txtAltPartNum: Any
-    txtCompRefDes: Any
-    txtDescription: Any
-    txtFigureNumber: Any
-    txtLCN: Any
-    txtName: Any
-    txtPageNumber: Any
-    txtPartNumber: Any
-    txtRefDes: Any
-    txtSpecification: Any
+    _title: str
+    chkRepairable: RAMSTKComboBox
+    cmbCategory: RAMSTKComboBox
+    cmbSubcategory: RAMSTKComboBox
+    txtAltPartNum: RAMSTKEntry
+    txtCompRefDes: RAMSTKEntry
+    txtDescription: RAMSTKTextView
+    txtFigureNumber: RAMSTKEntry
+    txtLCN: RAMSTKEntry
+    txtName: RAMSTKEntry
+    txtPageNumber: RAMSTKEntry
+    txtPartNumber: RAMSTKEntry
+    txtRefDes: RAMSTKEntry
+    txtSpecification: RAMSTKEntry
     dic_attribute_widget_map: Any
     dicSubcategories: Any
     def __init__(self) -> None: ...
     def do_load_categories(self, category: Dict[int, str]) -> None: ...
     def _do_load_subcategories(self, category_id: int) -> None: ...
+    def _do_set_comp_ref_des(self, comp_ref_des: str) -> None: ...
     def _request_load_component(self, combo: RAMSTKComboBox) -> None: ...
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None: ...
 
 class HardwareLogisticsPanel(RAMSTKFixedPanel):
     _select_msg: str
     _tag: str
-    _title: Any
-    cmbCostType: Any
-    cmbManufacturer: Any
-    txtCAGECode: Any
-    txtCost: Any
-    txtNSN: Any
-    txtQuantity: Any
-    txtYearMade: Any
+    _title: str
+    cmbCostType: RAMSTKComboBox
+    cmbManufacturer: RAMSTKComboBox
+    txtCAGECode: RAMSTKEntry
+    txtCost: RAMSTKEntry
+    txtNSN: RAMSTKEntry
+    txtQuantity: RAMSTKEntry
+    txtYearMade: RAMSTKEntry
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...
     def do_load_cost_types(self) -> None: ...
@@ -78,9 +79,9 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
     _select_msg: str
     _tag: str
-    _title: Any
-    chkTagged: Any
-    txtAttachments: Any
-    txtRemarks: Any
+    _title: str
+    chkTagged: RAMSTKCheckButton
+    txtAttachments: RAMSTKTextView
+    txtRemarks: RAMSTKTextView
     dic_attribute_widget_map: Any
     def __init__(self) -> None: ...

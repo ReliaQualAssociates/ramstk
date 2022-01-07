@@ -27,10 +27,10 @@ def test_viewmodel():
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_mechanism")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_opload")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_opstress")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_test_method")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_opload")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_opstress")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_test_method")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_oploads")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_opstresss")
@@ -57,10 +57,12 @@ class TestCreateControllers:
         assert test_viewmodel._tag == "pof"
         assert test_viewmodel._root == 0
         assert test_viewmodel._revision_id == 0
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_mechanism")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_opload")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_opstress")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_test_method")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mechanism")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_opload")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_opstress")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_test_method"
+        )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_retrieve_mechanisms"
         )

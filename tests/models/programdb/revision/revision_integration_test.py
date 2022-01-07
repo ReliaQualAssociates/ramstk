@@ -74,8 +74,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(3).data["revision"], RAMSTKRevisionRecord)
         assert tree.get_node(3).data["revision"].revision_id == 3
@@ -203,7 +202,7 @@ class TestUpdateMethods:
         _revision = test_tablemodel.do_select(1)
         _revision.name = "Test Revision"
 
-        pub.sendMessage("request_update_revision", node_id=1, table="revision")
+        pub.sendMessage("request_update_revision", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_revision")
 
@@ -227,7 +226,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_revision")
 
         test_tablemodel.tree.get_node(1).data["revision"].cost = None
-        pub.sendMessage("request_update_revision", node_id=1, table="revision")
+        pub.sendMessage("request_update_revision", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_revision")
 
@@ -238,7 +237,7 @@ class TestUpdateMethods:
             self.on_fail_update_root_node_wrong_data_type, "fail_update_revision"
         )
 
-        pub.sendMessage("request_update_revision", node_id=0, table="revision")
+        pub.sendMessage("request_update_revision", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_revision"
@@ -249,7 +248,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_revision")
 
-        pub.sendMessage("request_update_revision", node_id=100, table="revision")
+        pub.sendMessage("request_update_revision", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_revision")
 
@@ -259,7 +258,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_revision")
 
         test_tablemodel.tree.get_node(1).data.pop("revision")
-        pub.sendMessage("request_update_revision", node_id=1, table="revision")
+        pub.sendMessage("request_update_revision", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_revision")
 

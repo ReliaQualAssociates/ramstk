@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 # pylint: disable=ungrouped-imports
@@ -48,23 +48,11 @@ class RAMSTKPanel(RAMSTKFrame):
         used to display.
     :cvar _title: the title to display on the panel frame.
 
-    :ivar _dic_row_loader: contains the methods used to load the row data
-        into a RAMSTKTreeView() where the key is the name of the module and
-        the value is the method.  This is necessary for those views that
-        combine different tables such as the usage profile or FMEA.  Having
-        different loader methods for each type of entity may be needed to
-        load the data for each entity in the correct order.  Most work
-        stream modules will simple use the do_load_row() method of this
-        meta-class.  Example entries in this dict might be:
-
-        'mission': self.__do_load_mission
-        'function': super().do_load_row
-
-    :ivar _parent_id: the ID of the parent entity for the selected work stream
-        entity.  This is needed for hierarchical modules such as the
-        function module.  For flat modules, this will always be zero.
-    :ivar _record_id: the work stream module ID whose attributes
-        this panel is displaying.
+    :ivar _parent_id: the ID of the parent entity for the selected work stream entity.
+        This is needed for hierarchical modules such as the function module.  For flat
+        modules, this will always be zero.
+    :ivar _record_id: the work stream module ID whose attributes this panel is
+        displaying.
 
     :ivar dic_attribute_widget_map: a dict used to map model attributes to their
         respective display widgets.  The key is the name of the attribute in the record
@@ -87,6 +75,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
         For a fixed panel, dict entries should be in the order they should appear in
         the panel.
+
     :ivar fmt: the formatting string for displaying float values.
     """
 
@@ -95,7 +84,7 @@ class RAMSTKPanel(RAMSTKFrame):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _record_field: str = "revision_id"
+    _record_field: str = ""
     _select_msg: str = "selected_revision"
     _tag: str = ""
     _title: str = ""
@@ -117,13 +106,10 @@ class RAMSTKPanel(RAMSTKFrame):
         # Initialize private dict instance attributes.
 
         # Initialize private list instance attributes.
-        self._lst_labels: List[str] = []
-        self._lst_widgets: List[object] = []
 
         # Initialize private scalar instance attributes.
         self._parent_id: int = -1
         self._record_id: int = -1
-        self._tree_loaded: bool = False
 
         # Initialize public dict instance attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {}
@@ -132,7 +118,6 @@ class RAMSTKPanel(RAMSTKFrame):
 
         # Initialize public scalar instance attributes.
         self.fmt: str = "{0:0.6}"
-        self.tree: treelib.Tree = treelib.Tree()
 
         # Subscribe to PyPubSub messages.
 
@@ -171,7 +156,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.on_edit_callback: str = f"wvw_editing_{self._tag}"
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -182,20 +166,23 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             self.do_load_panel,
             self._select_msg,
         )
-        pub.subscribe(
-            self.on_edit,
-            self.on_edit_callback,
-        )
+        pub.subscribe(self.on_edit, f"mvw_editing_{self._tag}")
 
         # Generally used with panels that accept inputs and are, thus, editable.
         try:
-            pub.subscribe(self._do_set_sensitive, f"succeed_get_{self._tag}_attributes")
+            pub.subscribe(
+                self._do_set_sensitive,
+                f"succeed_get_{self._tag}_attributes",
+            )
         except AttributeError:
             pass
 
         # Generally used with panels that display results and are, thus, uneditable.
         try:
-            pub.subscribe(self._do_load_entries, f"succeed_get_{self._tag}_attributes")
+            pub.subscribe(
+                self._do_load_entries,
+                f"succeed_get_{self._tag}_attributes",
+            )
         except AttributeError:
             pass
 
@@ -292,11 +279,12 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _key,
             _value,
         ) in self.dic_attribute_widget_map.items():
+            # Value[1] is the widget who's callback is being set.
             _value[1].dic_handler_id[_value[2]] = _value[1].connect(
-                _value[2],
-                _value[3],
-                _key,
-                _value[4],
+                _value[2],  # Widget's callback signal.
+                _value[3],  # Callback function/method.
+                _key,  # Attribute name.
+                _value[4],  # Message to for callback to emit on success.
             )
 
     def do_set_properties(self, **kwargs: Any) -> None:
@@ -340,7 +328,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _new_text = int(combo.get_active())
 
             # Only if something is selected should we send the message.
-            # Otherwise attributes get updated to a value of -1 which isn't
+            # Otherwise, attributes get updated to a value of -1 which isn't
             # correct.  And it sucks trying to figure out why, so leave the
             # conditional unless you have a more elegant (and there prolly
             # is) solution.
@@ -478,14 +466,15 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         [[_key, _value]] = package.items()
 
         try:
+            _widget = self.dic_attribute_widget_map[_key][1]
             _signal = self.dic_attribute_widget_map[_key][2]
-            _function = self.dic_attribute_widget_map[_key][3]
-            _function(_value, _signal)  # type: ignore
+            _widget.do_update(_value, _signal)  # type: ignore
         except KeyError:
             _error_msg = _(
-                "{2}: An error occurred while updating {1} data for record "
-                "ID {0} in the view.  No key {3} in dic_attribute_widget_map."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while updating {self._tag} data "
+                f"for record ID {self._record_id} in the view.  No key {_key} in "
+                f"dic_attribute_widget_map."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -493,10 +482,10 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             )
         except TypeError:
             _error_msg = _(
-                "{2}: An error occurred while updating {1} data for record "
-                "ID {0} in the view.  Data for key {3} is the wrong "
-                "type."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while updating {self._tag} data "
+                f"for record ID {self._record_id} in the view.  Data for key {_key} is "
+                f"the wrong type."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -583,6 +572,10 @@ class RAMSTKPlotPanel(RAMSTKPanel):
     The attributes of a RAMSTKPlotPanel are:
 
     :ivar pltPlot: a RAMSTPlot() for the panels that embed a plot.
+    :ivar lst_axis_labels: a list containing the labels for the plot's axes.  Index 0 is
+        the abscissa (x-axis) and index 1 is the ordinate (y-axis).
+    :ivar lst_legend: a list containing the text to display in the plot's legend.
+    :ivar plot_title: the title of the plot.
     """
 
     # Define private dict class attributes.
@@ -681,8 +674,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     The attributes of a RAMSTKTreePanel are:
 
-    :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a
-        treeview.
+    :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a treeview.
+    :ivar _filtered_tree: boolean indicating whether or not to display the filtered
+        RAMSTKTreeView() or the full RAMSTKTreeView().
     """
 
     # Define private dict class attributes.
@@ -709,11 +703,11 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Initialize private dict instance attributes.
-        self._dic_row_loader: Dict[str, Callable] = {}
 
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree: bool = False
 
         # Initialize public dict instance attributes.
 
@@ -723,7 +717,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
-        # pub.subscribe(self.do_load_panel, "succeed_insert_{}".format(self._tag))
+        pub.subscribe(self.do_load_panel, f"succeed_insert_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"wvw_editing_{self._tag}")
@@ -749,26 +743,30 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param tree: the treelib Tree containing the module to load.
         :return: None
         """
-        _model = self.tvwTreeView.get_model()
-        _model.clear()
+        try:
+            self.tvwTreeView.unfilt_model.clear()
+        except AttributeError:
+            pass
 
         try:
-            _row = None
-            for _node in tree.all_nodes()[1:]:
-                _row = self._dic_row_loader[_node.tag](_node, _row)
+            self.tvwTreeView.do_load_tree(tree, None)
+            if self._filtered_tree:
+                self.tvwTreeView.filt_model = self.tvwTreeView.unfilt_model.filter_new()
+                self.tvwTreeView.filt_model.set_visible_func(self.filter_tree)
+                self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
+
             self.tvwTreeView.expand_all()
-            _row = _model.get_iter_first()
+            _row = self.tvwTreeView.unfilt_model.get_iter_first()
             if _row is not None:
                 self.tvwTreeView.selection.select_iter(_row)
                 self.show_all()
         except TypeError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while loading {1} data for Record "
-                "ID {0} into the view.  One or more values from the "
-                "database was the wrong type for the column it was trying to "
-                "load."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while loading {self._tag} data for "
+                f"Record ID {self._record_id} into the view.  One or more values from "
+                f"the database was the wrong type for the column it was trying to load."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -777,15 +775,17 @@ class RAMSTKTreePanel(RAMSTKPanel):
         except ValueError:
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while loading {1:s} data for Record "
-                "ID {0:d} into the view.  One or more values from the "
-                "database was missing."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while loading {self._tag} data "
+                f"for Record ID {self._record_id} into the view.  One or more values "
+                f"from the database was missing."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=_error_msg,
             )
+
+        pub.sendMessage("request_set_cursor_active")
 
     def do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a row into the RAMSTKTreeView().
@@ -802,11 +802,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
             # pylint: disable=unused-variable
             [[__, _entity]] = node.data.items()
             _attributes = _entity.get_attributes()
-            _model = self.tvwTreeView.get_model()
             for _key, _pos in self.tvwTreeView.position.items():
                 _data.insert(_pos, _attributes[_key])
 
-            _new_row = _model.append(row, _data)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _data)
         except (AttributeError, TypeError, ValueError) as _error:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = (
@@ -830,8 +829,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         :return: None
         """
-        self._lst_widgets.append(self.tvwTreeView)
-
         self.tvwTreeView.widgets = {
             _key: _value[1] for _key, _value in self.dic_attribute_widget_map.items()
         }
@@ -862,20 +859,22 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _bg_color: str = kwargs.get("bg_color", "#FFFFFF")  # type: ignore
         _fg_color: str = kwargs.get("fg_color", "#000000")  # type: ignore
         _fmt_file: str = kwargs.get("fmt_file", "")  # type: ignore
+        _attrs = kwargs.get("attrs", {})
 
         self.tvwTreeView.do_parse_format(_fmt_file)
         self.tvwTreeView.do_make_model()
 
         for _key, _value in self.dic_attribute_widget_map.items():
             self.tvwTreeView.widgets[_key] = _value[1]
+            self.tvwTreeView.cellprops[_key] = _attrs[_key][6]
+            self.tvwTreeView.cellprops[_key]["bg_color"] = _bg_color
+            self.tvwTreeView.cellprops[_key]["fg_color"] = _fg_color
             try:
                 self.tvwTreeView.headings[_key] = _value[7]
             except IndexError:
                 pass
 
-        self.tvwTreeView.do_make_columns(
-            colors={"bg_color": _bg_color, "fg_color": _fg_color}
-        )
+        self.tvwTreeView.do_make_columns()
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -904,32 +903,32 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param package: the key:value for the data being updated.
         :return: None
         """
+        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+
         [[_key, _value]] = package.items()
 
         try:
             _position = self.tvwTreeView.position[_key]
 
             _model, _row = self.tvwTreeView.get_selection().get_selected()
-            _model.set(_row, _position, _value)
+            _model.set_value(_row, _position, _value)
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while refreshing {1} data for Record "
-                "ID {0} in the view.  Key {3} does not exist in "
-                "attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name, _key)
+                f"{_method_name}: An error occurred while refreshing {self._tag} data "
+                f"for Record ID {self._record_id} in the view.  Key {_key} does not "
+                f"exist in attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=_error_msg,
             )
         except TypeError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while refreshing {1} data for Record "
-                "ID {0} in the view.  Data {4} for {3} is the wrong "
-                "type."
-            ).format(self._record_id, self._tag, _method_name, _key, _value)
+                f"{_method_name}: An error occurred while refreshing {self._tag} data "
+                f"for Record ID {self._record_id} in the view.  Data {_value} for "
+                f"{_key} is the wrong type."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -955,10 +954,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
     def do_set_cell_callbacks(self, message: str, columns: List[str]) -> None:
         """Set the callback methods for RAMSTKTreeView() cells.
 
-        :param message: the PyPubSub message to broadcast on a
-            successful edit.
-        :param columns: the list of column numbers whose cells should
-            have a callback function assigned.
+        :param message: the PyPubSub message to broadcast on a successful edit.
+        :param columns: the list of column numbers whose cells should have a callback
+            function assigned.
         :return: None
         """
         for _key in columns:
@@ -1017,45 +1015,90 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.set_level_indentation(2)
         self.tvwTreeView.set_rubber_banding(True)
 
+    def on_cell_change(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: Gtk.TreeIter,
+        key: str,
+        message: str,
+    ) -> None:
+        """Handle edits of a Gtk.CellRendererCombo() in the panel's RAMSTKTreeview().
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param new_text: the new Gtk.TreeIter() selected in the
+            Gtk.CellRendererCombo().  This is relative to the cell renderer's model,
+            not the RAMSTKTreeView() model.
+        :param key: the column key of the edited Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        """
+        try:
+            _new_text = self.tvwTreeView.do_change_cell(
+                cell,
+                path,
+                new_text,
+                self.tvwTreeView.position[key],
+            )
+
+            pub.sendMessage(
+                message,
+                node_id=self._record_id,
+                package={key: _new_text},
+            )
+        except KeyError:
+            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
+            _error_msg = _(
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
+            pub.sendMessage(
+                "do_log_debug",
+                logger_name="DEBUG",
+                message=_error_msg,
+            )
+
     def on_cell_edit(
         self,
         cell: Gtk.CellRenderer,
         path: str,
         new_text: str,
-        position: int,
+        key: str,
         message: str,
     ) -> None:
-        """Handle edits of the RAMSTKTreeview() in a treeview panel.
+        """Handle edits of Gtk.CellRendererText() in the panel's RAMSTKTreeview().
 
         :param cell: the Gtk.CellRenderer() that was edited.
         :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
-        :param position: the column position of the edited
-            Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
         """
         try:
-            _keys = list(self.tvwTreeView.position.keys())
-            _vals = list(self.tvwTreeView.position.values())
-            _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.position[_col]
-            _position = self.tvwTreeView.position[_col]
+            self.tvwTreeView.do_edit_cell(
+                cell,
+                path,
+                new_text,
+                self.tvwTreeView.position[key],
+            )
 
-            _new_text = self.tvwTreeView.do_edit_cell(cell, path, new_text, _position)
             pub.sendMessage(
                 message,
-                node_id=[self._record_id, ""],
-                package={_key: _new_text},
+                node_id=self._record_id,
+                package={key: new_text},
             )
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while editing {1} data for record "
-                "ID {0} in the view.  One or more keys could not be found in "
-                "the attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1064,15 +1107,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     # pylint: disable=unused-argument
     def on_cell_toggled(
-        self, cell: Gtk.CellRenderer, path: str, position: int, message: str
+        self, cell: Gtk.CellRenderer, path: str, key: str, message: str
     ) -> None:
         """Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
 
         :param cell: the Gtk.CellRenderer() that was toggled.
         :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
             that was toggled.
-        :param position: the column position of the toggled
-            Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
         :rtype: None
@@ -1080,22 +1122,19 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _new_text = boolean_to_integer(cell.get_active())
 
         try:
-            _keys = list(self.tvwTreeView.position.keys())
-            _vals = list(self.tvwTreeView.position.values())
-            _col = _keys[_vals.index(position)]
-            _key = self.tvwTreeView.position[_col]
-
-            if not self.tvwTreeView.do_edit_cell(cell, path, _new_text, position):
+            if not self.tvwTreeView.do_edit_cell(
+                cell, path, _new_text, self.tvwTreeView.position[key]
+            ):
                 pub.sendMessage(
-                    message, node_id=[self._record_id, ""], package={_key: _new_text}
+                    message, node_id=self._record_id, package={key: _new_text}
                 )
         except KeyError:
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg = _(
-                "{2}: An error occurred while editing {1} data for record "
-                "ID {0} in the view.  One or more keys could not be found in "
-                "the attribute dictionary."
-            ).format(self._record_id, self._tag, _method_name)
+                f"{_method_name}: An error occurred while editing {self._tag} data "
+                f"for record ID {self._record_id} in the view.  One or more keys could "
+                f"not be found in the attribute dictionary."
+            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -1111,12 +1150,18 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         """
         _model, _row = self.tvwTreeView.selection.get_selected()
-        _model.remove(_row)
 
-        _row = _model.get_iter_first()
-        if _row is not None:
-            self.tvwTreeView.selection.select_iter(_row)
-            self.show_all()
+        if self._filtered_tree:
+            _model = self.tvwTreeView.filt_model.get_model()
+            _row = self.tvwTreeView.filt_model.convert_iter_to_child_iter(_row)
+            self.tvwTreeView.unfilt_model.remove(_row)
+            self.tvwTreeView.filt_model.refilter()
+        else:
+            self.tvwTreeView.unfilt_model.remove(_row)
+            _row = _model.get_iter_first()
+            if _row is not None:
+                self.tvwTreeView.selection.select_iter(_row)
+                self.show_all()
 
         pub.sendMessage("request_set_cursor_active")
 
@@ -1168,3 +1213,24 @@ class RAMSTKTreePanel(RAMSTKPanel):
         selection.handler_unblock(self.tvwTreeView.dic_handler_id["changed"])
 
         return _attributes
+
+    def _do_set_attributes(self, node_id, package) -> None:
+        """Set the attributes of the record associated with node ID.
+
+        This is a helper method to use with database view models.  Since database
+        view models are comprised of an aggregate of database tables, the selected
+        row in the RAMSTKTreeView will determine which table needs updating.  This
+        method susses that out and sends the correct message to cause the correct
+        table to be updated.
+
+        :param node_id: the ID of the record in the RAMSTK Program database table whose
+            attributes are to be set.
+        :param package: the key:value pair of the attribute to set.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            f"lvw_editing_{self._tag}",
+            node_id=node_id,
+            package=package,
+        )

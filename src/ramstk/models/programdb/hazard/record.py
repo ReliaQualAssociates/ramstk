@@ -1,12 +1,14 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKHazardAnalysis.py is part of The RAMSTK
-#       Project
+#       ramstk.models.programdb.hazard.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKHazardAnalysis Table."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Hazard Package Record Model."""
+
+# Standard Library Imports
+from typing import Any, Dict
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -188,7 +190,7 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Any]:
         """Retrieve current values of RAMSTKHazardAnalysis model attributes.
 
         :return: {revision_id, hardware_id, hazard_id, potential_hazard,

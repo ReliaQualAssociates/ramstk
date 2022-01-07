@@ -103,7 +103,7 @@ class TestUpdateMethods:
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = 0
         test_tablemodel.tree.get_node(1).data["option"].vandv_enabled = 0
-        test_tablemodel.do_update(1, table="option")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_siteinfo")
 
@@ -112,7 +112,7 @@ class TestUpdateMethods:
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = 1
         test_tablemodel.tree.get_node(1).data["option"].vandv_enabled = 1
-        test_tablemodel.do_update(1, table="option")
+        test_tablemodel.do_update(1)
 
         assert test_tablemodel.tree.get_node(1).data["option"].hardware_enabled == 1
         assert test_tablemodel.tree.get_node(1).data["option"].vandv_enabled == 1
@@ -132,7 +132,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hi ya"
-        test_tablemodel.do_update(1, table="option")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
 
@@ -144,7 +144,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hey bud"
-        test_tablemodel.do_update(0, table="option")
+        test_tablemodel.do_update(0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_siteinfo"
@@ -157,7 +157,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
 
         test_tablemodel.do_select_all({"site_id": 1})
-        test_tablemodel.do_update("skullduggery", table="option")
+        test_tablemodel.do_update("skullduggery")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
 
@@ -168,7 +168,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
 
         test_tablemodel.tree.get_node(1).data.pop("option")
-        test_tablemodel.do_update(1, table="option")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
 

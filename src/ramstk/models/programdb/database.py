@@ -110,16 +110,15 @@ class RAMSTKProgramDB:
     ) -> None:
         """Create a new RAMSTK Program database.
 
-        :param program_db: the BaseDatabase() that is to be used to create and
-            connect to the new RAMSTK program database.
-        :param database: a dict containing the database connection
-            arguments.
+        :param program_db: the BaseDatabase() that is to be used to create and connect
+            to the new RAMSTK program database.
+        :param database: a dict containing the database connection arguments.
         :return: None
         :rtype: None
         """
         with open(
             self.user_configuration.RAMSTK_CONF_DIR
-            + "/{0}_program_db.sql".format(database["dialect"]),
+            + f'/{database["dialect"]}_program_db.sql',
             "r",
         ) as _sql_file:
             self.program_dao = program_db

@@ -10,7 +10,6 @@
 from typing import Any, Dict, List
 
 # Third Party Imports
-import treelib
 from pubsub import pub  # type: ignore
 
 # RAMSTK Package Imports
@@ -101,7 +100,6 @@ class RevisionModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_revision")
-        pub.subscribe(self._on_insert_revision, "succeed_insert_revision")
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRevision table.
@@ -132,18 +130,7 @@ class RevisionModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["revision_id"]
-
-    def _on_insert_revision(self, node_id: int = 0, tree: treelib.Tree = "") -> None:
-        """Add row to module view for newly added revision.
-
-        :param node_id: the ID of the newly added revision.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
-        :return: None
-        """
-        _data = tree.get_node(node_id).data["revision"].get_attributes()
-        self._pnlPanel.on_insert(_data)
+        self.dic_pkeys["record_id"] = attributes["revision_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the revision module view.
@@ -236,7 +223,7 @@ class RevisionWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["revision_id"]
+        self.dic_pkeys["record_id"] = attributes["revision_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Revision General Data tab.

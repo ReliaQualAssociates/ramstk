@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict
 
 # Third Party Imports
 from sqlalchemy.orm import relationship
@@ -9,30 +9,30 @@ from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
 class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
-    __defaults__: Any
+    __defaults__: Dict[str, Any]
     __tablename__: str
-    __table_args__: Any
-    revision_id: Any
-    function_id: Any
-    availability_logistics: Any
-    availability_mission: Any
-    cost: Any
-    function_code: Any
-    hazard_rate_logistics: Any
-    hazard_rate_mission: Any
-    level: Any
-    mmt: Any
-    mcmt: Any
-    mpmt: Any
-    mtbf_logistics: Any
-    mtbf_mission: Any
-    mttr: Any
-    name: Any
-    parent_id: Any
-    remarks: Any
-    safety_critical: Any
-    total_mode_count: Any
-    total_part_count: Any
-    type_id: Any
+    __table_args__: Dict[str, bool]
+    revision_id: int
+    function_id: int
+    availability_logistics: float
+    availability_mission: float
+    cost: float
+    function_code: str
+    hazard_rate_logistics: float
+    hazard_rate_mission: float
+    level: int
+    mmt: float
+    mcmt: float
+    mpmt: float
+    mtbf_logistics: float
+    mtbf_mission: float
+    mttr: float
+    name: str
+    parent_id: int
+    remarks: str
+    safety_critical: bool
+    total_mode_count: int
+    total_part_count: int
+    type_id: int
     hazard: relationship
-    def get_attributes(self): ...
+    def get_attributes(self) -> Dict[str, Any]: ...

@@ -463,39 +463,40 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         """
         _message_type = Gtk.MessageType.INFO
 
+        _prompt = self.get_property("text")
+        # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
+        # e-mail address.
+        _hyper = (
+            "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
+            "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;"
+            "body=RAMSTK MODULE:%0d%0a%0d%0a"
+            "RAMSTK VERSION:%20%0d%0a%0d%0a"
+            "YOUR HARDWARE:%20%0d%0a%0d%0a"
+            "YOUR OS:%20%0d%0a%0d%0a"
+            "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
+        )
+        _prompt = (
+            "<b>"
+            + _prompt
+            + _(
+                "  Check the error log for additional information "
+                "(if any).  Please e-mail <span foreground='blue' "
+                "underline='single'>",
+            )
+            + _hyper
+            + _(
+                "bugs@reliaqual.com</a></span> with a detailed "
+                "description of the problem, the workflow you are "
+                "using and the error log attached if the problem "
+                "persists.</b>",
+            )
+        )
         if message_type == "error":
-            _prompt = self.get_property("text")
-            # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
-            # e-mail address.
-            _hyper = (
-                "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
-                "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;"
-                "body=RAMSTK MODULE:%0d%0a%0d%0a"
-                "RAMSTK VERSION:%20%0d%0a%0d%0a"
-                "YOUR HARDWARE:%20%0d%0a%0d%0a"
-                "YOUR OS:%20%0d%0a%0d%0a"
-                "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
-            )
-            _prompt = (
-                "<b>"
-                + _prompt
-                + _(
-                    "  Check the error log for additional information "
-                    "(if any).  Please e-mail <span foreground='blue' "
-                    "underline='single'>",
-                )
-                + _hyper
-                + _(
-                    "bugs@reliaqual.com</a></span> with a detailed "
-                    "description of the problem, the workflow you are "
-                    "using and the error log attached if the problem "
-                    "persists.</b>",
-                )
-            )
             self.set_markup(_prompt)
             _message_type = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "warning":
+            self.set_markup(_prompt)
             _message_type = Gtk.MessageType.WARNING
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "information":

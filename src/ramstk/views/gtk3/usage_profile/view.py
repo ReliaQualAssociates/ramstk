@@ -6,6 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Usage Profile Views."""
 
+# Standard Library Imports
+from typing import Any, Dict
+
 # Third Party Imports
 from pubsub import pub
 
@@ -98,6 +101,9 @@ class UsageProfileListView(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_record_id, "selected_mission")
+        pub.subscribe(self._do_set_record_id, "selected_mission_phase")
+        pub.subscribe(self._do_set_record_id, "selected_environment")
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -106,26 +112,21 @@ class UsageProfileListView(RAMSTKListView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-        _node_id = _model.get_value(_row, 8)
-        _level = _model.get_value(_row, 10)
-
         _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _dialog = super().do_raise_dialog(parent=_parent)
         _dialog.do_set_message(
             message=_(
-                "You are about to delete {1:s} {0:s} and all data "
-                "associated with it.  Is this really what you want to "
-                "do?"
-            ).format(_node_id, _level)
+                f"You are about to delete {self._tag} {self.dic_pkeys['record_id']} "
+                f"and all data associated with it.  Is this really what you want to do?"
+            )
         )
         _dialog.do_set_message_type(message_type="question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_usage_profile",
-                node_id=_node_id,
+                f"request_delete_{self._tag}",
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -136,28 +137,22 @@ class UsageProfileListView(RAMSTKListView):
 
         :return: None
         """
-        # Get the currently selected row, the level of the currently selected
-        # item, and it's parent row in the Usage Profile.
-        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-        _level = _model.get_value(_row, 10)
-        _prow = _model.iter_parent(_row)
-
         super().do_set_cursor_busy()
-        if _level == "mission":
-            _mission_id = _model.get_value(_row, 0)
+
+        _attributes = self.dic_pkeys
+
+        if self._tag == "mission":
+            _attributes.pop("environment_id")
             pub.sendMessage(
                 "request_insert_mission_phase",
-                mission_id=_mission_id,
+                attributes=_attributes,
             )
-        elif _level == "phase":
-            _phase_id = _model.get_value(_row, 0)
-            _mission_id = _model.get_value(_prow, 0)
+        elif self._tag == "mission_phase":
             pub.sendMessage(
                 "request_insert_environment",
-                mission_id=_mission_id,
-                phase_id=_phase_id,
+                attributes=_attributes,
             )
-        elif _level == "environment":
+        elif self._tag == "environment":
             _error = _("An environmental condition cannot have a child.")
             _parent = (
                 self.get_parent().get_parent().get_parent().get_parent().get_parent()
@@ -178,36 +173,48 @@ class UsageProfileListView(RAMSTKListView):
 
         :return: None
         """
-        # Get the currently selected row, the level of the currently selected
-        # item, and it's parent row in the Usage Profile.
-        _model, _row = self._pnlPanel.tvwTreeView.selection.get_selected()
-        try:
-            _level = _model.get_value(_row, 10)
-            _prow = _model.iter_parent(_row)
-        except TypeError:
-            _level = "mission"
-            _prow = None
-
         super().do_set_cursor_busy()
-        if _level == "mission":
-            pub.sendMessage(
-                "request_insert_mission",
-            )
-        elif _level == "phase":
-            _mission_id = _model.get_value(_prow, 0)
-            pub.sendMessage(
-                "request_insert_mission_phase",
-                mission_id=_mission_id,
-            )
-        elif _level == "environment":
-            _gprow = _model.iter_parent(_prow)
-            _mission_id = _model.get_value(_gprow, 0)
-            _phase_id = _model.get_value(_prow, 0)
-            pub.sendMessage(
-                "request_insert_environment",
-                mission_id=_mission_id,
-                phase_id=_phase_id,
-            )
+
+        _attributes = self.dic_pkeys
+        if self._tag == "mission":
+            _attributes.pop("phase_id")
+            _attributes.pop("environment_id")
+        elif self._tag == "mission_phase":
+            _attributes.pop("environment_id")
+
+        pub.sendMessage(
+            f"request_insert_{self._tag}",
+            attributes=_attributes,
+        )
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the usage profile's record ID.
+
+        :param attributes: the attributes dict for the selected usage profile element.
+        :return: None
+        :rtype: None
+        """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["phase_id"] = attributes["phase_id"]
+        self.dic_pkeys["environment_id"] = attributes["environment_id"]
+        self.dic_pkeys["mission_id"] = attributes["mission_id"]
+
+        if (
+            attributes["mission_id"]
+            * attributes["phase_id"]
+            * attributes["environment_id"]
+        ) > 0:
+            self.dic_pkeys["parent_id"] = attributes["phase_id"]
+            self.dic_pkeys["record_id"] = attributes["environment_id"]
+            self._tag = "environment"
+        elif (attributes["mission_id"] * attributes["phase_id"]) > 0:
+            self.dic_pkeys["parent_id"] = attributes["mission_id"]
+            self.dic_pkeys["record_id"] = attributes["phase_id"]
+            self._tag = "mission_phase"
+        else:
+            self.dic_pkeys["parent_id"] = 0
+            self.dic_pkeys["record_id"] = attributes["mission_id"]
+            self._tag = "mission"
 
     def __make_ui(self):
         """Build the user interface for the usage profile list view.
@@ -226,5 +233,5 @@ class UsageProfileListView(RAMSTKListView):
         ] = self._pnlPanel.tvwTreeView.connect(
             "button_press_event", super().on_button_press
         )
-        for _element in ["mission", "phase", "environment"]:
+        for _element in ["mission", "mission_phase", "environment"]:
             self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]

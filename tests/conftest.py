@@ -492,9 +492,6 @@ def test_config_dir():
 
     yield _config_dir
 
-    # Teardown the test configuration directory.
-    teardown_test_directory(test_dir=_config_dir)
-
 
 @pytest.fixture(scope="class")
 def test_import_dir():
@@ -559,10 +556,12 @@ def make_home_config_dir():
 
 @pytest.fixture(scope="function")
 def test_bald_dao():
-    # Use the RAMSTK DAO to connect to the fresh, new test database.
+    """Create a DAO with an unpopulated database attached."""
     dao = BaseDatabase()
 
     yield dao
+
+    del dao
 
 
 @pytest.fixture(scope="class")
@@ -720,8 +719,27 @@ def test_license_file():
     """Create a license key file for testing."""
     _cwd = os.getcwd()
     _license_file = open(_cwd + "/license.key", "w")
+    _license_file.write("0\n")
     _license_file.write("apowdigfb3rh9214839qu\n")
-    _license_file.write("2019-08-07")
+    _license_file.write("2019-08-07\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("0\n")
+    _license_file.write("0\n")
+    _license_file.write("0\n")
+    _license_file.write("0\n")
+    _license_file.write("0\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("1\n")
+    _license_file.write("0\n")
+    _license_file.write("0\n")
+    _license_file.write("ReliaQual Test Site")
     _license_file.close()
 
     yield _license_file
@@ -730,7 +748,7 @@ def test_license_file():
 
 
 @pytest.fixture(scope="session")
-def test_toml_site_configuration():
+def test_toml_site_configuration(test_config_dir):
     """Create a toml site configuration file."""
     _site_config = RAMSTKSiteConfiguration()
     _site_config.RAMSTK_SITE_CONF = VIRTUAL_ENV + "/share/RAMSTK/Site.toml"
@@ -793,7 +811,7 @@ def test_toml_user_configuration(make_home_config_dir):
         },
         "layouts": {
             "allocation": "allocation.toml",
-            "failure_definitions": "failure_definition.toml",
+            "failure_definition": "failure_definition.toml",
             "fmea": "fmea.toml",
             "function": "function.toml",
             "hardware": "hardware.toml",
@@ -802,7 +820,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "requirement": "requirement.toml",
             "revision": "revision.toml",
             "similar_item": "similar_item.toml",
-            "stakeholders": "stakeholder.toml",
+            "stakeholder": "stakeholder.toml",
             "usage_profile": "usage_profile.toml",
             "validation": "validation.toml",
         },

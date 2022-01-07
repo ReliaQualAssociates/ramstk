@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # RAMSTK Package Imports
 from ramstk.utilities import deprecated as deprecated
@@ -15,12 +15,14 @@ from .label import RAMSTKLabel as RAMSTKLabel
 from .widget import RAMSTKWidget as RAMSTKWidget
 
 def do_make_column(
-    cells: List[Gtk.CellRenderer], **kwargs: Dict[str, Any]
+    cells: List[object], **kwargs: Dict[str, Any]
 ) -> Gtk.TreeViewColumn: ...
-def do_set_cell_properties(cell: Gtk.CellRenderer, **kwargs) -> None: ...
+def do_set_cell_properties(cell: object, properties: Dict[str, Any]) -> None: ...
 
 class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     _has_pixbuf: bool
+    dic_row_loader: Dict[str, Callable]
+    cellprops: Dict[str, Any]
     datatypes: Dict[str, str]
     editable: Dict[str, bool]
     headings: Dict[str, str]
@@ -28,6 +30,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     visible: Dict[str, bool]
     widgets: Dict[str, object]
     selection: Gtk.TreeSelection
+    filt_model: Gtk.TreeModelFilter
+    unfilt_model: Gtk.TreeModel
     def __init__(self) -> None: ...
     def do_edit_cell(
         self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
@@ -36,7 +40,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter: ...
     def do_insert_row(self, data: Dict[str, Any], prow: Gtk.TreeIter = ...) -> None: ...
     def do_load_combo_cell(self, index: int, items: List[str]) -> None: ...
-    def do_make_columns(self, colors: Dict[str, str] = ...) -> None: ...
+    def do_make_columns(self) -> None: ...
     def do_make_model(self) -> None: ...
     def do_parse_format(self, fmt_file: str) -> None: ...
     def do_set_editable_columns(self, method: object) -> None: ...

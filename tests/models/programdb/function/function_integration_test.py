@@ -64,8 +64,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 4
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(4).data["function"], RAMSTKFunctionRecord)
         assert tree.get_node(4).data["function"].function_id == 4
@@ -73,17 +72,16 @@ class TestInsertMethods:
 
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
-    def on_succeed_insert_child(self, node_id, tree):
-        assert node_id == 5
+    def on_succeed_insert_child(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["function"], RAMSTKFunctionRecord)
-        assert tree.get_node(5).data["function"].parent_id == 0
+        assert tree.get_node(5).data["function"].parent_id == 1
         assert tree.get_node(5).data["function"].function_id == 5
         assert tree.get_node(5).data["function"].name == "New Function"
         print("\033[36m\nsucceed_insert_function topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == ("Parent node '40' is not in the tree")
+        assert error_message == ("do_insert: Parent node '40' is not in the tree")
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -250,7 +248,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_succeed_update, "succeed_update_function")
 
         test_tablemodel.tree.get_node(1).data["function"].name = "Test Function"
-        pub.sendMessage("request_update_function", node_id=1, table="function")
+        pub.sendMessage("request_update_function", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_function")
 
@@ -284,7 +282,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_function")
 
         test_tablemodel.tree.get_node(1).data["function"].name = {1: 1.56}
-        pub.sendMessage("request_update_function", node_id=1, table="function")
+        pub.sendMessage("request_update_function", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_function")
 
@@ -297,7 +295,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data["function"].name = {1: 1.56}
-        pub.sendMessage("request_update_function", node_id=0, table="function")
+        pub.sendMessage("request_update_function", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_function"
@@ -309,7 +307,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_function")
 
-        pub.sendMessage("request_update_function", node_id=100, table="function")
+        pub.sendMessage("request_update_function", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_function")
 
@@ -320,7 +318,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_function")
 
         test_tablemodel.tree.get_node(1).data.pop("function")
-        pub.sendMessage("request_update_function", node_id=1, table="function")
+        pub.sendMessage("request_update_function", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_function")
 

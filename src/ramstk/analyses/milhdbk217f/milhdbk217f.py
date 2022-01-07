@@ -37,7 +37,7 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
 
     .. attention:: The programmer is responsible for ensuring appropriate
         stress analyses (e.g., voltage ratios) are performed and results
-        assigned to the attributes dict prior to calling the MIL-HDBK-217F
+        assigned to the attribute dict prior to calling the MIL-HDBK-217F
         methods.
 
     .. important:: The calling object is responsible for handling any
@@ -53,54 +53,36 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
             attributes = _do_calculate_part_stress(**attributes)
 
         pub.sendMessage("succeed_predict_reliability", attributes=attributes)
+        pub.sendMessage("request_set_all_milhdbk217f_attributes", attributes=attributes)
+        pub.sendMessage("request_set_all_reliability_attributes", attributes=attributes)
     except ValueError:
         pub.sendMessage(
             "fail_predict_reliability",
             error_message=(
-                "Failed to predict MIL-HDBK-217F "
-                "hazard rate for hardware ID {0:d}; "
-                "one or more inputs has a negative or "
-                "missing value. Hardware item category "
-                "ID={1:d}, subcategory ID={2:d}, rated "
-                "power={3:f}, number of "
-                "elements={4:d}."
-            ).format(
-                attributes["hardware_id"],
-                attributes["category_id"],
-                attributes["subcategory_id"],
-                attributes["power_rated"],
-                attributes["n_elements"],
+                f"Failed to predict MIL-HDBK-217F hazard rate for hardware ID "
+                f'{attributes["hardware_id"]}; one or more inputs has a negative or '
+                f"missing value. Hardware item category "
+                f'ID={attributes["category_id"]}, subcategory '
+                f'ID={attributes["subcategory_id"]}, rated '
+                f'power={attributes["power_rated"]}, number of '
+                f'elements={attributes["n_elements"]}.'
             ),
         )
     except ZeroDivisionError:
         pub.sendMessage(
             "fail_predict_reliability",
             error_message=(
-                "Failed to predict MIL-HDBK-217F "
-                "hazard rate for hardware ID {0:d}; "
-                "one or more inputs has a value of "
-                "0.0.  Hardware item category "
-                "ID={1:d}, subcategory ID={2:d}, "
-                "operating ac voltage={3:f}, operating "
-                "DC voltage={4:f}, operating "
-                "temperature={5:f}, temperature "
-                "rise={10:f}, rated maximum "
-                "temperature={6:f}, "
-                "feature size={7:f}, "
-                "surface area={8:f}, and item "
-                "weight={9:f}."
-            ).format(
-                attributes["hardware_id"],
-                attributes["category_id"],
-                attributes["subcategory_id"],
-                attributes["voltage_ac_operating"],
-                attributes["voltage_dc_operating"],
-                attributes["temperature_active"],
-                attributes["temperature_rated_max"],
-                attributes["feature_size"],
-                attributes["area"],
-                attributes["weight"],
-                attributes["temperature_rise"],
+                f"Failed to predict MIL-HDBK-217F hazard rate for hardware ID "
+                f'{attributes["hardware_id"]}; one or more inputs has a value of 0.0.  '
+                f'Hardware item category ID={attributes["category_id"]}, subcategory '
+                f'ID={attributes["subcategory_id"]}, operating ac '
+                f'voltage={attributes["voltage_ac_operating"]}, operating DC '
+                f'voltage={attributes["voltage_dc_operating"]}, operating '
+                f'temperature={attributes["temperature_active"]}, temperature '
+                f'rise={attributes["temperature_rise"]}, rated maximum '
+                f'temperature={attributes["temperature_rated_max"]}, feature '
+                f'size={attributes["feature_size"]}, surface '
+                f'area={attributes["area"]}, and item weight={attributes["weight"]}.'
             ),
         )
 

@@ -20,13 +20,13 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase
-from ramstk.db.common import do_load_variables
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
     RAMSTKActionTable,
     RAMSTKAllocationTable,
     RAMSTKCauseTable,
+    RAMSTKCommonDB,
     RAMSTKControlTable,
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
@@ -130,17 +130,19 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
 
 def do_initialize_databases(
     configuration: RAMSTKUserConfiguration, site_db: BaseDatabase
-) -> RAMSTKProgramDB:
+) -> Tuple[RAMSTKProgramDB, RAMSTKCommonDB]:
     """Initialize the databases for the current instance of RAMSTK.
 
     :param configuration: the instance of the user configuration object to associate
         with this database model.
     :param site_db: the instance of the site data access object to associate with
         this database model.
-    :return: _program_db
-    :rtype: RAMSTKProgramDB
+    :return: _program_db, _site_db
+    :rtype: RAMSTKProgramDB, RAMSTKCommonDB
     """
     _program_db = RAMSTKProgramDB()
+    _site_db = RAMSTKCommonDB()
+
     _program_db.dic_tables["action"] = RAMSTKActionTable()
     _program_db.dic_tables["allocation"] = RAMSTKAllocationTable()
     _program_db.dic_tables["cause"] = RAMSTKCauseTable()
@@ -173,17 +175,20 @@ def do_initialize_databases(
     _program_db.dic_tables["import"] = Import()
     _program_db.user_configuration = configuration
 
-    # noinspection PyTypeChecker
-    _program_db.dic_tables["options"] = RAMSTKSiteInfoTable()
-    _program_db.dic_tables["options"].dao = site_db
-    _program_db.dic_tables["options"].do_select_all({"site_id": 1})
-
     _program_db.dic_views["fmea"] = RAMSTKFMEAView()
-    _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView()
+    _program_db.dic_views["hardwarebom"] = RAMSTKHardwareBoMView(
+        hr_multiplier=configuration.RAMSTK_HR_MULTIPLIER
+    )
     _program_db.dic_views["pof"] = RAMSTKPoFView()
     _program_db.dic_views["usage_profile"] = RAMSTKUsageProfileView()
 
-    return _program_db
+    # noinspection PyTypeChecker
+    _site_db.common_dao = site_db
+    _site_db.dic_tables["options"] = RAMSTKSiteInfoTable()
+    _site_db.dic_tables["options"].dao = site_db
+    _site_db.dic_tables["options"].do_select_all({"site_id": 1})
+
+    return _program_db, _site_db
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -332,17 +337,17 @@ def the_one_ring() -> None:
 
     site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
 
-    do_load_variables(site_db, user_configuration)
-
     pub.sendMessage(
         "do_log_info_msg",
         logger_name="INFO",
         message="Initializing the RAMSTK application.",
     )
-
-    _program_db = do_initialize_databases(  # pylint: disable=unused-variable
+    print(site_db)
+    _program_db, _site_db = do_initialize_databases(  # pylint: disable=unused-variable
         user_configuration, site_db
     )
+    print(_site_db, _site_db.common_dao)
+    user_configuration = _site_db.do_load_site_variables(user_configuration)
 
     pub.sendMessage(
         "do_log_info_msg",

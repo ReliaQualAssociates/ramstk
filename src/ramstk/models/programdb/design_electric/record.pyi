@@ -1,9 +1,17 @@
 # Standard Library Imports
-from typing import Any
+from typing import Any, Dict, List, Tuple
+
+# Third Party Imports
+from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.analyses import derating, stress
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
+
+def do_check_overstress(
+    overstress: Dict[str, List[float]], stress_type: str
+) -> Tuple[bool, str]: ...
 
 class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __defaults__: Any
@@ -65,4 +73,9 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     voltage_ratio: Any
     weight: Any
     years_in_production: Any
-    def get_attributes(self): ...
+    def get_attributes(self) -> Dict[str, Any]: ...
+    def do_calculate_current_ratio(self) -> None: ...
+    def do_calculate_power_ratio(self) -> None: ...
+    def do_calculate_voltage_ratio(self) -> None: ...
+    def do_derating_analysis(self, stress_limits: List[float]) -> None: ...
+    def do_stress_analysis(self, category_id: int) -> None: ...

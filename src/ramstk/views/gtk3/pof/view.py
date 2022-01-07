@@ -210,7 +210,7 @@ class PoFWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["node_id"]
+        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     def __do_load_test_method_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with test methods.

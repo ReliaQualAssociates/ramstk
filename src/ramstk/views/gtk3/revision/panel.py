@@ -42,7 +42,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "revision": super().do_load_treerow,
         }
 

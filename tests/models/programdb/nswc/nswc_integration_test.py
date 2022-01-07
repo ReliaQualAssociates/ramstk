@@ -66,11 +66,10 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(node_id).data["nswc"], RAMSTKNSWCRecord)
-        assert tree.get_node(node_id).data["nswc"].hardware_id == 8
+        assert isinstance(tree.get_node(8).data["nswc"], RAMSTKNSWCRecord)
+        assert tree.get_node(8).data["nswc"].hardware_id == 8
         print("\033[36m\nsucceed_insert_nswc topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -89,6 +88,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(8) is None
 
         test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_nswc", attributes=test_attributes)
 
         assert isinstance(
@@ -106,6 +107,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 9
         pub.sendMessage("request_insert_nswc", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(9) is None
@@ -205,7 +208,7 @@ class TestUpdateMethods:
         _nswc = test_tablemodel.do_select(2)
         _nswc.Cac = 5
         _nswc.Calt = 81
-        pub.sendMessage("request_update_nswc", node_id=2, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_nswc")
 
@@ -237,7 +240,7 @@ class TestUpdateMethods:
 
         _nswc = test_tablemodel.do_select(1)
         _nswc.Cac = {1: 2}
-        pub.sendMessage("request_update_nswc", node_id=1, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_nswc")
 
@@ -248,7 +251,7 @@ class TestUpdateMethods:
 
         _nswc = test_tablemodel.do_select(1)
         _nswc.Calt = {1: 2}
-        pub.sendMessage("request_update_nswc", node_id=0, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_nswc"
@@ -259,7 +262,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_nswc")
 
-        pub.sendMessage("request_update_nswc", node_id=100, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_nswc")
 
@@ -269,7 +272,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_nswc")
 
         test_tablemodel.tree.get_node(1).data.pop("nswc")
-        pub.sendMessage("request_update_nswc", node_id=1, table="nswc")
+        pub.sendMessage("request_update_nswc", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_nswc")
 

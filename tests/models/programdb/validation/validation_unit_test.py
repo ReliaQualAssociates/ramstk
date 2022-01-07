@@ -104,7 +104,7 @@ class TestCreateModels:
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_validation")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_validation"
+            test_tablemodel.do_update_all, "request_update_all_validations"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_attributes, "request_get_validation_attributes"
@@ -310,7 +310,7 @@ class TestAnalysisMethods:
         _validation.cost_average = 2200.0
         _validation.cost_maximum = 4500.0
         _validation.confidence = 95.0
-        test_tablemodel.do_update(1, table="validation")
+        test_tablemodel.do_update(1)
 
         test_tablemodel._do_calculate_task(node_id=1)
 

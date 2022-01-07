@@ -45,9 +45,6 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_hardware")
     pub.unsubscribe(dut.do_insert, "request_insert_hardware")
-    pub.unsubscribe(dut.do_calculate_cost, "request_calculate_total_cost")
-    pub.unsubscribe(dut.do_calculate_part_count, "request_calculate_total_part_count")
-    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     # Delete the device under test.
     del dut
@@ -56,18 +53,18 @@ def test_tablemodel(mock_program_dao):
 @pytest.fixture(scope="function")
 def test_viewmodel():
     """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
+    # Create the device under test (dut).
     dut = RAMSTKHardwareBoMView()
 
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.on_insert, "succeed_insert_hardware")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_electric")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_design_mechanic")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_milhdbk217f")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_nswc")
-    pub.unsubscribe(dut.on_insert, "succeed_insert_reliability")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_insert_reliability")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
     pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
@@ -81,12 +78,8 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_reliability")
     pub.unsubscribe(dut.do_calculate_hardware, "request_calculate_hardware")
-    pub.unsubscribe(
-        dut.do_calculate_power_dissipation, "request_calculate_power_dissipation"
-    )
-    pub.unsubscribe(
-        dut.do_predict_active_hazard_rate, "request_predict_active_hazard_rate"
-    )
+    pub.unsubscribe(dut.do_make_composite_ref_des, "request_make_comp_ref_des")
+
     # Delete the device under test.
     del dut
 
@@ -109,6 +102,8 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
+            "parent_id",
+            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKHardwareRecord
@@ -124,7 +119,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_hardware"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_hardware"
+            test_tablemodel.do_update_all, "request_update_all_hardwares"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_hardware_tree"
@@ -151,6 +146,88 @@ class TestCreateModels:
             "nswc": test_viewmodel._do_load_nswc,
             "reliability": test_viewmodel._do_load_reliability,
         }
+        assert test_viewmodel._dic_stress_limits == {
+            1: [
+                0.8,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            2: [
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+            ],
+            3: [
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+                1.0,
+                1.0,
+            ],
+            4: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                0.6,
+                0.9,
+            ],
+            5: [
+                0.6,
+                0.9,
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+            ],
+            6: [
+                0.75,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            7: [
+                0.75,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            8: [
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+            ],
+            9: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+            10: [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+            ],
+        }
         assert isinstance(test_viewmodel._dic_trees["hardware"], Tree)
         assert isinstance(test_viewmodel._dic_trees["design_electric"], Tree)
         assert isinstance(test_viewmodel._dic_trees["design_mechanic"], Tree)
@@ -165,16 +242,20 @@ class TestCreateModels:
             "nswc",
             "reliability",
         ]
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_hardware")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_hardware")
         assert pub.isSubscribed(
-            test_viewmodel.on_insert, "succeed_insert_design_electric"
+            test_viewmodel.do_set_tree, "succeed_insert_design_electric"
         )
         assert pub.isSubscribed(
-            test_viewmodel.on_insert, "succeed_insert_design_mechanic"
+            test_viewmodel.do_set_tree, "succeed_insert_design_mechanic"
         )
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_milhdbk217f")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_nswc")
-        assert pub.isSubscribed(test_viewmodel.on_insert, "succeed_insert_reliability")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_milhdbk217f"
+        )
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_nswc")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_insert_reliability"
+        )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_retrieve_hardwares"
         )
@@ -204,6 +285,9 @@ class TestCreateModels:
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_nswc")
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_delete_reliability"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_make_composite_ref_des, "request_make_comp_ref_des"
         )
 
 
@@ -261,7 +345,7 @@ class TestInsertMethods:
 
         assert isinstance(_new_record, RAMSTKHardwareRecord)
         assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 1
+        assert _new_record.hardware_id == 4
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
@@ -279,7 +363,9 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(4).data["hardware"].hardware_id == 4
 
     @pytest.mark.unit
-    def test_do_make_comp_ref_des(self, test_attributes, test_tablemodel):
+    def test_do_make_comp_ref_des(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should create the composite reference designator."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -289,7 +375,7 @@ class TestInsertMethods:
         _hardware = test_tablemodel.do_select(2)
         _hardware.ref_des = "A9"
 
-        test_tablemodel.do_make_composite_ref_des(1)
+        test_viewmodel.do_make_composite_ref_des(1)
 
         assert test_tablemodel.do_select(1).comp_ref_des == "SS8"
         assert test_tablemodel.do_select(2).comp_ref_des == "SS8:A9"
@@ -359,6 +445,8 @@ class TestGetterSetterMethods:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.alt_part_number == ""
         assert test_recordmodel.attachments == ""
@@ -403,6 +491,8 @@ class TestGetterSetterMethods:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["nsn"] == ""
 
@@ -413,16 +503,20 @@ class TestGetterSetterMethods:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_tablemodel", "test_viewmodel")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
-    def test_do_calculate_cost_part(self, test_attributes, test_tablemodel):
+    def test_do_calculate_cost_part(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total cost for a part."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -432,13 +526,15 @@ class TestAnalysisMethods:
         _hardware.cost = 12.98
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_cost(3)
+        test_viewmodel.do_calculate_cost(3)
         _attributes = test_tablemodel.do_select(3).get_attributes()
 
         assert _attributes["total_cost"] == 25.96
 
     @pytest.mark.unit
-    def test_do_calculate_cost_assembly(self, test_attributes, test_tablemodel):
+    def test_do_calculate_cost_assembly(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total cost of an assembly."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -453,15 +549,35 @@ class TestAnalysisMethods:
         _hardware = test_tablemodel.do_select(3)
         _hardware.cost_type_id = 1
         _hardware.part = 1
-        _hardware.total_cost = 25.96
+        _hardware.cost = 12.98
 
-        test_tablemodel.do_calculate_cost(1)
+        test_viewmodel.do_calculate_cost(1)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
-        assert _attributes["total_cost"] == 77.88
+        assert _attributes["total_cost"] == 38.94
 
     @pytest.mark.unit
-    def test_do_calculate_part_count_part(self, test_attributes, test_tablemodel):
+    def test_do_calculate_cost_no_type_id(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
+        """should calculate the total cost for a part."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _hardware = test_tablemodel.do_select(3)
+        _hardware.cost_type_id = 0
+        _hardware.part = 1
+        _hardware.cost = 12.98
+        _hardware.quantity = 2
+
+        test_viewmodel.do_calculate_cost(3)
+        _attributes = test_tablemodel.do_select(3).get_attributes()
+
+        assert _attributes["total_cost"] == 0.0
+
+    @pytest.mark.unit
+    def test_do_calculate_part_count_part(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total part count of a part."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -469,13 +585,15 @@ class TestAnalysisMethods:
         _hardware.part = 1
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_part_count(3)
+        test_viewmodel.do_calculate_part_count(3)
         _attributes = test_tablemodel.do_select(3).get_attributes()
 
         assert _attributes["total_part_count"] == 2
 
     @pytest.mark.unit
-    def test_do_calculate_part_count_assembly(self, test_attributes, test_tablemodel):
+    def test_do_calculate_part_count_assembly(
+        self, test_attributes, test_tablemodel, test_viewmodel
+    ):
         """should calculate the total part count of an assembly."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
@@ -489,7 +607,7 @@ class TestAnalysisMethods:
         _hardware.part = 1
         _hardware.quantity = 2
 
-        test_tablemodel.do_calculate_part_count(1)
+        test_viewmodel.do_calculate_part_count(1)
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["total_part_count"] == 6

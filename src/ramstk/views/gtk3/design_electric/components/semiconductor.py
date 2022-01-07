@@ -270,7 +270,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbPackage,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The package type for the semiconductor."),
@@ -283,7 +283,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbType,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The type of semiconductor."),
@@ -296,7 +296,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbApplication,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The application of the semiconductor."),
@@ -309,7 +309,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The method of construction of the semiconductor."),
@@ -322,7 +322,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbMatching,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The matching network of the semiconductor."),
@@ -335,7 +335,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtFrequencyOperating,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _("The operating frequency of the semiconductor."),
@@ -348,7 +348,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtNElements,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -363,7 +363,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtThetaJC,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0.0,
                 {
                     "tooltip": _(
@@ -423,18 +423,23 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected semiconductor.
 
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         self.cmbPackage.set_sensitive(False)
         self.txtThetaJC.set_sensitive(False)
 
@@ -453,7 +458,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             )
             self.txtThetaJC.set_sensitive(True)
             self.txtThetaJC.do_update(
-                str(self.fmt.format(attributes["theta_jc"])),
+                str(self.fmt.format(attributes["theta_jc"] or 0.0)),
                 signal="changed",
             )
 

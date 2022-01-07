@@ -742,7 +742,6 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         # Initialize private dict instance attributes.
 
         # Initialize private list instance attributes.
-        self._lst_labels: List[str] = [_("Select format file to edit:")]
 
         # Initialize private scalar instance attributes.
         self._configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
@@ -953,7 +952,7 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         _scrollwindow = self.get_child()
         self.remove(_scrollwindow)
 
-        _label = RAMSTKLabel(self._lst_labels[0])
+        _label = RAMSTKLabel(_("Select format file to edit:"))
         _x_pos = _label.get_attribute("width")
 
         _fixed: Gtk.Fixed = Gtk.Fixed()

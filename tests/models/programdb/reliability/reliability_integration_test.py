@@ -38,22 +38,6 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_reliability")
     pub.unsubscribe(dut.do_insert, "request_insert_reliability")
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_active, "request_calculate_hazard_rate_active"
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_dormant,
-        "request_calculate_hazard_rate_dormant",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_logistics,
-        "request_calculate_hazard_rate_logistics",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_mission, "request_calculate_hazard_rate_mission"
-    )
-    pub.unsubscribe(dut.do_calculate_mtbf, "request_calculate_mtbf")
-    pub.unsubscribe(dut.do_calculate_reliability, "request_calculate_reliability")
 
     # Delete the device under test.
     del dut
@@ -82,13 +66,10 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(node_id).data["reliability"], RAMSTKReliabilityRecord
-        )
-        assert tree.get_node(node_id).data["reliability"].hardware_id == 8
+        assert isinstance(tree.get_node(8).data["reliability"], RAMSTKReliabilityRecord)
+        assert tree.get_node(8).data["reliability"].hardware_id == 8
         print("\033[36m\nsucceed_insert_reliability topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -107,6 +88,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(8) is None
 
         test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_reliability", attributes=test_attributes)
 
         assert isinstance(
@@ -124,6 +107,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 9
         pub.sendMessage("request_insert_reliability", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(9) is None
@@ -296,7 +281,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_reliability")
 
-        pub.sendMessage("request_update_reliability", node_id=100, table="reliability")
+        pub.sendMessage("request_update_reliability", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_reliability")
 
@@ -306,7 +291,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_reliability")
 
         test_tablemodel.tree.get_node(1).data.pop("reliability")
-        pub.sendMessage("request_update_reliability", node_id=1, table="reliability")
+        pub.sendMessage("request_update_reliability", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_reliability")
 
@@ -412,146 +397,3 @@ class TestGetterSetter:
         )
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_reliability_tree")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestAnalysisMethods:
-    """Class for testing analytical methods."""
-
-    def on_request_predict_hazard_rate(self, node_id):
-        assert node_id == 1
-        print("\033[36m\nrequest_predict_active_hazard_rate topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_calculate_hazard_rate_active_predict(self, test_tablemodel):
-        """should calculate the active hazard rate."""
-        pub.subscribe(
-            self.on_request_predict_hazard_rate, "request_predict_active_hazard_rate"
-        )
-
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 1
-        _reliability.hazard_rate_specified = 0.000056
-
-        pub.sendMessage(
-            "request_calculate_hazard_rate_active",
-            node_id=1,
-            duty_cycle=100.0,
-            quantity=1,
-            multiplier=1.0,
-            time=0.0,
-        )
-
-        pub.unsubscribe(
-            self.on_request_predict_hazard_rate, "request_predict_active_hazard_rate"
-        )
-
-    @pytest.mark.integration
-    def test_do_calculate_hazard_rate_active(self, test_tablemodel):
-        """should calculate the active hazard rate."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_specified = 0.000056
-
-        pub.sendMessage(
-            "request_calculate_hazard_rate_active",
-            node_id=1,
-            duty_cycle=100.0,
-            quantity=1,
-            multiplier=1.0,
-            time=0.0,
-        )
-
-        assert _reliability.hazard_rate_active == 0.000056
-
-    @pytest.mark.integration
-    def test_do_calculate_hazard_rate_dormant(self, test_tablemodel):
-        """should calculate the dormant hazard rate."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_active = 0.000056
-
-        pub.sendMessage(
-            "request_calculate_hazard_rate_dormant",
-            node_id=1,
-            category_id=2,
-            subcategory_id=2,
-            env_active=3,
-            env_dormant=2,
-        )
-
-        assert _reliability.hazard_rate_dormant == 2.24e-06
-
-    @pytest.mark.integration
-    def test_do_calculate_hazard_rate_logistics(self, test_tablemodel):
-        """should calculate the logistics hazard rate."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_active = 0.000056
-        _reliability.hazard_rate_dormant = 2.24e-06
-        _reliability.hazard_rate_software = 0.000032
-
-        pub.sendMessage(
-            "request_calculate_hazard_rate_logistics",
-            node_id=1,
-        )
-
-        assert _reliability.hazard_rate_logistics == 9.024e-05
-
-    @pytest.mark.integration
-    def test_do_calculate_hazard_rate_mission(self, test_tablemodel):
-        """should calculate the mission hazard rate."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_active = 0.000056
-        _reliability.hazard_rate_dormant = 2.24e-06
-        _reliability.hazard_rate_software = 0.000032
-
-        pub.sendMessage(
-            "request_calculate_hazard_rate_mission",
-            node_id=1,
-            duty_cycle=0.35,
-        )
-
-        assert _reliability.hazard_rate_mission == 5.3056e-05
-
-    @pytest.mark.integration
-    def test_do_calculate_mtbf(self, test_tablemodel):
-        """should calculate the logistics and mission mtbf."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_logistics = 9.024e-05
-        _reliability.hazard_rate_mission = 5.3056e-05
-
-        pub.sendMessage(
-            "request_calculate_mtbf",
-            node_id=1,
-            multiplier=1.0,
-        )
-
-        assert _reliability.mtbf_logistics == pytest.approx(11081.5602837)
-        assert _reliability.mtbf_mission == pytest.approx(18848.0096502)
-
-    @pytest.mark.integration
-    def test_do_calculate_reliability(self, test_tablemodel):
-        """should calculate the logistics and mission reliability."""
-        _reliability = test_tablemodel.do_select(1)
-        _reliability.hardware_id = 1
-        _reliability.hazard_rate_type_id = 2
-        _reliability.hazard_rate_logistics = 9.024e-05
-        _reliability.hazard_rate_mission = 5.3056e-05
-
-        pub.sendMessage(
-            "request_calculate_reliability",
-            node_id=1,
-            time=1.0,
-        )
-
-        assert _reliability.reliability_logistics == pytest.approx(0.9999098)
-        assert _reliability.reliability_mission == pytest.approx(0.9999469)

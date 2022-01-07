@@ -7,10 +7,17 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKReliability Record Model."""
 
+# Standard Library Imports
+from math import exp
+from typing import Dict, Union
+
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
+from ramstk.analyses import dormancy
+from ramstk.analyses.milhdbk217f import milhdbk217f
+from ramstk.analyses.statistics import exponential, lognormal, normal, weibull
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
@@ -225,7 +232,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve RAMSTKReliability attributes from RAMSTK Program database.
 
         :return: {hardware_id, add_adj_factor, availability_logistics,
@@ -292,3 +299,177 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         }
 
         return _attributes
+
+    def do_calculate_hazard_rate_active(
+        self,
+        multiplier: float,
+        attributes: Dict[str, Union[float, int, str]],
+        time: float = 1.0,
+    ) -> None:
+        """Calculate the active hazard rate.
+
+        :param multiplier: the time multiplier for hazard rates.  Typically set to
+            1.0 to work with failures/hour or 1000000.0 to work with failures/10^6
+            hours.  Set the value in RAMSTK.toml.
+        :param attributes: the aggregate attribute dict for the Hardware ID
+            associated with the selected record.
+        :param time: the time at which to calculate the hazard rate.  Applicable to
+            non-EXP hazard functions.
+        :return: _hazard_rate_active; the active hazard rate.
+        :rtype: float
+        """
+        self.hazard_rate_active = 0.0
+
+        if self.hazard_rate_type_id == 1:
+            self.hazard_rate_active = self.do_predict_active_hazard_rate(attributes)
+        elif self.hazard_rate_type_id == 2:
+            self.hazard_rate_active = self.hazard_rate_specified
+        elif self.hazard_rate_type_id == 3:
+            self.hazard_rate_active = exponential.get_hazard_rate(self.mtbf_specified)
+        elif self.hazard_rate_type_id == 4:
+            _function = {
+                1: exponential.get_hazard_rate(
+                    self.scale_parameter,
+                    location=0.0,
+                ),
+                2: exponential.get_hazard_rate(
+                    self.scale_parameter,
+                    location=self.location_parameter,
+                ),
+                3: lognormal.get_hazard_rate(
+                    self.shape_parameter,
+                    time,
+                    location=0.0,
+                    scale=self.scale_parameter,
+                ),
+                4: lognormal.get_hazard_rate(
+                    self.shape_parameter,
+                    time,
+                    location=self.location_parameter,
+                    scale=self.scale_parameter,
+                ),
+                5: normal.get_hazard_rate(
+                    self.location_parameter,
+                    self.scale_parameter,
+                    time,
+                ),
+                6: weibull.get_hazard_rate(
+                    self.shape_parameter,
+                    self.scale_parameter,
+                    time,
+                    location=0.0,
+                ),
+                7: weibull.get_hazard_rate(
+                    self.shape_parameter,
+                    self.scale_parameter,
+                    time,
+                    location=self.location_parameter,
+                ),
+            }[self.failure_distribution_id]
+            self.hazard_rate_active = _function
+
+        self.hazard_rate_active = (
+            (self.hazard_rate_active + self.add_adj_factor)
+            * self.mult_adj_factor
+            * (attributes["duty_cycle"] / 100.0)
+            * attributes["quantity"]
+            / multiplier
+        )
+
+    def do_calculate_hazard_rate_dormant(
+        self,
+        category_id: int,
+        subcategory_id: int,
+        env_active: int,
+        env_dormant: int,
+    ) -> None:
+        """Calculate the dormant hazard rate.
+
+        :param category_id: the ID of the component category.
+        :param subcategory_id: the ID of the component subcategory.
+        :param env_active: the ID of the active environment.
+        :param env_dormant: the ID of the dormant environment.
+        :return: _hazard_rate_dormant; the dormant hazard rate.
+        :rtype: float
+        """
+        self.hazard_rate_dormant = dormancy.do_calculate_dormant_hazard_rate(
+            [
+                category_id,
+                subcategory_id,
+                self.hazard_rate_active,
+            ],
+            [
+                env_active,
+                env_dormant,
+            ],
+        )
+
+    def do_calculate_hazard_rate_logistics(self) -> None:
+        """Calculate the logistics hazard rate.
+
+        :return: None
+        :rtype: None
+        """
+        self.hazard_rate_logistics = (
+            self.hazard_rate_active
+            + self.hazard_rate_dormant
+            + self.hazard_rate_software
+        )
+
+    def do_calculate_hazard_rate_mission(self, duty_cycle: float) -> None:
+        """Calculate the logistics hazard rate.
+
+        :param duty_cycle: the duty cycle of the item record.
+        :return: None
+        :rtype: None
+        """
+        self.hazard_rate_mission = (
+            (self.hazard_rate_active * duty_cycle)
+            + (self.hazard_rate_dormant * (1 - duty_cycle))
+            + self.hazard_rate_software
+        )
+
+    def do_calculate_mtbf(self) -> None:
+        """Calculate the logistics and mission MTBF.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
+        except ZeroDivisionError:
+            self.mtbf_logistics = 0.0
+
+        try:
+            self.mtbf_mission = 1.0 / self.hazard_rate_mission
+        except ZeroDivisionError:
+            self.mtbf_mission = 0.0
+
+    def do_calculate_reliability(self, time: float) -> None:
+        """Calculate the reliability related metrics.
+
+        :param time: the time at which to calculate the reliabilities.
+        :return: None
+        :rtype: None
+        """
+        self.reliability_logistics = exp(-1.0 * self.hazard_rate_logistics * time)
+        self.reliability_mission = exp(-1.0 * self.hazard_rate_mission * time)
+
+    def do_predict_active_hazard_rate(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> float:
+        """Request that the hazard rate prediction be performed.
+
+        :param attributes: the aggregate attribute dict for the Hardware ID
+            associated with the record.
+        :return: None
+        :rtype: None
+        """
+        _hazard_rate_active = 0.0
+
+        if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]:
+            _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
+                **attributes
+            )
+
+        return _hazard_rate_active

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.hazards.table.py is part of The RAMSTK Project
+#       ramstk.models.programdb.hazard.table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hazards Package Table Model."""
+"""Hazard Package Table Model."""
 
 # Standard Library Imports
 from collections import OrderedDict
@@ -48,6 +48,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             "revision_id",
             "function_id",
             "hazard_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -65,17 +67,21 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
-    ) -> object:
+    ) -> RAMSTKHazardRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
+        attributes["hazard_id"] = self.last_id + 1
+        attributes["parent_id"] = attributes["function_id"]
+        attributes["record_id"] = attributes["hazard_id"]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.function_id = attributes["function_id"]
-        _new_record.hazard_id = self.last_id + 1
+        _new_record.hazard_id = attributes["hazard_id"]
 
         return _new_record
 
@@ -90,8 +96,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
         self._do_calculate_user_defined(node_id)
 
         pub.sendMessage(
-            "succeed_calculate_fha",
-            node_id=node_id,
+            f"succeed_calculate_{self._tag}",
+            tree=self.tree,
         )
 
     def _do_calculate_hri(self, node_id: int) -> None:

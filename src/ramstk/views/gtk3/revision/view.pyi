@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -22,29 +22,26 @@ class RevisionModuleView(RAMSTKModuleView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlPanel: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlPanel: RAMSTKPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def do_request_delete(self, __button: Gtk.ToolButton) -> None: ...
     _record_id: Any
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
-    def _on_insert_revision(
-        self, node_id: int = ..., tree: treelib.Tree = ...
-    ) -> None: ...
     def __make_ui(self) -> None: ...
 
 class RevisionWorkView(RAMSTKWorkView):
     _tag: str
-    _tablabel: Any
-    _tabtooltip: Any
-    _lst_tooltips: Any
-    _pnlGeneralData: Any
+    _tablabel: str
+    _tabtooltip: str
+    _lst_tooltips: List[str]
+    _pnlGeneralData: RAMSTKPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    _record_id: Any
+    _record_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...

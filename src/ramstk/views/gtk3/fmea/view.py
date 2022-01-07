@@ -281,7 +281,7 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["node_id"]
+        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware item hazard rate.

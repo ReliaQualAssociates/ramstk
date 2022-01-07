@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -24,15 +24,15 @@ class RequirementModuleView(RAMSTKModuleView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlPanel: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlPanel: RequirementTreePanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def do_request_delete(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
@@ -40,15 +40,15 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlGeneralData: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlGeneralData: RequirementGeneralDataPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def _do_request_create_code(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
@@ -56,14 +56,14 @@ class RequirementAnalysisView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _pnlClarity: Any
-    _pnlCompleteness: Any
-    _pnlConsistency: Any
-    _pnlVerifiability: Any
+    _pnlClarity: RequirementClarityPanel
+    _pnlCompleteness: RequirementCompletenessPanel
+    _pnlConsistency: RequirementConsistencyPanel
+    _pnlVerifiability: RequirementVerifiabilityPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...

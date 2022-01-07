@@ -40,23 +40,6 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_reliability")
     pub.unsubscribe(dut.do_insert, "request_insert_reliability")
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_active, "request_calculate_hazard_rate_active"
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_dormant,
-        "request_calculate_hazard_rate_dormant",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_logistics,
-        "request_calculate_hazard_rate_logistics",
-    )
-    pub.unsubscribe(
-        dut.do_calculate_hazard_rate_mission,
-        "request_calculate_hazard_rate_mission",
-    )
-    pub.unsubscribe(dut.do_calculate_mtbf, "request_calculate_mtbf")
-    pub.unsubscribe(dut.do_calculate_reliability, "request_calculate_reliability")
 
     # Delete the device under test.
     del dut
@@ -116,7 +99,7 @@ class TestCreateModels:
         assert test_recordmodel.lambda_b == 0.0
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_table_model_create(self, test_tablemodel):
         """should return a table manager instance."""
         assert isinstance(test_tablemodel, RAMSTKReliabilityTable)
         assert isinstance(test_tablemodel.tree, Tree)
@@ -129,6 +112,8 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
+            "parent_id",
+            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKReliabilityRecord
@@ -144,7 +129,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_reliability"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_reliability"
+            test_tablemodel.do_update_all, "request_update_all_reliabilitys"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_reliability_tree"
@@ -209,13 +194,15 @@ class TestInsertMethods:
 
         assert isinstance(_new_record, RAMSTKReliabilityRecord)
         assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 1
+        assert _new_record.hardware_id == 4
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 4
@@ -329,6 +316,72 @@ class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
+    def test_do_calculate_hazard_rate_active_predicted(
+        self, test_attributes, test_tablemodel
+    ):
+        """should calculate the active hazard rate when hazard rate is specified."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _reliability = test_tablemodel.do_select(1)
+        _reliability.hardware_id = 1
+        _reliability.hazard_rate_method_id = 2
+        _reliability.hazard_rate_type_id = 1
+        _reliability.add_adj_factor = 0.0
+        _reliability.mult_adj_factor = 1.0
+        test_attributes["hazard_rate_method_id"] = 2
+        test_attributes["hazard_rate_type_id"] = 1
+        test_attributes["category_id"] = 1
+        test_attributes["subcategory_id"] = 1
+        test_attributes["application_id"] = 2
+        test_attributes["area"] = 0.5
+        test_attributes["environment_active_id"] = 3
+        test_attributes["family_id"] = 2
+        test_attributes["feature_size"] = 0.8
+        test_attributes["manufacturing_id"] = 1
+        test_attributes["n_elements"] = 100
+        test_attributes["n_active_pins"] = 32
+        test_attributes["package_id"] = 1
+        test_attributes["power_operating"] = 0.038
+        test_attributes["technology_id"] = 1
+        test_attributes["temperature_case"] = 48.3
+        test_attributes["theta_jc"] = 125
+        test_attributes["type_id"] = 1
+        test_attributes["voltage_esd"] = 2000
+        test_attributes["years_in_production"] = 3
+        test_attributes["piE"] = 1.0
+        test_attributes["piQ"] = 2.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["part"] = 1
+        test_attributes["quantity"] = 1
+
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
+
+        assert _reliability.hazard_rate_active == pytest.approx(0.08514244)
+
+    @pytest.mark.unit
+    def test_do_calculate_hazard_rate_active_predicted_assembly(
+        self, test_attributes, test_tablemodel
+    ):
+        """should calculate the active hazard rate when hazard rate is specified."""
+        test_tablemodel.do_select_all(attributes=test_attributes)
+
+        _reliability = test_tablemodel.do_select(1)
+        _reliability.hardware_id = 1
+        _reliability.hazard_rate_method_id = 2
+        _reliability.hazard_rate_type_id = 1
+        _reliability.add_adj_factor = 0.0
+        _reliability.mult_adj_factor = 1.0
+        test_attributes["hazard_rate_method_id"] = 2
+        test_attributes["hazard_rate_type_id"] = 1
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["part"] = 0
+        test_attributes["quantity"] = 1
+
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
+
+        assert _reliability.hazard_rate_active == 0.0
+
+    @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_specified_ht(
         self, test_attributes, test_tablemodel
     ):
@@ -341,8 +394,10 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_specified = 0.0032
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
 
         assert _reliability.hazard_rate_active == pytest.approx(0.0032)
 
@@ -359,8 +414,10 @@ class TestAnalysisMethods:
         _reliability.mtbf_specified = 12632.0
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
 
         assert _reliability.hazard_rate_active == pytest.approx(7.9164028e-05)
 
@@ -379,17 +436,19 @@ class TestAnalysisMethods:
         _reliability.location_parameter = 0.0
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
         # One-parameter EXP.
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0)
-        assert _reliability.hazard_rate_active == 0.0001
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
+        assert _reliability.hazard_rate_active == pytest.approx(0.0001)
 
         # Two-parameter EXP.
         _reliability.failure_distribution_id = 2
         _reliability.scale_parameter = 1000.0
         _reliability.location_parameter = 56.0
 
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
         assert _reliability.hazard_rate_active == pytest.approx(0.0009469697)
 
     @pytest.mark.unit
@@ -408,16 +467,18 @@ class TestAnalysisMethods:
         _reliability.location_parameter = 0.0
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
         # Two-parameter LOGN.
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0, time=4.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes, time=4.0)
         assert _reliability.hazard_rate_active == pytest.approx(0.6610467)
 
         # Three-parameter LOGN.
         _reliability.failure_distribution_id = 4
         _reliability.location_parameter = 1.85
 
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0, time=4.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes, time=4.0)
         assert _reliability.hazard_rate_active == pytest.approx(1.5117773)
 
     @pytest.mark.unit
@@ -436,9 +497,11 @@ class TestAnalysisMethods:
         _reliability.location_parameter = 100.0
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
         # Two-parameter NORM.
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0, time=85.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes, time=85.0)
         assert _reliability.hazard_rate_active == pytest.approx(0.01387898)
 
     @pytest.mark.unit
@@ -457,15 +520,17 @@ class TestAnalysisMethods:
         _reliability.location_parameter = 0.0
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
         # Two-parameter WEI.
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0, time=105.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes, time=105.0)
         assert _reliability.hazard_rate_active == pytest.approx(0.0235972)
 
         # Three-parameter WEI.
         _reliability.failure_distribution_id = 7
         _reliability.location_parameter = 18.5
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0, time=105.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes, time=105.0)
         assert _reliability.hazard_rate_active == pytest.approx(0.02874279)
 
     @pytest.mark.unit
@@ -479,8 +544,10 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_specified = 0.0032
         _reliability.add_adj_factor = 0.0
         _reliability.mult_adj_factor = 1.0
+        test_attributes["duty_cycle"] = 100.0
+        test_attributes["quantity"] = 1
 
-        test_tablemodel.do_calculate_hazard_rate_active(1, 100.0, 1, 1.0)
+        _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
 
         assert _reliability.hazard_rate_active == 0.0
 
@@ -495,7 +562,7 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_dormant = 0.000128
         _reliability.hazard_rate_software = 0.00005
 
-        test_tablemodel.do_calculate_hazard_rate_logistics(1)
+        _reliability.do_calculate_hazard_rate_logistics()
 
         assert _reliability.hazard_rate_logistics == pytest.approx(0.003378)
 
@@ -510,7 +577,7 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_dormant = 0.000128
         _reliability.hazard_rate_software = 0.00005
 
-        test_tablemodel.do_calculate_hazard_rate_mission(1, 0.55)
+        _reliability.do_calculate_hazard_rate_mission(0.55)
 
         assert _reliability.hazard_rate_mission == pytest.approx(0.0018676)
 
@@ -525,7 +592,7 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_logistics = 0.003378
         _reliability.hazard_rate_mission = 0.0018676
 
-        test_tablemodel.do_calculate_mtbf(1, 1.0)
+        _reliability.do_calculate_mtbf()
 
         assert _reliability.mtbf_logistics == pytest.approx(296.03315571)
         assert _reliability.mtbf_mission == pytest.approx(535.4465624)
@@ -541,7 +608,7 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_logistics = 0.0
         _reliability.hazard_rate_mission = 0.0018676
 
-        test_tablemodel.do_calculate_mtbf(1, 1.0)
+        _reliability.do_calculate_mtbf()
 
         assert _reliability.mtbf_logistics == 0.0
         assert _reliability.mtbf_mission == pytest.approx(535.4465624)
@@ -557,7 +624,7 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_logistics = 0.003378
         _reliability.hazard_rate_mission = 0.0
 
-        test_tablemodel.do_calculate_mtbf(1, 1.0)
+        _reliability.do_calculate_mtbf()
 
         assert _reliability.mtbf_logistics == pytest.approx(296.03315571)
         assert _reliability.mtbf_mission == 0.0
@@ -572,6 +639,6 @@ class TestAnalysisMethods:
         _reliability.hazard_rate_logistics = 0.003378
         _reliability.hazard_rate_mission = 0.0018676
 
-        test_tablemodel.do_calculate_reliability(1, 1.0)
+        _reliability.do_calculate_reliability(1.0)
         assert _reliability.reliability_logistics == pytest.approx(0.9966277)
         assert _reliability.reliability_mission == pytest.approx(0.9981341)

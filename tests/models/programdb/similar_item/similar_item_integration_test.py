@@ -72,15 +72,14 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["similar_item"], RAMSTKSimilarItemRecord
+            tree.get_node(8).data["similar_item"], RAMSTKSimilarItemRecord
         )
-        assert tree.get_node(node_id).data["similar_item"].revision_id == 1
-        assert tree.get_node(node_id).data["similar_item"].hardware_id == 8
-        assert tree.get_node(node_id).data["similar_item"].parent_id == 2
+        assert tree.get_node(8).data["similar_item"].revision_id == 1
+        assert tree.get_node(8).data["similar_item"].hardware_id == 8
+        assert tree.get_node(8).data["similar_item"].parent_id == 2
         print("\033[36m\nsucceed_insert_similar_item topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -256,7 +255,7 @@ class TestUpdateMethods:
 
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_description_1 = "This is a description of the change."
-        pub.sendMessage("request_update_similar_item", node_id=2, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=2)
 
         assert (
             test_tablemodel.do_select(1).change_description_1
@@ -311,7 +310,7 @@ class TestUpdateMethods:
 
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
-        pub.sendMessage("request_update_similar_item", node_id=1, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
@@ -325,8 +324,7 @@ class TestUpdateMethods:
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
-        pub.sendMessage("request_update_similar_item", node_id=0, table="similar_item")
-
+        pub.sendMessage("request_update_similar_item", node_id=0)
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
         )
@@ -336,9 +334,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
-        pub.sendMessage(
-            "request_update_similar_item", node_id=100, table="similar_item"
-        )
+        pub.sendMessage("request_update_similar_item", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
@@ -348,7 +344,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 
         test_tablemodel.tree.get_node(1).data.pop("similar_item")
-        pub.sendMessage("request_update_similar_item", node_id=1, table="similar_item")
+        pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 

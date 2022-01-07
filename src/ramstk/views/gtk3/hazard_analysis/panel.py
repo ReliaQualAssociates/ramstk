@@ -11,7 +11,6 @@ from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
-from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
@@ -27,7 +26,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
     # Define private scalar class attributes.
     _select_msg = "succeed_retrieve_hazards"
-    _tag = "hazards"
+    _tag = "hazard"
     _title: str = _("Hazards Analysis")
 
     # Define public dictionary class attributes.
@@ -41,13 +40,14 @@ class HazardsTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_row_loader = {
+        self.tvwTreeView.dic_row_loader = {
             "hazard": super().do_load_treerow,
         }
 
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dict instance attributes.
@@ -723,6 +723,22 @@ class HazardsTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, f"succeed_calculate_{self._tag}")
+
+        pub.subscribe(self._on_select_function, "selected_function")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def filter_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any) -> bool:
+        """Filter Hazards to show only those associated with the selected Function.
+
+        :param model: the filtered model for the Hazard RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][1] == self._parent_id
 
     def do_load_severity(self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
         """Load the Gtk.CellRendererCombo() containing severities.
@@ -732,6 +748,12 @@ class HazardsTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
+        # ISSUE: Replace Hazards Panel Integer Position List with String Key List
+        #
+        # The list of column positions should be replaced with a list of column keys
+        # and the position should be taken from self.tvwTreeView.position[_key].
+        # This needs to be done for all the methods that load a Gtk.CellRendererCombo().
+        # labels: type: refactor
         for i in [6, 10, 14, 18]:
             _model = self.tvwTreeView.get_cell_model(i)
             for _key in criticalities:
@@ -762,18 +784,6 @@ class HazardsTreePanel(RAMSTKTreePanel):
             for _probability in probabilities:
                 _model.append((_probability[0],))
 
-    def _on_insert(self, tree: Tree) -> None:
-        """Wrap the do_load_panel() method when an element is inserted.
-
-        The do_set_cursor_active() method responds to the same message,
-        but one less argument in it's call.  This results in a PyPubSub
-        error and is the reason this wrapper method is needed.
-
-        :param tree: the module's treelib Tree().
-        :return: None
-        """
-        super().do_load_panel(tree)
-
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the HazOps Tree View RAMSTKTreeView().
 
@@ -786,10 +796,19 @@ class HazardsTreePanel(RAMSTKTreePanel):
         _attributes = super().on_row_change(selection)
 
         if _attributes:
-            self._parent_id = _attributes["function_id"]
             self._record_id = _attributes["hazard_id"]
 
             pub.sendMessage(
                 "selected_hazard",
                 attributes=_attributes,
             )
+
+    def _on_select_function(self, attributes: Dict[str, Any]) -> None:
+        """Filter hazards list when Function is selected.
+
+        :param attributes: the dict of Function attributes for the selected Function.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["function_id"]
+        self.tvwTreeView.filt_model.refilter()

@@ -44,6 +44,8 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
             "revision_id",
             "mission_id",
             "phase_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.

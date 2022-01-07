@@ -76,11 +76,11 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().on_insert, "succeed_insert_mode")
-        pub.subscribe(super().on_insert, "succeed_insert_mechanism")
-        pub.subscribe(super().on_insert, "succeed_insert_cause")
-        pub.subscribe(super().on_insert, "succeed_insert_control")
-        pub.subscribe(super().on_insert, "succeed_insert_action")
+        pub.subscribe(super().do_set_tree, "succeed_insert_mode")
+        pub.subscribe(super().do_set_tree, "succeed_insert_mechanism")
+        pub.subscribe(super().do_set_tree, "succeed_insert_cause")
+        pub.subscribe(super().do_set_tree, "succeed_insert_control")
+        pub.subscribe(super().do_set_tree, "succeed_insert_action")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_modes")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_mechanisms")
         pub.subscribe(super().do_set_tree, "succeed_retrieve_causes")
@@ -100,7 +100,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mode"].all_nodes()[1:]:
             _mode = _node.data["mode"]
-            _node_id = "{}".format(_mode.mode_id)
+            _node_id = f"{_mode.mode_id}"
 
             self.tree.create_node(
                 tag="mode",
@@ -123,13 +123,13 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mechanism"].all_nodes()[1:]:
             _mechanism = _node.data["mechanism"]
-            _node_id = "{}.{}".format(mode_id, _mechanism.mechanism_id)
+            _node_id = f"{mode_id}.{_mechanism.mechanism_id}"
 
             if _mechanism.mode_id == mode_id:
                 self.tree.create_node(
                     tag="mechanism",
                     identifier=_node_id,
-                    parent="{}".format(mode_id),
+                    parent=f"{mode_id}",
                     data={self._tag: _mechanism},
                 )
 
@@ -149,7 +149,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["cause"].all_nodes()[1:]:
             _cause = _node.data["cause"]
-            _node_id = "{}.{}".format(parent_id, _cause.cause_id)
+            _node_id = f"{parent_id}.{_cause.cause_id}"
 
             if _cause.mechanism_id == mechanism_id:
                 self.tree.create_node(
@@ -181,7 +181,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["control"].all_nodes()[1:]:
             _control = _node.data["control"]
-            _node_id = "{}.{}c".format(parent_id, _control.control_id)
+            _node_id = f"{parent_id}.{_control.control_id}c"
 
             if _control.cause_id == cause_id:
                 self.tree.create_node(
@@ -201,7 +201,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["action"].all_nodes()[1:]:
             _action = _node.data["action"]
-            _node_id = "{}.{}a".format(parent_id, _action.action_id)
+            _node_id = f"{parent_id}.{_action.action_id}a"
 
             if _action.cause_id == cause_id:
                 self.tree.create_node(

@@ -66,13 +66,10 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(node_id).data["milhdbk217f"], RAMSTKMilHdbk217FRecord
-        )
-        assert tree.get_node(node_id).data["milhdbk217f"].hardware_id == 8
+        assert isinstance(tree.get_node(8).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
+        assert tree.get_node(8).data["milhdbk217f"].hardware_id == 8
         print("\033[36m\nsucceed_insert_milhdbk217f topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -91,6 +88,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(8) is None
 
         test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
 
         assert isinstance(
@@ -108,6 +107,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 9
         pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(9) is None
@@ -224,7 +225,7 @@ class TestUpdateMethods:
         _milhdbk217f = test_tablemodel.do_select(2)
         _milhdbk217f.PiA = 5
         _milhdbk217f.lambdaBD = 0.0045
-        pub.sendMessage("request_update_milhdbk217f", node_id=2, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_milhdbk217f")
 
@@ -256,7 +257,7 @@ class TestUpdateMethods:
 
         _milhdbk217f = test_tablemodel.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
-        pub.sendMessage("request_update_milhdbk217f", node_id=1, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_milhdbk217f")
 
@@ -269,7 +270,7 @@ class TestUpdateMethods:
 
         _milhdbk217f = test_tablemodel.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
-        pub.sendMessage("request_update_milhdbk217f", node_id=0, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_milhdbk217f"
@@ -280,7 +281,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
 
-        pub.sendMessage("request_update_milhdbk217f", node_id=100, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
 
@@ -290,7 +291,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
 
         test_tablemodel.tree.get_node(1).data.pop("milhdbk217f")
-        pub.sendMessage("request_update_milhdbk217f", node_id=1, table="milhdbk217f")
+        pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
 

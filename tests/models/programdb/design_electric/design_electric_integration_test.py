@@ -38,8 +38,6 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut.do_derating_analysis, "request_derating_analysis")
-    pub.unsubscribe(dut.do_stress_analysis, "request_stress_analysis")
 
     # Delete the device under test.
     del dut
@@ -70,13 +68,12 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 8
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(node_id).data["design_electric"], RAMSTKDesignElectricRecord
+            tree.get_node(8).data["design_electric"], RAMSTKDesignElectricRecord
         )
-        assert tree.get_node(node_id).data["design_electric"].hardware_id == 8
+        assert tree.get_node(8).data["design_electric"].hardware_id == 8
         print("\033[36m\nsucceed_insert_design_electric topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -97,6 +94,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(8) is None
 
         test_attributes["hardware_id"] = 8
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_design_electric", attributes=test_attributes)
 
         assert isinstance(
@@ -116,6 +115,8 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_design_electric", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(9) is None
@@ -245,9 +246,7 @@ class TestUpdateMethods:
         _design_electric = test_tablemodel.do_select(2)
         _design_electric.n_active_pins = 5
         _design_electric.temperature_active = 81
-        pub.sendMessage(
-            "request_update_design_electric", node_id=2, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_design_electric")
 
@@ -291,9 +290,7 @@ class TestUpdateMethods:
 
         _design_electric = test_tablemodel.do_select(1)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage(
-            "request_update_design_electric", node_id=1, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_wrong_data_type, "fail_update_design_electric"
@@ -308,9 +305,7 @@ class TestUpdateMethods:
 
         _design_electric = test_tablemodel.do_select(1)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage(
-            "request_update_design_electric", node_id=0, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_design_electric"
@@ -323,9 +318,7 @@ class TestUpdateMethods:
             self.on_fail_update_non_existent_id, "fail_update_design_electric"
         )
 
-        pub.sendMessage(
-            "request_update_design_electric", node_id=100, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=100)
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_design_electric"
@@ -339,9 +332,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data.pop("design_electric")
-        pub.sendMessage(
-            "request_update_design_electric", node_id=1, table="design_electric"
-        )
+        pub.sendMessage("request_update_design_electric", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_design_electric"
@@ -517,7 +508,7 @@ class TestAnalysisMethods:
         _design_electric.current_rated = 0.0
         _design_electric.current_operating = 0.0032
 
-        test_tablemodel.do_calculate_current_ratio(1)
+        _design_electric.do_calculate_current_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["current_ratio"] == 0.0
@@ -539,7 +530,7 @@ class TestAnalysisMethods:
         _design_electric.power_rated = 0.0
         _design_electric.power_operating = 0.0032
 
-        test_tablemodel.do_calculate_power_ratio(1)
+        _design_electric.do_calculate_power_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["power_ratio"] == 0.0
@@ -561,7 +552,7 @@ class TestAnalysisMethods:
         _design_electric.voltage_rated = 0.0
         _design_electric.voltage_dc_operating = 0.0032
 
-        test_tablemodel.do_calculate_voltage_ratio(1)
+        _design_electric.do_calculate_voltage_ratio()
         _attributes = test_tablemodel.do_select(1).get_attributes()
 
         assert _attributes["voltage_ratio"] == 0.0

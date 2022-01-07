@@ -78,7 +78,7 @@ class TestCreateModels:
             test_tablemodel.do_update, "request_update_failure_definition"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_failure_definition"
+            test_tablemodel.do_update_all, "request_update_all_failure_definitions"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_failure_definition_tree"
@@ -185,6 +185,8 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("definition_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -196,6 +198,8 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("definition_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["definition"] == "Failure Definition"
 
@@ -206,5 +210,7 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("definition_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

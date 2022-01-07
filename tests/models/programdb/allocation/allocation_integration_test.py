@@ -79,19 +79,16 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 6
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(node_id).data["allocation"], RAMSTKAllocationRecord
-        )
-        assert tree.get_node(node_id).data["allocation"].revision_id == 1
-        assert tree.get_node(node_id).data["allocation"].hardware_id == 6
-        assert tree.get_node(node_id).data["allocation"].parent_id == 2
+        assert isinstance(tree.get_node(6).data["allocation"], RAMSTKAllocationRecord)
+        assert tree.get_node(6).data["allocation"].revision_id == 1
+        assert tree.get_node(6).data["allocation"].hardware_id == 6
+        assert tree.get_node(6).data["allocation"].parent_id == 2
         print("\033[36m\nsucceed_insert_allocation topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == ("Parent node '9' is not in the tree")
+        assert error_message == ("do_insert: Parent node '9' is not in the tree")
         print("\033[35m\nfail_insert_allocation topic was broadcast on no parent.")
 
     def on_fail_insert_no_revision(self, error_message):
@@ -280,7 +277,7 @@ class TestUpdateMethods:
         _allocation = test_datamanager.do_select(2)
         _allocation.percent_weight_factor = 0.9832
         _allocation.mtbf_goal = 12000
-        pub.sendMessage("request_update_allocation", node_id=2, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=2)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_allocation")
 
@@ -318,7 +315,7 @@ class TestUpdateMethods:
 
         _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=1, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
 
@@ -331,7 +328,7 @@ class TestUpdateMethods:
 
         _allocation = test_datamanager.do_select(1)
         _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=0, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
@@ -342,7 +339,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
-        pub.sendMessage("request_update_allocation", node_id=100, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
 
@@ -352,7 +349,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 
         test_datamanager.tree.get_node(1).data.pop("allocation")
-        pub.sendMessage("request_update_allocation", node_id=1, table="allocation")
+        pub.sendMessage("request_update_allocation", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
 

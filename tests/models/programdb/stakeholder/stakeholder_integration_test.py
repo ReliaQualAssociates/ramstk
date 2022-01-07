@@ -72,8 +72,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(3).data["stakeholder"], RAMSTKStakeholderRecord)
         assert tree.get_node(3).data["stakeholder"].stakeholder_id == 3
@@ -216,7 +215,7 @@ class TestUpdateMethods:
         test_tablemodel.tree.get_node(1).data[
             "stakeholder"
         ].description = "Test Stakeholder"
-        pub.sendMessage("request_update_stakeholder", node_id=1, table="stakeholder")
+        pub.sendMessage("request_update_stakeholder", node_id=1)
 
         assert (
             test_tablemodel.tree.get_node(1).data["stakeholder"].description
@@ -250,7 +249,7 @@ class TestUpdateMethods:
 
         _stakeholder = test_tablemodel.do_select(1)
         _stakeholder.user_float_1 = {1: 2}
-        pub.sendMessage("request_update_stakeholder", node_id=1, table="stakeholder")
+        pub.sendMessage("request_update_stakeholder", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_stakeholder")
 
@@ -264,7 +263,7 @@ class TestUpdateMethods:
         _stakeholder = test_tablemodel.do_select(1)
         _stakeholder.user_float_1 = {1: 2}
 
-        pub.sendMessage("request_update_stakeholder", node_id=0, table="stakeholder")
+        pub.sendMessage("request_update_stakeholder", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_stakeholder"
@@ -275,7 +274,7 @@ class TestUpdateMethods:
         """should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_stakeholder")
 
-        pub.sendMessage("request_update_stakeholder", node_id=100, table="stakeholder")
+        pub.sendMessage("request_update_stakeholder", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_stakeholder")
 
@@ -285,7 +284,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_stakeholder")
 
         test_tablemodel.tree.get_node(1).data.pop("stakeholder")
-        pub.sendMessage("request_update_stakeholder", node_id=1, table="stakeholder")
+        pub.sendMessage("request_update_stakeholder", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_stakeholder")
 
@@ -366,8 +365,11 @@ class TestGetterSetter:
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
-    def on_succeed_calculate_stakeholder(self, node_id):
-        assert node_id == 1
+    def on_succeed_calculate_stakeholder(self, tree):
+        assert isinstance(tree, Tree)
+        assert isinstance(tree.get_node(1).data, dict)
+        assert tree.get_node(1).data["improvement"] == 1.2
+        assert tree.get_node(1).data["overall_weight"] == 12.48
         print("\033[36m\nsucceed_calculate_stakeholder topic was broadcast.")
 
     @pytest.mark.integration

@@ -4,7 +4,7 @@
 #       ramstk.views.gtk3.widgets.view.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTKBaseView Module."""
 
 # Standard Library Imports
@@ -31,7 +31,7 @@ from .treeview import RAMSTKTreeView
 
 # noinspection PyUnresolvedReferences
 class RAMSTKBaseView(Gtk.HBox):
-    """Meta class for all RAMSTK ListView, ModuleView, and WorkView classes.
+    """Metaclass for all RAMSTK ListView, ModuleView, and WorkView classes.
 
     Attributes of the RAMSTKBaseView are:
 
@@ -141,13 +141,17 @@ class RAMSTKBaseView(Gtk.HBox):
         self._img_tab: Gtk.Image = Gtk.Image()
         self._mission_time: float = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
         self._notebook: Gtk.Notebook = Gtk.Notebook()
-        self._parent_id: int = 0
         self._pnlPanel: RAMSTKPanel = RAMSTKPanel()
-        self._record_id: int = -1
         self._revision_id: int = 0
         self._tree_loaded: bool = False
 
         # Initialize public dictionary attributes.
+        self.dic_pkeys: Dict[str, int] = {
+            "revision_id": 0,
+            f"{self._tag}_id": 0,
+            "parent_id": 0,
+            "record_id": 0,
+        }
 
         # Initialize public list attributes.
 
@@ -170,6 +174,7 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, "succeed_update_all")
+        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}")
@@ -195,7 +200,10 @@ class RAMSTKBaseView(Gtk.HBox):
             _fg_color = "#000000"
 
         self._pnlPanel.do_make_treeview(
-            bg_color=_bg_color, fg_color=_fg_color, fmt_file=_fmt_file
+            bg_color=_bg_color,
+            fg_color=_fg_color,
+            fmt_file=_fmt_file,
+            attrs=self._pnlPanel.dic_attribute_widget_map,
         )
 
         self.pack_end(self._pnlPanel, True, True, 0)
@@ -351,22 +359,18 @@ class RAMSTKBaseView(Gtk.HBox):
 
         return _vpaned_left, _vpaned_right
 
-    def do_raise_dialog(self, **kwargs: Any) -> RAMSTKMessageDialog:
+    @staticmethod
+    def do_raise_dialog(**kwargs: Any) -> RAMSTKMessageDialog:
         """Raise a dialog in response to information, warnings, and errors.
 
-        This method will display an message dialog of the appropriate severity
-        information, warning, or error containing a message to the user.  It
-        will also write a message to the RAMSTK debug_log to (hopefully) assist
-        in troubleshooting.
+        This method will display a message dialog of the appropriate severity
+        information, warning, or error containing a message to the user.
 
         :return: _dialog
         """
-        _debug_msg = kwargs.get("debug_msg", "")
         _parent = kwargs.get("parent", None)
 
         _dialog = RAMSTKMessageDialog(parent=_parent)
-
-        self.RAMSTK_LOGGER.do_log_debug(__name__, _debug_msg)
 
         return _dialog
 
@@ -378,10 +382,10 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _prompt = _(
-            "You are about to delete {1} {0} and all "
-            "data associated with it.  Is this really what "
-            "you want to do?"
-        ).format(self._record_id, self._tag.title())
+            f"You are about to delete {self._tag.title()} "
+            f"{self.dic_pkeys['record_id']} and all data associated with it.  Is this "
+            f"really what you want to do?"
+        )
         _dialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
@@ -390,7 +394,7 @@ class RAMSTKBaseView(Gtk.HBox):
             self.do_set_cursor_busy()
             pub.sendMessage(
                 f"request_delete_{self._tag}",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -407,13 +411,16 @@ class RAMSTKBaseView(Gtk.HBox):
         if _sibling:
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                parent_id=self._parent_id,
+                attributes=self.dic_pkeys,
             )
         else:
+            _parent_id = self.dic_pkeys["parent_id"]
+            self.dic_pkeys["parent_id"] = self.dic_pkeys["record_id"]
             pub.sendMessage(
                 f"request_insert_{self._tag.lower()}",
-                parent_id=self._record_id,
+                attributes=self.dic_pkeys,
             )  # noqa
+            self.dic_pkeys["parent_id"] = _parent_id
 
     def do_request_insert_child(self, __button: Gtk.ToolButton) -> Any:
         """Request to insert a new child entity of the selected entity.
@@ -438,7 +445,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_{self._tag}", node_id=self._record_id)
+        pub.sendMessage(
+            f"request_update_{self._tag}", node_id=self.dic_pkeys["record_id"]
+        )
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
         """Send request to save all the records to RAMSTK program database.
@@ -508,10 +517,11 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
 
-    # pylint: disable=unused-argument
-    # noinspection PyUnusedLocal
     def do_set_cursor_active_on_fail(self, error_message: str = "") -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
+
+        This method will also write the error message to the RAMSTK debug_log to (
+        hopefully) assist in troubleshooting.
 
         :param error_message: the error message broadcast with the
         'fail' message.  Only needed when this method is a PyPubSub subscriber.
@@ -519,6 +529,8 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
+
+        self.RAMSTK_LOGGER.do_log_debug(__name__, error_message)
 
     def do_set_cursor_busy(self) -> None:
         """Set busy cursor for the Module, List, and Work Book Gdk.Window().
@@ -598,7 +610,6 @@ class RAMSTKBaseView(Gtk.HBox):
                 _menu_item.connect(
                     "activate",
                     self._lst_callbacks[_idx],
-                    self.RAMSTK_USER_CONFIGURATION,
                 )
                 _menu_item.show()
                 _menu.append(_menu_item)
@@ -624,6 +635,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self._revision_id = attributes["revision_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
 
     def __set_icons(self) -> Dict[str, str]:
         """Set the dict of icons.
@@ -677,7 +689,7 @@ class RAMSTKBaseView(Gtk.HBox):
             "part": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/part.png",
             "partial": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/partial.png",
-            "phase": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            "mission_phase": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/phase.png",
             "plot": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/charts.png",
@@ -709,12 +721,6 @@ class RAMSTKListView(RAMSTKBaseView):
     This is the meta class for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
-    :ivar str _module: the capitalized name of the RAMSTK module the List View
-        is associated with.
-    :ivar int _n_columns: the number of columns in a matrix.
-    :ivar int _n_rows: the number of rows in a matrix.
-    :ivar int n_fixed_columns: the number of matrix columns on the left that
-        contain fixed data.
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
     :type tab_label: :class:`Gtk.Label`
     """
@@ -745,11 +751,6 @@ class RAMSTKListView(RAMSTKBaseView):
         self.tab_label: Gtk.Label = Gtk.Label()
 
         # Subscribe to PyPubSub messages.
-
-    def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to update the matrix."""
-        super().do_set_cursor_busy()
-        pub.sendMessage(f"request_update_all_{self._tag}s")
 
     def make_ui(self) -> None:
         """Build the list view user interface.
@@ -812,32 +813,4 @@ class RAMSTKWorkView(RAMSTKBaseView):
 
     This is the meta class for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
-
-    :ivar list _lst_widgets: the list of RAMSTK (preferred) and Gtk widgets
-        used to display information on a workview.
     """
-
-    def __init__(
-        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
-    ) -> None:
-        """Initialize the RAMSTKWorkView meta-class.
-
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :param logger: the RAMSTKLogManager class instance.
-        """
-        super().__init__(configuration, logger)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_widgets: List[object] = []
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-
-        # Subscribe to PyPubSub messages.

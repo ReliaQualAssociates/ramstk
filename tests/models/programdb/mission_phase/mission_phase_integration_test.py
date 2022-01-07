@@ -70,8 +70,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 4
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(4).data["mission_phase"], RAMSTKMissionPhaseRecord
@@ -214,9 +213,7 @@ class TestUpdateMethods:
         _mission_phase = test_datamanager.do_select(1)
         _mission_phase.name = _test_name
 
-        pub.sendMessage(
-            "request_update_mission_phase", node_id=1, table="mission_phase"
-        )
+        pub.sendMessage("request_update_mission_phase", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_mission_phase")
 
@@ -242,9 +239,7 @@ class TestUpdateMethods:
         _mission_phase = test_datamanager.do_select(1)
         _mission_phase.name = {1: 2}
 
-        pub.sendMessage(
-            "request_update_mission_phase", node_id=1, table="mission_phase"
-        )
+        pub.sendMessage("request_update_mission_phase", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_wrong_data_type, "fail_update_mission_phase"
@@ -261,9 +256,7 @@ class TestUpdateMethods:
         _mission_phase = test_datamanager.do_select(1)
         _mission_phase.name = {1: 2}
 
-        pub.sendMessage(
-            "request_update_mission_phase", node_id=0, table="mission_phase"
-        )
+        pub.sendMessage("request_update_mission_phase", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission_phase"
@@ -275,9 +268,7 @@ class TestUpdateMethods:
         to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mission_phase")
 
-        pub.sendMessage(
-            "request_update_mission_phase", node_id=10, table="mission_phase"
-        )
+        pub.sendMessage("request_update_mission_phase", node_id=10)
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_mission_phase"
@@ -290,9 +281,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mission_phase")
 
         test_datamanager.tree.get_node(1).data.pop("mission_phase")
-        pub.sendMessage(
-            "request_update_mission_phase", node_id=1, table="mission_phase"
-        )
+        pub.sendMessage("request_update_mission_phase", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_mission_phase"

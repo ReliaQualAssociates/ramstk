@@ -137,8 +137,8 @@ class SimilarItemWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to iteratively calculate the Similar Item metrics.
@@ -200,7 +200,7 @@ class SimilarItemWorkView(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_roll_up_change_descriptions",
-            node=self._pnlPanel.tree.get_node(self._record_id),
+            node=self._pnlPanel.tree.get_node(self.dic_pkeys["record_id"]),
         )
 
     def __make_ui(self) -> None:

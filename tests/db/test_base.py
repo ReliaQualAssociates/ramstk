@@ -27,6 +27,7 @@ from ramstk.models import (
     RAMSTKRevisionRecord,
     RAMSTKSiteInfoRecord,
 )
+from ramstk.models.commondb import RAMSTKManufacturer
 
 TEMPDIR = tempfile.gettempdir()
 
@@ -453,18 +454,15 @@ class TestSelectMethods:
         DUT.do_connect(config)
 
         _record = (
-            DUT.session.query(RAMSTKSiteInfoRecord)
-            .filter(RAMSTKSiteInfoRecord.site_id == 1)
+            DUT.session.query(RAMSTKManufacturer)
+            .filter(RAMSTKManufacturer.manufacturer_id == 1)
             .all()[0]
         )
 
-        assert _record.site_id == 1
-        assert _record.function_enabled == 1
-        assert _record.requirement_enabled == 1
-        assert _record.hardware_enabled == 1
-        assert _record.software_enabled == 0
-        assert _record.rcm_enabled == 0
-        assert _record.fta_enabled == 0
+        assert _record.manufacturer_id == 1
+        assert _record.description == "Sprague"
+        assert _record.location == "New Hampshire"
+        assert _record.cage_code == "13606"
 
         DUT.do_disconnect()
 

@@ -7,20 +7,6 @@ on:
     types: [closed]
 
 jobs:
-  packaging_error_check:
-    name: Check for Packaging Errors
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Check for packaging errors
-        run: |
-          pip install -U pip poetry
-          make packchk
-
   bump_version:
     name: Update Version Files
     runs-on: ubuntu-latest
@@ -69,6 +55,7 @@ jobs:
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
             echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
             echo "do_tag=1" >> $GITHUB_ENV
+            echo "do_release=1" >> $GITHUB_ENV
           else
             echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
             echo "do_release=0" >> $GITHUB_ENV

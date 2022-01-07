@@ -49,7 +49,7 @@ class StakeholderListView(RAMSTKListView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag = "stakeholders"
+    _tag = "stakeholder"
     _tablabel = "<span weight='bold'>" + _("Stakeholder\nInputs") + "</span>"
     _tabtooltip = _("Displays stakeholder inputs for the selected revision.")
     _view_type = "list"
@@ -128,7 +128,9 @@ class StakeholderListView(RAMSTKListView):
         :return: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_calculate_stakeholder", node_id=self._record_id)
+        pub.sendMessage(
+            "request_calculate_stakeholder", node_id=self.dic_pkeys["record_id"]
+        )
         super().do_set_cursor_active()
 
     # pylint: disable=unused-argument
@@ -156,13 +158,15 @@ class StakeholderListView(RAMSTKListView):
                 "You are about to delete Stakeholder input {0:d} and "
                 "all data associated with it.  Is this really what you "
                 "want to do?"
-            ).format(self._record_id)
+            ).format(self.dic_pkeys["record_id"])
         )
         _dialog.do_set_message_type(message_type="question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage("request_delete_stakeholder", node_id=self._record_id)
+            pub.sendMessage(
+                "request_delete_stakeholder", node_id=self.dic_pkeys["record_id"]
+            )
 
         _dialog.do_destroy()
 
@@ -174,7 +178,10 @@ class StakeholderListView(RAMSTKListView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["stakeholder_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["parent_id"] = 0
+        self.dic_pkeys["stakeholder_id"] = attributes["requirement_id"]
+        self.dic_pkeys["record_id"] = attributes["stakeholder_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the stakeholder input list view.

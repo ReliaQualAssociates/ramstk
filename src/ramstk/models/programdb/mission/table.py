@@ -42,6 +42,8 @@ class RAMSTKMissionTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "mission_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.

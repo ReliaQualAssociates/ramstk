@@ -43,6 +43,8 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -69,6 +71,6 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         """
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
-        _new_record.hardware_id = attributes["hardware_id"]
+        _new_record.hardware_id = self.last_id + 1
 
         return _new_record

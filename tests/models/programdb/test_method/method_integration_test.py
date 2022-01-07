@@ -74,8 +74,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 5
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["test_method"], RAMSTKTestMethodRecord)
         print("\033[36m\nsucceed_insert_test_method topic was broadcast.")
@@ -213,7 +212,7 @@ class TestUpdateMethods:
         test_tablemodel.tree.get_node(3).data[
             "test_method"
         ].boundary_conditions = "Big test boundary conditions."
-        pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=3)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_test_method")
 
@@ -235,7 +234,7 @@ class TestUpdateMethods:
         _test_method = test_tablemodel.do_select(3)
         _test_method.boundary_conditions = {1: 2}
 
-        pub.sendMessage("request_update_test_method", node_id=3, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=3)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_test_method")
 
@@ -250,7 +249,7 @@ class TestUpdateMethods:
         _test_method = test_tablemodel.do_select(4)
         _test_method.boundary_conditions = {1: 2}
 
-        pub.sendMessage("request_update_test_method", node_id=0, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_test_method"
@@ -262,7 +261,7 @@ class TestUpdateMethods:
         that doesn't exist."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_test_method")
 
-        pub.sendMessage("request_update_test_method", node_id=100, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_test_method")
 
@@ -273,7 +272,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 
         test_tablemodel.tree.get_node(4).data.pop("test_method")
-        pub.sendMessage("request_update_test_method", node_id=4, table="test_method")
+        pub.sendMessage("request_update_test_method", node_id=4)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_test_method")
 

@@ -74,8 +74,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class to test data controller insert methods using actual database."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 3
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree[3].data["failure_definition"], RAMSTKFailureDefinitionRecord
@@ -231,9 +230,7 @@ class TestUpdateMethods:
 
         _failure_definition = test_tablemodel.do_select(1)
         _failure_definition.definition = "Big test definition"
-        pub.sendMessage(
-            "request_update_failure_definition", node_id=1, table="failure_definition"
-        )
+        pub.sendMessage("request_update_failure_definition", node_id=1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_failure_definition")
 
@@ -267,9 +264,7 @@ class TestUpdateMethods:
         test_tablemodel.tree.get_node(1).data["failure_definition"].definition = {
             1: "Big test definition",
         }
-        pub.sendMessage(
-            "request_update_failure_definition", node_id=1, table="failure_definition"
-        )
+        pub.sendMessage("request_update_failure_definition", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_wrong_data_type, "fail_update_failure_definition"
@@ -287,9 +282,7 @@ class TestUpdateMethods:
         test_tablemodel.tree.get_node(1).data["failure_definition"].definition = {
             1: "Big test definition",
         }
-        pub.sendMessage(
-            "request_update_failure_definition", node_id=0, table="failure_definition"
-        )
+        pub.sendMessage("request_update_failure_definition", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type,
@@ -304,11 +297,7 @@ class TestUpdateMethods:
             self.on_fail_update_non_existent_id, "fail_update_failure_definition"
         )
 
-        pub.sendMessage(
-            "request_update_failure_definition",
-            node_id=100,
-            table="failure_definitions",
-        )
+        pub.sendMessage("request_update_failure_definition", node_id=100)
 
         pub.unsubscribe(
             self.on_fail_update_non_existent_id, "fail_update_failure_definition"
@@ -323,9 +312,7 @@ class TestUpdateMethods:
         )
 
         test_tablemodel.tree.get_node(1).data.pop("failure_definition")
-        pub.sendMessage(
-            "request_update_failure_definition", node_id=1, table="failure_definitions"
-        )
+        pub.sendMessage("request_update_failure_definition", node_id=1)
 
         pub.unsubscribe(
             self.on_fail_update_no_data_package, "fail_update_failure_definition"

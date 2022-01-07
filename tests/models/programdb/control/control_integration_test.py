@@ -74,14 +74,13 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 5
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["control"], RAMSTKControlRecord)
         print("\033[36m\nsucceed_insert_control topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
-        assert error_message == ("Parent node '100' is not in the tree")
+        assert error_message == ("do_insert: Parent node '100' is not in the tree")
         print("\033[35m\nfail_insert_control topic was broadcast on no parent.")
 
     @pytest.mark.integration

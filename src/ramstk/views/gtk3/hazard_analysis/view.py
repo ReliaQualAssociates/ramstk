@@ -49,9 +49,9 @@ class HazardsWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag: str = "hazard"
-    _tablabel: str = _("HazOps")
-    _tabtooltip: str = _("Displays the HazOps analysis for the selected Function.")
+    _tag = "hazard"
+    _tablabel = _("HazOps")
+    _tabtooltip = _("Displays the HazOps analysis for the selected Function.")
 
     # Define public dict class attributes.
 
@@ -116,7 +116,7 @@ class HazardsWorkView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_calculate_fha", node_id=self._record_id)
+        pub.sendMessage("request_calculate_fha", node_id=self.dic_pkeys["record_id"])
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record ID when a hazard is selected.
@@ -125,7 +125,9 @@ class HazardsWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hazard_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hazard_id"] = attributes["hazard_id"]
+        self.dic_pkeys["record_id"] = attributes["hazard_id"]
 
     def _on_select_function(self, attributes: Dict[str, Any]) -> None:
         """Set the parent ID when a function is selected.
@@ -134,7 +136,9 @@ class HazardsWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes["function_id"]
+        self.dic_pkeys["parent_id"] = attributes["function_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["function_id"] = attributes["function_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Function Hazard Analysis tab.

@@ -78,7 +78,7 @@ class TestCreateModels:
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_mission")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_mission"
+            test_tablemodel.do_update_all, "request_update_all_missions"
         )
         assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_mission")
         assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_mission")
@@ -171,6 +171,8 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -182,6 +184,8 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["mission_time"] == 0.0
 
@@ -192,5 +196,7 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
+        test_attributes.pop("parent_id")
+        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -68,8 +68,7 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
-    def on_succeed_insert_sibling(self, node_id, tree):
-        assert node_id == 4
+    def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(4).data["mission"], RAMSTKMissionRecord)
         print("\033[36m\nsucceed_insert_mission topic was broadcast")
@@ -196,7 +195,7 @@ class TestUpdateMethods:
         _mission = test_tablemodel.do_select(1)
         _mission.name = "Big test mission"
 
-        test_tablemodel.do_update(1, table="mission")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_mission")
 
@@ -230,7 +229,7 @@ class TestUpdateMethods:
         _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
 
-        test_tablemodel.do_update(1, table="mission")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
 
@@ -245,7 +244,7 @@ class TestUpdateMethods:
         _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
 
-        test_tablemodel.do_update(0, table="mission")
+        test_tablemodel.do_update(0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
@@ -257,7 +256,7 @@ class TestUpdateMethods:
         to save a non-existent ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
 
-        test_tablemodel.do_update(10, table="mission")
+        test_tablemodel.do_update(10)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
 
@@ -268,7 +267,7 @@ class TestUpdateMethods:
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mission")
 
         test_tablemodel.tree.get_node(1).data.pop("mission")
-        test_tablemodel.do_update(1, table="mission")
+        test_tablemodel.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mission")
 

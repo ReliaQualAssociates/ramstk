@@ -502,7 +502,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtCapacitance,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _(
@@ -517,7 +517,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbSpecification,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The governing specification for the capacitor."),
@@ -530,7 +530,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbStyle,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The style of the capacitor."),
@@ -543,7 +543,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConfiguration,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The configuration of the capacitor."),
@@ -556,7 +556,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.cmbConstruction,
                 "changed",
                 super().on_changed_combo,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The method of construction of the capacitor."),
@@ -569,7 +569,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 self.txtESR,
                 "changed",
                 super().on_changed_entry,
-                self.on_edit_callback,
+                f"wvw_editing_{self._tag}",
                 0,
                 {
                     "tooltip": _("The equivalent series resistance of the capacitor."),
@@ -653,6 +653,17 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
             self._quality_id = attributes["quality_id"]
 
+            self.cmbQuality.set_sensitive(True)
+            self.cmbQuality.do_update(
+                self._quality_id,
+                signal="changed",
+            )
+
+            pub.sendMessage(
+                f"request_get_{self._tag}_attributes",
+                node_id=self._record_id,
+            )
+
     def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
         """Load the style RAMSTKComboBox() when the specification changes.
 
@@ -678,12 +689,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
         if self._hazard_rate_method_id == 1:
             self.__do_set_parts_count_sensitive(attributes)
         else:

@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -17,28 +17,28 @@ class FunctionModuleView(RAMSTKModuleView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlPanel: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlPanel: RAMSTKPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
 class FunctionWorkView(RAMSTKWorkView):
     _tag: str
-    _tablabel: Any
-    _tabtooltip: Any
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlGeneralData: Any
+    _tablabel: str
+    _tabtooltip: str
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlGeneralData: RAMSTKPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...

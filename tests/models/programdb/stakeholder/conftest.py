@@ -72,6 +72,8 @@ def test_attributes():
         "user_float_3": 1.0,
         "user_float_4": 1.0,
         "user_float_5": 1.0,
+        "parent_id": 1,
+        "record_id": 1,
     }
 
 

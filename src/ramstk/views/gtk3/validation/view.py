@@ -118,14 +118,16 @@ class ValidationModuleView(RAMSTKModuleView):
             "You are about to delete Validation {0:d} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
-        ).format(self._record_id)
+        ).format(self.dic_pkeys["record_id"])
         _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent)
         _dialog.do_set_message(_prompt)
         _dialog.do_set_message_type("question")
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage("request_delete_validation", node_id=self._record_id)
+            pub.sendMessage(
+                "request_delete_validation", node_id=self.dic_pkeys["record_id"]
+            )
 
         _dialog.do_destroy()
 
@@ -137,7 +139,7 @@ class ValidationModuleView(RAMSTKModuleView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["validation_id"]
+        self.dic_pkeys["record_id"] = attributes["validation_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the requirement module view.
@@ -295,7 +297,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_calculate_validation_task",
-            node_id=self._record_id,
+            node_id=self.dic_pkeys["record_id"],
         )
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
@@ -318,7 +320,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["validation_id"]
+        self.dic_pkeys["record_id"] = attributes["validation_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Validation General Data tab.

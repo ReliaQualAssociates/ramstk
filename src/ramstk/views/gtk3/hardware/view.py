@@ -8,6 +8,7 @@
 """GTK3 Hardware Views."""
 
 # Standard Library Imports
+from copy import copy
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -88,11 +89,11 @@ class HardwareModuleView(RAMSTKModuleView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag: str = "hardware"
     _tablabel: str = "Hardware"
     _tabtooltip: str = _(
         "Displays the hardware hierarchy (BoM) for the selected Revision."
     )
+    _tag: str = "hardware"
 
     # Define public dictionary class attributes.
 
@@ -168,7 +169,10 @@ class HardwareModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
+        )
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
         """Send request to calculate the selected hardware item.
@@ -179,7 +183,7 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_calculate_hardware",
-            node_id=self._record_id,
+            node_id=self.dic_pkeys["record_id"],
         )
 
     def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None:
@@ -200,11 +204,39 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
+        _attributes = {
+            "revision_id": self.dic_pkeys["revision_id"],
+            "hardware_id": self.dic_pkeys["hardware_id"],
+            "parent_id": self.dic_pkeys["hardware_id"],
+            "part": 0,
+            "record_id": self.dic_pkeys["record_id"],
+        }
+
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
-            parent_id=self._record_id,
-            part=0,
+            attributes=copy(_attributes),
+        )
+        _attributes.pop("part")
+        pub.sendMessage(
+            "request_insert_design_electric",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_design_mechanic",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_milhdbk217f",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_nswc",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_reliability",
+            attributes=copy(_attributes),
         )
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
@@ -213,8 +245,40 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
+        _attributes = {
+            "revision_id": self.dic_pkeys["revision_id"],
+            "hardware_id": self.dic_pkeys["hardware_id"],
+            "parent_id": self.dic_pkeys["hardware_id"],
+            "part": 1,
+            "record_id": self.dic_pkeys["record_id"],
+        }
+
         super().do_set_cursor_busy()
-        pub.sendMessage("request_insert_hardware", parent_id=self._record_id, part=1)
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes=copy(_attributes),
+        )
+        _attributes.pop("part")
+        pub.sendMessage(
+            "request_insert_design_electric",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_design_mechanic",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_milhdbk217f",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_nswc",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_reliability",
+            attributes=copy(_attributes),
+        )
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """Send request to insert a new sibling Hardware item.
@@ -222,19 +286,52 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
+        _attributes = {
+            "revision_id": self.dic_pkeys["revision_id"],
+            "hardware_id": self.dic_pkeys["hardware_id"],
+            "parent_id": self.dic_pkeys["parent_id"],
+            "part": 0,
+            "record_id": self.dic_pkeys["record_id"],
+        }
+
         super().do_set_cursor_busy()
-        pub.sendMessage("request_insert_hardware", parent_id=self._parent_id, part=0)
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes=copy(_attributes),
+        )
+        _attributes.pop("part")
+        pub.sendMessage(
+            "request_insert_design_electric",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_design_mechanic",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_milhdbk217f",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_nswc",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_reliability",
+            attributes=copy(_attributes),
+        )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
 
-        :param attributes: the attributes dict for the selected work stream
-            module item.
+        :param attributes: the attributes dict for the selected work stream module item.
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hardware_id"] = attributes["hardware_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
@@ -373,7 +470,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_hardware")
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
+        )
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
         """Send request to create the composite reference designator.
@@ -383,7 +483,9 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage("request_make_comp_ref_des", node_id=self._record_id)
+        pub.sendMessage(
+            "request_make_comp_ref_des", node_id=self.dic_pkeys["record_id"]
+        )
         super().do_set_cursor_active()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -394,8 +496,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hardware_id"] = attributes["hardware_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware General Data tab.
@@ -561,7 +665,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         )
         pub.subscribe(
             self._do_set_record_id,
-            "selected_hardware",
+            f"selected_{self._tag}",
         )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
@@ -597,7 +701,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_calculate_hardware",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
         except KeyError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
@@ -615,8 +719,8 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             "reliability",
         ]:
             pub.sendMessage(
-                "request_update_{}".format(_table),
-                node_id=self._record_id,
+                f"request_update_{_table}",
+                node_id=self.dic_pkeys["record_id"],
             )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
@@ -627,8 +731,10 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hardware_id"] = attributes["hardware_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Input tab.
@@ -715,6 +821,11 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         """
         super().__init__(configuration, logger)
 
+        # Create a logger specifically for this class.
+        self.RAMSTK_LOGGER.do_create_logger(
+            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL, to_tty=False
+        )
+
         # Initialize private dictionary attributes.
         self._dic_component_results: Dict[int, RAMSTKPanel] = {
             1: ICMilHdbk217FResultPanel(),
@@ -780,6 +891,10 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             self._do_pack_component_panel,
             "hardware_category_changed",
         )
+        pub.subscribe(
+            self._do_set_record_id,
+            f"selected_{self._tag}",
+        )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the results specific to hardware components.
@@ -813,21 +928,39 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_calculate_hardware",
-                node_id=self._record_id,
+                node_id=self.dic_pkeys["record_id"],
             )
-        except KeyError as _error:
+        except (IndexError, KeyError) as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            _parent = self.get_parent().get_parent().get_parent().get_parent()
+            _dialog = super().do_raise_dialog(parent=_parent)
+            _dialog.do_set_message(
+                _(
+                    f"One or more inputs necessary to calculate "
+                    f'hardware ID {self.dic_pkeys["hardware_id"]} is '
+                    f"missing."
+                )
+            )
+            _dialog.do_set_message_type("warning")
+            _dialog.do_run()
+            _dialog.do_destroy()
+            pub.sendMessage(
+                "fail_calculate_hardware",
+                error_message=_error,
+            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
 
-        :param attributes: the attributes dict for the selected work stream
+        :param attributes: the attribute dict for the selected work stream
             module item.
         :return: None
         :rtype: None
         """
-        self._record_id = attributes["hardware_id"]
-        self._parent_id = attributes["parent_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hardware_id"] = attributes["hardware_id"]
+        self.dic_pkeys["parent_id"] = attributes["parent_id"]
+        self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the Hardware Assessment Results tab.

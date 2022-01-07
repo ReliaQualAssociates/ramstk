@@ -33,6 +33,8 @@ def test_attributes():
         "revision_id": 1,
         "definition_id": 1,
         "definition": "Failure Definition",
+        "parent_id": 1,
+        "record_id": 1,
     }
 
 

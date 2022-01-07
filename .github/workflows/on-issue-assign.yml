@@ -1,4 +1,4 @@
-name: Assigned Issue Workflow
+name: Issue Assigned Workflow
 on:
   issues:
     types: [assigned]
