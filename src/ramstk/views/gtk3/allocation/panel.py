@@ -32,7 +32,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field = "hardware_id"
-    _select_msg = "selected_allocation"
+    _select_msg = "succeed_get_allocation_attributes"
     _tag = "allocation"
     _title = _("Allocation Goals and Method")
 
@@ -286,6 +286,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "reliability_alloc": False,
                 "availability_logistics": True,
                 "availability_alloc": False,
+                "parent_id": False,
             },
             1: {
                 "revision_id": False,
@@ -310,6 +311,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "reliability_alloc": True,
                 "availability_logistics": True,
                 "availability_alloc": True,
+                "parent_id": False,
             },
             2: {
                 "revision_id": False,
@@ -334,6 +336,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "reliability_alloc": True,
                 "availability_logistics": True,
                 "availability_alloc": True,
+                "parent_id": False,
             },
             3: {
                 "revision_id": False,
@@ -358,6 +361,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "reliability_alloc": True,
                 "availability_logistics": True,
                 "availability_alloc": True,
+                "parent_id": False,
             },
             4: {
                 "revision_id": False,
@@ -382,12 +386,14 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "reliability_alloc": True,
                 "availability_logistics": True,
                 "availability_alloc": True,
+                "parent_id": False,
             },
         }
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._filtered_tree = True
         self._goal_id: int = 0
         self._method_id: int = 0
         self._on_edit_message: str = f"mvw_editing_{self._tag}"
@@ -647,7 +653,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Allocated Failure Rate"),
+                _("Allocated Hazard Rate"),
                 "gfloat",
             ],
             "mtbf_logistics": [
@@ -746,6 +752,22 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 _("Allocation Availability"),
                 "gfloat",
             ],
+            "parent_id": [
+                22,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Parent ID"),
+                "gint",
+            ],
         }
 
         # Initialize public list attributes.
@@ -770,6 +792,22 @@ class AllocationTreePanel(RAMSTKTreePanel):
             self._do_set_reliability_attributes, "succeed_retrieve_reliabilitys"
         )
         pub.subscribe(self._on_method_changed, "succeed_change_allocation_method")
+        pub.subscribe(self._on_select_hardware, "selected_hardware")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
+        """Filter Allocations to show only those associated with the selected Hardware.
+
+        :param model: the filtered model for the Allocation RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][22] == self._parent_id
 
     def _do_set_columns_visible(self) -> None:
         """Set editable columns based on the Allocation method selected.
@@ -789,9 +827,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-            self._dic_hardware_attrs[_hardware.hardware_id] = [
-                _hardware.name,
-            ]
+            _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
+            if _row is not None:
+                self.tvwTreeView.unfilt_model.set_value(_row, 2, _hardware.name)
 
     def _do_set_reliability_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the reliability tree is retrieved.
@@ -802,12 +840,28 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _reliability = _node.data["reliability"]
-            self._dic_reliability_attrs[_reliability.hardware_id] = [
-                _reliability.hazard_rate_logistics,
-                _reliability.mtbf_logistics,
-                _reliability.reliability_logistics,
-                _reliability.availability_logistics,
-            ]
+            _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
+            if _row is not None:
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    14,
+                    _reliability.hazard_rate_logistics,
+                )
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    16,
+                    _reliability.mtbf_logistics,
+                )
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    18,
+                    _reliability.reliability_logistics,
+                )
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    20,
+                    _reliability.availability_logistics,
+                )
 
     def _on_method_changed(self, method_id: int) -> None:
         """Set method ID attributes when user changes the selection.
@@ -820,12 +874,12 @@ class AllocationTreePanel(RAMSTKTreePanel):
         self._do_set_columns_visible()
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
-        """Handle events for the Hardware package Module View RAMSTKTreeView().
+        """Handle events for the Allocation RAMSTKTreeView().
 
-        This method is called whenever a Hardware Module View RAMSTKTreeView()
-        row is activated/changed.
+        This method is called whenever an Allocation RAMSTKTreeView() row is
+        activated/changed.
 
-        :param selection: the Hardware class Gtk.TreeSelection().
+        :param selection: the Allocation Gtk.TreeSelection().
         :return: None
         """
         _attributes = super().on_row_change(selection)
@@ -842,40 +896,31 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 node_id=self._record_id,
             )
 
-    def __do_load_allocation(
-        self, node: Any = "", row: Gtk.TreeIter = None
-    ) -> Gtk.TreeIter:
+    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+        """Filter allocation list when Hardware is selected.
+
+        :param attributes: the dict of attributes for the selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["hardware_id"]
+        self.tvwTreeView.filt_model.refilter()
+
+    def __do_load_allocation(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the allocation RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
         :param row: the parent row of the mode to load into the hardware tree.
-        :return: _new_row; the row that was just populated with hardware data.
-        :rtype: :class:`Gtk.TreeIter`
+        :return: None
+        :rtype: None
         """
-        _new_row = None
-
         _entity = node.data["allocation"]
 
         if not _entity.parent_id == 0:
-            _model = self.tvwTreeView.get_model()
-
-            try:
-                _name = self._dic_hardware_attrs[_entity.hardware_id][0]
-                _hr_logistics = self._dic_reliability_attrs[_entity.hardware_id][0]
-                _mtbf_logistics = self._dic_reliability_attrs[_entity.hardware_id][1]
-                _rel_logistics = self._dic_reliability_attrs[_entity.hardware_id][2]
-                _avail_logistics = self._dic_reliability_attrs[_entity.hardware_id][3]
-            except KeyError:
-                _name = ""
-                _hr_logistics = 0.0
-                _mtbf_logistics = 0.0
-                _rel_logistics = 1.0
-                _avail_logistics = 1.0
-
             _attributes = [
                 _entity.revision_id,
                 _entity.hardware_id,
-                _name,
+                "",
                 _entity.included,
                 _entity.n_sub_systems,
                 _entity.n_sub_elements,
@@ -887,20 +932,20 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 _entity.env_factor,
                 _entity.weight_factor,
                 _entity.percent_weight_factor,
-                _hr_logistics,
+                0.0,
                 _entity.hazard_rate_alloc,
-                _mtbf_logistics,
+                0.0,
                 _entity.mtbf_alloc,
-                _rel_logistics,
+                0.0,
                 _entity.reliability_alloc,
-                _avail_logistics,
+                0.0,
                 _entity.availability_alloc,
+                _entity.parent_id,
             ]
 
             try:
-                _new_row = _model.append(row, _attributes)
+                self.tvwTreeView.unfilt_model.append(row, _attributes)
             except (AttributeError, TypeError, ValueError):
-                _new_row = None
                 _message = _(
                     f"An error occurred when loading allocation record "
                     f"{str(node.identifier)} into the allocation list.  This might "
@@ -913,5 +958,3 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     logger_name="WARNING",
                     message=_message,
                 )
-
-        return _new_row

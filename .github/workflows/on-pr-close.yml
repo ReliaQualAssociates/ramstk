@@ -58,20 +58,9 @@ jobs:
             echo "do_release=1" >> $GITHUB_ENV
           else
             echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
-            echo "do_release=0" >> $GITHUB_ENV
             echo "do_tag=0" >> $GITHUB_ENV
+            echo "do_release=0" >> $GITHUB_ENV
           fi
-
-      - name: Check
-        run: |
-          echo "${{ steps.prlabels.outputs.labels }}"
-          echo "${{ steps.curversion.outputs.tag_version }}"
-          echo "${{ steps.curversion.outputs.tag_major }}"
-          echo "${{ steps.curversion.outputs.tag_minor }}"
-          echo "${{ steps.curversion.outputs.tag_patch }}"
-          echo "${{ steps.nextversion.outputs.next_version }}"
-          echo "${{ env.do_release }}"
-          echo "${{ env.do_tag }}"
 
       - name: Update VERSION and pyproject.toml file
         if: ${{ env.do_tag == 1 }}
@@ -87,9 +76,9 @@ jobs:
         id: prvars
         run: |
           if [ ${{ env.do_release }} == 1 ]; then
-            echo ::set-output name=title::"ci: set for release"
+            echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
             echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version; set for release."
-            echo ::set-output name=message::"ci: release v${{ steps.nextversion.outputs.next_version }}"
+            echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
             echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
           else
             echo ::set-output name=title::"ci: bump version files"
@@ -97,13 +86,6 @@ jobs:
             echo ::set-output name=message::"ci: bump version files"
             echo ::set-output name=branch::"ci/bump_version_files"
           fi
-
-      - name: Check 2
-        run: |
-          echo "${{ steps.prvars.outputs.message }}"
-          echo "${{ steps.prvars.outputs.title }}"
-          echo "${{ steps.prvars.outputs.body }}"
-          echo "${{ steps.prvars.outputs.branch }}"
 
       - name: Cut pull request to merge updated version files
         if: ${{ env.do_push == 1 }}

@@ -23,6 +23,7 @@ reliability_logistics='Current Reliability'
 reliability_alloc='Allocated Reliability'
 availability_logistics='Current Availability'
 availability_alloc='Allocated Availability'
+parent_id='Parent ID'
 
 [usertitle]
 revision_id='Revision ID'
@@ -47,6 +48,7 @@ reliability_logistics='Current Reliability'
 reliability_alloc='Allocated Reliability'
 availability_logistics='Current Availability'
 availability_alloc='Allocated Availability'
+parent_id='Parent ID'
 
 [position]
 revision_id=0
@@ -71,6 +73,7 @@ reliability_logistics=18
 reliability_alloc=19
 availability_logistics=20
 availability_alloc=21
+parent_id=22
 
 [editable]
 revision_id='False'
@@ -95,6 +98,7 @@ reliability_logistics='False'
 reliability_alloc='False'
 availability_logistics='False'
 availability_alloc='False'
+parent_id='False'
 
 [visible]
 revision_id='False'
@@ -119,3 +123,4 @@ reliability_logistics='True'
 reliability_alloc='True'
 availability_logistics='True'
 availability_alloc='True'
+parent_id='False'

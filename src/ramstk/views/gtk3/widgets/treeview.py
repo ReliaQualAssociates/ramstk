@@ -234,30 +234,23 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             self.set_cursor(_path, None, False)
             self.row_activated(_path, _column)
 
-    @deprecated
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter:
         """Find the row in the RAMSTKTreeView() containing the passed value.
-
-        Currently unused.  Determine if it has value.
 
         :param search_col: the column number to search for the desired value.
         :param value: the value to match.
         :return: _iter; the Gtk.TreeIter() for the matching row.
         :rtype: :class:`Gtk.TreeIter`
         """
-        _model = self.get_model()
-        try:
-            _row = _model.get_iter_first()
-        except AttributeError:
-            _row = None
+        _row = self.unfilt_model.get_iter_first()
 
         while _row is not None:
-            _value = _model.get_value(_row, search_col)
-            # pylint: disable=no-else-return
-            if _value == value:
-                return _row
-            else:
-                _row = _model.iter_next(_row)
+            if self.unfilt_model.get_value(_row, search_col) == value:
+                break
+
+            _row = self.unfilt_model.iter_next(_row)
+
+        return _row
 
     def do_insert_row(self, data: Dict[str, Any], prow: Gtk.TreeIter = None) -> None:
         """Insert a new row in the treeview.

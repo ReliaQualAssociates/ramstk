@@ -238,6 +238,14 @@ class HardwareModuleView(RAMSTKModuleView):
             "request_insert_reliability",
             attributes=copy(_attributes),
         )
+        pub.sendMessage(
+            "request_insert_allocation",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_similar_item",
+            attributes=copy(_attributes),
+        )
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
         """Send request to insert a piece part to the selected Hardware item.
@@ -318,6 +326,14 @@ class HardwareModuleView(RAMSTKModuleView):
         )
         pub.sendMessage(
             "request_insert_reliability",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_allocation",
+            attributes=copy(_attributes),
+        )
+        pub.sendMessage(
+            "request_insert_similar_item",
             attributes=copy(_attributes),
         )
 

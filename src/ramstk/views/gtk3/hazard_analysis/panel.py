@@ -729,7 +729,9 @@ class HazardsTreePanel(RAMSTKTreePanel):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def filter_tree(self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any) -> bool:
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
         """Filter Hazards to show only those associated with the selected Function.
 
         :param model: the filtered model for the Hazard RAMSTKTreeView.

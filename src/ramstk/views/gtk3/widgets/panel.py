@@ -42,7 +42,7 @@ class RAMSTKPanel(RAMSTKFrame):
 
     :cvar _record_field: the database table field that contains the record ID.
     :cvar _select_msg: the PyPubSub message the panel listens for to load values into
-        it's attribute widgets.  Defaults to "selected_revision".
+        its attribute widgets.  Defaults to "selected_revision".
     :cvar _tag: the name of the tag in the table or view model tree.  This should be
         the same value as the _tag attribute for the table or view model the panel is
         used to display.
@@ -204,7 +204,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     ) -> None:
         """Load data into the widgets on fixed type panel.
 
-        :param attributes: the attributes dict for the selected item.
+        :param attributes: the attribute dict for the selected item.
         :return: None
         """
         self._record_id = attributes[self._record_field]
@@ -675,7 +675,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
     The attributes of a RAMSTKTreePanel are:
 
     :ivar tvwTreeView: a RAMSTKTreeView() for the panels that embed a treeview.
-    :ivar _filtered_tree: boolean indicating whether or not to display the filtered
+    :ivar _filtered_tree: boolean indicating whether to display the filtered
         RAMSTKTreeView() or the full RAMSTKTreeView().
     """
 
@@ -750,11 +750,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         try:
             self.tvwTreeView.do_load_tree(tree, None)
-            if self._filtered_tree:
-                self.tvwTreeView.filt_model = self.tvwTreeView.unfilt_model.filter_new()
-                self.tvwTreeView.filt_model.set_visible_func(self.filter_tree)
-                self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
-
             self.tvwTreeView.expand_all()
             _row = self.tvwTreeView.unfilt_model.get_iter_first()
             if _row is not None:
@@ -875,6 +870,11 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 pass
 
         self.tvwTreeView.do_make_columns()
+
+        if self._filtered_tree:
+            self.tvwTreeView.filt_model = self.tvwTreeView.unfilt_model.filter_new()
+            self.tvwTreeView.filt_model.set_visible_func(self.do_filter_tree)
+            self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
