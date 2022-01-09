@@ -220,6 +220,12 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self._goal_id = combo.get_active()
+        if self._goal_id == 1:  # Expressed as reliability.
+            self.txtReliabilityGoal.set_sensitive(True)
+        elif self._goal_id == 2:  # Expressed as a hazard rate.
+            self.txtHazardRateGoal.set_sensitive(True)
+        elif self._goal_id == 3:  # Expressed as an MTBF.
+            self.txtMTBFGoal.set_sensitive(True)
 
     @staticmethod
     def _on_method_changed(combo: RAMSTKComboBox) -> None:
@@ -396,7 +402,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         self._filtered_tree = True
         self._goal_id: int = 0
         self._method_id: int = 0
-        self._on_edit_message: str = f"mvw_editing_{self._tag}"
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary attributes.
         self.dic_attribute_widget_map = {
@@ -457,9 +463,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 1,
                 {
                     "bg_color": "#FFFFFF",
-                    "editable": False,
+                    "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Included?"),
                 "gint",
@@ -891,10 +897,6 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 "selected_allocation",
                 attributes=_attributes,
             )
-            pub.sendMessage(
-                "request_get_allocation_attributes",
-                node_id=self._record_id,
-            )
 
     def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
         """Filter allocation list when Hardware is selected.
@@ -905,6 +907,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
+        pub.sendMessage("request_get_allocation_attributes", node_id=self._parent_id)
 
     def __do_load_allocation(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the allocation RAMSTKTreeView().
