@@ -116,12 +116,25 @@ class AllocationWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _message = ""
-
         super().do_set_cursor_busy()
         if self._pnlGoalMethods.method_id == 1:  # Equal
             pub.sendMessage(
                 "request_calculate_equal_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 2:  # AGREE
+            pub.sendMessage(
+                "request_calculate_agree_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 3:  # ARINC
+            pub.sendMessage(
+                "request_calculate_arinc_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 4:  # FOO
+            pub.sendMessage(
+                "request_calculate_foo_allocation",
                 node_id=self.dic_pkeys["record_id"],
             )
 

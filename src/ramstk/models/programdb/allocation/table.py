@@ -149,22 +149,16 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, 0, **_attributes
             )
 
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_alloc": _attributes["reliability_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_goal": _attributes["reliability_alloc"]},
-            )
+            for _attr in [
+                "mtbf_alloc",
+                "hazard_rate_alloc",
+                "reliability_alloc",
+                "reliability_goal",
+            ]:
+                self.do_set_attributes(
+                    node_id=_node.identifier,
+                    package={_attr: _attributes[_attr]},
+                )
 
             _parent_goal = _node.data["allocation"].reliability_goal
 
@@ -197,22 +191,16 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, 0, **_attributes
             )
 
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_alloc": _attributes["reliability_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_goal": _attributes["reliability_alloc"]},
-            )
+            for _attr in [
+                "mtbf_alloc",
+                "hazard_rate_alloc",
+                "reliability_alloc",
+                "reliability_goal",
+            ]:
+                self.do_set_attributes(
+                    node_id=_node.identifier,
+                    package={_attr: _attributes[_attr]},
+                )
 
             _parent_goal = _node.data["allocation"].hazard_rate_goal
 
@@ -243,30 +231,18 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, 0, **_attributes
             )
 
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"allocation_method_id": _attributes["allocation_method_id"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"weight_factor": _attributes["weight_factor"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_alloc": _attributes["reliability_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_goal": _attributes["reliability_alloc"]},
-            )
+            for _attr in [
+                "allocation_method_id",
+                "weight_factor",
+                "mtbf_alloc",
+                "hazard_rate_alloc",
+                "reliability_alloc",
+                "reliability_goal",
+            ]:
+                self.do_set_attributes(
+                    node_id=_node.identifier,
+                    package={_attr: _attributes[_attr]},
+                )
 
             _parent_goal = _attributes["reliability_alloc"]
 
@@ -296,30 +272,18 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, _cum_weight, **_attributes
             )
 
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"weight_factor": _attributes["weight_factor"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"percent_weight_factor": _attributes["percent_weight_factor"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_alloc": _attributes["reliability_alloc"]},
-            )
-            self.do_set_attributes(
-                node_id=_node.identifier,
-                package={"reliability_goal": _attributes["reliability_alloc"]},
-            )
+            for _attr in [
+                "weight_factor",
+                "percent_weight_factor",
+                "mtbf_alloc",
+                "hazard_rate_alloc",
+                "reliability_alloc",
+                "reliability_goal",
+            ]:
+                self.do_set_attributes(
+                    node_id=_node.identifier,
+                    package={_attr: _attributes[_attr]},
+                )
 
         pub.sendMessage(
             "succeed_calculate_allocation",
