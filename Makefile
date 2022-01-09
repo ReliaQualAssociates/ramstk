@@ -146,8 +146,8 @@ depends:
 
 upgrade:
 	pip install -U pip wheel
-	$(POETRY) install
 	$(POETRY) update
+	$(POETRY) install
 
 # Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc

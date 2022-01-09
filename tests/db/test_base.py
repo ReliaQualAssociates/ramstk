@@ -102,7 +102,7 @@ class TestConnectionMethods:
         ] = "/home/test/testdb.db"
         DUT = BaseDatabase()
 
-        with pytest.raises(exc.OperationalError):
+        with pytest.raises(DataAccessError) as _error:
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.integration
@@ -112,7 +112,17 @@ class TestConnectionMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "sqldoyle"
         DUT = BaseDatabase()
 
-        with pytest.raises(DataAccessError):
+        with pytest.raises(DataAccessError) as _error:
+            DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+
+    @pytest.mark.integration
+    def test_do_connect_no_server(self, test_toml_user_configuration):
+        """do_connect() should raise a DataAccessError when the server is off-line."""
+        test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "postgres"
+        test_toml_user_configuration.RAMSTK_PROG_INFO["host"] = "shibby-shibby-do"
+        DUT = BaseDatabase()
+
+        with pytest.raises(DataAccessError) as _error:
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.integration

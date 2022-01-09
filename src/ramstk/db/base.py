@@ -139,8 +139,7 @@ class BaseDatabase:
     def do_connect(self, database: Dict) -> None:
         """Connect to the database.
 
-        :param database: the connection information for the database to
-            connect to.
+        :param database: the connection information for the database to connect to.
         :return: None
         :rtype: None
         :raise: sqlalchemy.exc.OperationalError if passed an invalid database
@@ -172,16 +171,26 @@ class BaseDatabase:
                     + self.cxnargs["dbname"]
                 )
             else:
-                raise DataAccessError(
-                    "Unknown database dialect in database " "connection dict."
+                _error_msg = (
+                    f"Unknown database dialect in database connection "
+                    f"dict: {self.cxnargs}."
                 )
-        except TypeError as _error:
-            raise DataAccessError(
-                "Unknown dialect or non-string value in " "database connection dict."
-            ) from _error
-
-        if self.database != "":
+                pub.sendMessage(
+                    "do_log_error_msg", logger_name="ERROR", message=_error_msg
+                )
+                raise DataAccessError(_error_msg)
             self.engine, self.session = do_open_session(self.database)
+        except exc.OperationalError as _error:
+            _error_msg = f"{str(_error.orig).capitalize()}: {self.cxnargs}"
+            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
+            raise DataAccessError(_error_msg) from _error
+        except TypeError as _error:
+            _error_msg = (
+                f"Unknown dialect or non-string value in database "
+                f"connection: {self.cxnargs['dialect']}, {self.cxnargs['dbname']}"
+            )
+            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
+            raise DataAccessError(_error_msg) from _error
 
     def do_delete(self, item: object) -> None:
         """Delete a record from the RAMSTK Program database.
