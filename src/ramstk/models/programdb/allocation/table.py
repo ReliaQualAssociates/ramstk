@@ -149,13 +149,22 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, 0, **_attributes
             )
 
-            _node.data["allocation"].hazard_rate_alloc = _attributes[
-                "hazard_rate_alloc"
-            ]
-            _node.data["allocation"].mtbf_alloc = _attributes["mtbf_alloc"]
-            _node.data["allocation"].reliability_alloc = _attributes[
-                "reliability_alloc"
-            ]
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_alloc": _attributes["reliability_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_goal": _attributes["reliability_alloc"]},
+            )
 
             _parent_goal = _node.data["allocation"].reliability_goal
 
@@ -188,13 +197,22 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
                 _parent_goal, 0, **_attributes
             )
 
-            _node.data["allocation"].mtbf_alloc = _attributes["mtbf_alloc"]
-            _node.data["allocation"].hazard_rate_alloc = _attributes[
-                "hazard_rate_alloc"
-            ]
-            _node.data["allocation"].reliability_alloc = _attributes[
-                "reliability_alloc"
-            ]
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"mtbf_alloc": _attributes["mtbf_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_alloc": _attributes["reliability_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_goal": _attributes["reliability_alloc"]},
+            )
 
             _parent_goal = _node.data["allocation"].hazard_rate_goal
 
@@ -226,27 +244,31 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             )
 
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"allocation_method_id": _attributes["allocation_method_id"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"weight_factor": _attributes["weight_factor"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"mtbf_alloc": _attributes["mtbf_alloc"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"reliability_alloc": _attributes["reliability_alloc"]},
             )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_goal": _attributes["reliability_alloc"]},
+            )
 
-            _parent_goal = _node.data["allocation"].reliability_goal
+            _parent_goal = _attributes["reliability_alloc"]
 
         pub.sendMessage(
             "succeed_calculate_allocation",
@@ -275,24 +297,28 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             )
 
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"weight_factor": _attributes["weight_factor"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"percent_weight_factor": _attributes["percent_weight_factor"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"mtbf_alloc": _attributes["mtbf_alloc"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"hazard_rate_alloc": _attributes["hazard_rate_alloc"]},
             )
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"reliability_alloc": _attributes["reliability_alloc"]},
+            )
+            self.do_set_attributes(
+                node_id=_node.identifier,
+                package={"reliability_goal": _attributes["reliability_alloc"]},
             )
 
         pub.sendMessage(

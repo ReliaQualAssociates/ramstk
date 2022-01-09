@@ -147,6 +147,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.method_id: int = 0
 
         super().do_set_properties()
         super().do_make_panel()
@@ -227,16 +228,18 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         elif self._goal_id == 3:  # Expressed as an MTBF.
             self.txtMTBFGoal.set_sensitive(True)
 
-    @staticmethod
-    def _on_method_changed(combo: RAMSTKComboBox) -> None:
+    def _on_method_changed(self, combo: RAMSTKComboBox) -> None:
         """Let others know when allocation method combo changes.
 
         :param combo: the allocation calculation method RAMSTKComboBox().
         :return: None
         :rtype: None
         """
+        self.method_id = combo.get_active()
+
         pub.sendMessage(
-            "succeed_change_allocation_method", method_id=combo.get_active()
+            "succeed_change_allocation_method",
+            method_id=self.method_id,
         )
 
 
@@ -691,7 +694,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Allocation MTBF"),
+                _("Allocated MTBF"),
                 "gfloat",
             ],
             "reliability_logistics": [
@@ -755,7 +758,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
                     "fg_color": "#000000",
                     "visible": True,
                 },
-                _("Allocation Availability"),
+                _("Allocated Availability"),
                 "gfloat",
             ],
             "parent_id": [
@@ -793,9 +796,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_allocation")
-        pub.subscribe(self._do_set_hardware_attributes, "succeed_retrieve_hardwares")
+        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
         pub.subscribe(
-            self._do_set_reliability_attributes, "succeed_retrieve_reliabilitys"
+            self._do_set_reliability_attributes, "succeed_get_reliability_tree"
         )
         pub.subscribe(self._on_method_changed, "succeed_change_allocation_method")
         pub.subscribe(self._on_select_hardware, "selected_hardware")
@@ -948,6 +951,8 @@ class AllocationTreePanel(RAMSTKTreePanel):
 
             try:
                 self.tvwTreeView.unfilt_model.append(row, _attributes)
+                pub.sendMessage("request_get_hardware_tree")
+                pub.sendMessage("request_get_reliability_tree")
             except (AttributeError, TypeError, ValueError):
                 _message = _(
                     f"An error occurred when loading allocation record "
