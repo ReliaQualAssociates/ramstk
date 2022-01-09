@@ -62,7 +62,7 @@ jobs:
         id: build
         if: contains(steps.prlabels.outputs.labels, ' Release ')
         run: |
-          pip install -U pip poetry
+          pip install -U pip poetry twine
           make build
 
       - name: Publish to Test PyPi
