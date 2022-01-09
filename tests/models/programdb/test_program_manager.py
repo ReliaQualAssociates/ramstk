@@ -49,12 +49,18 @@ class TestProgramManager:
         print("\033[36m\nsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
-        assert error_message == ("The database bad_database_url.ramstk does not exist.")
+        assert error_message == (
+            "Fatal:  database \"bad_database_url.ramstk\" does not exist\n: {'dialect': "
+            "'postgres', 'user': 'postgres', 'password': 'postgres', 'host': "
+            "'localhost', 'port': '5432', 'dbname': 'bad_database_url.ramstk'}"
+        )
         print("\033[35m\nfail_connect_program_database topic was broadcast on bad URL.")
 
     def on_fail_open_program_unknown_dialect(self, error_message):
         assert error_message == (
-            "Unknown database dialect in database connection dict."
+            "Unknown database dialect in database connection dict: "
+            "{'dialect': 'doyleton', 'user': 'postgres', 'password': 'postgres', "
+            "'host': 'localhost', 'port': '5432', 'dbname': 'bad_database_url.ramstk'}."
         )
         print(
             "\033[35m\nfail_connect_program_database topic was broadcast on unknown "
@@ -63,7 +69,7 @@ class TestProgramManager:
 
     def on_fail_open_program_non_string_url(self, error_message):
         assert error_message == (
-            "Unknown dialect or non-string value in " "database connection dict."
+            "Unknown dialect or non-string value in database connection: postgres, 8742.11"
         )
         print(
             "\033[35m\nfail_connect_program_database topic was broadcast on "
@@ -75,7 +81,7 @@ class TestProgramManager:
 
     def on_fail_close_program(self, error_message):
         assert error_message == (
-            "Not currently connected to a database.  " "Nothing to close."
+            "Not currently connected to a database.  Nothing to close."
         )
         print("\033[35m\nfail_disconnect_program_database topic was broadcast")
 

@@ -20,6 +20,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase
+from ramstk.exceptions import DataAccessError
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models import (
@@ -81,7 +82,14 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
     )
 
     _site_db = BaseDatabase()
-    _site_db.do_connect(conn_info)
+    try:
+        _site_db.do_connect(conn_info)
+    except DataAccessError:
+        sys.exit(
+            "\033[35mUNABLE TO CONNECT TO RAMSTK COMMON DATABASE!  Check the "
+            "logs for more information.\033[0m"
+        )
+
     pub.sendMessage(
         "do_log_info_msg",
         logger_name="INFO",
@@ -94,7 +102,7 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
 
 
 def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
-    """Raise dialog to setup site database.
+    """Raise dialog to set up site database.
 
     :param configuration: the RAMSTKSiteConfiguration() instance.
     :return: None
@@ -342,11 +350,11 @@ def the_one_ring() -> None:
         logger_name="INFO",
         message="Initializing the RAMSTK application.",
     )
-    print(site_db)
+
     _program_db, _site_db = do_initialize_databases(  # pylint: disable=unused-variable
         user_configuration, site_db
     )
-    print(_site_db, _site_db.common_dao)
+
     user_configuration = _site_db.do_load_site_variables(user_configuration)
 
     pub.sendMessage(

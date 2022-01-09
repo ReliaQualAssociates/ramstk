@@ -102,8 +102,15 @@ class TestConnectionMethods:
         ] = "/home/test/testdb.db"
         DUT = BaseDatabase()
 
-        with pytest.raises(exc.OperationalError):
+        with pytest.raises(DataAccessError) as _error:
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+
+        assert (
+            _error.value.msg == "Unable to open database file: {'dialect': "
+            "'sqlite', 'user': 'postgres', 'password': "
+            "'postgres', 'host': 'localhost', 'port': '5432', "
+            "'dbname': '/home/test/testdb.db'}"
+        )
 
     @pytest.mark.integration
     def test_do_connect_unknown_dialect(self, test_toml_user_configuration):
@@ -112,8 +119,32 @@ class TestConnectionMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "sqldoyle"
         DUT = BaseDatabase()
 
-        with pytest.raises(DataAccessError):
+        with pytest.raises(DataAccessError) as _error:
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+
+        assert _error.value.msg == (
+            "Unknown database dialect in database connection dict: {'dialect': "
+            "'sqldoyle', 'user': 'postgres', 'password': 'postgres', 'host': "
+            "'localhost', 'port': '5432', 'dbname': '/home/test/testdb.db'}."
+        )
+
+    @pytest.mark.integration
+    def test_do_connect_no_server(self, test_toml_user_configuration):
+        """do_connect() should raise a DataAccessError when the server is off-line."""
+        test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "postgres"
+        test_toml_user_configuration.RAMSTK_PROG_INFO["host"] = "shibby-shibby-do"
+        DUT = BaseDatabase()
+
+        with pytest.raises(DataAccessError) as _error:
+            DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+
+        assert (
+            _error.value.msg
+            == 'Could not translate host name "shibby-shibby-do" to address: name or '
+            "service not known\n: {'dialect': 'postgres', 'user': 'postgres', "
+            "'password': 'postgres', 'host': 'shibby-shibby-do', 'port': '5432', "
+            "'dbname': '/home/test/testdb.db'}"
+        )
 
     @pytest.mark.integration
     def test_do_disconnect(self, test_toml_user_configuration):
