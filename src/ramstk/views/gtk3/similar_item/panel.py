@@ -7,7 +7,7 @@
 """GTK3 Similar Item Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -27,7 +27,7 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field = "hardware_id"
-    _select_msg = "selected_similar_item"
+    _select_msg = "succeed_get_similar_item_attributes"
     _tag = "similar_item"
     _title = _("Similar Item Method")
 
@@ -146,8 +146,6 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dict instance attributes.
-        self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
-        self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self.tvwTreeView.dic_row_loader = {
             "similar_item": self.__do_load_similar_item,
         }
@@ -208,6 +206,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "user_int_3": False,
                 "user_int_4": False,
                 "user_int_5": False,
+                "parent_id": False,
             },
             1: {
                 "revision_id": False,
@@ -265,6 +264,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "user_int_3": False,
                 "user_int_4": False,
                 "user_int_5": False,
+                "parent_id": False,
             },
             2: {
                 "revision_id": False,
@@ -322,12 +322,14 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "user_int_3": True,
                 "user_int_4": True,
                 "user_int_5": True,
+                "parent_id": False,
             },
         }
 
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree = True
         self._method_id: int = 0
         self._on_edit_message: str = f"mvw_editing_{self._tag}"
 
@@ -1213,6 +1215,22 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 _("User Integer 5"),
                 "gint",
             ],
+            "parent_id": [
+                55,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Parent ID"),
+                "gint",
+            ],
         }
 
         # Initialize public list instance attributes.
@@ -1232,11 +1250,28 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_similar_item")
-        pub.subscribe(self._do_set_hardware_attributes, "succeed_retrieve_hardwares")
+        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
         pub.subscribe(
-            self._do_set_reliability_attributes, "succeed_retrieve_reliabilitys"
+            self._do_set_reliability_attributes, "succeed_get_reliability_tree"
         )
         pub.subscribe(self._on_method_changed, "succeed_change_similar_item_method")
+        pub.subscribe(self._on_select_hardware, "selected_hardware")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
+        """Filter Similar Item to show only those associated with the selected
+        Hardware.
+
+        :param model: the filtered model for the Similar Item RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][55] == self._parent_id
 
     def do_load_comboboxes(self) -> None:
         """Load Similar Item analysis RAMSTKComboBox()s.
@@ -1282,10 +1317,13 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-            self._dic_hardware_attrs[_hardware.hardware_id] = [
-                _hardware.name,
-                _hardware.part,
-            ]
+            _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
+            if _row is not None:
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    2,
+                    _hardware.name,
+                )
 
     def _do_set_reliability_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the reliability tree is retrieved.
@@ -1296,9 +1334,13 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _reliability = _node.data["reliability"]
-            self._dic_reliability_attrs[_reliability.hardware_id] = [
-                _reliability.hazard_rate_active,
-            ]
+            _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
+            if _row is not None:
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    3,
+                    _reliability.hazard_rate_active,
+                )
 
     def _on_method_changed(self, method_id: int) -> None:
         """Set method ID attributes when user changes the selection.
@@ -1325,10 +1367,6 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 "selected_similar_item",
                 attributes=_attributes,
             )
-            pub.sendMessage(
-                "request_get_similar_item_attributes",
-                node_id=self._record_id,
-            )
 
     def _do_set_columns_visible(self) -> None:
         """Set editable columns based on the Allocation method selected.
@@ -1341,9 +1379,18 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         self.tvwTreeView.visible = self._dic_visible_mask[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 
-    def __do_load_similar_item(
-        self, node: Any = "", row: Gtk.TreeIter = None
-    ) -> Gtk.TreeIter:
+    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+        """Filter allocation list when Hardware is selected.
+
+        :param attributes: the dict of attributes for the selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["hardware_id"]
+        self.tvwTreeView.filt_model.refilter()
+        pub.sendMessage("request_get_allocation_attributes", node_id=self._parent_id)
+
+    def __do_load_similar_item(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the similar item RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -1351,28 +1398,14 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         :return: _new_row; the row that was just populated with hardware data.
         :rtype: :class:`Gtk.TreeIter`
         """
-        _new_row = None
-
         _entity = node.data["similar_item"]
 
-        if (
-            not self._dic_hardware_attrs[_entity.hardware_id][1]
-            and not _entity.parent_id == 0
-        ):
-            _model = self.tvwTreeView.get_model()
-
-            try:
-                _name = self._dic_hardware_attrs[_entity.hardware_id][0]
-                _hr_active = self._dic_reliability_attrs[_entity.hardware_id][0]
-            except KeyError:
-                _name = ""
-                _hr_active = 0.0
-
+        if not _entity.parent_id == 0:
             _attributes = [
                 _entity.revision_id,
                 _entity.hardware_id,
-                _name,
-                _hr_active,
+                "",
+                0.0,
                 self._dic_quality[_entity.quality_from_id],
                 self._dic_quality[_entity.quality_to_id],
                 self._dic_environment[_entity.environment_from_id],
@@ -1424,12 +1457,14 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                 _entity.user_int_3,
                 _entity.user_int_4,
                 _entity.user_int_5,
+                _entity.parent_id,
             ]
 
             try:
-                _new_row = _model.append(row, _attributes)
+                self.tvwTreeView.unfilt_model.append(row, _attributes)
+                pub.sendMessage("request_get_hardware_tree")
+                pub.sendMessage("request_get_reliability_tree")
             except (AttributeError, TypeError, ValueError):
-                _new_row = None
                 _message = _(
                     f"An error occurred when loading similar item record "
                     f"{node.identifier} into the similar item list.  This might "
@@ -1442,5 +1477,3 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
                     logger_name="WARNING",
                     message=_message,
                 )
-
-        return _new_row

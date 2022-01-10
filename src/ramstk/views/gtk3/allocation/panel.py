@@ -7,7 +7,7 @@
 """GTK3 Allocation Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict
 
 # Third Party Imports
 import treelib
@@ -266,8 +266,6 @@ class AllocationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
-        self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self.tvwTreeView.dic_row_loader = {
             "allocation": self.__do_load_allocation,
         }
@@ -838,7 +836,11 @@ class AllocationTreePanel(RAMSTKTreePanel):
             _hardware = _node.data["hardware"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(_row, 2, _hardware.name)
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    2,
+                    _hardware.name,
+                )
 
     def _do_set_reliability_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the reliability tree is retrieved.

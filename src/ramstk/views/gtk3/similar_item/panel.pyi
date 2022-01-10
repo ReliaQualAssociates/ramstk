@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List
 
 # Third Party Imports
 import treelib
@@ -30,8 +30,6 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
     _title: str
-    _dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]]
-    _dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]]
     _dic_row_loader: Dict[str, Callable]
     _dic_visible_mask: Dict[int, Dict[str, str]]
     _method_id: int
