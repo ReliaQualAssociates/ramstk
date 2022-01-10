@@ -96,3 +96,11 @@ jobs:
           body: ${{ steps.prvars.outputs.body }}
           branch: ${{ steps.prvars.outputs.branch }}
           labels: Release
+  label_pr_closed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Closed Label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: closed"
+          remove-labels: "status: inprogress"
