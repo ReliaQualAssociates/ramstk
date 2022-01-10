@@ -590,7 +590,7 @@ class TestSelectMethods:
 
         assert _last_id == 0
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_get_database_list(self):
         """get_database_list() should return a list of database names available on the
         server."""
@@ -609,6 +609,29 @@ class TestSelectMethods:
 
         DUT.do_disconnect()
 
-        # How to test this now that the databases are being given a random name conf.py.
-        assert "TestCommonDB" in _databases
-        assert "TestProgramDB" in _databases
+        assert isinstance(_databases, list)
+        assert "postgres" not in _databases
+        assert "template0" not in _databases
+        assert "template1" not in _databases
+
+    @pytest.mark.integration
+    def test_get_database_list_unknown_dialect(self):
+        """get_database_list() should return a list of database names available on the
+        server."""
+        _database = {
+            "dialect": "postgres",
+            "user": "postgres",
+            "password": "postgres",
+            "host": "localhost",
+            "port": "5432",
+            "database": "postgres",
+        }
+        DUT = BaseDatabase()
+        DUT.do_connect(_database)
+
+        _database["dialect"] = "doyleton"
+        _databases = DUT.get_database_list(_database)
+
+        DUT.do_disconnect()
+
+        assert _databases == []
