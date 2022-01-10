@@ -130,6 +130,7 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
+            "record_id",
         ]
         assert test_tablemodel._record == RAMSTKSimilarItemRecord
         assert test_tablemodel.pkey == "hardware_id"
@@ -219,7 +220,7 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
         test_tablemodel.do_select_all(attributes=test_attributes)
-
+        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert isinstance(test_tablemodel.tree, Tree)
