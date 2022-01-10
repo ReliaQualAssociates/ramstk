@@ -14,6 +14,7 @@ jobs:
         with:
           allowed: >
             dobranch
+            Release
       - name: Create Issue Branch
         id: create_issue_branch
         if: steps.getlabel.outputs.match == 'dobranch'
