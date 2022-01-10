@@ -70,7 +70,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
-          git commit -a -m "Update VERSION and pyproject.toml" && echo "do_push=1" >> $GITHUB_ENV
+          git commit -a -m "release: v${{ steps.nextversion.outputs.next_version }}" && echo "do_push=1" >> $GITHUB_ENV
 
       - name: Set PR variables
         id: prvars

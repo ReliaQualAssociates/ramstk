@@ -21,7 +21,6 @@
         <th>Quality</th>
         <td>
             <a href="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk"><img src="https://www.codefactor.io/repository/github/reliaqualassociates/ramstk/badge" alt="CodeFactor" /></a>
-            <a href="https://www.deepcode.ai/app/gh/ReliaQualAssociates/ramstk/_/dashboard?utm_content=gh%2FReliaQualAssociates%2Framstk"><img alt="Deep Code" src="https://www.deepcode.ai/api/gh/badge?key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwbGF0Zm9ybTEiOiJnaCIsIm93bmVyMSI6IlJlbGlhUXVhbEFzc29jaWF0ZXMiLCJyZXBvMSI6InJhbXN0ayIsImluY2x1ZGVMaW50IjpmYWxzZSwiYXV0aG9ySWQiOjI1MTA4LCJpYXQiOjE2MDkxMzcwNTl9.R5P6VLkyK1LK6Jc5PjJ8QrLRq6zNuVxnzdjZCJbH7_k"></a>
             <img alt="Quality Gate" src="https://sonarcloud.io/api/project_badges/measure?project=ReliaQualAssociates_ramstk&metric=alert_status">
         </td>
     </tr>
