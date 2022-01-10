@@ -117,9 +117,26 @@ class AllocationWorkView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage(
-            "request_calculate_allocation", node_id=self.dic_pkeys["record_id"]
-        )
+        if self._pnlGoalMethods.method_id == 1:  # Equal
+            pub.sendMessage(
+                "request_calculate_equal_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 2:  # AGREE
+            pub.sendMessage(
+                "request_calculate_agree_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 3:  # ARINC
+            pub.sendMessage(
+                "request_calculate_arinc_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
+        elif self._pnlGoalMethods.method_id == 4:  # FOO
+            pub.sendMessage(
+                "request_calculate_foo_allocation",
+                node_id=self.dic_pkeys["record_id"],
+            )
 
     def __make_ui(self) -> None:
         """Build the user interface for the allocation tab.

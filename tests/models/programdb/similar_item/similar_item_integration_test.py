@@ -107,6 +107,7 @@ class TestInsertMethods:
 
         test_attributes["hardware_id"] = 8
         test_attributes["parent_id"] = 2
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert isinstance(
@@ -126,6 +127,7 @@ class TestInsertMethods:
         test_attributes["revision_id"] = 40
         test_attributes["hardware_id"] = 9
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(9) is None
@@ -140,6 +142,7 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(15) is None
 
         test_attributes["hardware_id"] = 15
+        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(15) is None

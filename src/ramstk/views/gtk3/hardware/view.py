@@ -218,26 +218,19 @@ class HardwareModuleView(RAMSTKModuleView):
             attributes=copy(_attributes),
         )
         _attributes.pop("part")
-        pub.sendMessage(
+        for _message in [
             "request_insert_design_electric",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_design_mechanic",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_milhdbk217f",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_nswc",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_reliability",
-            attributes=copy(_attributes),
-        )
+            "request_insert_allocation",
+            "request_insert_similar_item",
+        ]:
+            pub.sendMessage(
+                _message,
+                attributes=copy(_attributes),
+            )
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
         """Send request to insert a piece part to the selected Hardware item.
@@ -259,26 +252,17 @@ class HardwareModuleView(RAMSTKModuleView):
             attributes=copy(_attributes),
         )
         _attributes.pop("part")
-        pub.sendMessage(
+        for _message in [
             "request_insert_design_electric",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_design_mechanic",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_milhdbk217f",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_nswc",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_reliability",
-            attributes=copy(_attributes),
-        )
+        ]:
+            pub.sendMessage(
+                _message,
+                attributes=copy(_attributes),
+            )
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """Send request to insert a new sibling Hardware item.
@@ -300,26 +284,19 @@ class HardwareModuleView(RAMSTKModuleView):
             attributes=copy(_attributes),
         )
         _attributes.pop("part")
-        pub.sendMessage(
+        for _message in [
             "request_insert_design_electric",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_design_mechanic",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_milhdbk217f",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_nswc",
-            attributes=copy(_attributes),
-        )
-        pub.sendMessage(
             "request_insert_reliability",
-            attributes=copy(_attributes),
-        )
+            "request_insert_allocation",
+            "request_insert_similar_item",
+        ]:
+            pub.sendMessage(
+                _message,
+                attributes=copy(_attributes),
+            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.

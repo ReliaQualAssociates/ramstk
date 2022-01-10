@@ -12,13 +12,6 @@ from typing import Dict
 # Third Party Imports
 from pubsub import pub
 
-# noinspection PyPackageRequirements
-from sqlalchemy.exc import (  # type: ignore
-    ArgumentError,
-    NoSuchModuleError,
-    OperationalError,
-)
-
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
@@ -148,23 +141,6 @@ class RAMSTKProgramDB:
             pub.sendMessage(
                 "request_retrieve_revisions", attributes={"revision_id": None}
             )
-        except NoSuchModuleError:
-            _error_msg = (
-                "RAMSTK does not currently support database dialect "
-                "{0:s}.".format(database["dialect"])
-            )
-            pub.sendMessage("fail_connect_program_database", error_message=_error_msg)
-        except ArgumentError:
-            _error_msg = (
-                "The database URL {0:s} did not conform to the RFC 1738 "
-                "standard and could not be opened.".format(database["database"])
-            )
-            pub.sendMessage("fail_connect_program_database", error_message=_error_msg)
-        except OperationalError:
-            _error_msg = "The database {0:s} does not exist.".format(
-                database["database"]
-            )
-            pub.sendMessage("fail_connect_program_database", error_message=_error_msg)
         except DataAccessError as _error:
             pub.sendMessage("fail_connect_program_database", error_message=_error.msg)
 

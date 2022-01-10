@@ -316,7 +316,7 @@ class RAMSTKBaseTable:
     def do_select_all(self, attributes: Dict[str, Any]) -> None:
         """Retrieve all the records from the RAMSTK Program database.
 
-        :param attributes: the attributes dict for the selected failure action.
+        :param attributes: the attribute dict for the selected record.
         :return: None
         :rtype: None
         """

@@ -118,6 +118,7 @@ class TestInsertMethods:
 
         test_attributes["hardware_id"] = 6
         test_attributes["parent_id"] = 2
+        test_attributes["record_id"] = 6
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         assert isinstance(
@@ -135,6 +136,7 @@ class TestInsertMethods:
 
         test_attributes["hardware_id"] = 7
         test_attributes["parent_id"] = 9
+        test_attributes["record_id"] = 6
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
@@ -149,6 +151,7 @@ class TestInsertMethods:
         test_attributes["revision_id"] = 40
         test_attributes["hardware_id"] = 8
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 6
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         assert test_datamanager.tree.get_node(8) is None
@@ -163,6 +166,7 @@ class TestInsertMethods:
         assert test_datamanager.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["record_id"] = 6
         pub.sendMessage("request_insert_allocation", attributes=test_attributes)
 
         assert test_datamanager.tree.get_node(9) is None
