@@ -7,7 +7,7 @@
 """GTK3 Allocation Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Third Party Imports
 import treelib
@@ -165,7 +165,11 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.cmbAllocationGoal.do_load_combo(
-            [[_("Reliability"), 0], [_("Hazard Rate"), 1], [_("MTBF"), 2]]
+            [
+                [_("Reliability"), 0],
+                [_("Hazard Rate"), 1],
+                [_("MTBF"), 2],
+            ],
         )
         self.cmbAllocationMethod.do_load_combo(
             [
@@ -176,7 +180,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
             ]
         )
 
-    def _do_set_sensitive(self, attributes) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set widget sensitivity as needed for the selected R(t) goal.
 
         :return: None
@@ -903,7 +907,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 attributes=_attributes,
             )
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_select_hardware(
+        self, attributes: Dict[str, Union[int, float, str]]
+    ) -> None:
         """Filter allocation list when Hardware is selected.
 
         :param attributes: the dict of attributes for the selected Hardware.

@@ -7,7 +7,7 @@
 """GTK3 Similar Item Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -72,6 +72,7 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.method_id: int = 0
 
         super().do_set_properties()
         super().do_make_panel()
@@ -87,21 +88,39 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        # Load the method combobox.
         self.cmbSimilarItemMethod.do_load_combo(
-            [[_("Topic 633"), 0], [_("User-Defined"), 1]], signal="changed"
+            [
+                [_("Topic 633"), 0],
+                [_("User-Defined"), 1],
+            ],
+            signal="changed",
         )
 
-    @staticmethod
-    def _on_method_changed(combo: RAMSTKComboBox) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Union[int, float, str]]) -> None:
+        """Set widget sensitivity as needed for the selected R(t) goal.
+
+        :param attributes: the Similar Item attribute dict.
+        :return: None
+        :rtype: None
+        """
+        self.cmbSimilarItemMethod.set_sensitive(True)
+        self.cmbSimilarItemMethod.do_update(
+            attributes["similar_item_method_id"],
+            signal="changed",
+        )
+
+    def _on_method_changed(self, combo: RAMSTKComboBox) -> None:
         """Let others know when similar item method combo changes.
 
         :param combo: the similar item calculation method RAMSTKComboBox().
         :return: None
         :rtype: None
         """
+        self.method_id = combo.get_active()
+
         pub.sendMessage(
-            "succeed_change_similar_item_method", method_id=combo.get_active()
+            "succeed_change_similar_item_method",
+            method_id=self.method_id,
         )
 
 
@@ -1295,7 +1314,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """Refresh the Similar Item functions in the RAMSTKTreeView().
 
         :param row: the row in the Similar Item RAMSTKTreeView() whose
-            functions need to be updated.  This is require to allow a recursive
+            functions need to be updated.  This is required to allow a recursive
             calling function to load the same function in all rows.
         :param function: the list of user-defined Similar Item functions.
         :return: None
@@ -1379,7 +1398,9 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         self.tvwTreeView.visible = self._dic_visible_mask[self._method_id]
         self.tvwTreeView.do_set_visible_columns()
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_select_hardware(
+        self, attributes: Dict[str, Union[int, float, str]]
+    ) -> None:
         """Filter allocation list when Hardware is selected.
 
         :param attributes: the dict of attributes for the selected Hardware.
@@ -1388,7 +1409,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
-        pub.sendMessage("request_get_allocation_attributes", node_id=self._parent_id)
+        pub.sendMessage("request_get_similar_item_attributes", node_id=self._parent_id)
 
     def __do_load_similar_item(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the similar item RAMSTKTreeView().
