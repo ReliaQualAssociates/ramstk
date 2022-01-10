@@ -49,6 +49,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
