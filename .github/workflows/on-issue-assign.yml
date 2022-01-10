@@ -2,8 +2,6 @@ name: Issue Assigned Workflow
 on:
   issues:
     types: [assigned]
-  issue_comment:
-    types: [created]
 
 jobs:
   create_issue_branch_job:
