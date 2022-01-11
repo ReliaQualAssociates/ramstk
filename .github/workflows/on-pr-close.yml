@@ -74,7 +74,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         if: ${{ env.do_release == 1 }}
-        uses: vemel/update-changelog@0.0.1
+        uses: Hiekki4/update-changelog@master
         id: changelog
         with:
           version: ${{ steps.nextversion.outputs.next_version }}
