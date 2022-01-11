@@ -224,8 +224,6 @@ class HardwareModuleView(RAMSTKModuleView):
             "request_insert_milhdbk217f",
             "request_insert_nswc",
             "request_insert_reliability",
-            "request_insert_allocation",
-            "request_insert_similar_item",
         ]:
             pub.sendMessage(
                 _message,
@@ -290,8 +288,6 @@ class HardwareModuleView(RAMSTKModuleView):
             "request_insert_milhdbk217f",
             "request_insert_nswc",
             "request_insert_reliability",
-            "request_insert_allocation",
-            "request_insert_similar_item",
         ]:
             pub.sendMessage(
                 _message,
@@ -301,7 +297,7 @@ class HardwareModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
 
-        :param attributes: the attributes dict for the selected work stream module item.
+        :param attributes: the attribute dict for the selected work stream module item.
         :return: None
         :rtype: None
         """
