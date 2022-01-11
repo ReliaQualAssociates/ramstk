@@ -7,7 +7,7 @@
 """GTK3 Allocation Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -98,10 +98,10 @@ class AllocationWorkView(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_hardware")
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the allocation's record ID.
 
-        :param attributes: the attributes dict for the selected allocation
+        :param attributes: the attribute dict for the selected allocation
             record.
         :return: None
         :rtype: None

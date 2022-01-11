@@ -20,6 +20,7 @@ jobs:
         uses: robvanderleek/create-issue-branch@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   label_issue_in_progress:
     runs-on: ubuntu-latest
     steps:

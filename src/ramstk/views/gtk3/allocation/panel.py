@@ -7,7 +7,7 @@
 """GTK3 Allocation Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, Union
 
 # Third Party Imports
 import treelib
@@ -165,7 +165,11 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.cmbAllocationGoal.do_load_combo(
-            [[_("Reliability"), 0], [_("Hazard Rate"), 1], [_("MTBF"), 2]]
+            [
+                [_("Reliability"), 0],
+                [_("Hazard Rate"), 1],
+                [_("MTBF"), 2],
+            ],
         )
         self.cmbAllocationMethod.do_load_combo(
             [
@@ -176,7 +180,7 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
             ]
         )
 
-    def _do_set_sensitive(self, attributes) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set widget sensitivity as needed for the selected R(t) goal.
 
         :return: None
@@ -266,8 +270,6 @@ class AllocationTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary attributes.
-        self._dic_hardware_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
-        self._dic_reliability_attrs: Dict[int, List[Union[bool, float, int, str]]] = {}
         self.tvwTreeView.dic_row_loader = {
             "allocation": self.__do_load_allocation,
         }
@@ -838,7 +840,11 @@ class AllocationTreePanel(RAMSTKTreePanel):
             _hardware = _node.data["hardware"]
             _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
             if _row is not None:
-                self.tvwTreeView.unfilt_model.set_value(_row, 2, _hardware.name)
+                self.tvwTreeView.unfilt_model.set_value(
+                    _row,
+                    2,
+                    _hardware.name,
+                )
 
     def _do_set_reliability_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the reliability tree is retrieved.
@@ -901,7 +907,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 attributes=_attributes,
             )
 
-    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
+    def _on_select_hardware(
+        self, attributes: Dict[str, Union[int, float, str]]
+    ) -> None:
         """Filter allocation list when Hardware is selected.
 
         :param attributes: the dict of attributes for the selected Hardware.
