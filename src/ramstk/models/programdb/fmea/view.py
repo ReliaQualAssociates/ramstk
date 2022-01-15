@@ -30,7 +30,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
 
     # Define private scalar class attributes.
     _root = 0
-    _tag = "fmea"
+    _tag = "fmeca"
 
     # Define public dictionary class attributes.
 

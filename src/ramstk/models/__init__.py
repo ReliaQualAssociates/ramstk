@@ -30,7 +30,6 @@ from .programdb.environment.record import RAMSTKEnvironmentRecord
 from .programdb.environment.table import RAMSTKEnvironmentTable
 from .programdb.failure_definition.record import RAMSTKFailureDefinitionRecord
 from .programdb.failure_definition.table import RAMSTKFailureDefinitionTable
-from .programdb.fmea.record import RAMSTKFMEARecord
 from .programdb.fmea.view import RAMSTKFMEAView
 from .programdb.function.record import RAMSTKFunctionRecord
 from .programdb.function.table import RAMSTKFunctionTable
