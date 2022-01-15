@@ -718,30 +718,28 @@ def test_simple_program_database():
 def test_license_file():
     """Create a license key file for testing."""
     _cwd = os.getcwd()
-    _license_file = open(_cwd + "/license.key", "w")
-    _license_file.write("0\n")
-    _license_file.write("apowdigfb3rh9214839qu\n")
-    _license_file.write("2019-08-07\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("ReliaQual Test Site")
-    _license_file.close()
-
+    with open(_cwd + "/license.key", "w") as _license_file:
+        _license_file.write("0\n")
+        _license_file.write("apowdigfb3rh9214839qu\n")
+        _license_file.write("2019-08-07\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("ReliaQual Test Site")
     yield _license_file
 
     os.remove(_cwd + "/license.key")
@@ -955,19 +953,13 @@ def test_excel_file():
     _book = xlwt.Workbook()
     _sheet = _book.add_sheet("Sheet 1", cell_overwrite_ok=True)
 
-    _col_num = 1
-    for _header in HEADERS["Function"]:
+    for _col_num, _header in enumerate(HEADERS["Function"], start=1):
         _sheet.write(0, _col_num, _header)
-        _col_num += 1
-
-    _row_num = 1
-    for _row in ROW_DATA[:2]:
+    for _row_num, _row in enumerate(ROW_DATA[:2], start=1):
         _col_num = 1
         for _data in enumerate(_row):
             _sheet.write(_row_num, _col_num, _data[1])
             _col_num += 1
-        _row_num += 1
-
     _book.save(_test_file)
 
     yield _test_file

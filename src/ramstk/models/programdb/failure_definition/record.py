@@ -49,10 +49,8 @@ class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {revision_id, definition_id, definition} pairs.
         :rtype: (int, int, str)
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "definition_id": self.definition_id,
             "definition": self.definition,
         }
-
-        return _attributes

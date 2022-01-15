@@ -207,7 +207,7 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   user_int_2, user_int_3} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "function_id": self.function_id,
             "hazard_id": self.hazard_id,
@@ -250,5 +250,3 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "user_int_2": self.user_int_2,
             "user_int_3": self.user_int_3,
         }
-
-        return _attributes

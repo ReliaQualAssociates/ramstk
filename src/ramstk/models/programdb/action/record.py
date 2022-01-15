@@ -121,7 +121,7 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   action_closed_date} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "cause_id": self.cause_id,
             "action_id": self.action_id,
             "action_recommended": self.action_recommended,
@@ -135,5 +135,3 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "action_closed": self.action_closed,
             "action_close_date": self.action_close_date,
         }
-
-        return _attributes

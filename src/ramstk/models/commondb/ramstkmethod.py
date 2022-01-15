@@ -46,11 +46,9 @@ class RAMSTKMethod(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {method_id, name, description, method_type} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "method_id": self.method_id,
             "name": self.name,
             "description": self.description,
             "method_type": self.method_type,
         }
-
-        return _attributes

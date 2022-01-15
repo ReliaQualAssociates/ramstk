@@ -129,7 +129,7 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   type_id} pairs.
         :rtype: tuple
         """
-        _values = {
+        return {
             "revision_id": self.revision_id,
             "function_id": self.function_id,
             "availability_logistics": self.availability_logistics,
@@ -153,5 +153,3 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "total_part_count": self.total_part_count,
             "type_id": self.type_id,
         }
-
-        return _values

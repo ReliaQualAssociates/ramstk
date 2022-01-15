@@ -390,9 +390,8 @@ def get_allocation_goal(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: KeyError if the passed attributes dict doesn't contain the
         allocation_method_id, hazard_rate_goal, and/or reliability_goal key.
     """
-    if attributes["allocation_method_id"] in [2, 4]:  # ARINC or FOO.
-        _goal = attributes["hazard_rate_goal"]
-    else:
-        _goal = attributes["reliability_goal"]
-
-    return _goal
+    return (
+        attributes["hazard_rate_goal"]
+        if attributes["allocation_method_id"] in [2, 4]
+        else attributes["reliability_goal"]
+    )

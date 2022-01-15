@@ -115,7 +115,7 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   requirement_enabled, vandv_enabled, fmea_enabled} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "site_id": self.site_id,
             "site_name": self.site_name,
             "product_key": self.product_key,
@@ -138,5 +138,3 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "rbd_enabled": self.rbd_enabled,
             "fta_enabled": self.fta_enabled,
         }
-
-        return _attributes

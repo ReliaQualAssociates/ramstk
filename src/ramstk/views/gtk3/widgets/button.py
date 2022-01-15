@@ -120,7 +120,7 @@ class RAMSTKButton(Gtk.Button, RAMSTKWidget):
         super().do_set_properties(**kwargs)
         self.set_property("always_show_image", True)
 
-        _icon = kwargs.get("icon", None)
+        _icon = kwargs.get("icon")
 
         if _icon is not None:
             self.set_label("")
@@ -224,7 +224,7 @@ class RAMSTKFileChooserButton(Gtk.FileChooserButton, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _select_action = kwargs.get("select-action", None)
+        _select_action = kwargs.get("select-action")
 
         self.set_action(_select_action)
 

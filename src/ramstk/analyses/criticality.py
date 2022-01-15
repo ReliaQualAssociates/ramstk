@@ -40,13 +40,11 @@ def calculate_rpn(sod):
     if not 0 < sod["rpn_detection"] < 11:
         raise OutOfRangeError(("RPN detection is outside the range [1, 10]."))
 
-    _rpn = (
+    return (
         int(sod["rpn_severity"])
         * int(sod["rpn_occurrence"])
         * int(sod["rpn_detection"])
     )
-
-    return _rpn
 
 
 def calculate_mode_hazard_rate(item_hr, mode_ratio):

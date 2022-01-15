@@ -94,7 +94,7 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   measurable_parameter, remarks} pairs
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "load_id": self.load_id,
             "stress_id": self.stress_id,
             "description": self.description,
@@ -102,5 +102,3 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "measurable_parameter": self.measurable_parameter,
             "remarks": self.remarks,
         }
-
-        return _attributes

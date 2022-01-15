@@ -563,9 +563,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for __, _key in enumerate(measurement_unit):
+        for _key, value in measurement_unit.items():
             self._lst_measurement_units.append(measurement_unit[_key][1])
-            _cellmodel.append([measurement_unit[_key][1]])
+            _cellmodel.append([value[1]])
 
     def do_load_verification_types(
         self, verification_type: Dict[int, Tuple[str, str]]
@@ -587,9 +587,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for __, _key in enumerate(verification_type):
+        for _key, value in verification_type.items():
             self._lst_verification_types.append(verification_type[_key][1])
-            _cellmodel.append([verification_type[_key][1]])
+            _cellmodel.append([value[1]])
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).

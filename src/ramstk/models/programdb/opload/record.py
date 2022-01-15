@@ -88,12 +88,10 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   priority_id} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "mechanism_id": self.mechanism_id,
             "load_id": self.load_id,
             "description": self.description,
             "damage_model": self.damage_model,
             "priority_id": self.priority_id,
         }
-
-        return _attributes

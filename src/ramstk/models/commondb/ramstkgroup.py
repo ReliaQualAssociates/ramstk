@@ -44,10 +44,8 @@ class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {workgroup_id, description, group_type} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "group_id": self.group_id,
             "description": self.description,
             "group_type": self.group_type,
         }
-
-        return _attributes

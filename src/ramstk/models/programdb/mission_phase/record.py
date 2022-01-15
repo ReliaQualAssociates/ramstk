@@ -82,7 +82,7 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: value of instance attributes
         :rtype: tuple
         """
-        _values = {
+        return {
             "mission_id": self.mission_id,
             "phase_id": self.phase_id,
             "description": self.description,
@@ -90,5 +90,3 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "phase_start": self.phase_start,
             "phase_end": self.phase_end,
         }
-
-        return _values

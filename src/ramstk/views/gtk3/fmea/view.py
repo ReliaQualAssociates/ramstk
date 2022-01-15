@@ -44,7 +44,7 @@ def do_request_insert(level: str, parent_id: str) -> None:
         pub.sendMessage("request_insert_fmea_mechanism", mode_id=str(parent_id))
     elif level == "cause":
         pub.sendMessage("request_insert_fmea_cause", parent_id=str(parent_id))
-    elif level in ["control", "action"]:
+    elif level in {"control", "action"}:
         pub.sendMessage(f"request_insert_fmea_{level}", parent_id=str(parent_id))
 
 

@@ -127,9 +127,7 @@ def split_string(string: str) -> List[str]:
     :return: _strlist
     :rtype: list of strings
     """
-    _strlist = string.rsplit(":")
-
-    return _strlist
+    return string.rsplit(":")
 
 
 def boolean_to_integer(boolean: bool) -> int:
@@ -139,12 +137,7 @@ def boolean_to_integer(boolean: bool) -> int:
     :return: _result
     :rtype: int
     """
-    _result = 0
-
-    if boolean:
-        _result = 1
-
-    return _result
+    return 1 if boolean else 0
 
 
 def integer_to_boolean(integer: int) -> bool:
@@ -158,12 +151,7 @@ def integer_to_boolean(integer: int) -> bool:
     :rtype: bool
     :raise: TypeError if passed a string.
     """
-    _result = False
-
-    if integer > 0:
-        _result = True
-
-    return _result
+    return integer > 0
 
 
 def string_to_boolean(string: str) -> bool:
@@ -173,19 +161,9 @@ def string_to_boolean(string: str) -> bool:
     :return: _result
     :rtype: bool
     """
-    _result = False
-
     _string = str(string)
 
-    if (
-        _string.lower() == "true"
-        or _string.lower() == "yes"
-        or _string.lower() == "t"
-        or _string.lower() == "y"
-    ):
-        _result = True
-
-    return _result
+    return _string.lower() in ["true", "yes", "t", "y"]
 
 
 def get_install_prefix() -> str:

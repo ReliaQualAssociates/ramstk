@@ -251,7 +251,7 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   user_int_5}
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "change_description_1": self.change_description_1,
             "change_description_2": self.change_description_2,
@@ -307,5 +307,3 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "user_int_4": self.user_int_4,
             "user_int_5": self.user_int_5,
         }
-
-        return _attributes

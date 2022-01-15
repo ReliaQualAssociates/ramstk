@@ -44,11 +44,9 @@ class RAMSTKType(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {type_id, description, type_type} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "type_id": self.type_id,
             "code": self.code,
             "description": self.description,
             "type_type": self.type_type,
         }
-
-        return _attributes

@@ -203,7 +203,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_cost(_node.identifier)
                 _total_cost += _node.data["hardware"].total_cost
-                _total_cost = _total_cost * _record.quantity
+                _total_cost *= _record.quantity
             _record.set_attributes({"total_cost": _total_cost})
 
     def do_calculate_hardware(self, node_id: int) -> None:
@@ -288,7 +288,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_part_count(_node.identifier)
                 _total_part_count += _node.data["hardware"].total_part_count
-                _total_part_count = _total_part_count * _record.quantity
+                _total_part_count *= _record.quantity
 
             _record.set_attributes({"total_part_count": _total_part_count})
 
@@ -312,9 +312,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
-            _total_power_dissipation = (
-                _total_power_dissipation * _record.data["hardware"].quantity
-            )
+            _total_power_dissipation *= _record.data["hardware"].quantity
 
         _record.data["hardware"].set_attributes(
             {"total_power_dissipation": _total_power_dissipation}

@@ -32,12 +32,10 @@ def get_hazard_rate(scale: float, location: float = 0.0) -> float:
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    _hazard_rate = 1.0 / expon.mean(
+    return 1.0 / expon.mean(
         loc=location,
         scale=scale,
     )
-
-    return _hazard_rate
 
 
 def get_mtbf(rate: float, location: float = 0.0) -> float:

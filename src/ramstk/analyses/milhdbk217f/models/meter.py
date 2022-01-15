@@ -186,13 +186,11 @@ def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
     :raise: IndexError when passed an unknown type ID.
     """
     if subcategory_id == 1:
-        _lambda_b = PART_STRESS_LAMBDA_B[1][type_id - 1]
+        return PART_STRESS_LAMBDA_B[1][type_id - 1]
     elif subcategory_id == 2:
-        _lambda_b = PART_STRESS_LAMBDA_B[2]
+        return PART_STRESS_LAMBDA_B[2]
     else:
-        _lambda_b = 0.0
-
-    return _lambda_b
+        return 0.0
 
 
 def get_temperature_stress_factor(

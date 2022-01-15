@@ -144,7 +144,7 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   time_mean, time_minimum, time_ul, time_variance} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "validation_id": self.validation_id,
             "acceptable_maximum": self.acceptable_maximum,
@@ -175,8 +175,6 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "time_ul": self.time_ul,
             "time_variance": self.time_variance,
         }
-
-        return _attributes
 
     def calculate_task_time(self):
         """Calculate the mean, standard error, and bounds on the task time.

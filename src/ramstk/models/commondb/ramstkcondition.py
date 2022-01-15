@@ -41,10 +41,8 @@ class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {condition_id, description, condition_type} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "condition_id": self.condition_id,
             "description": self.description,
             "condition_type": self.condition_type,
         }
-
-        return _attributes

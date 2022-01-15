@@ -56,10 +56,8 @@ class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {category_id, subcategory, description} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "category_id": self.category_id,
             "subcategory_id": self.subcategory_id,
             "description": self.description,
         }
-
-        return _attributes

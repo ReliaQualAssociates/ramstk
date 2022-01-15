@@ -260,12 +260,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        _data = []
         _model, _row = self.selection.get_selected()
 
-        for _key in self.position:
-            _data.append(data[_key])
-
+        _data = [data[_key] for _key in self.position]
         _row = _model.append(prow, _data)
 
         _path = _model.get_path(_row)
@@ -342,11 +339,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        _types = []
+        _types = [
+            GObject.type_from_name(_datatype)
+            for __, _datatype in self.datatypes.items()
+        ]
 
-        # Create a list of GObject data types to pass to the model.
-        for __, _datatype in self.datatypes.items():  # pylint: disable=unused-variable
-            _types.append(GObject.type_from_name(_datatype))
 
         if self._has_pixbuf:
             _types.append(GdkPixbuf.Pixbuf)
@@ -514,9 +511,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         val = model.get_value(row, data[0])
         try:
             cell.set_property("text", fmt.format(val))
-        except TypeError:  # It's a Gtk.CellRendererToggle
-            pass
-        except ValueError:
+        except (TypeError, ValueError):  # It's a Gtk.CellRendererToggle
             pass
 
     def _do_set_column_properties(self, key: str, column: Gtk.TreeViewColumn) -> None:
@@ -594,9 +589,7 @@ class CellRendererML(Gtk.CellRendererText):
         :param widget:
         :param cell_area:
         """
-        size_tuple = Gtk.CellRendererText.do_get_size(self, widget, cell_area)
-
-        return size_tuple
+        return Gtk.CellRendererText.do_get_size(self, widget, cell_area)
 
     # pylint: disable=arguments-differ,too-many-locals
     def do_start_editing(

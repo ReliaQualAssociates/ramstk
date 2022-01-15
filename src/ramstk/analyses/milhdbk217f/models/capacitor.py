@@ -360,9 +360,7 @@ def calculate_capacitance_factor(subcategory_id: int, capacitance: float) -> flo
     }
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
-    _pi_cv = _f0 * capacitance ** _f1
-
-    return _pi_cv
+    return _f0 * capacitance ** _f1
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -489,13 +487,11 @@ def calculate_part_stress_lambda_b(
     _f2 = _dic_factors[subcategory_id][2]
     _f3 = _dic_factors[subcategory_id][3]
     _f4 = _dic_factors[subcategory_id][4]
-    _lambda_b = (
+    return (
         _f0
         * ((voltage_ratio / _f1) ** _f2 + 1.0)
         * exp(_f3 * ((temperature_active + 273.0) / _ref_temp) ** _f4)
     )
-
-    return _lambda_b
 
 
 def calculate_series_resistance_factor(
@@ -516,19 +512,17 @@ def calculate_series_resistance_factor(
     _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
 
     if 0 < _ckt_resistance <= 0.1:
-        _pi_sr = 0.33
+        return 0.33
     elif 0.1 < _ckt_resistance <= 0.2:
-        _pi_sr = 0.27
+        return 0.27
     elif 0.2 < _ckt_resistance <= 0.4:
-        _pi_sr = 0.2
+        return 0.2
     elif 0.4 < _ckt_resistance <= 0.6:
-        _pi_sr = 0.13
+        return 0.13
     elif 0.6 < _ckt_resistance <= 0.8:
-        _pi_sr = 0.1
+        return 0.1
     else:
-        _pi_sr = 0.066
-
-    return _pi_sr
+        return 0.066
 
 
 def get_configuration_factor(configuration_id: int) -> float:
@@ -636,13 +630,12 @@ def get_part_count_lambda_b(
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
-    if subcategory_id == 1:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][  # type: ignore
-            specification_id
-        ][environment_active_id - 1]
-    else:
-        _base_hr = PART_COUNT_LAMBDA_B[subcategory_id][  # type: ignore
+    return (
+        PART_COUNT_LAMBDA_B[subcategory_id][specification_id][  # type: ignore
             environment_active_id - 1
         ]
-
-    return _base_hr
+        if subcategory_id == 1
+        else PART_COUNT_LAMBDA_B[subcategory_id][  # type: ignore
+            environment_active_id - 1
+        ]
+    )

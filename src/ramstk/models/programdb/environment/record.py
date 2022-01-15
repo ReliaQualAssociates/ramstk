@@ -94,7 +94,7 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   high_dwell_time} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "phase_id": self.phase_id,
             "environment_id": self.environment_id,
             "name": self.name,
@@ -107,5 +107,3 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "low_dwell_time": self.low_dwell_time,
             "high_dwell_time": self.high_dwell_time,
         }
-
-        return _attributes

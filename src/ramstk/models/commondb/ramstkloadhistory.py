@@ -35,9 +35,7 @@ class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {load_history_id, description} pairs
         :rtype: dict
         """
-        _values = {
+        return {
             "history_id": self.history_id,
             "description": self.description,
         }
-
-        return _values

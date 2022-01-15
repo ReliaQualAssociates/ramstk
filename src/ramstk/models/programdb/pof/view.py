@@ -149,9 +149,9 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["opstress"].all_nodes()[1:]:
             _opstress = _node.data["opstress"]
-            _node_id = f"{parent_id}.{_opstress.stress_id}s"
-
             if _opstress.load_id == load_id:
+                _node_id = f"{parent_id}.{_opstress.stress_id}s"
+
                 self.tree.create_node(
                     tag="opstress",
                     identifier=_node_id,
@@ -169,9 +169,9 @@ class RAMSTKPoFView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["test_method"].all_nodes()[1:]:
             _test_method = _node.data["test_method"]
-            _node_id = f"{parent_id}.{_test_method.test_id}t"
-
             if _test_method.load_id == load_id:
+                _node_id = f"{parent_id}.{_test_method.test_id}t"
+
                 self.tree.create_node(
                     tag="test_method",
                     identifier=_node_id,

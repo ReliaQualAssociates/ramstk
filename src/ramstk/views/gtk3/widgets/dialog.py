@@ -48,7 +48,7 @@ class RAMSTKDialog(Gtk.Dialog):
                 Gtk.ResponseType.CANCEL,
             ),
         )
-        _dlgparent = kwargs.get("dlgparent", None)
+        _dlgparent = kwargs.get("dlgparent")
 
         super().__init__()
 
@@ -495,10 +495,6 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
             self.set_markup(_prompt)
             _message_type = Gtk.MessageType.ERROR
             self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == "warning":
-            self.set_markup(_prompt)
-            _message_type = Gtk.MessageType.WARNING
-            self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "information":
             _message_type = Gtk.MessageType.INFO
             self.add_buttons("_OK", Gtk.ResponseType.OK)
@@ -506,6 +502,10 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
             _message_type = Gtk.MessageType.QUESTION
             self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
 
+        elif message_type == "warning":
+            self.set_markup(_prompt)
+            _message_type = Gtk.MessageType.WARNING
+            self.add_buttons("_OK", Gtk.ResponseType.OK)
         self.set_property("message-type", _message_type)
 
     def do_run(self) -> Any:

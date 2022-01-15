@@ -45,11 +45,9 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {manufacturer_id, description, location, cage_code} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "manufacturer_id": self.manufacturer_id,
             "description": self.description,
             "location": self.location,
             "cage_code": self.cage_code,
         }
-
-        return _attributes

@@ -71,12 +71,10 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   time_units)
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "mission_id": self.mission_id,
             "description": self.description,
             "mission_time": self.mission_time,
             "time_units": self.time_units,
         }
-
-        return _attributes

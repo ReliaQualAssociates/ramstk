@@ -1037,10 +1037,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         _model = self.cmbCategory.get_model()
         _model.clear()
 
-        _categories = []
-        # pylint: disable=unused-variable
-        for __, _key in enumerate(category):
-            _categories.append([category[_key]])
+        _categories = [[value] for value in category.values()]
         self.cmbCategory.do_load_combo(entries=_categories)  # type: ignore
 
     def _do_load_subcategories(self, category_id: int) -> None:
@@ -1054,9 +1051,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
 
         if category_id > 0:
             _subcategories = SortedDict(self.dicSubcategories[category_id])
-            _subcategory = []
-            for _key in _subcategories:
-                _subcategory.append([_subcategories[_key]])
+            _subcategory = [[_subcategories[_key]] for _key in _subcategories]
             self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
 
     def _do_set_comp_ref_des(self, comp_ref_des: str) -> None:
@@ -1275,9 +1270,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         :return: None
         """
-        _manufacturer = []
-        for _key in manufacturers:
-            _manufacturer.append(manufacturers[_key])
+        _manufacturer = list(manufacturers.values())
         self.cmbManufacturer.do_load_combo(
             entries=_manufacturer,  # type: ignore
             simple=False,

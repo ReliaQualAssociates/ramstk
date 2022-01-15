@@ -227,7 +227,7 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   q_verifiable_3, q_verifiable_4, q_verifiable_5} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "requirement_id": self.requirement_id,
             "derived": self.derived,
@@ -277,8 +277,6 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "q_verifiable_4": self.q_verifiable_4,
             "q_verifiable_5": self.q_verifiable_5,
         }
-
-        return _attributes
 
     def create_code(self, prefix: str) -> None:
         """Create Requirement code based on the requirement type and it's ID.

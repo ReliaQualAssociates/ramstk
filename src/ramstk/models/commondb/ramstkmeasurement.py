@@ -47,11 +47,9 @@ class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {measurement_id, description} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "measurement_id": self.measurement_id,
             "code": self.code,
             "description": self.description,
             "measurement_type": self.measurement_type,
         }
-
-        return _attributes

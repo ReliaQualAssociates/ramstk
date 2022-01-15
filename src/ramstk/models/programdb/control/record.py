@@ -77,11 +77,9 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {cause_id, control_id, description, type_id} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "cause_id": self.cause_id,
             "control_id": self.control_id,
             "description": self.description,
             "type_id": self.type_id,
         }
-
-        return _attributes

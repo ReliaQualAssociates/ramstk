@@ -44,10 +44,8 @@ class RAMSTKHazards(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {hazard_id, category, subcategory} pairs
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "hazard_id": self.hazard_id,
             "hazard_category": self.hazard_category,
             "hazard_subcategory": self.hazard_subcategory,
         }
-
-        return _attributes

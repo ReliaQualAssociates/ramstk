@@ -1421,7 +1421,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _entity = node.data["similar_item"]
 
-        if not _entity.parent_id == 0:
+        if _entity.parent_id != 0:
             _attributes = [
                 _entity.revision_id,
                 _entity.hardware_id,

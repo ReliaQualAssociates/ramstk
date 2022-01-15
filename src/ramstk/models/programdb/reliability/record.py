@@ -254,7 +254,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   lambda_b} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "add_adj_factor": self.add_adj_factor,
             "availability_logistics": self.availability_logistics,
@@ -297,8 +297,6 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "shape_parameter": self.shape_parameter,
             "survival_analysis_id": self.survival_analysis_id,
         }
-
-        return _attributes
 
     def do_calculate_hazard_rate_active(
         self,
@@ -465,11 +463,8 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        _hazard_rate_active = 0.0
-
-        if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]:
-            _hazard_rate_active = milhdbk217f.do_predict_active_hazard_rate(
-                **attributes
-            )
-
-        return _hazard_rate_active
+        return (
+            milhdbk217f.do_predict_active_hazard_rate(**attributes)
+            if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]
+            else 0.0
+        )

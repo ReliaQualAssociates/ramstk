@@ -90,9 +90,9 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["environment"].all_nodes()[1:]:
             _environment = _node.data["environment"]
-            _node_id = f"{parent_id}.{_environment.environment_id}"
-
             if _environment.phase_id == phase_id:
+                _node_id = f"{parent_id}.{_environment.environment_id}"
+
                 self.tree.create_node(
                     tag="environment",
                     identifier=_node_id,

@@ -109,7 +109,7 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
                   mild_maxt_limit} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "category_id": self.category_id,
             "name": self.name,
             "description": self.description,
@@ -126,5 +126,3 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
             "harsh_maxt_limit": self.harsh_maxt_limit,
             "mild_maxt_limit": self.mild_maxt_limit,
         }
-
-        return _attributes
