@@ -264,9 +264,7 @@ class FMEAWorkView(RAMSTKWorkView):
         _attributes["control_id"] = _model.get_value(_row, 5)
         _attributes["action_id"] = _model.get_value(_row, 6)
 
-        if _attributes["action_id"] != 0:
-            _level, _no_keys = self.__on_request_insert_control_action()
-        elif _attributes["control_id"] != 0:
+        if _attributes["action_id"] != 0 or _attributes["control_id"] != 0:
             _level, _no_keys = self.__on_request_insert_control_action()
         elif _attributes["cause_id"] != 0:
             _level = "cause"
@@ -301,7 +299,6 @@ class FMEAWorkView(RAMSTKWorkView):
         :return:
         """
         self._hardware_id = attributes["hardware_id"]
-        # self._item_hazard_rate = attributes["hazard_rate_active"]
 
     def __do_load_action_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.

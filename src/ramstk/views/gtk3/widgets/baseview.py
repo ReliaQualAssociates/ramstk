@@ -370,9 +370,7 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         _parent = kwargs.get("parent")
 
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-
-        return _dialog
+        return RAMSTKMessageDialog(parent=_parent)
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKFunction table.

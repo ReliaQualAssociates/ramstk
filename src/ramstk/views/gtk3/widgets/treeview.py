@@ -590,9 +590,7 @@ class CellRendererML(Gtk.CellRendererText):
         :param widget:
         :param cell_area:
         """
-        size_tuple = Gtk.CellRendererText.do_get_size(self, widget, cell_area)
-
-        return size_tuple
+        return Gtk.CellRendererText.do_get_size(self, widget, cell_area)
 
     # pylint: disable=arguments-differ,too-many-locals
     def do_start_editing(
