@@ -203,23 +203,7 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _attributes = {
-            "revision_id": self._revision_id,
-            "hardware_id": self._hardware_id,
-            "mode_id": 0,
-            "mechanism_id": 0,
-            "cause_id": 0,
-            "control_id": 0,
-            "action_id": 0,
-        }
-
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-
-        _attributes["mode_id"] = _model.get_value(_row, 2)
-        _attributes["mechanism_id"] = _model.get_value(_row, 3)
-        _attributes["cause_id"] = _model.get_value(_row, 4)
-        _attributes["control_id"] = _model.get_value(_row, 5)
-        _attributes["action_id"] = _model.get_value(_row, 6)
+        _attributes = self.__do_get_fmea_ids()
 
         if _attributes["cause_id"] != 0:
             _level, _no_keys = self.__on_request_insert_control_action()
@@ -246,23 +230,7 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _attributes = {
-            "revision_id": self._revision_id,
-            "hardware_id": self._hardware_id,
-            "mode_id": 0,
-            "mechanism_id": 0,
-            "cause_id": 0,
-            "control_id": 0,
-            "action_id": 0,
-        }
-
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-
-        _attributes["mode_id"] = _model.get_value(_row, 2)
-        _attributes["mechanism_id"] = _model.get_value(_row, 3)
-        _attributes["cause_id"] = _model.get_value(_row, 4)
-        _attributes["control_id"] = _model.get_value(_row, 5)
-        _attributes["action_id"] = _model.get_value(_row, 6)
+        _attributes = self.__do_get_fmea_ids()
 
         if _attributes["action_id"] != 0 or _attributes["control_id"] != 0:
             _level, _no_keys = self.__on_request_insert_control_action()
@@ -299,6 +267,32 @@ class FMEAWorkView(RAMSTKWorkView):
         :return:
         """
         self._hardware_id = attributes["hardware_id"]
+
+    def __do_get_fmea_ids(self) -> Dict[str, int]:
+        """Read each of the ID columns.
+
+        :return: _attributes
+        :rtype: dict
+        """
+        _attributes = {
+            "revision_id": self._revision_id,
+            "hardware_id": self._hardware_id,
+            "mode_id": 0,
+            "mechanism_id": 0,
+            "cause_id": 0,
+            "control_id": 0,
+            "action_id": 0,
+        }
+
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        _attributes["mode_id"] = _model.get_value(_row, 2)
+        _attributes["mechanism_id"] = _model.get_value(_row, 3)
+        _attributes["cause_id"] = _model.get_value(_row, 4)
+        _attributes["control_id"] = _model.get_value(_row, 5)
+        _attributes["action_id"] = _model.get_value(_row, 6)
+
+        return _attributes
 
     def __do_load_action_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
