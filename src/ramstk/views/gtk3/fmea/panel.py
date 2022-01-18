@@ -34,8 +34,8 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field = "mode_id"
-    _select_msg = "succeed_retrieve_fmea"
-    _tag = "fmea"
+    _select_msg = "succeed_retrieve_mode"
+    _tag = "fmeca"
     _title = _("FMEA Risk Analysis Method")
 
     # Define public dictionary class attributes.
@@ -161,8 +161,8 @@ class FMEATreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_modes"
-    _tag = "fmea"
+    _select_msg = "succeed_retrieve_fmeca"
+    _tag = "fmeca"
     _title = _("Failure Mode and Effects Analysis")
 
     # Define public dictionary class attributes.
@@ -186,269 +186,264 @@ class FMEATreePanel(RAMSTKTreePanel):
             "control": self.__do_load_control,
             "action": self.__do_load_action,
         }
-        self._dic_visible_mask: Dict[str, List[str]] = {
-            "mode": [
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "False",
-                "True",
-                "False",
-            ],
-            "mechanism": [
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-            ],
-            "cause": [
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-            ],
-            "control": [
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-            ],
-            "action": [
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-            ],
+        self._dic_visible_mask: Dict[str, Dict[str, bool]] = {
+            "mode": {
+                "revision_id": True,
+                "hardware_id": False,
+                "mode_id": False,
+                "mechanism_id": False,
+                "cause_id": False,
+                "control_id": False,
+                "action_id": False,
+                "description": True,
+                "mission": True,
+                "mission_phase": True,
+                "effect_local": True,
+                "effect_next": True,
+                "effect_end": True,
+                "detection_method": True,
+                "other_indications": True,
+                "isolation_method": True,
+                "design_provisions": True,
+                "operator_actions": True,
+                "severity_class": True,
+                "hazard_rate_source": True,
+                "mode_probability": True,
+                "effect_probability": True,
+                "mode_ratio": True,
+                "mode_hazard_rate": True,
+                "mode_op_time": True,
+                "mode_criticality": True,
+                "type_id": False,
+                "rpn_severity": True,
+                "rpn_occurrence": False,
+                "rpn_detection": False,
+                "rpn": True,
+                "action_category": False,
+                "action_owner": False,
+                "action_due_date": False,
+                "action_status": False,
+                "action_taken": False,
+                "action_approved": False,
+                "action_approve_date": False,
+                "action_closed": False,
+                "action_close_date": False,
+                "rpn_severity_new": True,
+                "rpn_occurrence_new": False,
+                "rpn_detection_new": False,
+                "rpn_new": True,
+                "critical_item": True,
+                "single_point": True,
+                "pof_include": False,
+                "remarks": True,
+            },
+            "mechanism": {
+                "revision_id": True,
+                "hardware_id": False,
+                "mode_id": False,
+                "mechanism_id": False,
+                "cause_id": False,
+                "control_id": False,
+                "action_id": False,
+                "description": True,
+                "mission": False,
+                "mission_phase": False,
+                "effect_local": False,
+                "effect_next": False,
+                "effect_end": False,
+                "detection_method": False,
+                "other_indications": False,
+                "isolation_method": False,
+                "design_provisions": False,
+                "operator_actions": False,
+                "severity_class": False,
+                "hazard_rate_source": False,
+                "mode_probability": False,
+                "effect_probability": False,
+                "mode_ratio": False,
+                "mode_hazard_rate": False,
+                "mode_op_time": False,
+                "mode_criticality": False,
+                "type_id": False,
+                "rpn_severity": False,
+                "rpn_occurrence": True,
+                "rpn_detection": True,
+                "rpn": True,
+                "action_category": False,
+                "action_owner": False,
+                "action_due_date": False,
+                "action_status": False,
+                "action_taken": False,
+                "action_approved": False,
+                "action_approve_date": False,
+                "action_closed": False,
+                "action_close_date": False,
+                "rpn_severity_new": False,
+                "rpn_occurrence_new": True,
+                "rpn_detection_new": True,
+                "rpn_new": True,
+                "critical_item": False,
+                "single_point": False,
+                "pof_include": True,
+                "remarks": False,
+            },
+            "cause": {
+                "revision_id": True,
+                "hardware_id": False,
+                "mode_id": False,
+                "mechanism_id": False,
+                "cause_id": False,
+                "control_id": False,
+                "action_id": False,
+                "description": True,
+                "mission": False,
+                "mission_phase": False,
+                "effect_local": False,
+                "effect_next": False,
+                "effect_end": False,
+                "detection_method": False,
+                "other_indications": False,
+                "isolation_method": False,
+                "design_provisions": False,
+                "operator_actions": False,
+                "severity_class": False,
+                "hazard_rate_source": False,
+                "mode_probability": False,
+                "effect_probability": False,
+                "mode_ratio": False,
+                "mode_hazard_rate": False,
+                "mode_op_time": False,
+                "mode_criticality": False,
+                "type_id": False,
+                "rpn_severity": False,
+                "rpn_occurrence": False,
+                "rpn_detection": False,
+                "rpn": False,
+                "action_category": False,
+                "action_owner": False,
+                "action_due_date": False,
+                "action_status": False,
+                "action_taken": False,
+                "action_approved": False,
+                "action_approve_date": False,
+                "action_closed": False,
+                "action_close_date": False,
+                "rpn_severity_new": False,
+                "rpn_occurrence_new": False,
+                "rpn_detection_new": False,
+                "rpn_new": False,
+                "critical_item": False,
+                "single_point": False,
+                "pof_include": False,
+                "remarks": False,
+            },
+            "control": {
+                "revision_id": True,
+                "hardware_id": False,
+                "mode_id": False,
+                "mechanism_id": False,
+                "cause_id": False,
+                "control_id": False,
+                "action_id": False,
+                "description": True,
+                "mission": False,
+                "mission_phase": False,
+                "effect_local": False,
+                "effect_next": False,
+                "effect_end": False,
+                "detection_method": False,
+                "other_indications": False,
+                "isolation_method": False,
+                "design_provisions": False,
+                "operator_actions": False,
+                "severity_class": False,
+                "hazard_rate_source": False,
+                "mode_probability": False,
+                "effect_probability": False,
+                "mode_ratio": False,
+                "mode_hazard_rate": False,
+                "mode_op_time": False,
+                "mode_criticality": False,
+                "type_id": False,
+                "rpn_severity": False,
+                "rpn_occurrence": False,
+                "rpn_detection": False,
+                "rpn": False,
+                "action_category": False,
+                "action_owner": False,
+                "action_due_date": False,
+                "action_status": False,
+                "action_taken": False,
+                "action_approved": False,
+                "action_approve_date": False,
+                "action_closed": False,
+                "action_close_date": False,
+                "rpn_severity_new": False,
+                "rpn_occurrence_new": False,
+                "rpn_detection_new": False,
+                "rpn_new": False,
+                "critical_item": False,
+                "single_point": False,
+                "pof_include": False,
+                "remarks": False,
+            },
+            "action": {
+                "revision_id": True,
+                "hardware_id": False,
+                "mode_id": False,
+                "mechanism_id": False,
+                "cause_id": False,
+                "control_id": False,
+                "action_id": False,
+                "description": True,
+                "mission": False,
+                "mission_phase": False,
+                "effect_local": False,
+                "effect_next": False,
+                "effect_end": False,
+                "detection_method": False,
+                "other_indications": False,
+                "isolation_method": False,
+                "design_provisions": False,
+                "operator_actions": False,
+                "severity_class": False,
+                "hazard_rate_source": False,
+                "mode_probability": False,
+                "effect_probability": False,
+                "mode_ratio": False,
+                "mode_hazard_rate": False,
+                "mode_op_time": False,
+                "mode_criticality": False,
+                "type_id": False,
+                "rpn_severity": False,
+                "rpn_occurrence": False,
+                "rpn_detection": False,
+                "rpn": False,
+                "action_category": True,
+                "action_owner": True,
+                "action_due_date": True,
+                "action_status": True,
+                "action_taken": True,
+                "action_approved": True,
+                "action_approve_date": True,
+                "action_closed": True,
+                "action_close_date": True,
+                "rpn_severity_new": False,
+                "rpn_occurrence_new": False,
+                "rpn_detection_new": False,
+                "rpn_new": False,
+                "critical_item": False,
+                "single_point": False,
+                "pof_include": False,
+                "remarks": False,
+            },
         }
 
         # Initialize private list attributes.
         self._lst_missions: List[str] = [""]
 
         # Initialize private scalar attributes.
+        self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary attributes.
@@ -586,7 +581,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -602,7 +597,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -618,7 +613,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -634,7 +629,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -650,7 +645,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -666,7 +661,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -682,7 +677,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -698,7 +693,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -714,7 +709,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -730,7 +725,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -746,7 +741,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -762,7 +757,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -778,7 +773,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -794,7 +789,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -810,7 +805,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -826,7 +821,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -842,7 +837,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -858,7 +853,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -874,7 +869,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -890,7 +885,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -899,14 +894,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Severity"),
-                "gint",
+                "gchararray",
             ],
             "rpn_occurrence": [
                 28,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -915,14 +910,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Occurrence"),
-                "gint",
+                "gchararray",
             ],
             "rpn_detection": [
                 29,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -931,14 +926,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("RPN Detection"),
-                "gint",
+                "gchararray",
             ],
             "rpn": [
                 30,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 1,
                 {
                     "bg_color": "#FFFFFF",
@@ -954,7 +949,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -970,7 +965,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -986,7 +981,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1002,7 +997,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1018,7 +1013,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1034,7 +1029,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1050,7 +1045,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1066,7 +1061,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1082,7 +1077,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_action",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1098,7 +1093,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1107,14 +1102,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Severity"),
-                "gint",
+                "gchararray",
             ],
             "rpn_occurrence_new": [
                 41,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1123,14 +1118,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Occurence"),
-                "gint",
+                "gchararray",
             ],
             "rpn_detection_new": [
                 42,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1139,14 +1134,14 @@ class FMEATreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("New RPN Detection"),
-                "gint",
+                "gchararray",
             ],
             "rpn_new": [
                 43,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 1,
                 {
                     "bg_color": "#FFFFFF",
@@ -1162,7 +1157,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1178,7 +1173,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1194,7 +1189,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererToggle(),
                 "toggled",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_mechanism",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1210,7 +1205,7 @@ class FMEATreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mode",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1250,20 +1245,27 @@ class FMEATreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_retrieve_hardware_fmea")
+        pub.subscribe(super().do_load_panel, "succeed_retrieve_fmeca")
         pub.subscribe(super().do_load_panel, "succeed_calculate_rpn")
-        pub.subscribe(super().do_load_panel, "succeed_delete_action")
-        pub.subscribe(super().do_load_panel, "succeed_delete_cause")
-        pub.subscribe(super().do_load_panel, "succeed_delete_control")
-        pub.subscribe(super().do_load_panel, "succeed_delete_mechanism")
-        pub.subscribe(super().do_load_panel, "succeed_delete_mode")
-        pub.subscribe(super().do_load_panel, "succeed_insert_action")
-        pub.subscribe(super().do_load_panel, "succeed_insert_cause")
-        pub.subscribe(super().do_load_panel, "succeed_insert_control")
-        pub.subscribe(super().do_load_panel, "succeed_insert_mechanism")
-        pub.subscribe(super().do_load_panel, "succeed_insert_mode")
+
+        pub.subscribe(self._on_select_hardware, "selected_hardware")
 
         pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
+        """Filter FMEA to show only those rows associated with the selected Hardware.
+
+        :param model: the filtered model for the Allocation RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][1] == self._parent_id
 
     def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -1314,25 +1316,26 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
+        _attributes = super().on_row_change(selection)
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            if _model.get_value(_row, 3) == 0:
-                _level = "mode"
-            elif _model.get_value(_row, 4) == 0:
-                _level = "mechanism"
-            elif _model.get_value(_row, 5) == 0:
-                _level = "cause"
-            elif _model.get_value(_row, 6) == 0:
-                _level = "control"
-            else:
-                _level = "action"
-
-            self.tvwTreeView.visible = self._dic_visible_mask[_level]
-            self.tvwTreeView.do_set_visible_columns()
+            self.__do_set_visible_columns(_model, _row, _attributes)
 
             _mission = _model.get_value(_row, 8)
             self.__do_load_mission_phases(_mission)
+
+    def _on_select_hardware(
+        self, attributes: Dict[str, Union[int, float, str]]
+    ) -> None:
+        """Filter FMEA when Hardware is selected.
+
+        :param attributes: the dict of attributes for the selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["hardware_id"]
+        self.tvwTreeView.filt_model.refilter()
 
     def __do_get_rpn_names(
         self, entity: Union[RAMSTKCauseRecord, RAMSTKMechanismRecord]
@@ -1343,10 +1346,10 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: (_occurrence, _detection, _occurrence_new, _detection_new)
         :rtype: tuple
         """
-        _occurrence = str(self.lst_occurrence[entity.rpn_occurrence])
-        _detection = str(self.lst_detection[entity.rpn_detection])
-        _occurrence_new = str(self.lst_occurrence[entity.rpn_occurrence_new])
-        _detection_new = str(self.lst_detection[entity.rpn_detection_new])
+        _occurrence = str(self.lst_rpn_occurrence[entity.rpn_occurrence])
+        _detection = str(self.lst_rpn_detection[entity.rpn_detection])
+        _occurrence_new = str(self.lst_rpn_occurrence[entity.rpn_occurrence_new])
+        _detection_new = str(self.lst_rpn_detection[entity.rpn_detection_new])
 
         return _occurrence, _detection, _occurrence_new, _detection_new
 
@@ -1363,8 +1366,6 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["action"], 22, 22)
 
@@ -1374,7 +1375,7 @@ class FMEATreePanel(RAMSTKTreePanel):
             _entity.mode_id,
             _entity.mechanism_id,
             _entity.cause_id,
-            _entity.control_id,
+            0,
             _entity.action_id,
             _entity.action_recommended,
             "",
@@ -1421,7 +1422,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1470,8 +1471,6 @@ class FMEATreePanel(RAMSTKTreePanel):
         _new_row = None
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _model = self.tvwTreeView.get_model()
 
         (
             _occurrence,
@@ -1536,7 +1535,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1564,8 +1563,6 @@ class FMEATreePanel(RAMSTKTreePanel):
         _new_row = None
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _model = self.tvwTreeView.get_model()
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -1625,7 +1622,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1665,8 +1662,6 @@ class FMEATreePanel(RAMSTKTreePanel):
         _new_row = None
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _model = self.tvwTreeView.get_model()
 
         (
             _occurrence,
@@ -1733,7 +1728,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1794,7 +1789,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         _model = self.tvwTreeView.get_cell_model(
-            self.tvwTreeView.position["mission_Phase"]
+            self.tvwTreeView.position["mission_phase"]
         )
         _model.clear()
         _model.append([""])
@@ -1817,10 +1812,8 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
-        _severity = self.lst_severity[_entity.rpn_severity]
-        _severity_new = self.lst_severity[_entity.rpn_severity_new]
+        _severity = self.lst_rpn_severity[_entity.rpn_severity]
+        _severity_new = self.lst_rpn_severity[_entity.rpn_severity_new]
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"], 22, 22)
@@ -1878,7 +1871,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
@@ -1955,3 +1948,37 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.tvwTreeView.do_load_combo_cell(
             self.tvwTreeView.position["action_owner"], self.lst_users
         )
+
+    def __do_set_visible_columns(
+        self,
+        model: Gtk.TreeModel,
+        row: Gtk.TreeIter,
+        attrs: Dict[str, Union[float, int, str]],
+    ) -> None:
+        """Determine level in the FMECA the row corresponds to and set visible columns.
+
+        :param model: the FMECA Gtk.TreeModel().
+        :param row: the selected Gtk.TreeIter() in the FMECA.
+        :param attrs: the attribute dict for the selected row.
+        :return: None
+        :rtype: None
+        """
+        _cid = ""
+
+        # This seems like a kludgy way to determine the FMEA level, but it works.
+        for _col in [2, 3, 4, 5, 6]:
+            _cid = f"{_cid}{int(bool(model.get_value(row, _col)))}"
+
+        _level = {
+            "10000": "mode",
+            "11000": "mechanism",
+            "11100": "cause",
+            "11110": "control",
+            "11101": "action",
+        }[_cid]
+
+        self.tvwTreeView.visible = self._dic_visible_mask[_level]
+
+        self.tvwTreeView.do_set_visible_columns()
+
+        pub.sendMessage("selected_fmeca", attributes={"node_id": attrs[f"{_level}_id"]})

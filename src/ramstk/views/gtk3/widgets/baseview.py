@@ -368,7 +368,7 @@ class RAMSTKBaseView(Gtk.HBox):
 
         :return: _dialog
         """
-        _parent = kwargs.get("parent", None)
+        _parent = kwargs.get("parent")
 
         _dialog = RAMSTKMessageDialog(parent=_parent)
 

@@ -260,11 +260,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        _data = []
         _model, _row = self.selection.get_selected()
 
-        for _key in self.position:
-            _data.append(data[_key])
+        _data = [data[_key] for _key in self.position]
 
         _row = _model.append(prow, _data)
 
@@ -313,7 +311,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # If creating a RAMSTKTreeView() that displays icons and this is
             # the first column we're creating, add a Gtk.CellRendererPixbuf()
             # to go along with the data in the first column.
-            if self._has_pixbuf and _key == "col0":
+            if self._has_pixbuf and _position == 0:
                 _pbcell = Gtk.CellRendererPixbuf()
                 _pbcell.set_property("xalign", 0.5)
                 _pbcell.set_property("cell-background", _properties["bg_color"])
@@ -329,6 +327,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                     heading=self.headings[_key],  # type: ignore
                     visible=string_to_boolean(self.visible[_key]),  # type: ignore
                 )
+
             _column.set_cell_data_func(
                 _cell, self._do_format_cell, (_position, self.datatypes[_key])
             )
@@ -342,11 +341,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        _types = []
-
-        # Create a list of GObject data types to pass to the model.
-        for __, _datatype in self.datatypes.items():  # pylint: disable=unused-variable
-            _types.append(GObject.type_from_name(_datatype))
+        _types = [
+            GObject.type_from_name(_datatype)
+            for __, _datatype in self.datatypes.items()
+        ]
 
         if self._has_pixbuf:
             _types.append(GdkPixbuf.Pixbuf)
@@ -514,9 +512,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         val = model.get_value(row, data[0])
         try:
             cell.set_property("text", fmt.format(val))
-        except TypeError:  # It's a Gtk.CellRendererToggle
-            pass
-        except ValueError:
+        except (TypeError, ValueError):  # It's a Gtk.CellRendererToggle
             pass
 
     def _do_set_column_properties(self, key: str, column: Gtk.TreeViewColumn) -> None:
