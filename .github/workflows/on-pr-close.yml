@@ -74,17 +74,18 @@ jobs:
 
       - name: Update CHANGELOG.md
         if: ${{ env.do_release == 1 }}
-        uses: Hiekki4/update-changelog@master
+        uses: vemel/nextchange@master
         id: changelog
         with:
-          version: ${{ steps.nextversion.outputs.next_version }}
+          release: ${{ steps.nextversion.outputs.next_version }}
+          sanitize: true
 
       - name: Set PR variables
         if: ${{ env.do_release == 1 }}
         id: prvars
         run: |
           echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=body::"${{ steps.changelog.outputs.pulls_list_md }}"
+          echo ::set-output name=body::"${{ steps.changelog.outputs.result }}"
           echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
           echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
 

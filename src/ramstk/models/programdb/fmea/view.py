@@ -30,7 +30,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
 
     # Define private scalar class attributes.
     _root = 0
-    _tag = "fmea"
+    _tag = "fmeca"
 
     # Define public dictionary class attributes.
 
@@ -149,12 +149,11 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["cause"].all_nodes()[1:]:
             _cause = _node.data["cause"]
-            _node_id = f"{parent_id}.{_cause.cause_id}"
 
             if _cause.mechanism_id == mechanism_id:
                 self.tree.create_node(
                     tag="cause",
-                    identifier=_node_id,
+                    identifier=f"{parent_id}.{_cause.cause_id}",
                     parent=parent_id,
                     data={self._tag: _cause},
                 )
@@ -162,13 +161,13 @@ class RAMSTKFMEAView(RAMSTKBaseView):
                 if self._dic_trees["control"].depth() > 0:
                     self._dic_load_functions["control"](  # type: ignore
                         _cause.cause_id,
-                        _node_id,
+                        f"{parent_id}.{_cause.cause_id}",
                     )
 
                 if self._dic_trees["action"].depth() > 0:
                     self._dic_load_functions["action"](  # type: ignore
                         _cause.cause_id,
-                        _node_id,
+                        f"{parent_id}.{_cause.cause_id}",
                     )
 
     def _do_load_controls(self, cause_id: int, parent_id: str) -> None:
@@ -181,12 +180,11 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["control"].all_nodes()[1:]:
             _control = _node.data["control"]
-            _node_id = f"{parent_id}.{_control.control_id}c"
 
             if _control.cause_id == cause_id:
                 self.tree.create_node(
                     tag="control",
-                    identifier=_node_id,
+                    identifier=f"{parent_id}.{_control.control_id}c",
                     parent=parent_id,
                     data={self._tag: _control},
                 )
@@ -201,12 +199,11 @@ class RAMSTKFMEAView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["action"].all_nodes()[1:]:
             _action = _node.data["action"]
-            _node_id = f"{parent_id}.{_action.action_id}a"
 
             if _action.cause_id == cause_id:
                 self.tree.create_node(
                     tag="action",
-                    identifier=_node_id,
+                    identifier=f"{parent_id}.{_action.action_id}a",
                     parent=parent_id,
                     data={self._tag: _action},
                 )

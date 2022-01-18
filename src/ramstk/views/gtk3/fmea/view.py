@@ -7,7 +7,7 @@
 """GTK3 FMEA Views."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -26,26 +26,6 @@ from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKPanel, RAMSTKWo
 
 # RAMSTK Local Imports
 from . import FMEAMethodPanel, FMEATreePanel
-
-
-def do_request_insert(level: str, parent_id: str) -> None:
-    """Send the correct request for the FMEA item to insert.
-
-    :param level: the indenture level in the FMEA of the new element to
-        insert.
-    :param parent_id: the node ID in the FMEA treelib Tree() of the
-        parent element.
-    :return: None
-    :rtype: None
-    """
-    if level == "mode":
-        pub.sendMessage("request_insert_fmea_mode")
-    elif level == "mechanism":
-        pub.sendMessage("request_insert_fmea_mechanism", mode_id=str(parent_id))
-    elif level == "cause":
-        pub.sendMessage("request_insert_fmea_cause", parent_id=str(parent_id))
-    elif level in ["control", "action"]:
-        pub.sendMessage(f"request_insert_fmea_{level}", parent_id=str(parent_id))
 
 
 class FMEAWorkView(RAMSTKWorkView):
@@ -82,7 +62,7 @@ class FMEAWorkView(RAMSTKWorkView):
     :ivar list _lst_tooltips: the list of tooltips for the view's
         toolbar buttons and pop-up menu.  The tooltips are listed in the
         order they appear on the toolbar or pop-up menu.
-    :ivar dict _dic_missions: dict containing all this missions associated
+    :ivar dict _dic_missions: dict containing all the missions associated
         with the selected Revision.
     :ivar dict _dic_mission_phases: dict containing all the mission phases
         associated with each mission in _dic_missions.
@@ -153,6 +133,7 @@ class FMEAWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
+        self._hardware_id: int = 0
         self._item_hazard_rate: float = 0.0
 
         self._pnlMethods: RAMSTKPanel = FMEAMethodPanel()
@@ -167,9 +148,9 @@ class FMEAWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_fmea")
+        pub.subscribe(self._do_set_record_id, "selected_fmeca")
         pub.subscribe(
-            self._on_get_hardware_attributes, "succeed_get_all_hardware_attributes"
+            self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
         )
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
@@ -222,28 +203,26 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # Try to get the information needed to add a new entity at the correct
-        # location in the FMEA.  If there is nothing in the FMEA, by default
-        # add a failure Mode.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-        try:
-            _parent_id = _model.get_value(_row, 0)
-            _level = {
-                1: "mechanism",
-                2: "cause",
-                3: "control_action",
-            }[len(str(_parent_id).split("."))]
-        except TypeError:
-            _parent_id = "0"
-            _level = "mechanism"
+        _attributes = self.__do_get_fmea_ids()
 
-        if _level == "control_action":
-            _level = self.__on_request_insert_control_action()
+        if _attributes["cause_id"] != 0:
+            _level, _no_keys = self.__on_request_insert_control_action()
+        elif _attributes["mechanism_id"] != 0:
+            _level = "cause"
+            _no_keys = ["control_id", "action_id"]
+        elif _attributes["mode_id"] != 0:
+            _level = "mechanism"
+            _no_keys = ["cause_id", "control_id", "action_id"]
+        else:
+            print("Raise dialog 'cause can't add child to control or action.")
+            return
+
+        for _key in _no_keys:
+            _attributes.pop(_key)
 
         super().do_set_cursor_busy()
 
-        # noinspection PyArgumentList
-        do_request_insert(_level, _parent_id)
+        pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
         """Request to insert a new entity to the FMEA.
@@ -251,28 +230,26 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # Try to get the information needed to add a new entity at the correct
-        # location in the FMEA.  If there is nothing in the FMEA, by default
-        # add a failure Mode.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-        try:
-            _parent_id = _model.get_value(_model.iter_parent(_row), 0)
-            _level = {
-                0: "mode",
-                1: "mechanism",
-                2: "cause",
-                3: "control_action",
-            }[len(str(_parent_id).split("."))]
-        except TypeError:
-            _parent_id = "0"
-            _level = "mode"
+        _attributes = self.__do_get_fmea_ids()
 
-        if _level == "control_action":
-            _level = self.__on_request_insert_control_action()
+        if _attributes["action_id"] != 0 or _attributes["control_id"] != 0:
+            _level, _no_keys = self.__on_request_insert_control_action()
+        elif _attributes["cause_id"] != 0:
+            _level = "cause"
+            _no_keys = ["control_id", "action_id"]
+        elif _attributes["mechanism_id"] != 0:
+            _level = "mechanism"
+            _no_keys = ["cause_id", "control_id", "action_id"]
+        else:
+            _level = "mode"
+            _no_keys = ["mechanism_id", "cause_id", "control_id", "action_id"]
+
+        for _key in _no_keys:
+            _attributes.pop(_key)
 
         super().do_set_cursor_busy()
-        # noinspection PyArgumentList
-        do_request_insert(_level, _parent_id)
+
+        pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record and revision ID when a hardware item is selected.
@@ -289,7 +266,33 @@ class FMEAWorkView(RAMSTKWorkView):
         :param attributes:
         :return:
         """
-        self._item_hazard_rate = attributes["hazard_rate_active"]
+        self._hardware_id = attributes["hardware_id"]
+
+    def __do_get_fmea_ids(self) -> Dict[str, int]:
+        """Read each of the ID columns.
+
+        :return: _attributes
+        :rtype: dict
+        """
+        _attributes = {
+            "revision_id": self._revision_id,
+            "hardware_id": self._hardware_id,
+            "mode_id": 0,
+            "mechanism_id": 0,
+            "cause_id": 0,
+            "control_id": 0,
+            "action_id": 0,
+        }
+
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        _attributes["mode_id"] = _model.get_value(_row, 2)
+        _attributes["mechanism_id"] = _model.get_value(_row, 3)
+        _attributes["cause_id"] = _model.get_value(_row, 4)
+        _attributes["control_id"] = _model.get_value(_row, 5)
+        _attributes["action_id"] = _model.get_value(_row, 6)
+
+        return _attributes
 
     def __do_load_action_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
@@ -363,7 +366,7 @@ class FMEAWorkView(RAMSTKWorkView):
 
         self.show_all()
 
-    def __on_request_insert_control_action(self) -> str:
+    def __on_request_insert_control_action(self) -> Tuple[str, List[str]]:
         """Raise dialog to select whether to add a control or action.
 
         :return: _level; the level to add, control or action.
@@ -378,9 +381,11 @@ class FMEAWorkView(RAMSTKWorkView):
         if _dialog.do_run() == Gtk.ResponseType.OK:
             if _dialog.rdoControl.get_active():
                 _level = "control"
+                _no_keys = ["action_id"]
             elif _dialog.rdoAction.get_active():
                 _level = "action"
+                _no_keys = ["control_id"]
 
         _dialog.do_destroy()
 
-        return _level
+        return _level, _no_keys

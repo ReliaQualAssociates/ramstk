@@ -1458,3 +1458,47 @@ CREATE TABLE ramstk_growth_test (
     PRIMARY KEY (fld_phase_id),
     FOREIGN KEY(fld_test_id) REFERENCES ramstk_test (fld_test_id)
 );
+
+-- Create functions.
+CREATE OR REPLACE FUNCTION public.insertallocationrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 0 THEN
+        INSERT INTO ramstk_allocation(fld_revision_id,fld_hardware_id,fld_parent_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id, NEW.fld_parent_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.insertsimilaritemrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 0 THEN
+        INSERT INTO ramstk_similar_item(fld_revision_id,fld_hardware_id,fld_parent_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id, NEW.fld_parent_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+-- Create triggers
+create trigger insertallocationrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertallocationrecord();
+
+create trigger insertsimilaritemrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertsimilaritemrecord();

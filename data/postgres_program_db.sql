@@ -1221,6 +1221,71 @@ CREATE TABLE ramstk_unit (
     PRIMARY KEY (fld_unit_id)
 );
 
+-- Create views
+CREATE OR REPLACE VIEW public.ramstk_fmeca
+AS SELECT md.fld_revision_id,
+    md.fld_hardware_id,
+    md.fld_mode_id,
+    mc.fld_mechanism_id,
+    cs.fld_cause_id,
+    ct.fld_control_id,
+    ac.fld_action_id,
+    md.fld_description AS md_description,
+    mc.fld_description AS mc_description,
+    cs.fld_description AS cs_description,
+    ct.fld_description AS ct_description,
+    ac.fld_action_recommended AS ac_description,
+    md.fld_mission,
+    md.fld_mission_phase,
+    md.fld_effect_local,
+    md.fld_effect_next,
+    md.fld_effect_end,
+    md.fld_detection_method,
+    md.fld_other_indications,
+    md.fld_isolation_method,
+    md.fld_design_provisions,
+    md.fld_operator_actions,
+    md.fld_severity_class,
+    md.fld_hazard_rate_source,
+    md.fld_mode_probability,
+    md.fld_effect_probability,
+    rt.fld_hazard_rate_active,
+    md.fld_mode_ratio,
+    md.fld_mode_hazard_rate,
+    md.fld_mode_op_time,
+    md.fld_mode_criticality,
+    md.fld_type_id,
+    md.fld_rpn_severity,
+    mc.fld_rpn_occurrence,
+    mc.fld_rpn_detection,
+    mc.fld_rpn,
+    ac.fld_action_category,
+    ac.fld_action_owner,
+    ac.fld_action_due_date,
+    ac.fld_action_status,
+    ac.fld_action_taken,
+    ac.fld_action_approved,
+    ac.fld_action_approve_date,
+    ac.fld_action_closed,
+    ac.fld_action_close_date,
+    md.fld_rpn_severity_new,
+    mc.fld_rpn_occurrence_new,
+    mc.fld_rpn_detection_new,
+    mc.fld_rpn_new,
+    md.fld_critical_item,
+    md.fld_single_point,
+    mc.fld_pof_include,
+    md.fld_remarks,
+    hw.fld_description AS hw_description
+   FROM ramstk_hardware hw
+     JOIN ramstk_mode md ON md.fld_hardware_id = hw.fld_hardware_id
+     JOIN ramstk_reliability rt ON rt.fld_hardware_id = hw.fld_hardware_id
+     JOIN ramstk_mechanism mc ON mc.fld_mode_id = md.fld_mode_id
+     JOIN ramstk_cause cs ON cs.fld_mechanism_id = mc.fld_mechanism_id
+     JOIN ramstk_control ct ON ct.fld_cause_id = cs.fld_cause_id
+     JOIN ramstk_action ac ON ac.fld_cause_id = cs.fld_cause_id
+  WHERE hw.fld_revision_id = 1;
+
 -- Create functions.
 CREATE OR REPLACE FUNCTION public.insertallocationrecord()
  RETURNS trigger
