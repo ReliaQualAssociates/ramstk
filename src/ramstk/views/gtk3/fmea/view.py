@@ -264,9 +264,7 @@ class FMEAWorkView(RAMSTKWorkView):
         _attributes["control_id"] = _model.get_value(_row, 5)
         _attributes["action_id"] = _model.get_value(_row, 6)
 
-        if _attributes["action_id"] != 0:
-            _level, _no_keys = self.__on_request_insert_control_action()
-        elif _attributes["control_id"] != 0:
+        if _attributes["action_id"] != 0 or _attributes["control_id"] != 0:
             _level, _no_keys = self.__on_request_insert_control_action()
         elif _attributes["cause_id"] != 0:
             _level = "cause"
