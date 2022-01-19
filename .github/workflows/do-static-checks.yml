@@ -1,7 +1,7 @@
-name: PR Push Workflow
+name: Perform Static Checks on RAMSTK Code Base
 
 on:
-  pull_request:
+  pull-request:
     branches:
       - master
 
@@ -146,66 +146,3 @@ jobs:
           extra-mypy-options: ""
           extra-pylint-options: "-j0 --rcfile=./pyproject.toml --dummy-variables-rgx='__'"
           extra-flake8-options: ""
-
-  test_suite:
-    name: RAMSTK Test Suite
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python: [3.6, 3.7, 3.8]
-
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Update and install system packages
-        run: |
-          echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
-
-      - name: Set up Python ${{ matrix.python }}
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Create a virtual environment
-        run: |
-          python -mvenv $VIRTUAL_ENV
-
-      - name: Install RAMSTK dependencies and test with coverage
-        run: |
-          source $VIRTUAL_ENV/bin/activate
-          pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
-          python poetry_fix.py
-          make depends
-          make PREFIX=$VIRTUAL_ENV install
-          xvfb-run --auto-servernum make coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          files: ./cobertura.xml
-          flags: ${{ matrix.python }}
-
-      - name: Create Coveralls report
-        uses: miurahr/coveralls-python-action@patch-pyprject-toml
-        with:
-          parallel: true
-
-  upload_coveralls:
-    name: Upload Coverage Results to Coveralls
-    needs: test_suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload report to Coveralls
-        uses: miurahr/coveralls-python-action@patch-pyprject-toml
-        with:
-          parallel-finished: true
