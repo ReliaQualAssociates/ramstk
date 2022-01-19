@@ -989,8 +989,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :rtype: None
         """
         _columns = self.tvwTreeView.get_columns()
-        i = 0
-        for _key in self.tvwTreeView.headings:
+        for i, _key in enumerate(self.tvwTreeView.headings):
             _label = RAMSTKLabel(
                 "<span weight='bold'>" + self.tvwTreeView.headings[_key] + "</span>"
             )
@@ -1000,8 +999,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _label.show_all()
             _columns[i].set_widget(_label)
             _columns[i].set_visible(self.tvwTreeView.visible[_key])
-
-            i += 1
 
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set properties of the RAMSTKPanel() widgets.
@@ -1152,7 +1149,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if self._filtered_tree:
-            _model = self.tvwTreeView.filt_model.get_model()
             _row = self.tvwTreeView.filt_model.convert_iter_to_child_iter(_row)
             self.tvwTreeView.unfilt_model.remove(_row)
             self.tvwTreeView.filt_model.refilter()

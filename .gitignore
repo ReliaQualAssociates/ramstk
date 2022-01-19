@@ -47,7 +47,6 @@ out/
 *.glade
 *.html
 *.json
-*.log
 *.txt
 *.xls*
 *coverage*

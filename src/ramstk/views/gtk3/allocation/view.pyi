@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -25,6 +25,8 @@ class AllocationWorkView(RAMSTKWorkView):
     ) -> None: ...
     _record_id: int
     _parent_id: int
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    def _do_set_record_id(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None: ...
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None: ...
     def __make_ui(self) -> None: ...

@@ -223,21 +223,21 @@ class TestSelectMethods:
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
-            tree.get_node(TEST_IDS["mode"]).data["fmea"], RAMSTKModeRecord
+            tree.get_node(TEST_IDS["mode"]).data["fmeca"], RAMSTKModeRecord
         )
         assert isinstance(
-            tree.get_node(TEST_IDS["mechanism"]).data["fmea"], RAMSTKMechanismRecord
+            tree.get_node(TEST_IDS["mechanism"]).data["fmeca"], RAMSTKMechanismRecord
         )
         assert isinstance(
-            tree.get_node(TEST_IDS["cause"]).data["fmea"], RAMSTKCauseRecord
+            tree.get_node(TEST_IDS["cause"]).data["fmeca"], RAMSTKCauseRecord
         )
         assert isinstance(
-            tree.get_node(TEST_IDS["control"]).data["fmea"], RAMSTKControlRecord
+            tree.get_node(TEST_IDS["control"]).data["fmeca"], RAMSTKControlRecord
         )
         assert isinstance(
-            tree.get_node(TEST_IDS["action"]).data["fmea"], RAMSTKActionRecord
+            tree.get_node(TEST_IDS["action"]).data["fmeca"], RAMSTKActionRecord
         )
-        print("\033[36m\nsucceed_retrieve_fmea topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_fmeca topic was broadcast.")
 
     @pytest.mark.integration
     def test_on_select_all(
@@ -250,7 +250,7 @@ class TestSelectMethods:
         test_action,
     ):
         """should return tree of modes, mechanisms, causess, controls, actions."""
-        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
+        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
         test_mode.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
         test_mechanism.do_select_all(
@@ -284,27 +284,27 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
+        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
     @pytest.mark.integration
     def test_on_select_all_populated_tree(
@@ -350,52 +350,52 @@ class TestSelectMethods:
         )
 
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
-        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
+        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
         test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmea"],
+            test_viewmodel.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmea")
+        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(

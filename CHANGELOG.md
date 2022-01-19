@@ -1,7 +1,10 @@
 # Changelog
 
-## [v0.12.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.12.0) (2021-01-19)
+## [Unreleased]
 
+## [0.15.3]
+
+## [v0.12.0(https://github.com/ReliaQualAssociates/ramstk/tree/v0.12.0)]
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.11.0...v0.12.0)
 
 **Implemented features:**
@@ -22,8 +25,7 @@
 - chore: add tests for configuration.py to increase coverage [\#446](https://github.com/ReliaQualAssociates/ramstk/pull/446) ([weibullguy](https://github.com/weibullguy))
 - chore: create install targets [\#444](https://github.com/ReliaQualAssociates/ramstk/pull/444) ([weibullguy](https://github.com/weibullguy))
 
-## [v0.11.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.11.0) (2021-01-16)
-
+## [v0.11.0(https://github.com/ReliaQualAssociates/ramstk/tree/v0.11.0)]
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.10.0...v0.11.0)
 
 **Closed issues:**
@@ -42,8 +44,7 @@
 - refactor: split options and preferences data managers [\#435](https://github.com/ReliaQualAssociates/ramstk/pull/435) ([weibullguy](https://github.com/weibullguy))
 - test: create MockDAO and mock tables for testing [\#434](https://github.com/ReliaQualAssociates/ramstk/pull/434) ([weibullguy](https://github.com/weibullguy))
 
-## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
-
+## [Unreleased(https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)]
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.0.0...HEAD)
 
 **Implemented enhancements:**

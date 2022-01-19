@@ -72,20 +72,22 @@ jobs:
           git add .
           git commit -a -m "release: v${{ steps.nextversion.outputs.next_version }}" && echo "do_push=1" >> $GITHUB_ENV
 
+      - name: Update CHANGELOG.md
+        if: ${{ env.do_release == 1 }}
+        uses: vemel/nextchange@main
+        id: changelog
+        with:
+          release: ${{ steps.nextversion.outputs.next_version }}
+          sanitize: true
+
       - name: Set PR variables
+        if: ${{ env.do_release == 1 }}
         id: prvars
         run: |
-          if [ ${{ env.do_release }} == 1 ]; then
-            echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
-            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next version; set for release."
-            echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
-            echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
-          else
-            echo ::set-output name=title::"ci: bump version files"
-            echo ::set-output name=body::"Bump VERSION and pyproject.toml to next patch version."
-            echo ::set-output name=message::"ci: bump version files"
-            echo ::set-output name=branch::"ci/bump_version_files"
-          fi
+          echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
+          echo ::set-output name=body::"${{ steps.changelog.outputs.result }}"
+          echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
+          echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
 
       - name: Cut pull request to merge updated version files
         if: ${{ env.do_push == 1 }}
@@ -96,6 +98,7 @@ jobs:
           body: ${{ steps.prvars.outputs.body }}
           branch: ${{ steps.prvars.outputs.branch }}
           labels: Release
+
   label_pr_closed:
     runs-on: ubuntu-latest
     steps:
