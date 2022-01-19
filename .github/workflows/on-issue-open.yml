@@ -5,20 +5,11 @@ on:
     types: [opened, edited]
 
 jobs:
-  assign_issues_to_backlog:
-    name: Assign New Issue to Backlog
+  autolabel_issues:
     runs-on: ubuntu-latest
     steps:
-      - uses: technote-space/create-project-card-action@v1
-        with:
-          PROJECT: Backlog
-          COLUMN: Triage
-
-  autolable_issues:
-    name: Apply Labels to New Issue
-    runs-on: ubuntu-latest
-    steps:
-      - uses: Naturalclar/issue-action@v2.0.2
+      - name: Apply labels to new issue
+        uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
           parameters: '[ {"keywords": ["type: build"], "labels": ["type: build"], "assignees": [""]},
@@ -29,10 +20,18 @@ jobs:
                          {"keywords": ["type: refactor"], "labels": ["type: refactor"], "assignees": [""]},
                          {"keywords": ["type: style"], "labels": ["type: style"], "assignees": [""]},
                          {"keywords": ["type: test"], "labels": ["type: test"], "assignees": [""]},
-                         {"keywords": ["type: major", "BREAKING"], "labels": ["bump: major"], "assignees": [""]},
+                         {"keywords": ["bump: major", "BREAKING"], "labels": ["bump: major"], "assignees": [""]},
                          {"keywords": ["bump: minor"], "labels": ["bump: minor"], "assignees": [""]},
                          {"keywords": ["bump: patch"], "labels": ["bump: patch"], "assignees": [""]},
                          {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]},
                          {"keywords": ["Epic"], "labels": ["Epic"], "assignees": [""]},
                          {"keywords": ["Release"], "labels": ["Release"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+
+  label_issue_backlog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add backlog label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: backlog"
