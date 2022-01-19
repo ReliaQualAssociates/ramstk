@@ -12,7 +12,11 @@ jobs:
         uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
-          parameters: '[ {"keywords": ["type: build"], "labels": ["type: build"], "assignees": [""]},
+          parameters: '[ {"keywords": ["priority: low"], "labels": ["priority: low"], "assignees": [""]},
+                         {"keywords": ["priority: normal"], "labels": ["priority: normal"], "assignees": [""]},
+                         {"keywords": ["priority: high"], "labels": ["priority: high"], "assignees": [""]},
+                         {"keywords": ["priority: blocker"], "labels": ["priority: blocker"], "assignees": [""]},
+                         {"keywords": ["type: build"], "labels": ["type: build"], "assignees": [""]},
                          {"keywords": ["type: CI/CD"], "labels": ["type: ci"], "assignees": [""]},
                          {"keywords": ["type: documentation"], "labels": ["type: docs"], "assignees": [""]},
                          {"keywords": ["type: feature"], "labels": ["type: feature", "bump: minor"], "assignees": [""]},

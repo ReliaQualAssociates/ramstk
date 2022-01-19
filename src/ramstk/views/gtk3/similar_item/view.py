@@ -7,7 +7,7 @@
 """GTK3 Similar Item Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -129,11 +129,10 @@ class SimilarItemWorkView(RAMSTKWorkView):
             "selected_hardware",
         )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the allocation's record ID.
+    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+        """Set the Similar Items's record ID.
 
-        :param attributes: the attributes dict for the selected allocation
-            record.
+        :param attributes: the attribute dict for the selected Similar Item record.
         :return: None
         :rtype: None
         """
@@ -213,6 +212,7 @@ class SimilarItemWorkView(RAMSTKWorkView):
 
         super().do_embed_treeview_panel()
         self._pnlPanel.do_load_comboboxes()
+        self._pnlMethod.do_load_comboboxes()
 
         self.remove(self.get_children()[-1])
         _hpaned.pack1(self._pnlMethod, True, True)

@@ -18,7 +18,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pr-labeler:
-    name: Label Pull Request
+    name: Label Pull Request from Branch Name
     runs-on: ubuntu-latest
     steps:
       - name: Apply Labels to PR

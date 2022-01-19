@@ -56,6 +56,7 @@ user_int_2='User Integer 2'
 user_int_3='User Integer 3'
 user_int_4='User Integer 4'
 user_int_5='User Integer 5'
+parent_id='Parent ID'
 
 [usertitle]
 revision_id='Revision ID'
@@ -113,6 +114,7 @@ user_int_2='User Integer 2'
 user_int_3='User Integer 3'
 user_int_4='User Integer 4'
 user_int_5='User Integer 5'
+parent_id='Parent ID'
 
 [position]
 revision_id=0
@@ -170,6 +172,7 @@ user_int_2=51
 user_int_3=52
 user_int_4=53
 user_int_5=54
+parent_id=55
 
 [editable]
 revision_id='False'
@@ -227,6 +230,7 @@ user_int_2='True'
 user_int_3='True'
 user_int_4='True'
 user_int_5='True'
+parent_id='False'
 
 [visible]
 revision_id='False'
@@ -284,3 +288,4 @@ user_int_2='True'
 user_int_3='True'
 user_int_4='True'
 user_int_5='True'
+parent_id='False'
