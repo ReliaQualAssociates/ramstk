@@ -8,6 +8,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Class for testing FMEA algorithms and models."""
 
+# Standard Library Imports
+from datetime import date, timedelta
+
 # Third Party Imports
 import pytest
 from pubsub import pub
@@ -57,7 +60,7 @@ class TestCreateControllers:
         assert isinstance(test_viewmodel, RAMSTKFMEAView)
         assert isinstance(test_viewmodel.tree, Tree)
         assert isinstance(test_viewmodel.dao, BaseDatabase)
-        assert test_viewmodel._tag == "fmea"
+        assert test_viewmodel._tag == "fmeca"
         assert test_viewmodel._root == 0
         assert test_viewmodel._revision_id == 0
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mode")

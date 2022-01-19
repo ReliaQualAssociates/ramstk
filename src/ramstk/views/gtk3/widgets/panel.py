@@ -1149,7 +1149,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if self._filtered_tree:
-            _model = self.tvwTreeView.filt_model.get_model()
             _row = self.tvwTreeView.filt_model.convert_iter_to_child_iter(_row)
             self.tvwTreeView.unfilt_model.remove(_row)
             self.tvwTreeView.filt_model.refilter()

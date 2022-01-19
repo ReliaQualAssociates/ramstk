@@ -263,6 +263,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _model, _row = self.selection.get_selected()
 
         _data = [data[_key] for _key in self.position]
+
         _row = _model.append(prow, _data)
 
         _path = _model.get_path(_row)
@@ -310,7 +311,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             # If creating a RAMSTKTreeView() that displays icons and this is
             # the first column we're creating, add a Gtk.CellRendererPixbuf()
             # to go along with the data in the first column.
-            if self._has_pixbuf and _key == "col0":
+            if self._has_pixbuf and _position == 0:
                 _pbcell = Gtk.CellRendererPixbuf()
                 _pbcell.set_property("xalign", 0.5)
                 _pbcell.set_property("cell-background", _properties["bg_color"])
@@ -326,6 +327,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
                     heading=self.headings[_key],  # type: ignore
                     visible=string_to_boolean(self.visible[_key]),  # type: ignore
                 )
+
             _column.set_cell_data_func(
                 _cell, self._do_format_cell, (_position, self.datatypes[_key])
             )
@@ -343,7 +345,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             GObject.type_from_name(_datatype)
             for __, _datatype in self.datatypes.items()
         ]
-
 
         if self._has_pixbuf:
             _types.append(GdkPixbuf.Pixbuf)
