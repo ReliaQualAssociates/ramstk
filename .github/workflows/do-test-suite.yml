@@ -41,14 +41,12 @@ jobs:
           python-version: ${{ matrix.python }}
 
       - name: Create a virtual environment
-        needs: setpy
         id: venv
         run: |
           echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
           python -mvenv $VIRTUAL_ENV
 
       - name: Install RAMSTK dependencies
-        needs: venv
         id: deps
         run: |
           source $VIRTUAL_ENV/bin/activate
@@ -57,21 +55,18 @@ jobs:
           make depends
 
       - name: Install RAMSTK and test with coverage
-        needs: deps
         id: test
         run: |
           make PREFIX=$VIRTUAL_ENV install
           xvfb-run --auto-servernum make coverage
 
       - name: Upload coverage to Codecov
-        needs: test
         uses: codecov/codecov-action@v1
         with:
           files: ./cobertura.xml
           flags: ${{ matrix.python }}
 
       - name: Create Coveralls report
-        needs: test
         uses: miurahr/coveralls-python-action@patch-pyprject-toml
         with:
           parallel: true
