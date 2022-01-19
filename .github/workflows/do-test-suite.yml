@@ -12,6 +12,7 @@ on:
 
 jobs:
   test_suite:
+    name: Run Test Suite
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -72,6 +73,7 @@ jobs:
           parallel: true
 
   upload_coveralls:
+    name: Upload Results to Coveralls
     needs: test_suite
     runs-on: ubuntu-latest
     steps:
