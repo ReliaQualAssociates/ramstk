@@ -74,7 +74,7 @@ jobs:
 
       - name: Update CHANGELOG.md
         if: ${{ env.do_release == 1 }}
-        uses: vemel/nextchange@master
+        uses: vemel/nextchange@main
         id: changelog
         with:
           release: ${{ steps.nextversion.outputs.next_version }}

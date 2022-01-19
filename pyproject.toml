@@ -85,11 +85,15 @@ pytest-sugar = "^0.9.4"
 radon = "^5.1.0"
 recommonmark = "^0.7.1"
 seed-isort-config = "^2.2.0"
-Sphinx = "^4.2.0"
+Sphinx = "^4.4.0"
 sphinx_py3doc_enhanced_theme = "^2.4.0"
 sphinxcontrib-issuetracker = "^0.11"
 sphinxcontrib-spelling = "^7.1.0"
 twine = "^3.3.0"
+pillow = [
+	{ version = "8.4.0", python = "<3.7" },
+	{ version = "^9.0.0" , python = "^3.7" }
+]
 
 [tool.poetry.scripts]
 ramstk = "ramstk.__main__:the_one_ring"

@@ -1231,6 +1231,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.lst_users: List[str] = []
 
         # Initialize public scalar attributes.
+        self.level: str = ""
 
         super().do_set_properties()
         super().do_make_panel()
@@ -1266,6 +1267,27 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: bool
         """
         return model[row][1] == self._parent_id
+
+    def do_get_fmea_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None:
+        """Determine the FMEA level of the selected FMEA row.
+
+        :param model: the FMECA Gtk.TreeModel().
+        :param row: the selected Gtk.TreeIter() in the FMECA.
+        :return: None
+        :rtype: None
+        """
+        _cid = ""
+
+        for _col in [2, 3, 4, 5, 6]:
+            _cid = f"{_cid}{int(bool(model.get_value(row, _col)))}"
+
+        self.level = {
+            "10000": "mode",
+            "11000": "mechanism",
+            "11100": "cause",
+            "11110": "control",
+            "11101": "action",
+        }[_cid]
 
     def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -1310,9 +1332,8 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         This method is called whenever a RAMSTKTreeView() row is activated.
 
-        :param selection: the current Gtk.TreeViewSelection() in the
-            FMEA RAMSTKTreView().
-        :type selection: :class:`Gtk.TreeViewSelection`
+        :param selection: the current Gtk.TreeViewSelection() in the FMECA
+            RAMSTKTreView().
         :return: None
         :rtype: None
         """
@@ -1320,7 +1341,9 @@ class FMEATreePanel(RAMSTKTreePanel):
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            self.__do_set_visible_columns(_model, _row, _attributes)
+            self.do_get_fmea_level(_model, _row)
+            self.__do_set_visible_columns(_attributes)
+            self._record_id = _attributes[f"{self.level}_id"]
 
             _mission = _model.get_value(_row, 8)
             self.__do_load_mission_phases(_mission)
@@ -1951,34 +1974,17 @@ class FMEATreePanel(RAMSTKTreePanel):
 
     def __do_set_visible_columns(
         self,
-        model: Gtk.TreeModel,
-        row: Gtk.TreeIter,
         attrs: Dict[str, Union[float, int, str]],
     ) -> None:
         """Determine level in the FMECA the row corresponds to and set visible columns.
 
-        :param model: the FMECA Gtk.TreeModel().
-        :param row: the selected Gtk.TreeIter() in the FMECA.
         :param attrs: the attribute dict for the selected row.
         :return: None
         :rtype: None
         """
-        _cid = ""
-
-        # This seems like a kludgy way to determine the FMEA level, but it works.
-        for _col in [2, 3, 4, 5, 6]:
-            _cid = f"{_cid}{int(bool(model.get_value(row, _col)))}"
-
-        _level = {
-            "10000": "mode",
-            "11000": "mechanism",
-            "11100": "cause",
-            "11110": "control",
-            "11101": "action",
-        }[_cid]
-
-        self.tvwTreeView.visible = self._dic_visible_mask[_level]
-
+        self.tvwTreeView.visible = self._dic_visible_mask[self.level]
         self.tvwTreeView.do_set_visible_columns()
 
-        pub.sendMessage("selected_fmeca", attributes={"node_id": attrs[f"{_level}_id"]})
+        pub.sendMessage(
+            "selected_fmeca", attributes={"node_id": attrs[f"{self.level}_id"]}
+        )

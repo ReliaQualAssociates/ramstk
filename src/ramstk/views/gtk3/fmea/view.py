@@ -102,6 +102,8 @@ class FMEAWorkView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks[0] = self._do_request_update
+        self._lst_callbacks[1] = self._do_request_update_all
         self._lst_callbacks.insert(0, self._do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
@@ -129,7 +131,10 @@ class FMEAWorkView(RAMSTKWorkView):
                 "number (RPN)."
             ),
             _("Save changes to the selected entity in the (D)FME(C)A."),
-            _("Save changes to all entities in the (D)FME(C)A."),
+            _(
+                "Save changes to all entities at the same level as the selected entity "
+                "in the (D)FME(C)A."
+            ),
         ]
 
         # Initialize private scalar attributes.
@@ -205,12 +210,12 @@ class FMEAWorkView(RAMSTKWorkView):
         """
         _attributes = self.__do_get_fmea_ids()
 
-        if _attributes["cause_id"] != 0:
+        if self._pnlPanel.level == "cause":
             _level, _no_keys = self.__on_request_insert_control_action()
-        elif _attributes["mechanism_id"] != 0:
+        elif self._pnlPanel.level == "mechanism":
             _level = "cause"
             _no_keys = ["control_id", "action_id"]
-        elif _attributes["mode_id"] != 0:
+        elif self._pnlPanel.level == "mode":
             _level = "mechanism"
             _no_keys = ["cause_id", "control_id", "action_id"]
         else:
@@ -231,17 +236,15 @@ class FMEAWorkView(RAMSTKWorkView):
         :rtype: None
         """
         _attributes = self.__do_get_fmea_ids()
+        _level = self._pnlPanel.level
 
-        if _attributes["action_id"] != 0 or _attributes["control_id"] != 0:
+        if _level in ["action", "control"]:
             _level, _no_keys = self.__on_request_insert_control_action()
-        elif _attributes["cause_id"] != 0:
-            _level = "cause"
+        elif _level == "cause":
             _no_keys = ["control_id", "action_id"]
-        elif _attributes["mechanism_id"] != 0:
-            _level = "mechanism"
+        elif _level == "mechanism":
             _no_keys = ["cause_id", "control_id", "action_id"]
         else:
-            _level = "mode"
             _no_keys = ["mechanism_id", "cause_id", "control_id", "action_id"]
 
         for _key in _no_keys:
@@ -250,6 +253,30 @@ class FMEAWorkView(RAMSTKWorkView):
         super().do_set_cursor_busy()
 
         pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
+
+    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
+        """Request to update selected record to RAMSTK program database.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        super().do_set_cursor_busy()
+
+        _attributes = self.__do_get_fmea_ids()
+
+        pub.sendMessage(
+            f"request_update_{self._pnlPanel.level}",
+            node_id=_attributes[f"{self._pnlPanel.level}_id"],
+        )
+
+    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
+        """Send request to save all the records to RAMSTK program database.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        self.do_set_cursor_busy()
+        pub.sendMessage(f"request_update_all_{self._pnlPanel.level}s")
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record and revision ID when a hardware item is selected.
@@ -264,7 +291,8 @@ class FMEAWorkView(RAMSTKWorkView):
         """Set the hardware item hazard rate.
 
         :param attributes:
-        :return:
+        :return: None
+        :rtype: None
         """
         self._hardware_id = attributes["hardware_id"]
 
@@ -294,7 +322,7 @@ class FMEAWorkView(RAMSTKWorkView):
 
         return _attributes
 
-    def __do_load_action_lists(self):
+    def __do_load_action_lists(self) -> None:
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
 
         :return: None
@@ -313,7 +341,7 @@ class FMEAWorkView(RAMSTKWorkView):
         ]
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
-    def __do_load_rpn_lists(self):
+    def __do_load_rpn_lists(self) -> None:
         """Load the Gtk.CellRendererCombo()s associated with RPNs.
 
         :return: None
@@ -335,7 +363,7 @@ class FMEAWorkView(RAMSTKWorkView):
         ]
         self._pnlPanel.lst_rpn_severity.insert(0, "")
 
-    def __do_load_severity_lists(self):
+    def __do_load_severity_lists(self) -> None:
         """Load the Gtk.CellRendererCombo()s associated with CA risk.
 
         :return: None
