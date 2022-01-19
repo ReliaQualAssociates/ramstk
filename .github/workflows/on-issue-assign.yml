@@ -8,13 +8,13 @@ jobs:
     name: Create Branch for Issue
     runs-on: ubuntu-latest
     steps:
-      - name: Is Issue dobranch
+      - name: Is issue dobranch
         id: getlabel
         uses: renanmav/match-label-action@v3
         with:
           allowed: >
             dobranch
-      - name: Create Issue Branch
+      - name: Create issue branch
         id: create_issue_branch
         if: steps.getlabel.outputs.match == 'dobranch'
         uses: robvanderleek/create-issue-branch@main
@@ -24,7 +24,7 @@ jobs:
   label_issue_in_progress:
     runs-on: ubuntu-latest
     steps:
-      - name: Add In Progress Label
+      - name: Add in progress label
         uses: andymckay/labeler@master
         with:
           add-labels: "status: inprogress"

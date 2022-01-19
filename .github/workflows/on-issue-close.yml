@@ -1,0 +1,15 @@
+name: Issue Close Workflow
+
+on:
+  issues:
+    types: [closed]
+
+jobs:
+  label_issue_closed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add in progress label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: closed"
+          remove-labels: "status: inprogress"

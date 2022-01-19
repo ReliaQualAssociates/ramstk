@@ -6,10 +6,9 @@ on:
 
 jobs:
   autolabel_issues:
-    name: Apply Labels to New Issue
     runs-on: ubuntu-latest
     steps:
-      - name: Keyword to Label
+      - name: Apply labels to new issue
         uses: Naturalclar/issue-action@v2.0.2
         with:
           title-or-body: "both"
@@ -25,7 +24,7 @@ jobs:
                          {"keywords": ["type: refactor"], "labels": ["type: refactor"], "assignees": [""]},
                          {"keywords": ["type: style"], "labels": ["type: style"], "assignees": [""]},
                          {"keywords": ["type: test"], "labels": ["type: test"], "assignees": [""]},
-                         {"keywords": ["type: major", "BREAKING"], "labels": ["bump: major"], "assignees": [""]},
+                         {"keywords": ["bump: major", "BREAKING"], "labels": ["bump: major"], "assignees": [""]},
                          {"keywords": ["bump: minor"], "labels": ["bump: minor"], "assignees": [""]},
                          {"keywords": ["bump: patch"], "labels": ["bump: patch"], "assignees": [""]},
                          {"keywords": ["dobranch"], "labels": ["dobranch"], "assignees": [""]},
@@ -33,7 +32,10 @@ jobs:
                          {"keywords": ["Release"], "labels": ["Release"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Add Backlog Label
+  label_issue_backlog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add backlog label
         uses: andymckay/labeler@master
         with:
           add-labels: "status: backlog"
