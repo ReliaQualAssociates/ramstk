@@ -1,0 +1,34 @@
+name: Build and Deploy Documentation
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build_documentation:
+    name: Build RAMSTK Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Execute Sphinx
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation Changes
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
+
+      - name: Push RAMSTK Documentation Changes
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
