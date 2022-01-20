@@ -46,31 +46,27 @@ jobs:
         run: |
           if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
             echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.major }})"
-            echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
             echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.minor }})"
-            echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
             echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
-            echo "do_tag=1" >> $GITHUB_ENV
             echo "do_release=1" >> $GITHUB_ENV
           else
             echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
-            echo "do_tag=0" >> $GITHUB_ENV
             echo "do_release=0" >> $GITHUB_ENV
           fi
 
       - name: Update VERSION and pyproject.toml file
-        if: ${{ env.do_tag == 1 }}
-        run: |
-          echo "${{ steps.nextversion.outputs.next_version }}" > VERSION
-          sed -i 's/\(^version =.*$\)/version = "${{ steps.nextversion.outputs.next_version }}"/' pyproject.toml
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -a -m "release: v${{ steps.nextversion.outputs.next_version }}" && echo "do_push=1" >> $GITHUB_ENV
+        if: ${{ env.do_release == 1 }}
+        uses: vemel/nextversion@main
+        with:
+          path: ./pyproject.toml
+          result: ${{ steps.nextversion.outputs.next_version }}
+          update: |
+            ./VERSION
+            ./pyproject.toml
 
       - name: Update CHANGELOG.md
         if: ${{ env.do_release == 1 }}
@@ -88,6 +84,7 @@ jobs:
           echo ::set-output name=body::"${{ steps.changelog.outputs.result }}"
           echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
           echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
+          echo "do_push=1" >> $GITHUB_ENV
 
       - name: Cut pull request to merge updated version files
         if: ${{ env.do_push == 1 }}
