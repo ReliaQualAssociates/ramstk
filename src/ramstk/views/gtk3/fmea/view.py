@@ -397,10 +397,12 @@ class FMEAWorkView(RAMSTKWorkView):
     def __on_request_insert_control_action(self) -> Tuple[str, List[str]]:
         """Raise dialog to select whether to add a control or action.
 
-        :return: _level; the level to add, control or action.
-        :rtype: str
+        :return: _level, _no_keys; the level to add, control or action and the list
+            of ID columns to pop from the attributes list.
+        :rtype: tuple
         """
         _level = ""
+        _no_keys = []
 
         _dialog = AddControlAction(
             parent=self.get_parent().get_parent().get_parent().get_parent()

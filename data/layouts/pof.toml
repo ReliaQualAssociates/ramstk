@@ -1,6 +1,7 @@
 pixbuf='True'
 
 [defaulttitle]
+hardware_id='Hardware ID'
 mode_id='Mode ID'
 mechanism_id='Mechanism ID'
 load_id='Load ID'
@@ -18,6 +19,7 @@ priority_id='Priority'
 remarks='Remarks'
 
 [usertitle]
+hardware_id='Hardware ID'
 mode_id='Mode ID'
 mechanism_id='Mechanism ID'
 load_id='Load ID'
@@ -34,41 +36,26 @@ boundary_conditions='Boundary Conditions'
 priority_id='Priority'
 remarks='Remarks'
 
-[datatype]
-col0='gint'
-col1='gint'
-col2='gint'
-col3='gint'
-col4='gint'
-col5='gchararray'
-col6='gchararray'
-col7='gchararray'
-col8='gfloat'
-col9='gchararray'
-col10='gchararray'
-col11='gchararray'
-col12='gchararray'
-col13='gint'
-col14='gchararray'
-
 [position]
-mode_id=0
-mechanism_id=1
-load_id=2
-stress_id=3
-test_id=4
-description=5
-effect_end=6
-severity_class=7
-mode_probability=8
-damage_model=9
-measurable_parameter=10
-load_history=11
-boundary_conditions=12
-priority_id=13
-remarks=14
+hardware_id=0
+mode_id=1
+mechanism_id=2
+load_id=3
+stress_id=4
+test_id=5
+description=6
+effect_end=7
+severity_class=8
+mode_probability=9
+damage_model=10
+measurable_parameter=11
+load_history=12
+boundary_conditions=13
+priority_id=14
+remarks=15
 
 [editable]
+hardware_id='False'
 mode_id='False'
 mechanism_id='False'
 load_id='False'
@@ -86,6 +73,7 @@ priority_id='True'
 remarks='True'
 
 [visible]
+hardware_id='False'
 mode_id='False'
 mechanism_id='False'
 load_id='False'
