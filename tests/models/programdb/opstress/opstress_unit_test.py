@@ -65,7 +65,7 @@ class TestCreateModels:
         assert isinstance(test_tablemodel, RAMSTKOpStressTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_stress_id"
+        assert test_tablemodel._db_id_colname == "fld_opstress_id"
         assert test_tablemodel._db_tablename == "ramstk_op_stress"
         assert test_tablemodel._tag == "opstress"
         assert test_tablemodel._root == 0
@@ -177,7 +177,7 @@ class TestGetterSetter:
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
         test_attributes.pop("opload_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opstress_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -192,7 +192,7 @@ class TestGetterSetter:
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
         test_attributes.pop("opload_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opstress_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["measurable_parameter"] == 0
 
@@ -206,6 +206,6 @@ class TestGetterSetter:
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
         test_attributes.pop("opload_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opstress_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

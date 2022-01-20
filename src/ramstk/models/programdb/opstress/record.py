@@ -58,8 +58,8 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     opload_id = Column(
         "fld_opload_id", Integer, primary_key=True, nullable=False, unique=True
     )
-    stress_id = Column(
-        "fld_stress_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    opstress_id = Column(
+        "fld_opstress_id", Integer, primary_key=True, autoincrement=True, nullable=False
     )
 
     description = Column(
@@ -90,13 +90,13 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def get_attributes(self):
         """Retrieve the current values of the Op Stress data model attributes.
 
-        :return: {opload_id, stress_id, description, load_history,
+        :return: {opload_id, opstress_id, description, load_history,
                   measurable_parameter, remarks} pairs
         :rtype: tuple
         """
         _attributes = {
             "opload_id": self.opload_id,
-            "stress_id": self.stress_id,
+            "opstress_id": self.opstress_id,
             "description": self.description,
             "load_history": self.load_history,
             "measurable_parameter": self.measurable_parameter,

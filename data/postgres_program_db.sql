@@ -787,12 +787,12 @@ CREATE TABLE ramstk_op_stress (
     fld_mode_id INTEGER NOT NULL,
     fld_mechanism_id INTEGER NOT NULL,
     fld_opload_id INTEGER NOT NULL,
-    fld_stress_id INTEGER NOT NULL,
+    fld_opstress_id INTEGER NOT NULL,
     fld_description VARCHAR(512) DEFAULT '',
     fld_load_history INTEGER DEFAULT 0,
     fld_measurable_parameter INTEGER DEFAULT 0,
     fld_remarks VARCHAR DEFAULT '',
-    PRIMARY KEY (fld_stress_id),
+    PRIMARY KEY (fld_opstress_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_opload_id) REFERENCES ramstk_op_load (fld_opload_id) ON DELETE CASCADE
 );

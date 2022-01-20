@@ -83,8 +83,7 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def get_attributes(self):
         """Retrieve current values of RAMSTKTestMethod data model attributes.
 
-        :return: {stress_id, test_id, description, boundary_conditions,
-                  remarks} pairs
+        :return: {test_id, description, boundary_conditions, remarks} pairs
         :rtype: dict
         """
         _attributes = {
