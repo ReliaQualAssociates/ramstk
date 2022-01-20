@@ -706,7 +706,7 @@ class RAMSTKBaseView(Gtk.HBox):
             + "/32x32/save-all.png",
             "save-layout": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/save-layout.png",
-            "testmethod": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            "test_method": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/method.png",
             "warning": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
             + "/32x32/warning.png",

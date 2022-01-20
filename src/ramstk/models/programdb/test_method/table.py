@@ -21,7 +21,7 @@ class RAMSTKTestMethodTable(RAMSTKBaseTable):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_test_id"
+    _db_id_colname = "fld_test_method_id"
     _db_tablename = "ramstk_test_method"
     _select_msg = "selected_revision"
     _tag = "test_method"
@@ -45,7 +45,7 @@ class RAMSTKTestMethodTable(RAMSTKBaseTable):
             "mode_id",
             "mechanism_id",
             "opload_id",
-            "test_id",
+            "test_method_id",
         ]
 
         # Initialize private scalar attributes.
@@ -56,7 +56,7 @@ class RAMSTKTestMethodTable(RAMSTKBaseTable):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "test_id"
+        self.pkey = "test_method_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -75,6 +75,6 @@ class RAMSTKTestMethodTable(RAMSTKBaseTable):
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
         _new_record.opload_id = attributes["opload_id"]
-        _new_record.test_id = self.last_id + 1
+        _new_record.test_method_id = self.last_id + 1
 
         return _new_record

@@ -54,8 +54,12 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     opload_id = Column(
         "fld_opload_id", Integer, primary_key=True, nullable=False, unique=True
     )
-    test_id = Column(
-        "fld_test_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    test_method_id = Column(
+        "fld_test_method_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     description = Column(
@@ -88,7 +92,7 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         """
         _attributes = {
             "opload_id": self.opload_id,
-            "test_id": self.test_id,
+            "test_method_id": self.test_method_id,
             "description": self.description,
             "boundary_conditions": self.boundary_conditions,
             "remarks": self.remarks,

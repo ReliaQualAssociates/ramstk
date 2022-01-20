@@ -441,7 +441,7 @@ class TestInsertMethods:
                 "mode_id": 1,
                 "mechanism_id": 3,
                 "opload_id": 3,
-                "test_id": 4,
+                "test_method_id": 4,
             },
         )
 
