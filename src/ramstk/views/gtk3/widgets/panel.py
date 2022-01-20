@@ -714,6 +714,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.level: str = ""
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
@@ -1011,6 +1012,27 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.set_grid_lines(Gtk.TreeViewGridLines.BOTH)
         self.tvwTreeView.set_level_indentation(2)
         self.tvwTreeView.set_rubber_banding(True)
+
+    def do_set_visible_columns(
+        self,
+        attributes: Dict[str, Union[float, int, str]],
+    ) -> None:
+        """Set visible columns in the RAMSTKTreeView depending on the selected level.
+
+        :param attributes: the attribute dict for the selected row.
+        :return: None
+        :rtype: None
+        """
+        self.tvwTreeView.visible = {
+            _key: self._dic_visible_mask[self.level][_idx]
+            for _idx, _key in enumerate(self.tvwTreeView.visible)
+        }
+        self.tvwTreeView.do_set_visible_columns()
+
+        pub.sendMessage(
+            f"selected_{self._tag}",
+            attributes={"node_id": attributes[f"{self.level}_id"]},
+        )
 
     def on_cell_change(
         self,
