@@ -592,7 +592,7 @@ class Import:
                 ),
                 "length_relaxed": _get_input_value(_map, row, "Length, Relaxed", 0.0),
                 "load_design": _get_input_value(_map, row, "Design Load", 0.0),
-                "opload_id": _get_input_value(_map, row, "Load ID", 0),
+                "load_id": _get_input_value(_map, row, "Load ID", 0),
                 "load_operating": _get_input_value(_map, row, "Operating Load", 0.0),
                 "lubrication_id": _get_input_value(_map, row, "Lubrication ID", 0),
                 "manufacturing_id": _get_input_value(_map, row, "Manufacturing ID", 0),

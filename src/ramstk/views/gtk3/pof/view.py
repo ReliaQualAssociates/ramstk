@@ -7,7 +7,7 @@
 """GTK3 PoF Views."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 from pubsub import pub
@@ -111,6 +111,8 @@ class PoFWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
+        self._hardware_id: int = 0
+
         self._pnlPanel: RAMSTKPanel = PoFTreePanel()
 
         # Initialize public dictionary attributes.
@@ -123,6 +125,10 @@ class PoFWorkView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_pof")
+
+        pub.subscribe(
+            self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
+        )
 
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete the selected entity from the PoF.
@@ -159,24 +165,23 @@ class PoFWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # Try to get the information needed to add a new entity at the correct
-        # location in the PoF.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-        try:
-            _parent_id = _model.get_value(_row, 0)
-            _level = {
-                2: "opload",
-                3: "opstress_testmethod",
-            }[len(str(_parent_id).split("."))]
-        except TypeError:
-            _parent_id = "0"
-            _level = "opload"
+        _attributes = self.__do_get_pof_ids()
 
-        if _level == "opstress_testmethod":
-            _level = self.__on_request_insert_opstress_method()
+        if self._pnlPanel.level == "opload":
+            _level, _no_keys = self.__on_request_insert_opstress_method()
+        elif self._pnlPanel.level == "mechanism":
+            _level = "opload"
+            _no_keys = ["opstress_id", "test_method_id"]
+        else:
+            print("Raise dialog 'cause can't add child to opstress or test.")
+            return
+
+        for _key in _no_keys:
+            _attributes.pop(_key)
 
         super().do_set_cursor_busy()
-        pub.sendMessage(f"request_insert_pof_{_level}", parent_id=str(_parent_id))
+
+        pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
         """Request to insert a new sibling entity to the PoF.
@@ -184,24 +189,22 @@ class PoFWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # Try to get the information needed to add a new entity at the correct
-        # location in the PoF.
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-        try:
-            _parent_id = _model.get_value(_model.iter_parent(_row), 0)
-            _level = {
-                2: "opload",
-                3: "opstress_testmethod",
-            }[len(str(_parent_id).split("."))]
-        except TypeError:
-            _parent_id = "0"
-            _level = "opload"
+        _attributes = self.__do_get_pof_ids()
+        _level = self._pnlPanel.level
 
-        if _level == "opstress_testmethod":
-            _level = self.__on_request_insert_opstress_method()
+        if _level in ["opstress", "test_method"]:
+            _level, _no_keys = self.__on_request_insert_opstress_method()
+        elif _level == "opload":
+            _no_keys = ["opstress_id", "test_method_id"]
+        else:
+            _no_keys = ["opload_id", "opstress_id", "test_method_id"]
+
+        for _key in _no_keys:
+            _attributes.pop(_key)
 
         super().do_set_cursor_busy()
-        pub.sendMessage(f"request_insert_pof_{_level}", parent_id=str(_parent_id))
+
+        pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record and revision ID when a hardware item is selected.
@@ -212,7 +215,42 @@ class PoFWorkView(RAMSTKWorkView):
         """
         self.dic_pkeys["record_id"] = attributes["node_id"]
 
-    def __do_load_test_method_lists(self):
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the hardware ID.
+
+        :param attributes:
+        :return: None
+        :rtype: None
+        """
+        self._hardware_id = attributes["hardware_id"]
+
+    def __do_get_pof_ids(self) -> Dict[str, int]:
+        """Read each of the ID columns.
+
+        :return: _attributes
+        :rtype: dict
+        """
+        _attributes = {
+            "revision_id": self._revision_id,
+            "hardware_id": self._hardware_id,
+            "mode_id": 0,
+            "mechanism_id": 0,
+            "opload_id": 0,
+            "opstress_id": 0,
+            "test_method_id": 0,
+        }
+
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        _attributes["mode_id"] = _model.get_value(_row, 1)
+        _attributes["mechanism_id"] = _model.get_value(_row, 2)
+        _attributes["opload_id"] = _model.get_value(_row, 3)
+        _attributes["opstress_id"] = _model.get_value(_row, 4)
+        _attributes["test_method_id"] = _model.get_value(_row, 5)
+
+        return _attributes
+
+    def __do_load_pof_lists(self):
         """Load the Gtk.CellRendererCombo()s associated with test methods.
 
         :return: None
@@ -240,18 +278,19 @@ class PoFWorkView(RAMSTKWorkView):
         self._pnlPanel.dic_icons = self._dic_icons
 
         super().do_embed_treeview_panel()
-        self.__do_load_test_method_lists()
+        self.__do_load_pof_lists()
         self._pnlPanel.do_load_comboboxes()
 
         self.show_all()
 
-    def __on_request_insert_opstress_method(self) -> str:
+    def __on_request_insert_opstress_method(self) -> Tuple[str, List[str]]:
         """Raise dialog to select whether to add a stress or test method.
 
         :return: _level; the level to add, opstress or testmethod.
         :rtype: str
         """
         _level = ""
+        _no_keys = []
 
         _dialog = AddStressTestMethod(
             parent=self.get_parent().get_parent().get_parent().get_parent()
@@ -260,9 +299,11 @@ class PoFWorkView(RAMSTKWorkView):
         if _dialog.do_run() == Gtk.ResponseType.OK:
             if _dialog.rdoOpStress.get_active():
                 _level = "opstress"
+                _no_keys = ["test_method_id"]
             elif _dialog.rdoTestMethod.get_active():
-                _level = "testmethod"
+                _level = "test_method"
+                _no_keys = ["opstress_id"]
 
         _dialog.do_destroy()
 
-        return _level
+        return _level, _no_keys
