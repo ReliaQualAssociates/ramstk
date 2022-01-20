@@ -13,7 +13,7 @@ def mock_program_dao(monkeypatch):
     _opstress_1.hardware_id = 1
     _opstress_1.mode_id = 1
     _opstress_1.mechanism_id = 1
-    _opstress_1.load_id = 1
+    _opstress_1.opload_id = 1
     _opstress_1.stress_id = 1
     _opstress_1.description = "Test Operating Stress #1"
     _opstress_1.load_history = 2
@@ -25,7 +25,7 @@ def mock_program_dao(monkeypatch):
     _opstress_2.hardware_id = 1
     _opstress_2.mode_id = 1
     _opstress_2.mechanism_id = 1
-    _opstress_2.load_id = 1
+    _opstress_2.opload_id = 1
     _opstress_2.stress_id = 2
     _opstress_2.description = "Test Operating Stress #2"
     _opstress_2.load_history = 1
@@ -48,7 +48,7 @@ def test_attributes():
         "hardware_id": 1,
         "mode_id": 6,
         "mechanism_id": 3,
-        "load_id": 3,
+        "opload_id": 3,
         "stress_id": 3,
         "description": "",
         "load_history": 4,

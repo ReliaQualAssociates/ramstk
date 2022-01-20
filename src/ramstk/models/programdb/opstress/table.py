@@ -44,7 +44,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
             "hardware_id",
             "mode_id",
             "mechanism_id",
-            "load_id",
+            "opload_id",
             "stress_id",
         ]
 
@@ -74,7 +74,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
         _new_record.hardware_id = attributes["hardware_id"]
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
-        _new_record.load_id = attributes["load_id"]
+        _new_record.opload_id = attributes["opload_id"]
         _new_record.stress_id = self.last_id + 1
 
         return _new_record

@@ -32,14 +32,14 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 "fld_hardware_id",
                 "fld_mode_id",
                 "fld_mechanism_id",
-                "fld_load_id",
+                "fld_opload_id",
             ],
             [
                 "ramstk_op_load.fld_revision_id",
                 "ramstk_op_load.fld_hardware_id",
                 "ramstk_op_load.fld_mode_id",
                 "ramstk_op_load.fld_mechanism_id",
-                "ramstk_op_load.fld_load_id",
+                "ramstk_op_load.fld_opload_id",
             ],
         ),
         {"extend_existing": True},
@@ -51,8 +51,8 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
-    load_id = Column(
-        "fld_load_id", Integer, primary_key=True, nullable=False, unique=True
+    opload_id = Column(
+        "fld_opload_id", Integer, primary_key=True, nullable=False, unique=True
     )
     test_id = Column(
         "fld_test_id", Integer, primary_key=True, autoincrement=True, nullable=False
@@ -88,7 +88,7 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :rtype: dict
         """
         _attributes = {
-            "load_id": self.load_id,
+            "opload_id": self.opload_id,
             "test_id": self.test_id,
             "description": self.description,
             "boundary_conditions": self.boundary_conditions,

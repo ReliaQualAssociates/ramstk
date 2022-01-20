@@ -178,7 +178,7 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         test_attributes.pop("test_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
@@ -193,7 +193,7 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         test_attributes.pop("test_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["boundary_conditions"] == ""
@@ -207,7 +207,7 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         test_attributes.pop("test_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

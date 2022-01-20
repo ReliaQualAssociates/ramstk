@@ -24,7 +24,7 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_load_id"
+    _db_id_colname = "fld_opload_id"
     _db_tablename = "ramstk_op_load"
     _select_msg = "selected_revision"
     _tag = "opload"
@@ -47,7 +47,7 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
             "hardware_id",
             "mode_id",
             "mechanism_id",
-            "load_id",
+            "opload_id",
         ]
 
         # Initialize private scalar attributes.
@@ -58,7 +58,7 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "load_id"
+        self.pkey = "opload_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -76,6 +76,6 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
         _new_record.hardware_id = attributes["hardware_id"]
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
-        _new_record.load_id = self.last_id + 1
+        _new_record.opload_id = self.last_id + 1
 
         return _new_record
