@@ -24,8 +24,8 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     __defaults__ = {
         "description": "",
-        "load_history": "",
-        "measurable_parameter": "",
+        "load_history": 0,
+        "measurable_parameter": 0,
         "remarks": "",
     }
     __tablename__ = "ramstk_op_stress"
@@ -66,11 +66,11 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_description", String(512), default=__defaults__["description"]
     )
     load_history = Column(
-        "fld_load_history", String(512), default=__defaults__["load_history"]
+        "fld_load_history", Integer, default=__defaults__["load_history"]
     )
     measurable_parameter = Column(
         "fld_measurable_parameter",
-        String(512),
+        Integer,
         default=__defaults__["measurable_parameter"],
     )
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
