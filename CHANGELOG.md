@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.15.4]
+
 ## [0.15.3]
 
 ## [v0.12.0(https://github.com/ReliaQualAssociates/ramstk/tree/v0.12.0)]

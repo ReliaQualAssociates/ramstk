@@ -7,7 +7,7 @@
 """GTK3 PoF Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Union
 
 # Third Party Imports
 import treelib
@@ -22,11 +22,103 @@ class PoFTreePanel(RAMSTKTreePanel):
     """Panel to display Physics if Failure analysis worksheet."""
 
     # Define private dictionary class attributes.
+    _dic_visible_mask: Dict[str, List[bool]] = {
+        "mode": [
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+        ],
+        "mechanism": [
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ],
+        "opload": [
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            True,
+            False,
+        ],
+        "opstress": [
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            False,
+            True,
+            True,
+            False,
+            False,
+            True,
+        ],
+        "testmethod": [
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            True,
+            False,
+            True,
+        ],
+    }
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_modes"
+    _select_msg = "succeed_retrieve_pof"
     _tag = "pof"
     _title = _("Physics of Failure (PoF) Analysis")
 
@@ -46,90 +138,35 @@ class PoFTreePanel(RAMSTKTreePanel):
             "mechanism": self.__do_load_mechanism,
             "opload": self.__do_load_opload,
             "opstress": self.__do_load_opstress,
-            "method": self.__do_load_test_method,
-        }
-        self._dic_visible_mask: Dict[str, List[str]] = {
-            "mode": [
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-            ],
-            "mechanism": [
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-                "False",
-            ],
-            "opload": [
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "False",
-            ],
-            "opstress": [
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "True",
-                "True",
-                "False",
-                "False",
-                "True",
-                "False",
-            ],
-            "testmethod": [
-                "True",
-                "True",
-                "True",
-                "True",
-                "True",
-                "False",
-                "False",
-                "False",
-                "True",
-                "False",
-                "True",
-                "False",
-            ],
+            "testmethod": self.__do_load_test_method,
         }
 
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self._filtered_tree = True
         self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary instance attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "mode_id": [
+            "hardware_id": [
                 0,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Hardware ID"),
+                "gint",
+            ],
+            "mode_id": [
+                1,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -145,7 +182,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "mechanism_id": [
-                1,
+                2,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -161,7 +198,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "load_id": [
-                2,
+                3,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -177,7 +214,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "stress_id": [
-                3,
+                4,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -193,7 +230,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "test_id": [
-                4,
+                5,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -209,7 +246,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "description": [
-                5,
+                6,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -225,7 +262,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "effect_end": [
-                6,
+                7,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -241,7 +278,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "severity_class": [
-                7,
+                8,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -257,7 +294,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "mode_probability": [
-                8,
+                9,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -273,11 +310,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gfloat",
             ],
             "damage_model": [
-                9,
+                10,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_toggled,
-                self._on_edit_message,
+                "wvw_editing_opload",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -289,11 +326,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "measurable_parameter": [
-                10,
+                11,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_opstress",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -305,11 +342,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "load_history": [
-                11,
+                12,
                 Gtk.CellRendererCombo(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_opstress",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -321,11 +358,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "boundary_conditions": [
-                12,
+                13,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_test_method",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -337,11 +374,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
             "priority_id": [
-                13,
+                14,
                 Gtk.CellRendererSpin(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_opload",
                 0,
                 {
                     "bg_color": "#FFFFFF",
@@ -353,11 +390,11 @@ class PoFTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "remarks": [
-                14,
+                15,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_test_method",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -390,11 +427,45 @@ class PoFTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_delete_test_method")
-        pub.subscribe(super().do_load_panel, "succeed_delete_opstress")
-        pub.subscribe(super().do_load_panel, "succeed_delete_opload")
-        pub.subscribe(super().do_load_panel, "succeed_delete_mechanism")
-        pub.subscribe(super().do_load_panel, "succeed_delete_mode")
+        pub.subscribe(super().do_load_panel, "succeed_retrieve_pof")
+
+        pub.subscribe(self._on_select_hardware, "selected_hardware")
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
+        """Filter PoF to show only those rows associated with the selected Hardware.
+
+        :param model: the filtered model for the PoF RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
+        """
+        return model[row][0] == self._parent_id
+
+    def do_get_pof_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None:
+        """Determine the FMEA level of the selected FMEA row.
+
+        :param model: the FMEA Gtk.TreeModel().
+        :param row: the selected Gtk.TreeIter() in the FMECA.
+        :return: None
+        :rtype: None
+        """
+        _cid = ""
+
+        for _col in [1, 2, 3, 4, 5]:
+            _cid = f"{_cid}{int(bool(model.get_value(row, _col)))}"
+
+        self.level = {
+            "10000": "mode",
+            "11000": "mechanism",
+            "11100": "opload",
+            "11110": "opstress",
+            "11101": "testmethod",
+        }[_cid]
 
     def do_load_comboboxes(self) -> None:
         """Load the RAMSTKComboBox() widgets.
@@ -423,22 +494,25 @@ class PoFTreePanel(RAMSTKTreePanel):
             selected row in the PoF RAMSTKTreeView().
         :return: None
         """
+        _attributes = super().on_row_change(selection)
         _model, _row = selection.get_selected()
 
         if _row is not None:
-            if _model.get_value(_row, 0) == 0:
-                _level = "mode"
-            elif _model.get_value(_row, 1) == 0:
-                _level = "mechanism"
-            elif _model.get_value(_row, 2) == 0:
-                _level = "load"
-            elif _model.get_value(_row, 3) == 0:
-                _level = "stress"
-            else:
-                _level = "test"
+            self.do_get_pof_level(_model, _row)
+            super().do_set_visible_columns(_attributes)
+            self._record_id = _attributes[f"{self.level}_id"]
 
-            self.tvwTreeView.visible = self._dic_visible_mask[_level]
-            self.tvwTreeView.do_set_visible_columns()
+    def _on_select_hardware(
+        self, attributes: Dict[str, Union[int, float, str]]
+    ) -> None:
+        """Filter FMEA when Hardware is selected.
+
+        :param attributes: the dict of attributes for the selected Hardware.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["hardware_id"]
+        self.tvwTreeView.filt_model.refilter()
 
     def __do_load_damage_models(self) -> None:
         """Load the RAMSTKTreeView() damage model CellRendererCombo().
@@ -482,14 +556,13 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons["mechanism"], 22, 22
         )
 
         _attributes = [
+            _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
             0,
@@ -509,17 +582,16 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure mechanism {0:s} in "
-                "the "
-                "physics of failure analysis.  This might indicate it was "
-                "missing it's data package, some of the data in the package "
-                "was missing, or some of the data was the wrong type.  Row "
-                "data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure mechanism {node.identifier} "
+                f"in the physics of failure analysis.  This might indicate it was "
+                f"missing it's data package, some of the data in the package was "
+                f"missing, or some of the data was the wrong type.  Row data "
+                f"was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -537,12 +609,11 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"], 22, 22)
 
         _attributes = [
+            _entity.hardware_id,
             _entity.mode_id,
             0,
             0,
@@ -562,16 +633,15 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading failure mode {0:s} in the "
-                "physics of failure analysis.  This might indicate it was "
-                "missing it's data package, some of the data in the package "
-                "was missing, or some of the data was the wrong type.  Row "
-                "data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading failure mode {node.identifier} in the "
+                f"physics of failure analysis.  This might indicate it was missing "
+                f"its data package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -589,14 +659,13 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["opload"], 22, 22)
 
         _damage_model = self.dic_damage_models[_entity.damage_model]
 
         _attributes = [
+            _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
             _entity.load_id,
@@ -616,16 +685,16 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading operating load {0:s} in the "
-                "physics of failure analysis.  This might indicate it was "
-                "missing it's data package, some of the data in the package "
-                "was missing, or some of the data was the wrong type.  Row "
-                "data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading operating load {node.identifier} in "
+                f"the physics of failure analysis.  This might indicate it was "
+                f"missing its data package, some of the data in the package was "
+                f"missing, or some of the data was the wrong type.  Row data "
+                f"was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -643,8 +712,6 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons["opstress"], 22, 22
@@ -656,6 +723,7 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         _attributes = [
+            _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
             _entity.load_id,
@@ -675,16 +743,16 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading operating stress {0:s} in the "
-                "physics of failure analysis.  This might indicate it was "
-                "missing it's data package, some of the data in the package "
-                "was missing, or some of the data was the wrong type.  Row "
-                "data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading operating stress {node.identifier} in "
+                f"the physics of failure analysis.  This might indicate it was "
+                f"missing its data package, some of the data in the package was "
+                f"missing, or some of the data was the wrong type.  Row data "
+                f"was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
@@ -704,14 +772,13 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
             self.dic_icons["testmethod"], 22, 22
         )
 
         _attributes = [
+            _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
             _entity.load_id,
@@ -731,16 +798,15 @@ class PoFTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
             _new_row = None
             _message = _(
-                "An error occurred when loading test method {0:s} in the "
-                "physics of failure analysis.  This might indicate it was "
-                "missing it's data package, some of the data in the package "
-                "was missing, or some of the data was the wrong type.  Row "
-                "data was: {1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading test method {node.identifier} in the "
+                f"physics of failure analysis.  This might indicate it was missing its "
+                f"data package, some of the data in the package was missing, or some "
+                f"of the data was the wrong type.  Row data was: {_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg", logger_name="WARNING", message=_message
             )
