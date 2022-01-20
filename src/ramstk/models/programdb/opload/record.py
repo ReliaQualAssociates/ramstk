@@ -24,7 +24,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     shares a One-to-Many relationship with ramstk_test_method.
     """
 
-    __defaults__ = {"description": "", "damage_model": "", "priority_id": 0}
+    __defaults__ = {"description": "", "damage_model": 0, "priority_id": 0}
     __tablename__ = "ramstk_op_load"
     __table_args__ = (
         ForeignKeyConstraint(
@@ -53,7 +53,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_description", String(512), default=__defaults__["description"]
     )
     damage_model = Column(
-        "fld_damage_model", String(512), default=__defaults__["damage_model"]
+        "fld_damage_model", Integer, default=__defaults__["damage_model"]
     )
     priority_id = Column(
         "fld_priority_id", Integer, default=__defaults__["priority_id"]

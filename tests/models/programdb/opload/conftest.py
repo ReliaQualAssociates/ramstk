@@ -14,7 +14,7 @@ def mock_program_dao(monkeypatch):
     _opload_1.mode_id = 6
     _opload_1.mechanism_id = 2
     _opload_1.load_id = 1
-    _opload_1.damage_model = ""
+    _opload_1.damage_model = 3
     _opload_1.description = "Test Operating Load #1"
     _opload_1.priority_id = 0
 
@@ -24,7 +24,7 @@ def mock_program_dao(monkeypatch):
     _opload_2.mode_id = 6
     _opload_2.mechanism_id = 2
     _opload_2.load_id = 2
-    _opload_2.damage_model = ""
+    _opload_2.damage_model = 1
     _opload_2.description = "Test Operating Load #2"
     _opload_2.priority_id = 0
 
@@ -46,7 +46,7 @@ def test_attributes():
         "mechanism_id": 3,
         "load_id": 3,
         "description": "",
-        "damage_model": "",
+        "damage_model": 2,
         "priority_id": 0,
     }
 

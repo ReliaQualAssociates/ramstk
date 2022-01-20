@@ -54,7 +54,7 @@ class TestCreateModels:
 
         # Verify class attributes are properly initialized.
         assert test_recordmodel.__tablename__ == "ramstk_op_load"
-        assert test_recordmodel.damage_model == ""
+        assert test_recordmodel.damage_model == 3
         assert test_recordmodel.description == "Test Operating Load #1"
         assert test_recordmodel.priority_id == 0
 
@@ -162,7 +162,7 @@ class TestGetterSetter:
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Operating Load #1"
-        assert _attributes["damage_model"] == ""
+        assert _attributes["damage_model"] == 3
         assert _attributes["priority_id"] == 0
 
     @pytest.mark.unit
@@ -179,7 +179,7 @@ class TestGetterSetter:
     def test_set_record_model_attributes_none_value(
         self, test_attributes, test_recordmodel
     ):
-        """should set an attribute to it's default value when the a None value."""
+        """should set an attribute to its default value when passed a None value."""
         test_attributes["priority_id"] = None
 
         test_attributes.pop("revision_id")
