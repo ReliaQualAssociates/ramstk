@@ -24,7 +24,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     shares a One-to-Many relationship with ramstk_test_method.
     """
 
-    __defaults__ = {"description": "", "damage_model": "", "priority_id": 0}
+    __defaults__ = {"description": "", "damage_model": 0, "priority_id": 0}
     __tablename__ = "ramstk_op_load"
     __table_args__ = (
         ForeignKeyConstraint(
@@ -45,15 +45,15 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
-    load_id = Column(
-        "fld_load_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    opload_id = Column(
+        "fld_opload_id", Integer, primary_key=True, autoincrement=True, nullable=False
     )
 
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
     damage_model = Column(
-        "fld_damage_model", String(512), default=__defaults__["damage_model"]
+        "fld_damage_model", Integer, default=__defaults__["damage_model"]
     )
     priority_id = Column(
         "fld_priority_id", Integer, default=__defaults__["priority_id"]
@@ -84,13 +84,13 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def get_attributes(self):
         """Retrieve current values of the RAMSTKOpLoad data model attributes.
 
-        :return: {mechanism_id, load_id, description, damage_model,
+        :return: {mechanism_id, opload_id, description, damage_model,
                   priority_id} pairs
         :rtype: dict
         """
         return {
             "mechanism_id": self.mechanism_id,
-            "load_id": self.load_id,
+            "opload_id": self.opload_id,
             "description": self.description,
             "damage_model": self.damage_model,
             "priority_id": self.priority_id,

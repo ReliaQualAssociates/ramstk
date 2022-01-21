@@ -54,7 +54,7 @@ class TestCreateModels:
 
         # Verify class attributes are properly initialized.
         assert test_recordmodel.__tablename__ == "ramstk_op_load"
-        assert test_recordmodel.damage_model == ""
+        assert test_recordmodel.damage_model == 3
         assert test_recordmodel.description == "Test Operating Load #1"
         assert test_recordmodel.priority_id == 0
 
@@ -64,7 +64,7 @@ class TestCreateModels:
         assert isinstance(test_tablemodel, RAMSTKOpLoadTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_load_id"
+        assert test_tablemodel._db_id_colname == "fld_opload_id"
         assert test_tablemodel._db_tablename == "ramstk_op_load"
         assert test_tablemodel._tag == "opload"
         assert test_tablemodel._root == 0
@@ -162,7 +162,7 @@ class TestGetterSetter:
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Operating Load #1"
-        assert _attributes["damage_model"] == ""
+        assert _attributes["damage_model"] == 3
         assert _attributes["priority_id"] == 0
 
     @pytest.mark.unit
@@ -172,21 +172,21 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
         self, test_attributes, test_recordmodel
     ):
-        """should set an attribute to it's default value when the a None value."""
+        """should set an attribute to its default value when passed a None value."""
         test_attributes["priority_id"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["priority_id"] == 0
 
@@ -199,6 +199,6 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
+        test_attributes.pop("opload_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

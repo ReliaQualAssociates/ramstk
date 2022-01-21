@@ -64,7 +64,7 @@ class TestCreateModels:
         """__init__() should return a PoF data manager."""
         assert isinstance(test_tablemodel, RAMSTKTestMethodTable)
         assert isinstance(test_tablemodel.tree, Tree)
-        assert test_tablemodel._db_id_colname == "fld_test_id"
+        assert test_tablemodel._db_id_colname == "fld_test_method_id"
         assert test_tablemodel._db_tablename == "ramstk_test_method"
         assert test_tablemodel._tag == "test_method"
         assert test_tablemodel._root == 0
@@ -178,8 +178,8 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("test_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("test_method_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -193,8 +193,8 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("test_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("test_method_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["boundary_conditions"] == ""
 
@@ -207,7 +207,7 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("test_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("test_method_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

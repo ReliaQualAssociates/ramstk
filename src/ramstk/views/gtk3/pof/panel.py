@@ -95,7 +95,7 @@ class PoFTreePanel(RAMSTKTreePanel):
             False,
             True,
         ],
-        "testmethod": [
+        "test_method": [
             True,
             False,
             False,
@@ -138,7 +138,7 @@ class PoFTreePanel(RAMSTKTreePanel):
             "mechanism": self.__do_load_mechanism,
             "opload": self.__do_load_opload,
             "opstress": self.__do_load_opstress,
-            "testmethod": self.__do_load_test_method,
+            "test_method": self.__do_load_test_method,
         }
 
         # Initialize private list instance attributes.
@@ -197,7 +197,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 _("Mechanism ID"),
                 "gint",
             ],
-            "load_id": [
+            "opload_id": [
                 3,
                 Gtk.CellRendererText(),
                 "edited",
@@ -213,7 +213,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 _("Load ID"),
                 "gint",
             ],
-            "stress_id": [
+            "opstress_id": [
                 4,
                 Gtk.CellRendererText(),
                 "edited",
@@ -229,7 +229,7 @@ class PoFTreePanel(RAMSTKTreePanel):
                 _("Stress ID"),
                 "gint",
             ],
-            "test_id": [
+            "test_method_id": [
                 5,
                 Gtk.CellRendererText(),
                 "edited",
@@ -464,7 +464,7 @@ class PoFTreePanel(RAMSTKTreePanel):
             "11000": "mechanism",
             "11100": "opload",
             "11110": "opstress",
-            "11101": "testmethod",
+            "11101": "test_method",
         }[_cid]
 
     def do_load_comboboxes(self) -> None:
@@ -662,20 +662,18 @@ class PoFTreePanel(RAMSTKTreePanel):
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["opload"], 22, 22)
 
-        _damage_model = self.dic_damage_models[_entity.damage_model]
-
         _attributes = [
             _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
-            _entity.load_id,
+            _entity.opload_id,
             0,
             0,
             _entity.description,
             "",
             "",
             0.0,
-            _damage_model,
+            self.lst_damage_models[_entity.damage_model],
             "",
             "",
             "",
@@ -717,25 +715,20 @@ class PoFTreePanel(RAMSTKTreePanel):
             self.dic_icons["opstress"], 22, 22
         )
 
-        _load_history = self.dic_load_history[_entity.load_history]
-        _measurable_parameter = self.dic_measurable_parameters[
-            _entity.measurable_parameter
-        ]
-
         _attributes = [
             _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
-            _entity.load_id,
-            _entity.stress_id,
+            _entity.opload_id,
+            _entity.opstress_id,
             0,
             _entity.description,
             "",
             "",
             0.0,
             "",
-            _measurable_parameter,
-            _load_history,
+            self.lst_measurable_parameters[_entity.measurable_parameter],
+            self.lst_load_history[_entity.load_history],
             "",
             0,
             _entity.remarks,
@@ -774,16 +767,16 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["testmethod"], 22, 22
+            self.dic_icons["test_method"], 22, 22
         )
 
         _attributes = [
             _entity.hardware_id,
             _entity.mode_id,
             _entity.mechanism_id,
-            _entity.load_id,
-            _entity.stress_id,
-            _entity.test_id,
+            _entity.opload_id,
+            0,
+            _entity.test_method_id,
             _entity.description,
             "",
             "",

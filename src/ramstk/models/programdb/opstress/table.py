@@ -21,7 +21,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_stress_id"
+    _db_id_colname = "fld_opstress_id"
     _db_tablename = "ramstk_op_stress"
     _select_msg = "selected_revision"
     _tag = "opstress"
@@ -44,8 +44,8 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
             "hardware_id",
             "mode_id",
             "mechanism_id",
-            "load_id",
-            "stress_id",
+            "opload_id",
+            "opstress_id",
         ]
 
         # Initialize private scalar attributes.
@@ -56,7 +56,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "stress_id"
+        self.pkey = "opstress_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -74,7 +74,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
         _new_record.hardware_id = attributes["hardware_id"]
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
-        _new_record.load_id = attributes["load_id"]
-        _new_record.stress_id = self.last_id + 1
+        _new_record.opload_id = attributes["opload_id"]
+        _new_record.opstress_id = self.last_id + 1
 
         return _new_record

@@ -5,6 +5,14 @@ on:
     types: [opened, edited]
 
 jobs:
+  label_issue_backlog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add backlog label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: backlog"
+
   autolabel_issues:
     runs-on: ubuntu-latest
     steps:
@@ -31,11 +39,3 @@ jobs:
                          {"keywords": ["Epic"], "labels": ["Epic"], "assignees": [""]},
                          {"keywords": ["Release"], "labels": ["Release"], "assignees": [""]} ]'
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-
-  label_issue_backlog:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add backlog label
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "status: backlog"

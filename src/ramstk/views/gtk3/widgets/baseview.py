@@ -642,74 +642,48 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: dict
         """
         return {
-            "action": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/action.png",
-            "add": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/add.png",
-            "assembly": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/assembly.png",
-            "calculate": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/calculate.png",
-            "calculate_all": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/calculate-all.png",
-            "cancel": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/cancel.png",
-            "cause": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/cause.png",
-            "complete": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/complete.png",
-            "control": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/control.png",
-            "chart": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/charts.png",
-            "edit": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/edit.png",
-            "environment": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/environment.png",
-            "error": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/error.png",
-            "export": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/export.png",
-            "important": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/important.png",
-            "insert_child": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/insert_child.png",
-            "insert_sibling": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/insert_sibling.png",
-            "mechanism": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/mechanism.png",
-            "mission": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/mission.png",
-            "mode": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/mode.png",
-            "none": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/none.png",
-            "opload": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/load.png",
-            "opstress": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/stress.png",
-            "part": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/part.png",
-            "partial": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/partial.png",
-            "mission_phase": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/phase.png",
-            "plot": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/charts.png",
-            "question": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/question.png",
-            "refresh-view": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/view-refresh.png",
-            "remove": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/remove.png",
-            "rollup": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/rollup.png",
-            "reports": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/reports.png",
-            "save": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/save.png",
-            "save-all": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/save-all.png",
-            "save-layout": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/save-layout.png",
-            "testmethod": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/method.png",
-            "warning": self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/warning.png",
+            _icon: (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + f"/32x32/{_icon}.png"
+            )
+            for _icon in [
+                "action",
+                "add",
+                "assembly",
+                "calculate",
+                "calculate_all",
+                "cancel",
+                "cause",
+                "complete",
+                "control",
+                "charts",
+                "edit",
+                "environment",
+                "error",
+                "export",
+                "important",
+                "insert_child",
+                "insert_sibling",
+                "mechanism",
+                "mission",
+                "mission_phase",
+                "mode",
+                "none",
+                "opload",
+                "opstress",
+                "part",
+                "partial",
+                "plot",
+                "question",
+                "refresh-view",
+                "remove",
+                "rollup",
+                "reports",
+                "save",
+                "save-all",
+                "save-layout",
+                "test_method",
+                "warning",
+            ]
         }
 
 

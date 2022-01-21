@@ -55,8 +55,8 @@ class TestCreateModels:
         # Verify class attributes are properly initialized.
         assert test_recordmodel.__tablename__ == "ramstk_op_stress"
         assert test_recordmodel.description == "Test Operating Stress #1"
-        assert test_recordmodel.load_history == "Waterfall histogram"
-        assert test_recordmodel.measurable_parameter == ""
+        assert test_recordmodel.load_history == 2
+        assert test_recordmodel.measurable_parameter == 0
         assert test_recordmodel.remarks == ""
 
     @pytest.mark.unit
@@ -65,7 +65,7 @@ class TestCreateModels:
         assert isinstance(test_tablemodel, RAMSTKOpStressTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_stress_id"
+        assert test_tablemodel._db_id_colname == "fld_opstress_id"
         assert test_tablemodel._db_tablename == "ramstk_op_stress"
         assert test_tablemodel._tag == "opstress"
         assert test_tablemodel._root == 0
@@ -165,8 +165,8 @@ class TestGetterSetter:
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Operating Stress #1"
-        assert _attributes["load_history"] == "Waterfall histogram"
-        assert _attributes["measurable_parameter"] == ""
+        assert _attributes["load_history"] == 2
+        assert _attributes["measurable_parameter"] == 0
         assert _attributes["remarks"] == ""
 
     @pytest.mark.unit
@@ -176,8 +176,8 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("opstress_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -191,10 +191,10 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("opstress_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["measurable_parameter"] == ""
+        assert test_recordmodel.get_attributes()["measurable_parameter"] == 0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
@@ -205,7 +205,7 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        test_attributes.pop("load_id")
-        test_attributes.pop("stress_id")
+        test_attributes.pop("opload_id")
+        test_attributes.pop("opstress_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
