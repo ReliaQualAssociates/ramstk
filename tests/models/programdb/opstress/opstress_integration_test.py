@@ -29,7 +29,7 @@ def test_tablemodel(test_program_dao):
             "hardware_id": 1,
             "mode_id": 6,
             "mechanism_id": 3,
-            "load_id": 3,
+            "opload_id": 3,
         }
     )
 
@@ -81,7 +81,7 @@ class TestInsertMethods:
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_load_id)=(100) is not present in table "
+            "returned:\n\tKey (fld_opload_id)=(100) is not present in table "
             '"ramstk_op_load".'
         )
         print("\033[35m\nfail_insert_opstress topic was broadcast.")
@@ -103,7 +103,7 @@ class TestInsertMethods:
         """should send the fail message when load ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_opstress")
 
-        test_attributes["load_id"] = 100
+        test_attributes["opload_id"] = 100
         pub.sendMessage("request_insert_opstress", attributes=test_attributes)
 
         assert test_tablemodel.last_id == 5
@@ -281,7 +281,7 @@ class TestGetterSetter:
 
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes["load_id"] == 3
+        assert attributes["opload_id"] == 3
         assert attributes["description"] == ""
         print("\033[36m\nsucceed_get_opstress_attributes topic was broadcast.")
 

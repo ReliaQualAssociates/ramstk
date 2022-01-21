@@ -864,11 +864,11 @@ CREATE TABLE ramstk_op_load (
     fld_hardware_id INTEGER NOT NULL,
     fld_mode_id INTEGER NOT NULL,
     fld_mechanism_id INTEGER NOT NULL,
-    fld_load_id INTEGER NOT NULL,
+    fld_opload_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
     fld_damage_model VARCHAR(512),
     fld_priority_id INTEGER,
-    PRIMARY KEY (fld_load_id),
+    PRIMARY KEY (fld_opload_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mechanism_id) REFERENCES ramstk_mechanism (fld_mechanism_id) ON DELETE CASCADE
 );
@@ -881,15 +881,15 @@ CREATE TABLE ramstk_op_stress (
     fld_hardware_id INTEGER NOT NULL,
     fld_mode_id INTEGER NOT NULL,
     fld_mechanism_id INTEGER NOT NULL,
-    fld_load_id INTEGER NOT NULL,
-    fld_stress_id INTEGER NOT NULL,
+    fld_opload_id INTEGER NOT NULL,
+    fld_opstress_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
     fld_load_history VARCHAR(512),
     fld_measurable_parameter VARCHAR(512),
     fld_remarks VARCHAR,
-    PRIMARY KEY (fld_stress_id),
+    PRIMARY KEY (fld_opstress_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
-    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
+    FOREIGN KEY(fld_opload_id) REFERENCES ramstk_op_load (fld_opload_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_op_stress" VALUES(1,1,4,1,1,1,'Test Operating Stress','','','');
 INSERT INTO "ramstk_op_stress" VALUES(1,1,5,2,2,2,'','','','');
@@ -900,14 +900,14 @@ CREATE TABLE ramstk_test_method (
     fld_hardware_id INTEGER NOT NULL,
     fld_mode_id INTEGER NOT NULL,
     fld_mechanism_id INTEGER NOT NULL,
-    fld_load_id INTEGER NOT NULL,
-    fld_test_id INTEGER NOT NULL,
+    fld_opload_id INTEGER NOT NULL,
+    fld_test_method_id INTEGER NOT NULL,
     fld_description VARCHAR(512),
     fld_boundary_conditions VARCHAR(512),
     fld_remarks VARCHAR,
-    PRIMARY KEY (fld_test_id),
+    PRIMARY KEY (fld_test_method_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
-    FOREIGN KEY(fld_load_id) REFERENCES ramstk_op_load (fld_load_id) ON DELETE CASCADE
+    FOREIGN KEY(fld_opload_id) REFERENCES ramstk_op_load (fld_opload_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_test_method" VALUES(1,1,4,1,1,1,'Test Test Method','','');
 INSERT INTO "ramstk_test_method" VALUES(1,1,5,2,2,2,'','','');

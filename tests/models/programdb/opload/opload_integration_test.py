@@ -290,7 +290,7 @@ class TestGetterSetter:
 
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes["load_id"] == 1
+        assert attributes["opload_id"] == 1
         assert attributes["description"] == "System Test Failure Mode #2"
         print("\033[36m\nsucceed_get_mode_attributes topic was broadcast.")
 

@@ -30,7 +30,7 @@ def test_tablemodel(test_program_dao):
             "hardware_id": 1,
             "mode_id": 6,
             "mechanism_id": 3,
-            "load_id": 3,
+            "opload_id": 3,
         }
     )
 
@@ -82,7 +82,7 @@ class TestInsertMethods:
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_load_id)=(100) is not present in table "
+            "returned:\n\tKey (fld_opload_id)=(100) is not present in table "
             '"ramstk_op_load".'
         )
         print("\033[35m\nfail_insert_test_method topic was broadcast.")
@@ -93,7 +93,7 @@ class TestInsertMethods:
         inserting an operating load."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
 
-        test_attributes["load_id"] = 3
+        test_attributes["opload_id"] = 3
         pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_test_method")
@@ -104,7 +104,7 @@ class TestInsertMethods:
         an operating load to a non-existent test_method ID."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")
 
-        test_attributes["load_id"] = 100
+        test_attributes["opload_id"] = 100
         pub.sendMessage("request_insert_test_method", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_test_method")

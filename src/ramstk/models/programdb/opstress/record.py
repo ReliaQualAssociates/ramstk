@@ -24,8 +24,8 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     __defaults__ = {
         "description": "",
-        "load_history": "",
-        "measurable_parameter": "",
+        "load_history": 0,
+        "measurable_parameter": 0,
         "remarks": "",
     }
     __tablename__ = "ramstk_op_stress"
@@ -36,14 +36,14 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 "fld_hardware_id",
                 "fld_mode_id",
                 "fld_mechanism_id",
-                "fld_load_id",
+                "fld_opload_id",
             ],
             [
                 "ramstk_op_load.fld_revision_id",
                 "ramstk_op_load.fld_hardware_id",
                 "ramstk_op_load.fld_mode_id",
                 "ramstk_op_load.fld_mechanism_id",
-                "ramstk_op_load.fld_load_id",
+                "ramstk_op_load.fld_opload_id",
             ],
         ),
         {"extend_existing": True},
@@ -55,22 +55,22 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
-    load_id = Column(
-        "fld_load_id", Integer, primary_key=True, nullable=False, unique=True
+    opload_id = Column(
+        "fld_opload_id", Integer, primary_key=True, nullable=False, unique=True
     )
-    stress_id = Column(
-        "fld_stress_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    opstress_id = Column(
+        "fld_opstress_id", Integer, primary_key=True, autoincrement=True, nullable=False
     )
 
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
     load_history = Column(
-        "fld_load_history", String(512), default=__defaults__["load_history"]
+        "fld_load_history", Integer, default=__defaults__["load_history"]
     )
     measurable_parameter = Column(
         "fld_measurable_parameter",
-        String(512),
+        Integer,
         default=__defaults__["measurable_parameter"],
     )
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
@@ -90,17 +90,15 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def get_attributes(self):
         """Retrieve the current values of the Op Stress data model attributes.
 
-        :return: {load_id, stress_id, description, load_history,
+        :return: {opload_id, opstress_id, description, load_history,
                   measurable_parameter, remarks} pairs
         :rtype: tuple
         """
-        _attributes = {
-            "load_id": self.load_id,
-            "stress_id": self.stress_id,
+        return {
+            "opload_id": self.opload_id,
+            "opstress_id": self.opstress_id,
             "description": self.description,
             "load_history": self.load_history,
             "measurable_parameter": self.measurable_parameter,
             "remarks": self.remarks,
         }
-
-        return _attributes
