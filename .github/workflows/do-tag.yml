@@ -1,0 +1,93 @@
+# This workflow creates a new tags when a push is made to the master bracnch.
+# Tag pushes are ignored.
+#
+# - Job 1:
+#     - Pushes 'latest' tag.  This happens on every push to master.
+#     - Updates draft release notes.  This happens on every push to master.
+# - Job 2:
+#     - Gets list of PR labels.
+#     - IF 'Release' label is in list:
+#         - Reads VERSION for new version number
+#         - Pushes new version tag
+#         - Creates release notes for version
+#
+# Environment:
+#   DO_VERSION - Whether to create version tag (default: 0).  Set to 1 to create.
+
+name: Push Tags
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - "*"
+
+jobs:
+  tag-latest:
+    name: Push 'latest' Tag
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Push 'latest' tag
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -f -a -m"push latest tag" latest
+          git push -f --tags
+
+      - name: Draft 'latest' release notes
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "Next Release"
+          tag: "latest"
+          version: "latest"
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  tag-version:
+    name: Push Version Tag
+    runs-on: ubuntu-latest
+    env:
+      DO_VERSION: 0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get new version
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        id: newversion
+        run: |
+          echo "::set-output name=version::$(echo $(cat VERSION))"
+          echo "DO_VERSION=1" >> $GITHUB_ENV
+
+      - name: Push version tag
+        if: ${{ env.DO_VERSION == 1 }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
+          git push --tags
+
+      - name: Create release notes
+        if: ${{ env.DO_VERSION == 1 }}
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "v${{ steps.newversion.outputs.version }}"
+          tag: "v${{ steps.newversion.outputs.version }}"
+          version: "${{ steps.newversion.outputs.version }}"
+          prerelease: false
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
