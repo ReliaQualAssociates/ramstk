@@ -4,11 +4,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - master
-    tags-ignore:
-      - "*"
 
 jobs:
   test_suite:

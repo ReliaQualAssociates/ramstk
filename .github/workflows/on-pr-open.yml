@@ -1,11 +1,17 @@
-name: PR Open Workflow
+# This workflow runs when a pull request is closed.
+#
+# - Job 1:
+#     - Remove 'status: inprogress' label.
+#     - Add 'status: closed' label.
+
+name: Open Pull Request Workflow
 
 on:
   pull_request:
     types: [opened]
 
 jobs:
-  good_pr_title:
+  good-pr-title:
     name: Ensure Conventional PR Title
     runs-on: ubuntu-latest
     steps:
