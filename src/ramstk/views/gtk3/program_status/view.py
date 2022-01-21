@@ -84,7 +84,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
             self._do_request_calculate_all,
         ]
         self._lst_icons = [
-            "chart",
+            "charts",
         ]
         self._lst_mnu_labels = [_("Plot Verification Effort")]
         self._lst_tooltips = [

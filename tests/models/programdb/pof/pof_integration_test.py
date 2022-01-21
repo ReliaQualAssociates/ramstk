@@ -94,7 +94,7 @@ def test_opstress(test_program_dao):
             "hardware_id": 1,
             "mode_id": 6,
             "mechanism_id": 3,
-            "load_id": 3,
+            "opload_id": 3,
         }
     )
 
@@ -126,7 +126,7 @@ def test_method(test_program_dao):
             "hardware_id": 1,
             "mode_id": 6,
             "mechanism_id": 3,
-            "load_id": 3,
+            "opload_id": 3,
         }
     )
 
@@ -211,7 +211,7 @@ class TestSelectMethods:
                 "hardware_id": 1,
                 "mode_id": 6,
                 "mechanism_id": 3,
-                "load_id": 3,
+                "opload_id": 3,
             }
         )
         test_method.do_select_all(
@@ -220,7 +220,7 @@ class TestSelectMethods:
                 "hardware_id": 1,
                 "mode_id": 6,
                 "mechanism_id": 3,
-                "load_id": 3,
+                "opload_id": 3,
             }
         )
 
@@ -261,7 +261,7 @@ class TestSelectMethods:
                 "hardware_id": 1,
                 "mode_id": 6,
                 "mechanism_id": 3,
-                "load_id": 3,
+                "opload_id": 3,
             }
         )
         test_method.do_select_all(
@@ -270,7 +270,7 @@ class TestSelectMethods:
                 "hardware_id": 1,
                 "mode_id": 6,
                 "mechanism_id": 3,
-                "load_id": 3,
+                "opload_id": 3,
             }
         )
 
@@ -391,7 +391,7 @@ class TestInsertMethods:
                 "hardware_id": 1,
                 "mode_id": 1,
                 "mechanism_id": 5,
-                "load_id": 5,
+                "opload_id": 5,
             },
         )
 
@@ -415,8 +415,8 @@ class TestInsertMethods:
                 "hardware_id": 1,
                 "mode_id": 1,
                 "mechanism_id": 3,
-                "load_id": 3,
-                "stress_id": 4,
+                "opload_id": 3,
+                "opstress_id": 4,
             },
         )
 
@@ -440,8 +440,8 @@ class TestInsertMethods:
                 "hardware_id": 1,
                 "mode_id": 1,
                 "mechanism_id": 3,
-                "load_id": 3,
-                "test_id": 4,
+                "opload_id": 3,
+                "test_method_id": 4,
             },
         )
 

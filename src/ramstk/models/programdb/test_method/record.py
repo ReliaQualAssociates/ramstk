@@ -32,14 +32,14 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 "fld_hardware_id",
                 "fld_mode_id",
                 "fld_mechanism_id",
-                "fld_load_id",
+                "fld_opload_id",
             ],
             [
                 "ramstk_op_load.fld_revision_id",
                 "ramstk_op_load.fld_hardware_id",
                 "ramstk_op_load.fld_mode_id",
                 "ramstk_op_load.fld_mechanism_id",
-                "ramstk_op_load.fld_load_id",
+                "ramstk_op_load.fld_opload_id",
             ],
         ),
         {"extend_existing": True},
@@ -51,11 +51,15 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
-    load_id = Column(
-        "fld_load_id", Integer, primary_key=True, nullable=False, unique=True
+    opload_id = Column(
+        "fld_opload_id", Integer, primary_key=True, nullable=False, unique=True
     )
-    test_id = Column(
-        "fld_test_id", Integer, primary_key=True, autoincrement=True, nullable=False
+    test_method_id = Column(
+        "fld_test_method_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     description = Column(
@@ -83,16 +87,13 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def get_attributes(self):
         """Retrieve current values of RAMSTKTestMethod data model attributes.
 
-        :return: {stress_id, test_id, description, boundary_conditions,
-                  remarks} pairs
+        :return: {test_id, description, boundary_conditions, remarks} pairs
         :rtype: dict
         """
-        _attributes = {
-            "load_id": self.load_id,
-            "test_id": self.test_id,
+        return {
+            "opload_id": self.opload_id,
+            "test_method_id": self.test_method_id,
             "description": self.description,
             "boundary_conditions": self.boundary_conditions,
             "remarks": self.remarks,
         }
-
-        return _attributes

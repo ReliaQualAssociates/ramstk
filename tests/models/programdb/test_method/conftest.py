@@ -13,8 +13,8 @@ def mock_program_dao(monkeypatch):
     _test_method_1.hardware_id = 1
     _test_method_1.mode_id = 1
     _test_method_1.mechanism_id = 1
-    _test_method_1.load_id = 1
-    _test_method_1.test_id = 1
+    _test_method_1.opload_id = 1
+    _test_method_1.test_method_id = 1
     _test_method_1.description = "Test Test Method #1"
     _test_method_1.boundary_conditions = "Waters"
     _test_method_1.remarks = ""
@@ -24,8 +24,8 @@ def mock_program_dao(monkeypatch):
     _test_method_2.hardware_id = 1
     _test_method_2.mode_id = 1
     _test_method_2.mechanism_id = 1
-    _test_method_2.load_id = 1
-    _test_method_2.test_id = 2
+    _test_method_2.opload_id = 1
+    _test_method_2.test_method_id = 2
     _test_method_2.description = "Test Test Method #2"
     _test_method_2.boundary_conditions = "Sands"
     _test_method_2.remarks = ""
@@ -46,8 +46,8 @@ def test_attributes():
         "hardware_id": 1,
         "mode_id": 1,
         "mechanism_id": 1,
-        "load_id": 1,
-        "test_id": 1,
+        "opload_id": 1,
+        "test_method_id": 1,
         "description": "",
         "boundary_conditions": "",
         "remarks": "",
