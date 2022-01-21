@@ -90,12 +90,10 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {test_id, description, boundary_conditions, remarks} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "opload_id": self.opload_id,
             "test_method_id": self.test_method_id,
             "description": self.description,
             "boundary_conditions": self.boundary_conditions,
             "remarks": self.remarks,
         }
-
-        return _attributes

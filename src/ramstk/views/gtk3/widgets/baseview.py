@@ -641,9 +641,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: the dict of icons to use in RAMSTK.
         :rtype: dict
         """
-        _dic_icons: Dict[str, str] = {}
-
-        for _icon in [
+        return {_icon: (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + f"/32x32/{_icon}.png"
+            ) for _icon in [
             "action",
             "add",
             "assembly",
@@ -681,12 +681,7 @@ class RAMSTKBaseView(Gtk.HBox):
             "save-layout",
             "test_method",
             "warning",
-        ]:
-            _dic_icons[_icon] = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + f"/32x32/{_icon}.png"
-            )
-
-        return _dic_icons
+        ]}
 
 
 class RAMSTKListView(RAMSTKBaseView):
