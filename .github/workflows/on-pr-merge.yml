@@ -31,7 +31,7 @@
 #         - Upload wheel and sdist to Test PyPi.
 #         - Test install from Test PyPi.
 #         - Upload wheel and sdist to PyPi.
-#         - Upload wheel to GitHub Release.
+#         - Upload wheel to GitHub Release. (pending)
 # Environment:
 #   DO_VERSION - Whether to create version tag (default: 0).  Set to 1 to create.
 
