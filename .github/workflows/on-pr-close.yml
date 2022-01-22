@@ -3,6 +3,15 @@
 # - Job 1:
 #     - Remove 'status: inprogress' label.
 #     - Add 'status: closed' label.
+# - Job 2:
+#     - Gets list of PR labels.
+#     - Get current version from VERSION.
+#     - Determine next Semantic version.
+#     - Set next version.
+#     - IF one of 'bump: patch', 'bump: minor', or 'bump: major' tags:
+#         - Update pyproject.toml and VERSION.
+#         - Set pull request variables.
+#         - Cut release pull request.
 
 name: Close Pull Request Workflow
 
@@ -22,3 +31,84 @@ jobs:
         with:
           add-labels: "status: closed"
           remove-labels: "status: inprogress"
+
+  cut-release:
+    name: Cut Release Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+
+          tag_major=$(echo $tag_version | cut -d '.' -f1)
+          tag_minor=$(echo $tag_version | cut -d '.' -f2)
+          tag_patch=$(echo $tag_version | cut -d '.' -f3)
+
+          echo "::set-output name=tag_version::$(echo $tag_version)"
+          echo "::set-output name=tag_major::$(echo $tag_major)"
+          echo "::set-output name=tag_minor::$(echo $tag_minor)"
+          echo "::set-output name=tag_patch::$(echo $tag_patch)"
+
+      - name: Determine next Semantic version
+        id: semver
+        uses: WyriHaximus/github-action-next-semvers@v1
+        with:
+          version: ${{ steps.curversion.outputs.tag_version }}
+
+      - name: Set next version
+        id: nextversion
+        run: |
+          if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.major }})"
+            echo "do_release=1" >> $GITHUB_ENV
+          elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.minor }})"
+            echo "do_release=1" >> $GITHUB_ENV
+          elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
+            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
+            echo "do_release=1" >> $GITHUB_ENV
+          else
+            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
+            echo "do_release=0" >> $GITHUB_ENV
+          fi
+
+      - name: Update VERSION and pyproject.toml
+        if: ${{ env.do_release == 1 }}
+        uses: vemel/nextversion@main
+        with:
+          path: ./pyproject.toml
+          result: ${{ steps.nextversion.outputs.next_version }}
+          update: |
+            ./VERSION
+            ./pyproject.toml
+
+      - name: Set release pull request variables
+        if: ${{ env.do_release == 1 }}
+        id: prvars
+        run: |
+          echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
+          echo ::set-output name=body::"Please cut release v${{ steps.nextversion.outputs.next_version }}"
+          echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
+          echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
+          echo "do_push=1" >> $GITHUB_ENV
+
+      - name: Cut release pull request
+        if: ${{ env.do_push == 1 }}
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: ${{ steps.prvars.outputs.message }}
+          title: ${{ steps.prvars.outputs.title }}
+          body: ${{ steps.prvars.outputs.body }}
+          branch: ${{ steps.prvars.outputs.branch }}
+          labels: Release
