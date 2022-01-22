@@ -6,27 +6,12 @@
 # - Job 2:
 #     - Creates issues from any issue comments.
 # - Job 3:
-#     - Runs RAMSTK test suite for matrix of Python versions.
-# - Job 4 (needs job 3):
-#     - Upload aggregate coverage results to Coveralls.
-# - Job 5 (needs job 3):
-#     - Gets list of PR labels.
-#     - Get current version from VERSION.
-#     - Determine next Semantic version.
-#     - Set next version.
-#     - IF one of 'bump: patch', 'bump: minor', or 'bump: major' tags:
-#         - Update pyproject.toml and VERSION.
-#         - Set pull request variables.
-#         - Cut release pull request.
-# - Job 6 (needs job 3):
-#     - Get list of PR labels.
-#     - IF 'Release' label is in list:
+#     - IF branch is release/*:
 #         - Get new version from VERSION.
 #         - Push version tag.
 #         - Draft release notes.
-# - Job 7 (needs job 3 or job 6):
-#     - Get list of PR labels.
-#     - IF 'Release' label is in list:
+# - Job 4:
+#     - IF branch is release/*:
 #         - Build wheel and sdist.
 #         - Upload wheel and sdist to Test PyPi.
 #         - Test install from Test PyPi.
@@ -90,158 +75,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  test-suite:
-    name: Run Test Suite
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python: [ 3.6, 3.7, 3.8 ]
-
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Update and install system packages
-        run: |
-          echo "VIRTUAL_ENV=ramstk-venv${{ matrix.python }}" >> $GITHUB_ENV
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
-
-      - name: Set up Python ${{ matrix.python }}
-        id: setpy
-        uses: actions/setup-python@v2
-        with:
-          python-version: ${{ matrix.python }}
-
-      - name: Create a virtual environment
-        id: venv
-        run: |
-          python -mvenv $VIRTUAL_ENV
-
-      - name: Install RAMSTK and test with coverage
-        id: test
-        run: |
-          source $VIRTUAL_ENV/bin/activate
-          pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
-          python poetry_fix.py
-          make depends
-          make PREFIX=$VIRTUAL_ENV install
-          xvfb-run --auto-servernum make coverage
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          files: ./cobertura.xml
-          flags: ${{ matrix.python }}
-
-      - name: Create Coveralls report
-        uses: miurahr/coveralls-python-action@patch-pyprject-toml
-        with:
-          parallel: true
-
-  upload-coveralls:
-    name: Upload Results to Coveralls
-    needs: test-suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload coverage report to Coveralls
-        uses: miurahr/coveralls-python-action@patch-pyprject-toml
-        with:
-          parallel-finished: true
-
-  cut-release:
-    name: Cut Release Pull Request
-    needs: test-suite
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
-      - name: Get current version
-        id: curversion
-        run: |
-          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          tag_version=$(echo $tag_version | cut -d 'v' -f2)
-
-          tag_major=$(echo $tag_version | cut -d '.' -f1)
-          tag_minor=$(echo $tag_version | cut -d '.' -f2)
-          tag_patch=$(echo $tag_version | cut -d '.' -f3)
-
-          echo "::set-output name=tag_version::$(echo $tag_version)"
-          echo "::set-output name=tag_major::$(echo $tag_major)"
-          echo "::set-output name=tag_minor::$(echo $tag_minor)"
-          echo "::set-output name=tag_patch::$(echo $tag_patch)"
-
-      - name: Determine next SemVer
-        id: semver
-        uses: WyriHaximus/github-action-next-semvers@v1
-        with:
-          version: ${{ steps.curversion.outputs.tag_version }}
-
-      - name: Set next version
-        id: nextversion
-        run: |
-          if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.major }})"
-            echo "do_release=1" >> $GITHUB_ENV
-          elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.minor }})"
-            echo "do_release=1" >> $GITHUB_ENV
-          elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
-            echo "do_release=1" >> $GITHUB_ENV
-          else
-            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
-            echo "do_release=0" >> $GITHUB_ENV
-          fi
-
-      - name: Update VERSION and pyproject.toml
-        if: ${{ env.do_release == 1 }}
-        uses: vemel/nextversion@main
-        with:
-          path: ./pyproject.toml
-          result: ${{ steps.nextversion.outputs.next_version }}
-          update: |
-            ./VERSION
-            ./pyproject.toml
-
-      - name: Set release pull request variables
-        if: ${{ env.do_release == 1 }}
-        id: prvars
-        run: |
-          echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=body::"${{ steps.changelog.outputs.result }}"
-          echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
-          echo "do_push=1" >> $GITHUB_ENV
-
-      - name: Cut release pull request
-        if: ${{ env.do_push == 1 }}
-        uses: peter-evans/create-pull-request@v3
-        with:
-          commit-message: ${{ steps.prvars.outputs.message }}
-          title: ${{ steps.prvars.outputs.title }}
-          body: ${{ steps.prvars.outputs.body }}
-          branch: ${{ steps.prvars.outputs.branch }}
-          labels: Release
-
   tag-version:
     name: Tag Repository with Version
-    needs: test-suite
+    if: startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
     env:
       DO_VERSION: 0
@@ -251,19 +87,12 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
       - name: Get new version
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
         id: newversion
         run: |
           echo "::set-output name=version::$(echo $(cat VERSION))"
-          echo "DO_VERSION=1" >> $GITHUB_ENV
 
       - name: Push version tag
-        if: ${{ env.DO_VERSION == 1 }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -271,7 +100,6 @@ jobs:
           git push --tags
 
       - name: Create release notes
-        if: ${{ env.DO_VERSION == 1 }}
         uses: release-drafter/release-drafter@master
         with:
           name: "v${{ steps.newversion.outputs.version }}"
@@ -284,20 +112,15 @@ jobs:
 
   build-deploy:
     name: Build and Deploy RAMSTK
-    needs: test-suite
+    if: startsWith(github.head_ref, 'release/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
       - name: Build release
         id: build
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
         run: |
           pip install -U pip poetry twine
           make build && echo "build_ok=1" >> $GITHUB_ENV
