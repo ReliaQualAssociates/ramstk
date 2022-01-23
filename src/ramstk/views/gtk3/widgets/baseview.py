@@ -72,6 +72,7 @@ class RAMSTKBaseView(Gtk.HBox):
     """
 
     # Define private class scalar attributes.
+    _tag: str = ""
     _pixbuf: bool = False
 
     # Define public class dict attributes.
@@ -537,6 +538,16 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         self.do_set_cursor(Gdk.CursorType.WATCH)
+
+    def do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the record and revision ID when a hardware item is selected.
+
+        :param attributes: the hazard dict for the selected hardware ID.
+        :return: None
+        :rtype: None
+        """
+        self._tag = self._pnlPanel.level
+        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     # noinspection PyUnusedLocal
     # pylint: disable=unused-argument

@@ -124,7 +124,7 @@ class PoFWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_pof")
+        pub.subscribe(super().do_set_record_id, "selected_pof")
 
         pub.subscribe(
             self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
@@ -205,15 +205,6 @@ class PoFWorkView(RAMSTKWorkView):
         super().do_set_cursor_busy()
 
         pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
-
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the record and revision ID when a hardware item is selected.
-
-        :param attributes: the hazard dict for the selected hardware ID.
-        :return: None
-        :rtype: None
-        """
-        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware ID.
