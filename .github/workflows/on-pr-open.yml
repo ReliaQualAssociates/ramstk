@@ -1,8 +1,13 @@
-# This workflow runs when a pull request is closed.
+# This workflow runs when a pull request is opened.
 #
 # - Job 1:
-#     - Remove 'status: inprogress' label.
-#     - Add 'status: closed' label.
+#     - Check the PR title follows conventional commit spec.
+# - Job 2:
+#     - Label the PR based on the rules in .github/pr-labler.yml
+# - Job 3:
+#     - Gets the tag that was just pushed.
+#     - Creates unpublished release notes.
+#     - Uses release notes to update CHANGELOG.md.
 
 name: Open Pull Request Workflow
 
@@ -31,3 +36,28 @@ jobs:
         uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-changelog:
+    name: Update CHANGELOG.md
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        id: gettag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+
+      - name: Create (unpublished) release notes
+        id: releasenotes
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "${{ steps.gettag.outputs.tag }}"
+          tag: "${{ steps.gettag.outputs.tag }}"
+          version: "${{ steps.gettag.outputs.tag }}"
+          publish: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update CHANGELOG.md
+        uses: vemel/nextchange@0.1.0
+        with:
+          release: "${{ steps.releasenotes.outputs.tag_name }}"
+          append: "${{ steps.releasenotes.outputs.body }}"
