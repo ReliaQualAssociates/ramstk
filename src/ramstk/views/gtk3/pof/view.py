@@ -17,7 +17,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
-from ramstk.views.gtk3.widgets import RAMSTKMessageDialog, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import PoFTreePanel
@@ -92,7 +92,7 @@ class PoFWorkView(RAMSTKWorkView):
         # Initialize private list attributes.
         self._lst_callbacks.insert(0, self._do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_insert_child)
-        self._lst_callbacks.insert(2, self._do_request_delete)
+        self._lst_callbacks.insert(2, super().do_request_delete)
         self._lst_icons.insert(0, "insert_sibling")
         self._lst_icons.insert(1, "insert_child")
         self._lst_icons.insert(2, "remove")
@@ -124,40 +124,11 @@ class PoFWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_pof")
+        pub.subscribe(super().do_set_record_id, "selected_pof")
 
         pub.subscribe(
             self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
         )
-
-    def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
-        """Request to delete the selected entity from the PoF.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        :rtype: None
-        """
-        _parent = self.get_parent().get_parent().get_parent().get_parent()
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 0)
-
-        _prompt = _(
-            "You are about to delete {1} item {0} and all "
-            "data associated with it.  Is this really what "
-            "you want to do?"
-        ).format(_node_id, self._tag.title())
-        _dialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type("question")
-
-        if _dialog.do_run() == Gtk.ResponseType.YES:
-            super().do_set_cursor_busy()
-            pub.sendMessage(
-                "request_delete_pof",
-                node_id=_node_id,
-            )
-
-        _dialog.do_destroy()
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:
         """Request to insert a new child entity to the PoF.
@@ -205,15 +176,6 @@ class PoFWorkView(RAMSTKWorkView):
         super().do_set_cursor_busy()
 
         pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
-
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the record and revision ID when a hardware item is selected.
-
-        :param attributes: the hazard dict for the selected hardware ID.
-        :return: None
-        :rtype: None
-        """
-        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware ID.

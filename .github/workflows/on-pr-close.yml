@@ -1,14 +1,39 @@
-name: PR Close Workflow
+# This workflow runs when a pull request is closed.
+#
+# - Job 1:
+#     - Remove 'status: inprogress' label.
+#     - Add 'status: closed' label.
+# - Job 2:
+#     - Gets list of PR labels.
+#     - Get current version from VERSION.
+#     - Determine next Semantic version.
+#     - Set next version.
+#     - IF one of 'bump: patch', 'bump: minor', or 'bump: major' tags:
+#         - Update pyproject.toml and VERSION.
+#         - Set pull request variables.
+#         - Cut release pull request.
+
+name: Close Pull Request Workflow
 
 on:
   pull_request:
     branches:
       - master
-    types: [closed]
+    types:
+      - closed
 
 jobs:
-  bump_version:
-    name: Update Version Files
+  label-pr-closed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Closed Label
+        uses: andymckay/labeler@master
+        with:
+          add-labels: "status: closed"
+          remove-labels: "status: inprogress"
+
+  cut-release:
+    name: Cut Release Pull Request
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -35,7 +60,7 @@ jobs:
           echo "::set-output name=tag_minor::$(echo $tag_minor)"
           echo "::set-output name=tag_patch::$(echo $tag_patch)"
 
-      - name: Determine next SemVer
+      - name: Determine next Semantic version
         id: semver
         uses: WyriHaximus/github-action-next-semvers@v1
         with:
@@ -58,7 +83,7 @@ jobs:
             echo "do_release=0" >> $GITHUB_ENV
           fi
 
-      - name: Update VERSION and pyproject.toml file
+      - name: Update VERSION and pyproject.toml
         if: ${{ env.do_release == 1 }}
         uses: vemel/nextversion@main
         with:
@@ -68,25 +93,17 @@ jobs:
             ./VERSION
             ./pyproject.toml
 
-      - name: Update CHANGELOG.md
-        if: ${{ env.do_release == 1 }}
-        uses: vemel/nextchange@main
-        id: changelog
-        with:
-          release: ${{ steps.nextversion.outputs.next_version }}
-          sanitize: true
-
-      - name: Set PR variables
+      - name: Set release pull request variables
         if: ${{ env.do_release == 1 }}
         id: prvars
         run: |
           echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=body::"${{ steps.changelog.outputs.result }}"
+          echo ::set-output name=body::"Please cut release v${{ steps.nextversion.outputs.next_version }}"
           echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
           echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
           echo "do_push=1" >> $GITHUB_ENV
 
-      - name: Cut pull request to merge updated version files
+      - name: Cut release pull request
         if: ${{ env.do_push == 1 }}
         uses: peter-evans/create-pull-request@v3
         with:
@@ -95,12 +112,3 @@ jobs:
           body: ${{ steps.prvars.outputs.body }}
           branch: ${{ steps.prvars.outputs.branch }}
           labels: Release
-
-  label_pr_closed:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add Closed Label
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "status: closed"
-          remove-labels: "status: inprogress"

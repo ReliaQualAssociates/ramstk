@@ -14,7 +14,7 @@ categories:
       - 'type: build'
       - 'type: ci'
       - 'type: refactor'
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-template: '- [#$NUMBER] $TITLE  (@$AUTHOR)'
 change-title-escapes: '\<*_&'
 version-resolver:
   major:
@@ -35,7 +35,8 @@ exclude-labels:
   - 'endgame: invalid'
   - 'endgame: wontfix'
   - 'type: test'
+  - 'Release'
 template: |
-  ## What's Changing
+  ## What Changed
 
   $CHANGES

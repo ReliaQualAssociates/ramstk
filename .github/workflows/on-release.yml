@@ -1,94 +1,20 @@
-name: On Release Workflow
+# This workflow runs when a push is made to the master branch.
+#
+# - Job 1:
+#     - Create new minor version milestone.
+#     - Create new major version milestone.
+# - Job 2:
+#     - Build RAMSTK documentation.
+#     - Publish RAMSTK documentation.
+
+name: Publish Release Workflow
 
 on:
-  pull_request:
-    branches:
-      - master
-    types: [closed]
+  release:
+    types:
+      - published
 
 jobs:
-  tagged-release:
-    name: Create Tagged Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
-      - name: Get new version
-        id: newversion
-        run: |
-          echo "::set-output name=version::$(echo $(cat VERSION))"
-
-      - name: Push versioned tag
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
-          git push --tags
-
-      - name: Draft release notes
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
-        uses: release-drafter/release-drafter@master
-        with:
-          name: "v${{ steps.newversion.outputs.version }}"
-          tag: "v${{ steps.newversion.outputs.version }}"
-          version: "${{ steps.newversion.outputs.version }}"
-          prerelease: false
-          publish: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-deploy:
-    needs: tagged-release
-    name: Build and Deploy RAMSTK
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
-      - name: Build release
-        id: build
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
-        run: |
-          pip install -U pip poetry twine
-          make build && echo "build_ok=1" >> $GITHUB_ENV
-
-      - name: Publish to Test PyPi
-        if: ${{ env.build_ok == 1 }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-
-      - name: Test install from TestPyPI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
-          pip install \
-          --index-url https://test.pypi.org/simple/ \
-          --extra-index-url https://pypi.org/simple \
-          ramstk && echo "install_ok=1" >> $GITHUB_ENV
-
-      - name: Publish to PyPi
-        if: ${{ env.install_ok == 1 }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
-
   create_new_milestone:
     name: Create New Milestone
     runs-on: ubuntu-latest
@@ -96,10 +22,6 @@ jobs:
       - uses: actions/checkout@v2.2.0
         with:
           fetch-depth: 0
-
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
 
       - name: Get new version
         id: newversion
@@ -112,10 +34,44 @@ jobs:
         with:
           version: ${{ steps.newversion.outputs.version }}
 
-      - name: Create new release milestone
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
+      - name: Create new minor release milestone
         uses: WyriHaximus/github-action-create-milestone@master
         with:
           title: "${{ steps.nextversion.outputs.v_minor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new major release milestone
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "${{ steps.nextversion.outputs.v_major }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_documentation:
+    name: Build RAMSTK Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Execute Sphinx
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation Changes
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
+
+      - name: Push RAMSTK Documentation Changes
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
