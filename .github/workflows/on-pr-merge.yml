@@ -77,7 +77,7 @@ jobs:
 
   tag-version:
     name: Tag Repository with Version
-    if: startsWith(github.head_ref, 'release/')
+    if: contains(github.ref, 'release/')
     runs-on: ubuntu-latest
     env:
       DO_VERSION: 0
@@ -112,7 +112,7 @@ jobs:
 
   build-deploy:
     name: Build and Deploy RAMSTK
-    if: startsWith(github.head_ref, 'release/')
+    if: contains(github.ref, 'release/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
