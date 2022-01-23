@@ -95,14 +95,18 @@ class TestCreateModels:
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
+    def test_do_select_all(self, test_tablemodel):
         """should return a Tree() object populated with RAMSTKCauseRecord instances."""
-        test_tablemodel.do_select_all(test_attributes)
+        test_tablemodel.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
         assert isinstance(
             test_tablemodel.tree.get_node(1).data["cause"], RAMSTKCauseRecord
@@ -112,10 +116,14 @@ class TestSelectMethods:
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
+    def test_do_select(self, test_tablemodel):
         """do_select() should return an instance of the RAMSTKCauseRecord on
         success."""
-        test_tablemodel.do_select_all(test_attributes)
+        test_tablemodel.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
         _cause = test_tablemodel.do_select(1)
 
@@ -129,9 +137,13 @@ class TestSelectMethods:
         assert _cause.rpn_occurrence == 4
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
+    def test_do_select_non_existent_id(self, test_tablemodel):
         """do_select() should return None when a non-existent cause ID is requested."""
-        test_tablemodel.do_select_all(test_attributes)
+        test_tablemodel.do_select_all(
+            {
+                "revision_id": 1,
+            }
+        )
 
         assert test_tablemodel.do_select(100) is None
 
