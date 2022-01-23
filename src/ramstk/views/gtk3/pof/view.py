@@ -90,8 +90,6 @@ class PoFWorkView(RAMSTKWorkView):
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks[0] = self._do_request_update
-        self._lst_callbacks[1] = self._do_request_update_all
         self._lst_callbacks.insert(0, self._do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
@@ -126,7 +124,7 @@ class PoFWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_pof")
+        pub.subscribe(super().do_set_record_id, "selected_pof")
 
         pub.subscribe(
             self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
@@ -207,39 +205,6 @@ class PoFWorkView(RAMSTKWorkView):
         super().do_set_cursor_busy()
 
         pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
-
-    def _do_request_update(self, __button: Gtk.ToolButton) -> None:
-        """Request to update selected record to RAMSTK program database.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        super().do_set_cursor_busy()
-
-        _attributes = self.__do_get_pof_ids()
-
-        pub.sendMessage(
-            f"request_update_{self._pnlPanel.level}",
-            node_id=_attributes[f"{self._pnlPanel.level}_id"],
-        )
-
-    def _do_request_update_all(self, __button: Gtk.ToolButton) -> None:
-        """Send request to save all the records to RAMSTK program database.
-
-        :param __button: the Gtk.ToolButton() that called this method.
-        :return: None
-        """
-        self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_all_{self._pnlPanel.level}s")
-
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the record and revision ID when a hardware item is selected.
-
-        :param attributes: the hazard dict for the selected hardware ID.
-        :return: None
-        :rtype: None
-        """
-        self.dic_pkeys["record_id"] = attributes["node_id"]
 
     def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware ID.
