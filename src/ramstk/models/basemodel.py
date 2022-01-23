@@ -72,6 +72,7 @@ class RAMSTKBaseTable:
     # Define private scalar class attributes.
     _db_id_colname: str = ""
     _db_tablename: str = ""
+    _deprecated: bool = True
     _root: int = 0
     _select_msg: str = "selected_revision"
     _tag: str = ""
@@ -322,22 +323,33 @@ class RAMSTKBaseTable:
         """
         self.tree = do_clear_tree(self.tree)
 
-        try:
-            self._revision_id = attributes["revision_id"]
-        except KeyError:
+        # ISSUE: Remove if-else control from RAMSTKBaseTable do_select_all() method
+        #
+        # This if-else program control block is needed until all the child table
+        # classes and associated tests are converted to use the new API.  Once that
+        # is complete, the if portion of the control block can be removed as well as
+        # the _deprecated class attribute.
+        if self._deprecated:
             try:
-                self._revision_id = attributes["site_id"]
+                self._revision_id = attributes["revision_id"]
             except KeyError:
-                self._revision_id = 0
+                try:
+                    self._revision_id = attributes["site_id"]
+                except KeyError:
+                    self._revision_id = 0
+
+            _keys = [self._lst_id_columns[0]]
+            _values = [self._revision_id]
+        else:
+            _keys = [_key for _key in self._lst_id_columns if _key in attributes]
+            _values = [
+                attributes[_key] for _key in self._lst_id_columns if _key in attributes
+            ]
 
         for _record in self.dao.do_select_all(
             self._record,
-            key=[
-                self._lst_id_columns[0],
-            ],
-            value=[
-                self._revision_id,
-            ],
+            key=_keys,
+            value=_values,
             order=self._db_id_colname,
         ):
             try:
@@ -353,8 +365,16 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
+        # ISSUE: Remove deprecated PyPubSub sendMessage
+        #
+        # The "succeed_retrieve_{self._tag}s" message is deprecated in favor of the
+        # "succeed_retrieve_all_{self._tag}" message.
         pub.sendMessage(
             f"succeed_retrieve_{self._tag}s",
+            tree=self.tree,
+        )
+        pub.sendMessage(
+            f"succeed_retrieve_all_{self._tag}",
             tree=self.tree,
         )
 
@@ -419,7 +439,7 @@ class RAMSTKBaseTable:
         """
         for _key in attributes:
             self.do_set_attributes(
-                node_id=[attributes[self.pkey]],
+                node_id=attributes[self.pkey],
                 package={_key: attributes[_key]},
             )
 
