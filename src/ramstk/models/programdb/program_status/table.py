@@ -126,10 +126,10 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
             _node_id = self.last_id
 
         self.do_set_attributes(
-            node_id=[_node_id], package={"cost_remaining": cost_remaining}
+            node_id=_node_id, package={"cost_remaining": cost_remaining}
         )
         self.do_set_attributes(
-            node_id=[_node_id], package={"time_remaining": time_remaining}
+            node_id=_node_id, package={"time_remaining": time_remaining}
         )
 
         self.do_update(_node_id)

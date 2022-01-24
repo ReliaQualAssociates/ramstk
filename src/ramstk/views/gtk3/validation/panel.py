@@ -1068,7 +1068,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
 
             pub.sendMessage(
                 "wvw_editing_validation",
-                node_id=[self._record_id, -1, ""],
+                node_id=self._record_id,
                 package={"name": _task_code},
             )
         except (AttributeError, KeyError):
@@ -1385,7 +1385,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
 
         pub.sendMessage(
             "wvw_editing_validation",
-            node_id=[self._record_id, -1, ""],
+            node_id=self._record_id,
             package={"name": _code},
         )
 

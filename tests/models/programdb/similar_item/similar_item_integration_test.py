@@ -463,7 +463,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_similar_item_attributes",
-            node_id=[1],
+            node_id=1,
             package={"change_description_1": "Testing set name from moduleview."},
         )
 

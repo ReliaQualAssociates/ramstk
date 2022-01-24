@@ -349,7 +349,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_stakeholder_attributes",
-            node_id=[1],
+            node_id=1,
             package={"description": "Testing set description from moduleview."},
         )
 
