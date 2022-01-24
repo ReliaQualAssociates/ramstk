@@ -41,6 +41,11 @@ jobs:
     name: Update CHANGELOG.md
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Get tag
         id: gettag
         uses: "WyriHaximus/github-action-get-previous-tag@master"
