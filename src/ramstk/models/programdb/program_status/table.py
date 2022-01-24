@@ -89,13 +89,10 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
             dates and the remaining time/cost.
         :rtype: :class:`pandas.DataFrame`
         """
-        _dic_actual = {}
-
-        for _node in self.tree.all_nodes()[1:]:
-            _dic_actual[pd.to_datetime(_node.data["program_status"].date_status)] = [
+        _dic_actual = {pd.to_datetime(_node.data["program_status"].date_status): [
                 _node.data["program_status"].cost_remaining,
                 _node.data["program_status"].time_remaining,
-            ]
+            ] for _node in self.tree.all_nodes()[1:]}
 
         _status = pd.DataFrame(
             _dic_actual.values(), index=_dic_actual.keys(), columns=["cost", "time"]
