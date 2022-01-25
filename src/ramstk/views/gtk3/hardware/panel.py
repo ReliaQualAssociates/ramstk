@@ -654,7 +654,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
         :param selection: the Hardware class Gtk.TreeSelection().
         :return: None
         """
-        if _attributes := super().on_row_change(selection):
+        _attributes = super().on_row_change(selection)
+
+        if _attributes:
             self._record_id = _attributes["hardware_id"]
             self._parent_id = _attributes["parent_id"]
 
