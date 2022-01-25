@@ -218,26 +218,26 @@ class EditFunction(RAMSTKDialog):
         """
         pub.sendMessage(
             "wvw_editing_similar_item",
-            node_id=[hardware_id, -1],
+            node_id=hardware_id,
             package={"function_1": str(self.txtFunction1.get_text())},
         )
         pub.sendMessage(
             "wvw_editing_similar_item",
-            node_id=[hardware_id, -1],
+            node_id=hardware_id,
             package={"function_2": str(self.txtFunction2.get_text())},
         )
         pub.sendMessage(
             "wvw_editing_similar_item",
-            node_id=[hardware_id, -1],
+            node_id=hardware_id,
             package={"function_3": str(self.txtFunction3.get_text())},
         )
         pub.sendMessage(
             "wvw_editing_similar_item",
-            node_id=[hardware_id, -1],
+            node_id=hardware_id,
             package={"function_4": str(self.txtFunction4.get_text())},
         )
         pub.sendMessage(
             "wvw_editing_similar_item",
-            node_id=[hardware_id, -1],
+            node_id=hardware_id,
             package={"function_5": str(self.txtFunction5.get_text())},
         )

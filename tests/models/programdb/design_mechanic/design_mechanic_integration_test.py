@@ -458,7 +458,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_design_mechanic_attributes",
-            node_id=[2],
+            node_id=2,
             package={"rpm_design": 65.5},
         )
 

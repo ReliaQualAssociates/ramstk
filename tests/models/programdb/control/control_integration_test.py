@@ -326,7 +326,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_control_attributes",
-            node_id=[4],
+            node_id=4,
             package={"type_id": "Detection"},
         )
 
@@ -341,6 +341,6 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_control_attributes",
-            node_id=[4],
+            node_id=4,
             package={"type_id": "New Type ID"},
         )

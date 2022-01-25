@@ -334,7 +334,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_validation_attributes",
-            node_id=[1],
+            node_id=1,
             package={"task_specification": "MIL-HDBK-217F"},
         )
 

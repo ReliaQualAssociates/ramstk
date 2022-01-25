@@ -439,7 +439,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         textview.handler_unblock(textview.dic_handler_id["changed"])
 
-        pub.sendMessage(message, node_id=[self._record_id, -1], package=_package)
+        pub.sendMessage(message, node_id=self._record_id, package=_package)
 
         return _package
 
@@ -527,7 +527,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
             pub.sendMessage(
                 message,
-                node_id=[self._record_id, -1, ""],
+                node_id=self._record_id,
                 package={key: _new_text},
             )
         except KeyError:
