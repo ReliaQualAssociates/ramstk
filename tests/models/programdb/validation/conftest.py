@@ -1,5 +1,5 @@
 # Standard Library Imports
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 # Third Party Imports
 import pytest
@@ -26,8 +26,10 @@ def mock_program_dao(monkeypatch):
     _validation_1.cost_minimum = 0.0
     _validation_1.cost_ul = 0.0
     _validation_1.cost_variance = 0.0
-    _validation_1.date_end = date.today() + timedelta(days=30)
-    _validation_1.date_start = date.today()
+    _validation_1.date_end = datetime.strftime(
+        date.today() + timedelta(days=30), "%Y-%m-%d"
+    )
+    _validation_1.date_start = datetime.strftime(date.today(), "%Y-%m-%d")
     _validation_1.description = ""
     _validation_1.measurement_unit = 0
     _validation_1.name = "PRF-0001"
@@ -57,8 +59,12 @@ def mock_program_dao(monkeypatch):
     _validation_2.cost_minimum = 0.0
     _validation_2.cost_ul = 0.0
     _validation_2.cost_variance = 0.0
-    _validation_2.date_end = date.today() + timedelta(days=20)
-    _validation_2.date_start = date.today() - timedelta(days=10)
+    _validation_2.date_end = datetime.strftime(
+        date.today() + timedelta(days=20), "%Y-%m-%d"
+    )
+    _validation_2.date_start = datetime.strftime(
+        date.today() - timedelta(days=10), "%Y-%m-%d"
+    )
     _validation_2.description = ""
     _validation_2.measurement_unit = 0
     _validation_2.name = ""
@@ -88,8 +94,10 @@ def mock_program_dao(monkeypatch):
     _validation_3.cost_minimum = 0.0
     _validation_3.cost_ul = 0.0
     _validation_3.cost_variance = 0.0
-    _validation_3.date_end = date.today() + timedelta(days=30)
-    _validation_3.date_start = date.today()
+    _validation_3.date_end = datetime.strftime(
+        date.today() + timedelta(days=30), "%Y-%m-%d"
+    )
+    _validation_3.date_start = datetime.strftime(date.today(), "%Y-%m-%d")
     _validation_3.description = ""
     _validation_3.measurement_unit = 0
     _validation_3.name = ""
@@ -131,13 +139,13 @@ def test_attributes():
         "cost_minimum": 0.0,
         "cost_ul": 0.0,
         "cost_variance": 0.0,
-        "date_end": date.today() + timedelta(days=30),
-        "date_start": date.today(),
+        "date_end": datetime.strftime(date.today() + timedelta(days=30), "%Y-%m-%d"),
+        "date_start": datetime.strftime(date.today(), "%Y-%m-%d"),
         "description": "",
-        "measurement_unit": "",
+        "measurement_unit": 0,
         "name": "New Validation Task",
         "status": 0.0,
-        "task_type": "",
+        "task_type": 0,
         "task_specification": "",
         "time_average": 0.0,
         "time_ll": 0.0,

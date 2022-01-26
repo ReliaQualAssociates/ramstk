@@ -830,7 +830,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 logger_name="WARNING",
                 message=_error_msg,
             )
-            _new_row = None
 
         return _new_row
 

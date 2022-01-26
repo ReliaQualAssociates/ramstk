@@ -349,7 +349,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Unit of Measure"),
-                "gchararray",
+                "gint",
             ],
             "name": [
                 18,
@@ -413,7 +413,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Task Type"),
-                "gchararray",
+                "gint",
             ],
             "time_average": [
                 22,
