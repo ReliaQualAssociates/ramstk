@@ -134,11 +134,13 @@ class ValidationModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task's record ID.
 
-        :param attributes: the attributes dict for the selected Verification
+        :param attributes: the attribute dict for the selected Verification
             task.
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["validation_id"] = attributes["validation_id"]
         self.dic_pkeys["record_id"] = attributes["validation_id"]
 
     def __make_ui(self) -> None:
@@ -155,30 +157,6 @@ class ValidationModuleView(RAMSTKModuleView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
 
-        self._pnlPanel.do_set_cell_callbacks(
-            "mvw_editing_validation",
-            [
-                "acceptable_maximum",
-                "acceptable_mean",
-                "acceptable_minimum",
-                "acceptable_variance",
-                "confidence",
-                "cost_average",
-                "cost_maximum",
-                "cost_minimum",
-                "date_end",
-                "date_start",
-                "description",
-                "measurement_unit",
-                "name",
-                "status",
-                "task_specification",
-                "task_type",
-                "time_average",
-                "time_maximum",
-                "time_minimum",
-            ],
-        )
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(
@@ -255,15 +233,15 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         ]
         self._lst_tooltips = [
             _(
-                "Calculate the expected cost and time of the selected "
-                "Validation task."
+                "Calculate the expected cost and time of the selected Verification "
+                "task."
             ),
             _(
-                "Calculate the cost and time of the program (i.e., all "
-                "Validation tasks)."
+                "Calculate the cost and time of the program (i.e., all Verfication "
+                "tasks)."
             ),
-            _("Save changes to the selected Validation task."),
-            _("Save changes to all Validation tasks."),
+            _("Save changes to the selected Verification task."),
+            _("Save changes to all Verification tasks."),
         ]
 
         # Initialize private scalar attributes.
@@ -315,11 +293,12 @@ class ValidationGeneralDataView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task record ID.
 
-        :param attributes: the attributes dict for the selected Validation
-            task.
+        :param attributes: the attribute dict for the selected Validation task.
         :return: None
         :rtype: None
         """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["validation_id"] = attributes["validation_id"]
         self.dic_pkeys["record_id"] = attributes["validation_id"]
 
     def __make_ui(self) -> None:

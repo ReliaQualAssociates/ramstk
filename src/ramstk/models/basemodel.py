@@ -156,7 +156,7 @@ class RAMSTKBaseTable:
             # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
-    def do_delete(self, node_id: int) -> None:
+    def do_delete(self, node_id: int) -> None:  # sourcery skip: extract-method
         """Remove a record from the Program database and records tree.
 
         :param node_id: the ID of the record to delete.
@@ -234,7 +234,9 @@ class RAMSTKBaseTable:
             tree=self.tree,
         )
 
-    def do_insert(self, attributes: Dict[str, Any]) -> None:
+    def do_insert(
+        self, attributes: Dict[str, Any]
+    ) -> None:  # sourcery skip: extract-method
         """Add a new record to the RAMSTK program database and records tree.
 
         :param attributes: the attribute values to assign to the new record.
