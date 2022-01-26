@@ -46,19 +46,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get tag
-        id: gettag
-        uses: "WyriHaximus/github-action-get-previous-tag@master"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          echo "::set-output name=tag_version::$(echo $tag_version)"
 
       - name: Create (unpublished) release notes
         id: releasenotes
         uses: release-drafter/release-drafter@master
         with:
-          name: "${{ steps.gettag.outputs.tag }}"
-          tag: "${{ steps.gettag.outputs.tag }}"
-          version: "${{ steps.gettag.outputs.tag }}"
+          name: "${{ steps.curversion.outputs.tag_version }}"
+          tag: "${{ steps.curversion.outputs.tag_version }}"
+          version: "${{ steps.curversion.outputs.tag_version }}"
           publish: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
