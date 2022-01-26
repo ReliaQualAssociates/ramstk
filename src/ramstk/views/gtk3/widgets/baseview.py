@@ -84,7 +84,7 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     # Define public class scalar attributes.
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
@@ -624,18 +624,6 @@ class RAMSTKBaseView(Gtk.HBox):
                 _menu.append(_menu_item)
 
         treeview.handler_unblock(treeview.dic_handler_id["button-press"])
-
-    def on_insert(self, node_id: int = 0, tree: treelib.Tree = "") -> None:
-        """Add row to the RAMSTKTreeView for newly added element.
-
-        :param node_id: the ID of the newly added element.
-        :param tree: the treelib Tree() containing the work stream module's
-            data.
-        :return: None
-        :rtype: None
-        """
-        _data = tree.get_node(node_id).data[self._tag].get_attributes()
-        self._pnlPanel.on_insert(_data)
 
     def on_select_revision(self, attributes: Dict[str, Any]) -> None:
         """Set the Revision ID when a new Revision is selected.

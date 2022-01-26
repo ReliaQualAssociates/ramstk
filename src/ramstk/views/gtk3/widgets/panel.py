@@ -1197,27 +1197,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def on_insert(self, data: Any) -> None:
-        """Add row to module view for newly added work stream element.
-
-        :param data: the data package for the work stream element to add.
-        :return: None
-        """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-
-        # When inserting a child record, the selected row becomes the parent
-        # row.
-        if self._record_id == self._parent_id:
-            _prow = _row
-        # When inserting a sibling record, use the parent of the selected
-        # row.
-        else:
-            _prow = _model.iter_parent(_row)
-
-        self.tvwTreeView.do_insert_row(data, _prow)
-
-        pub.sendMessage("request_set_cursor_active")
-
     def on_row_change(self, selection: Gtk.TreeSelection) -> Dict[str, Any]:
         """Get the attributes for the newly selected row.
 
