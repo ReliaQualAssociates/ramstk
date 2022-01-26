@@ -8,7 +8,7 @@
 """Validation Record Model."""
 
 # Standard Library Imports
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -144,7 +144,17 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   time_mean, time_minimum, time_ul, time_variance} pairs.
         :rtype: dict
         """
-        _attributes = {
+        try:
+            self.date_end = datetime.strftime(self.date_end, "%Y-%m-%d")
+        except TypeError:
+            pass
+
+        try:
+            self.date_start = datetime.strftime(self.date_start, "%Y-%m-%d")
+        except TypeError:
+            pass
+
+        return {
             "revision_id": self.revision_id,
             "validation_id": self.validation_id,
             "acceptable_maximum": self.acceptable_maximum,
@@ -175,8 +185,6 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "time_ul": self.time_ul,
             "time_variance": self.time_variance,
         }
-
-        return _attributes
 
     def calculate_task_time(self):
         """Calculate the mean, standard error, and bounds on the task time.
