@@ -156,8 +156,10 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         _planned.loc[_start_date] = [_time_ll, _time_mean, _time_ul]
         _planned = _planned.sort_index()
 
-        _dic_plan["plan"] = _planned
-        _dic_plan["assessed"] = self._do_select_assessment_targets()
+        _dic_plan = {
+            "plan": _planned,
+            "assessed": self._do_select_assessment_targets(),
+        }
 
         pub.sendMessage(
             "succeed_calculate_verification_plan",
@@ -216,14 +218,15 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: _assessed; a pandas DataFrame() containing the assessment
             dates as the index and associated targets.
         """
-        _dic_assessed = {}
-        for _node in self.tree.all_nodes()[1:]:
-            if _node.data["validation"].task_type == 5:
-                _dic_assessed[pd.to_datetime(_node.data["validation"].date_end)] = [
-                    _node.data["validation"].acceptable_minimum,
-                    _node.data["validation"].acceptable_mean,
-                    _node.data["validation"].acceptable_maximum,
-                ]
+        _dic_assessed = {
+            pd.to_datetime(_node.data["validation"].date_end): [
+                _node.data["validation"].acceptable_minimum,
+                _node.data["validation"].acceptable_mean,
+                _node.data["validation"].acceptable_maximum,
+            ]
+            for _node in self.tree.all_nodes()[1:]
+            if _node.data["validation"].task_type == 5
+        }
 
         # noinspection PyTypeChecker
         return pd.DataFrame(
