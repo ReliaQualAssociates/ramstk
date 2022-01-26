@@ -41,9 +41,16 @@ jobs:
     name: Update CHANGELOG.md
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Get tag
         id: gettag
-        uses: actions-ecosystem/action-get-latest-tag@v1
+        uses: "WyriHaximus/github-action-get-previous-tag@master"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Create (unpublished) release notes
         id: releasenotes
@@ -61,3 +68,10 @@ jobs:
         with:
           release: "${{ steps.releasenotes.outputs.tag_name }}"
           append: "${{ steps.releasenotes.outputs.body }}"
+
+      - name: Commit and push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          message: "docs: update CHANGELOG.md"

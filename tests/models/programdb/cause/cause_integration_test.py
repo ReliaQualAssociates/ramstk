@@ -322,7 +322,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_cause_attributes",
-            node_id=[4],
+            node_id=4,
             package={"rpn_detection": 4},
         )
 

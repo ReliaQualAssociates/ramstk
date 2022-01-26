@@ -239,12 +239,12 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_option_attributes",
-            node_id=[1, ""],
+            node_id=1,
             package={"function_enabled": 1},
         )
         pub.sendMessage(
             "request_set_option_attributes",
-            node_id=[1, ""],
+            node_id=1,
             package={"requirement_enabled": 1},
         )
 

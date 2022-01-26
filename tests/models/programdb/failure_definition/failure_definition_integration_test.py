@@ -380,7 +380,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_failure_definition_attributes",
-            node_id=[1],
+            node_id=1,
             package={"definition": "Test Description"},
         )
 

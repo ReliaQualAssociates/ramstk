@@ -564,8 +564,8 @@ class FMEATreePanel(RAMSTKTreePanel):
                 7,
                 Gtk.CellRendererText(),
                 "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
+                self._on_cell_edit,
+                "wvw_editing_fmeca",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -1239,9 +1239,8 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         self.tvwTreeView.set_tooltip_text(
             _(
-                "Displays the (Design) Failure Mode and Effects "
-                "(and Criticality) Analysis [(D)FME(C)A] for the "
-                "currently selected Hardware item."
+                "Displays the (Design) Failure Mode and Effects (and Criticality) "
+                "Analysis [(D)FME(C)A] for the currently selected Hardware item."
             )
         )
 
@@ -1309,6 +1308,32 @@ class FMEATreePanel(RAMSTKTreePanel):
             self.tvwTreeView.position["mission"]
         ).get_cells()
         _cell[0].connect("edited", self._on_mission_change)
+
+    def _on_cell_edit(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        key: str,
+        message: str,
+    ) -> None:
+        """Handle edits of description column to ensure proper level is updated.
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        """
+        super().on_cell_edit(
+            cell,
+            path,
+            new_text,
+            key,
+            f"wvw_editing_{self.level}",
+        )
 
     def _on_mission_change(
         self, __combo: Gtk.CellRendererCombo, path: str, new_text: str

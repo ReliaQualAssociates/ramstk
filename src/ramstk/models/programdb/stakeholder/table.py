@@ -115,10 +115,10 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         )
 
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"improvement": _improvement},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"overall_weight": _overall_weight},
         )

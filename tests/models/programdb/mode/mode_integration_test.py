@@ -337,7 +337,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_mode_attributes",
-            node_id=[4, ""],
+            node_id=4,
             package={"description": "Jared Kushner"},
         )
 
