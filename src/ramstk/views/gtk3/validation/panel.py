@@ -615,9 +615,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         :param selection: the Validation class Gtk.TreeSelection().
         :return: None
         """
-        _attributes = super().on_row_change(selection)
-
-        if _attributes:
+        if _attributes := super().on_row_change(selection):
             self._record_id = _attributes["validation_id"]
 
             _title = _(f"Analyzing Verification Task {_attributes['name']}")
