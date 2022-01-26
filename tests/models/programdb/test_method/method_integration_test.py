@@ -331,7 +331,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_test_method_attributes",
-            node_id=[1],
+            node_id=1,
             package={"boundary_conditions": "Big test boundary condition."},
         )
 

@@ -346,7 +346,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_mission_phase_attributes",
-            node_id=[1, ""],
+            node_id=1,
             package={"phase_start": 12.86},
         )
 

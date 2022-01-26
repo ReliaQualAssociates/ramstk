@@ -376,7 +376,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_function_attributes",
-            node_id=[1],
+            node_id=1,
             package={"function_code": "-"},
         )
 

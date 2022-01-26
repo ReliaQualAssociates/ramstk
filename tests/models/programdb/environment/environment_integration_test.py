@@ -338,7 +338,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_environment_attributes",
-            node_id=[1],
+            node_id=1,
             package={"name": "This is the environment name."},
         )
 

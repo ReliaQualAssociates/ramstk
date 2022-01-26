@@ -382,7 +382,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_nswc_attributes",
-            node_id=[2],
+            node_id=2,
             package={"Cac": 65.5},
         )
 

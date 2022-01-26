@@ -387,7 +387,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_milhdbk217f_attributes",
-            node_id=[2],
+            node_id=2,
             package={"lambdaBD": 0.00655},
         )
 

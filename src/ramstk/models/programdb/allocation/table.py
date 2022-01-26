@@ -112,15 +112,15 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         _attributes = allocation.do_calculate_goals(**_attributes)
 
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"hazard_rate_goal": _attributes["hazard_rate_goal"]},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"mtbf_goal": _attributes["mtbf_goal"]},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"reliability_goal": _attributes["reliability_goal"]},
         )
 
@@ -329,7 +329,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             _cum_weight += _attributes["weight_factor"]
 
             self.do_set_attributes(
-                node_id=[_node.identifier],
+                node_id=_node.identifier,
                 package={"weight_factor": _attributes["weight_factor"]},
             )
 

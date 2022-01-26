@@ -95,7 +95,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         cell: Gtk.CellRenderer,
         path: str,
         new_text: str,
-        position: int,
+        key: str,
         message: str,
     ) -> None: ...
     def on_cell_toggled(

@@ -392,7 +392,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_reliability_attributes",
-            node_id=[2],
+            node_id=2,
             package={"location_parameter": 65.5},
         )
 

@@ -366,7 +366,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_opstress_attributes",
-            node_id=[1, ""],
+            node_id=1,
             package={"description": "Big test operating load."},
         )
 

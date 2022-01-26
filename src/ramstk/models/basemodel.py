@@ -156,7 +156,7 @@ class RAMSTKBaseTable:
             # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
-    def do_delete(self, node_id: int) -> None:
+    def do_delete(self, node_id: int) -> None:  # sourcery skip: extract-method
         """Remove a record from the Program database and records tree.
 
         :param node_id: the ID of the record to delete.
@@ -234,7 +234,9 @@ class RAMSTKBaseTable:
             tree=self.tree,
         )
 
-    def do_insert(self, attributes: Dict[str, Any]) -> None:
+    def do_insert(
+        self, attributes: Dict[str, Any]
+    ) -> None:  # sourcery skip: extract-method
         """Add a new record to the RAMSTK program database and records tree.
 
         :param attributes: the attribute values to assign to the new record.
@@ -378,7 +380,7 @@ class RAMSTKBaseTable:
             tree=self.tree,
         )
 
-    def do_set_attributes(self, node_id: List, package: Dict[str, Any]) -> None:
+    def do_set_attributes(self, node_id: int, package: Dict[str, Any]) -> None:
         """Set the attributes of the record associated with node ID.
 
         :param node_id: the ID of the record in the RAMSTK Program database
@@ -388,24 +390,13 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         [[_key, _value]] = package.items()
-        # ISSUE: Make node_id an integer argument to do_set_attributes()
-        #
-        # The node_id argument to RAMSTKBaseTable.do_set_attributes() is currently a
-        # List type argument.  This is deprecated and all calls should replace this
-        # with an integer argument.  After fixing all calls, remove the try construct
-        # in do_set_attributes() that exists to handle the List and int types.
-        # labels: type: refactor
-        try:
-            _node_id = node_id[0]
-        except TypeError:
-            _node_id = node_id
 
         try:
-            _attributes = self.do_select(_node_id).get_attributes()
+            _attributes = self.do_select(node_id).get_attributes()
         except (AttributeError, KeyError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                f"{_method_name}: No data package for node ID {_node_id} in module "
+                f"{_method_name}: No data package for node ID {node_id} in module "
                 f"{self._tag}."
             )
             pub.sendMessage(
@@ -424,7 +415,7 @@ class RAMSTKBaseTable:
         if _key in _attributes:
             _attributes[_key] = _value
 
-            self.do_select(_node_id).set_attributes(_attributes)
+            self.do_select(node_id).set_attributes(_attributes)
 
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore

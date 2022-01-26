@@ -249,8 +249,8 @@ class PoFTreePanel(RAMSTKTreePanel):
                 6,
                 Gtk.CellRendererText(),
                 "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
+                self._on_cell_edit,
+                "wvw_editing_pof",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -393,8 +393,8 @@ class PoFTreePanel(RAMSTKTreePanel):
                 15,
                 Gtk.CellRendererText(),
                 "edited",
-                super().on_cell_edit,
-                "wvw_editing_test_method",
+                self._on_cell_edit,
+                "wvw_editing_pof",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -484,6 +484,32 @@ class PoFTreePanel(RAMSTKTreePanel):
         ).get_cells()[0]
         _adjustment = _cell.get_property("adjustment")
         _adjustment.configure(5, 1, 5, -1, 0, 0)
+
+    def _on_cell_edit(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        key: str,
+        message: str,
+    ) -> None:
+        """Handle edits of description column to ensure proper level is updated.
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        """
+        super().on_cell_edit(
+            cell,
+            path,
+            new_text,
+            key,
+            f"wvw_editing_{self.level}",
+        )
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the PoF Work View RAMSTKTreeView().

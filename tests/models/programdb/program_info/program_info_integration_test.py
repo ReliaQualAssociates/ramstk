@@ -264,7 +264,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_preference_attributes",
-            node_id=[1],
+            node_id=1,
             package={"function_active": 0},
         )
 
@@ -272,7 +272,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_preference_attributes",
-            node_id=[1],
+            node_id=1,
             package={"function_active": 1},
         )
         assert test_datamanager.do_select(1).function_active == 1

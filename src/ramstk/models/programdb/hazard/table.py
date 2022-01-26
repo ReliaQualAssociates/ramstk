@@ -119,7 +119,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             _attributes["assembly_severity"],
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"assembly_hri": _result},
         )
 
@@ -128,7 +128,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             _attributes["system_severity"],
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"system_hri": _result},
         )
 
@@ -137,7 +137,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             _attributes["assembly_severity_f"],
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"assembly_hri_f": _result},
         )
 
@@ -146,7 +146,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             _attributes["system_severity_f"],
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"system_hri_f": _result},
         )
 
@@ -227,22 +227,22 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
         _fha = fha.calculate_user_defined(_fha)
 
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"result_1": float(_fha["res1"])},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"result_2": float(_fha["res2"])},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"result_3": float(_fha["res3"])},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"result_4": float(_fha["res4"])},
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={"result_5": float(_fha["res5"])},
         )

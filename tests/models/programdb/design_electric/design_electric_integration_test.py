@@ -453,7 +453,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_design_electric_attributes",
-            node_id=[2],
+            node_id=2,
             package={"temperature_active": 65.5},
         )
 
