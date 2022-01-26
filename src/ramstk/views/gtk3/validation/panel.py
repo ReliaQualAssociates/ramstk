@@ -36,7 +36,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_validations"
+    _select_msg = "succeed_retrieve_all_validation"
     _tag = "validation"
     _title = _("Verification Task List")
 
@@ -52,7 +52,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self.tvwTreeView.dic_row_loader = {
-            "validation": self.__do_load_verification,
+            "validation": super().do_load_treerow,
         }
 
         # Initialize private list class attributes.
@@ -602,7 +602,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         if module == self._tag and _row is not None:
             _code = _model.get_value(_row, self.tvwTreeView.position["validation_id"])
             _name = _model.get_value(_row, self.tvwTreeView.position["name"])
-            _title = _(f"Analyzing Validation {_code}: {_name}")
+            _title = _(f"Analyzing Validation Task {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
 
@@ -620,95 +620,16 @@ class ValidationTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["validation_id"]
 
-            _title = _("Analyzing Verification Task {0}").format(
-                str(_attributes["name"])
-            )
+            _title = _(f"Analyzing Verification Task {_attributes['name']}")
 
             pub.sendMessage(
                 "selected_validation",
                 attributes=_attributes,
             )
             pub.sendMessage(
-                "request_get_validation_attributes",
-                node_id=self._record_id,
-                table="validation",
-            )
-            pub.sendMessage(
                 "request_set_title",
                 title=_title,
             )
-
-    def __do_load_verification(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
-        """Load a verification task into the RAMSTKTreeView().
-
-        :param node: the treelib Node() with the mode data to load.
-        :param row: the parent row of the mode to load into the requirement
-            tree.
-        :return: _new_row; the row that was just populated with requirement
-            data.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-
-        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _model = self.tvwTreeView.get_model()
-
-        _measurement_unit = self._lst_measurement_units[_entity.measurement_unit]
-        _task_type = self._lst_verification_types[_entity.task_type]
-
-        _attributes = [
-            _entity.revision_id,
-            _entity.validation_id,
-            _entity.acceptable_maximum,
-            _entity.acceptable_mean,
-            _entity.acceptable_minimum,
-            _entity.acceptable_variance,
-            _entity.confidence,
-            _entity.cost_average,
-            _entity.cost_ll,
-            _entity.cost_maximum,
-            _entity.cost_mean,
-            _entity.cost_minimum,
-            _entity.cost_ul,
-            _entity.cost_variance,
-            str(_entity.date_end),
-            str(_entity.date_start),
-            _entity.description,
-            _measurement_unit,
-            _entity.name,
-            _entity.status,
-            _entity.task_specification,
-            _task_type,
-            _entity.time_average,
-            _entity.time_ll,
-            _entity.time_maximum,
-            _entity.time_mean,
-            _entity.time_minimum,
-            _entity.time_ul,
-            _entity.time_variance,
-        ]
-
-        try:
-            _new_row = _model.append(row, _attributes)
-        except (AttributeError, TypeError, ValueError):
-            _new_row = None
-            _error_msg = _(
-                "An error occurred when loading verification task {0} in the "
-                "verification task list.  This might indicate it was missing "
-                "it's data package, some of the data in the package was "
-                "missing, or some of the data was the wrong type.  Row data "
-                "was: {1}"
-            ).format(str(node.identifier), _attributes)
-            pub.sendMessage(
-                "do_log_warning_msg",
-                logger_name="WARNING",
-                message=_error_msg,
-            )
-
-        return _new_row
 
 
 class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
@@ -766,7 +687,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtTaskID,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 50,
@@ -780,7 +701,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtCode,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 "",
                 {
                     "width": 50,
@@ -795,7 +716,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtTask,
                 "changed",
                 super().on_changed_textview,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 "",
                 {
                     "height": 100,
@@ -812,7 +733,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.cmbTaskType,
                 "changed",
                 super().on_changed_combo,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 "",
                 {
                     "tooltip": _(
@@ -828,7 +749,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtSpecification,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 "",
                 {
                     "tooltip": _(
@@ -844,7 +765,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.cmbMeasurementUnit,
                 "changed",
                 super().on_changed_combo,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 "",
                 {
                     "tooltip": _(
@@ -860,7 +781,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtMinAcceptable,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -877,7 +798,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtMaxAcceptable,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -894,7 +815,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtMeanAcceptable,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -911,7 +832,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtVarAcceptable,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -928,7 +849,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtStartDate,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 date.today(),
                 {
                     "width": 100,
@@ -945,7 +866,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.txtEndDate,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 date.today(),
                 {
                     "width": 100,
@@ -962,7 +883,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 self.spnStatus,
                 "value-changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "limits": [0, 0, 100, 1, 0.1],

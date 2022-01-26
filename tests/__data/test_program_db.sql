@@ -932,7 +932,7 @@ CREATE TABLE ramstk_validation (
     fld_date_end DATE,
     fld_date_start DATE,
     fld_description VARCHAR,
-    fld_measurement_unit VARCHAR(256),
+    fld_measurement_unit VARCHAR(256) DEFAULT '',
     fld_name VARCHAR(256),
     fld_status FLOAT,
     fld_type VARCHAR(256),

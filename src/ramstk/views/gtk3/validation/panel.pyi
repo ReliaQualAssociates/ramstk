@@ -20,7 +20,7 @@ from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
 class ValidationTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
-    _title: Any
+    _title: str
     _dic_row_loader: Any
     _lst_measurement_units: Any
     _lst_verification_types: Any
@@ -35,9 +35,6 @@ class ValidationTreePanel(RAMSTKTreePanel):
     def _on_module_switch(self, module: str = ...) -> None: ...
     _record_id: Any
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
-    def __do_load_verification(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter: ...
 
 class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
     _record_field: str
