@@ -46,28 +46,30 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get tag
-        id: gettag
-        uses: "WyriHaximus/github-action-get-previous-tag@master"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          echo "::set-output name=tag_version::$(echo $tag_version)"
 
-      - name: Create (unpublished) release notes
-        id: releasenotes
-        uses: release-drafter/release-drafter@master
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@master
         with:
-          name: "${{ steps.gettag.outputs.tag }}"
-          tag: "${{ steps.gettag.outputs.tag }}"
-          version: "${{ steps.gettag.outputs.tag }}"
-          publish: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update CHANGELOG.md
-        uses: vemel/nextchange@0.1.0
-        with:
-          release: "${{ steps.releasenotes.outputs.tag_name }}"
-          append: "${{ steps.releasenotes.outputs.body }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: "v0.10.0"
+          issues-wo-labels: "false"
+          breakingLabel: "Breaking Changes"
+          breakingLabels:
+            - "bump: major"
+          enhancementLabel: "New Features"
+          enhancementLabels:
+            - "bump: minor"
+            - "type: feature"
+          bugLabel: "Bug Fixes"
+          bugLabels:
+            - "bump: patch"
+            - "type: fix"
 
       - name: Commit and push changes
         uses: actions-js/push@master
