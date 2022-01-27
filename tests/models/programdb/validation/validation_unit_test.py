@@ -184,6 +184,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
