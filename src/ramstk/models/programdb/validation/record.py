@@ -42,10 +42,10 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "date_end": date.today() + timedelta(days=30),
         "date_start": date.today(),
         "description": "",
-        "measurement_unit": "",
+        "measurement_unit": 0,
         "name": "",
         "status": 0.0,
-        "task_type": "",
+        "task_type": 0,
         "task_specification": "",
         "time_average": 0.0,
         "time_ll": 0.0,
@@ -104,7 +104,7 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     date_start = Column("fld_date_start", Date, default=__defaults__["date_start"])
     description = Column("fld_description", String, default=__defaults__["description"])
     measurement_unit = Column(
-        "fld_measurement_unit", String(256), default=__defaults__["measurement_unit"]
+        "fld_measurement_unit", Integer, default=__defaults__["measurement_unit"]
     )
     name = Column("fld_name", String(256), default=__defaults__["name"])
     status = Column("fld_status", Float, default=__defaults__["status"])
@@ -113,7 +113,7 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         String(512),
         default=__defaults__["task_specification"],
     )
-    task_type = Column("fld_type", String(256), default=__defaults__["task_type"])
+    task_type = Column("fld_type", Integer, default=__defaults__["task_type"])
     time_average = Column(
         "fld_time_average", Float, default=__defaults__["time_average"]
     )

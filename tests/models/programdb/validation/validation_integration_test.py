@@ -93,6 +93,8 @@ class TestInsertMethods:
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         pub.sendMessage("request_insert_validation", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_validation")
@@ -102,6 +104,8 @@ class TestInsertMethods:
         """should not add a record when passed a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_validation")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_attributes["revision_id"] = 30
         pub.sendMessage("request_insert_validation", attributes=test_attributes)
 
