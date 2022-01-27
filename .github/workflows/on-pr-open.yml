@@ -65,6 +65,15 @@ jobs:
           enhancementLabels: "bump: minor"
           bugLabel: "Bug Fixes"
           bugLabels: "bump: patch"
+          issues: false
+          issuesWoLabels: false
+          pullRequests: true
+          prWoLabels: false
+          author: true
+          unreleased: true
+          compareLink: true
+          stripGeneratorNotice: true
+          verbose: true
 
       - name: Commit and push changes
         uses: actions-js/push@master
