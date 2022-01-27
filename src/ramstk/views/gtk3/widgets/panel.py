@@ -210,10 +210,18 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         self._record_id = attributes[self._record_field]
 
         for _key, _value in self.dic_attribute_widget_map.items():
+            _new_text = attributes.get(_key, _value[5])
             _value[1].do_update(
-                attributes.get(_key, _value[5]),
+                _new_text,
                 signal=_value[2],
             )
+
+            if _value[4]:
+                pub.sendMessage(
+                    _value[4],
+                    node_id=self._record_id,
+                    package={_key: _new_text},
+                )
 
         pub.sendMessage("request_set_cursor_active")
 
