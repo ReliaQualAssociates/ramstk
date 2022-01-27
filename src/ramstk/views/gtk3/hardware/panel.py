@@ -1294,7 +1294,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         self.txtCAGECode.do_update(_cage_code, signal="changed")
         pub.sendMessage(
             f"wvw_editing_{self._tag}",
-            node_id=[self._record_id, -1],
+            node_id=self._record_id,
             package={"cage_code": _cage_code},
         )
 

@@ -27,6 +27,7 @@ class RAMSTKCauseTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_cause_id"
     _db_tablename = "ramstk_cause"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "cause"
 

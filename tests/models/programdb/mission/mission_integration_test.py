@@ -320,8 +320,6 @@ class TestGetterSetter:
         """do_set_attributes() should send the success message."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mission_tree")
 
-        test_tablemodel.do_set_attributes(
-            node_id=[1, ""], package={"mission_time": 12.86}
-        )
+        test_tablemodel.do_set_attributes(node_id=1, package={"mission_time": 12.86})
 
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_mission_tree")

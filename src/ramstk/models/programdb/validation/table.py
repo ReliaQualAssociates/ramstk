@@ -28,6 +28,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_validation_id"
     _db_tablename = "ramstk_validation"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "validation"
 
@@ -48,6 +49,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "validation_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -155,8 +158,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         _planned = _planned.sort_index()
 
         _dic_plan = {
-            'plan': _planned,
-            'assessed': self._do_select_assessment_targets(),
+            "plan": _planned,
+            "assessed": self._do_select_assessment_targets(),
         }
 
         pub.sendMessage(
@@ -208,7 +211,15 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         _node.data["validation"].calculate_task_time()
         _node.data["validation"].calculate_task_cost()
 
-        self.do_set_attributes_all(attributes=_node.data["validation"].get_attributes())
+        _attributes = _node.data["validation"].get_attributes()
+        self.do_set_attributes_all(
+            attributes=_attributes,
+        )
+
+        pub.sendMessage(
+            "succeed_calculate_validation_task",
+            attributes=_attributes,
+        )
 
     def _do_select_assessment_targets(self) -> pd.DataFrame:
         """Select the targets for all tasks of Reliability Assessment type.

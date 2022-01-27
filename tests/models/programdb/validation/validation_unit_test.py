@@ -9,7 +9,7 @@
 """Test class for testing Validation module algorithms and models."""
 
 # Standard Library Imports
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 # Third Party Imports
 import pandas as pd
@@ -75,8 +75,12 @@ class TestCreateModels:
         assert test_recordmodel.cost_minimum == 0.0
         assert test_recordmodel.cost_ul == 0.0
         assert test_recordmodel.cost_variance == 0.0
-        assert test_recordmodel.date_end == date.today() + timedelta(days=30)
-        assert test_recordmodel.date_start == date.today()
+        assert test_recordmodel.date_end == datetime.strftime(
+            date.today() + timedelta(days=30), "%Y-%m-%d"
+        )
+        assert test_recordmodel.date_start == datetime.strftime(
+            date.today(), "%Y-%m-%d"
+        )
         assert test_recordmodel.description == ""
         assert test_recordmodel.measurement_unit == 0
         assert test_recordmodel.name == "PRF-0001"
@@ -180,6 +184,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -229,8 +235,10 @@ class TestGetterSetter:
         assert _attributes["cost_minimum"] == 0.0
         assert _attributes["cost_ul"] == 0.0
         assert _attributes["cost_variance"] == 0.0
-        assert _attributes["date_end"] == date.today() + timedelta(days=30)
-        assert _attributes["date_start"] == date.today()
+        assert _attributes["date_end"] == datetime.strftime(
+            date.today() + timedelta(days=30), "%Y-%m-%d"
+        )
+        assert _attributes["date_start"] == datetime.strftime(date.today(), "%Y-%m-%d")
         assert _attributes["description"] == ""
         assert _attributes["measurement_unit"] == 0
         assert _attributes["name"] == "PRF-0001"

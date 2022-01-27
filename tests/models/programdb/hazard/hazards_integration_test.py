@@ -343,7 +343,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_hazard_attributes",
-            node_id=[1],
+            node_id=1,
             package={"potential_hazard": "Donald Trump"},
         )
 

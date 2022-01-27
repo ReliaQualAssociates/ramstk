@@ -210,10 +210,18 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         self._record_id = attributes[self._record_field]
 
         for _key, _value in self.dic_attribute_widget_map.items():
+            _new_text = attributes.get(_key, _value[5])
             _value[1].do_update(
-                attributes.get(_key, _value[5]),
+                _new_text,
                 signal=_value[2],
             )
+
+            if _value[4]:
+                pub.sendMessage(
+                    _value[4],
+                    node_id=self._record_id,
+                    package={_key: _new_text},
+                )
 
         pub.sendMessage("request_set_cursor_active")
 
@@ -439,7 +447,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         textview.handler_unblock(textview.dic_handler_id["changed"])
 
-        pub.sendMessage(message, node_id=[self._record_id, -1], package=_package)
+        pub.sendMessage(message, node_id=self._record_id, package=_package)
 
         return _package
 
@@ -527,7 +535,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
             pub.sendMessage(
                 message,
-                node_id=[self._record_id, -1, ""],
+                node_id=self._record_id,
                 package={key: _new_text},
             )
         except KeyError:
@@ -830,7 +838,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 logger_name="WARNING",
                 message=_error_msg,
             )
-            _new_row = None
 
         return _new_row
 
@@ -1194,27 +1201,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             if _row is not None:
                 self.tvwTreeView.selection.select_iter(_row)
                 self.show_all()
-
-        pub.sendMessage("request_set_cursor_active")
-
-    def on_insert(self, data: Any) -> None:
-        """Add row to module view for newly added work stream element.
-
-        :param data: the data package for the work stream element to add.
-        :return: None
-        """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-
-        # When inserting a child record, the selected row becomes the parent
-        # row.
-        if self._record_id == self._parent_id:
-            _prow = _row
-        # When inserting a sibling record, use the parent of the selected
-        # row.
-        else:
-            _prow = _model.iter_parent(_row)
-
-        self.tvwTreeView.do_insert_row(data, _prow)
 
         pub.sendMessage("request_set_cursor_active")
 

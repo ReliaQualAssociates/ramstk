@@ -24,7 +24,9 @@ def test_tablemodel(test_program_dao):
     dut = RAMSTKCauseTable()
     dut.do_connect(test_program_dao)
     dut.do_select_all(
-        {"revision_id": 1, "hardware_id": 1, "mode_id": 6, "mechanism_id": 3}
+        {
+            "revision_id": 1,
+        }
     )
 
     yield dut
@@ -44,7 +46,7 @@ def test_tablemodel(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -54,11 +56,16 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_cause topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
+    def test_do_select_all_populated_tree(self, test_tablemodel):
         """should return a Tree() object populated with RAMSTKCauseRecord instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        pub.sendMessage(
+            "selected_revision",
+            attributes={
+                "revision_id": 1,
+            },
+        )
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
 
@@ -315,7 +322,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_cause_attributes",
-            node_id=[4],
+            node_id=4,
             package={"rpn_detection": 4},
         )
 

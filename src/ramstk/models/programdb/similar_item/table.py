@@ -176,61 +176,61 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             )
 
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_1": _change_description_1,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_2": _change_description_2,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_3": _change_description_3,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_4": _change_description_4,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_5": _change_description_5,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_6": _change_description_6,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_7": _change_description_7,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_8": _change_description_8,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_9": _change_description_9,
             },
         )
         self.do_set_attributes(
-            node_id=[node_id],
+            node_id=node_id,
             package={
                 "change_description_10": _change_description_10,
             },

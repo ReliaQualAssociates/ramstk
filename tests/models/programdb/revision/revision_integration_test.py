@@ -315,7 +315,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_revision_attributes",
-            node_id=[1],
+            node_id=1,
             package={"revision_code": "ABC"},
         )
 

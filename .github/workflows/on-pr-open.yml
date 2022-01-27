@@ -1,8 +1,13 @@
-# This workflow runs when a pull request is closed.
+# This workflow runs when a pull request is opened.
 #
 # - Job 1:
-#     - Remove 'status: inprogress' label.
-#     - Add 'status: closed' label.
+#     - Check the PR title follows conventional commit spec.
+# - Job 2:
+#     - Label the PR based on the rules in .github/pr-labler.yml
+# - Job 3:
+#     - Gets the tag that was just pushed.
+#     - Creates unpublished release notes.
+#     - Uses release notes to update CHANGELOG.md.
 
 name: Open Pull Request Workflow
 
@@ -31,3 +36,48 @@ jobs:
         uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-changelog:
+    name: Update CHANGELOG.md
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          echo "::set-output name=tag_version::$(echo $tag_version)"
+
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: "v0.10.0"
+          issues-wo-labels: "false"
+          breakingLabel: "Breaking Changes"
+          breakingLabels: "bump: major"
+          enhancementLabel: "New Features"
+          enhancementLabels: "bump: minor"
+          bugLabel: "Bug Fixes"
+          bugLabels: "bump: patch"
+          issues: false
+          issuesWoLabels: false
+          pullRequests: true
+          prWoLabels: false
+          author: true
+          unreleased: true
+          compareLink: true
+          stripGeneratorNotice: true
+          verbose: true
+
+      - name: Commit and push changes
+        uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.head_ref }}
+          message: "docs: update CHANGELOG.md"

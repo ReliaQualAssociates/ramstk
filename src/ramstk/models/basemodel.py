@@ -72,6 +72,7 @@ class RAMSTKBaseTable:
     # Define private scalar class attributes.
     _db_id_colname: str = ""
     _db_tablename: str = ""
+    _deprecated: bool = True
     _root: int = 0
     _select_msg: str = "selected_revision"
     _tag: str = ""
@@ -155,7 +156,7 @@ class RAMSTKBaseTable:
             # noinspection PyUnresolvedReferences
             self.do_create_code(_node.identifier, prefix)  # type: ignore
 
-    def do_delete(self, node_id: int) -> None:
+    def do_delete(self, node_id: int) -> None:  # sourcery skip: extract-method
         """Remove a record from the Program database and records tree.
 
         :param node_id: the ID of the record to delete.
@@ -233,7 +234,9 @@ class RAMSTKBaseTable:
             tree=self.tree,
         )
 
-    def do_insert(self, attributes: Dict[str, Any]) -> None:
+    def do_insert(
+        self, attributes: Dict[str, Any]
+    ) -> None:  # sourcery skip: extract-method
         """Add a new record to the RAMSTK program database and records tree.
 
         :param attributes: the attribute values to assign to the new record.
@@ -322,22 +325,33 @@ class RAMSTKBaseTable:
         """
         self.tree = do_clear_tree(self.tree)
 
-        try:
-            self._revision_id = attributes["revision_id"]
-        except KeyError:
+        # ISSUE: Remove if-else control from RAMSTKBaseTable do_select_all() method
+        #
+        # This if-else program control block is needed until all the child table
+        # classes and associated tests are converted to use the new API.  Once that
+        # is complete, the if portion of the control block can be removed as well as
+        # the _deprecated class attribute.
+        if self._deprecated:
             try:
-                self._revision_id = attributes["site_id"]
+                self._revision_id = attributes["revision_id"]
             except KeyError:
-                self._revision_id = 0
+                try:
+                    self._revision_id = attributes["site_id"]
+                except KeyError:
+                    self._revision_id = 0
+
+            _keys = [self._lst_id_columns[0]]
+            _values = [self._revision_id]
+        else:
+            _keys = [_key for _key in self._lst_id_columns if _key in attributes]
+            _values = [
+                attributes[_key] for _key in self._lst_id_columns if _key in attributes
+            ]
 
         for _record in self.dao.do_select_all(
             self._record,
-            key=[
-                self._lst_id_columns[0],
-            ],
-            value=[
-                self._revision_id,
-            ],
+            key=_keys,
+            value=_values,
             order=self._db_id_colname,
         ):
             try:
@@ -353,12 +367,20 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
+        # ISSUE: Remove deprecated PyPubSub sendMessage
+        #
+        # The "succeed_retrieve_{self._tag}s" message is deprecated in favor of the
+        # "succeed_retrieve_all_{self._tag}" message.
         pub.sendMessage(
             f"succeed_retrieve_{self._tag}s",
             tree=self.tree,
         )
+        pub.sendMessage(
+            f"succeed_retrieve_all_{self._tag}",
+            tree=self.tree,
+        )
 
-    def do_set_attributes(self, node_id: List, package: Dict[str, Any]) -> None:
+    def do_set_attributes(self, node_id: int, package: Dict[str, Any]) -> None:
         """Set the attributes of the record associated with node ID.
 
         :param node_id: the ID of the record in the RAMSTK Program database
@@ -368,24 +390,13 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         [[_key, _value]] = package.items()
-        # ISSUE: Make node_id an integer argument to do_set_attributes()
-        #
-        # The node_id argument to RAMSTKBaseTable.do_set_attributes() is currently a
-        # List type argument.  This is deprecated and all calls should replace this
-        # with an integer argument.  After fixing all calls, remove the try construct
-        # in do_set_attributes() that exists to handle the List and int types.
-        # labels: type: refactor
-        try:
-            _node_id = node_id[0]
-        except TypeError:
-            _node_id = node_id
 
         try:
-            _attributes = self.do_select(_node_id).get_attributes()
+            _attributes = self.do_select(node_id).get_attributes()
         except (AttributeError, KeyError):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                f"{_method_name}: No data package for node ID {_node_id} in module "
+                f"{_method_name}: No data package for node ID {node_id} in module "
                 f"{self._tag}."
             )
             pub.sendMessage(
@@ -404,7 +415,7 @@ class RAMSTKBaseTable:
         if _key in _attributes:
             _attributes[_key] = _value
 
-            self.do_select(_node_id).set_attributes(_attributes)
+            self.do_select(node_id).set_attributes(_attributes)
 
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore
@@ -419,7 +430,7 @@ class RAMSTKBaseTable:
         """
         for _key in attributes:
             self.do_set_attributes(
-                node_id=[attributes[self.pkey]],
+                node_id=attributes[self.pkey],
                 package={_key: attributes[_key]},
             )
 

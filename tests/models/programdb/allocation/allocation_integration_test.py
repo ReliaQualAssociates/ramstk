@@ -431,7 +431,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_allocation_attributes",
-            node_id=[2],
+            node_id=2,
             package={"hazard_rate_goal": 0.00005},
         )
 

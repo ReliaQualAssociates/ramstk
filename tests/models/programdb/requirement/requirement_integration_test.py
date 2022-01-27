@@ -400,7 +400,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_requirement_attributes",
-            node_id=[1, -1],
+            node_id=1,
             package={"requirement_code": "REQ-0001"},
         )
 
@@ -416,7 +416,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_requirement_attributes",
-            node_id=[1, -1],
+            node_id=1,
             package={"validated_date": None},
         )
 

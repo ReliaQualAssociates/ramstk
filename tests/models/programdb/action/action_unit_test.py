@@ -109,10 +109,6 @@ class TestSelectMethods:
         test_tablemodel.do_select_all(
             {
                 "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
             }
         )
 
@@ -129,10 +125,6 @@ class TestSelectMethods:
         test_tablemodel.do_select_all(
             {
                 "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
             }
         )
 
@@ -148,10 +140,6 @@ class TestSelectMethods:
         test_tablemodel.do_select_all(
             {
                 "revision_id": 1,
-                "hardware_id": 1,
-                "mode_id": 6,
-                "mechanism_id": 3,
-                "cause_id": 3,
             }
         )
 

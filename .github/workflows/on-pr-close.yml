@@ -12,6 +12,18 @@
 #         - Update pyproject.toml and VERSION.
 #         - Set pull request variables.
 #         - Cut release pull request.
+# - Job 3:
+#     - IF branch is release/*:
+#         - Get new version from VERSION.
+#         - Push version tag.
+#         - Draft release notes.
+# - Job 4:
+#     - IF branch is release/*:
+#         - Build wheel and sdist.
+#         - Upload wheel and sdist to Test PyPi.
+#         - Test install from Test PyPi.
+#         - Upload wheel and sdist to PyPi.
+#         - Upload wheel to GitHub Release. (pending)
 
 name: Close Pull Request Workflow
 
@@ -112,3 +124,86 @@ jobs:
           body: ${{ steps.prvars.outputs.body }}
           branch: ${{ steps.prvars.outputs.branch }}
           labels: Release
+
+  tag-version:
+    name: Tag Repository with Version
+    runs-on: ubuntu-latest
+    env:
+      DO_VERSION: 0
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get new version
+        id: newversion
+        run: |
+          echo "::set-output name=version::$(echo $(cat VERSION))"
+
+      - name: Push version tag
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git tag -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
+          git push --tags
+
+      - name: Create release notes
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "v${{ steps.newversion.outputs.version }}"
+          tag: "v${{ steps.newversion.outputs.version }}"
+          version: "${{ steps.newversion.outputs.version }}"
+          prerelease: false
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-deploy:
+    name: Build and Deploy RAMSTK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Build release
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        id: build
+        run: |
+          pip install -U pip poetry twine
+          make build && echo "build_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to Test PyPi
+        if: ${{ env.build_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Test install from Test PyPI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+          pip install \
+          --index-url https://test.pypi.org/simple/ \
+          --extra-index-url https://pypi.org/simple \
+          ramstk && echo "install_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to PyPi
+        if: ${{ env.install_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}

@@ -26,10 +26,6 @@ def test_tablemodel(test_program_dao):
     dut.do_select_all(
         {
             "revision_id": 1,
-            "hardware_id": 1,
-            "mode_id": 6,
-            "mechanism_id": 3,
-            "cause_id": 3,
         }
     )
 
@@ -49,7 +45,7 @@ def test_tablemodel(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_tablemodel")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -60,14 +56,19 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_action topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
+    def test_do_select_all_populated_tree(self, test_tablemodel):
         """should return a Tree() object populated with RAMSTKActionRecord
         instances."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_action")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_action")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        pub.sendMessage(
+            "selected_revision",
+            attributes={
+                "revision_id": 1,
+            },
+        )
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_action")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_action")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -345,7 +346,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_action_attributes",
-            node_id=[4],
+            node_id=4,
             package={"action_owner": "John Jacob Jingleheimer Schmidt"},
         )
 
