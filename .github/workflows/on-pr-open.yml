@@ -53,22 +53,23 @@ jobs:
           tag_version=$(echo $tag_version | cut -d 'v' -f2)
           echo "::set-output name=tag_version::$(echo $tag_version)"
 
-      - name: Create (unpublished) release notes
-        id: releasenotes
-        uses: release-drafter/release-drafter@master
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@master
         with:
-          name: "${{ steps.curversion.outputs.tag_version }}"
-          tag: "${{ steps.curversion.outputs.tag_version }}"
-          version: "${{ steps.curversion.outputs.tag_version }}"
-          publish: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update CHANGELOG.md
-        uses: vemel/nextchange@0.1.0
-        with:
-          release: "${{ steps.releasenotes.outputs.tag_name }}"
-          append: "${{ steps.releasenotes.outputs.body }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: "v0.10.0"
+          issues-wo-labels: "false"
+          breakingLabel: "Breaking Changes"
+          breakingLabels:
+            - "bump: major"
+          enhancementLabel: "New Features"
+          enhancementLabels:
+            - "bump: minor"
+            - "type: feature"
+          bugLabel: "Bug Fixes"
+          bugLabels:
+            - "bump: patch"
+            - "type: fix"
 
       - name: Commit and push changes
         uses: actions-js/push@master
