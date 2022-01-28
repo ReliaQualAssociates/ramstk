@@ -44,7 +44,9 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_insert, "request_insert_validation")
     pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
     pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
-    pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
+    pub.unsubscribe(
+        dut._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
+    )
 
     # Delete the device under test.
     del dut
@@ -349,9 +351,8 @@ class TestGetterSetter:
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
-    def on_succeed_calculate_all_tasks(self, cost_remaining, time_remaining):
-        assert cost_remaining == 3400.0
-        assert time_remaining == 80.0
+    def on_succeed_calculate_all_tasks(self, tree):
+        assert isinstance(tree, Tree)
         print("\033[36m\nsucceed_calculate_all_tasks topic was broadcast.")
 
     def on_succeed_calculate_plan(self, attributes):
@@ -412,7 +413,7 @@ class TestAnalysisMethods:
         _validation.cost_maximum = 3500.0
         _validation.confidence = 95.0
 
-        pub.sendMessage("request_calculate_validation_tasks")
+        pub.sendMessage("request_calculate_all_validation_tasks")
 
         assert test_tablemodel.tree.get_node(1).data[
             "validation"

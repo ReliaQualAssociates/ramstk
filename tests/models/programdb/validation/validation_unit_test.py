@@ -45,7 +45,9 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_insert, "request_insert_validation")
     pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
     pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
-    pub.unsubscribe(dut._do_calculate_all_tasks, "request_calculate_validation_tasks")
+    pub.unsubscribe(
+        dut._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
+    )
 
     # Delete the device under test.
     del dut
@@ -96,7 +98,7 @@ class TestCreateModels:
         assert test_recordmodel.time_variance == 0.0
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_table_model_create(self, test_tablemodel):
         """should return a table manager instance."""
         assert isinstance(test_tablemodel, RAMSTKValidationTable)
         assert isinstance(test_tablemodel.tree, Tree)
@@ -129,7 +131,7 @@ class TestCreateModels:
         )
         assert pub.isSubscribed(
             test_tablemodel._do_calculate_all_tasks,
-            "request_calculate_validation_tasks",
+            "request_calculate_all_validation_tasks",
         )
 
 

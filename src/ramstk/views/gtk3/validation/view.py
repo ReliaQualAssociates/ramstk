@@ -286,7 +286,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage(
-            "request_calculate_validation_tasks",
+            "request_calculate_all_validation_tasks",
         )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:

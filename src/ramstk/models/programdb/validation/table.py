@@ -67,7 +67,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         pub.subscribe(self.do_calculate_plan, "request_calculate_plan")
         pub.subscribe(self._do_calculate_task, "request_calculate_validation_task")
         pub.subscribe(
-            self._do_calculate_all_tasks, "request_calculate_validation_tasks"
+            self._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -192,6 +192,10 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
 
         pub.sendMessage(
             "succeed_calculate_all_validation_tasks",
+            tree=self.tree,
+        )
+        pub.sendMessage(
+            "succeed_calculate_program_remaining",
             cost_remaining=_program_cost_remaining,
             time_remaining=_program_time_remaining,
         )
