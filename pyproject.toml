@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ramstk"
-version = "0.15.10"
+version = "0.15.11"
 description = "A tool to manage RAMS data and analyses."
 authors = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
 maintainers = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
