@@ -62,7 +62,7 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_get_actual_status, "request_get_actual_status")
-        pub.subscribe(self._do_set_attributes, "succeed_calculate_all_validation_tasks")
+        pub.subscribe(self._do_set_attributes, "succeed_calculate_program_remaining")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

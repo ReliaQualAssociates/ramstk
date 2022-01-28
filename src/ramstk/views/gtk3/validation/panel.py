@@ -8,10 +8,9 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 # Third Party Imports
-import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -542,6 +541,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, "succeed_calculate_all_validation_tasks")
         pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
 
     def do_load_measurement_units(
@@ -592,7 +592,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
             _cellmodel.append([value[1]])
 
     def _on_module_switch(self, module: str = "") -> None:
-        """Respond to changes in selected Module View module (tab).
+        """Respond to change in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
         :return: None
@@ -1254,7 +1254,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_calculate_validation_task")
+        pub.subscribe(self._on_calculate_task, "succeed_calculate_validation_task")
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]
@@ -1339,15 +1339,15 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
 
         return _date
 
-    def _on_calculate_task(self, tree: treelib.Tree) -> None:
+    def _on_calculate_task(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Wrap _do_load_panel() on successful task calculation.
 
-        :param tree: the validation treelib.Tree().
+        :param attributes: the verification task attribute dict.
         :return: None
         :rtype: None
         """
-        _attributes = tree.get_node(self._record_id).data["validation"].get_attributes()
-        self._do_load_panel(_attributes)
+        if attributes["validation_id"] == self._record_id:
+            super().do_load_panel(attributes)
 
     def __do_adjust_widgets(self) -> None:
         """Adjust position of some widgets.
