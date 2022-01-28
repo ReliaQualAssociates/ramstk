@@ -46,35 +46,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get current version
-        id: curversion
-        run: |
-          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          tag_version=$(echo $tag_version | cut -d 'v' -f2)
-          echo "::set-output name=tag_version::$(echo $tag_version)"
-
-      - name: Generate release changelog
-        uses: heinrichreimer/github-changelog-generator-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          sinceTag: "v0.10.0"
-          issues-wo-labels: "false"
-          breakingLabel: "Breaking Changes"
-          breakingLabels: "bump: major"
-          enhancementLabel: "New Features"
-          enhancementLabels: "bump: minor"
-          bugLabel: "Bug Fixes"
-          bugLabels: "bump: patch"
-          issues: false
-          issuesWoLabels: false
-          pullRequests: true
-          prWoLabels: false
-          author: true
-          unreleased: true
-          compareLink: true
-          stripGeneratorNotice: true
-          verbose: true
-
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v4
@@ -91,10 +62,38 @@ jobs:
           echo "name:        ${{ steps.import_gpg.outputs.name }}"
           echo "email:       ${{ steps.import_gpg.outputs.email }}"
 
+      - name: Get current version
+        id: curversion
+        run: |
+          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          echo "::set-output name=tag_version::$(echo $tag_version)"
+
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: "v0.10.0"
+          breakingLabel: "Breaking Changes"
+          breakingLabels: "bump: major"
+          enhancementLabel: "New Features"
+          enhancementLabels: "bump: minor"
+          bugsLabel: "Bug Fixes"
+          bugLabels: "bump: patch"
+          issues: false
+          issuesWoLabels: false
+          pullRequests: true
+          prWoLabels: false
+          author: true
+          unreleased: true
+          compareLink: true
+          stripGeneratorNotice: true
+          verbose: true
+
       - name: Commit and push changes
         run: |
-          git config --global user.email "${{ steps.import-gpg.outputs.email }}"
-          git config --global user.name "${{ steps.import-gpg.outputs.name }}"
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
           git add ./CHANGELOG.md
           git commit -S -m "docs: update CHANGELOG.md"
-          git push
+          git push origin HEAD:${{ github.ref }}
