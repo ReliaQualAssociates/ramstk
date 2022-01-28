@@ -71,13 +71,13 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel, "succeed_calculate_verification_plan")
+        pub.subscribe(self._do_load_actuals, "succeed_get_actual_status")
 
     def _do_load_panel(self, attributes: Dict[str, pd.DataFrame]) -> None:
         """Load the burndown curve with the planned and actual status.
 
         :param attributes: a dict containing a pandas DataFrames() for each of
-            planned burndown, assessment dates/targets, and the actual
-            progress.
+            planned burndown and assessment dates/targets.
         :return: None
         """
         self._do_load_plan(attributes["plan"])
@@ -85,13 +85,22 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
             attributes["assessed"], attributes["plan"].loc[:, "upper"].max()
         )
 
+        super().do_load_panel()
+
+        pub.sendMessage("request_get_actual_status")
+
+    def _do_load_actuals(self, status: pd.DataFrame) -> None:
+        """Load the actual progress status points.
+
+        :param status: a Pandas dataframe containing a pandas DataFrames() for the
+            actual progress.
+        :return: None
+        """
         self.pltPlot.do_add_line(
-            x_values=list(attributes["actual"].index),
-            y_values=list(attributes["actual"].loc[:, "time"]),
+            x_values=list(status.index),
+            y_values=list(status.loc[:, "time"]),
             marker="o",
         )
-
-        super().do_load_panel()
 
     def _do_load_assessment_milestones(
         self, assessed: pd.DataFrame, y_max: float
