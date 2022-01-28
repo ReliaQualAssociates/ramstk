@@ -1073,7 +1073,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMinTime,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1089,7 +1089,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtExpTime,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1105,7 +1105,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMaxTime,
                 "changed",
                 super().on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1121,7 +1121,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanTimeLL,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1135,7 +1135,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanTime,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1149,7 +1149,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanTimeUL,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1163,7 +1163,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMinCost,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1177,7 +1177,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtExpCost,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1191,7 +1191,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMaxCost,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1205,7 +1205,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanCostLL,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1219,7 +1219,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanCost,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1233,7 +1233,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
                 self.txtMeanCostUL,
                 "changed",
                 self.on_changed_entry,
-                "mvw_editing_validation",
+                "wvw_editing_validation",
                 0.0,
                 {
                     "width": 100,
@@ -1254,6 +1254,7 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(super().do_load_panel, "succeed_calculate_validation_task")
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]

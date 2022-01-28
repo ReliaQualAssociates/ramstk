@@ -258,7 +258,6 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, "succeed_calculate_validation_task")
         pub.subscribe(
             super().do_set_cursor_active_on_fail, "fail_calculate_validation_task"
         )

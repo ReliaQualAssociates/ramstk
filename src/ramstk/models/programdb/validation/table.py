@@ -49,6 +49,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "validation_id",
+            "parent_id",
+            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -210,7 +212,15 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         _node.data["validation"].calculate_task_time()
         _node.data["validation"].calculate_task_cost()
 
-        self.do_set_attributes_all(attributes=_node.data["validation"].get_attributes())
+        _attributes = _node.data["validation"].get_attributes()
+        self.do_set_attributes_all(
+            attributes=_attributes,
+        )
+
+        pub.sendMessage(
+            "succeed_calculate_validation_task",
+            attributes=_attributes,
+        )
 
     def _do_select_assessment_targets(self) -> pd.DataFrame:
         """Select the targets for all tasks of Reliability Assessment type.
