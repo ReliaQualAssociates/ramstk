@@ -1,14 +1,27 @@
+# This workflow runs when a push is made to a pull request against the master branch.
+#
+# - Job 1:
+#     - Run bandit against the entire code base.
+# - Job 2:
+#     - Run black, isort, and docformatter against the entire code base.
+# - Job 3:
+#     - Run pycodestyle and pydocstyle against the entire code base.
+# - Job 4:
+#     - Run mypy agaisnt the entire code base.
+# - Job 5:
+#     - Run pylint and flake8 (future) against the entire code base.
 name: Perform Static Checks on RAMSTK Code Base
 
 on:
   pull_request:
     branches:
       - master
-    branches-ignore:
-      - ci/*
-      - fix/*
-      - refactor/*
-      - release/*
+  push:
+    branches:
+      - '!ci/**'
+      - '!fix/**'
+      - '!refactor/**'
+      - '!release/**'
 
 jobs:
   bandit:
