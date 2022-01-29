@@ -31,6 +31,12 @@ class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         ForeignKey("ramstk_revision.fld_revision_id", ondelete="CASCADE"),
         nullable=False,
     )
+    function_id = Column(
+        "fld_function_id",
+        Integer,
+        ForeignKey("ramstk_function.fld_function_id", ondelete="CASCADE"),
+        nullable=False,
+    )
     definition_id = Column(
         "fld_definition_id",
         Integer,
@@ -49,10 +55,9 @@ class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {revision_id, definition_id, definition} pairs.
         :rtype: (int, int, str)
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
+            "function_id": self.function_id,
             "definition_id": self.definition_id,
             "definition": self.definition,
         }
-
-        return _attributes

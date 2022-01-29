@@ -29,13 +29,6 @@ CREATE TABLE ramstk_revision (
     PRIMARY KEY (fld_revision_id)
 );
 INSERT INTO "ramstk_revision" VALUES(1,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Revision -',1.0,1.0,X'',1,'',0.0,0.0,0.0,0.0);
-CREATE TABLE ramstk_failure_definition (
-    fld_revision_id INTEGER NOT NULL,
-    fld_definition_id INTEGER NOT NULL,
-    fld_definition VARCHAR(1024) DEFAULT '',
-    PRIMARY KEY (fld_definition_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
-);
 CREATE TABLE ramstk_mission (
     fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
@@ -141,6 +134,15 @@ CREATE TABLE ramstk_function (
     fld_type_id INTEGER DEFAULT 0,
     PRIMARY KEY (fld_function_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
+);
+CREATE TABLE ramstk_failure_definition (
+    fld_revision_id INTEGER NOT NULL,
+    fld_function_id INTEGER NOT NULL,
+    fld_definition_id INTEGER NOT NULL,
+    fld_definition VARCHAR(1024) DEFAULT '',
+    PRIMARY KEY (fld_definition_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
 );
 CREATE TABLE ramstk_hazard_analysis (
     fld_revision_id INTEGER NOT NULL,

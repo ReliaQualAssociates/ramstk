@@ -1,14 +1,25 @@
+# This workflow runs when a push is made or a PR is opened, reopened, or synchronized.
+#
+# - Job 1:
+#     - Set up the postgresql service.
+#     - Update and install non-pip packages (pygobject, etc.).
+#     - Set up the matrix of Python versions to test against.
+#     - Run the test suite with coverage for each Python version.
+#     - Upload the coverage results for each Python version to Codecov.
+#     - Create a coverage report for each Python version to use with Coveralls.
+# - Job 2:
+#     - Aggregate and upload each Python's version coverage report for Coveralls.
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
+  push:
+    tags-ignore:
+      - "*"
   pull_request:
-    branches:
-      - master
-    branches-ignore:
-      - ci/*
-      - fix/*
-      - refactor/*
-      - release/*
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
 
 jobs:
   test_suite:

@@ -10,11 +10,13 @@ from ramstk.models import RAMSTKFailureDefinitionRecord
 def mock_program_dao(monkeypatch):
     _definition_1 = RAMSTKFailureDefinitionRecord()
     _definition_1.revision_id = 1
+    _definition_1.function_id = 1
     _definition_1.definition_id = 1
     _definition_1.definition = "Mock Failure Definition 1"
 
     _definition_2 = RAMSTKFailureDefinitionRecord()
     _definition_2.revision_id = 1
+    _definition_1.function_id = 1
     _definition_2.definition_id = 2
     _definition_2.definition = "Mock Failure Definition 2"
 
@@ -31,6 +33,7 @@ def mock_program_dao(monkeypatch):
 def test_attributes():
     yield {
         "revision_id": 1,
+        "function_id": 1,
         "definition_id": 1,
         "definition": "Failure Definition",
         "parent_id": 1,
