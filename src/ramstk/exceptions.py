@@ -16,7 +16,7 @@ class RAMSTKError(Exception):
         :keyword str msg: the message to display to the user when this
             exception is raised.
         """
-        if msg == "":
+        if not msg:
             # Set some default useless error message
             msg = "An error occured with RAMSTK."
 
