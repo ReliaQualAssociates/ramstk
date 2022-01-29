@@ -34,7 +34,7 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_failure_definition")
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
     pub.unsubscribe(dut.do_insert, "request_insert_failure_definition")
 
@@ -63,7 +63,7 @@ class TestSelectMethods:
             self.on_succeed_select_all, "succeed_retrieve_failure_definitions"
         )
 
-        pub.sendMessage("selected_function", attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes=test_attributes)
 
         pub.unsubscribe(
             self.on_succeed_select_all, "succeed_retrieve_failure_definitions"

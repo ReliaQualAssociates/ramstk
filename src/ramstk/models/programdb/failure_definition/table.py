@@ -24,7 +24,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
     _db_id_colname = "fld_definition_id"
     _db_tablename = "ramstk_failure_definition"
     _deprecated = False
-    _select_msg = "selected_function"
+    _select_msg = "selected_revision"
     _tag = "failure_definition"
 
     # Define public dictionary class attributes.

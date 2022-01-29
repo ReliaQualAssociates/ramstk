@@ -36,7 +36,7 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_failure_definition")
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_function")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
     pub.unsubscribe(dut.do_insert, "request_insert_failure_definition")
 
@@ -75,7 +75,7 @@ class TestCreateModels:
             test_tablemodel.do_get_attributes,
             "request_get_failure_definition_attributes",
         )
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_function")
+        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
         assert pub.isSubscribed(
             test_tablemodel.do_update, "request_update_failure_definition"
         )
@@ -90,7 +90,7 @@ class TestCreateModels:
             "request_set_failure_definition_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "lvw_editing_failure_definition"
+            test_tablemodel.do_set_attributes, "wvw_editing_failure_definition"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_delete, "request_delete_failure_definition"
