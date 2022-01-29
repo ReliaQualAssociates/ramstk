@@ -7,7 +7,7 @@
 """Failure Definition Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type, Union
+from typing import Dict, Type, Union
 
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable, RAMSTKFailureDefinitionRecord
@@ -32,7 +32,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a Failure Definition data manager instance."""
         super().__init__(**kwargs)
 

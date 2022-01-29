@@ -7,6 +7,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Failure Definition Record Model."""
 
+# Standard Library Imports
+from typing import Dict, Union
+
 # Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
 
@@ -49,7 +52,7 @@ class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of the RAMSTKFailureDefinition attributes.
 
         :return: {revision_id, definition_id, definition} pairs.
