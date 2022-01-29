@@ -7,7 +7,7 @@
 """Failure Definition Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Union
 
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable, RAMSTKFailureDefinitionRecord
@@ -41,6 +41,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
         # Initialize private list attributes.
         self._lst_id_columns = [
             "revision_id",
+            "function_id",
             "definition_id",
             "parent_id",
             "record_id",
@@ -61,7 +62,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Union[float, int, str]]
     ) -> object:
         """Gets a new record instance with attributes set.
 
@@ -71,6 +72,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
         """
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
+        _new_record.function_id = attributes["function_id"]
         _new_record.definition_id = self.last_id + 1
 
         return _new_record

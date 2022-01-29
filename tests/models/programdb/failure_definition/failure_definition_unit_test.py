@@ -56,10 +56,12 @@ class TestCreateModels:
         # Verify class attributes are properly initialized.
         assert test_recordmodel.__tablename__ == "ramstk_failure_definition"
         assert test_recordmodel.revision_id == 1
+        assert test_recordmodel.function_id == 1
+        assert test_recordmodel.definition_id == 1
         assert test_recordmodel.definition == "Mock Failure Definition 1"
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_table_model_create(self, test_tablemodel):
         """__init__() should return a Revision data manager."""
         assert isinstance(test_tablemodel, RAMSTKFailureDefinitionTable)
         assert isinstance(test_tablemodel.tree, Tree)
@@ -184,6 +186,7 @@ class TestGetterSetter:
     def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
         """should return None on success."""
         test_attributes.pop("revision_id")
+        test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
@@ -197,6 +200,7 @@ class TestGetterSetter:
         test_attributes["definition"] = None
 
         test_attributes.pop("revision_id")
+        test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
@@ -209,6 +213,7 @@ class TestGetterSetter:
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
+        test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")

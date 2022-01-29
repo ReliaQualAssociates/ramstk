@@ -1,4 +1,4 @@
-# This workflow runs when a push is made to a pull request against the master branch.
+# This workflow runs when a push is made or a PR is opened, reopened, or synchronized.
 #
 # - Job 1:
 #     - Set up the postgresql service.
@@ -12,15 +12,14 @@
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
-  pull_request:
-    branches:
-      - master
   push:
-    branches:
-      - '!ci/**'
-      - '!fix/**'
-      - '!refactor/**'
-      - '!release/**'
+    tags-ignore:
+      - "*"
+  pull_request:
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
 
 jobs:
   test_suite:
