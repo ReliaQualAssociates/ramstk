@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Type
+from typing import Dict, List, Type, Union
 
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
@@ -13,7 +13,7 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
     _lst_id_columns: List[str]
     _record: Type[RAMSTKFailureDefinitionRecord]
     pkey: str
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None: ...
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None: ...
     def do_get_new_record(
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Union[float, int, str]]
     ) -> Type[RAMSTKFailureDefinitionRecord]: ...
