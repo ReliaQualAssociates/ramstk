@@ -159,7 +159,7 @@ jobs:
         run: |
           git config --global user.email "${{ steps.import_gpg.outputs.email }}"
           git config --global user.name "${{ steps.import_gpg.outputs.name }}"
-          git tag -S -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
+          git tag -s -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
           git push --tags
 
       - name: Create release notes

@@ -40,7 +40,7 @@ jobs:
         run: |
           git config --global user.email "${{ steps.import_gpg.outputs.email }}"
           git config --global user.name "${{ steps.import_gpg.outputs.name }}"
-          git tag -S -f -a -m"push latest tag" latest
+          git tag -s -f -a -m"push latest tag" latest
           git push -f --tags
 
       - name: Draft 'latest' release notes
