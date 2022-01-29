@@ -15,7 +15,6 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3.failure_definition import FailureDefinitionListView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -44,9 +43,7 @@ class RAMSTKListBook(RAMSTKBaseBook):
 
         # Initialize private dictionary attributes.
         self._dic_list_views: Dict[str, List[object]] = {
-            "revision": [
-                FailureDefinitionListView(configuration, logger),
-            ],
+            "revision": [],
             "function": [],
             "requirement": [],
             "hardware": [],

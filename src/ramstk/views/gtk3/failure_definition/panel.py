@@ -7,7 +7,7 @@
 """GTK3 Failure Definition Panels."""
 
 # Standard Library Imports
-from typing import Any, Callable, Dict, List
+from typing import Any, Dict, List
 
 # Third Party Imports
 import treelib
@@ -41,14 +41,15 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize private dictionary class attributes.
-        self.tvwTreeView.dic_row_loader: Dict[str, Callable] = {
+        self.tvwTreeView.dic_row_loader = {
             "failure_definition": self.__do_load_failure_definition,
         }
 
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_message: str = f"lvw_editing_{self._tag}"
+        self._filtered_tree = True
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -68,8 +69,24 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 _("Revision ID"),
                 "gint",
             ],
-            "definition_id": [
+            "function_id": [
                 1,
+                Gtk.CellRendererText(),
+                "edited",
+                None,
+                self._on_edit_message,
+                0,
+                {
+                    "bg_color": "#FFFFFF",
+                    "editable": False,
+                    "fg_color": "#000000",
+                    "visible": False,
+                },
+                _("Function ID"),
+                "gint",
+            ],
+            "definition_id": [
+                2,
                 Gtk.CellRendererText(),
                 "edited",
                 None,
@@ -85,7 +102,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
                 "gint",
             ],
             "definition": [
-                2,
+                3,
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
@@ -115,21 +132,22 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "lvwSwitchedPage")
+        pub.subscribe(self._on_select_function, "selected_function")
 
-    def _on_module_switch(self, module: str = "") -> None:
-        """Respond to changes in selected Module View module (tab).
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def do_filter_tree(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
+    ) -> bool:
+        """Filter Hazards to show only those associated with the selected Function.
 
-        :param module: the name of the module that was just selected.
-        :return: None
+        :param model: the filtered model for the Hazard RAMSTKTreeView.
+        :param row: the iter to check against condition(s).
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :return: True if row should be visible, False else.
+        :rtype: bool
         """
-        _model, _row = self.tvwTreeView.selection.get_selected()
-
-        if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["definition_id"])
-            _title = _(f"Analyzing Failure Definition {_code}")
-
-            pub.sendMessage("request_set_title", title=_title)
+        return model[row][1] == self._parent_id
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Read attributes from newly selected RAMSTKTreeView() row.
@@ -145,7 +163,20 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["definition_id"]
 
-            pub.sendMessage("selected_failure_definition", attributes=_attributes)
+            pub.sendMessage(
+                "selected_failure_definition",
+                attributes=_attributes,
+            )
+
+    def _on_select_function(self, attributes: Dict[str, Any]) -> None:
+        """Filter hazards list when Function is selected.
+
+        :param attributes: the dict of Function attributes for the selected Function.
+        :return: None
+        :rtype: None
+        """
+        self._parent_id = attributes["function_id"]
+        self.tvwTreeView.filt_model.refilter()
 
     def __do_load_failure_definition(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -162,14 +193,16 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
-        _attributes = [_entity.revision_id, _entity.definition_id, _entity.definition]
+        _attributes = [
+            _entity.revision_id,
+            _entity.function_id,
+            _entity.definition_id,
+            _entity.definition,
+        ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
                 "An error occurred when loading failure definition {0:s}.  "
                 "This might indicate it was missing it's data package, some "

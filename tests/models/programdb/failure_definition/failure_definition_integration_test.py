@@ -24,7 +24,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKFailureDefinitionTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+    dut.do_select_all(attributes={"function_id": 1})
 
     yield dut
 
@@ -89,6 +89,14 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_function topic was broadcast.")
 
+    def on_fail_insert_no_function(self, error_message):
+        assert error_message == (
+            "do_insert: Database error when attempting to add a record.  Database "
+            "returned:\n\tKey (fld_function_id)=(40) is not present in table "
+            '"ramstk_function".'
+        )
+        print("\033[35m\nfail_insert_function topic was broadcast.")
+
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
@@ -97,12 +105,14 @@ class TestInsertMethods:
             self.on_succeed_insert_sibling, "succeed_insert_failure_definition"
         )
 
-        assert test_tablemodel.tree.get_node(3) is None
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
+        assert test_tablemodel.tree.get_node(4) is None
 
         pub.sendMessage("request_insert_failure_definition", attributes=test_attributes)
 
         assert isinstance(
-            test_tablemodel.tree.get_node(3).data["failure_definition"],
+            test_tablemodel.tree.get_node(4).data["failure_definition"],
             RAMSTKFailureDefinitionRecord,
         )
 
@@ -117,11 +127,29 @@ class TestInsertMethods:
         ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_failure_definition")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_attributes["revision_id"] = 40
         pub.sendMessage("request_insert_failure_definition", attributes=test_attributes)
 
         pub.unsubscribe(
             self.on_fail_insert_no_revision, "fail_insert_failure_definition"
+        )
+
+    @pytest.mark.integration
+    def test_do_insert_no_function(self, test_attributes, test_tablemodel):
+        """do_insert() should send the fail_insert_failure_definition message when
+        attempting to insert a new failure definition with a non-existent function
+        ID."""
+        pub.subscribe(self.on_fail_insert_no_function, "fail_insert_failure_definition")
+
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
+        test_attributes["function_id"] = 40
+        pub.sendMessage("request_insert_failure_definition", attributes=test_attributes)
+
+        pub.unsubscribe(
+            self.on_fail_insert_no_function, "fail_insert_failure_definition"
         )
 
 
@@ -146,7 +174,7 @@ class TestDeleteMethods:
         print("\033[35m\nfail_delete_failure_definition topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_delete(self):
+    def test_do_delete(self, test_tablemodel):
         """_do_delete_failure_definition() should send the success message after
         successfully deleting a definition."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_failure_definition")
