@@ -151,7 +151,7 @@ class FMEAWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_record_id, "selected_fmeca")
+        pub.subscribe(super().do_set_record_id, f"selected_{self._tag}")
         pub.subscribe(
             self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
         )
