@@ -9,4 +9,4 @@
 
 # RAMSTK Local Imports
 from .panel import FailureDefinitionTreePanel
-from .view import FailureDefinitionListView
+from .view import FailureDefinitionWorkView
