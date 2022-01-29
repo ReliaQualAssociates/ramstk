@@ -55,13 +55,6 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: GPG user IDs
-        run: |
-          echo "fingerprint: ${{ steps.import_gpg.outputs.fingerprint }}"
-          echo "keyid:       ${{ steps.import_gpg.outputs.keyid }}"
-          echo "name:        ${{ steps.import_gpg.outputs.name }}"
-          echo "email:       ${{ steps.import_gpg.outputs.email }}"
-
       - name: Get current version
         id: curversion
         run: |
@@ -74,6 +67,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           sinceTag: "v0.10.0"
+          excludeTags: "latest"
           breakingLabel: "Breaking Changes"
           breakingLabels: "bump: major"
           enhancementLabel: "New Features"
