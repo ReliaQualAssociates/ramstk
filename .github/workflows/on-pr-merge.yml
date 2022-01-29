@@ -5,9 +5,6 @@
 #     - Updates draft release notes.  This happens on every push to master.
 # - Job 2:
 #     - Creates issues from any issue comments.
-# Environment:
-#   DO_VERSION - Whether to create version tag (default: 0).  Set to 1 to create.
-
 name: Merge Pull Request Workflow
 
 on:
