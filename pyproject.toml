@@ -197,8 +197,8 @@ markers = [
 ]
 
 [tool.pylint.master]
-ignore = [
-	'tests'
+ignore-paths = [
+	'tests*'
 ]
 persistent = true
 extension-pkg-whitelist = [

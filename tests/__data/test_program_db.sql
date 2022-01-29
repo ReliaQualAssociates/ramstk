@@ -30,15 +30,6 @@ CREATE TABLE ramstk_revision (
 );
 INSERT INTO "ramstk_revision" VALUES(1,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Test Revision',1.0,1.0,X'',1,'',0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_revision" VALUES(2,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Test Revision 2',1.0,1.0,X'',1,'',0.0,0.0,0.0,0.0);
-CREATE TABLE ramstk_failure_definition (
-    fld_revision_id INTEGER,
-    fld_definition_id INTEGER NOT NULL,
-    fld_definition VARCHAR(1024),
-    PRIMARY KEY (fld_definition_id),
-    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
-);
-INSERT INTO "ramstk_failure_definition" VALUES(1,1,'Failure Definition');
-INSERT INTO "ramstk_failure_definition" VALUES(1,2,'Failure Definition');
 CREATE TABLE ramstk_mission (
     fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
@@ -157,6 +148,17 @@ CREATE TABLE ramstk_function (
 INSERT INTO "ramstk_function" VALUES(1,1,1.0,1.0,0.0,'FUNC-0001',0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,'Function Name',0,'',0,0,0,0);
 INSERT INTO "ramstk_function" VALUES(1,2,1.0,1.0,0.0,'FUNC-0002',0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,'Function Name',1,'',0,0,0,0);
 INSERT INTO "ramstk_function" VALUES(1,3,1.0,1.0,0.0,'FUNC-0003',0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,'Function Name',0,'',0,0,0,0);
+CREATE TABLE ramstk_failure_definition (
+    fld_revision_id INTEGER NOT NULL,
+    fld_function_id INTEGER NOT NULL,
+    fld_definition_id INTEGER NOT NULL,
+    fld_definition VARCHAR(1024),
+    PRIMARY KEY (fld_definition_id),
+    FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
+    FOREIGN KEY(fld_function_id) REFERENCES ramstk_function (fld_function_id) ON DELETE CASCADE
+);
+INSERT INTO "ramstk_failure_definition" VALUES(1,1,1,'Failure Definition');
+INSERT INTO "ramstk_failure_definition" VALUES(1,1,2,'Failure Definition');
 CREATE TABLE ramstk_hazard_analysis (
     fld_revision_id INTEGER NOT NULL,
     fld_function_id INTEGER NOT NULL,
