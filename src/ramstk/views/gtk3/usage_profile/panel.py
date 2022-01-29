@@ -22,6 +22,56 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
     """Panel to display hierarchical list of usage profiles."""
 
     # Define private dictionary class attributes.
+    _dic_visible_mask: Dict[str, List[bool]] = {
+        "mission": [
+            False,
+            True,
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ],
+        "phase": [
+            False,
+            False,
+            True,
+            False,
+            True,
+            True,
+            False,
+            False,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+        ],
+        "environment": [
+            False,
+            False,
+            False,
+            True,
+            True,
+            False,
+            False,
+            True,
+            False,
+            False,
+            True,
+            True,
+            True,
+            True,
+        ],
+    }
 
     # Define private list class attributes.
 
@@ -46,61 +96,11 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             "mission_phase": self.__do_load_phase,
             "environment": self.__do_load_environment,
         }
-        self._dic_visible_mask: Dict[str, Dict[str, bool]] = {
-            "mission": {
-                "revision_id": False,
-                "mission_id": True,
-                "phase_id": False,
-                "environment_id": False,
-                "name": False,
-                "description": True,
-                "mission_time": True,
-                "units": True,
-                "phase_start": False,
-                "phase_end": False,
-                "minimum": False,
-                "maximum": False,
-                "mean": False,
-                "variance": False,
-            },
-            "mission_phase": {
-                "revision_id": False,
-                "mission_id": False,
-                "phase_id": True,
-                "environment_id": False,
-                "name": True,
-                "description": True,
-                "mission_time": False,
-                "units": False,
-                "phase_start": True,
-                "phase_end": True,
-                "minimum": False,
-                "maximum": False,
-                "mean": False,
-                "variance": False,
-            },
-            "environment": {
-                "revision_id": False,
-                "mission_id": False,
-                "phase_id": False,
-                "environment_id": True,
-                "name": True,
-                "description": False,
-                "mission_time": False,
-                "units": True,
-                "phase_start": False,
-                "phase_end": False,
-                "minimum": True,
-                "maximum": True,
-                "mean": True,
-                "variance": True,
-            },
-        }
 
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_message: str = f"lvw_editing_{self._tag}"
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -172,8 +172,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 4,
                 Gtk.CellRendererText(),
                 "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
+                self._on_cell_edit,
+                "wvw_editing_usage_profile",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -188,8 +188,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 5,
                 Gtk.CellRendererText(),
                 "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
+                self._on_cell_edit,
+                "wvw_editing_usage_profile",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -205,7 +205,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_mission",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -220,8 +220,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 7,
                 Gtk.CellRendererCombo(),
                 "edited",
-                super().on_cell_edit,
-                self._on_edit_message,
+                self._on_cell_edit,
+                "wvw_editing_usage_profile",
                 "",
                 {
                     "bg_color": "#FFFFFF",
@@ -237,7 +237,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_phase",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -253,7 +253,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_phase",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -269,7 +269,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_environment",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -285,7 +285,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_environment",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -301,7 +301,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_environment",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -317,7 +317,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                self._on_edit_message,
+                "wvw_editing_environment",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -340,6 +340,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         # Initialize public list class attributes.
 
         # Initialize public scalar class attributes.
+        self.level: str = ""
 
         super().do_set_properties()
         super().do_make_panel()
@@ -350,7 +351,27 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super()._do_set_attributes, f"lvw_editing_{self._tag}")
+
+    def do_get_usage_profile_level(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter
+    ) -> None:
+        """Determine the Usage Profile level of the selected Usage Profile row.
+
+        :param model: the Usage Profile Gtk.TreeModel().
+        :param row: the selected Gtk.TreeIter() in the Usage Profile.
+        :return: None
+        :rtype: None
+        """
+        _cid = ""
+
+        for _col in [1, 2, 3]:
+            _cid = f"{_cid}{int(bool(model.get_value(row, _col)))}"
+
+        self.level = {
+            "100": "mission",
+            "110": "phase",
+            "111": "environment",
+        }[_cid]
 
     def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -362,6 +383,33 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         for __, _unit in self.dic_units.items():  # pylint: disable=unused-variable
             _model.append([_unit[1]])
 
+    # noinspection PyUnusedLocal
+    def _on_cell_edit(
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        key: str,
+        message: str,  # pylint: disable=unused-argument
+    ) -> None:
+        """Handle edits of description column to ensure proper level is updated.
+
+        :param cell: the Gtk.CellRenderer() that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
+            that was edited.
+        :param new_text: the new text in the edited Gtk.CellRenderer().
+        :param key: the column key of the edited Gtk.CellRenderer().
+        :param message: the PyPubSub message to publish.
+        :return: None
+        """
+        super().on_cell_edit(
+            cell,
+            path,
+            new_text,
+            key,
+            f"wvw_editing_{self.level}",
+        )
+
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle row changes for the Usage Profile package List View.
 
@@ -372,27 +420,14 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         :return: None
         """
         _attributes = super().on_row_change(selection)
-        __, _row = selection.get_selected()  # pylint: disable=unused-variable
+        _model, _row = selection.get_selected()
 
-        if _row is not None:
-            if (
-                _attributes["mission_id"]
-                * _attributes["phase_id"]
-                * _attributes["environment_id"]
-            ) > 0:
-                self._tag = "environment"
-                self._record_id = _attributes["environment_id"]
-            elif (_attributes["mission_id"] * _attributes["phase_id"]) > 0:
-                self._tag = "mission_phase"
-                self._record_id = _attributes["phase_id"]
-            else:
-                self._tag = "mission"
-                self._record_id = _attributes["mission_id"]
+        if _row is None:
+            return
 
-            self.tvwTreeView.visible = self._dic_visible_mask[self._tag]
-            self.tvwTreeView.do_set_visible_columns()
-
-            pub.sendMessage(f"selected_{self._tag}", attributes=_attributes)
+        self.do_get_usage_profile_level(_model, _row)
+        super().do_set_visible_columns(_attributes)
+        self._record_id = _attributes[f"{self.level}_id"]
 
     def __do_load_environment(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -407,8 +442,6 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         _new_row = None
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _model = self.tvwTreeView.get_model()
 
         _pixbuf = GdkPixbuf.Pixbuf()
         _icon = _pixbuf.new_from_file_at_size(self.dic_icons["environment"], 22, 22)
@@ -432,9 +465,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
                 "An error occurred when loading environment {0:s} in the "
                 "usage profile.  This might indicate it was missing it's data "
@@ -461,8 +493,6 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         # pylint: disable=unused-variable
         [[__, _entity]] = node.data.items()
 
-        _model = self.tvwTreeView.get_model()
-
         _pixbuf = GdkPixbuf.Pixbuf()
         _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission"], 22, 22)
 
@@ -485,9 +515,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
                 "An error occurred when loading mission {0:s} in the usage "
                 "profile.  This might indicate it was missing it's data "
@@ -513,8 +542,6 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
-        _model = self.tvwTreeView.get_model()
-
         _pixbuf = GdkPixbuf.Pixbuf()
         _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission_phase"], 22, 22)
 
@@ -537,9 +564,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
                 "An error occurred when loading mission phase {0:s} in the "
                 "usage profile.  This might indicate it was missing it's data "

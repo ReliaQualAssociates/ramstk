@@ -10,4 +10,4 @@
 
 # RAMSTK Local Imports
 from .panel import UsageProfileTreePanel
-from .view import UsageProfileListView
+from .view import UsageProfileWorkView

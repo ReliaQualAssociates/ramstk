@@ -1309,13 +1309,14 @@ class FMEATreePanel(RAMSTKTreePanel):
         ).get_cells()
         _cell[0].connect("edited", self._on_mission_change)
 
+    # noinspection PyUnusedLocal
     def _on_cell_edit(
         self,
         cell: Gtk.CellRenderer,
         path: str,
         new_text: str,
         key: str,
-        message: str,
+        message: str,  # pylint: disable=unused-argument
     ) -> None:
         """Handle edits of description column to ensure proper level is updated.
 
@@ -1365,13 +1366,15 @@ class FMEATreePanel(RAMSTKTreePanel):
         _attributes = super().on_row_change(selection)
         _model, _row = selection.get_selected()
 
-        if _row is not None:
-            self.do_get_fmea_level(_model, _row)
-            super().do_set_visible_columns(_attributes)
-            self._record_id = _attributes[f"{self.level}_id"]
+        if _row is None:
+            return
 
-            _mission = _model.get_value(_row, 8)
-            self.__do_load_mission_phases(_mission)
+        self.do_get_fmea_level(_model, _row)
+        super().do_set_visible_columns(_attributes)
+        self._record_id = _attributes[f"{self.level}_id"]
+
+        _mission = _model.get_value(_row, 8)
+        self.__do_load_mission_phases(_mission)
 
     def _on_select_hardware(
         self, attributes: Dict[str, Union[int, float, str]]
@@ -1921,7 +1924,6 @@ class FMEATreePanel(RAMSTKTreePanel):
         try:
             _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
                 f"An error occurred when loading failure mode {node.identifier} in the "
                 f"FMEA.  This might indicate it was missing it's data package, "
