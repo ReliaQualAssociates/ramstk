@@ -32,6 +32,7 @@ from ramstk.views.gtk3.requirement import (
 )
 from ramstk.views.gtk3.revision import RevisionWorkView
 from ramstk.views.gtk3.similar_item import SimilarItemWorkView
+from ramstk.views.gtk3.stakeholder import StakeholderWorkView
 from ramstk.views.gtk3.usage_profile import UsageProfileWorkView
 from ramstk.views.gtk3.validation import ValidationGeneralDataView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
@@ -72,6 +73,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             "requirement": [
                 RequirementGeneralDataView(configuration, logger),
                 RequirementAnalysisView(configuration, logger),
+                StakeholderWorkView(configuration, logger),
             ],
             "hardware": [
                 HardwareGeneralDataView(configuration, logger),

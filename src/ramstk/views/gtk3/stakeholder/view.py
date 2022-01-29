@@ -16,13 +16,13 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKListView
+from ramstk.views.gtk3.widgets import RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import StakeholderTreePanel
 
 
-class StakeholderListView(RAMSTKListView):
+class StakeholderWorkView(RAMSTKWorkView):
     """Display Stakeholder Inputs associated with the selected Revision.
 
     The Stakeholder List View displays all the stakeholder inputs associated
@@ -173,7 +173,7 @@ class StakeholderListView(RAMSTKListView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
 
-        :param attributes: the attributes dict for the selected stakeholder
+        :param attributes: the attribute dict for the selected stakeholder
             input.
         :return: None
         :rtype: None
@@ -188,7 +188,8 @@ class StakeholderListView(RAMSTKListView):
 
         :return: None
         """
-        super().make_ui()
+        super().do_make_layout()
+        super().do_embed_treeview_panel()
 
         self._pnlPanel.do_load_affinity_groups(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS
