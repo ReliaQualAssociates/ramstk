@@ -14,7 +14,6 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook
 
 
@@ -31,13 +30,10 @@ class RAMSTKListBook(RAMSTKBaseBook):
         that RAMSTK module.
     """
 
-    def __init__(
-        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
-    ) -> None:
+    def __init__(self, configuration: RAMSTKUserConfiguration) -> None:
         """Initialize an instance of the RAMSTK List View class.
 
         :param configuration: the RAMSTKUserConfiguration() class instance.
-        :param logger: the RAMSTKLogManager class instance.
         """
         RAMSTKBaseBook.__init__(self, configuration)
 

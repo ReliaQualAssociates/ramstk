@@ -7,7 +7,7 @@
 """GTK3 Failure Definition Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -123,10 +123,10 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
 
         _dialog.do_destroy()
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the failure definition's record ID.
 
-        :param attributes: the attributes dict for the selected failure
+        :param attributes: the attribute dict for the selected failure
             definition.
         :return: None
         :rtype: None
