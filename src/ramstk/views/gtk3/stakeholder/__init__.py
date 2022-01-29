@@ -9,4 +9,4 @@
 
 # RAMSTK Local Imports
 from .panel import StakeholderTreePanel
-from .view import StakeholderListView
+from .view import StakeholderWorkView

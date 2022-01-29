@@ -12,7 +12,7 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 # RAMSTK Local Imports
 from . import StakeholderTreePanel as StakeholderTreePanel
 
-class StakeholderListView(RAMSTKListView):
+class StakeholderWorkView(RAMSTKListView):
     _tag: str
     _tablabel: str
     _tabtooltip: str

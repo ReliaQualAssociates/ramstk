@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.12...HEAD)
+
+**Merged pull requests:**
+
+- refactor: move usage profile to work view [\#927](https://github.com/ReliaQualAssociates/ramstk/pull/927) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.12](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.12) (2022-01-28)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.11...v0.15.12)
