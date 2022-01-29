@@ -159,6 +159,7 @@ CREATE TABLE ramstk_failure_definition (
 );
 INSERT INTO "ramstk_failure_definition" VALUES(1,1,1,'Failure Definition');
 INSERT INTO "ramstk_failure_definition" VALUES(1,1,2,'Failure Definition');
+INSERT INTO "ramstk_failure_definition" VALUES(1,1,3,'Failure Definition');
 CREATE TABLE ramstk_hazard_analysis (
     fld_revision_id INTEGER NOT NULL,
     fld_function_id INTEGER NOT NULL,

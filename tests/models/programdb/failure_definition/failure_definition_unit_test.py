@@ -36,7 +36,7 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_set_attributes, "lvw_editing_failure_definition")
     pub.unsubscribe(dut.do_update, "request_update_failure_definition")
     pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_select_all, "selected_function")
     pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
     pub.unsubscribe(dut.do_insert, "request_insert_failure_definition")
 
@@ -75,7 +75,7 @@ class TestCreateModels:
             test_tablemodel.do_get_attributes,
             "request_get_failure_definition_attributes",
         )
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
+        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_function")
         assert pub.isSubscribed(
             test_tablemodel.do_update, "request_update_failure_definition"
         )
@@ -144,6 +144,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add new record to record tree and update last_id."""
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -180,6 +182,7 @@ class TestGetterSetter:
 
         assert isinstance(_attributes, dict)
         assert _attributes["revision_id"] == 1
+        assert _attributes["function_id"] == 1
         assert _attributes["definition"] == "Mock Failure Definition 1"
 
     @pytest.mark.unit
@@ -188,8 +191,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -202,8 +203,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["definition"] == "Failure Definition"
 
@@ -215,7 +214,5 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

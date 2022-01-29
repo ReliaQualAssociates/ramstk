@@ -23,7 +23,8 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_definition_id"
     _db_tablename = "ramstk_failure_definition"
-    _select_msg = "selected_revision"
+    _deprecated = False
+    _select_msg = "selected_function"
     _tag = "failure_definition"
 
     # Define public dictionary class attributes.
