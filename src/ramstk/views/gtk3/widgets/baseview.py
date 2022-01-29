@@ -29,7 +29,7 @@ from .panel import RAMSTKPanel
 from .treeview import RAMSTKTreeView
 
 
-# noinspection PyUnresolvedReferences
+# noinspection PyUnresolvedReferences,GrazieInspection
 class RAMSTKBaseView(Gtk.HBox):
     """Metaclass for all RAMSTK ListView, ModuleView, and WorkView classes.
 
@@ -540,9 +540,12 @@ class RAMSTKBaseView(Gtk.HBox):
         self.do_set_cursor(Gdk.CursorType.WATCH)
 
     def do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the record and revision ID when a hardware item is selected.
+        """Set the record ID and tag when am item is selected.
 
-        :param attributes: the hazard dict for the selected hardware ID.
+        This method is used with views containing tree panels that display database
+        views such as the FMEA.
+
+        :param attributes: the attribute dict for the selected item.
         :return: None
         :rtype: None
         """
@@ -689,7 +692,7 @@ class RAMSTKBaseView(Gtk.HBox):
 class RAMSTKListView(RAMSTKBaseView):
     """Class to display list and matrix type data in the RAMSTK List Book.
 
-    This is the meta class for all RAMSTK List View classes.  Attributes of the
+    This is the metaclass for all RAMSTK List View classes.  Attributes of the
     RAMSTKListView are:
 
     :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
@@ -735,14 +738,14 @@ class RAMSTKListView(RAMSTKBaseView):
 class RAMSTKModuleView(RAMSTKBaseView):
     """Display data in the RAMSTK Module Book.
 
-    This is the meta class for all RAMSTK Module View classes. Attributes of the
+    This is the metaclass for all RAMSTK Module View classes. Attributes of the
     RAMSTKModuleView are:
     """
 
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None:
-        """Initialize the RAMSTKModuleView meta-class.
+        """Initialize the RAMSTKModuleView metaclass.
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         :param logger: the RAMSTKLogManager class instance.
@@ -782,6 +785,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
 class RAMSTKWorkView(RAMSTKBaseView):
     """Class to display data in the RAMSTK Work Book.
 
-    This is the meta class for all RAMSTK Work View classes.  Attributes of the
+    This is the metaclass for all RAMSTK Work View classes.  Attributes of the
     RAMSTKWorkView are:
     """
