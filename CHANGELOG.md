@@ -1,12 +1,28 @@
 # Changelog
 
+## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.12...HEAD)
+
+**Merged pull requests:**
+
+- refactor: move usage profile to work view [\#927](https://github.com/ReliaQualAssociates/ramstk/pull/927) ([weibullguy](https://github.com/weibullguy))
+
+## [v0.15.12](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.12) (2022-01-28)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.11...v0.15.12)
+
+Bug Fixes
+
+- fix: verification plan calculate all updates wrong records [\#924](https://github.com/ReliaQualAssociates/ramstk/pull/924) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- release: v0.15.12 [\#925](https://github.com/ReliaQualAssociates/ramstk/pull/925) ([github-actions[bot]](https://github.com/apps/github-actions))
+
 ## [v0.15.11](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.11) (2022-01-28)
 
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/latest...v0.15.11)
-
-## [latest](https://github.com/ReliaQualAssociates/ramstk/tree/latest) (2022-01-28)
-
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.10...latest)
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.10...v0.15.11)
 
 Bug Fixes
 

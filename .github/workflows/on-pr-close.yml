@@ -136,6 +136,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: Get PR labels
         id: prlabels
         uses: joerick/pr-labels-action@v1.0.6
@@ -148,9 +157,9 @@ jobs:
       - name: Push version tag
         if: contains(steps.prlabels.outputs.labels, ' Release ')
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
+          git tag -s -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
           git push --tags
 
       - name: Create release notes

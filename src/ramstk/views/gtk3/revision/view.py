@@ -219,7 +219,7 @@ class RevisionWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Revision's record ID.
 
-        :param attributes: the attributes dict for the selected Revision.
+        :param attributes: the attribute dict for the selected Revision.
         :return: None
         :rtype: None
         """
@@ -233,5 +233,6 @@ class RevisionWorkView(RAMSTKWorkView):
         """
         super().do_make_layout()
 
-        self.pack_end(self._pnlGeneralData, True, True, 0)
+        self.pack_start(self._pnlGeneralData, True, True, 0)
+
         self.show_all()

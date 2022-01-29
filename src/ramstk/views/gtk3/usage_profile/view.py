@@ -6,9 +6,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Usage Profile Views."""
 
-# Standard Library Imports
-from typing import Any, Dict
-
 # Third Party Imports
 from pubsub import pub
 
@@ -16,13 +13,13 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKListView
+from ramstk.views.gtk3.widgets import RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import UsageProfileTreePanel
 
 
-class UsageProfileListView(RAMSTKListView):
+class UsageProfileWorkView(RAMSTKWorkView):
     """Display Usage Profiles associated with the selected Revision.
 
     The attributes of a Usage Profile List View are:
@@ -62,10 +59,10 @@ class UsageProfileListView(RAMSTKListView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks[0] = self._do_request_insert_sibling
+        self._lst_callbacks.insert(0, self._do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_insert_child)
         self._lst_callbacks.insert(2, self._do_request_delete)
-        self._lst_icons[0] = "insert_sibling"
+        self._lst_icons.insert(0, "insert_sibling")
         self._lst_icons.insert(1, "insert_child")
         self._lst_icons.insert(2, "remove")
         self._lst_mnu_labels = [
@@ -86,7 +83,7 @@ class UsageProfileListView(RAMSTKListView):
             ),
             _("Delete the currently selected entity from the usage profile."),
             _("Save changes to the currently selected entity in the usage profile."),
-            _("Save changes to all entities in the usage profile."),
+            _("Save changes to all entities at the same level in the usage profile."),
         ]
 
         # Initialize private scalar attributes.
@@ -101,9 +98,7 @@ class UsageProfileListView(RAMSTKListView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_mission")
-        pub.subscribe(self._do_set_record_id, "selected_mission_phase")
-        pub.subscribe(self._do_set_record_id, "selected_environment")
+        pub.subscribe(super().do_set_record_id, f"selected_{self._tag}")
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -187,41 +182,14 @@ class UsageProfileListView(RAMSTKListView):
             attributes=_attributes,
         )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the usage profile's record ID.
-
-        :param attributes: the attributes dict for the selected usage profile element.
-        :return: None
-        :rtype: None
-        """
-        self.dic_pkeys["revision_id"] = attributes["revision_id"]
-        self.dic_pkeys["phase_id"] = attributes["phase_id"]
-        self.dic_pkeys["environment_id"] = attributes["environment_id"]
-        self.dic_pkeys["mission_id"] = attributes["mission_id"]
-
-        if (
-            attributes["mission_id"]
-            * attributes["phase_id"]
-            * attributes["environment_id"]
-        ) > 0:
-            self.dic_pkeys["parent_id"] = attributes["phase_id"]
-            self.dic_pkeys["record_id"] = attributes["environment_id"]
-            self._tag = "environment"
-        elif (attributes["mission_id"] * attributes["phase_id"]) > 0:
-            self.dic_pkeys["parent_id"] = attributes["mission_id"]
-            self.dic_pkeys["record_id"] = attributes["phase_id"]
-            self._tag = "mission_phase"
-        else:
-            self.dic_pkeys["parent_id"] = 0
-            self.dic_pkeys["record_id"] = attributes["mission_id"]
-            self._tag = "mission"
-
-    def __make_ui(self):
+    def __make_ui(self) -> None:
         """Build the user interface for the usage profile list view.
 
         :return: None
+        :rtype: None
         """
-        super().make_ui()
+        super().do_make_layout()
+        super().do_embed_treeview_panel()
 
         self._pnlPanel.dic_units = (
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_MEASUREMENT_UNITS

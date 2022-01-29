@@ -27,11 +27,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
       - name: Push 'latest' tag
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git tag -f -a -m"push latest tag" latest
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
+          git tag -s -f -a -m"push latest tag" latest
           git push -f --tags
 
       - name: Draft 'latest' release notes
