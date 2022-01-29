@@ -12,7 +12,7 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel
 # RAMSTK Local Imports
 from . import UsageProfileTreePanel as UsageProfileTreePanel
 
-class UsageProfileListView(RAMSTKListView):
+class UsageProfileWorkView(RAMSTKListView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
