@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKCategory.py is part of The RAMSTK Project
+#       ramstk.models.commondb.category.record.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKCategory Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Category Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Float, Integer, String
@@ -15,11 +18,15 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_category in the RAMSTK Common database.
 
-    Types of category are:     # 1. Hardware     # 2. Risk     # 3.
-    Software     # 4. Incident     # 5. Action
+    Types of category are:
+        1. Hardware
+        2. Risk
+        3. Software
+        4. Incident
+        5. Action
     """
 
     __defaults__ = {
@@ -99,7 +106,7 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="delete",
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of the RAMSTKCategory data model attributes.
 
         :return: {category_id, name, description, category_type, value,
@@ -109,7 +116,7 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
                   mild_maxt_limit} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "category_id": self.category_id,
             "name": self.name,
             "description": self.description,
@@ -126,5 +133,3 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
             "harsh_maxt_limit": self.harsh_maxt_limit,
             "mild_maxt_limit": self.mild_maxt_limit,
         }
-
-        return _attributes

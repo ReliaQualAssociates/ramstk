@@ -8,7 +8,6 @@
 """The RAMSTK common database models package."""
 
 # RAMSTK Local Imports
-from .ramstkcategory import RAMSTKCategory
 from .ramstkcondition import RAMSTKCondition
 from .ramstkfailuremode import RAMSTKFailureMode
 from .ramstkgroup import RAMSTKGroup

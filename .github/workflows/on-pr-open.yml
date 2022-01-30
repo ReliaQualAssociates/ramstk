@@ -74,6 +74,7 @@ jobs:
           enhancementLabels: "bump: minor"
           bugsLabel: "Bug Fixes"
           bugLabels: "bump: patch"
+          excludeLabels: "Release"
           issues: false
           issuesWoLabels: false
           pullRequests: true

@@ -17,10 +17,9 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
-from ramstk.models import RAMSTKSiteInfoRecord
+from ramstk.models import RAMSTKCategoryRecord, RAMSTKSiteInfoRecord
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKCategory,
     RAMSTKFailureMode,
     RAMSTKGroup,
     RAMSTKHazards,
@@ -266,8 +265,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "action")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "action")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -304,8 +303,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "hardware")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "hardware")
             .all()
         ):
 
@@ -368,8 +367,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "incident")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "incident")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -590,8 +589,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "risk")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "risk")
             .all()
         ):
             _attributes = _record.get_attributes()
