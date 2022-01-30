@@ -6,13 +6,13 @@ from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfigurat
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
-from ramstk.views.gtk3.widgets import RAMSTKListView as RAMSTKListView
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
+from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import StakeholderTreePanel as StakeholderTreePanel
 
-class StakeholderWorkView(RAMSTKListView):
+class StakeholderWorkView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
