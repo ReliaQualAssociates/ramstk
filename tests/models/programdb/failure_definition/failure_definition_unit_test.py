@@ -90,7 +90,7 @@ class TestCreateModels:
             "request_set_failure_definition_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "lvw_editing_failure_definition"
+            test_tablemodel.do_set_attributes, "wvw_editing_failure_definition"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_delete, "request_delete_failure_definition"
@@ -144,6 +144,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add new record to record tree and update last_id."""
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 0
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -180,6 +182,7 @@ class TestGetterSetter:
 
         assert isinstance(_attributes, dict)
         assert _attributes["revision_id"] == 1
+        assert _attributes["function_id"] == 1
         assert _attributes["definition"] == "Mock Failure Definition 1"
 
     @pytest.mark.unit
@@ -188,8 +191,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -202,8 +203,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["definition"] == "Failure Definition"
 
@@ -215,7 +214,5 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("definition_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

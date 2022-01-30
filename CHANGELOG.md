@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- refactor: associate failure definitions with functions [\#930](https://github.com/ReliaQualAssociates/ramstk/pull/930) ([weibullguy](https://github.com/weibullguy))
 - ci: lower case -s to sign tags [\#929](https://github.com/ReliaQualAssociates/ramstk/pull/929) ([weibullguy](https://github.com/weibullguy))
 - refactor: move Stakeholder inputs to Requirements work view [\#928](https://github.com/ReliaQualAssociates/ramstk/pull/928) ([weibullguy](https://github.com/weibullguy))
 - refactor: move usage profile to work view [\#927](https://github.com/ReliaQualAssociates/ramstk/pull/927) ([weibullguy](https://github.com/weibullguy))

@@ -16,6 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3.allocation import AllocationWorkView
+from ramstk.views.gtk3.failure_definition import FailureDefinitionWorkView
 from ramstk.views.gtk3.fmea import FMEAWorkView
 from ramstk.views.gtk3.function import FunctionWorkView
 from ramstk.views.gtk3.hardware import (
@@ -69,6 +70,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             "function": [
                 FunctionWorkView(configuration, logger),
                 HazardsWorkView(configuration, logger),
+                FailureDefinitionWorkView(configuration, logger),
             ],
             "requirement": [
                 RequirementGeneralDataView(configuration, logger),

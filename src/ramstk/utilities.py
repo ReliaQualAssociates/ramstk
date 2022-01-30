@@ -82,11 +82,7 @@ def none_to_default(field: Any, default: Any) -> Any:
         otherwise.
     :rtype: any
     """
-    _return = field
-    if field is None:
-        _return = default
-
-    return _return
+    return default if field is None else field
 
 
 def none_to_string(string: None) -> str:
@@ -127,9 +123,7 @@ def split_string(string: str) -> List[str]:
     :return: _strlist
     :rtype: list of strings
     """
-    _strlist = string.rsplit(":")
-
-    return _strlist
+    return string.rsplit(":")
 
 
 def boolean_to_integer(boolean: bool) -> int:
@@ -139,12 +133,7 @@ def boolean_to_integer(boolean: bool) -> int:
     :return: _result
     :rtype: int
     """
-    _result = 0
-
-    if boolean:
-        _result = 1
-
-    return _result
+    return 1 if boolean else 0
 
 
 def integer_to_boolean(integer: int) -> bool:
@@ -158,34 +147,19 @@ def integer_to_boolean(integer: int) -> bool:
     :rtype: bool
     :raise: TypeError if passed a string.
     """
-    _result = False
-
-    if integer > 0:
-        _result = True
-
-    return _result
+    return integer > 0
 
 
 def string_to_boolean(string: str) -> bool:
-    """Convert string representations of TRUE/FALSE to an boolean value.
+    """Convert string representations of TRUE/FALSE to a boolean value.
 
     :param string: the string to convert.
     :return: _result
     :rtype: bool
     """
-    _result = False
-
     _string = str(string)
 
-    if (
-        _string.lower() == "true"
-        or _string.lower() == "yes"
-        or _string.lower() == "t"
-        or _string.lower() == "y"
-    ):
-        _result = True
-
-    return _result
+    return _string.lower() in ["true", "yes", "t", "y"]
 
 
 def get_install_prefix() -> str:
@@ -200,7 +174,7 @@ def get_install_prefix() -> str:
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
         lambda x: x in ["lib64", "lib"],  # nosec
-        lambda x: x == ("python%s" % sys.version[:3]),
+        lambda x: x == f"python{sys.version[:3]}",
         lambda x: x in ["site-packages", "dist-packages"],
         lambda x: x == _name,  # 'project'
         lambda x: x == _this,  # 'prefix.py'
