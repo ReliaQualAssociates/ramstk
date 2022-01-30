@@ -24,7 +24,7 @@ from ramstk.views.gtk3.assistants import (
     ImportProject,
     OpenProject,
 )
-from ramstk.views.gtk3.books import RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+from ramstk.views.gtk3.books import RAMSTKModuleBook, RAMSTKWorkBook
 from ramstk.views.gtk3.options import OptionsDialog
 from ramstk.views.gtk3.preferences import PreferencesDialog
 
@@ -123,9 +123,6 @@ class RAMSTKDesktop(Gtk.Window):
 
         self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
-        self.nbkListBook: RAMSTKListBook = RAMSTKListBook(
-            self.RAMSTK_USER_CONFIGURATION
-        )
         self.nbkModuleBook: RAMSTKModuleBook = RAMSTKModuleBook(
             self.RAMSTK_USER_CONFIGURATION, logger
         )
@@ -421,12 +418,8 @@ class RAMSTKDesktop(Gtk.Window):
         _vbox.pack_start(self.menubar, False, False, 0)
         _vbox.pack_start(self.toolbar, False, False, 0)
 
-        _hpaned = Gtk.HPaned()
-        _hpaned.pack1(self.nbkModuleBook, True, False)
-        _hpaned.pack2(self.nbkListBook, True, False)
-
         _vpaned = Gtk.VPaned()
-        _vpaned.pack1(_hpaned)
+        _vpaned.pack1(self.nbkModuleBook, True, False)
         _vpaned.pack2(self.nbkWorkBook, True, False)
 
         _vbox.pack_start(_vpaned, True, True, 0)
@@ -441,7 +434,7 @@ class RAMSTKDesktop(Gtk.Window):
         self._do_set_status_icon()
 
     def __set_callbacks(self) -> None:
-        """Set the callbacks for the RAMSTKListBook() and widgets.
+        """Set the callbacks for the RAMSTKBook() and widgets.
 
         :return: None
         :rtype: None
