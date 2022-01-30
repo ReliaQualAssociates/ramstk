@@ -124,7 +124,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.icoStatus: Gtk.StatusIcon = Gtk.StatusIcon()
 
         self.nbkListBook: RAMSTKListBook = RAMSTKListBook(
-            self.RAMSTK_USER_CONFIGURATION, logger
+            self.RAMSTK_USER_CONFIGURATION
         )
         self.nbkModuleBook: RAMSTKModuleBook = RAMSTKModuleBook(
             self.RAMSTK_USER_CONFIGURATION, logger

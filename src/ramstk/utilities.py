@@ -82,11 +82,7 @@ def none_to_default(field: Any, default: Any) -> Any:
         otherwise.
     :rtype: any
     """
-    _return = field
-    if field is None:
-        _return = default
-
-    return _return
+    return default if field is None else field
 
 
 def none_to_string(string: None) -> str:
@@ -155,7 +151,7 @@ def integer_to_boolean(integer: int) -> bool:
 
 
 def string_to_boolean(string: str) -> bool:
-    """Convert string representations of TRUE/FALSE to an boolean value.
+    """Convert string representations of TRUE/FALSE to a boolean value.
 
     :param string: the string to convert.
     :return: _result
@@ -178,7 +174,7 @@ def get_install_prefix() -> str:
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
         lambda x: x in ["lib64", "lib"],  # nosec
-        lambda x: x == ("python%s" % sys.version[:3]),
+        lambda x: x == f"python{sys.version[:3]}",
         lambda x: x in ["site-packages", "dist-packages"],
         lambda x: x == _name,  # 'project'
         lambda x: x == _this,  # 'prefix.py'

@@ -7,7 +7,7 @@
 """GTK3 Failure Definition Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -16,13 +16,13 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import RAMSTKListView
+from ramstk.views.gtk3.widgets import RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import FailureDefinitionTreePanel
 
 
-class FailureDefinitionListView(RAMSTKListView):
+class FailureDefinitionWorkView(RAMSTKWorkView):
     """Display failure definitions associated with the selected revision.
 
     The attributes of the failure definition list view are:
@@ -83,7 +83,7 @@ class FailureDefinitionListView(RAMSTKListView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlPanel = FailureDefinitionTreePanel()
+        self._pnlPanel: FailureDefinitionTreePanel = FailureDefinitionTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -123,10 +123,10 @@ class FailureDefinitionListView(RAMSTKListView):
 
         _dialog.do_destroy()
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the failure definition's record ID.
 
-        :param attributes: the attributes dict for the selected failure
+        :param attributes: the attribute dict for the selected failure
             definition.
         :return: None
         :rtype: None
@@ -141,7 +141,8 @@ class FailureDefinitionListView(RAMSTKListView):
 
         :return: None
         """
-        super().make_ui()
+        super().do_make_layout()
+        super().do_embed_treeview_panel()
 
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"

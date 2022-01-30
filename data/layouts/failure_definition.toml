@@ -2,25 +2,30 @@ pixbuf='False'
 
 [defaulttitle]
 revision_id='Revision ID'
+function_id='Function ID'
 definition_id='Definition ID'
 definition='Failure Definition'
 
 [usertitle]
 revision_id='Revision ID'
+function_id='Function ID'
 definition_id='Definition ID'
 definition='Failure Definition'
 
 [position]
 revision_id=0
-definition_id=1
-definition=2
+function_id=1
+definition_id=2
+definition=3
 
 [editable]
 revision_id='False'
+function_id='False'
 definition_id='False'
 definition='True'
 
 [visible]
 revision_id='False'
+function_id='False'
 definition_id='True'
 definition='True'
