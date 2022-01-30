@@ -8,6 +8,5 @@
 """RAMSTK GTK3 Books Package."""
 
 # RAMSTK Local Imports
-from .listbook import RAMSTKListBook
 from .modulebook import RAMSTKModuleBook
 from .workbook import RAMSTKWorkBook

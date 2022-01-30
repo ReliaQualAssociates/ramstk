@@ -689,52 +689,6 @@ class RAMSTKBaseView(Gtk.HBox):
         }
 
 
-class RAMSTKListView(RAMSTKBaseView):
-    """Class to display list and matrix type data in the RAMSTK List Book.
-
-    This is the metaclass for all RAMSTK List View classes.  Attributes of the
-    RAMSTKListView are:
-
-    :ivar tab_label: the Gtk.Label() displaying text for the List View tab.
-    :type tab_label: :class:`Gtk.Label`
-    """
-
-    def __init__(
-        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
-    ) -> None:
-        """Initialize the List View.
-
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :param logger: the RAMSTKLogManager class instance.
-        """
-        super().__init__(configuration, logger)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-        self._lst_icons.insert(0, "add")
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.tab_label: Gtk.Label = Gtk.Label()
-
-        # Subscribe to PyPubSub messages.
-
-    def make_ui(self) -> None:
-        """Build the list view user interface.
-
-        :return: None
-        """
-        super().do_make_layout()
-        super().do_embed_treeview_panel()
-
-
 class RAMSTKModuleView(RAMSTKBaseView):
     """Display data in the RAMSTK Module Book.
 
