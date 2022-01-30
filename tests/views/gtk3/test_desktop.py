@@ -15,7 +15,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop
-from ramstk.views.gtk3.books import RAMSTKListBook, RAMSTKModuleBook, RAMSTKWorkBook
+from ramstk.views.gtk3.books import RAMSTKModuleBook, RAMSTKWorkBook
 
 
 @pytest.mark.usefixtures("test_toml_user_configuration")
@@ -35,7 +35,6 @@ class TestRAMSTKBook:
         assert isinstance(DUT, RAMSTKDesktop)
         assert isinstance(DUT.RAMSTK_USER_CONFIGURATION, RAMSTKUserConfiguration)
         assert isinstance(DUT.menubar, Gtk.MenuBar)
-        assert isinstance(DUT.nbkListBook, RAMSTKListBook)
         assert isinstance(DUT.nbkModuleBook, RAMSTKModuleBook)
         assert isinstance(DUT.nbkWorkBook, RAMSTKWorkBook)
         assert isinstance(DUT.progressbar, Gtk.ProgressBar)

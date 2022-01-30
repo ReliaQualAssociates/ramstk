@@ -87,7 +87,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.set_current_page(0)
 
     def __set_callbacks(self) -> None:
-        """Set callback methods for the RAMSTKListBook and widgets.
+        """Set callback methods for the RAMSTKModuleBook and widgets.
 
         :return: None
         :rtype: None
