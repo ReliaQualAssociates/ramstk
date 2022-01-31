@@ -6,6 +6,8 @@
 
 **Merged pull requests:**
 
+- refactor: move RAMSTKCategory to its own package [\#933](https://github.com/ReliaQualAssociates/ramstk/pull/933) ([weibullguy](https://github.com/weibullguy))
+- refactor: retire listviews and listbook [\#932](https://github.com/ReliaQualAssociates/ramstk/pull/932) ([weibullguy](https://github.com/weibullguy))
 - refactor: move failure definitions to Function work view [\#931](https://github.com/ReliaQualAssociates/ramstk/pull/931) ([weibullguy](https://github.com/weibullguy))
 - refactor: associate failure definitions with functions [\#930](https://github.com/ReliaQualAssociates/ramstk/pull/930) ([weibullguy](https://github.com/weibullguy))
 - ci: lower case -s to sign tags [\#929](https://github.com/ReliaQualAssociates/ramstk/pull/929) ([weibullguy](https://github.com/weibullguy))
@@ -20,10 +22,6 @@ Bug Fixes
 
 - fix: verification plan calculate all updates wrong records [\#924](https://github.com/ReliaQualAssociates/ramstk/pull/924) ([weibullguy](https://github.com/weibullguy))
 
-**Merged pull requests:**
-
-- release: v0.15.12 [\#925](https://github.com/ReliaQualAssociates/ramstk/pull/925) ([github-actions[bot]](https://github.com/apps/github-actions))
-
 ## [v0.15.11](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.11) (2022-01-28)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.10...v0.15.11)
@@ -35,7 +33,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.11 [\#922](https://github.com/ReliaQualAssociates/ramstk/pull/922) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: add GPG key for auto actions [\#919](https://github.com/ReliaQualAssociates/ramstk/pull/919) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.10](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.10) (2022-01-27)
@@ -49,7 +46,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.10 [\#916](https://github.com/ReliaQualAssociates/ramstk/pull/916) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: update on-pr-open action to use git for finding version [\#913](https://github.com/ReliaQualAssociates/ramstk/pull/913) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.9](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.9) (2022-01-26)
@@ -62,7 +58,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.9 [\#905](https://github.com/ReliaQualAssociates/ramstk/pull/905) ([github-actions[bot]](https://github.com/apps/github-actions))
 - refactor: remove unused methods [\#901](https://github.com/ReliaQualAssociates/ramstk/pull/901) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.8](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.8) (2022-01-25)
@@ -75,7 +70,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.8 [\#900](https://github.com/ReliaQualAssociates/ramstk/pull/900) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: add step to checkout repository [\#896](https://github.com/ReliaQualAssociates/ramstk/pull/896) ([weibullguy](https://github.com/weibullguy))
 - refactor: update do\_set\_attributes\(\) node\_id argument to integer [\#894](https://github.com/ReliaQualAssociates/ramstk/pull/894) ([weibullguy](https://github.com/weibullguy))
 - ci: update previous tag action [\#893](https://github.com/ReliaQualAssociates/ramstk/pull/893) ([weibullguy](https://github.com/weibullguy))
@@ -92,7 +86,6 @@ Bug Fixes
 **Merged pull requests:**
 
 - ci: update CHANGELOG.md when opening PR [\#888](https://github.com/ReliaQualAssociates/ramstk/pull/888) ([weibullguy](https://github.com/weibullguy))
-- release: v0.15.7 [\#887](https://github.com/ReliaQualAssociates/ramstk/pull/887) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: update on-merge workflow to use ref [\#884](https://github.com/ReliaQualAssociates/ramstk/pull/884) ([weibullguy](https://github.com/weibullguy))
 
 ## [0.15.6](https://github.com/ReliaQualAssociates/ramstk/tree/0.15.6) (2022-01-23)
@@ -105,7 +98,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.6 [\#883](https://github.com/ReliaQualAssociates/ramstk/pull/883) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: move job to update version files to PR close workflow [\#880](https://github.com/ReliaQualAssociates/ramstk/pull/880) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.5](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.5) (2022-01-22)
@@ -119,7 +111,6 @@ Bug Fixes
 **Merged pull requests:**
 
 - ci: update workflows [\#879](https://github.com/ReliaQualAssociates/ramstk/pull/879) ([weibullguy](https://github.com/weibullguy))
-- release: v0.15.5 [\#878](https://github.com/ReliaQualAssociates/ramstk/pull/878) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: move documentation build and deploy action to separate workflow [\#874](https://github.com/ReliaQualAssociates/ramstk/pull/874) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.4](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.4) (2022-01-20)
@@ -132,7 +123,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.4 [\#873](https://github.com/ReliaQualAssociates/ramstk/pull/873) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: update action workflows [\#870](https://github.com/ReliaQualAssociates/ramstk/pull/870) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.3](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.3) (2022-01-19)
@@ -148,7 +138,6 @@ Bug Fixes
 
 **Merged pull requests:**
 
-- release: v0.15.3 [\#869](https://github.com/ReliaQualAssociates/ramstk/pull/869) ([github-actions[bot]](https://github.com/apps/github-actions))
 - ci: update action workflows [\#857](https://github.com/ReliaQualAssociates/ramstk/pull/857) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.2](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.2) (2022-01-10)
@@ -160,11 +149,6 @@ Bug Fixes
 - ci: add step to label closed PR [\#855](https://github.com/ReliaQualAssociates/ramstk/pull/855) ([weibullguy](https://github.com/weibullguy))
 - fix: load Allocation worksheet [\#851](https://github.com/ReliaQualAssociates/ramstk/pull/851) ([weibullguy](https://github.com/weibullguy))
 
-**Merged pull requests:**
-
-- release: v0.15.2 [\#856](https://github.com/ReliaQualAssociates/ramstk/pull/856) ([github-actions[bot]](https://github.com/apps/github-actions))
-- ci: fix issue assign action [\#854](https://github.com/ReliaQualAssociates/ramstk/pull/854) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.1) (2022-01-09)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.0...v0.15.1)
@@ -173,17 +157,9 @@ Bug Fixes
 
 - fix: handle no server connection error [\#848](https://github.com/ReliaQualAssociates/ramstk/pull/848) ([weibullguy](https://github.com/weibullguy))
 
-**Merged pull requests:**
-
-- ci: set for release [\#849](https://github.com/ReliaQualAssociates/ramstk/pull/849) ([github-actions[bot]](https://github.com/apps/github-actions))
-
 ## [v0.15.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.0) (2022-01-07)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.14.2...v0.15.0)
-
-New Features
-
-- release: v0.15.0 [\#840](https://github.com/ReliaQualAssociates/ramstk/pull/840) ([weibullguy](https://github.com/weibullguy))
 
 **Merged pull requests:**
 
