@@ -1,33 +1,27 @@
 # Standard Library Imports
-from typing import Any
+from typing import Dict, Union
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
-class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
-    __defaults__: Any
+class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+    __defaults__: Dict[str, Union[float, int, str]]
     __tablename__: str
-    __table_args__: Any
-    site_id: Any
-    site_name: Any
-    product_key: Any
-    expire_on: Any
-    function_enabled: Any
-    requirement_enabled: Any
-    hardware_enabled: Any
-    software_enabled: Any
-    rcm_enabled: Any
-    testing_enabled: Any
-    incident_enabled: Any
-    survival_enabled: Any
-    vandv_enabled: Any
-    hazard_enabled: Any
-    stakeholder_enabled: Any
-    allocation_enabled: Any
-    similar_item_enabled: Any
-    fmea_enabled: Any
-    pof_enabled: Any
-    rbd_enabled: Any
-    fta_enabled: Any
-    def get_attributes(self): ...
+    __table_args__: Dict[str, bool]
+    category_id: int
+    name: str
+    description: str
+    category_type: int
+    value: int
+    harsh_ir_limit: float
+    mild_ir_limit: float
+    harsh_pr_limit: float
+    mild_pr_limit: float
+    harsh_vr_limit: float
+    mild_vr_limit: float
+    harsh_deltat_limit: float
+    mild_deltat_limit: float
+    harsh_maxt_limit: float
+    mild_maxt_limit: float
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]: ...
