@@ -69,7 +69,7 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {failuremode_id, description, type} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "category_id": self.category_id,
             "subcategory_id": self.subcategory_id,
             "mode_id": self.mode_id,
@@ -77,5 +77,3 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
             "mode_ratio": self.mode_ratio,
             "source": self.source,
         }
-
-        return _attributes
