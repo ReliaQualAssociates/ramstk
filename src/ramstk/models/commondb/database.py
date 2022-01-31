@@ -329,22 +329,19 @@ class RAMSTKCommonDB:
             ):
                 _subcats[_subcat.subcategory_id] = _subcat.description
 
-                _modes = {}
                 user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                     _subcat.subcategory_id
                 ] = {}
-                for _mode in (
+                _modes = {_mode.mode_id: [
+                        _mode.description,
+                        _mode.mode_ratio,
+                        _mode.source,
+                    ] for _mode in (
                     self.common_dao.session.query(RAMSTKFailureMode)
                     .filter(RAMSTKFailureMode.category_id == _record.category_id)
                     .filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id)
                     .all()
-                ):
-                    _modes[_mode.mode_id] = [
-                        _mode.description,
-                        _mode.mode_ratio,
-                        _mode.source,
-                    ]
-
+                )}
                 user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                     _subcat.subcategory_id
                 ] = _modes
