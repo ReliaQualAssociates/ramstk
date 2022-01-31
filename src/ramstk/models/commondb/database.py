@@ -17,7 +17,11 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
-from ramstk.models import RAMSTKCategoryRecord, RAMSTKSiteInfoRecord
+from ramstk.models import (
+    RAMSTKCategoryRecord,
+    RAMSTKSiteInfoRecord,
+    RAMSTKSubCategoryRecord,
+)
 from ramstk.models.commondb import (
     RAMSTKRPN,
     RAMSTKFailureMode,
@@ -30,7 +34,6 @@ from ramstk.models.commondb import (
     RAMSTKModel,
     RAMSTKStakeholders,
     RAMSTKStatus,
-    RAMSTKSubCategory,
     RAMSTKType,
     RAMSTKUser,
 )
@@ -77,10 +80,6 @@ class RAMSTKCommonDB:
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_create_common, "request_create_common")
-        # pub.subscribe(self.do_open_program, "request_open_program")
-        # pub.subscribe(self.do_open_program, "succeed_create_program_database")
-        # pub.subscribe(self.do_close_program, "request_close_program")
-        # pub.subscribe(self.do_save_program, "request_update_program")
 
     def do_create_common(
         self,
@@ -323,8 +322,8 @@ class RAMSTKCommonDB:
                 _record.mild_maxt_limit,
             )
             for _subcat in (
-                self.common_dao.session.query(RAMSTKSubCategory)
-                .filter(RAMSTKSubCategory.category_id == _record.category_id)
+                self.common_dao.session.query(RAMSTKSubCategoryRecord)
+                .filter(RAMSTKSubCategoryRecord.category_id == _record.category_id)
                 .all()
             ):
                 _subcats[_subcat.subcategory_id] = _subcat.description

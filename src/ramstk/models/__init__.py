@@ -10,11 +10,13 @@
 from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isort:skip
 from .commondb.category.record import RAMSTKCategoryRecord  # isort:skip
 from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip
+from .commondb.subcategory.record import RAMSTKSubCategoryRecord  # isort:skip
+from .commondb.category.table import RAMSTKCategoryTable  # isort:skip
 
 # RAMSTK Local Imports
-from .commondb.category.table import RAMSTKCategoryTable
 from .commondb.database import RAMSTKCommonDB
 from .commondb.site_info.table import RAMSTKSiteInfoTable
+from .commondb.subcategory.table import RAMSTKSubCategoryTable
 from .programdb.action.record import RAMSTKActionRecord
 from .programdb.action.table import RAMSTKActionTable
 from .programdb.allocation.record import RAMSTKAllocationRecord
