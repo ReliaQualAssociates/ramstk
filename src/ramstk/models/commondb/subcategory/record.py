@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKSubCategory.py is part of The RAMSTK
-#       Project
+#       ramstk.models.commondb.subcategory.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKSubCategory Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""SubCategory Record Module."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKey, Integer, String
@@ -16,7 +18,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKSubCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_subcategory in the RAMSTK Common database."""
 
     __defaults__ = {"description": "Subcategory Description"}
@@ -50,16 +52,14 @@ class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="delete",
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve current values of RAMSTKSubCategory data model attributes.
 
-        :return: {category_id, subcategory, description} pairs.
+        :return: {category_id, subcategory_id, description} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "category_id": self.category_id,
             "subcategory_id": self.subcategory_id,
             "description": self.description,
         }
-
-        return _attributes

@@ -60,7 +60,7 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="mode",
     )
     subcategory = relationship(  # type: ignore
-        "RAMSTKSubCategory", back_populates="mode"
+        "RAMSTKSubCategoryRecord", back_populates="mode"
     )
 
     def get_attributes(self):

@@ -20,6 +20,5 @@ from .ramstkmodel import RAMSTKModel
 from .ramstkrpn import RAMSTKRPN
 from .ramstkstakeholders import RAMSTKStakeholders
 from .ramstkstatus import RAMSTKStatus
-from .ramstksubcategory import RAMSTKSubCategory
 from .ramstktype import RAMSTKType
 from .ramstkuser import RAMSTKUser

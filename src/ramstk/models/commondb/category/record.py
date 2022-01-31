@@ -96,7 +96,7 @@ class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     subcategory = relationship(  # type: ignore
-        "RAMSTKSubCategory",
+        "RAMSTKSubCategoryRecord",
         back_populates="category",
         cascade="delete",
     )
