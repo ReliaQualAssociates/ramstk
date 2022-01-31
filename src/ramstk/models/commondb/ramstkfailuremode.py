@@ -55,7 +55,10 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
     source = Column("fld_source", String(128), default=__defaults__["source"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    category = relationship("RAMSTKCategory", back_populates="mode")  # type: ignore
+    category = relationship(  # type: ignore
+        "RAMSTKCategoryRecord",
+        back_populates="mode",
+    )
     subcategory = relationship(  # type: ignore
         "RAMSTKSubCategory", back_populates="mode"
     )

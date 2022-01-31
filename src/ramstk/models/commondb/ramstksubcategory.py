@@ -42,7 +42,7 @@ class RAMSTKSubCategory(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     category = relationship(  # type: ignore
-        "RAMSTKCategory", back_populates="subcategory"
+        "RAMSTKCategoryRecord", back_populates="subcategory"
     )
     mode = relationship(  # type: ignore
         "RAMSTKFailureMode",

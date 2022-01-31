@@ -17,10 +17,9 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
-from ramstk.models import RAMSTKSiteInfoRecord
+from ramstk.models import RAMSTKCategoryRecord, RAMSTKSiteInfoRecord
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKCategory,
     RAMSTKFailureMode,
     RAMSTKGroup,
     RAMSTKHazards,
@@ -266,8 +265,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "action")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "action")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -304,8 +303,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "hardware")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "hardware")
             .all()
         ):
 
@@ -330,22 +329,24 @@ class RAMSTKCommonDB:
             ):
                 _subcats[_subcat.subcategory_id] = _subcat.description
 
-                _modes = {}
                 user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                     _subcat.subcategory_id
                 ] = {}
-                for _mode in (
-                    self.common_dao.session.query(RAMSTKFailureMode)
-                    .filter(RAMSTKFailureMode.category_id == _record.category_id)
-                    .filter(RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id)
-                    .all()
-                ):
-                    _modes[_mode.mode_id] = [
+                _modes = {
+                    _mode.mode_id: [
                         _mode.description,
                         _mode.mode_ratio,
                         _mode.source,
                     ]
-
+                    for _mode in (
+                        self.common_dao.session.query(RAMSTKFailureMode)
+                        .filter(RAMSTKFailureMode.category_id == _record.category_id)
+                        .filter(
+                            RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id
+                        )
+                        .all()
+                    )
+                }
                 user_configuration.RAMSTK_FAILURE_MODES[_record.category_id][
                     _subcat.subcategory_id
                 ] = _modes
@@ -368,8 +369,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "incident")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "incident")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -590,8 +591,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKCategory)
-            .filter(RAMSTKCategory.category_type == "risk")
+            self.common_dao.session.query(RAMSTKCategoryRecord)
+            .filter(RAMSTKCategoryRecord.category_type == "risk")
             .all()
         ):
             _attributes = _record.get_attributes()
