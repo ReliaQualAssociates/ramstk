@@ -101,7 +101,7 @@ class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="delete",
     )
     mode = relationship(  # type: ignore
-        "RAMSTKFailureMode",
+        "RAMSTKFailureModeRecord",
         back_populates="category",
         cascade="delete",
     )

@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKFailureMode.py is part of The RAMSTK
-#       Project
+#       ramstk.models.commondb.failure_mode.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKFailureMode Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Failure Mode Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -16,7 +15,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKFailureModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_failuremode in the RAMSTK Common database."""
 
     __defaults__ = {

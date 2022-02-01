@@ -47,7 +47,7 @@ class RAMSTKSubCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "RAMSTKCategoryRecord", back_populates="subcategory"
     )
     mode = relationship(  # type: ignore
-        "RAMSTKFailureMode",
+        "RAMSTKFailureModeRecord",
         back_populates="subcategory",
         cascade="delete",
     )

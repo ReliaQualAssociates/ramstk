@@ -19,12 +19,12 @@ from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguratio
 from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.models import (
     RAMSTKCategoryRecord,
+    RAMSTKFailureModeRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKFailureMode,
     RAMSTKGroup,
     RAMSTKHazards,
     RAMSTKLoadHistory,
@@ -338,10 +338,13 @@ class RAMSTKCommonDB:
                         _mode.source,
                     ]
                     for _mode in (
-                        self.common_dao.session.query(RAMSTKFailureMode)
-                        .filter(RAMSTKFailureMode.category_id == _record.category_id)
+                        self.common_dao.session.query(RAMSTKFailureModeRecord)
                         .filter(
-                            RAMSTKFailureMode.subcategory_id == _subcat.subcategory_id
+                            RAMSTKFailureModeRecord.category_id == _record.category_id
+                        )
+                        .filter(
+                            RAMSTKFailureModeRecord.subcategory_id
+                            == _subcat.subcategory_id
                         )
                         .all()
                     )
