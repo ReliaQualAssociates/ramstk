@@ -8,10 +8,10 @@ from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfigurat
 from ramstk.db import BaseDatabase as BaseDatabase
 from ramstk.db import do_create_program_db as do_create_program_db
 from ramstk.models import RAMSTKCategoryRecord as RAMSTKCategoryRecord
+from ramstk.models import RAMSTKFailureModeRecord as RAMSTKFailureModeRecord
 from ramstk.models import RAMSTKSiteInfoRecord as RAMSTKSiteInfoRecord
 from ramstk.models import RAMSTKSubCategoryRecord as RAMSTKSubCategoryRecord
 from ramstk.models.commondb import RAMSTKRPN as RAMSTKRPN
-from ramstk.models.commondb import RAMSTKFailureMode as RAMSTKFailureMode
 from ramstk.models.commondb import RAMSTKGroup as RAMSTKGroup
 from ramstk.models.commondb import RAMSTKHazards as RAMSTKHazards
 from ramstk.models.commondb import RAMSTKLoadHistory as RAMSTKLoadHistory
