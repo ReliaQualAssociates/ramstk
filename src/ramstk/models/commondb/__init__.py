@@ -9,7 +9,6 @@
 
 # RAMSTK Local Imports
 from .ramstkcondition import RAMSTKCondition
-from .ramstkfailuremode import RAMSTKFailureMode
 from .ramstkgroup import RAMSTKGroup
 from .ramstkhazards import RAMSTKHazards
 from .ramstkloadhistory import RAMSTKLoadHistory
