@@ -17,7 +17,7 @@ from distutils import dir_util, file_util
 # pylint: disable=no-name-in-module
 from distutils.errors import DistutilsFileError
 from os import environ, makedirs
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Tuple, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -525,32 +525,38 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self._logs_sub_dir = "/logs"
 
         # Initialize public dictionary attributes.
-        self.RAMSTK_ACTION_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
-        self.RAMSTK_ACTION_STATUS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_AFFINITY_GROUPS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_CATEGORIES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_DAMAGE_MODELS: Dict[str, str] = {}  # User.
-        self.RAMSTK_DETECTION_METHODS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_FAILURE_MODES: Dict[str, str] = {}  # User.
-        self.RAMSTK_HAZARDS: Dict[str, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[str, Tuple[str, str, str, str]] = {}
-        self.RAMSTK_INCIDENT_STATUS: Dict[str, Tuple[str, str, str]] = {}
-        self.RAMSTK_INCIDENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_ACTION_CATEGORY: Dict[int, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_ACTION_STATUS: Dict[int, Tuple[str, str, str]] = {}
+        self.RAMSTK_AFFINITY_GROUPS: Dict[int, Tuple[str, str]] = {}  # User.
+        self.RAMSTK_CATEGORIES: Dict[int, str] = {}  # Static.
+        self.RAMSTK_DAMAGE_MODELS: Dict[int, str] = {}  # User.
+        self.RAMSTK_DETECTION_METHODS: Dict[int, Tuple[str, str, str]] = {}
+        self.RAMSTK_FAILURE_MODES: Dict[
+            int, Dict[int, Dict[int, Union[float, str]]]
+        ] = {}
+        # User.
+        self.RAMSTK_HAZARDS: Dict[int, Tuple[str, str]] = {}  # User.
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[int, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_INCIDENT_STATUS: Dict[int, Tuple[str, str, str]] = {}
+        self.RAMSTK_INCIDENT_TYPE: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[str, Tuple[str, str, str]] = {}  # User.
+        self.RAMSTK_MANUFACTURERS: Dict[int, Tuple[str, str, str]] = {}  # User.
         self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[str, Tuple[str, str, str]] = {}  # Admin.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[int, Tuple[str, str, str]] = {}  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
-        self.RAMSTK_REQUIREMENT_TYPE: Dict[str, Tuple[str, str, str]] = {}
+        self.RAMSTK_REQUIREMENT_TYPE: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
         self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}  # Admin
-        self.RAMSTK_STAKEHOLDERS: Dict[str, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[int, List[float]] = {}  # User.
-        self.RAMSTK_SUBCATEGORIES: Dict[str, Dict[str, str]] = {}  # Static.
-        self.RAMSTK_USERS: Dict[str, Tuple[str, str, str, str, str]] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[str, Tuple[str, str, str]] = {}  # Admin.
+        self.RAMSTK_STAKEHOLDERS: Dict[int, str] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict[
+            int,
+            Tuple[float, float, float, float, float, float, float, float, float, float],
+        ] = {}  # User.
+        self.RAMSTK_SUBCATEGORIES: Dict[int, Dict[str, str]] = {}  # Static.
+        self.RAMSTK_USERS: Dict[int, Tuple[str, str, str, str, str]] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[int, Tuple[str, str, str]] = {}  # Admin.
 
         self.RAMSTK_COLORS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
