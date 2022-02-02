@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKFailureMode.py is part of The RAMSTK
-#       Project
+#       ramstk.models.commondb.failure_mode.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKFailureMode Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Failure Mode Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
@@ -16,7 +15,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKFailureModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_failuremode in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -55,9 +54,12 @@ class RAMSTKFailureMode(RAMSTK_BASE, RAMSTKBaseRecord):
     source = Column("fld_source", String(128), default=__defaults__["source"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    category = relationship("RAMSTKCategory", back_populates="mode")  # type: ignore
+    category = relationship(  # type: ignore
+        "RAMSTKCategoryRecord",
+        back_populates="mode",
+    )
     subcategory = relationship(  # type: ignore
-        "RAMSTKSubCategory", back_populates="mode"
+        "RAMSTKSubCategoryRecord", back_populates="mode"
     )
 
     def get_attributes(self):

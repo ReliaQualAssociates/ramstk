@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKCategory.py is part of The RAMSTK Project
+#       ramstk.models.commondb.category.record.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKCategory Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Category Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Float, Integer, String
@@ -15,11 +18,15 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_category in the RAMSTK Common database.
 
-    Types of category are:     # 1. Hardware     # 2. Risk     # 3.
-    Software     # 4. Incident     # 5. Action
+    Types of category are:
+        1. Hardware
+        2. Risk
+        3. Software
+        4. Incident
+        5. Action
     """
 
     __defaults__ = {
@@ -89,17 +96,17 @@ class RAMSTKCategory(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
     subcategory = relationship(  # type: ignore
-        "RAMSTKSubCategory",
+        "RAMSTKSubCategoryRecord",
         back_populates="category",
         cascade="delete",
     )
     mode = relationship(  # type: ignore
-        "RAMSTKFailureMode",
+        "RAMSTKFailureModeRecord",
         back_populates="category",
         cascade="delete",
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of the RAMSTKCategory data model attributes.
 
         :return: {category_id, name, description, category_type, value,
