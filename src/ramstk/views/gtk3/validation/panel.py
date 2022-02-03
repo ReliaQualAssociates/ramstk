@@ -11,6 +11,7 @@ from datetime import date
 from typing import Dict, List, Tuple, Union
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -51,7 +52,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self.tvwTreeView.dic_row_loader = {
-            "validation": super().do_load_treerow,
+            "validation": self.__do_load_validation,
         }
 
         # Initialize private list class attributes.
@@ -337,8 +338,8 @@ class ValidationTreePanel(RAMSTKTreePanel):
             "measurement_unit": [
                 17,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 "mvw_editing_validation",
                 "",
                 {
@@ -348,7 +349,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Unit of Measure"),
-                "gint",
+                "gchararray",
             ],
             "name": [
                 18,
@@ -401,8 +402,8 @@ class ValidationTreePanel(RAMSTKTreePanel):
             "task_type": [
                 21,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 "mvw_editing_validation",
                 "",
                 {
@@ -412,7 +413,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
                     "visible": True,
                 },
                 _("Task Type"),
-                "gint",
+                "gchararray",
             ],
             "time_average": [
                 22,
@@ -620,6 +621,13 @@ class ValidationTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["validation_id"]
 
+            _attributes["measurement_unit"] = self._lst_measurement_units.index(
+                _attributes["measurement_unit"]
+            )
+            _attributes["task_type"] = self._lst_verification_types.index(
+                _attributes["task_type"]
+            )
+
             _title = _(f"Analyzing Verification Task {_attributes['name']}")
 
             pub.sendMessage(
@@ -630,6 +638,71 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 "request_set_title",
                 title=_title,
             )
+
+    def __do_load_validation(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
+        """Load a verification task into the RAMSTKTreeView().
+
+        :param node: the treelib Node() with the mode data to load.
+        :param row: the parent row of the task to load into the validation tree.
+        :return: _new_row; the row that was just populated with validation data.
+        :rtype: :class:`Gtk.TreeIter`
+        """
+        _new_row = None
+
+        # pylint: disable=unused-variable
+        _entity = node.data["validation"]
+
+        _attributes = [
+            _entity.revision_id,
+            _entity.validation_id,
+            _entity.acceptable_maximum,
+            _entity.acceptable_mean,
+            _entity.acceptable_minimum,
+            _entity.acceptable_variance,
+            _entity.confidence,
+            _entity.cost_average,
+            _entity.cost_ll,
+            _entity.cost_maximum,
+            _entity.cost_mean,
+            _entity.cost_minimum,
+            _entity.cost_ul,
+            _entity.cost_variance,
+            _entity.date_end,
+            _entity.date_start,
+            _entity.description,
+            self._lst_measurement_units[_entity.measurement_unit],
+            _entity.name,
+            _entity.status,
+            _entity.task_specification,
+            self._lst_verification_types[_entity.task_type],
+            _entity.time_average,
+            _entity.time_ll,
+            _entity.time_maximum,
+            _entity.time_mean,
+            _entity.time_minimum,
+            _entity.time_ul,
+            _entity.time_variance,
+        ]
+
+        try:
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+        except (AttributeError, TypeError, ValueError):
+            _message = _(
+                f"An error occurred when loading verification task {node.identifier} "
+                f"into the verification tree.  This might indicate it was missing it's "
+                f"data package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: "
+                f"{_attributes}"
+            )
+            pub.sendMessage(
+                "do_log_warning_msg",
+                logger_name="WARNING",
+                message=_message,
+            )
+
+        return _new_row
 
 
 class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):

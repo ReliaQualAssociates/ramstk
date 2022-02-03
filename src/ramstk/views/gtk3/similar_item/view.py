@@ -29,10 +29,6 @@ class SimilarItemWorkView(RAMSTKWorkView):
     The WorkView displays all the attributes for the Similar Item Analysis. The
     attributes of a SimilarItem Work View are:
 
-    :cvar dict _dic_quality: the quality levels and associated index to use in
-        a Topic 633 analysis.
-    :cvar dict _dic_environment: the environments and associated index to use
-        in a Topic 633 analysis.
     :cvar str _tag: the name of the module.
 
     :ivar dict _dic_hardware: dict to hold information from the Hardware
