@@ -171,7 +171,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _iter = _cell_model.get_iter_first()
         while _iter is not None:
             if _cell_model.get_value(_iter, 0) == _new_text:
-                _model[path][position] = _idx
+                _model[path][position] = _new_text
                 break
             _iter = _cell_model.iter_next(_iter)
             _idx += 1

@@ -35,6 +35,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
+    _lst_cost_types: List[str] = ["", "Assessed", "Specified"]
 
     # Define private scalar class attributes.
     _record_field = "hardware_id"
@@ -273,19 +274,19 @@ class HardwareTreePanel(RAMSTKTreePanel):
             ],
             "manufacturer_id": [
                 13,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
+                Gtk.CellRendererCombo(),
+                "changed",
+                super().on_cell_change,
                 f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Manufacturer"),
-                "gint",
+                "gchararray",
             ],
             "mission_time": [
                 14,
@@ -545,19 +546,19 @@ class HardwareTreePanel(RAMSTKTreePanel):
             ],
             "cost_type_id": [
                 30,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
+                Gtk.CellRendererCombo(),
+                "changed",
+                super().on_cell_change,
                 f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Cost Type"),
-                "gint",
+                "gchararray",
             ],
             "attachments": [
                 31,
@@ -577,40 +578,43 @@ class HardwareTreePanel(RAMSTKTreePanel):
             ],
             "category_id": [
                 32,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
+                Gtk.CellRendererCombo(),
+                "changed",
+                super().on_cell_change,
                 f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Category"),
-                "gint",
+                "gchararray",
             ],
             "subcategory_id": [
                 33,
-                Gtk.CellRendererText(),
-                "edited",
-                None,
+                Gtk.CellRendererCombo(),
+                "changed",
+                super().on_cell_change,
                 f"mvw_editing_{self._tag}",
                 0,
                 {
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Subcategory"),
-                "gint",
+                "gchararray",
             ],
         }
         self.dic_icons = {"assembly": None, "part": None}
+        self.dic_subcategories: Dict[int, List[str]] = {0: [""]}
 
         # Initialize public list class attributes.
+        self.lst_categories: List[str] = [""]
+        self.lst_manufacturers: List[str] = [""]
 
         # Initialize public scalar class attributes.
 
@@ -628,8 +632,51 @@ class HardwareTreePanel(RAMSTKTreePanel):
             "mvwSwitchedPage",
         )
 
+    def do_load_comboboxes(self) -> None:
+        """Load the Gtk.CellRendererCombo()s.
+
+        :return: None
+        :rtype: None
+        """
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["category_id"],
+            self.lst_categories,
+        )
+
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["manufacturer_id"],
+            self.lst_manufacturers,
+        )
+
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["cost_type_id"],
+            self._lst_cost_types,
+        )
+
+        _cell = self.tvwTreeView.get_column(
+            self.tvwTreeView.position["category_id"]
+        ).get_cells()
+        _cell[0].connect("edited", self._on_category_change)
+
+    def _on_category_change(
+        self, __combo: Gtk.CellRendererCombo, path: str, new_text: str
+    ) -> None:
+        """Load the subcategories whenever the category combo is changed.
+
+        :param __combo: the category list Gtk.CellRendererCombo().  Unused in
+            this method.
+        :param path: the path identifying the edited cell.
+        :param new_text: the new text (category description).
+        :return: None
+        :rtype: None
+        """
+        self.__do_load_subcategories(new_text)
+
+        _model = self.tvwTreeView.get_model()
+        _model[path][self.tvwTreeView.position["subcategory_id"]] = ""
+
     def _on_module_switch(self, module: str = "") -> None:
-        """Respond to changes in selected Module View module (tab).
+        """Respond to change in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
         :return: None
@@ -660,6 +707,19 @@ class HardwareTreePanel(RAMSTKTreePanel):
             self._record_id = _attributes["hardware_id"]
             self._parent_id = _attributes["parent_id"]
 
+            _attributes["category_id"] = self.lst_categories.index(
+                _attributes["category_id"]
+            )
+            _attributes["cost_type_id"] = ["", "Assessed", "Specified"].index(
+                _attributes["cost_type_id"]
+            )
+            _attributes["manufacturer_id"] = self.lst_manufacturers.index(
+                _attributes["manufacturer_id"]
+            )
+            _attributes["subcategory_id"] = self.dic_subcategories[
+                _attributes["category_id"]
+            ].index(_attributes["subcategory_id"])
+
             _title = _("Analyzing hardware item {0}: {1}").format(
                 str(_attributes["comp_ref_des"]), str(_attributes["name"])
             )
@@ -687,7 +747,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         """Load a hardware item into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
-        :param row: the parent row of the mode to load into the hardware tree.
+        :param row: the parent row of the item to load into the hardware tree.
         :return: _new_row; the row that was just populated with hardware data.
         :rtype: :class:`Gtk.TreeIter`
         """
@@ -695,8 +755,6 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
         # pylint: disable=unused-variable
         _entity = node.data["hardware"]
-
-        _model = self.tvwTreeView.get_model()
 
         # noinspection PyArgumentList
         _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
@@ -723,7 +781,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _entity.figure_number,
             _entity.lcn,
             _entity.level,
-            _entity.manufacturer_id,
+            self.lst_manufacturers[_entity.manufacturer_id],
             _entity.mission_time,
             _entity.name,
             _entity.nsn,
@@ -740,24 +798,23 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _entity.total_part_count,
             _entity.total_power_dissipation,
             _entity.year_of_manufacture,
-            _entity.cost_type_id,
+            self._lst_cost_types[_entity.cost_type_id],
             _entity.attachments,
-            _entity.category_id,
-            _entity.subcategory_id,
+            self.lst_categories[_entity.category_id],
+            self.dic_subcategories[_entity.category_id][_entity.subcategory_id],
             _icon,
         ]
 
         try:
-            _new_row = _model.append(row, _attributes)
+            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
         except (AttributeError, TypeError, ValueError):
-            _new_row = None
             _message = _(
-                "An error occurred when loading hardware item {0} into the "
-                "hardware tree.  This might indicate it was missing it's data "
-                "package, some of the data in the package was missing, or "
-                "some of the data was the wrong type.  Row data was: "
-                "{1}"
-            ).format(str(node.identifier), _attributes)
+                f"An error occurred when loading hardware item {node.identifier} into "
+                f"the hardware tree.  This might indicate it was missing it's data "
+                f"package, some of the data in the package was missing, or "
+                f"some of the data was the wrong type.  Row data was: "
+                f"{_attributes}"
+            )
             pub.sendMessage(
                 "do_log_warning_msg",
                 logger_name="WARNING",
@@ -765,6 +822,20 @@ class HardwareTreePanel(RAMSTKTreePanel):
             )
 
         return _new_row
+
+    def __do_load_subcategories(self, category: str) -> None:
+        """Load subcategory Gtk.CellRendererCombo() when a new category is selected.
+
+        :param category: the ID of the newly selected category.
+        :return: None
+        :rtype: None
+        """
+        _category_id = self.lst_categories.index(category)
+
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["subcategory_id"],
+            self.dic_subcategories[_category_id],
+        )
 
 
 class HardwareGeneralDataPanel(RAMSTKFixedPanel):

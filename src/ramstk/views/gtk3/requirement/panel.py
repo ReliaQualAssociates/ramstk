@@ -849,7 +849,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
         pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
 
     def _on_module_switch(self, module: str = "") -> None:
-        """Respond to changes in selected Module View module (tab).
+        """Respond to change in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
         :return: None
@@ -1230,11 +1230,8 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _requirement_types: List[Tuple[str]] = []
+        _requirement_types: List[Tuple[str]] = list(requirement_types.values())
 
-        # pylint: disable=unused-variable
-        for __, _key in enumerate(requirement_types):
-            _requirement_types.append(requirement_types[_key])
         self.cmbRequirementType.do_load_combo(entries=_requirement_types, simple=False)
 
     def do_load_workgroups(self, workgroups: Dict[int, Tuple[str]]) -> None:
@@ -1244,11 +1241,8 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _owners = []
+        _owners = list(workgroups.values())
 
-        # pylint: disable=unused-variable
-        for __, _key in enumerate(workgroups):
-            _owners.append(workgroups[_key])
         self.cmbOwner.do_load_combo(_owners)
 
     def _do_load_code(self, requirement_code: int) -> None:

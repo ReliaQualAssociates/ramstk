@@ -306,12 +306,39 @@ class HardwareModuleView(RAMSTKModuleView):
         self.dic_pkeys["parent_id"] = attributes["parent_id"]
         self.dic_pkeys["record_id"] = attributes["hardware_id"]
 
+    def __do_load_lists(self) -> None:
+        """Load the pick lists associated with Hardware.
+
+        :return: None
+        :rtype: None
+        """
+        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES:
+            self._pnlPanel.lst_categories.append(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_CATEGORIES[_key]
+            )
+            self._pnlPanel.dic_subcategories[_key] = [""]
+
+            for _subkey in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key]:
+                self._pnlPanel.dic_subcategories[_key].append(
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][_subkey]
+                )
+
+        for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS:
+            self._pnlPanel.lst_manufacturers.append(
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS[_key][0]
+            )
+
     def __make_ui(self) -> None:
         """Build the user interface for the function module view.
 
         :return: None
         """
         super().make_ui()
+
+        self._pnlPanel.dic_icons = self._dic_icons
+
+        self.__do_load_lists()
+        self._pnlPanel.do_load_comboboxes()
 
         self._pnlPanel.do_set_cell_callbacks(
             "mvw_editing_hardware",
@@ -344,8 +371,6 @@ class HardwareModuleView(RAMSTKModuleView):
         ] = self._pnlPanel.tvwTreeView.connect(
             "button_press_event", super().on_button_press
         )
-        for _element in ["assembly", "part"]:
-            self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]
 
 
 class HardwareGeneralDataView(RAMSTKWorkView):
