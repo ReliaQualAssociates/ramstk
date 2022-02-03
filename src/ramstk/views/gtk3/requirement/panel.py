@@ -849,7 +849,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
         pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
 
     def _on_module_switch(self, module: str = "") -> None:
-        """Respond to changes in selected Module View module (tab).
+        """Respond to change in selected Module View module (tab).
 
         :param module: the name of the module that was just selected.
         :return: None
