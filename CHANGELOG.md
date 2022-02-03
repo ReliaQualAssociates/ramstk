@@ -6,6 +6,7 @@
 
 **Merged pull requests:**
 
+- refactor: move RAMSTKFailureMode to its own package [\#939](https://github.com/ReliaQualAssociates/ramstk/pull/939) ([weibullguy](https://github.com/weibullguy))
 - refactor: move RAMSTKSubCategory to its own package [\#937](https://github.com/ReliaQualAssociates/ramstk/pull/937) ([weibullguy](https://github.com/weibullguy))
 - refactor: move RAMSTKCategory to its own package [\#933](https://github.com/ReliaQualAssociates/ramstk/pull/933) ([weibullguy](https://github.com/weibullguy))
 - refactor: retire listviews and listbook [\#932](https://github.com/ReliaQualAssociates/ramstk/pull/932) ([weibullguy](https://github.com/weibullguy))
