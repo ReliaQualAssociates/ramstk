@@ -128,24 +128,24 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     """Panel to display Similar Item analysis worksheet."""
 
     # Define private dict class attributes.
-    _dic_quality: Dict[int, str] = {
-        0: "",
-        1: "Space",
-        2: "Full Military",
-        3: "Ruggedized",
-        4: "Commercial",
-    }
-    _dic_environment: Dict[int, str] = {
-        0: "",
-        1: "Ground, Benign",
-        2: "Ground,Mobile",
-        3: "Naval, Sheltered",
-        4: "Airborne, Inhabited, Cargo",
-        5: "Airborne, Rotary Wing",
-        6: "Space, Flight",
-    }
 
     # Define private list class attributes.
+    _lst_environments: List[str] = [
+        "",
+        "Ground, Benign",
+        "Ground,Mobile",
+        "Naval, Sheltered",
+        "Airborne, Inhabited, Cargo",
+        "Airborne, Rotary Wing",
+        "Space, Flight",
+    ]
+    _lst_qualities: List[str] = [
+        "",
+        "Space",
+        "Full Military",
+        "Ruggedized",
+        "Commercial",
+    ]
 
     # Define private scalar class attributes.
     _select_msg = "succeed_retrieve_similar_items"
@@ -421,8 +421,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "quality_from_id": [
                 4,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 self._on_edit_message,
                 "",
                 {
@@ -437,8 +437,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "quality_to_id": [
                 5,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 self._on_edit_message,
                 "",
                 {
@@ -453,8 +453,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "environment_from_id": [
                 6,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 self._on_edit_message,
                 "",
                 {
@@ -469,8 +469,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             "environment_to_id": [
                 7,
                 Gtk.CellRendererCombo(),
-                "edited",
-                super().on_cell_edit,
+                "changed",
+                super().on_cell_change,
                 self._on_edit_message,
                 "",
                 {
@@ -1298,17 +1298,22 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        # Load the quality from and quality to Gtk.CellRendererCombo().
-        for _idx in [4, 5]:
-            _model = self.tvwTreeView.get_cell_model(_idx, True)
-            for _quality in self._dic_quality.values():
-                _model.append([_quality])
-
-        # Load the environment from and environment to Gtk.CellRendererCombo().
-        for _idx in [6, 7]:
-            _model = self.tvwTreeView.get_cell_model(_idx, True)
-            for _environment in self._dic_environment.values():
-                _model.append([_environment])
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["environment_from_id"],
+            self._lst_environments,
+        )
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["environment_to_id"],
+            self._lst_environments,
+        )
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["quality_from_id"],
+            self._lst_qualities,
+        )
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["quality_to_id"],
+            self._lst_qualities,
+        )
 
     def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
         """Refresh the Similar Item functions in the RAMSTKTreeView().
@@ -1421,16 +1426,16 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _entity = node.data["similar_item"]
 
-        if not _entity.parent_id == 0:
+        if _entity.parent_id != 0:
             _attributes = [
                 _entity.revision_id,
                 _entity.hardware_id,
                 "",
                 0.0,
-                self._dic_quality[_entity.quality_from_id],
-                self._dic_quality[_entity.quality_to_id],
-                self._dic_environment[_entity.environment_from_id],
-                self._dic_environment[_entity.environment_to_id],
+                self._lst_qualities[_entity.quality_from_id],
+                self._lst_qualities[_entity.quality_to_id],
+                self._lst_environments[_entity.environment_from_id],
+                self._lst_environments[_entity.environment_to_id],
                 _entity.temperature_from,
                 _entity.temperature_to,
                 _entity.change_description_1,
