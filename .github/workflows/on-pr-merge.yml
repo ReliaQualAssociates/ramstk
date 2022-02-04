@@ -14,16 +14,9 @@ on:
       - "*"
 
 jobs:
-  test-suite:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Test Suite
-        uses: ./.github/workflows/do-test-suite.yml
-
   tag-latest:
     name: Tag Repository as 'latest'
     runs-on: ubuntu-latest
-    needs: test-suite
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
