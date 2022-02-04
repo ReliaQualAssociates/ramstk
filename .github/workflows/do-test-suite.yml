@@ -13,7 +13,9 @@
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
-  workflow_call:
+  push:
+    branches:
+      - master
   pull_request:
     types:
       - "opened"
