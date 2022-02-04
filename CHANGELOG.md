@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/ReliaQualAssociates/ramstk/tree/HEAD)
+## [v](https://github.com/ReliaQualAssociates/ramstk/tree/v) (2022-02-04)
 
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.12...HEAD)
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.13...v)
+
+**Merged pull requests:**
+
+- ci: update workflows to follow more conventional ci/cd pipeline [\#942](https://github.com/ReliaQualAssociates/ramstk/pull/942) ([weibullguy](https://github.com/weibullguy))
+
+## [v0.15.13](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.13) (2022-02-03)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.12...v0.15.13)
+
+Bug Fixes
+
+- fix: properly handle CellRenderCombo returning integers [\#940](https://github.com/ReliaQualAssociates/ramstk/pull/940) ([weibullguy](https://github.com/weibullguy))
 
 **Merged pull requests:**
 
