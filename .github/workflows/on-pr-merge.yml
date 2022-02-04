@@ -17,7 +17,8 @@ jobs:
   test-suite:
     runs-on: ubuntu-latest
     steps:
-      uses: ./.github/workflows/do-test-suite.yml
+      - name: Test Suite
+        uses: ./.github/workflows/do-test-suite.yml
 
   tag-latest:
     name: Tag Repository as 'latest'
