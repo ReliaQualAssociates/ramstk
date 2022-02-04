@@ -9,9 +9,8 @@
 #     - Determine next Semantic version.
 #     - Set next version.
 #     - IF one of 'bump: patch', 'bump: minor', or 'bump: major' tags:
-#         - Update pyproject.toml and VERSION.
-#         - Set pull request variables.
-#         - Cut release pull request.
+#         - Import GPG key.
+#         - Push version tag.
 # - Job 3:
 #     - IF branch is release/*:
 #         - Get new version from VERSION.
@@ -24,7 +23,6 @@
 #         - Test install from Test PyPi.
 #         - Upload wheel and sdist to PyPi.
 #         - Upload wheel to GitHub Release. (pending)
-
 name: Close Pull Request Workflow
 
 on:
@@ -44,8 +42,8 @@ jobs:
           add-labels: "status: closed"
           remove-labels: "status: inprogress"
 
-  cut-release:
-    name: Cut Release Pull Request
+  tag-version:
+    name: Push Version Tag
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -95,48 +93,8 @@ jobs:
             echo "do_release=0" >> $GITHUB_ENV
           fi
 
-      - name: Update VERSION and pyproject.toml
-        if: ${{ env.do_release == 1 }}
-        uses: vemel/nextversion@main
-        with:
-          path: ./pyproject.toml
-          result: ${{ steps.nextversion.outputs.next_version }}
-          update: |
-            ./VERSION
-            ./pyproject.toml
-
-      - name: Set release pull request variables
-        if: ${{ env.do_release == 1 }}
-        id: prvars
-        run: |
-          echo ::set-output name=title::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=body::"Please cut release v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=message::"release: v${{ steps.nextversion.outputs.next_version }}"
-          echo ::set-output name=branch::"release/v${{ steps.nextversion.outputs.next_version }}"
-          echo "do_push=1" >> $GITHUB_ENV
-
-      - name: Cut release pull request
-        if: ${{ env.do_push == 1 }}
-        uses: peter-evans/create-pull-request@v3
-        with:
-          commit-message: ${{ steps.prvars.outputs.message }}
-          title: ${{ steps.prvars.outputs.title }}
-          body: ${{ steps.prvars.outputs.body }}
-          branch: ${{ steps.prvars.outputs.branch }}
-          labels: Release
-
-  tag-version:
-    name: Tag Repository with Version
-    runs-on: ubuntu-latest
-    env:
-      DO_VERSION: 0
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
       - name: Import GPG key
+        if: ${{ env.do_release == 1 }}
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v4
         with:
@@ -145,74 +103,10 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
-      - name: Get new version
-        id: newversion
-        run: |
-          echo "::set-output name=version::$(echo $(cat VERSION))"
-
       - name: Push version tag
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        if: ${{ env.do_release == 1 }}
         run: |
           git config --global user.email "${{ steps.import_gpg.outputs.email }}"
           git config --global user.name "${{ steps.import_gpg.outputs.name }}"
           git tag -s -a -m"v${{ steps.newversion.outputs.version }}" v${{ steps.newversion.outputs.version }}
           git push --tags
-
-      - name: Create release notes
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
-        uses: release-drafter/release-drafter@master
-        with:
-          name: "v${{ steps.newversion.outputs.version }}"
-          tag: "v${{ steps.newversion.outputs.version }}"
-          version: "${{ steps.newversion.outputs.version }}"
-          prerelease: false
-          publish: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-deploy:
-    name: Build and Deploy RAMSTK
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Get PR labels
-        id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
-
-      - name: Build release
-        if: contains(steps.prlabels.outputs.labels, ' Release ')
-        id: build
-        run: |
-          pip install -U pip poetry twine
-          make build && echo "build_ok=1" >> $GITHUB_ENV
-
-      - name: Publish to Test PyPi
-        if: ${{ env.build_ok == 1 }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-          repository_url: https://test.pypi.org/legacy/
-
-      - name: Test install from Test PyPI
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
-          pip install \
-          --index-url https://test.pypi.org/simple/ \
-          --extra-index-url https://pypi.org/simple \
-          ramstk && echo "install_ok=1" >> $GITHUB_ENV
-
-      - name: Publish to PyPi
-        if: ${{ env.install_ok == 1 }}
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}

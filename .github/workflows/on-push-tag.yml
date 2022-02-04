@@ -1,0 +1,95 @@
+# This workflow runs when a version tag is pushed.
+#
+# - Job 1:
+#     - Create release.
+#     - Get release version.
+#     - Update CHANGELOG.md
+#     - Update pyproject.toml and VERSION with new version.
+#     - Set PR variable.
+#     - Cut PR to merge files and create release/* branch.
+name: Push Version Tag Workflow
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*"
+
+jobs:
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get new tag
+        id: newversion
+        run: |
+          new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          new_tag=$(echo $tag_version | cut -d 'v' -f2)
+
+          echo "::set-output name=new_version::$(echo $new_tag)"
+
+      - name: Create release notes
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "v${{ steps.newversion.outputs.new_version }}"
+          tag: "v${{ steps.newversion.outputs.new_version }}"
+          version: "${{ steps.newversion.outputs.new_version }}"
+          prerelease: false
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate release changelog
+        uses: heinrichreimer/github-changelog-generator-action@master
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          sinceTag: "v0.10.0"
+          excludeTags: "latest"
+          breakingLabel: "Breaking Changes"
+          breakingLabels: "bump: major"
+          enhancementLabel: "New Features"
+          enhancementLabels: "bump: minor"
+          bugsLabel: "Bug Fixes"
+          bugLabels: "bump: patch"
+          excludeLabels: "Release"
+          issues: false
+          issuesWoLabels: false
+          pullRequests: true
+          prWoLabels: false
+          author: true
+          unreleased: true
+          compareLink: true
+          stripGeneratorNotice: true
+          verbose: true
+
+      - name: Update VERSION and pyproject.toml
+        uses: vemel/nextversion@main
+        with:
+          path: ./pyproject.toml
+          result: ${{ steps.newversion.outputs.new_version }}
+          update: |
+            ./VERSION
+            ./pyproject.toml
+
+      - name: Set release pull request variables
+        id: prvars
+        run: |
+          echo ::set-output name=title::"release: v${{ steps.newversion.outputs.new_version }}"
+          echo ::set-output name=body::"Please cut release v${{ steps.newversion.outputs.new_version }}"
+          echo ::set-output name=message::"release: v${{ steps.newversion.outputs.new_version }}"
+          echo ::set-output name=branch::"release/v${{ steps.newversion.outputs.new_version }}"
+
+      - name: Cut release pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: ${{ steps.prvars.outputs.message }}
+          title: ${{ steps.prvars.outputs.title }}
+          body: ${{ steps.prvars.outputs.body }}
+          branch: ${{ steps.prvars.outputs.branch }}
+          labels: Release

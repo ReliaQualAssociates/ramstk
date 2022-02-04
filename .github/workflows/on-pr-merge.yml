@@ -1,10 +1,9 @@
-# This workflow runs when a push is made to the master branch.
+# This workflow runs when a PR is merged to the master branch.
 #
 # - Job 1:
-#     - Pushes 'latest' tag.  This happens on every push to master.
+#     - Imports signing GPG key.
+#     - Signs and pushes 'latest' tag.  This happens on every push to master.
 #     - Updates draft release notes.  This happens on every push to master.
-# - Job 2:
-#     - Creates issues from any issue comments.
 name: Merge Pull Request Workflow
 
 on:
@@ -15,9 +14,15 @@ on:
       - "*"
 
 jobs:
+  test-suite:
+    runs-on: ubuntu-latest
+    steps:
+      uses: ./.github/workflows/do-test-suite.yml
+
   tag-latest:
     name: Tag Repository as 'latest'
     runs-on: ubuntu-latest
+    needs: test-suite
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -47,24 +52,5 @@ jobs:
           tag: "latest"
           version: "latest"
           prerelease: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  todo_issue:
-    name: Create Issues from TODOs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: TODO to Issue
-        id: todo
-        uses: alstr/todo-to-issue-action@master
-        with:
-          REPO: ${{ github.repository }}
-          BEFORE: ${{ github.event.before }}
-          SHA: ${{ github.sha }}
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          LABEL: "# ISSUE:"
-          COMMENT_MARKER: "#"
-          AUTO_P: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

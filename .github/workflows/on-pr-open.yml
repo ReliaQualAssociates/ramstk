@@ -3,12 +3,7 @@
 # - Job 1:
 #     - Check the PR title follows conventional commit spec.
 # - Job 2:
-#     - Label the PR based on the rules in .github/pr-labler.yml
-# - Job 3:
-#     - Gets the tag that was just pushed.
-#     - Creates unpublished release notes.
-#     - Uses release notes to update CHANGELOG.md.
-
+#     - Label the PR based on the rules in .github/pr-labeler.yml
 name: Open Pull Request Workflow
 
 on:
@@ -36,63 +31,3 @@ jobs:
         uses: TimonVS/pr-labeler-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  update-changelog:
-    name: Update CHANGELOG.md
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Import GPG key
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v4
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-
-      - name: Get current version
-        id: curversion
-        run: |
-          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          tag_version=$(echo $tag_version | cut -d 'v' -f2)
-          echo "::set-output name=tag_version::$(echo $tag_version)"
-
-      - name: Generate release changelog
-        uses: heinrichreimer/github-changelog-generator-action@master
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          sinceTag: "v0.10.0"
-          excludeTags: "latest"
-          breakingLabel: "Breaking Changes"
-          breakingLabels: "bump: major"
-          enhancementLabel: "New Features"
-          enhancementLabels: "bump: minor"
-          bugsLabel: "Bug Fixes"
-          bugLabels: "bump: patch"
-          excludeLabels: "Release"
-          issues: false
-          issuesWoLabels: false
-          pullRequests: true
-          prWoLabels: false
-          author: true
-          unreleased: true
-          compareLink: true
-          stripGeneratorNotice: true
-          verbose: true
-
-      - name: Get branch name
-        id: branch-name
-        uses: tj-actions/branch-names@v5.1
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
-          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
-          git add ./CHANGELOG.md
-          git commit -S -m "docs: update CHANGELOG.md"
-          git push origin HEAD:${{ steps.branch-name.outputs.head_ref_branch }}

@@ -1,12 +1,16 @@
-# This workflow runs when a push is made to the master branch.
+# This workflow runs when a release is published.
 #
 # - Job 1:
+#     - Build artifacts.
+#     - Upload to Test PyPi.
+#     - Test install from Test PyPi.
+#     - Upload to PyPi.
+#     - Add wheel to GitHub release.
+#     - Build user documentation.
+#     - Add user documentation to GitHub release.
+# - Job 2:
 #     - Create new minor version milestone.
 #     - Create new major version milestone.
-# - Job 2:
-#     - Build RAMSTK documentation.
-#     - Publish RAMSTK documentation.
-
 name: Publish Release Workflow
 
 on:
@@ -15,6 +19,72 @@ on:
       - published
 
 jobs:
+  build-deploy:
+    name: Build and Deploy RAMSTK
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build release
+        id: build
+        run: |
+          pip install -U pip poetry twine
+          make build && echo "build_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to Test PyPi
+        if: ${{ env.build_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Test install from Test PyPI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+          pip install \
+          --index-url https://test.pypi.org/simple/ \
+          --extra-index-url https://pypi.org/simple \
+          ramstk && echo "install_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to PyPi
+        if: ${{ env.install_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  build_documentation:
+    name: Build RAMSTK Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Execute Sphinx
+        uses: ammaraskar/sphinx-action@master
+        with:
+          docs-folder: "docs/"
+
+      - name: Commit RAMSTK Documentation Changes
+        run: |
+          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
+          cp -fr docs/_build/html/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
+
+      - name: Push RAMSTK Documentation Changes
+        if: env.do_push == 1
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
   create_new_milestone:
     name: Create New Milestone
     runs-on: ubuntu-latest
@@ -47,31 +117,3 @@ jobs:
           title: "${{ steps.nextversion.outputs.v_major }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build_documentation:
-    name: Build RAMSTK Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Execute Sphinx
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
-
-      - name: Commit RAMSTK Documentation Changes
-        run: |
-          git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
-          cp -fr docs/_build/html/* gh-pages/
-          cd gh-pages
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .
-          git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
-
-      - name: Push RAMSTK Documentation Changes
-        if: env.do_push == 1
-        uses: ad-m/github-push-action@master
-        with:
-          branch: gh-pages
-          directory: gh-pages
-          github_token: ${{ secrets.GITHUB_TOKEN }}

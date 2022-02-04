@@ -1,4 +1,5 @@
-# This workflow runs when a push is made or a PR is opened, reopened, or synchronized.
+# This workflow runs when a PR is opened, reopened, or synchronized or is called from
+# another workflow.
 #
 # - Job 1:
 #     - Set up the postgresql service.
@@ -12,9 +13,7 @@
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
-  push:
-    tags-ignore:
-      - "*"
+  workflow_call:
   pull_request:
     types:
       - "opened"
