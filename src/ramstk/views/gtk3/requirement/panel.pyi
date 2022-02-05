@@ -22,12 +22,15 @@ class RequirementTreePanel(RAMSTKTreePanel):
     _tag: str
     _title: str
     _dic_row_loader: Dict[str, Callable]
-    dic_attribute_widget_map: Dict[str, List[Any]]
+    dic_attribute_widget_map: Dict[str, Any]
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
     _record_id: int
     _parent_id: int
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
+    def _on_workview_edit(
+        self, node_id: int, package: Dict[str, List[Any]]
+    ) -> None: ...
     def __do_load_requirement(
         self, node: treelib.Node, row: Gtk.TreeIter
     ) -> Gtk.TreeIter: ...
