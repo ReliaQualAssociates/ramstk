@@ -41,7 +41,7 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_delete, "request_delete_program_status")
     pub.unsubscribe(dut.do_insert, "request_insert_program_status")
     pub.unsubscribe(dut.do_get_actual_status, "request_get_actual_status")
-    pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_program_status")
+    pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_program_remaining")
 
     # Delete the device under test.
     del dut

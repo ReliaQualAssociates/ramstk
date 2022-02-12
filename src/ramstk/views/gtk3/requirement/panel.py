@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -248,7 +248,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
                     "bg_color": "#FFFFFF",
                     "editable": True,
                     "fg_color": "#000000",
-                    "visible": False,
+                    "visible": True,
                 },
                 _("Type"),
                 "gchararray",
@@ -846,7 +846,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+        pub.subscribe(
+            self._on_module_switch,
+            "mvwSwitchedPage",
+        )
+        pub.subscribe(
+            self._on_workview_edit,
+            f"wvw_editing_{self._tag}",
+        )
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to change in selected Module View module (tab).
@@ -890,6 +897,32 @@ class RequirementTreePanel(RAMSTKTreePanel):
 
             pub.sendMessage("selected_requirement", attributes=_attributes)
             pub.sendMessage("request_set_title", title=_title)
+
+    def _on_workview_edit(self, node_id: int, package: Dict[str, Any]) -> None:
+        """Update the module view RAMSTKTreeView() with attribute changes.
+
+        This is a wrapper for the metaclass method do_refresh_tree().  It is
+        necessary to handle RAMSTKComboBox() changes because the package value will
+        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+
+        :param node_id: the ID of the requirement being edited.
+        :param package: the key:value for the data being updated.
+        :return: None
+        """
+        [[_key, _value]] = package.items()
+
+        _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+        _cell = _column.get_cells()[-1]
+
+        if isinstance(_cell, Gtk.CellRendererCombo):
+            if _key == "owner":
+                package[_key] = self.lst_owner[_value]
+            elif _key == "priority":
+                package[_key] = str(package[_key])
+            elif _key == "requirement_type":
+                package[_key] = self.lst_type[_value]
+
+            super().do_refresh_tree(node_id, package)
 
     def __do_load_requirement(
         self, node: treelib.Node, row: Gtk.TreeIter

@@ -542,8 +542,19 @@ class ValidationTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_calculate_all_validation_tasks")
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+        pub.subscribe(
+            super().do_load_panel,
+            "succeed_calculate_all_validation_tasks",
+        )
+
+        pub.subscribe(
+            self._on_module_switch,
+            "mvwSwitchedPage",
+        )
+        pub.subscribe(
+            self._on_workview_edit,
+            f"wvw_editing_{self._tag}",
+        )
 
     def do_load_measurement_units(
         self, measurement_unit: Dict[int, Tuple[str, str]]
@@ -638,6 +649,32 @@ class ValidationTreePanel(RAMSTKTreePanel):
                 "request_set_title",
                 title=_title,
             )
+
+    def _on_workview_edit(
+        self, node_id: int, package: Dict[str, Union[bool, float, int, str]]
+    ) -> None:
+        """Update the module view RAMSTKTreeView() with attribute changes.
+
+        This is a wrapper for the metaclass method do_refresh_tree().  It is
+        necessary to handle RAMSTKComboBox() changes because the package value will
+        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+
+        :param node_id: the ID of the validation task being edited.
+        :param package: the key:value for the data being updated.
+        :return: None
+        """
+        [[_key, _value]] = package.items()
+
+        _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+        _cell = _column.get_cells()[-1]
+
+        if isinstance(_cell, Gtk.CellRendererCombo):
+            if _key == "measurement_unit":
+                package[_key] = self._lst_measurement_units[_value]
+            elif _key == "task_type":
+                package[_key] = self._lst_verification_types[_value]
+
+            super().do_refresh_tree(node_id, package)
 
     def __do_load_validation(
         self, node: treelib.Node, row: Gtk.TreeIter

@@ -900,7 +900,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def do_refresh_tree(self, node_id: List, package: Dict[str, Any]) -> None:
+    def do_refresh_tree(self, node_id: int, package: Dict[str, Any]) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
         This method is used to update a RAMSTKPanel() containing a
