@@ -846,9 +846,14 @@ class RequirementTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
-
-        pub.subscribe(self._on_workview_edit, "wvw_editing_requirement")
+        pub.subscribe(
+            self._on_module_switch,
+            "mvwSwitchedPage",
+        )
+        pub.subscribe(
+            self._on_workview_edit,
+            f"wvw_editing_{self._tag}",
+        )
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to change in selected Module View module (tab).
