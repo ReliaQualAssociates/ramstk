@@ -31,12 +31,18 @@ jobs:
         id: newversion
         run: |
           new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          echo "::debug::$new_tag"
-          new_tag=$(echo $tag_version | cut -d 'v' -f2)
-          echo "::debug::$new_tag"
+          new_tag2=$(echo $new_tag | cut -d 'v' -f2)
 
           echo "::set-output name=new_version::$(echo $new_tag)"
+          echo "::set-output name=new_tag::$(echo $new_tag)"
+          echo "::set-output name=new_tag2::$(echo $new_tag2)"
 
+      - name: See tag stuff
+        run: |
+          - echo "${{ steps.newversion.outputs.new_tag }}"
+          - echo "${{ steps.newversion.outputs.new_tag2 }}"
+          - echo "${{ steps.newversion.outputs.new_version }}"
+          
       - name: Create release notes
         uses: release-drafter/release-drafter@master
         with:
