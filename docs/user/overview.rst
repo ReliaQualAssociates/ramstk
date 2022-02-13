@@ -34,7 +34,7 @@ There are currently five modules available for RAMSTK.  These are:
 * Function
 * Requirement
 * Hardware
-* Validation
+* Validation & Verification
 
 Every RAMSTK Program must have a Revision module; the remainder are
 optional.
