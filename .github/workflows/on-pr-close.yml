@@ -11,18 +11,6 @@
 #     - IF one of 'bump: patch', 'bump: minor', or 'bump: major' tags:
 #         - Import GPG key.
 #         - Push version tag.
-# - Job 3:
-#     - IF branch is release/*:
-#         - Get new version from VERSION.
-#         - Push version tag.
-#         - Draft release notes.
-# - Job 4:
-#     - IF branch is release/*:
-#         - Build wheel and sdist.
-#         - Upload wheel and sdist to Test PyPi.
-#         - Test install from Test PyPi.
-#         - Upload wheel and sdist to PyPi.
-#         - Upload wheel to GitHub Release. (pending)
 name: Close Pull Request Workflow
 
 on:
