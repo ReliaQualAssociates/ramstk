@@ -49,11 +49,3 @@ RAMSTK
    :members:
    :undoc-members:
    :show-inheritance:
-
-Module Contents
----------------
-
-.. automodule:: ramstk
-   :members:
-   :undoc-members:
-   :show-inheritance:
