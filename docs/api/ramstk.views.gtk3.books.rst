@@ -1,37 +1,18 @@
-ramstk.views.gtk3.books package
-===============================
+RAMSTK Books Package
+====================
 
-Submodules
-----------
-
-ramstk.views.gtk3.books.listbook module
----------------------------------------
-
-.. automodule:: ramstk.views.gtk3.books.listbook
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ramstk.views.gtk3.books.modulebook module
------------------------------------------
+RAMSTK Module Book
+------------------
 
 .. automodule:: ramstk.views.gtk3.books.modulebook
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.books.workbook module
----------------------------------------
+RAMSTK Work Book
+----------------
 
 .. automodule:: ramstk.views.gtk3.books.workbook
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.books
    :members:
    :undoc-members:
    :show-inheritance:

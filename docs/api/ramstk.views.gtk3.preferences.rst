@@ -1,12 +1,12 @@
-Requirement View Package
+Preferences View Package
 ========================
 
-.. automodule:: ramstk.views.gtk3.requirement.panel
+.. automodule:: ramstk.views.gtk3.preferences.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: ramstk.views.gtk3.requirement.view
+.. automodule:: ramstk.views.gtk3.preferences.view
    :members:
    :undoc-members:
    :show-inheritance:

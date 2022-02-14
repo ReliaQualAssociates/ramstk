@@ -1,5 +1,5 @@
-ramstk.views.gtk3.hardware package
-==================================
+Hardware View Package
+=====================
 
 Subpackages
 -----------
@@ -7,39 +7,33 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   ramstk.views.gtk3.hardware.components
-
-Submodules
-----------
+   ramstk.views.gtk3.design_electric
+   ramstk.views.gtk3.milhdbk217f
 
 ramstk.views.gtk3.hardware.listview module
 ------------------------------------------
 
-.. automodule:: ramstk.views.gtk3.hardware.listview
+.. automodule:: ramstk.views.gtk3.hardware.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.hardware.moduleview module
---------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.hardware.moduleview
+.. automodule:: ramstk.views.gtk3.design_electric.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.hardware.workview module
-------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.hardware.workview
+.. automodule:: ramstk.views.gtk3.milhdbk217f.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+.. automodule:: ramstk.views.gtk3.reliability.panel
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: ramstk.views.gtk3.hardware
+.. automodule:: ramstk.views.gtk3.hardware.view
    :members:
    :undoc-members:
    :show-inheritance:
