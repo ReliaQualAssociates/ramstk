@@ -26,36 +26,42 @@ Failure Definitions are unable to be displayed in the Module Book.
 
 Work Book
 ---------
-Failure Definitions currently has no work space to display in the Work Book.
 
-List Book
----------
 .. figure:: ./figures/failure_definitions.png
 
 Failure Definitions are displayed in the List Book when the Revision work
 stream is selected in the Module Book.  The following attributes are
 displayed for each Failure Definition.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Failure Definition Attributes**
 
-   +---------------+----------+
-   | Attribute     | Editable |
-   +===============+==========+
-   | Definition ID | No       |
-   +---------------+----------+
-   | Definition    | Yes      |
-   +---------------+----------+
+   +---------------+----------+------------------------------------+
+   | Attribute     | Editable | Source of Data                     |
+   +===============+==========+====================================+
+   | Revision ID   | No       | Assigned by database.              |
+   +---------------+----------+------------------------------------+
+   | Function ID   | No       | Assigned by database.              |
+   +---------------+----------+------------------------------------+
+   | Definition ID | No       | Assigned by database.              |
+   +---------------+----------+------------------------------------+
+   | Definition    | Yes      | Free form entry.                   |
+   +---------------+----------+------------------------------------+
+   | End Effect?   | Yes      | Check button. (future)             |
+   +---------------+----------+------------------------------------+
 
 Adding and Removing Failure Definitions from the List Book
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To add a new Failure Definition to the open `RAMSTK` Program database:
+
+When adding a new function, no failure definitions will exist.  To add a new
+Failure Definition to the open `RAMSTK` Program database, select the function
+in the module book you'd like to add a failure definition and then:
 
 * Press the 'Add' button to the left of the definition list.
 * Right click on the definition list and select 'Add' from the pop-up menu.
 
 This will add a new Failure Definition that is associated with the selected
-Revision.
+function.
 
 To remove the currently selected Failure Definition from the open `RAMSTK`
 Program database:
