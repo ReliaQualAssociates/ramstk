@@ -228,158 +228,160 @@ connection information for the RAMSTK Program database server is saved.  This
 file is installed at $HOME/.config/RAMSTK whenever RAMSTK is launched and
 can't find RAMSTK.toml at this path.
 
-The default RAMSTK.toml is shown below::
+The default RAMSTK.toml is shown below:
 
-  title: "RAMSTK User Configuration"
+.. code-block:: toml
 
-  [general]
-  reportsize = "letter"
-    # paper size for generated reports
-    # possible values: "letter", "a4"
-  frmultiplier = "1000000.0"
-    # the multiplier for display failure rate
-    # possible values: any float value
-  calcreltime = "100.0"
-    # the time at which reliability is calculated
-    # possible values: any float value
-  decimal = "6"
-    # the number of decimal places to display
-    # possible values: any integer value
-  modesource = "1"
-    # the source of component failure modes
-    # possible values: any integer value
-  moduletabpos = "top"
-    # the postion of the tabs in the module book
-    # possible values: "bottom", "left", "right", "top"
-  worktabpos = "bottom"
-    # the position of the tabs in the work book
-    # possible values: "bottom", "left", "right", "top"
-  loglevel = "INFO"
-    # the level of messages to log while running RAMSTK
-    # possible values: "DEBUG", "ERROR", "INFO", "WARNING"
+   title: "RAMSTK User Configuration"
 
-  [directories]
-  datadir = "$HOME/.config/RAMSTK/layouts"
-    # directory containing layout files for RAMSTK
-    # possible values: any directory the user has read/write access
-  icondir = "$HOME/.config/RAMSTK/icons"
-    # directory containing the RAMSTK icons
-    # possible values: any directory the user has read/write access
-  logdir = "$HOME/.config/RAMSTK/logs"
-    # directory where RAMSTK runtime logs are written
-    # possible values: any directory the user has read/write access
+   [general]
+   reportsize = "letter"
+     # paper size for generated reports
+     # possible values: "letter", "a4"
+   frmultiplier = "1000000.0"
+     # the multiplier for display failure rate
+     # possible values: any float value
+   calcreltime = "100.0"
+     # the time at which reliability is calculated
+     # possible values: any float value
+   decimal = "6"
+     # the number of decimal places to display
+     # possible values: any integer value
+   modesource = "1"
+     # the source of component failure modes
+     # possible values: any integer value
+   moduletabpos = "top"
+     # the postion of the tabs in the module book
+     # possible values: "bottom", "left", "right", "top"
+   worktabpos = "bottom"
+     # the position of the tabs in the work book
+     # possible values: "bottom", "left", "right", "top"
+   loglevel = "INFO"
+     # the level of messages to log while running RAMSTK
+     # possible values: "DEBUG", "ERROR", "INFO", "WARNING"
 
-  [layouts]
-  allocation = "allocation.toml"
-    # the name of the file containing Allocation tree layout information
-    # possible values: any valid file name
-  failure_definition = "failure_definition.toml"
-    # the name of the file containing Failure Definition list layout information
-    # possible values: any valid file name
-  fmea = "fmea.toml"
-    # the name of the file containing Failure Mode and Effects Analysis tree layout information
-    # possible values: any valid file name
-  function = "function.toml"
-    # the name of the file containing Function tree layout information
-    # possible values: any valid file name
-  hardware = "hardware.toml"
-    # the name of the file containing Hardware tree layout information
-    # possible values: any valid file name
-  hazard = "hazard.toml"
-    # the name of the file containing Hazard Analysis tree layout information
-    # possible values: any valid file name
-  pof = "pof.toml"
-    # the name of the file containing Physics of Failure analysis tree layout information
-    # possible values: any valid file name
-  requirement = "requirement.toml"
-    # the name of the file containing Requirement tree layout information
-    # possible values: any valid file name
-  revision = "revision.toml"
-    # the name of the file containing Revision list layout information.
-    # possible values: any valid file name
-  similar_item = "similar_item.toml"
-    # the name of the file containing Similar Item tree layout information
-    # possible values: any valid file name
-  stakeholder = "stakeholder.toml"
-    # the name of the file containing Stakeholder list layout information
-    # possible values: any valid file name
-  usage_profile = "usage_profile.toml"
-    # the name of the file containing Usage Profile tree layout information
-    # possible values: any valid file name
-  validation = "validation.toml"
-    # the name of the file containing Validation list layout information
-    # possible values: any valid file name
+   [directories]
+   datadir = "$HOME/.config/RAMSTK/layouts"
+     # directory containing layout files for RAMSTK
+     # possible values: any directory the user has read/write access
+   icondir = "$HOME/.config/RAMSTK/icons"
+     # directory containing the RAMSTK icons
+     # possible values: any directory the user has read/write access
+   logdir = "$HOME/.config/RAMSTK/logs"
+     # directory where RAMSTK runtime logs are written
+     # possible values: any directory the user has read/write access
 
-  [colors]
-  allocationbg = "#000000"
-    # the background color of the Allocation analysis worksheet
-    # possible values: any hexidecimal color code
-  allocationfg = "#FFFFFF"
-    # the foreground color of the Allocation analysis worksheet
-    # possible values: any hexidecimal color code
-  failure_definitionbg = "#000000"
-    # the background color of the Failure Definition list
-    # possible values: any hexidecimal color code
-  failure_definitionfg = "#FFFFFF"
-    # the foreground color of the Failure Definition list
-    # possible values: any hexidecimal color code
-  fmeabg = "#000000"
-    # the background color of the Failure Mode and Effects Analysis worksheet
-    # possible values: any hexidecimal color code
-  fmeafg = "#FFFFFF"
-    # the foreground color of the Failure Mode and Effects Analysis worksheet
-    # possible values: any hexidecimal color code
-  functionbg = "#000000"
-    # the background color of the Function tree
-    # possible values: any hexidecimal color code
-  functionfg = "#FFFFFF"
-    # the foreground color of the Function tree
-    # possible values: any hexidecimal color code
-  hardwarebg = "#000000"
-    # the background color of the Hardware tree
-    # possible values: any hexidecimal color code
-  hardwarefg = "#FFFFFF"
-    # the foreground color of the Hardware tree
-    # possible values: any hexidecimal color code
-  hazardbg = "#000000"
-    # the background color of the Hazard analysis worksheet
-    # possible values: any hexidecimal color code
-  hazardfg = "#FFFFFF"
-    # the foreground color of the Hazard analysis worksheet
-    # possible values: any hexidecimal color code
-  pofbg = "#000000"
-    # the background color of the Physics of Failure analysis worksheet
-    # possible values: any hexidecimal color code
-  poffg = "#FFFFFF"
-    # the foreground color of the Physics of Failure analysis worksheet
-    # possible values: any hexidecimal color code
-  requirementbg = "#000000"
-    # the background color of the Requirement tree
-    # possible values: any hexidecimal color code
-  requirementfg = "#FFFFFF"
-    # the foreground color of the Requirement tree
-    # possible values: any hexidecimal color code
-  revisionbg = "#000000"
-    # the background color of the Revision list
-    # possible values: any hexidecimal color code
-  revisionfg = "#FFFFFF"
-    # the foreground color of the Revision list
-    # possible values: any hexidecimal color code
-  similar_itembg  = "#000000"
-    # the background color of the Similar Item analysis worksheet
-    # possible values: any hexidecimal color code
-  similar_itemfg = "#FFFFFF"
-    # the foreground color of the Similar Item analysis worksheet
-    # possible values: any hexidecimal color code
-  stakeholderbg  = "#000000"
-    # the background color of the Stakeholder input list
-    # possible values: any hexidecimal color code
-  stakeholderfg = "#FFFFFF"
-    # the foreground color of the Stakeholder input list
-    # possible values: any hexidecimal color code
-  validationbg  = "#000000"
-    # the background color of the Validation & Verification task list
-    # possible values: any hexidecimal color code
-  validationfg = "#FFFFFF"
-    # the foreground color of the Validation & Verification task list
-    # possible values: any hexidecimal color code
+   [layouts]
+   allocation = "allocation.toml"
+     # the name of the file containing Allocation tree layout information
+     # possible values: any valid file name
+   failure_definition = "failure_definition.toml"
+     # the name of the file containing Failure Definition list layout information
+     # possible values: any valid file name
+   fmea = "fmea.toml"
+     # the name of the file containing Failure Mode and Effects Analysis tree layout information
+     # possible values: any valid file name
+   function = "function.toml"
+     # the name of the file containing Function tree layout information
+     # possible values: any valid file name
+   hardware = "hardware.toml"
+     # the name of the file containing Hardware tree layout information
+     # possible values: any valid file name
+   hazard = "hazard.toml"
+     # the name of the file containing Hazard Analysis tree layout information
+     # possible values: any valid file name
+   pof = "pof.toml"
+     # the name of the file containing Physics of Failure analysis tree layout information
+     # possible values: any valid file name
+   requirement = "requirement.toml"
+     # the name of the file containing Requirement tree layout information
+     # possible values: any valid file name
+   revision = "revision.toml"
+     # the name of the file containing Revision list layout information.
+     # possible values: any valid file name
+   similar_item = "similar_item.toml"
+     # the name of the file containing Similar Item tree layout information
+     # possible values: any valid file name
+   stakeholder = "stakeholder.toml"
+     # the name of the file containing Stakeholder list layout information
+     # possible values: any valid file name
+   usage_profile = "usage_profile.toml"
+     # the name of the file containing Usage Profile tree layout information
+     # possible values: any valid file name
+   validation = "validation.toml"
+     # the name of the file containing Validation list layout information
+     # possible values: any valid file name
+
+   [colors]
+   allocationbg = "#000000"
+     # the background color of the Allocation analysis worksheet
+     # possible values: any hexidecimal color code
+   allocationfg = "#FFFFFF"
+     # the foreground color of the Allocation analysis worksheet
+     # possible values: any hexidecimal color code
+   failure_definitionbg = "#000000"
+     # the background color of the Failure Definition list
+     # possible values: any hexidecimal color code
+   failure_definitionfg = "#FFFFFF"
+     # the foreground color of the Failure Definition list
+     # possible values: any hexidecimal color code
+   fmeabg = "#000000"
+     # the background color of the Failure Mode and Effects Analysis worksheet
+     # possible values: any hexidecimal color code
+   fmeafg = "#FFFFFF"
+     # the foreground color of the Failure Mode and Effects Analysis worksheet
+     # possible values: any hexidecimal color code
+   functionbg = "#000000"
+     # the background color of the Function tree
+     # possible values: any hexidecimal color code
+   functionfg = "#FFFFFF"
+     # the foreground color of the Function tree
+     # possible values: any hexidecimal color code
+   hardwarebg = "#000000"
+     # the background color of the Hardware tree
+     # possible values: any hexidecimal color code
+   hardwarefg = "#FFFFFF"
+     # the foreground color of the Hardware tree
+     # possible values: any hexidecimal color code
+   hazardbg = "#000000"
+     # the background color of the Hazard analysis worksheet
+     # possible values: any hexidecimal color code
+   hazardfg = "#FFFFFF"
+     # the foreground color of the Hazard analysis worksheet
+     # possible values: any hexidecimal color code
+   pofbg = "#000000"
+     # the background color of the Physics of Failure analysis worksheet
+     # possible values: any hexidecimal color code
+   poffg = "#FFFFFF"
+     # the foreground color of the Physics of Failure analysis worksheet
+     # possible values: any hexidecimal color code
+   requirementbg = "#000000"
+     # the background color of the Requirement tree
+     # possible values: any hexidecimal color code
+   requirementfg = "#FFFFFF"
+     # the foreground color of the Requirement tree
+     # possible values: any hexidecimal color code
+   revisionbg = "#000000"
+     # the background color of the Revision list
+     # possible values: any hexidecimal color code
+   revisionfg = "#FFFFFF"
+     # the foreground color of the Revision list
+     # possible values: any hexidecimal color code
+   similar_itembg  = "#000000"
+     # the background color of the Similar Item analysis worksheet
+     # possible values: any hexidecimal color code
+   similar_itemfg = "#FFFFFF"
+     # the foreground color of the Similar Item analysis worksheet
+     # possible values: any hexidecimal color code
+   stakeholderbg  = "#000000"
+     # the background color of the Stakeholder input list
+     # possible values: any hexidecimal color code
+   stakeholderfg = "#FFFFFF"
+     # the foreground color of the Stakeholder input list
+     # possible values: any hexidecimal color code
+   validationbg  = "#000000"
+     # the background color of the Validation & Verification task list
+     # possible values: any hexidecimal color code
+   validationfg = "#FFFFFF"
+     # the foreground color of the Validation & Verification task list
+     # possible values: any hexidecimal color code

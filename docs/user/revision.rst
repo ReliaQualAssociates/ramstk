@@ -112,8 +112,7 @@ open `RAMSTK` Program database.
 To save changes to all Revisions:
 
 * Press the 'Save All' button to the left of the revision list.
-* Right click on the revision list and select 'Save All' from the pop-up
-menu.
+* Right click on the revision list and select 'Save All' from the pop-up menu.
 
 Pending changes to all Revisions are committed to the open `RAMSTK` Program
 database.
@@ -189,13 +188,6 @@ open `RAMSTK` Program database.
 To save changes to all Revisions, press the 'Save All' button to the left of
 the work space.  All pending changes to all Revisions are committed to the
 open `RAMSTK` Program database.
-
-List Book
----------
-There are two lists associated with the Revision work stream.  These are the
-:ref:`sec-usage-profile` and :ref:`sec-failure-definitions`.
-
-There are no matrices associated with the Revision work stream.
 
 Analyzing the Revision
 ----------------------

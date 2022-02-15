@@ -272,7 +272,8 @@ ignore_errors = true
 [tool.rstcheck]
 report = "warning"
 ignore_directives = [
-	"automodule"
+	"automodule",
+	"tabularcolumns"
 ]
 
 [tool.pydocstyle]
