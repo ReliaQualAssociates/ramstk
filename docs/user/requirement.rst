@@ -9,6 +9,7 @@ system.  While any or all requirements for a system could be documented in
 RAMS requirements only.
 
 .. _sec-requirement-module-book:
+
 Module Book
 -----------
 
@@ -20,108 +21,110 @@ attributes displayed for each Requirement are determined by the settings in the
 :ref:`sec-ramstk-user-configuration` file.  The following attributes are
 available for display in the Requirement tab of the Module Book.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Requirement Attributes Available to Module Book**
 
-   +-----------------------------------------+----------+
-   | Attribute                               | Editable |
-   +=========================================+==========+
-   | Revision ID                             | No       |
-   +-----------------------------------------+----------+
-   | Requirement ID                          | No       |
-   +-----------------------------------------+----------+
-   | Derived                                 | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Description                 | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Owner                       | Yes      |
-   +-----------------------------------------+----------+
-   | Applicable Specification                | Yes      |
-   +-----------------------------------------+----------+
-   | Specification Page Number               | Yes      |
-   +-----------------------------------------+----------+
-   | Specification Figure Number             | Yes      |
-   +-----------------------------------------+----------+
-   | Parent ID                               | No       |
-   +-----------------------------------------+----------+
-   | Priority                                | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Code                        | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Type                        | Yes      |
-   +-----------------------------------------+----------+
-   | Validated                               | Yes      |
-   +-----------------------------------------+----------+
-   | Validated Date                          | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #1                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #2                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #3                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #4                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #5                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #6                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #7                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #8                     | Yes      |
-   +-----------------------------------------+----------+
-   | Clarity Question #9                     | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #1                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #2                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #3                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #4                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #5                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #6                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #7                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #8                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #9                | Yes      |
-   +-----------------------------------------+----------+
-   | Completeness Question #10               | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #1                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #2                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #3                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #4                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #5                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #6                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #7                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #8                  | Yes      |
-   +-----------------------------------------+----------+
-   | Consistent Question #9                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #1                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #2                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #3                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #4                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #5                  | Yes      |
-   +-----------------------------------------+----------+
-   | Verifiable Question #6                  | Yes      |
-   +-----------------------------------------+----------+
+   +-----------------------------+----------+----------------------------------+
+   | Attribute                   | Editable | Source of Data                   |
+   +=============================+==========+==================================+
+   | Revision ID                 | No       | Assigned by database.            |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement ID              | No       | Assigned by database.            |
+   +-----------------------------+----------+----------------------------------+
+   | Derived                     | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Description     | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Owner           | Yes      | Pick list stored in Site         |
+   |                             |          | database.                        |
+   +-----------------------------+----------+----------------------------------+
+   | Applicable Specification    | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Specification Page Number   | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Specification Figure Number | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Parent ID                   | No       | Assigned by database.            |
+   +-----------------------------+----------+----------------------------------+
+   | Priority                    | Yes      | Pick list.                       |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Code            | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Type            | Yes      | Pick list stored in Site         |
+   |                             |          | database.                        |
+   +-----------------------------+----------+----------------------------------+
+   | Validated                   | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Validated Date              | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #1         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #2         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #3         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #4         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #5         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #6         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #7         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #8         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Clarity Question #9         | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #1    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #2    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #3    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #4    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #5    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #6    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #7    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #8    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #9    | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Completeness Question #10   | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #1      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #2      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #3      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #4      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #5      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #6      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #7      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #8      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Consistent Question #9      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #1      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #2      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #3      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #4      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #5      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Verifiable Question #6      | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
 
 Selecting the Requirement you wish to work with from the displayed tree will
 cause the Requirement module Work Book to display the attributes of the selected
@@ -134,15 +137,13 @@ To add a new Requirement at the same indenture level as the currently selected
 Requirement:
 
 * Press the 'Add Sibling' button to the left of the requirement tree.
-* Right click on the requirement tree and select 'Add Sibling' from the pop-up
-menu.
+* Right click on the requirement tree and select 'Add Sibling' from the pop-up menu.
 
 To add a new Requirement one indenture level lower than the currently selected
 Requirement:
 
 * Press the 'Add Child' button to the left of the requirement tree.
-* Right click on the requirement tree and select 'Add Child' from the pop-up
-menu.
+* Right click on the requirement tree and select 'Add Child' from the pop-up menu.
 
 To remove the currently selected Requirement from the open `RAMSTK` Program
 database:
@@ -168,49 +169,51 @@ All pending changes to the selected Requirement are committed to the open
 To save changes to all Requirements:
 
 * Press the 'Save All' button to the left of the requirement tree.
-* Right click on the requirement tree and select 'Save All' from the pop-up
-menu.
+* Right click on the requirement tree and select 'Save All' from the pop-up menu.
 
 Pending changes to all Requirements associated with the selected Revision are
 committed to the open `RAMSTK` Program database.
 
 .. _sec-requirement-work-book:
+
 Work Book
 ---------
 .. figure:: ./figures/requirement_work_book.png
 
-The Requirement module Work Book has a General Data and a Requirement
-Analysis page.  The following attributes are displayed in the Requirement's
-General Data page.
+The Requirement module Work Book has a General Data, Requirement Analysis,
+and Stakeholder Input page.  The following attributes are displayed in the
+Requirement's General Data page.
 
 .. tabularcolumns:: |r|l|
 .. table:: **Requirement Attributes in the Work Book**
 
-   +-----------------------------------------+----------+
-   | Attribute                               | Editable |
-   +=========================================+==========+
-   | Requirement Code                        | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Description                 | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Type                        | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement is Derived                  | Yes      |
-   +-----------------------------------------+----------+
-   | Applicable Specification                | Yes      |
-   +-----------------------------------------+----------+
-   | Specification Page Number               | Yes      |
-   +-----------------------------------------+----------+
-   | Specification Figure Number             | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Priority                    | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement Owner                       | Yes      |
-   +-----------------------------------------+----------+
-   | Requirement is Validated                | Yes      |
-   +-----------------------------------------+----------+
-   | Validated Date                          | Yes      |
-   +-----------------------------------------+----------+
+   +-----------------------------+----------+----------------------------------+
+   | Attribute                   | Editable | Source of Data                   |
+   +=============================+==========+==================================+
+   | Derived                     | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Description     | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Owner           | Yes      | Pick list stored in Site         |
+   |                             |          | database.                        |
+   +-----------------------------+----------+----------------------------------+
+   | Applicable Specification    | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Specification Page Number   | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Specification Figure Number | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Priority                    | Yes      | Pick list.                       |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Code            | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
+   | Requirement Type            | Yes      | Pick list stored in Site         |
+   |                             |          | database.                        |
+   +-----------------------------+----------+----------------------------------+
+   | Validated                   | Yes      | Check button.                    |
+   +-----------------------------+----------+----------------------------------+
+   | Validated Date              | Yes      | Free form entry.                 |
+   +-----------------------------+----------+----------------------------------+
 
 A requirement code is a unique identifier for a Requirement.  Requirement
 codes can be automatically created by `RAMSTK` or you may enter them manually
@@ -279,6 +282,9 @@ be re-written until it does.  This may require negotiation with customer
 organizations if they were the ones who levied the requirements.  Once a
 requirement satisfies the minimum criteria, it can be considered validated.
 
+See :ref:`sec-stakeholders` for instructions on working with the Stakeholders
+work stream module.
+
 Saving Requirements from the Work Book
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To save changes to the currently selected Requirement, press the 'Save' button
@@ -288,9 +294,3 @@ open `RAMSTK` Program database.
 To save changes to all Requirements associated with the selected Revision, press
 the 'Save All' button to the left of the work space.  Pending changes to all
 Requirements are committed to the open `RAMSTK` Program database.
-
-Lists Book
-----------
-There is one list view associated with the Requirement work stream.  This is a
-list of stakeholder inputs.  See :ref:`sec-stakeholders` for instructions on
-working with the Stakeholders work stream module.
