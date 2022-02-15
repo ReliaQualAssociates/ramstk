@@ -217,6 +217,9 @@ use multiple Site databases as discussed in section
 :ref:`sec-ramstk-backends`.  Using multiple virtual environments would be the
 recommended solution for this.
 
+This file can be edited by hand, but the RAMSTK Options assistant is the
+preferred method.
+
 .. _sec-ramstk-user-configuration:
 
 User Configuration
@@ -228,7 +231,8 @@ connection information for the RAMSTK Program database server is saved.  This
 file is installed at $HOME/.config/RAMSTK whenever RAMSTK is launched and
 can't find RAMSTK.toml at this path.
 
-The default RAMSTK.toml is shown below:
+This file can be edited by hand, but the RAMSTK Preferences assistant is the
+preferred method.  The default RAMSTK.toml is shown below.
 
 .. code-block:: toml
 
@@ -385,3 +389,75 @@ The default RAMSTK.toml is shown below:
    validationfg = "#FFFFFF"
      # the foreground color of the Validation & Verification task list
      # possible values: any hexidecimal color code
+
+The layouts section of the RAMSTK.toml provides the names of the files
+containing the settings for creating the layout of the various tree and
+list views in RAMSTK.  These files are relative to the directories.datadir
+entry.  These files can be edited by hand, but the RAMSTK Preferences
+assistant is the preferred method.
+
+The following is the layout file (failure_definition.toml) for the Failure
+Definition list view.
+
+.. code-block:: toml
+
+   pixbuf="False"
+
+   # The default column header text when no user-defined text is provided.
+   [defaulttitle]
+   revision_id="Revision ID"
+   function_id="Function ID"
+   definition_id="Definition ID"
+   definition="Failure Definition"
+
+   # The user-defined column header text.  Defaults to the defaulttitle values.
+   [usertitle]
+   revision_id="Revision ID"
+   function_id="Function ID"
+   definition_id="Definition ID"
+   definition="Failure Definition"
+
+   # The column position, from left to right, in the tree view.
+   [position]
+   revision_id=0
+   function_id=1
+   definition_id=2
+   definition=3
+
+   # Whether the data is editable.  The *_id columns are key values in the
+   # Program database.  These attributes are never updated by RAMSTK, but it is
+   # recommended you leave them un-editable anyway.
+   [editable]
+   revision_id="False"
+   function_id="False"
+   definition_id="False"
+   definition="True"
+
+   # Whether the column is visible.
+   [visible]
+   revision_id="False"
+   function_id="False"
+   definition_id="True"
+   definition="True"
+
+The colors section of RAMSTK.toml provides the background and foreground
+colors for the various list and tree views.  The default is a white
+background with black text.  To change these, simply provide a valid
+heximdecimal value.  The RAMSTK Preferences assistant has a color chooser
+that will do this for you.
+
+Example System
+--------------
+
+When you install RAMSTK, you have the option of creating an example system in
+the Program database server.  This example power supply plugs into an outlet
+in your home or business and develops various DC voltages from the ac mains.
+There is internal overload protection.  This could, perhaps, be the power
+supply in a desktop computer.
+
+We will develop this example system as we work through the various RAMSTK work
+stream modules in the next sections.  The screenshots and discussions in the
+next sections refer to this example system.  If you chose to create the
+example system Program database, you can follow along.  If you chose not to,
+you can create the example (or any) system as you work your way through the
+User Guide.

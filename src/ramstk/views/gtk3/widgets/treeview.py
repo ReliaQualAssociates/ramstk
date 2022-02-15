@@ -368,12 +368,8 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _keys = sorted(_format["position"], key=_format["position"].get)
         for _key in _keys:
             self.position[_key] = _format["position"][_key]
-            self.editable[_key] = self.editable[_key] or string_to_boolean(
-                _format["editable"][_key]
-            )
-            self.visible[_key] = self.visible[_key] or string_to_boolean(
-                _format["visible"][_key]
-            )
+            self.editable[_key] = string_to_boolean(_format["editable"][_key])
+            self.visible[_key] = string_to_boolean(_format["visible"][_key])
 
         self.headings = _format["usertitle"]
 
