@@ -15,4 +15,8 @@ This chapter describes each of the `RAMSTK` modules in detail.
    requirement
    stakeholder
    hardware
+   allocation
+   similar_item
+   fmea
+   pof
    validation
