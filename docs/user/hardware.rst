@@ -258,7 +258,11 @@ The following attributes are displayed in the miscellaneous information pane.
 
 Assessment Inputs Page
 ^^^^^^^^^^^^^^^^^^^^^^
+.. _hw_assessment_inputs:
+
 .. figure:: ./figures/hardware_work_book_assessment_inputs.png
+
+   :numref:`Hardware Assessment Inputs Page`
 
 The Assessment Inputs page is where all of the information required to assess
 the reliability of hardware items is entered.  `RAMSTK` currently supports
@@ -453,3 +457,54 @@ The calculated operating point will also be displayed on the curve.
 
 Performing a Reliability Assessment
 -----------------------------------
+Refer to :ref:`hw_assessment_inputs` figure for location of widgets mentioned
+in this section.
+
+To perform a reliability assessment, select a Hardware item in the Hardware
+module book.  Next, select the Assessment Inputs page in the Hardware work
+book.  In the **Reliability Assessment Inputs** pane, select the assessment
+type.  Assessment types available:
+
+* *Assessed* to assess reliability based on a handbook or database hazard rate.
+* *Defined, Hazard Rate* to enter a hazard rate for the item manually.
+* *Defined, MTBF* to enter a MTBF for the item manually.
+
+If you selected *Assessed*, available assessement methods are:
+
+* *MIL-HDBK-217F, Parts Count* to use the parts count methodology.
+* *MIL-HDBK-217F, Parts Stress* to use the part stress methodology.
+* *Sum of Parts* to assess reliability based on the sum of immediate childrens' hazard rates.
+
+If you selected one of the defined assessment types, the appropriate entries
+will become editable.  Enter the defined hazard rate or MTBF for the selected
+assembly or component.
+
+In the **Hardware Environmental Inputs** pane, select the active and dormant
+environments from the pick lists.  These two inputs will be used to calculate
+the dormant hazard rate regardless of the assessment type and method used.
+However, only the MIL-HDBK-217F methods use the active environment input
+directly.  Enter the temperature, mission time, and duty cycle information.
+
+The **Hardware Thermal & Electrical Inputs** pane is only for piece-part
+assessments.  The minimum, maximum, and knee temperatures are used to
+construct the operating limit curves for mild and harsh environments.  These
+values are typically found on a component's data sheet.
+
+The rated and operating current, power, and voltage are used to calculate the
+operating point of the piece-part and the three stress ratios.  The operating
+point is plotted on operating limit curve and provides a visual display of
+available margin.  The three stress ratios are compared to various derating
+rules to determine whether the component is overstressed in its application.
+
+In the **Design Input** pane, enter the appropriate information for the
+selected component category/subcategory combination.  Only those inputs
+applicable to the category/subcategory combination will be editable.  This is
+only applicable to MIL-HDBK-217F assessment methods and this pane will not be
+visible if anther type or method is selected.
+
+Once all the information is entered, press the:
+
+* 'Calculate' button on the Assessment Inputs page.
+* 'Calculate' button on the Assessment Results page.
+* 'Calculate' button on the Hardware Module Book.
+* 'Calculate All' button on the Hardware Module Book.

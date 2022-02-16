@@ -273,7 +273,10 @@ ignore_errors = true
 report = "warning"
 ignore_directives = [
 	"automodule",
-	"tabularcolumns"
+	"tabularcolumns",
+]
+ignore_roles = [
+	"numref",
 ]
 
 [tool.pydocstyle]
