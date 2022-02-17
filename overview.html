@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview &#8212; RAMSTK 1.0.0 documentation</title>
+    <title>RAMSTK Overview &#8212; RAMSTK 0.15.14 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css" />
     
@@ -30,7 +30,7 @@
       <h3>Navigation</h3>
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
-        <li><a href="index.html">RAMSTK 1.0.0 documentation</a> &#187;</li> 
+        <li><a href="index.html">RAMSTK 0.15.14 documentation</a> &#187;</li> 
       </ul>
     </div>
     
@@ -41,40 +41,74 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="ramstk-overview">
+<h1>RAMSTK Overview<a class="headerlink" href="#ramstk-overview" title="Permalink to this headline">¶</a></h1>
 <p><cite>RAMSTK</cite> provides several analytical tools for estimating the RAMS metrics for
 electromechanical systems.</p>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
-<p>Currently RAMSTK supports Python 3.7+ and requires the following Python
-packages to be installed somewhere in your PYTHONPATH.</p>
-<p>If you’re planning to help develop RAMSTK, the following Python packages will
-need to be installed. It is recommended you use a virtual environment for
-development, but you could install these in a user or system location if you
-choose.</p>
-<p>In order to build this documentation, you will need to install the following
-Python packages.</p>
-<p>If you’re building the documentation to host locally, you are free to use
-whatever Sphinx theme you’d like.  I happen to prefer the
-<a class="reference external" href="https://github.com/ionelmc/sphinx-py3doc-enhanced-theme">py3doc enhanced theme</a>.</p>
+<p>RAMSTK requires access to at least one postgresql database server.  Installing
+and configuring a postgresql server is outside the scope of RAMSTK
+documentation.  Your first resource should be the official postgresql
+documents. Internet searches should provide you more assistance if needed.</p>
+<p>The project <a class="reference external" href="https://github.com/ReliaQualAssociates/ramstk/wiki/PostgreSQL-Server-Setup">wiki</a>
+contains instructions and hints for setting up a postgresql server and
+database users for RAMSTK.  They may be helpful, but expect your mileage to
+vary.</p>
 </div>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p><cite>RAMSTK</cite> can be installed in several ways.  Firstly, <cite>RAMSTK</cite> is available from
-PyPi.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install ramstk
+<p>Since RAMSTK is still a version 0 product, it’s highly recommended that you
+install in a virtual environment.  The instructions below presume you will
+be installing in a virtual environment and system-wide Python packages that
+RAMSTK depends on will be unavailable.  That being the case, you will need
+various system development packages available via your operating system’s
+package manager to install RAMSTK.</p>
+<p>Once you have installed any missing development file packages using your
+operating system’s package manager, download the &lt;version&gt; of RAMSTK
+source from GitHub you wish to install.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v0.15.14.tar.gz
+$ tar -xf v0.15.14.tar.gz
+$ <span class="nb">cd</span> ramstk-0.15.14
 </pre></div>
 </div>
-<p>Or the source code can be checked-out from GitHub and installed the
-old-fashioned way.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git checkout https://github.com/ReliaQualAssociates/ramstk.git ramstk.git
-<span class="nb">cd</span> ramstk.git
-python setup.py install --user
+<p>The other option for obtaining the RAMSTK source code is to clone the
+repository.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/ReliaQualAssociates/ramstk.git ramstk.git
+$ <span class="nb">cd</span> ramstk.git
 </pre></div>
 </div>
-<p>where the <em>–user</em> switch is optional if you’re sure you want to install
-<cite>RAMSTK</cite> in a system-wide location.</p>
+<p>Create and activate a virtual environment however you are acustomed to.
+One approach is to use pyenv and poetry.  Using pyenv isn’t necessary
+unless you want to install and use a Python version other than that
+provided by your operating system.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pyenv install <span class="m">3</span>.8.7
+$ poetry env use ~/.pyenv/shims/python3.8
+$ poetry shell
+</pre></div>
+</div>
+<p>This will install Python-3.8.7 and tell poetry to use the Python interpreter
+you just installed.  Finally, poetry will create, if needed, and activate
+the virtual environment using Python-3.8.7 as the interpreter.</p>
+<p>Now that the virtual environment is activated, you can install the
+necessary RAMSTK dependencies and RAMSTK itself.  Omitting the PREFIX
+variable will cause RAMSTK to install to /usr/local by default.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make depends
+$ make <span class="nv">PREFIX</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span> install
+</pre></div>
+</div>
+<p>When upgrading RAMSTK, you can simply:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -U ramstk
+</pre></div>
+</div>
+<p>This will only install the latest RAMSTK version from PyPi and will leave
+configuration, data, and icon files untouched.  If you cloned the RAMSTK
+repository, you can also use the Makefile:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git switch master
+$ git pull
+$ make install.dev
+</pre></div>
+</div>
 </div>
 <div class="section" id="license">
 <h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
@@ -126,7 +160,7 @@ python setup.py install --user
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#">RAMSTK Overview</a><ul>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#license">License</a></li>
@@ -182,7 +216,7 @@ python setup.py install --user
     </div>
 
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2007 - 2020, Doyle Rowland.
+        &#169; Copyright since 2007, Doyle &#34;weibullguy&#34; Rowland.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
     </div>
   </body>
