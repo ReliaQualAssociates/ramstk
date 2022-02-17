@@ -42,5 +42,5 @@ jobs:
           version: "${{ steps.relversion.outputs.rel_version }}"
           prerelease: false
           publish: true
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
