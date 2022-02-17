@@ -46,23 +46,22 @@ jobs:
       - name: Get current version
         id: curversion
         run: |
-          tag_version=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          tag_version=$(echo $tag_version | cut -d 'v' -f2)
+          cur_version=$(cat VERSION)
 
-          tag_major=$(echo $tag_version | cut -d '.' -f1)
-          tag_minor=$(echo $tag_version | cut -d '.' -f2)
-          tag_patch=$(echo $tag_version | cut -d '.' -f3)
+          ver_major=$(echo $cur_version | cut -d '.' -f1)
+          ver_minor=$(echo $cur_version | cut -d '.' -f2)
+          ver_patch=$(echo $cur_version | cut -d '.' -f3)
 
-          echo "::set-output name=tag_version::$(echo $tag_version)"
-          echo "::set-output name=tag_major::$(echo $tag_major)"
-          echo "::set-output name=tag_minor::$(echo $tag_minor)"
-          echo "::set-output name=tag_patch::$(echo $tag_patch)"
+          echo "::set-output name=cur_version::$(echo $cur_version)"
+          echo "::set-output name=ver_major::$(echo $ver_major)"
+          echo "::set-output name=ver_minor::$(echo $ver_minor)"
+          echo "::set-output name=ver_patch::$(echo $ver_patch)"
 
       - name: Determine next Semantic version
         id: semver
         uses: WyriHaximus/github-action-next-semvers@v1
         with:
-          version: ${{ steps.curversion.outputs.tag_version }}
+          version: ${{ steps.curversion.outputs.cur_version }}
 
       - name: Set next version
         id: nextversion
@@ -77,7 +76,7 @@ jobs:
             echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
             echo "do_release=1" >> $GITHUB_ENV
           else
-            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.tag_version }})"
+            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.cur_version }})"
             echo "do_release=0" >> $GITHUB_ENV
           fi
 

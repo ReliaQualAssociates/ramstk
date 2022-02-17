@@ -4,8 +4,8 @@
 #     - Get new tag.
 #     - Create new release notes.
 #     - Update CHANGELOG.md
-#     - Update pyproject.toml and VERSION with new version.
-#     - Set PR variable.
+#     - Update pyproject.toml, VERSION, and docs/conf.py with new version.
+#     - Set PR variables.
 #     - Cut PR to merge files and create release/* branch.
 name: Push Version Tag Workflow
 
@@ -18,7 +18,7 @@ on:
 
 jobs:
   create-release:
-    name: Create Release
+    name: Cut Release PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,20 +30,9 @@ jobs:
       - name: Get new tag
         id: newversion
         run: |
-          new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
+          new_tag=$(git describe $(git rev-list --tags --max-count=1) | cut -d '-' -f1 | cut -d 'v' -f2)
 
           echo "::set-output name=new_version::$(echo $new_tag)"
-
-      - name: Create release notes
-        uses: release-drafter/release-drafter@master
-        with:
-          name: "v${{ steps.newversion.outputs.new_version }}"
-          tag: "v${{ steps.newversion.outputs.new_version }}"
-          version: "${{ steps.newversion.outputs.new_version }}"
-          prerelease: false
-          publish: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate release changelog
         uses: heinrichreimer/github-changelog-generator-action@master
@@ -68,7 +57,7 @@ jobs:
           stripGeneratorNotice: true
           verbose: true
 
-      - name: Update VERSION and pyproject.toml
+      - name: Update VERSION, pyproject.toml, and docs/conf.py
         uses: vemel/nextversion@main
         with:
           path: ./pyproject.toml
@@ -76,6 +65,7 @@ jobs:
           update: |
             ./VERSION
             ./pyproject.toml
+            ./docs/conf.py
 
       - name: Set release pull request variables
         id: prvars
