@@ -142,8 +142,6 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
             self._get_database()
             self.exists = self.database["database"] in self._lst_databases
             _return = Gtk.ResponseType.OK
-        elif self.run() == Gtk.ResponseType.CANCEL:
-            _return = Gtk.ResponseType.CANCEL
 
         return _return
 
@@ -348,19 +346,19 @@ class RAMSTKDateSelect(Gtk.Dialog):
             cancelled.
         :rtype: str
         """
+        _date = "1970-01-01"
+
         if self.run() == Gtk.ResponseType.ACCEPT:
-            _date = self._calendar.get_date()
+            _getdate = self._calendar.get_date()
             _date = (
                 datetime(
-                    _date[0],
-                    _date[1] + 1,
-                    _date[2],
+                    _getdate[0],
+                    _getdate[1] + 1,
+                    _getdate[2],
                 )
                 .date()
                 .strftime("%Y-%m-%d")
             )
-        else:
-            _date = "1970-01-01"
 
         return _date
 
@@ -424,8 +422,6 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
             _filename = self.get_filename()
             # pylint: disable=unused-variable
             __, _extension = os.path.splitext(_filename)
-        elif self.run() == Gtk.ResponseType.REJECT:
-            self.do_destroy()
 
         return _filename, _extension
 
