@@ -15,8 +15,8 @@ Module Book
 When the Function tab is selected in the Module Book, a hierarchical tree of all
 the Functions associated with the selected Revision is displayed.  The
 attributes displayed for each Function are determined by the settings in the
-:ref:`sec-ramstk-user-configuration` file.  The following attributes are
-available for display in the Function tab of the Module Book.
+function.toml file (see :ref:`sec-ramstk-user-configuration`).  The following
+attributes are available for display in the Function tab of the Module Book.
 
 .. tabularcolumns:: |r|l|
 .. table:: **Function Attributes Available to Module Book**
@@ -74,14 +74,19 @@ Function module to load their attributes.
 
 Adding and Removing Functions from the Module Book
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To add a new Function at the same indenture level as the currently selected
-Function:
+A new RAMSTK Program database will have no functions.  Functions are
+hierarchical.  Sibling functions share the same level in the hierarchy.
+Child functions are at the next lower level in hierarchy.  You would add a
+sibling function as the first function in a new RAMSTK Program database.
+
+To add a new Function at the same indenture level (sibling) as the currently
+selected Function:
 
 * Press the 'Add Sibling' button to the left of the function tree.
 * Right click on the function tree and select 'Add Sibling' from the pop-up menu.
 
-To add a new Function one indenture level lower than the currently selected
-Function:
+To add a new Function one indenture level lower (child) than the currently
+selected Function:
 
 * Press the 'Add Child' button to the left of the function tree.
 * Right click on the function tree and select 'Add Child' from the pop-up menu.
@@ -120,9 +125,9 @@ Work Book
 ---------
 .. figure:: ./figures/function_work_book.png
 
-The Function module Work Book has a General Data and a Functional Hazards
-Analysis page.  The following attributes are displayed in the Function's
-General Data page.
+The Function module Work Book has a General Data, a Functional Hazards
+Analysis, and a Failure Definitions page.  The following attributes are
+displayed in the Function's General Data page.
 
 .. tabularcolumns:: |r|l|
 .. table:: **Function Attributes in the Work Book**
@@ -154,6 +159,10 @@ information you deem pertinent to the selected Function.
 If the function is safety-critical, check the safety critical checkbutton to
 indicate the function's safety criticality.
 
+The functional hazards analysis and failure definition pages will be
+discussed in detail in their respective sections, :ref:`sec-hazards` and
+:ref:`sec-failure-definitions`.
+
 Saving Functions from the Work Book
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 To save changes to the currently selected Function, press the 'Save' button
@@ -163,11 +172,6 @@ open `RAMSTK` Program database.
 To save changes to all Functions associated with the selected Revision, press
 the 'Save All' button to the left of the work space.  Pending changes to all
 Functions are committed to the open `RAMSTK` Program database.
-
-Lists Book
-----------
-There are no modules associated with Functions that are displayed in the List
-Book.
 
 Analyzing the Function
 ----------------------

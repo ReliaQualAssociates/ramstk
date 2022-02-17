@@ -16,7 +16,11 @@ on:
   push:
     branches:
       - master
+    paths:
+      - "**.py"
   pull_request:
+    paths:
+      - "**.py"
     types:
       - "opened"
       - "reopened"

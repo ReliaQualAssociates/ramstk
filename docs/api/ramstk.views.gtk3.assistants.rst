@@ -1,77 +1,50 @@
-ramstk.views.gtk3.assistants package
-====================================
+RAMSTK Assistants Package
+=========================
 
-Submodules
-----------
-
-ramstk.views.gtk3.assistants.export module
-------------------------------------------
+RAMSTK Export Assistant
+-----------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.export
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.assistants.fmea module
-----------------------------------------
+RAMSTK FMEA Assistant
+---------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.fmea
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.assistants.imports module
--------------------------------------------
+RAMSTK Import Assistant
+-----------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.imports
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.assistants.options module
--------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.assistants.options
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ramstk.views.gtk3.assistants.pof module
----------------------------------------
+RAMSTK PoF Assistant
+--------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.pof
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.assistants.preferences module
------------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.assistants.preferences
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ramstk.views.gtk3.assistants.project module
--------------------------------------------
+RAMSTK Project Assistant
+------------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.project
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.assistants.similaritem module
------------------------------------------------
+RAMSTK Similar Item Assistant
+-----------------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.similaritem
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.assistants
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,21 +1,12 @@
-ramstk.views.gtk3.pof package
-=============================
+PoF View Package
+================
 
-Submodules
-----------
-
-ramstk.views.gtk3.pof.workview module
--------------------------------------
-
-.. automodule:: ramstk.views.gtk3.pof.workview
+.. automodule:: ramstk.views.gtk3.pof.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.pof
+.. automodule:: ramstk.views.gtk3.pof.view
    :members:
    :undoc-members:
    :show-inheritance:

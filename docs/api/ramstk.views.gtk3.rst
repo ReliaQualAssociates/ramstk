@@ -12,7 +12,10 @@ GTK3/PyGobject View Package
    ramstk.views.gtk3.function
    ramstk.views.gtk3.hardware
    ramstk.views.gtk3.hazard_analysis
+   ramstk.views.gtk3.options
    ramstk.views.gtk3.pof
+   ramstk.views.gtk3.preferences
+   ramstk.views.gtk3.program_status
    ramstk.views.gtk3.requirement
    ramstk.views.gtk3.revision
    ramstk.views.gtk3.similar_item

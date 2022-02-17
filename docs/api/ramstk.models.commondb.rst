@@ -4,10 +4,15 @@ ramstk.models.commondb package
 Submodules
 ----------
 
-ramstk.models.commondb.ramstkcategory module
+ramstk.models.commondb.category module
 --------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkcategory
+.. automodule:: ramstk.models.commondb.category.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.category.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -20,10 +25,15 @@ ramstk.models.commondb.ramstkcondition module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkfailuremode module
+ramstk.models.commondb.failure_mode module
 -----------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkfailuremode
+.. automodule:: ramstk.models.commondb.failure_mode.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.failure_mode.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -92,10 +102,15 @@ ramstk.models.commondb.ramstkrpn module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstksiteinfo module
+ramstk.models.commondb.site_info module
 --------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstksiteinfo
+.. automodule:: ramstk.models.commondb.site_info.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.site_info.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -116,10 +131,15 @@ ramstk.models.commondb.ramstkstatus module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstksubcategory module
+ramstk.models.commondb.subcategory module
 -----------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstksubcategory
+.. automodule:: ramstk.models.commondb.subcategory.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.subcategory.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -140,10 +160,10 @@ ramstk.models.commondb.ramstkuser module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
+Site Common Database
+--------------------
 
-.. automodule:: ramstk.models.commondb
+.. automodule:: ramstk.models.commondb.database
    :members:
    :undoc-members:
    :show-inheritance:

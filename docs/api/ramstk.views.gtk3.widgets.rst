@@ -65,14 +65,6 @@ RAMSTK Label Module
    :undoc-members:
    :show-inheritance:
 
-RAMSTK Matrixview Module
-------------------------
-
-.. automodule:: ramstk.views.gtk3.widgets.matrixview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 RAMSTK Panel Module
 -------------------
 

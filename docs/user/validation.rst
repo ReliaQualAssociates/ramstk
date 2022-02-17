@@ -7,10 +7,13 @@ The Verification module is used to document the development program's
 verification plan.
 
 .. _sec-verification-module-book:
+
 Module Book
 -----------
 
-.. figure:: ./figures/verifications_module_book.png
+.. figure:: ./figures/verification_module_book.png
+
+   :numref:`Verification Module Book`
 
 When the Verification tab is selected in the Module Book, a list of all the
 Verification tasks associated with the selected Revision is displayed.  The
@@ -18,70 +21,81 @@ attributes displayed for each Verification task are determined by the
 settings in the :ref:`sec-ramstk-user-configuration` file.  The following
 attributes are available for display in the Verification tab of the Module Book.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Verification Attributes Available to Module Book**
 
-   +-----------------------------------------+----------+
-   | Attribute                               | Editable |
-   +=========================================+==========+
-   | Revision ID                             | No       |
-   +-----------------------------------------+----------+
-   | Verification ID                         | No       |
-   +-----------------------------------------+----------+
-   | Maximum Acceptable Value for Task Result| Yes      |
-   +-----------------------------------------+----------+
-   | Mean Acceptable Value for Task Result   | Yes      |
-   +-----------------------------------------+----------+
-   | Minimum Acceptable Value for Task Result| Yes      |
-   +-----------------------------------------+----------+
-   | Acceptable Variance for Task Result     | Yes      |
-   +-----------------------------------------+----------+
-   | Confidence Level for Task Time/Cost     | Yes      |
-   +-----------------------------------------+----------+
-   | Minimum Expected Task Cost              | Yes      |
-   +-----------------------------------------+----------+
-   | Average Expected Task Cost              | Yes      |
-   +-----------------------------------------+----------+
-   | Maximum Expected Task Cost              | Yes      |
-   +-----------------------------------------+----------+
-   | Task Cost Lower Confidence Limit        | Yes      |
-   +-----------------------------------------+----------+
-   | Mean Task Cost                          | Yes      |
-   +-----------------------------------------+----------+
-   | Task Cost Upper Confidence Limit        | Yes      |
-   +-----------------------------------------+----------+
-   | Variance of Task Cost                   | Yes      |
-   +-----------------------------------------+----------+
-   | Minimum Expected Task Time              | Yes      |
-   +-----------------------------------------+----------+
-   | Average Expected Task Time              | Yes      |
-   +-----------------------------------------+----------+
-   | Maximum Expected Task Time              | Yes      |
-   +-----------------------------------------+----------+
-   | Task Time Lower Confidence Limit        | Yes      |
-   +-----------------------------------------+----------+
-   | Mean Task Time                          | Yes      |
-   +-----------------------------------------+----------+
-   | Task Time Upper Confidence Limit        | Yes      |
-   +-----------------------------------------+----------+
-   | Task Time Variance                      | Yes      |
-   +-----------------------------------------+----------+
-   | Planned Start Date of Task              | Yes      |
-   +-----------------------------------------+----------+
-   | Planned End Date of Task                | Yes      |
-   +-----------------------------------------+----------+
-   | Description of Task                     | Yes      |
-   +-----------------------------------------+----------+
-   | Unit of Measure for Task Results        | Yes      |
-   +-----------------------------------------+----------+
-   | Task Code                               | No       |
-   +-----------------------------------------+----------+
-   | % Task Complete                         | Yes      |
-   +-----------------------------------------+----------+
-   | Specification Applicable to Task        | Yes      |
-   +-----------------------------------------+----------+
-   | Type of Task                            | Yes      |
-   +-----------------------------------------+----------+
+   +---------------------------+----------+------------------------------------+
+   | Attribute                 | Editable | Source of Data                     |
+   +===========================+==========+====================================+
+   | Revision ID               | No       | Assigned by database.              |
+   +---------------------------+----------+------------------------------------+
+   | Verification ID           | No       | Assigned by database.              |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Acceptable Value  | Yes      | Free form entry.                   |
+   | for Task Result           |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Mean Acceptable Value for | Yes      | Free form entry.                   |
+   | Task Result               |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Acceptable Value  | Yes      | Free form entry.                   |
+   | for Task Result           |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Acceptable Variance for   | Yes      | Free form entry.                   |
+   | Task Result               |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Confidence Level for Task | Yes      | Free form entry.                   |
+   | Time/Cost                 |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Expected Task Cost| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Average Expected Task Cost| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Expected Task Cost| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Task Cost Lower Confidence| No       | Calculated value.                  |
+   | Limit                     |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Mean Task Cost            | No       | Calculated value.                  |
+   +---------------------------+----------+------------------------------------+
+   | Task Cost Upper Confidence| No       | Calculated value.                  |
+   | Limit                     |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Variance of Task Cost     | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Expected Task Time| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Average Expected Task Time| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Expected Task Time| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Task Time Lower Confidence| No       | Calculated value.                  |
+   | Limit                     |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Mean Task Time            | No       | Calculated value.                  |
+   +---------------------------+----------+------------------------------------+
+   | Task Time Upper Confidence| No       | Calculated value.                  |
+   | Limit                     |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Task Time Variance        | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Planned Start Date of Task| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Planned End Date of Task  | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Description of Task       | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Unit of Measure for Task  | Yes      | Pick list stored in Site database. |
+   | Results                   |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Task Code                 | No       | Calculated value.                  |
+   +---------------------------+----------+------------------------------------+
+   | % Task Complete           | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Specification Applicable  | Yes      | Free form entry.                   |
+   | to Task                   |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Type of Task              | Yes      | Pick list stored in Site database. |
+   +---------------------------+----------+------------------------------------+
 
 Selecting the Verification task you wish to work with from the displayed list
 will cause the Verification module Work Book to display the attributes of the
@@ -124,62 +138,69 @@ Pending changes to all Verification tasks associated with the selected Revision
 are committed to the open `RAMSTK` Program database.
 
 .. _sec-verification-work-book:
+
 Work Book
 ---------
-.. figure:: ./figures/verifications_work_book.png
+.. figure:: ./figures/verification_work_book.png
+
+   :numref:`Verification Work Book`
 
 The Verification module Work Book has a General Data and a Program
 Verification Progress page.  The following attributes are displayed in the
 Verification's General Data page.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Verification Attributes in the Work Book**
 
-   +-----------------------------------------+----------+
-   | Attribute                               | Editable |
-   +=========================================+==========+
-   | Verification ID                         | No       |
-   +-----------------------------------------+----------+
-   | Verification Task Code                  | No       |
-   +-----------------------------------------+----------+
-   | Task Description                        | Yes      |
-   +-----------------------------------------+----------+
-   | Task Type                               | Yes      |
-   +-----------------------------------------+----------+
-   | Specification                           | Yes      |
-   +-----------------------------------------+----------+
-   | Measurement Units                       | Yes      |
-   +-----------------------------------------+----------+
-   | Minimum Acceptable Value                | Yes      |
-   +-----------------------------------------+----------+
-   | Maximum Acceptable Value                | Yes      |
-   +-----------------------------------------+----------+
-   | Mean Acceptable Value                   | Yes      |
-   +-----------------------------------------+----------+
-   | Acceptable Variance                     | Yes      |
-   +-----------------------------------------+----------+
-   | Start Date                              | Yes      |
-   +-----------------------------------------+----------+
-   | End Date                                | Yes      |
-   +-----------------------------------------+----------+
-   | % Complete                              | Yes      |
-   +-----------------------------------------+----------+
-   | Minimum Expected Task Time              | Yes      |
-   +-----------------------------------------+----------+
-   | Most Likely Expected Task Time          | Yes      |
-   +-----------------------------------------+----------+
-   | Maximum Expected Task Time              | Yes      |
-   +-----------------------------------------+----------+
-   | Estimated Task Time at Confidence       | No       |
-   +-----------------------------------------+----------+
-   | Minimum Expected Task Cost              | Yes      |
-   +-----------------------------------------+----------+
-   | Most Likely Expected Task Cost          | Yes      |
-   +-----------------------------------------+----------+
-   | Maximum Expected Task Cost              | Yes      |
-   +-----------------------------------------+----------+
-   | Estimated Task Cost at Confidence       | No       |
-   +-----------------------------------------+----------+
+   +---------------------------+----------+------------------------------------+
+   | Attribute                 | Editable | Source of Data                     |
+   +===========================+==========+====================================+
+   | Verification ID           | No       | Assigned by database.              |
+   +---------------------------+----------+------------------------------------+
+   | Verification Task Code    | No       | Calculated value.                  |
+   +---------------------------+----------+------------------------------------+
+   | Task Description          | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Task Type                 | Yes      | Pick list stored in Site database. |
+   +---------------------------+----------+------------------------------------+
+   | Specification             | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Measurement Units         | Yes      | Pick list stored in Site database. |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Acceptable Value  | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Acceptable Value  | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Mean Acceptable Value     | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Acceptable Variance       | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Start Date                | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | End Date                  | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | % Complete                | Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Expected Task Time| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Most Likely Expected Task | Yes      | Free form entry.                   |
+   | Time                      |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Expected Task Time| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Estimated Task Time at    | No       | Calculated value.                  |
+   | Confidence                |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Minimum Expected Task Cost| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Most Likely Expected Task | Yes      | Free form entry.                   |
+   | Cost                      |          |                                    |
+   +---------------------------+----------+------------------------------------+
+   | Maximum Expected Task Cost| Yes      | Free form entry.                   |
+   +---------------------------+----------+------------------------------------+
+   | Estimated Task Cost at    | No       | Calculated value.                  |
+   | Confidence                |          |                                    |
+   +---------------------------+----------+------------------------------------+
 
 The verification ID is the database identifier for the task.
 
@@ -299,7 +320,9 @@ work book, you'll be presented with a blank plot.  Pressing the 'Plot' button
 to the left of the work space will cause `RAMSTK` to calculate the
 verification plan and plot the results.
 
-.. figure:: ./figures/verifications_2.png
+.. figure:: ./figures/program_status.png
+
+   :numref:`Validation Program Status`
 
 The plot shows the planned burn down curve which is the sum of the calculated
 task times for each task that is planned to be in progress by date.  To make
@@ -327,7 +350,3 @@ For every date the program plan was calculated and saved to the database, a
 black dot will be plotted showing the total verification program time
 remaining.  Ideally, these dots will track the blue line over time and remain
 between the green and red dashed lines.
-
-List Book
----------
-Verification tasks are unable to be displayed in the List Book.

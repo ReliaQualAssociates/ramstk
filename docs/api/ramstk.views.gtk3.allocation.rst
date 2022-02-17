@@ -1,21 +1,12 @@
-ramstk.views.gtk3.allocation package
-====================================
+Allocation View Package
+=======================
 
-Submodules
-----------
-
-ramstk.views.gtk3.allocation.workview module
---------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.allocation.workview
+.. automodule:: ramstk.views.gtk3.allocation.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.allocation
+.. automodule:: ramstk.views.gtk3.allocation.view
    :members:
    :undoc-members:
    :show-inheritance:

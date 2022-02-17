@@ -14,20 +14,20 @@ phases.  For each mission phase, one or more environmental conditions can be
 defined.  A simple :ref:`fig-usage-profile` (highlighted in red), for example,
 might be::
 
-  Drive to work (Mission)
+  Develop awesome new application (Mission)
     |
-    +- Start car (Mission Phase)
+    +- Start computer (Mission Phase)
     |    |
     |    +- Temperature, Ambient (Environment)
     |    +- Humidity
-    +- Transit from home to work (Mission Phase)
+    +- Write code, compile, and test (Mission Phase)
     |    |
     |    +- Temperature, Ambient
     |    +- Humidity
     |    +- Precipitation
     |    +- Vibration
     |    +- Shock
-    +- Stop car (Mission Phase)
+    +- Shutdown computer (Mission Phase)
          |
          +- Temperature, Ambient
          +- Humidity
@@ -39,52 +39,55 @@ The Usage Profile is unable to be displayed in the Module Book.
 
 Work Book
 ---------
-The Usage Profile currently has no work space to display in the Work Book.
-
-List Book
----------
 .. _fig-usage-profile:
 
 .. figure:: ./figures/usage_profile.png
 
    Usage Profile
 
-The Usage Profile is displayed in the List Book when the Revision work stream
+The Usage Profile is displayed in the Work Book when the Revision work stream
 is selected in the Module Book.  The following attributes are displayed for
 each entity in the Usage Profile.  All attributes are editable.
 
 .. tabularcolumns:: |r|l|
 .. table:: **Usage Profile Attributes**
 
-   +-------------------+-------------------------------------------+
-   | **Entity**        | **Attribute**                             |
-   +===================+===========================================+
-   | **Mission**       | Mission description                       |
-   |                   +-------------------------------------------+
-   |                   | Mission start time                        |
-   |                   +-------------------------------------------+
-   |                   | Mission end time                          |
-   +-------------------+-------------------------------------------+
-   | **Mission Phase** | Mission phase code                        |
-   |                   +-------------------------------------------+
-   |                   | Mission phase description                 |
-   |                   +-------------------------------------------+
-   |                   | Mission phase start time                  |
-   |                   +-------------------------------------------+
-   |                   | Mission phase end time                    |
-   +-------------------+-------------------------------------------+
-   | **Environment**   | Environmental condition description       |
-   |                   +-------------------------------------------+
-   |                   | Environmental condition measurement units |
-   |                   +-------------------------------------------+
-   |                   | Minimum design value                      |
-   |                   +-------------------------------------------+
-   |                   | Maximum design value                      |
-   |                   +-------------------------------------------+
-   |                   | Mean design value                         |
-   |                   +-------------------------------------------+
-   |                   | Variance of design value                  |
-   +-------------------+-------------------------------------------+
+   +-------------------+----------------------+--------------------------------+
+   | Entity            | Attribute            | Source of Data                 |
+   +===================+======================+================================+
+   | **Mission**       | Mission description  | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Mission start time   | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Mission end time     | Free form entry.               |
+   +-------------------+----------------------+--------------------------------+
+   | **Mission Phase** | Mission phase code   | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Mission phase        | Free form entry.               |
+   |                   | description          |                                |
+   |                   +----------------------+--------------------------------+
+   |                   | Mission phase start  | Free form entry.               |
+   |                   | time                 |                                |
+   |                   +----------------------+--------------------------------+
+   |                   | Mission phase end    | Free form entry.               |
+   |                   | time                 |                                |
+   +-------------------+----------------------+--------------------------------+
+   | **Environment**   | Environmental        | Free form entry.               |
+   |                   | condition description|                                |
+   |                   +----------------------+--------------------------------+
+   |                   | Environmental        | Pick list stored in Site       |
+   |                   | condition measurement| database.                      |
+   |                   | units                |                                |
+   |                   +----------------------+--------------------------------+
+   |                   | Minimum design value | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Maximum design value | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Mean design value    | Free form entry.               |
+   |                   +----------------------+--------------------------------+
+   |                   | Variance of design   | Free form entry.               |
+   |                   | value                |                                |
+   +-------------------+----------------------+--------------------------------+
 
 In addition to defining the usage profile, the mission and mission phase will
 be used in Hardware FMEA's to calculate a failure mode's mission time.
@@ -95,8 +98,15 @@ defined as minimum, maximum, or using a mean and a variance.
 
 Adding and Removing Usage Profile Entities
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-To add an entity at the same indenture level as the currently selected
-entity, press the 'Insert Sibling' button to the left of the Usage Profile.
+The Usage Profile is hierachical with a mission being the top level.  Below
+the mission are one or more mission phases.  For each mission phase one or
+more environmental conditions can be defined.
+
+When a new Revision is created in a RAMSTK Program database, including the
+initial Revision, a basic Usage Profile consisting of a mission, mission
+phase, and one environmental condition is also created.  To add an entity at
+the same indenture level as the currently selected entity, press the 'Insert
+Sibling' button to the left of the Usage Profile.
 
 To add an entity one indenture level below the currently selected entity,
 press the 'Insert Child' button to the left of the Usage Profile.  If the
