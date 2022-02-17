@@ -96,4 +96,4 @@ jobs:
           git config --global user.email "${{ steps.import_gpg.outputs.email }}"
           git config --global user.name "${{ steps.import_gpg.outputs.name }}"
           git tag -s -a -m"v${{ steps.nextversion.outputs.next_version }}" v${{ steps.nextversion.outputs.next_version }}
-          git push --tags
+          git push -f --tags
