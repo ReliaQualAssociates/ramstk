@@ -12,6 +12,8 @@ Module Book
 -----------
 .. figure:: ./figures/hardware_module_book.png
 
+   :numref:`Hardware Module Book`
+
 When the Hardware tab is selected in the Module Book, a hierarchical tree of all
 the Hardware associated with the selected Revision is displayed.  This
 hierarchical view is referred to as a bill of materials (BoM).  There are
@@ -168,6 +170,8 @@ committed to the open `RAMSTK` Program database.
 Work Book
 ---------
 .. figure:: ./figures/hardware_work_book.png
+
+   :numref:`Hardware Work Book`
 
 The Hardware module Work Book has a General Data, an Assessment Inputs, and
 an Assessment Results page.  These pages allow entry of information related
@@ -366,6 +370,8 @@ stress pane.
 Assessment Results Page
 ^^^^^^^^^^^^^^^^^^^^^^^
 .. figure:: ./figures/hardware_work_book_assessment_results.png
+
+   :numref:`Hardware Assessment Results Page`
 
 The Assessment Results page is where all of the calculated information is
 displayed.
