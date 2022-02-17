@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.16.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.0) (2022-02-17)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.14...v0.16.0)
+
+New Features
+
+- docs: Update Documentation for v0.16.0 [\#964](https://github.com/ReliaQualAssociates/ramstk/pull/964) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.14](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.14) (2022-02-12)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.13...v0.15.14)
