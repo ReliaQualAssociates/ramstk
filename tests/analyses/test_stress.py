@@ -17,7 +17,6 @@ from ramstk.analyses import stress
 
 @pytest.mark.unit
 @pytest.mark.calculation
-@pytest.mark.xfail
 def test_calculate_stress_ratio():
     """calculate_stress_ratio() should return a float stress ratio on success."""
     _stress_ratio = stress.calculate_stress_ratio(0.625, 1.25)
