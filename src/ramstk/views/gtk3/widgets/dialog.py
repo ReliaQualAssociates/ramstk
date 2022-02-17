@@ -259,6 +259,12 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.txtPassword.do_set_properties(
             tooltip=_("Enter the user password for the database server."), width=300
         )
+        self.txtPassword.set_visibility(False)
+        self.txtPassword.set_property(
+            "input-purpose",
+            Gtk.InputPurpose.PASSWORD,
+        )
+        self.txtPassword.set_invisible_char("*")
 
         self.tvwTreeView.selection = self.tvwTreeView.get_selection()
 
