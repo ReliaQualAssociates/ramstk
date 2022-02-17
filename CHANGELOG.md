@@ -1,5 +1,29 @@
 # Changelog
 
+## [v0.15.16](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.16) (2022-02-17)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.15...v0.15.16)
+
+Bug Fixes
+
+- fix: allow cancelling of database open/create dialog [\#970](https://github.com/ReliaQualAssociates/ramstk/pull/970) ([weibullguy](https://github.com/weibullguy))
+
+## [v0.15.15](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.15) (2022-02-17)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.14...v0.15.15)
+
+New Features
+
+- docs: Update Documentation for v0.16.0 [\#964](https://github.com/ReliaQualAssociates/ramstk/pull/964) ([weibullguy](https://github.com/weibullguy))
+
+Bug Fixes
+
+- fix: set database login password invisible [\#967](https://github.com/ReliaQualAssociates/ramstk/pull/967) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- ci: update ci/cd workflows [\#966](https://github.com/ReliaQualAssociates/ramstk/pull/966) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.14](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.14) (2022-02-12)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.13...v0.15.14)
