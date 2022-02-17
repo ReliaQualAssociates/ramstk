@@ -48,7 +48,7 @@ class RAMSTKDialog(Gtk.Dialog):
                 Gtk.ResponseType.CANCEL,
             ),
         )
-        _dlgparent = kwargs.get("dlgparent", None)
+        _dlgparent = kwargs.get("dlgparent")
 
         super().__init__()
 
@@ -467,7 +467,12 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         :return: None
         :rtype: None
         """
-        _message_type = Gtk.MessageType.INFO
+        _dic_message_type = {
+            "error": Gtk.MessageType.ERROR,
+            "warning": Gtk.MessageType.WARNING,
+            "information": Gtk.MessageType.INFO,
+            "question": Gtk.MessageType.QUESTION,
+        }
 
         _prompt = self.get_property("text")
         # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
@@ -497,22 +502,18 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                 "persists.</b>",
             )
         )
-        if message_type == "error":
-            self.set_markup(_prompt)
-            _message_type = Gtk.MessageType.ERROR
-            self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == "warning":
-            self.set_markup(_prompt)
-            _message_type = Gtk.MessageType.WARNING
-            self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == "information":
-            _message_type = Gtk.MessageType.INFO
+        self.set_markup(_prompt)
+        self.set_property("message-type", _dic_message_type[message_type])
+
+        if message_type in {"error", "warning", "information"}:
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "question":
-            _message_type = Gtk.MessageType.QUESTION
-            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
-
-        self.set_property("message-type", _message_type)
+            self.add_buttons(
+                "_Yes",
+                Gtk.ResponseType.YES,
+                "_No",
+                Gtk.ResponseType.NO,
+            )
 
     def do_run(self) -> Any:
         """Run the RAMSTK Message Dialog."""
