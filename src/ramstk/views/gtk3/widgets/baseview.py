@@ -122,7 +122,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._lst_handler_id: List[int] = []
         self._lst_layouts: List[str] = [
             "allocation",
-            "failure_definition",
+            "definition",
             "fmea",
             "function",
             "hardware",
@@ -194,8 +194,8 @@ class RAMSTKBaseView(Gtk.HBox):
         )
 
         try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[self._tag + "bg"]
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[self._tag + "fg"]
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}bg"]
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}fg"]
         except KeyError:
             _bg_color = "#FFFFFF"
             _fg_color = "#000000"
@@ -644,9 +644,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: dict
         """
         return {
-            _icon: (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + f"/32x32/{_icon}.png"
-            )
+            _icon: f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/{_icon}.png"
             for _icon in [
                 "action",
                 "add",
@@ -707,9 +705,10 @@ class RAMSTKModuleView(RAMSTKBaseView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons["insert_part"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/insert_part.png"
-        )
+        self._dic_icons[
+            "insert_part"
+        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/insert_part.png"
+
         self._dic_key_index: Dict[str, int] = {}
 
         # Initialize private list attributes.
@@ -717,14 +716,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._lst_callbacks.insert(1, super().do_request_delete)
         self._lst_icons.insert(0, "add")
         self._lst_icons.insert(1, "remove")
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
 
     def make_ui(self) -> None:
         """Build the user interface for a ModuleView.

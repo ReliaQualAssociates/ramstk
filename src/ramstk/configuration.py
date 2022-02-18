@@ -233,11 +233,11 @@ class RAMSTKSiteConfiguration:
         # Initialize public scalar attributes.
         self.RAMSTK_COM_BACKEND = ""
         if sys.platform in ["linux", "linux2"]:
-            self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_SITE_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
         elif sys.platform == "win32":
-            self.RAMSTK_SITE_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+            self.RAMSTK_SITE_DIR = f'{environ["PYTHONPATH"]}/RAMSTK'
 
-        self.RAMSTK_SITE_CONF = self.RAMSTK_SITE_DIR + "/Site.toml"
+        self.RAMSTK_SITE_CONF = f"{self.RAMSTK_SITE_DIR}/Site.toml"
 
     def do_create_site_configuration(self) -> None:
         """Create the default site configuration file.
@@ -312,8 +312,8 @@ class RAMSTKSiteConfiguration:
         :return: None
         :rtype: None
         """
-        self.RAMSTK_SITE_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
-        self.RAMSTK_SITE_CONF = self.RAMSTK_SITE_DIR + "/Site.toml"
+        self.RAMSTK_SITE_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
+        self.RAMSTK_SITE_CONF = f"{self.RAMSTK_SITE_DIR}/Site.toml"
 
         if not file_exists(self.RAMSTK_SITE_CONF):
             self.do_create_site_configuration()
@@ -469,8 +469,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "allocationfg",
             "fmeabg",
             "fmeafg",
-            "failure_definitionbg",
-            "failure_definitionfg",
+            "definitionbg",
+            "definitionfg",
             "functionbg",
             "functionfg",
             "hardwarebg",
@@ -492,7 +492,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         ]
         self._lst_format_files = [
             "allocation",
-            "failure_definition",
+            "definition",
             "fmea",
             "function",
             "hardware",
@@ -594,7 +594,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Initialize public scalar attributes.
         self.RAMSTK_MODE = ""
-        self.RAMSTK_MODE_SOURCE = 1  # 1=FMD-97
+        self.RAMSTK_MODE_SOURCE = 1
         self.RAMSTK_BACKEND = ""
         self.RAMSTK_REPORT_SIZE = "letter"
         self.RAMSTK_HR_MULTIPLIER = 1.0
@@ -606,21 +606,21 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_LOGLEVEL = "INFO"
         if sys.platform in ["linux", "linux2"]:
             self.RAMSTK_OS = "Linux"
-            self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_CONF_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
             self.RAMSTK_HOME_DIR = environ["HOME"]
         elif sys.platform == "win32":
             self.RAMSTK_OS = "Windows"
-            self.RAMSTK_CONF_DIR = environ["PYTHONPATH"] + "/RAMSTK"
+            self.RAMSTK_CONF_DIR = f'{environ["PYTHONPATH"]}/RAMSTK'
             self.RAMSTK_HOME_DIR = environ["USERPROFILE"]
 
         self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
         self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
-        self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk/"
+        self.RAMSTK_PROG_DIR = f"{self.RAMSTK_HOME_DIR}/analyses/ramstk/"
 
-        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
-        self.RAMSTK_USER_LOG = self.RAMSTK_LOG_DIR + "/ramstk_run.log"
-        self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
+        self.RAMSTK_PROG_CONF = f"{self.RAMSTK_CONF_DIR}/RAMSTK.toml"
+        self.RAMSTK_USER_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_run.log"
+        self.RAMSTK_IMPORT_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_import.log"
 
         self.loaded = False
 
@@ -630,11 +630,11 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         :return: None
         :rtype: None
         """
-        self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
+        self.RAMSTK_CONF_DIR = f"{self.RAMSTK_HOME_DIR}/.config/RAMSTK"
         if not dir_exists(self.RAMSTK_CONF_DIR):
             try:
                 makedirs(self.RAMSTK_CONF_DIR)
-                self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+                self.RAMSTK_PROG_CONF = f"{self.RAMSTK_CONF_DIR}/RAMSTK.toml"
             except OSError:
                 _error_msg = (
                     f"User's configuration directory {self.RAMSTK_CONF_DIR} does not "
@@ -743,15 +743,16 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
-        for _file in glob.glob(self._INSTALL_PREFIX + "/share/RAMSTK/layouts/*.toml"):
+        for _file in glob.glob(f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts/*.toml"):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
             dir_util.copy_tree(
-                self._INSTALL_PREFIX + "/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
+                f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
             )
+
         except DistutilsFileError:
             _error_msg = (
                 f"Attempt to copy RAMSTK icons from site-wide icon directory "
@@ -791,7 +792,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": "allocation.toml",
-                "failure_definition": "failure_definition.toml",
+                "definition": "failure_definition.toml",
                 "fmea": "fmea.toml",
                 "function": "function.toml",
                 "hardware": "hardware.toml",
@@ -807,8 +808,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "colors": {
                 "allocationbg": "#FFFFFF",
                 "allocationfg": "#000000",
-                "failure_definitionbg": "#FFFFFF",
-                "failure_definitionfg": "#000000",
+                "definitionbg": "#FFFFFF",
+                "definitionfg": "#000000",
                 "fmeabg": "#FFFFFF",
                 "fmeafg": "#000000",
                 "functionbg": "#FFFFFF",
@@ -917,8 +918,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_USER_LOG = "./ramstk_run.log"
                 self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
             else:
-                self.RAMSTK_USER_LOG = self.RAMSTK_LOG_DIR + "/ramstk_run.log"
-                self.RAMSTK_IMPORT_LOG = self.RAMSTK_LOG_DIR + "/ramstk_import.log"
+                self.RAMSTK_USER_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_run.log"
+                self.RAMSTK_IMPORT_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_import.log"
 
         else:
             _error_msg = (
@@ -961,7 +962,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             },
             "layouts": {
                 "allocation": self.RAMSTK_FORMAT_FILE["allocation"],
-                "failure_definition": self.RAMSTK_FORMAT_FILE["failure_definition"],
+                "definition": self.RAMSTK_FORMAT_FILE["definition"],
                 "fmea": self.RAMSTK_FORMAT_FILE["fmea"],
                 "function": self.RAMSTK_FORMAT_FILE["function"],
                 "hardware": self.RAMSTK_FORMAT_FILE["hardware"],
@@ -977,8 +978,8 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             "colors": {
                 "allocationbg": self.RAMSTK_COLORS["allocationbg"],
                 "allocationfg": self.RAMSTK_COLORS["allocationbg"],
-                "failure_definitionbg": self.RAMSTK_COLORS["failure_definitionbg"],
-                "failure_definitionfg": self.RAMSTK_COLORS["failure_definitionbg"],
+                "definitionbg": self.RAMSTK_COLORS["definitionbg"],
+                "definitionfg": self.RAMSTK_COLORS["definitionbg"],
                 "fmeabg": self.RAMSTK_COLORS["fmeabg"],
                 "fmeafg": self.RAMSTK_COLORS["fmeafg"],
                 "functionbg": self.RAMSTK_COLORS["functionbg"],
@@ -1025,29 +1026,29 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         """
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
-        if dir_exists(self.RAMSTK_HOME_DIR + "/.config/RAMSTK"):
-            self.RAMSTK_CONF_DIR = self.RAMSTK_HOME_DIR + "/.config/RAMSTK"
+        if dir_exists(f"{self.RAMSTK_HOME_DIR}/.config/RAMSTK"):
+            self.RAMSTK_CONF_DIR = f"{self.RAMSTK_HOME_DIR}/.config/RAMSTK"
         else:
-            self.RAMSTK_CONF_DIR = self._INSTALL_PREFIX + "/share/RAMSTK"
+            self.RAMSTK_CONF_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
 
-        self.RAMSTK_PROG_CONF = self.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+        self.RAMSTK_PROG_CONF = f"{self.RAMSTK_CONF_DIR}/RAMSTK.toml"
 
         if dir_exists(self.RAMSTK_CONF_DIR + self._data_sub_dir):
             self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         else:
-            self.RAMSTK_DATA_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/layouts"
+            self.RAMSTK_DATA_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts"
 
         if dir_exists(self.RAMSTK_CONF_DIR + self._icon_sub_dir):
             self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
         else:
-            self.RAMSTK_ICON_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/icons"
+            self.RAMSTK_ICON_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK/icons"
 
         if dir_exists(self.RAMSTK_CONF_DIR + self._logs_sub_dir):
             self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
         else:
-            self.RAMSTK_LOG_DIR = self._INSTALL_PREFIX + "/share/RAMSTK/logs"
+            self.RAMSTK_LOG_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK/logs"
 
-        if dir_exists(self.RAMSTK_HOME_DIR + "/analyses/ramstk"):
-            self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR + "/analyses/ramstk"
+        if dir_exists(f"{self.RAMSTK_HOME_DIR}/analyses/ramstk"):
+            self.RAMSTK_PROG_DIR = f"{self.RAMSTK_HOME_DIR}/analyses/ramstk"
         else:
             self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR

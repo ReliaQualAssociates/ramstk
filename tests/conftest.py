@@ -47,7 +47,7 @@ except KeyError:
     elif platform.system() == "Windows":
         VIRTUAL_ENV = os.getenv("TEMP")
     else:
-        print(("The {0:s} system platform is not supported.").format(platform.system()))
+        print(f"The {platform.system()} system platform is not supported.")
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -530,14 +530,14 @@ def make_home_config_dir():
     """Create a configuration directory to mimic a user's configuration directory."""
     _config_dir = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
 
-    # Setup the test home configuration directory.
+    # Set up the test home configuration directory.
     setup_test_directory(_config_dir)
     setup_test_directory(_config_dir + "/layouts")
     setup_test_directory(_config_dir + "/icons")
     setup_test_directory(_config_dir + "/log")
 
-    # Setup the test analyses directory.
-    _analyses_dir = VIRTUAL_ENV + "/tmp/analyses/ramstk"
+    # Set up the test analyses directory.
+    _analyses_dir = "{0}/tmp/analyses/ramstk".format(VIRTUAL_ENV)
     setup_test_directory(_analyses_dir)
 
     shutil.copyfile(
@@ -809,7 +809,7 @@ def test_toml_user_configuration(make_home_config_dir):
         },
         "layouts": {
             "allocation": "allocation.toml",
-            "failure_definition": "failure_definition.toml",
+            "definition": "failure_definition.toml",
             "fmea": "fmea.toml",
             "function": "function.toml",
             "hardware": "hardware.toml",
@@ -825,8 +825,8 @@ def test_toml_user_configuration(make_home_config_dir):
         "colors": {
             "allocationbg": "#FFFFFF",
             "allocationfg": "#000000",
-            "failure_definitionbg": "#FFFFFF",
-            "failure_definitionfg": "#000000",
+            "definitionbg": "#FFFFFF",
+            "definitionfg": "#000000",
             "fmeabg": "#FFFFFF",
             "fmeafg": "#000000",
             "functionbg": "#FFFFFF",
