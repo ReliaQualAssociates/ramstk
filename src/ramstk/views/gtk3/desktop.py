@@ -15,10 +15,7 @@ from typing import List, TypeVar
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration,
-    RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import (
@@ -79,16 +76,10 @@ class RAMSTKDesktop(Gtk.Window):
     :type toolbar: :class:`Gtk.Toolbar`
     """
 
-    RAMSTK_SITE_CONFIGURATION: RAMSTKSiteConfiguration = (
-        RAMSTKSiteConfiguration()
-    )
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = (
-        RAMSTKUserConfiguration()
-    )
+    RAMSTK_SITE_CONFIGURATION: RAMSTKSiteConfiguration = RAMSTKSiteConfiguration()
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
-    def __init__(
-        self, configuration: Tconfiguration, logger: RAMSTKLogManager
-    ) -> None:
+    def __init__(self, configuration: Tconfiguration, logger: RAMSTKLogManager) -> None:
         """Initialize an instance of the RAMSTK Book.
 
         :param configuration: a list containing the RAMSTK user
@@ -138,9 +129,7 @@ class RAMSTKDesktop(Gtk.Window):
         self.nbkWorkBook: RAMSTKWorkBook = RAMSTKWorkBook(
             self.RAMSTK_USER_CONFIGURATION, logger
         )
-        self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = (
-            self.RAMSTK_SITE_CONFIGURATION
-        )
+        self.nbkWorkBook.RAMSTK_SITE_CONFIGURATION = self.RAMSTK_SITE_CONFIGURATION
 
         try:
             locale.setlocale(
@@ -158,9 +147,7 @@ class RAMSTKDesktop(Gtk.Window):
         pub.subscribe(self._on_select, "request_set_title")
         pub.subscribe(self._do_set_status, "request_set_status")
 
-    def _do_request_options_assistant(
-        self, __widget: Gtk.ImageMenuItem
-    ) -> None:
+    def _do_request_options_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
         """Request the EditOptions assistant be launched.
 
         :param __widget: the Gtk.ImageMenuItem() that called this class.
@@ -184,9 +171,7 @@ class RAMSTKDesktop(Gtk.Window):
 
         _dialog.do_destroy()
 
-    def _do_request_preferences_assistant(
-        self, __widget: Gtk.ImageMenuItem
-    ) -> None:
+    def _do_request_preferences_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
         """Request the PreferencesDialog assistant be launched.
 
         :param __widget: the Gtk.ImageMenuItem() that called this class.
@@ -194,9 +179,7 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         _assistant = Gtk.Window()
-        _preferences = PreferencesDialog(
-            self.RAMSTK_USER_CONFIGURATION, self._logger
-        )
+        _preferences = PreferencesDialog(self.RAMSTK_USER_CONFIGURATION, self._logger)
 
         _screen: Gdk.Screen = Gdk.Screen()
         _n_screens = _screen.get_default().get_n_monitors()
@@ -239,9 +222,7 @@ class RAMSTKDesktop(Gtk.Window):
         for _menu_item in _menu_items:
             _menu.append(_menu_item)
 
-        _menu_items[0].connect(
-            "activate", self._do_request_preferences_assistant
-        )
+        _menu_items[0].connect("activate", self._do_request_preferences_assistant)
 
         _menu_item = Gtk.MenuItem(label=_("_Edit"), use_underline=True)
         _menu_item.set_submenu(_menu)
@@ -400,12 +381,8 @@ class RAMSTKDesktop(Gtk.Window):
                 _("Connect to an existing RAMSTK Program Database."),
                 _("Closes the open RAMSTK Program Database."),
                 _("Save the currently open RAMSTK Project Database."),
-                _(
-                    "Save the currently open RAMSTK Program Database then quits."
-                ),
-                _(
-                    "Quits without saving the currently open RAMSTK Program Database."
-                ),
+                _("Save the currently open RAMSTK Program Database then quits."),
+                _("Quits without saving the currently open RAMSTK Program Database."),
             ],
         )
 
@@ -491,9 +468,7 @@ class RAMSTKDesktop(Gtk.Window):
         pub.sendMessage("request_close_project")
 
     # noinspection PyDeepBugsSwappedArgs
-    def _do_request_save_project(
-        self, widget: Gtk.Widget, end: bool = False
-    ) -> None:
+    def _do_request_save_project(self, widget: Gtk.Widget, end: bool = False) -> None:
         """Request to save the open RAMSTK Program.
 
         :param Gtk.Widget widget: the Gtk.Widget() that called this method.
@@ -545,13 +520,9 @@ class RAMSTKDesktop(Gtk.Window):
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
                 + "/32x32/db-disconnected.png"
             )
-            _tooltip = _(
-                "RAMSTK is not currently connected to a project database."
-            )
+            _tooltip = _("RAMSTK is not currently connected to a project database.")
 
-        self.icoStatus.set_from_pixbuf(
-            _pixbuf.new_from_file_at_size(_icon, 22, 22)
-        )
+        self.icoStatus.set_from_pixbuf(_pixbuf.new_from_file_at_size(_icon, 22, 22))
         self.icoStatus.set_tooltip_markup(_tooltip)
 
     def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None:

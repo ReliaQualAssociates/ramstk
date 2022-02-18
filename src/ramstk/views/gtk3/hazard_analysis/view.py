@@ -116,9 +116,7 @@ class HazardsWorkView(RAMSTKWorkView):
         :rtype: None
         """
         super().do_set_cursor_busy()
-        pub.sendMessage(
-            "request_calculate_fha", node_id=self.dic_pkeys["record_id"]
-        )
+        pub.sendMessage("request_calculate_fha", node_id=self.dic_pkeys["record_id"])
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record ID when a hazard is selected.
@@ -151,12 +149,8 @@ class HazardsWorkView(RAMSTKWorkView):
         super().do_make_layout()
         super().do_embed_treeview_panel()
 
-        self._pnlPanel.do_load_severity(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY
-        )
-        self._pnlPanel.do_load_hazards(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS
-        )
+        self._pnlPanel.do_load_severity(self.RAMSTK_USER_CONFIGURATION.RAMSTK_SEVERITY)
+        self._pnlPanel.do_load_hazards(self.RAMSTK_USER_CONFIGURATION.RAMSTK_HAZARDS)
         self._pnlPanel.do_load_probability(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_FAILURE_PROBABILITY
         )

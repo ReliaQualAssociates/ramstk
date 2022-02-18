@@ -272,8 +272,7 @@ class FMEAWorkView(RAMSTKWorkView):
             for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_CATEGORY.items()
         ]
         self._pnlPanel.lst_action_status = [
-            x[1][0]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
+            x[1][0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
         ]
         self._pnlPanel.lst_users = [
             x[1][0] + ", " + x[1][1]
@@ -309,9 +308,7 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        self._pnlPanel.lst_mode_probability = [
-            x[0] for x in RAMSTK_FAILURE_PROBABILITY
-        ]
+        self._pnlPanel.lst_mode_probability = [x[0] for x in RAMSTK_FAILURE_PROBABILITY]
         self._pnlPanel.lst_severity_class = [x[0] for x in RAMSTK_CRITICALITY]
 
     def __make_ui(self) -> None:

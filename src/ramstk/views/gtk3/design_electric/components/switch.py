@@ -16,11 +16,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -165,9 +161,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _(
-                        "The contact form and quantity of the switch."
-                    ),
+                    "tooltip": _("The contact form and quantity of the switch."),
                 },
                 _("Contact Form:"),
                 "gint",
@@ -180,9 +174,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _(
-                        "The number of cycles per hour of the switch."
-                    ),
+                    "tooltip": _("The number of cycles per hour of the switch."),
                 },
                 _("Number of Cycles/Hour:"),
                 "gfloat",
@@ -195,9 +187,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 1,
                 {
-                    "tooltip": _(
-                        "The number of active contacts in the switch."
-                    ),
+                    "tooltip": _("The number of active contacts in the switch."),
                 },
                 _("Number of Active Contacts:"),
                 "gint",
@@ -234,9 +224,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo(
-            [["MIL-SPEC"], [_("Lower")]], signal="changed"
-        )
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
 
         # Load the application RAMSTKComboBox().
         try:
@@ -262,9 +250,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbContactForm.do_load_combo(_data, signal="changed")
 
-    def _do_set_reliability_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -316,9 +302,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             self.__do_set_cycles_sensitive(attributes)
             self.__do_set_elements_sensitive(attributes)
 
-    def __do_set_construction_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_construction_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the construction RAMSTKCombo() sensitive.
 
         :return: None
@@ -336,9 +320,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 signal="changed",
             )
 
-    def __do_set_contact_form_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_contact_form_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the contact form RAMSTKCombo() sensitive.
 
         :return: None

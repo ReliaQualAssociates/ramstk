@@ -248,9 +248,7 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     return get_part_count_lambda_b(attributes)
 
 
-def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -275,9 +273,7 @@ def calculate_part_stress_lambda_b(
     }
 
     if _subcategory_id == 1:
-        _lambda_b: Any = PART_STRESS_LAMBDA_B_TOGGLE[_construction_id][
-            _quality_id - 1
-        ]
+        _lambda_b: Any = PART_STRESS_LAMBDA_B_TOGGLE[_construction_id][_quality_id - 1]
     elif _subcategory_id in [2, 3]:
         _lambda_bE = _dic_factors[_subcategory_id][_quality_id - 1][0]
         _lambda_bC = _dic_factors[_subcategory_id][_quality_id - 1][1]
@@ -399,8 +395,6 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
             _environment_active_id - 1
         ]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][
-            _environment_active_id - 1
-        ]
+        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
 
     return _base_hr

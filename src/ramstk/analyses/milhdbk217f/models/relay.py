@@ -263,9 +263,7 @@ def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
     return _pi_cyc
 
 
-def calculate_load_stress_factor(
-    technology_id: int, current_ratio: float
-) -> float:
+def calculate_load_stress_factor(technology_id: int, current_ratio: float) -> float:
     """Calculate the load stress factor (piL).
 
     Only subcategory 1 relays use this in their calculation.
@@ -409,9 +407,7 @@ def get_application_construction_factor(
     else:
         _quality = 2
 
-    return PI_F[contact_rating_id][application_id][construction_id][
-        _quality - 1
-    ]
+    return PI_F[contact_rating_id][application_id][construction_id][_quality - 1]
 
 
 def get_environment_factor(
@@ -479,6 +475,4 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     _type_id = kwargs.get("type_id", 0)
     _environment_active_id = kwargs.get("environment_active_id", 0)
 
-    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
-        _environment_active_id - 1
-    ]
+    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]

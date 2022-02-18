@@ -330,19 +330,13 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         super().do_make_panel()
         super().do_set_callbacks()
 
-        self.tvwTreeView.set_tooltip_text(
-            _("Displays the list of stakeholders.")
-        )
+        self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_stakeholder")
-        pub.subscribe(
-            self._do_load_requirements, "succeed_retrieve_requirements"
-        )
+        pub.subscribe(self._do_load_requirements, "succeed_retrieve_requirements")
 
-    def do_load_affinity_groups(
-        self, affinities: Dict[int, Tuple[str, str]]
-    ) -> None:
+    def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:
         """Load the affinity group list.
 
         :param affinities: the dict containing the affinity groups and the
@@ -421,12 +415,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(
-                _row, self.tvwTreeView.position["stakeholder_id"]
-            )
-            _name = _model.get_value(
-                _row, self.tvwTreeView.position["description"]
-            )
+            _code = _model.get_value(_row, self.tvwTreeView.position["stakeholder_id"])
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
             _title = _(f"Analyzing Stakeholder {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)

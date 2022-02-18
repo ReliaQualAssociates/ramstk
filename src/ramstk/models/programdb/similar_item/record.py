@@ -205,9 +205,7 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Integer,
         default=__defaults__["similar_item_method_id"],
     )
-    parent_id = Column(
-        "fld_parent_id", Integer, default=__defaults__["parent_id"]
-    )
+    parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
     quality_from_id = Column(
         "fld_quality_from_id", Integer, default=__defaults__["quality_from_id"]
     )
@@ -225,21 +223,11 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     temperature_to = Column(
         "fld_temperature_to", Float, default=__defaults__["temperature_to"]
     )
-    user_blob_1 = Column(
-        "fld_user_blob_1", String, default=__defaults__["user_blob_1"]
-    )
-    user_blob_2 = Column(
-        "fld_user_blob_2", String, default=__defaults__["user_blob_2"]
-    )
-    user_blob_3 = Column(
-        "fld_user_blob_3", String, default=__defaults__["user_blob_3"]
-    )
-    user_blob_4 = Column(
-        "fld_user_blob_4", String, default=__defaults__["user_blob_4"]
-    )
-    user_blob_5 = Column(
-        "fld_user_blob_5", String, default=__defaults__["user_blob_5"]
-    )
+    user_blob_1 = Column("fld_user_blob_1", String, default=__defaults__["user_blob_1"])
+    user_blob_2 = Column("fld_user_blob_2", String, default=__defaults__["user_blob_2"])
+    user_blob_3 = Column("fld_user_blob_3", String, default=__defaults__["user_blob_3"])
+    user_blob_4 = Column("fld_user_blob_4", String, default=__defaults__["user_blob_4"])
+    user_blob_5 = Column("fld_user_blob_5", String, default=__defaults__["user_blob_5"])
     user_float_1 = Column(
         "fld_user_float_1", Float, default=__defaults__["user_float_1"]
     )
@@ -255,21 +243,11 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     user_float_5 = Column(
         "fld_user_float_5", Float, default=__defaults__["user_float_5"]
     )
-    user_int_1 = Column(
-        "fld_user_int_1", Integer, default=__defaults__["user_int_1"]
-    )
-    user_int_2 = Column(
-        "fld_user_int_2", Integer, default=__defaults__["user_int_2"]
-    )
-    user_int_3 = Column(
-        "fld_user_int_3", Integer, default=__defaults__["user_int_3"]
-    )
-    user_int_4 = Column(
-        "fld_user_int_4", Integer, default=__defaults__["user_int_4"]
-    )
-    user_int_5 = Column(
-        "fld_user_int_5", Integer, default=__defaults__["user_int_5"]
-    )
+    user_int_1 = Column("fld_user_int_1", Integer, default=__defaults__["user_int_1"])
+    user_int_2 = Column("fld_user_int_2", Integer, default=__defaults__["user_int_2"])
+    user_int_3 = Column("fld_user_int_3", Integer, default=__defaults__["user_int_3"])
+    user_int_4 = Column("fld_user_int_4", Integer, default=__defaults__["user_int_4"])
+    user_int_5 = Column("fld_user_int_5", Integer, default=__defaults__["user_int_5"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
 

@@ -74,10 +74,7 @@ class AddStressTestMethod(RAMSTKDialog):
         _y_pos: int = _label.get_preferred_size()[0].height + 50
 
         self.rdoOpStress.set_tooltip_text(
-            _(
-                "Select to add an operating stress to the selected operating "
-                "load."
-            )
+            _("Select to add an operating stress to the selected operating " "load.")
         )
         self.rdoTestMethod.set_tooltip_text(
             _("Select to add a test method to the selected operating load.")

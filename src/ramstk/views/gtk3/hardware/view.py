@@ -57,11 +57,7 @@ from ramstk.views.gtk3.reliability import (
     ReliabilityInputPanel,
     ReliabilityResultsPanel,
 )
-from ramstk.views.gtk3.widgets import (
-    RAMSTKModuleView,
-    RAMSTKPanel,
-    RAMSTKWorkView,
-)
+from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
 from . import (
@@ -117,8 +113,7 @@ class HardwareModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/hardware.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/hardware.png"
         )
 
         # Initialize private list attributes.
@@ -156,9 +151,7 @@ class HardwareModuleView(RAMSTKModuleView):
                 "assembly."
             ),
             _("Remove the currently selected hardware item and any children."),
-            _(
-                "Calculate the selected hardware item and all of it's children."
-            ),
+            _("Calculate the selected hardware item and all of it's children."),
             _("Calculate the entire system."),
             _("Save changes to the selected hardware item."),
             _("Save changes to the entire system."),
@@ -193,9 +186,7 @@ class HardwareModuleView(RAMSTKModuleView):
             node_id=self.dic_pkeys["record_id"],
         )
 
-    def _do_request_calculate_all_hardware(
-        self, __button: Gtk.ToolButton
-    ) -> None:
+    def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None:
         """Send request to iteratively calculate all hardware items.
 
         :param __button: the Gtk.ToolButton() that called this method.
@@ -327,13 +318,9 @@ class HardwareModuleView(RAMSTKModuleView):
             )
             self._pnlPanel.dic_subcategories[_key] = [""]
 
-            for _subkey in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[
-                _key
-            ]:
+            for _subkey in self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key]:
                 self._pnlPanel.dic_subcategories[_key].append(
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][
-                        _subkey
-                    ]
+                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_SUBCATEGORIES[_key][_subkey]
                 )
 
         for _key in self.RAMSTK_USER_CONFIGURATION.RAMSTK_MANUFACTURERS:
@@ -415,9 +402,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
     # Define private scalar class attributes.
     _tag: str = "hardware"
     _tablabel: str = _("General\nData")
-    _tabtooltip: str = _(
-        "Displays general information for the selected Hardware"
-    )
+    _tabtooltip: str = _("Displays general information for the selected Hardware")
 
     # Define public dictionary class attributes.
 
@@ -440,8 +425,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["comp_ref_des"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/rollup.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/rollup.png"
         )
 
         # Initialize private list attributes.
@@ -698,9 +682,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
-            _panel: RAMSTKPanel = self._dic_component_panels[
-                attributes["category_id"]
-            ]
+            _panel: RAMSTKPanel = self._dic_component_panels[attributes["category_id"]]
             _panel.fmt = self.fmt
             _panel.category_id = attributes["category_id"]
             self._vpnRight.pack2(_panel, True, True)
@@ -762,9 +744,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
 
         # Top left quadrant.
         self._pnlReliabilityInput.fmt = self.fmt
-        self._pnlReliabilityInput.do_load_hr_distributions(
-            RAMSTK_HR_DISTRIBUTIONS
-        )
+        self._pnlReliabilityInput.do_load_hr_distributions(RAMSTK_HR_DISTRIBUTIONS)
         self._pnlReliabilityInput.do_load_hr_methods(RAMSTK_HR_MODELS)
         self._pnlReliabilityInput.do_load_hr_types(RAMSTK_HR_TYPES)
         self._vpnLeft.pack1(self._pnlReliabilityInput, True, True)
@@ -931,9 +911,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
         # Retrieve the appropriate component-specific view.
         if attributes["category_id"] > 0:
-            _panel: RAMSTKPanel = self._dic_component_results[
-                attributes["category_id"]
-            ]
+            _panel: RAMSTKPanel = self._dic_component_results[attributes["category_id"]]
             _panel.fmt = self.fmt
             self._vpnRight.pack2(_panel, True, True)
             self.show_all()

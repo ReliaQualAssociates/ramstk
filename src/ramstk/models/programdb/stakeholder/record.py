@@ -57,22 +57,16 @@ class RAMSTKStakeholderRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     customer_rank = Column(
         "fld_customer_rank", Integer, default=__defaults__["customer_rank"]
     )
-    description = Column(
-        "fld_description", String, default=__defaults__["description"]
-    )
+    description = Column("fld_description", String, default=__defaults__["description"])
     group = Column("fld_group", String(128), default=__defaults__["group"])
-    improvement = Column(
-        "fld_improvement", Float, default=__defaults__["improvement"]
-    )
+    improvement = Column("fld_improvement", Float, default=__defaults__["improvement"])
     overall_weight = Column(
         "fld_overall_weight", Float, default=__defaults__["overall_weight"]
     )
     planned_rank = Column(
         "fld_planned_rank", Integer, default=__defaults__["planned_rank"]
     )
-    priority = Column(
-        "fld_priority", Integer, default=__defaults__["priority"]
-    )
+    priority = Column("fld_priority", Integer, default=__defaults__["priority"])
     requirement_id = Column(
         "fld_requirement_id", Integer, default=__defaults__["requirement_id"]
     )

@@ -12,14 +12,7 @@ from datetime import date
 from typing import Dict, Union
 
 # Third Party Imports
-from sqlalchemy import (
-    Column,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    UniqueConstraint,
-)
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -108,9 +101,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     attachments = Column(
         "fld_attachments", String(512), default=__defaults__["attachments"]
     )
-    cage_code = Column(
-        "fld_cage_code", String(256), default=__defaults__["cage_code"]
-    )
+    cage_code = Column("fld_cage_code", String(256), default=__defaults__["cage_code"])
     category_id = Column(
         "fld_category_id", Integer, default=__defaults__["category_id"]
     )
@@ -121,18 +112,14 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     cost_failure = Column(
         "fld_cost_failure", Float, default=__defaults__["cost_failure"]
     )
-    cost_hour = Column(
-        "fld_cost_hour", Float, default=__defaults__["cost_hour"]
-    )
+    cost_hour = Column("fld_cost_hour", Float, default=__defaults__["cost_hour"])
     cost_type_id = Column(
         "fld_cost_type_id", Integer, default=__defaults__["cost_type_id"]
     )
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    duty_cycle = Column(
-        "fld_duty_cycle", Float, default=__defaults__["duty_cycle"]
-    )
+    duty_cycle = Column("fld_duty_cycle", Float, default=__defaults__["duty_cycle"])
     figure_number = Column(
         "fld_figure_number", String(256), default=__defaults__["figure_number"]
     )
@@ -149,23 +136,15 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     page_number = Column(
         "fld_page_number", String(256), default=__defaults__["page_number"]
     )
-    parent_id = Column(
-        "fld_parent_id", Integer, default=__defaults__["parent_id"]
-    )
+    parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
     part = Column("fld_part", Integer, default=__defaults__["part"])
     part_number = Column(
         "fld_part_number", String(256), default=__defaults__["part_number"]
     )
-    quantity = Column(
-        "fld_quantity", Integer, default=__defaults__["quantity"]
-    )
-    ref_des = Column(
-        "fld_ref_des", String(256), default=__defaults__["ref_des"]
-    )
+    quantity = Column("fld_quantity", Integer, default=__defaults__["quantity"])
+    ref_des = Column("fld_ref_des", String(256), default=__defaults__["ref_des"])
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
-    repairable = Column(
-        "fld_repairable", Integer, default=__defaults__["repairable"]
-    )
+    repairable = Column("fld_repairable", Integer, default=__defaults__["repairable"])
     specification_number = Column(
         "fld_specification_number",
         String(256),
@@ -177,9 +156,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     tagged_part = Column(
         "fld_tagged_part", Integer, default=__defaults__["tagged_part"]
     )
-    total_cost = Column(
-        "fld_total_cost", Float, default=__defaults__["total_cost"]
-    )
+    total_cost = Column("fld_total_cost", Float, default=__defaults__["total_cost"])
     total_part_count = Column(
         "fld_total_part_count",
         Integer,

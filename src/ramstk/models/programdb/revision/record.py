@@ -85,9 +85,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
         default=__defaults__["availability_mission"],
     )
-    cost = Column(
-        "fld_cost", Float, nullable=False, default=__defaults__["cost"]
-    )
+    cost = Column("fld_cost", Float, nullable=False, default=__defaults__["cost"])
     cost_failure = Column(
         "fld_cost_failure",
         Float,
@@ -131,12 +129,8 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_software"],
     )
     mmt = Column("fld_mmt", Float, nullable=False, default=__defaults__["mmt"])
-    mcmt = Column(
-        "fld_mcmt", Float, nullable=False, default=__defaults__["mcmt"]
-    )
-    mpmt = Column(
-        "fld_mpmt", Float, nullable=False, default=__defaults__["mpmt"]
-    )
+    mcmt = Column("fld_mcmt", Float, nullable=False, default=__defaults__["mcmt"])
+    mpmt = Column("fld_mpmt", Float, nullable=False, default=__defaults__["mpmt"])
     mtbf_logistics = Column(
         "fld_mtbf_logistics",
         Float,
@@ -149,12 +143,8 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
         default=__defaults__["mtbf_mission"],
     )
-    mttr = Column(
-        "fld_mttr", Float, nullable=False, default=__defaults__["mttr"]
-    )
-    name = Column(
-        "fld_name", String(128), nullable=False, default=__defaults__["name"]
-    )
+    mttr = Column("fld_mttr", Float, nullable=False, default=__defaults__["mttr"])
+    name = Column("fld_name", String(128), nullable=False, default=__defaults__["name"])
     reliability_logistics = Column(
         "fld_reliability_logistics",
         Float,

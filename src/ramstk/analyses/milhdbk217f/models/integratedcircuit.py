@@ -1149,8 +1149,7 @@ def calculate_temperature_factor(
         _ea = ACTIVATION_ENERGY[subcategory_id]
 
     return 0.1 * exp(
-        (-_ea / 8.617e-5)
-        * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
+        (-_ea / 8.617e-5) * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
     )
 
 
@@ -1242,9 +1241,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes["type_id"],
         attributes["temperature_junction"],
     )
-    attributes["piL"] = 0.01 * exp(
-        5.35 - 0.35 * attributes["years_in_production"]
-    )
+    attributes["piL"] = 0.01 * exp(5.35 - 0.35 * attributes["years_in_production"])
 
     if attributes["subcategory_id"] in [1, 2, 3, 4]:
         attributes["C1"] = get_die_complexity_factor(
@@ -1275,9 +1272,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes["package_id"], attributes["n_active_pins"]
         )
         if attributes["subcategory_id"] == 6:
-            attributes["piECC"] = get_error_correction_factor(
-                attributes["type_id"]
-            )
+            attributes["piECC"] = get_error_correction_factor(attributes["type_id"])
             (_a_1, _a_2, _b_1, _b_2) = calculate_lambda_cyclic_factors(
                 attributes["n_cycles"],
                 attributes["construction_id"],
@@ -1322,15 +1317,11 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             * attributes["piL"]
         )
     elif attributes["subcategory_id"] == 10:
-        attributes["lambdaBD"] = get_die_base_hazard_rate(
-            attributes["type_id"]
-        )
+        attributes["lambdaBD"] = get_die_base_hazard_rate(attributes["type_id"])
         attributes["lambdaBP"] = calculate_package_base_hazard_rate(
             attributes["n_active_pins"]
         )
-        attributes["lambdaEOS"] = calculate_eos_hazard_rate(
-            attributes["voltage_esd"]
-        )
+        attributes["lambdaEOS"] = calculate_eos_hazard_rate(attributes["voltage_esd"])
         attributes["piCD"] = calculate_die_complexity_factor(
             attributes["area"], attributes["feature_size"]
         )
@@ -1420,9 +1411,7 @@ def get_die_complexity_factor(
 
     # This will retrieve the breakpoint value for the number of elements
     # closest (round up) to the number of elements passed.
-    _index = min(
-        range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements)
-    )
+    _index = min(range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements))
 
     return C1[subcategory_id][_technology - 1][_index]
 
@@ -1551,9 +1540,9 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
 
     if id_keys["subcategory_id"] in [3, 9]:
         _index = (
-            _dic_breakpoints[id_keys["subcategory_id"]][
-                id_keys["technology_id"]
-            ].index(n_elements)
+            _dic_breakpoints[id_keys["subcategory_id"]][id_keys["technology_id"]].index(
+                n_elements
+            )
             + 1
         )
     else:

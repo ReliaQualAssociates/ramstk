@@ -57,9 +57,7 @@ class RAMSTKWidget:
         _height = kwargs.get("height", self._default_height)
         _tooltip = kwargs.get(
             "tooltip",
-            _(
-                "Missing tooltip, please file a quality type issue to have one added."
-            ),
+            _("Missing tooltip, please file a quality type issue to have one added."),
         )
         _width = kwargs.get("width", self._default_width)
 

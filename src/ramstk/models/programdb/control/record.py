@@ -44,9 +44,7 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         {"extend_existing": True},
     )
 
-    revision_id = Column(
-        "fld_revision_id", Integer, primary_key=True, nullable=False
-    )
+    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
@@ -55,9 +53,7 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
-    mechanism_id = Column(
-        "fld_mechanism_id", Integer, primary_key=True, nullable=False
-    )
+    mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
     cause_id = Column(
         "fld_cause_id", Integer, primary_key=True, nullable=False, unique=True
     )
@@ -72,9 +68,7 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    type_id = Column(
-        "fld_type_id", String(512), default=__defaults__["type_id"]
-    )
+    type_id = Column("fld_type_id", String(512), default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
     cause = relationship("RAMSTKCauseRecord", back_populates="control")  # type: ignore

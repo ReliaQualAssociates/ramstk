@@ -69,11 +69,9 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        self._parent_id = (
-            attributes[  # pylint: disable=attribute-defined-outside-init
-                "parent_id"
-            ]
-        )
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]

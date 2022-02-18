@@ -80,8 +80,7 @@ class RequirementModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/requirement.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/requirement.png"
         )
 
         # Initialize private list attributes.
@@ -123,13 +122,7 @@ class RequirementModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = (
-            self.get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-        )
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _prompt = _(
             f"You are about to delete Requirement {self.dic_pkeys['record_id']} and "
             f"all data associated with it.  Is this really what you want to do?"
@@ -242,9 +235,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
     # Define private scalar class attributes.
     _tag: str = "requirement"
     _tablabel: str = _("General\nData")
-    _tabtooltip: str = _(
-        "Displays general information for the selected Requirement."
-    )
+    _tabtooltip: str = _("Displays general information for the selected Requirement.")
 
     # Define public dict class attributes.
 
@@ -267,8 +258,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["create_code"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/create_code.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/create_code.png"
         )
 
         # Initialize private list attributes.
@@ -341,9 +331,7 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         # Add the validation date dialog launcher button to the right of the
         # validated date RAMSTKEntry.
         _fixed: Gtk.Fixed = (
-            self._pnlGeneralData.get_children()[0]
-            .get_children()[0]
-            .get_children()[0]
+            self._pnlGeneralData.get_children()[0].get_children()[0].get_children()[0]
         )
         _entry: RAMSTKEntry = _fixed.get_children()[-1]
         _x_pos: int = _fixed.child_get_property(_entry, "x") + 205
@@ -420,13 +408,9 @@ class RequirementAnalysisView(RAMSTKWorkView):
 
         # Initialize private scalar attributes.
         self._pnlClarity: RAMSTKFixedPanel = RequirementClarityPanel()
-        self._pnlCompleteness: RAMSTKFixedPanel = (
-            RequirementCompletenessPanel()
-        )
+        self._pnlCompleteness: RAMSTKFixedPanel = RequirementCompletenessPanel()
         self._pnlConsistency: RAMSTKFixedPanel = RequirementConsistencyPanel()
-        self._pnlVerifiability: RAMSTKFixedPanel = (
-            RequirementVerifiabilityPanel()
-        )
+        self._pnlVerifiability: RAMSTKFixedPanel = RequirementVerifiabilityPanel()
 
         # Initialize public dictionary attributes.
 

@@ -82,9 +82,7 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
             pub.sendMessage("succeed_create_code")
             pub.sendMessage(
                 "succeed_create_requirement_code",
-                requirement_code=_requirement.get_attributes()[
-                    "requirement_code"
-                ],
+                requirement_code=_requirement.get_attributes()["requirement_code"],
             )
         except (TypeError, AttributeError):
             if node_id != 0:
@@ -108,11 +106,9 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        self._parent_id = (
-            attributes[  # pylint: disable=attribute-defined-outside-init
-                "parent_id"
-            ]
-        )
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]

@@ -8,14 +8,7 @@
 """Mission Record Module."""
 
 # Third Party Imports
-from sqlalchemy import (
-    Column,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    UniqueConstraint,
-)
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
@@ -56,9 +49,7 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         autoincrement=True,
         nullable=False,
     )
-    description = Column(
-        "fld_description", String, default=__defaults__["description"]
-    )
+    description = Column("fld_description", String, default=__defaults__["description"])
     mission_time = Column(
         "fld_mission_time", Float, default=__defaults__["mission_time"]
     )

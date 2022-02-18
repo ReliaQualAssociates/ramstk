@@ -867,9 +867,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
             _code = _model.get_value(
                 _row, self.tvwTreeView.position["requirement_code"]
             )
-            _name = _model.get_value(
-                _row, self.tvwTreeView.position["description"]
-            )
+            _name = _model.get_value(_row, self.tvwTreeView.position["description"])
             _title = _(f"Analyzing Requirement {_code}: {_name}")
 
             pub.sendMessage("request_set_title", title=_title)
@@ -1048,9 +1046,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         )
 
         self.cmbOwner: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(
-            index=1, simple=False
-        )
+        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(index=1, simple=False)
         self.cmbPriority: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
@@ -1077,9 +1073,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 "",
                 {
                     "width": 125,
-                    "tooltip": _(
-                        "A unique code for the selected requirement."
-                    ),
+                    "tooltip": _("A unique code for the selected requirement."),
                 },
                 _("Requirement Code:"),
                 "gchararray",
@@ -1094,9 +1088,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 {
                     "height": 100,
                     "width": 800,
-                    "tooltip": _(
-                        "The description of the selected requirement."
-                    ),
+                    "tooltip": _("The description of the selected requirement."),
                 },
                 _("Requirement Description:"),
                 "gchararray",
@@ -1196,9 +1188,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 "wvw_editing_requirement",
                 0,
                 {
-                    "tooltip": _(
-                        "The organization responsible for the requirement."
-                    ),
+                    "tooltip": _("The organization responsible for the requirement."),
                 },
                 _("Owner:"),
                 "gint",
@@ -1228,9 +1218,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
                 "wvw_editing_requirement",
                 date.today(),
                 {
-                    "tooltip": _(
-                        "The date the selected requirement was validated."
-                    ),
+                    "tooltip": _("The date the selected requirement was validated."),
                 },
                 _("Validated Date:"),
                 "gchararray",
@@ -1249,9 +1237,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
             height=25,
             width=25,
         )
-        self.btnValidateDate.dic_handler_id[
-            "released"
-        ] = self.btnValidateDate.connect(
+        self.btnValidateDate.dic_handler_id["released"] = self.btnValidateDate.connect(
             "button-release-event",
             self._do_select_date,
             self.txtValidatedDate,
@@ -1280,9 +1266,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         """
         _requirement_types: List[Tuple[str]] = list(requirement_types.values())
 
-        self.cmbRequirementType.do_load_combo(
-            entries=_requirement_types, simple=False
-        )
+        self.cmbRequirementType.do_load_combo(entries=_requirement_types, simple=False)
 
     def do_load_workgroups(self, workgroups: Dict[int, Tuple[str]]) -> None:
         """Load the workgroups RAMSTKComboBox().
@@ -1336,9 +1320,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         _dialog.do_destroy()
 
         entry.do_update(_date)
-        super().on_changed_entry(
-            entry, "validated_date", "wvw_editing_requirement"
-        )
+        super().on_changed_entry(entry, "validated_date", "wvw_editing_requirement")
 
         return _date
 
@@ -1395,9 +1377,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "1. The requirement clearly states what is needed or desired."
-                ),
+                _("1. The requirement clearly states what is needed or desired."),
                 "gint",
             ],
             "q_clarity_1": [
@@ -1410,9 +1390,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "2. The requirement is unambiguous and not open to interpretation."
-                ),
+                _("2. The requirement is unambiguous and not open to interpretation."),
                 "gint",
             ],
             "q_clarity_2": [
@@ -1457,9 +1435,7 @@ class RequirementClarityPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "5. The requirement is free from spelling and grammatical errors."
-                ),
+                _("5. The requirement is free from spelling and grammatical errors."),
                 "gint",
             ],
             "q_clarity_5": [
@@ -1605,9 +1581,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "2. No necessary information is missing from the requirement."
-                ),
+                _("2. No necessary information is missing from the requirement."),
                 "gint",
             ],
             "q_complete_2": [
@@ -1681,9 +1655,7 @@ class RequirementCompletenessPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "7. The requirement is relevant to the problem and its solution."
-                ),
+                _("7. The requirement is relevant to the problem and its solution."),
                 "gint",
             ],
             "q_complete_7": [
@@ -1828,9 +1800,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "3. The requirement can be implemented within known constraints."
-                ),
+                _("3. The requirement can be implemented within known constraints."),
                 "gint",
             ],
             "q_consistent_3": [
@@ -1891,9 +1861,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "7. The requirement does not conflict with another requirement."
-                ),
+                _("7. The requirement does not conflict with another requirement."),
                 "gint",
             ],
             "q_consistent_7": [
@@ -1906,9 +1874,7 @@ class RequirementConsistencyPanel(RAMSTKFixedPanel):
                 {
                     "height": 30,
                 },
-                _(
-                    "8. The requirement is not a duplicate of another requirement."
-                ),
+                _("8. The requirement is not a duplicate of another requirement."),
                 "gint",
             ],
             "q_consistent_8": [

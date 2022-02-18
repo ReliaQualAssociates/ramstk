@@ -100,9 +100,7 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     mttr = Column("fld_mttr", Float, default=__defaults__["mttr"])
     name = Column("fld_name", String(256), default=__defaults__["name"])
-    parent_id = Column(
-        "fld_parent_id", Integer, default=__defaults__["parent_id"]
-    )
+    parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
     safety_critical = Column(
         "fld_safety_critical", Integer, default=__defaults__["safety_critical"]

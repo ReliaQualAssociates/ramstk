@@ -9,9 +9,7 @@ from ramstk.views.gtk3.widgets import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets import RAMSTKEntry as RAMSTKEntry
 from ramstk.views.gtk3.widgets import RAMSTKFixedPanel as RAMSTKFixedPanel
 from ramstk.views.gtk3.widgets import RAMSTKPlot as RAMSTKPlot
-from ramstk.views.gtk3.widgets import (
-    RAMSTKScrolledWindow as RAMSTKScrolledWindow,
-)
+from ramstk.views.gtk3.widgets import RAMSTKScrolledWindow as RAMSTKScrolledWindow
 from ramstk.views.gtk3.widgets import RAMSTKTextView as RAMSTKTextView
 
 class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
@@ -66,7 +64,5 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
         self, attributes: Dict[str, Any], stress: str = ...
     ) -> None: ...
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None: ...
-    def _do_set_hardware_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None: ...
+    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...

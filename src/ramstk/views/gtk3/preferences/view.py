@@ -81,12 +81,8 @@ class PreferencesDialog(RAMSTKBaseView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlGeneralPreferences: GeneralPreferencesPanel = (
-            GeneralPreferencesPanel()
-        )
-        self._pnlLookFeel: LookFeelPreferencesPanel = (
-            LookFeelPreferencesPanel()
-        )
+        self._pnlGeneralPreferences: GeneralPreferencesPanel = GeneralPreferencesPanel()
+        self._pnlLookFeel: LookFeelPreferencesPanel = LookFeelPreferencesPanel()
         self._pnlTreeViewLayout: TreeLayoutPreferencesPanel = (
             TreeLayoutPreferencesPanel()
         )
@@ -119,9 +115,7 @@ class PreferencesDialog(RAMSTKBaseView):
         :param __button: the Gtk.Button() that called this method.
         :return: None
         """
-        _conf_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + "/RAMSTK.toml"
-        )
+        _conf_file = self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + "/RAMSTK.toml"
         copyfile(_conf_file, _conf_file + "_bak")
         self.RAMSTK_USER_CONFIGURATION.set_user_configuration()
 
@@ -160,9 +154,7 @@ class PreferencesDialog(RAMSTKBaseView):
         copyfile(self._pnlTreeViewLayout.fmt_file, _bak_file)
 
         # Open the format file for writing.
-        with open(
-            self._pnlTreeViewLayout.fmt_file, "w", encoding="utf-8"
-        ) as _file:
+        with open(self._pnlTreeViewLayout.fmt_file, "w", encoding="utf-8") as _file:
             _model = self._pnlTreeViewLayout.tvwTreeView.get_model()
             _row = _model.get_iter_first()
             while _row is not None:
@@ -173,9 +165,7 @@ class PreferencesDialog(RAMSTKBaseView):
                 _layout["editable"][_key] = integer_to_boolean(
                     _model.get_value(_row, 3)
                 )
-                _layout["visible"][_key] = integer_to_boolean(
-                    _model.get_value(_row, 4)
-                )
+                _layout["visible"][_key] = integer_to_boolean(_model.get_value(_row, 4))
                 _layout["datatype"][_key] = _model.get_value(_row, 5)
                 _layout["widget"][_key] = _model.get_value(_row, 6)
                 _layout["key"][_key] = _model.get_value(_row, 7)
@@ -212,9 +202,7 @@ class PreferencesDialog(RAMSTKBaseView):
             justify=Gtk.Justification.CENTER,
             tooltip=_("Allows setting color and other preferences."),
         )
-        self._notebook.insert_page(
-            self._pnlLookFeel, tab_label=_label, position=-1
-        )
+        self._notebook.insert_page(self._pnlLookFeel, tab_label=_label, position=-1)
 
         _label = RAMSTKLabel(_("Tree View Layout"))
         _label.do_set_properties(

@@ -121,9 +121,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
-        self.scrollwindow.set_policy(
-            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
-        )
+        self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrollwindow.add_with_viewport(self)
 
         self.tag_bold = txvbuffer.create_tag("bold", weight=Pango.Weight.BOLD)

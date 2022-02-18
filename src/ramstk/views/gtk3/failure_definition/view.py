@@ -85,9 +85,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlPanel: FailureDefinitionTreePanel = (
-            FailureDefinitionTreePanel()
-        )
+        self._pnlPanel: FailureDefinitionTreePanel = FailureDefinitionTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -108,13 +106,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = (
-            self.get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-        )
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _dialog = super().do_raise_dialog(parent=_parent)
         _dialog.do_set_message(
             message=_(
@@ -134,9 +126,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
 
         _dialog.do_destroy()
 
-    def _do_set_record_id(
-        self, attributes: Dict[str, Union[float, int, str]]
-    ) -> None:
+    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the failure definition's record ID.
 
         :param attributes: the attribute dict for the selected failure

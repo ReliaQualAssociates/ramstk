@@ -65,9 +65,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_calculate_plan, "request_calculate_plan")
-        pub.subscribe(
-            self._do_calculate_task, "request_calculate_validation_task"
-        )
+        pub.subscribe(self._do_calculate_task, "request_calculate_validation_task")
         pub.subscribe(
             self._do_calculate_all_tasks,
             "request_calculate_all_validation_tasks",
@@ -188,12 +186,12 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         for _node in self.tree.all_nodes()[1:]:
             self._do_calculate_task(_node.identifier)
 
-            _program_cost_remaining += _node.data[
-                "validation"
-            ].cost_average * (1.0 - _node.data["validation"].status / 100.0)
-            _program_time_remaining += _node.data[
-                "validation"
-            ].time_average * (1.0 - _node.data["validation"].status / 100.0)
+            _program_cost_remaining += _node.data["validation"].cost_average * (
+                1.0 - _node.data["validation"].status / 100.0
+            )
+            _program_time_remaining += _node.data["validation"].time_average * (
+                1.0 - _node.data["validation"].status / 100.0
+            )
 
         pub.sendMessage(
             "succeed_calculate_all_validation_tasks",

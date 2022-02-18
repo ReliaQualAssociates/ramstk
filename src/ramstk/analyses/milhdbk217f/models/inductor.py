@@ -205,32 +205,21 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes["family_id"],
     )
 
-    _power_input = (
-        attributes["voltage_dc_operating"] * attributes["current_operating"]
-    )
-    if (
-        attributes["subcategory_id"] == 2
-        and attributes["specification_id"] == 2
-    ):
+    _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
+    if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
             attributes["page_number"]
         )
     elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
-        attributes[
-            "temperature_rise"
-        ] = calculate_temperature_rise_power_loss_surface(
+        attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(
             attributes["power_operating"], attributes["area"]
         )
     elif attributes["power_operating"] > 0.0 and attributes["weight"] > 0.0:
-        attributes[
-            "temperature_rise"
-        ] = calculate_temperature_rise_power_loss_weight(
+        attributes["temperature_rise"] = calculate_temperature_rise_power_loss_weight(
             attributes["power_operating"], attributes["weight"]
         )
     elif _power_input > 0.0 and attributes["weight"] > 0.0:
-        attributes[
-            "temperature_rise"
-        ] = calculate_temperature_rise_input_power_weight(
+        attributes["temperature_rise"] = calculate_temperature_rise_input_power_weight(
             _power_input, attributes["weight"]
         )
     else:
@@ -376,9 +365,9 @@ def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
     :raise: KeyError if passed an unknown subcategory ID or family ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    return PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][
-        id_keys["family_id"]
-    ][id_keys["environment_active_id"] - 1]
+    return PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["family_id"]][
+        id_keys["environment_active_id"] - 1
+    ]
 
 
 def get_part_stress_quality_factor(

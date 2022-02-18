@@ -222,9 +222,9 @@ class ImportProject(Gtk.Assistant):
         self.connect("apply", self._do_request_import)
 
         # ----- COMBOBOX
-        self.cmbSelectModule.dic_handler_id[
-            "changed"
-        ] = self.cmbSelectModule.connect("changed", self._on_combo_changed)
+        self.cmbSelectModule.dic_handler_id["changed"] = self.cmbSelectModule.connect(
+            "changed", self._on_combo_changed
+        )
 
         # ----- FILECHOOSER
         self._filechooser.connect("selection_changed", self._do_select_file)
@@ -371,9 +371,7 @@ class ImportProject(Gtk.Assistant):
 
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
-        self.set_page_title(
-            _page, _("Map Input File Fields to RAMSTK Database Fields")
-        )
+        self.set_page_title(_page, _("Map Input File Fields to RAMSTK Database Fields"))
 
     def __make_ui(self):
         """Build the user interface.

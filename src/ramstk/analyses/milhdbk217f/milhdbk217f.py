@@ -53,12 +53,8 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
             attributes = _do_calculate_part_stress(**attributes)
 
         pub.sendMessage("succeed_predict_reliability", attributes=attributes)
-        pub.sendMessage(
-            "request_set_all_milhdbk217f_attributes", attributes=attributes
-        )
-        pub.sendMessage(
-            "request_set_all_reliability_attributes", attributes=attributes
-        )
+        pub.sendMessage("request_set_all_milhdbk217f_attributes", attributes=attributes)
+        pub.sendMessage("request_set_all_reliability_attributes", attributes=attributes)
     except ValueError:
         pub.sendMessage(
             "fail_predict_reliability",
@@ -129,9 +125,7 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes["subcategory_id"]
         ](**attributes)
     else:
-        attributes["lambda_b"] = _part_count[attributes["category_id"]](
-            **attributes
-        )
+        attributes["lambda_b"] = _part_count[attributes["category_id"]](**attributes)
 
     if attributes["category_id"] != 2:
         attributes["piQ"] = _get_part_count_quality_factor(
@@ -142,9 +136,7 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     else:
         attributes = semiconductor.get_part_count_quality_factor(attributes)
 
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"]
-    )
+    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piQ"]
 
     return attributes
 
@@ -245,9 +237,7 @@ def _get_environment_factor(
     elif category_id in [2, 3, 5, 7, 9, 10] or (
         category_id == 8 and subcategory_id not in [1, 2]
     ):
-        _pi_e = _pi_e_lists[category_id][subcategory_id][
-            environment_active_id - 1
-        ]
+        _pi_e = _pi_e_lists[category_id][subcategory_id][environment_active_id - 1]
     else:
         _pi_e = _pi_e_lists[category_id][environment_active_id - 1]
 

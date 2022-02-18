@@ -61,9 +61,7 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         self.pkey = "stakeholder_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_calculate_stakeholder, "request_calculate_stakeholder"
-        )
+        pub.subscribe(self.do_calculate_stakeholder, "request_calculate_stakeholder")
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]
@@ -105,10 +103,7 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         _record = self.tree.get_node(node_id).data[self._tag]
         _attributes = _record.get_attributes()
 
-        (
-            _improvement,
-            _overall_weight,
-        ) = improvementfactor.calculate_improvement(
+        (_improvement, _overall_weight,) = improvementfactor.calculate_improvement(
             _attributes["planned_rank"],
             _attributes["customer_rank"],
             _attributes["priority"],

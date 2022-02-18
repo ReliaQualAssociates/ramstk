@@ -53,15 +53,11 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         autoincrement=True,
         nullable=False,
     )
-    site_name = Column(
-        "fld_site_name", String(512), default=__defaults__["site_name"]
-    )
+    site_name = Column("fld_site_name", String(512), default=__defaults__["site_name"])
     product_key = Column(
         "fld_product_key", String(512), default=__defaults__["product_key"]
     )
-    expire_on = Column(
-        "fld_expire_on", Date, default=__defaults__["expire_on"]
-    )
+    expire_on = Column("fld_expire_on", Date, default=__defaults__["expire_on"])
     function_enabled = Column(
         "fld_function_enabled",
         Integer,

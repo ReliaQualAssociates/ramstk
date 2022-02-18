@@ -63,9 +63,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         {"extend_existing": True},
     )
 
-    revision_id = Column(
-        "fld_revision_id", Integer, primary_key=True, nullable=False
-    )
+    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
         "fld_hardware_id",
         Integer,
@@ -121,9 +119,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         String(512),
         default=__defaults__["isolation_method"],
     )
-    mission = Column(
-        "fld_mission", String(64), default=__defaults__["mission"]
-    )
+    mission = Column("fld_mission", String(64), default=__defaults__["mission"])
     mission_phase = Column(
         "fld_mission_phase", String(64), default=__defaults__["mission_phase"]
     )
@@ -141,9 +137,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         String(64),
         default=__defaults__["mode_probability"],
     )
-    mode_ratio = Column(
-        "fld_mode_ratio", Float, default=__defaults__["mode_ratio"]
-    )
+    mode_ratio = Column("fld_mode_ratio", Float, default=__defaults__["mode_ratio"])
     operator_actions = Column(
         "fld_operator_actions",
         String,

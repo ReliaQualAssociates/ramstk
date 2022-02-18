@@ -388,9 +388,7 @@ REF_TEMPS = {
 }
 
 
-def calculate_capacitance_factor(
-    subcategory_id: int, capacitance: float
-) -> float:
+def calculate_capacitance_factor(subcategory_id: int, capacitance: float) -> float:
     """Calculate the capacitance factor (piCV).
 
     :param subcategory_id: the capacitor subcategory identifier.
@@ -544,9 +542,7 @@ def calculate_part_stress_lambda_b(
     # temperature closest (round up) to one of the keys in the REF_TEMPS dict.
     _ref_temp = REF_TEMPS.get(
         temperature_rated_max,
-        REF_TEMPS[
-            min(REF_TEMPS.keys(), key=lambda k: abs(k - temperature_rated_max))
-        ],
+        REF_TEMPS[min(REF_TEMPS.keys(), key=lambda k: abs(k - temperature_rated_max))],
     )
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
@@ -577,9 +573,7 @@ def calculate_series_resistance_factor(
     :raise: TypeError if passed a non-numerical input.
     :raise: ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
-    _ckt_resistance = resistance / (
-        voltage_dc_operating + voltage_ac_operating
-    )
+    _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
 
     if 0 < _ckt_resistance <= 0.1:
         _pi_sr = 0.33

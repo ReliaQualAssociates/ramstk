@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKFixedPanel,
-    RAMSTKTreePanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel, RAMSTKTreePanel
 
 
 class SimilarItemMethodPanel(RAMSTKFixedPanel):
@@ -100,9 +96,7 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(
-        self, attributes: Dict[str, Union[int, float, str]]
-    ) -> None:
+    def _do_set_sensitive(self, attributes: Dict[str, Union[int, float, str]]) -> None:
         """Set widget sensitivity as needed for the selected R(t) goal.
 
         :param attributes: the Similar Item attribute dict.
@@ -1275,15 +1269,11 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_similar_item")
-        pub.subscribe(
-            self._do_set_hardware_attributes, "succeed_get_hardware_tree"
-        )
+        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
         pub.subscribe(
             self._do_set_reliability_attributes, "succeed_get_reliability_tree"
         )
-        pub.subscribe(
-            self._on_method_changed, "succeed_change_similar_item_method"
-        )
+        pub.subscribe(self._on_method_changed, "succeed_change_similar_item_method")
         pub.subscribe(self._on_select_hardware, "selected_hardware")
 
     # pylint: disable=unused-argument
@@ -1325,9 +1315,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             self._lst_qualities,
         )
 
-    def do_refresh_functions(
-        self, row: Gtk.TreeIter, function: List[str]
-    ) -> None:
+    def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
         """Refresh the Similar Item functions in the RAMSTKTreeView().
 
         :param row: the row in the Similar Item RAMSTKTreeView() whose
@@ -1338,21 +1326,11 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _model = self.tvwTreeView.get_model()
 
-        _model.set_value(
-            row, self.tvwTreeView.position["function_1"], function[0]
-        )
-        _model.set_value(
-            row, self.tvwTreeView.position["function_2"], function[1]
-        )
-        _model.set_value(
-            row, self.tvwTreeView.position["function_3"], function[2]
-        )
-        _model.set_value(
-            row, self.tvwTreeView.position["function_4"], function[3]
-        )
-        _model.set_value(
-            row, self.tvwTreeView.position["function_5"], function[4]
-        )
+        _model.set_value(row, self.tvwTreeView.position["function_1"], function[0])
+        _model.set_value(row, self.tvwTreeView.position["function_2"], function[1])
+        _model.set_value(row, self.tvwTreeView.position["function_3"], function[2])
+        _model.set_value(row, self.tvwTreeView.position["function_4"], function[3])
+        _model.set_value(row, self.tvwTreeView.position["function_5"], function[4])
 
     def _do_set_hardware_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the hardware tree is retrieved.
@@ -1363,9 +1341,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-            _row = self.tvwTreeView.do_get_row_by_value(
-                1, _hardware.hardware_id
-            )
+            _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -1382,9 +1358,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _reliability = _node.data["reliability"]
-            _row = self.tvwTreeView.do_get_row_by_value(
-                1, _reliability.hardware_id
-            )
+            _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -1440,13 +1414,9 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
-        pub.sendMessage(
-            "request_get_similar_item_attributes", node_id=self._parent_id
-        )
+        pub.sendMessage("request_get_similar_item_attributes", node_id=self._parent_id)
 
-    def __do_load_similar_item(
-        self, node: Any = "", row: Gtk.TreeIter = None
-    ) -> None:
+    def __do_load_similar_item(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the similar item RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.

@@ -70,9 +70,7 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
         super().do_make_panel()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_load_panel, "succeed_calculate_verification_plan"
-        )
+        pub.subscribe(self._do_load_panel, "succeed_calculate_verification_plan")
         pub.subscribe(self._do_load_actuals, "succeed_get_actual_status")
 
     def _do_load_panel(self, attributes: Dict[str, pd.DataFrame]) -> None:
@@ -129,32 +127,18 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
                 linestyle="-.",
             )
             self.pltPlot.axis.annotate(
-                str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), "upper"]
-                    )
-                )
+                str(self.fmt.format(assessed.loc[pd.to_datetime(_date), "upper"]))
                 + "\n"
-                + str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), "mean"]
-                    )
-                )
+                + str(self.fmt.format(assessed.loc[pd.to_datetime(_date), "mean"]))
                 + "\n"
-                + str(
-                    self.fmt.format(
-                        assessed.loc[pd.to_datetime(_date), "lower"]
-                    )
-                ),
+                + str(self.fmt.format(assessed.loc[pd.to_datetime(_date), "lower"])),
                 xy=(_date, 0.9 * _y_max),
                 xycoords="data",
                 xytext=(-55, 0),
                 textcoords="offset points",
                 size=12,
                 va="center",
-                bbox=dict(
-                    boxstyle="round", fc="#E5E5E5", ec="None", alpha=0.5
-                ),
+                bbox=dict(boxstyle="round", fc="#E5E5E5", ec="None", alpha=0.5),
                 arrowprops=dict(
                     arrowstyle="wedge,tail_width=1.",
                     fc="#E5E5E5",

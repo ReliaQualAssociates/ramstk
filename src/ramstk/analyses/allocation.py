@@ -29,9 +29,7 @@ def _calculate_agree_apportionment(
     :rtype: dict
     """
     _time_i: Any = (
-        float(attributes["mission_time"])
-        * float(attributes["duty_cycle"])
-        / 100.0
+        float(attributes["mission_time"]) * float(attributes["duty_cycle"]) / 100.0
     )
     _weight_factor: Any = float(attributes["weight_factor"])
     _n_sub_systems: Any = int(attributes["n_sub_systems"])
@@ -88,9 +86,7 @@ def _calculate_arinc_apportionment(
     try:
         _hazard_rate_alloc: Any = _weight_factor * float(parent_goal)
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
-        _reliability_alloc: Any = exp(
-            -1.0 * _hazard_rate_alloc * _mission_time
-        )
+        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _mission_time)
     except ZeroDivisionError:
         _mtbf_alloc = _hazard_rate_alloc = _reliability_alloc = 0.0
         pub.sendMessage(
@@ -126,9 +122,7 @@ def _calculate_equal_apportionment(
     _weight_factor: Any = float(attributes["weight_factor"])
     try:
         _reliability_alloc: Any = float(parent_goal) ** _weight_factor
-        _hazard_rate_alloc: Any = (
-            -1.0 * log(_reliability_alloc) / _mission_time
-        )
+        _hazard_rate_alloc: Any = -1.0 * log(_reliability_alloc) / _mission_time
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
 
         attributes["hazard_rate_alloc"] = _hazard_rate_alloc
@@ -198,9 +192,7 @@ def _calculate_foo_apportionment(
 
         _hazard_rate_alloc: Any = _percent_weight_factor * parent_goal
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
-        _reliability_alloc: Any = exp(
-            -1.0 * _hazard_rate_alloc * _mission_time
-        )
+        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _mission_time)
 
         attributes["weight_factor"] = _weight_factor
         attributes["percent_weight_factor"] = _percent_weight_factor
@@ -381,9 +373,7 @@ def do_calculate_goals(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes["mtbf_goal"] = _mtbf_goal
         attributes["reliability_goal"] = _reliability_goal
 
-    pub.sendMessage(
-        "succeed_calculate_allocation_goals", attributes=attributes
-    )
+    pub.sendMessage("succeed_calculate_allocation_goals", attributes=attributes)
 
     return attributes
 

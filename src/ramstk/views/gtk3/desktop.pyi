@@ -2,12 +2,8 @@
 from typing import List, TypeVar
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration as RAMSTKSiteConfiguration,
-)
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk as Gdk
 from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
@@ -21,9 +17,7 @@ from ramstk.views.gtk3.assistants import OpenProject as OpenProject
 from ramstk.views.gtk3.books import RAMSTKModuleBook as RAMSTKModuleBook
 from ramstk.views.gtk3.books import RAMSTKWorkBook as RAMSTKWorkBook
 from ramstk.views.gtk3.options import OptionsDialog as OptionsDialog
-from ramstk.views.gtk3.preferences import (
-    PreferencesDialog as PreferencesDialog,
-)
+from ramstk.views.gtk3.preferences import PreferencesDialog as PreferencesDialog
 
 Tconfiguration = TypeVar(
     "Tconfiguration", RAMSTKUserConfiguration, RAMSTKSiteConfiguration
@@ -48,9 +42,7 @@ class RAMSTKDesktop(Gtk.Window):
     def __init__(
         self, configuration: Tconfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    def _do_request_options_assistant(
-        self, __widget: Gtk.ImageMenuItem
-    ) -> None: ...
+    def _do_request_options_assistant(self, __widget: Gtk.ImageMenuItem) -> None: ...
     def _do_request_preferences_assistant(
         self, __widget: Gtk.ImageMenuItem
     ) -> None: ...
@@ -70,14 +62,10 @@ class RAMSTKDesktop(Gtk.Window):
     def __set_properties(self) -> None: ...
     @staticmethod
     def _do_request_close_project(__widget: Gtk.Widget) -> None: ...
-    def _do_request_save_project(
-        self, widget: Gtk.Widget, end: bool = ...
-    ) -> None: ...
+    def _do_request_save_project(self, widget: Gtk.Widget, end: bool = ...) -> None: ...
     def _do_set_status(self, status: str) -> None: ...
     def _do_set_status_icon(self, connected: bool = ...) -> None: ...
-    def _on_button_press(
-        self, __book: object, event: Gdk.EventButton
-    ) -> None: ...
+    def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None: ...
     def _on_request_open(self) -> None: ...
     def _on_select(self, title: str) -> None: ...
     @staticmethod

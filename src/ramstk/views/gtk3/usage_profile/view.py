@@ -85,12 +85,8 @@ class UsageProfileWorkView(RAMSTKWorkView):
                 "currently selected entity."
             ),
             _("Delete the currently selected entity from the usage profile."),
-            _(
-                "Save changes to the currently selected entity in the usage profile."
-            ),
-            _(
-                "Save changes to all entities at the same level in the usage profile."
-            ),
+            _("Save changes to the currently selected entity in the usage profile."),
+            _("Save changes to all entities at the same level in the usage profile."),
         ]
 
         # Initialize private scalar attributes.
@@ -114,13 +110,7 @@ class UsageProfileWorkView(RAMSTKWorkView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = (
-            self.get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-        )
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _dialog = super().do_raise_dialog(parent=_parent)
         _dialog.do_set_message(
             message=_(
@@ -158,11 +148,7 @@ class UsageProfileWorkView(RAMSTKWorkView):
         else:
             _error = _("An environmental condition cannot have a child.")
             _parent = (
-                self.get_parent()
-                .get_parent()
-                .get_parent()
-                .get_parent()
-                .get_parent()
+                self.get_parent().get_parent().get_parent().get_parent().get_parent()
             )
             _dialog = super().do_raise_dialog(parent=_parent)
             _dialog.do_set_message(message=_error)

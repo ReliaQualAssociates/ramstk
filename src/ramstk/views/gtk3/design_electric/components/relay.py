@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -310,9 +306,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _(
-                        "The number of relay on/off cycles per hour."
-                    ),
+                    "tooltip": _("The number of relay on/off cycles per hour."),
                 },
                 _("Number of Cycles/Hour:"),
                 "gfloat",
@@ -355,16 +349,10 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_type_combo()
 
         self.cmbLoadType.do_load_combo(self._lst_technology, signal="changed")
-        self.cmbContactForm.do_load_combo(
-            self._lst_contact_form, signal="changed"
-        )
-        self.cmbContactRating.do_load_combo(
-            self._lst_contact_rating, signal="changed"
-        )
+        self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
+        self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
 
-    def _do_set_reliability_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.

@@ -36,9 +36,7 @@ class RAMSTKBaseBook(Gtk.Notebook):
 
         :param configuration: the RAMSTKUserConfiguration class instance.
         """
-        GObject.GObject.__init__(
-            self
-        )  # pylint: disable=non-parent-init-called
+        GObject.GObject.__init__(self)  # pylint: disable=non-parent-init-called
 
         # Initialize private dictionary attributes.
 

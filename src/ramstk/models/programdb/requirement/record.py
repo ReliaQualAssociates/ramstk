@@ -91,9 +91,7 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     derived = Column("fld_derived", Integer, default=__defaults__["derived"])
-    description = Column(
-        "fld_description", String, default=__defaults__["description"]
-    )
+    description = Column("fld_description", String, default=__defaults__["description"])
     figure_number = Column(
         "fld_figure_number", String(256), default=__defaults__["figure_number"]
     )
@@ -101,12 +99,8 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     page_number = Column(
         "fld_page_number", String(256), default=__defaults__["page_number"]
     )
-    parent_id = Column(
-        "fld_parent_id", Integer, default=__defaults__["parent_id"]
-    )
-    priority = Column(
-        "fld_priority", Integer, default=__defaults__["priority"]
-    )
+    parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
+    priority = Column("fld_priority", Integer, default=__defaults__["priority"])
     requirement_code = Column(
         "fld_requirement_code",
         String(256),
@@ -120,41 +114,21 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Integer,
         default=__defaults__["requirement_type"],
     )
-    validated = Column(
-        "fld_validated", Integer, default=__defaults__["validated"]
-    )
+    validated = Column("fld_validated", Integer, default=__defaults__["validated"])
     validated_date = Column(
         "fld_validated_date", Date, default=__defaults__["validated_date"]
     )
 
     # Clarity of requirement questions.
-    q_clarity_0 = Column(
-        "fld_clarity_0", Integer, default=__defaults__["q_clarity_0"]
-    )
-    q_clarity_1 = Column(
-        "fld_clarity_1", Integer, default=__defaults__["q_clarity_1"]
-    )
-    q_clarity_2 = Column(
-        "fld_clarity_2", Integer, default=__defaults__["q_clarity_2"]
-    )
-    q_clarity_3 = Column(
-        "fld_clarity_3", Integer, default=__defaults__["q_clarity_3"]
-    )
-    q_clarity_4 = Column(
-        "fld_clarity_4", Integer, default=__defaults__["q_clarity_4"]
-    )
-    q_clarity_5 = Column(
-        "fld_clarity_5", Integer, default=__defaults__["q_clarity_5"]
-    )
-    q_clarity_6 = Column(
-        "fld_clarity_6", Integer, default=__defaults__["q_clarity_6"]
-    )
-    q_clarity_7 = Column(
-        "fld_clarity_7", Integer, default=__defaults__["q_clarity_7"]
-    )
-    q_clarity_8 = Column(
-        "fld_clarity_8", Integer, default=__defaults__["q_clarity_8"]
-    )
+    q_clarity_0 = Column("fld_clarity_0", Integer, default=__defaults__["q_clarity_0"])
+    q_clarity_1 = Column("fld_clarity_1", Integer, default=__defaults__["q_clarity_1"])
+    q_clarity_2 = Column("fld_clarity_2", Integer, default=__defaults__["q_clarity_2"])
+    q_clarity_3 = Column("fld_clarity_3", Integer, default=__defaults__["q_clarity_3"])
+    q_clarity_4 = Column("fld_clarity_4", Integer, default=__defaults__["q_clarity_4"])
+    q_clarity_5 = Column("fld_clarity_5", Integer, default=__defaults__["q_clarity_5"])
+    q_clarity_6 = Column("fld_clarity_6", Integer, default=__defaults__["q_clarity_6"])
+    q_clarity_7 = Column("fld_clarity_7", Integer, default=__defaults__["q_clarity_7"])
+    q_clarity_8 = Column("fld_clarity_8", Integer, default=__defaults__["q_clarity_8"])
 
     # Completeness of requirement questions.
     q_complete_0 = Column(

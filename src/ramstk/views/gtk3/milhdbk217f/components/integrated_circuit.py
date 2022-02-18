@@ -47,9 +47,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     """
 
     _lambda_p = '<span foreground="blue">\u03BB<sub>p</sub> = '
-    _function_1 = (
-        "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
-    )
+    _function_1 = "(C<sub>1</sub>\u03C0<sub>T</sub> + C<sub>2</sub>\u03C0<sub>E</sub>)"
     _function_2 = "\u03C0<sub>Q</sub>\u03C0<sub>L</sub></span>"
     _function_3 = "\u03BB<sub>CYC</sub>)" + _function_2
 
@@ -132,9 +130,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 0.0,
                 {
-                    "tooltip": _(
-                        "The base hazard rate for the integrated circuit."
-                    ),
+                    "tooltip": _("The base hazard rate for the integrated circuit."),
                 },
                 "\u03BB<sub>b</sub>:",
             ],
@@ -146,9 +142,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The quality factor for the integrated circuit."
-                    ),
+                    "tooltip": _("The quality factor for the integrated circuit."),
                 },
                 "\u03C0<sub>Q</sub>:",
             ],
@@ -160,9 +154,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The environment factor for the integrated circuit."
-                    ),
+                    "tooltip": _("The environment factor for the integrated circuit."),
                 },
                 "\u03C0<sub>E</sub>:",
             ],
@@ -202,9 +194,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The package hazard rate for the integrated circuit."
-                    ),
+                    "tooltip": _("The package hazard rate for the integrated circuit."),
                 },
                 "C2:",
             ],
@@ -216,9 +206,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The learning factor for the integrated circuit."
-                    ),
+                    "tooltip": _("The learning factor for the integrated circuit."),
                 },
                 "\u03C0<sub>L</sub>:",
             ],
@@ -303,9 +291,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The package type factor for the integrated circuit."
-                    ),
+                    "tooltip": _("The package type factor for the integrated circuit."),
                 },
                 "\u03C0<sub>PT</sub>:",
             ],
@@ -332,9 +318,7 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The application factor for the integrated circuit."
-                    ),
+                    "tooltip": _("The application factor for the integrated circuit."),
                 },
                 "\u03C0<sub>A</sub>:",
             ],
@@ -380,14 +364,10 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
             self.txtLambdaCYC.do_update(
                 str(self.fmt.format(attributes["lambdaCYC"])),
             )
-            self.txtLambdaBD.do_update(
-                str(self.fmt.format(attributes["lambdaBD"]))
-            )
+            self.txtLambdaBD.do_update(str(self.fmt.format(attributes["lambdaBD"])))
             self.txtPiMFG.do_update(str(self.fmt.format(attributes["piMFG"])))
             self.txtPiCD.do_update(str(self.fmt.format(attributes["piCD"])))
-            self.txtLambdaBP.do_update(
-                str(self.fmt.format(attributes["lambdaBP"]))
-            )
+            self.txtLambdaBP.do_update(str(self.fmt.format(attributes["lambdaBP"])))
             self.txtPiPT.do_update(str(self.fmt.format(attributes["piPT"])))
             self.txtLambdaEOS.do_update(
                 str(self.fmt.format(attributes["lambdaEOS"])),

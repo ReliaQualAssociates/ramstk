@@ -129,9 +129,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             package={"reliability_goal": _attributes["reliability_goal"]},
         )
 
-    def do_calculate_agree_allocation(
-        self, node_id: int, duty_cycle: float
-    ) -> None:
+    def do_calculate_agree_allocation(self, node_id: int, duty_cycle: float) -> None:
         """Allocate reliability using the AGREE method.
 
         :param node_id: the record ID whose allocation is to be calculated.
@@ -144,9 +142,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         _method_id = _record.allocation_method_id
 
         for _node in self.tree.children(node_id):
-            _attributes: Dict[str, Any] = _node.data[
-                "allocation"
-            ].get_attributes()
+            _attributes: Dict[str, Any] = _node.data["allocation"].get_attributes()
             _attributes["allocation_method_id"] = _method_id
             _attributes["duty_cycle"] = duty_cycle
 
@@ -236,9 +232,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             _attributes = _node.data["allocation"].get_attributes()
             _attributes["allocation_method_id"] = _method_id
 
-            _attributes["weight_factor"] = (
-                1.0 / _node.data["allocation"].n_sub_systems
-            )
+            _attributes["weight_factor"] = 1.0 / _node.data["allocation"].n_sub_systems
             _attributes = allocation.do_allocate_reliability(
                 _parent_goal, 0, **_attributes
             )
@@ -302,9 +296,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             tree=self.tree,
         )
 
-    def _do_calculate_agree_total_elements(
-        self, node_id: int
-    ) -> Tuple[int, int]:
+    def _do_calculate_agree_total_elements(self, node_id: int) -> Tuple[int, int]:
         """Calculate the total number of elements for the AGREE method.
 
         :param node_id: the record ID whose allocation is to be calculated.

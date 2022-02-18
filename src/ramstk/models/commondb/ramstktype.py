@@ -36,9 +36,7 @@ class RAMSTKType(RAMSTK_BASE, RAMSTKBaseRecord):
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    type_type = Column(
-        "fld_type", String(256), default=__defaults__["type_type"]
-    )
+    type_type = Column("fld_type", String(256), default=__defaults__["type_type"])
 
     def get_attributes(self):
         """Retrieve the current values of the RAMSTKType data model attributes.

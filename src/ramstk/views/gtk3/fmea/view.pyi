@@ -7,16 +7,12 @@ from ramstk.configuration import RAMSTK_CRITICALITY as RAMSTK_CRITICALITY
 from ramstk.configuration import (
     RAMSTK_FAILURE_PROBABILITY as RAMSTK_FAILURE_PROBABILITY,
 )
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.assistants import AddControlAction as AddControlAction
-from ramstk.views.gtk3.widgets import (
-    RAMSTKMessageDialog as RAMSTKMessageDialog,
-)
+from ramstk.views.gtk3.widgets import RAMSTKMessageDialog as RAMSTKMessageDialog
 from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 
@@ -44,9 +40,7 @@ class FMEAWorkView(RAMSTKWorkView):
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None: ...
     _record_id: int
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
-    def _on_get_hardware_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None: ...
+    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None: ...
     def __do_load_action_combos(self) -> None: ...
     def __do_load_rpn_combos(self) -> None: ...
     def __do_load_severity_combos(self) -> None: ...

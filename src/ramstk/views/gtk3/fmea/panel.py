@@ -52,12 +52,8 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         self.chkCriticality: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Calculate Criticality")
         )
-        self.chkRPN: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Calculate RPNs")
-        )
-        self.txtItemCriticality: RAMSTKTextView = RAMSTKTextView(
-            Gtk.TextBuffer()
-        )
+        self.chkRPN: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Calculate RPNs"))
+        self.txtItemCriticality: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 
         # Initialize private dictionary attributes.
 
@@ -130,9 +126,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Move the item criticality RAMSTKTextView() below it's label.
-        _fixed: Gtk.Fixed = (
-            self.get_children()[0].get_children()[0].get_child()
-        )
+        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_child()
         _label: RAMSTKLabel = _fixed.get_children()[-2]
         _x_pos: int = _fixed.child_get_property(_label, "x")
         _y_pos: int = _fixed.child_get_property(_label, "y") + 25
@@ -144,9 +138,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
             "succeed_calculate_mode_criticality",
         )
 
-    def _do_load_item_criticality(
-        self, item_criticality: Dict[str, float]
-    ) -> None:
+    def _do_load_item_criticality(self, item_criticality: Dict[str, float]) -> None:
         """Update the item criticality RAMSTKTextView() with the results.
 
         :param item_criticality: the item criticality for the selected
@@ -156,9 +148,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         """
         _item_criticality = ""
         for _key, _value in item_criticality.items():
-            _item_criticality = (
-                _item_criticality + _key + ": " + str(_value) + "\n"
-            )
+            _item_criticality = _item_criticality + _key + ": " + str(_value) + "\n"
 
         self.txtItemCriticality.do_update(_item_criticality, "changed")
 
@@ -1260,9 +1250,7 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         pub.subscribe(self._on_select_hardware, "selected_hardware")
 
-        pub.subscribe(
-            self.__do_load_missions, "succeed_retrieve_usage_profile"
-        )
+        pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -1279,9 +1267,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         """
         return model[row][1] == self._parent_id
 
-    def do_get_fmea_level(
-        self, model: Gtk.TreeModel, row: Gtk.TreeIter
-    ) -> None:
+    def do_get_fmea_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None:
         """Determine the FMEA level of the selected FMEA row.
 
         :param model: the FMEA Gtk.TreeModel().
@@ -1413,16 +1399,12 @@ class FMEATreePanel(RAMSTKTreePanel):
         """
         _occurrence = str(self.lst_rpn_occurrence[entity.rpn_occurrence])
         _detection = str(self.lst_rpn_detection[entity.rpn_detection])
-        _occurrence_new = str(
-            self.lst_rpn_occurrence[entity.rpn_occurrence_new]
-        )
+        _occurrence_new = str(self.lst_rpn_occurrence[entity.rpn_occurrence_new])
         _detection_new = str(self.lst_rpn_detection[entity.rpn_detection_new])
 
         return _occurrence, _detection, _occurrence_new, _detection_new
 
-    def __do_load_action(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
+    def __do_load_action(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load an action record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the action data to load.
@@ -1436,9 +1418,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["action"], 22, 22
-        )
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["action"], 22, 22)
 
         _attributes = [
             _entity.revision_id,
@@ -1530,9 +1510,7 @@ class FMEATreePanel(RAMSTKTreePanel):
             self.tvwTreeView.position["action_status"], self.lst_action_status
         )
 
-    def __do_load_cause(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
+    def __do_load_cause(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a failure cause record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the cause data to load.
@@ -1554,9 +1532,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         ) = self.__do_get_rpn_names(_entity)
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["cause"], 22, 22
-        )
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["cause"], 22, 22)
 
         _attributes = [
             _entity.revision_id,
@@ -1626,9 +1602,7 @@ class FMEATreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_control(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
+    def __do_load_control(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a control record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the control data to load.
@@ -1841,18 +1815,14 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _model = self.tvwTreeView.get_cell_model(
-            self.tvwTreeView.position["mission"]
-        )
+        _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["mission"])
 
         self._lst_missions = []
         _model.append([""])
         for _node in tree.children(tree.root):
             _lst_phases: List[str] = [""]
 
-            _mission = _node.data["usage_profile"].get_attributes()[
-                "description"
-            ]
+            _mission = _node.data["usage_profile"].get_attributes()["description"]
             _model.append([_mission])
             self._lst_missions.append(_mission)
 
@@ -1882,9 +1852,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         except KeyError:
             pass
 
-    def __do_load_mode(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
+    def __do_load_mode(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a failure mode record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -1900,9 +1868,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         _severity_new = self.lst_rpn_severity[_entity.rpn_severity_new]
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
-            self.dic_icons["mode"], 22, 22
-        )
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"], 22, 22)
 
         _attributes = [
             _entity.revision_id,

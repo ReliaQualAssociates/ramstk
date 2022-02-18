@@ -54,9 +54,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
     # Define private scalar class attributes.
     _tag = "validation"
     _tablabel = (
-        "<span weight='bold'>"
-        + _("Program\nVerification\nProgress")
-        + "</span>"
+        "<span weight='bold'>" + _("Program\nVerification\nProgress") + "</span>"
     )
     _tabtooltip = _(
         "Shows a plot of the total expected time to complete all verification "
@@ -113,9 +111,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_validation")
 
-        pub.subscribe(
-            self._do_set_cursor_active, "succeed_calculate_verification_plan"
-        )
+        pub.subscribe(self._do_set_cursor_active, "succeed_calculate_verification_plan")
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate program cost and time.

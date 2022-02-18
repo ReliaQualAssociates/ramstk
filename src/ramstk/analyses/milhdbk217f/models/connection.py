@@ -362,9 +362,7 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
     return _pi_c
 
 
-def calculate_insert_temperature(
-    contact_gauge: int, current_operating: float
-) -> float:
+def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
     """Calculate the insert temperature.
 
     Operating current can be passed as float or integer:
@@ -433,12 +431,8 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes["temperature_rise"] = calculate_insert_temperature(
         attributes["contact_gauge"], attributes["current_operating"]
     )
-    attributes["piC"] = calculate_complexity_factor(
-        attributes["n_circuit_planes"]
-    )
-    attributes["piP"] = calculate_active_pins_factor(
-        attributes["n_active_pins"]
-    )
+    attributes["piC"] = calculate_complexity_factor(attributes["n_circuit_planes"])
+    attributes["piP"] = calculate_active_pins_factor(attributes["n_active_pins"])
     attributes["piK"] = get_mate_unmate_factor(attributes["n_cycles"])
 
     if attributes["subcategory_id"] == 1:
@@ -450,9 +444,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     else:
         _factor_key = 5
     _contact_temp = (
-        attributes["temperature_active"]
-        + attributes["temperature_rise"]
-        + 273.0
+        attributes["temperature_active"] + attributes["temperature_rise"] + 273.0
     )
 
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
@@ -462,9 +454,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         _factor_key,
     )
 
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piE"]
-    )
+    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
     if attributes["subcategory_id"] == 3:
         attributes["hazard_rate_active"] = (
             attributes["hazard_rate_active"] * attributes["piP"]
@@ -484,9 +474,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         )
     else:
         attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piK"]
-            * attributes["piP"]
+            attributes["hazard_rate_active"] * attributes["piK"] * attributes["piP"]
         )
 
     return attributes
@@ -537,8 +525,7 @@ def calculate_part_stress_lambda_b(
         _lambda_b = 0.00042
     else:
         _lambda_b = _f0 * exp(
-            (_f1 / contact_temperature)
-            + (contact_temperature / _ref_temp) ** _f2
+            (_f1 / contact_temperature) + (contact_temperature / _ref_temp) ** _f2
         )
 
     return _lambda_b
@@ -662,8 +649,6 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
             _environment_active_id - 1
         ]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][
-            _environment_active_id - 1
-        ]
+        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
 
     return _base_hr

@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -181,9 +177,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo(
-            [["MIL-SPEC"], [_("Lower")]], signal="changed"
-        )
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
 
         # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
@@ -222,9 +216,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         if attributes["hardware_id"] == self._record_id:
             self._duty_cycle = attributes["duty_cycle"]
 
-    def _do_set_reliability_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.

@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -86,11 +82,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("Power Rectifier with High Voltage Stacks")],
             [_("Transient Suppressor/Varistor")],
             [_("Current Regulator")],
-            [
-                _(
-                    "Voltage Regulator and Voltage Reference (Avalanche and Zener)"
-                )
-            ],
+            [_("Voltage Regulator and Voltage Reference (Avalanche and Zener)")],
         ],
         2: [
             [_("Si IMPATT (<35 GHz)")],
@@ -320,9 +312,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _(
-                        "The method of construction of the semiconductor."
-                    ),
+                    "tooltip": _("The method of construction of the semiconductor."),
                 },
                 _("Construction:"),
                 "gint",
@@ -348,9 +338,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _(
-                        "The operating frequency of the semiconductor."
-                    ),
+                    "tooltip": _("The operating frequency of the semiconductor."),
                 },
                 _("Operating Frequency (GHz):"),
                 "gfloat",
@@ -424,9 +412,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_matching()
         self.__do_load_type()
 
-    def _do_set_reliability_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -561,9 +547,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
-    def __do_set_application_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_application_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the application RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -585,9 +569,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         else:
             self.cmbApplication.set_sensitive(False)
 
-    def __do_set_construction_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_construction_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the construction RAMSTKComboBox() sensitive or not.
 
         :return: None

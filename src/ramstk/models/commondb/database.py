@@ -15,10 +15,7 @@ from typing import Dict, Tuple, Union
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration,
-    RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.models import (
     RAMSTKCategoryRecord,
@@ -78,9 +75,7 @@ class RAMSTKCommonDB:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.site_configuration: RAMSTKSiteConfiguration = (
-            RAMSTKSiteConfiguration()
-        )
+        self.site_configuration: RAMSTKSiteConfiguration = RAMSTKSiteConfiguration()
         self.common_dao: BaseDatabase = BaseDatabase()
 
         # Subscribe to PyPubSub messages.
@@ -113,11 +108,7 @@ class RAMSTKCommonDB:
             self.do_load_site_info(license_file)
 
             _yn = (
-                input(
-                    _(
-                        "Would you like to add a RAMSTK Administrator? ([y]/n): "
-                    )
-                )
+                input(_("Would you like to add a RAMSTK Administrator? ([y]/n): "))
                 or "y"
             )
             if _yn.lower() == "y":
@@ -196,50 +187,28 @@ class RAMSTKCommonDB:
                 _dic_site_info["expire_on"] = datetime.strptime(
                     _contents[2].strip("\n"), "%Y-%m-%d"
                 )
-                _dic_site_info["function_enabled"] = int(
-                    _contents[3].strip("\n")
-                )
-                _dic_site_info["requirement_enabled"] = int(
-                    _contents[4].strip("\n")
-                )
-                _dic_site_info["hardware_enabled"] = int(
-                    _contents[5].strip("\n")
-                )
-                _dic_site_info["software_enabled"] = int(
-                    _contents[6].strip("\n")
-                )
+                _dic_site_info["function_enabled"] = int(_contents[3].strip("\n"))
+                _dic_site_info["requirement_enabled"] = int(_contents[4].strip("\n"))
+                _dic_site_info["hardware_enabled"] = int(_contents[5].strip("\n"))
+                _dic_site_info["software_enabled"] = int(_contents[6].strip("\n"))
                 _dic_site_info["rcm_enabled"] = int(_contents[7].strip("\n"))
-                _dic_site_info["testing_enabled"] = int(
-                    _contents[8].strip("\n")
-                )
-                _dic_site_info["incident_enabled"] = int(
-                    _contents[9].strip("\n")
-                )
-                _dic_site_info["survival_enabled"] = int(
-                    _contents[10].strip("\n")
-                )
-                _dic_site_info["vandv_enabled"] = int(
-                    _contents[11].strip("\n")
-                )
-                _dic_site_info["hazard_enabled"] = int(
-                    _contents[12].strip("\n")
-                )
-                _dic_site_info["stakeholder_enabled"] = int(
-                    _contents[13].strip("\n")
-                )
-                _dic_site_info["allocation_enabled"] = int(
-                    _contents[14].strip("\n")
-                )
-                _dic_site_info["similar_item_enabled"] = int(
-                    _contents[15].strip("\n")
-                )
+                _dic_site_info["testing_enabled"] = int(_contents[8].strip("\n"))
+                _dic_site_info["incident_enabled"] = int(_contents[9].strip("\n"))
+                _dic_site_info["survival_enabled"] = int(_contents[10].strip("\n"))
+                _dic_site_info["vandv_enabled"] = int(_contents[11].strip("\n"))
+                _dic_site_info["hazard_enabled"] = int(_contents[12].strip("\n"))
+                _dic_site_info["stakeholder_enabled"] = int(_contents[13].strip("\n"))
+                _dic_site_info["allocation_enabled"] = int(_contents[14].strip("\n"))
+                _dic_site_info["similar_item_enabled"] = int(_contents[15].strip("\n"))
                 _dic_site_info["fmea_enabled"] = int(_contents[16].strip("\n"))
                 _dic_site_info["pof_enabled"] = int(_contents[17].strip("\n"))
                 _dic_site_info["rbd_enabled"] = int(_contents[18].strip("\n"))
                 _dic_site_info["fta_enabled"] = int(_contents[19].strip("\n"))
                 _dic_site_info["site_name"] = _contents[20].strip("\n")
         except IOError:
-            _error_msg = "Unable to read license key file.  Defaulting to a 30-day demo license."
+            _error_msg = (
+                "Unable to read license key file.  Defaulting to a 30-day demo license."
+            )
             pub.sendMessage("fail_read_license", error_message=_error_msg)
 
         _site_info = RAMSTKSiteInfoRecord()
@@ -265,35 +234,21 @@ class RAMSTKCommonDB:
             message="Loading global RAMSTK configuration variables.",
         )
 
-        user_configuration = self._do_load_action_categories(
-            user_configuration
-        )
+        user_configuration = self._do_load_action_categories(user_configuration)
         user_configuration = self._do_load_action_status(user_configuration)
         user_configuration = self._do_load_affinity_groups(user_configuration)
         user_configuration = self._do_load_damage_models(user_configuration)
-        user_configuration = self._do_load_detection_methods(
-            user_configuration
-        )
-        user_configuration = self._do_load_hardware_variables(
-            user_configuration
-        )
+        user_configuration = self._do_load_detection_methods(user_configuration)
+        user_configuration = self._do_load_hardware_variables(user_configuration)
         user_configuration = self._do_load_hazards(user_configuration)
-        user_configuration = self._do_load_incident_categories(
-            user_configuration
-        )
+        user_configuration = self._do_load_incident_categories(user_configuration)
         user_configuration = self._do_load_incident_status(user_configuration)
         user_configuration = self._do_load_incident_types(user_configuration)
         user_configuration = self._do_load_load_history(user_configuration)
         user_configuration = self._do_load_manufacturers(user_configuration)
-        user_configuration = self._do_load_measureable_parameters(
-            user_configuration
-        )
-        user_configuration = self._do_load_measurement_units(
-            user_configuration
-        )
-        user_configuration = self._do_load_requirement_types(
-            user_configuration
-        )
+        user_configuration = self._do_load_measureable_parameters(user_configuration)
+        user_configuration = self._do_load_measurement_units(user_configuration)
+        user_configuration = self._do_load_requirement_types(user_configuration)
         user_configuration = self._do_load_rpn_detection(user_configuration)
         user_configuration = self._do_load_rpn_occurrence(user_configuration)
         user_configuration = self._do_load_rpn_severity(user_configuration)
@@ -400,9 +355,9 @@ class RAMSTKCommonDB:
             .all()
         ):
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_DAMAGE_MODELS[
-                _record.model_id
-            ] = _attributes["description"]
+            user_configuration.RAMSTK_DAMAGE_MODELS[_record.model_id] = _attributes[
+                "description"
+            ]
 
         return user_configuration
 
@@ -450,9 +405,7 @@ class RAMSTKCommonDB:
             for _mode in (
                 self.common_dao.session.query(RAMSTKFailureModeRecord)
                 .filter(RAMSTKFailureModeRecord.category_id == category_id)
-                .filter(
-                    RAMSTKFailureModeRecord.subcategory_id == subcategory_id
-                )
+                .filter(RAMSTKFailureModeRecord.subcategory_id == subcategory_id)
                 .all()
             )
         }
@@ -481,9 +434,7 @@ class RAMSTKCommonDB:
 
             for _subcat in (
                 self.common_dao.session.query(RAMSTKSubCategoryRecord)
-                .filter(
-                    RAMSTKSubCategoryRecord.category_id == _record.category_id
-                )
+                .filter(RAMSTKSubCategoryRecord.category_id == _record.category_id)
                 .all()
             ):
                 _subcats[_subcat.subcategory_id] = _subcat.description
@@ -500,9 +451,7 @@ class RAMSTKCommonDB:
             user_configuration.RAMSTK_CATEGORIES[
                 _record.category_id
             ] = _record.description
-            user_configuration.RAMSTK_SUBCATEGORIES[
-                _record.category_id
-            ] = _subcats
+            user_configuration.RAMSTK_SUBCATEGORIES[_record.category_id] = _subcats
 
         return user_configuration
 
@@ -542,9 +491,7 @@ class RAMSTKCommonDB:
             .all()
         ):
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_INCIDENT_CATEGORY[
-                _record.category_id
-            ] = (
+            user_configuration.RAMSTK_INCIDENT_CATEGORY[_record.category_id] = (
                 _attributes["name"],
                 _attributes["description"],
                 _attributes["category_type"],
@@ -614,9 +561,9 @@ class RAMSTKCommonDB:
         """
         for _record in self.common_dao.session.query(RAMSTKLoadHistory).all():
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_LOAD_HISTORY[
-                _record.history_id
-            ] = _attributes["description"]
+            user_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = _attributes[
+                "description"
+            ]
 
         return user_configuration
 
@@ -632,9 +579,7 @@ class RAMSTKCommonDB:
         """
         for _record in self.common_dao.session.query(RAMSTKManufacturer).all():
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_MANUFACTURERS[
-                _record.manufacturer_id
-            ] = (
+            user_configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
                 _attributes["description"],
                 _attributes["location"],
                 _attributes["cage_code"],
@@ -658,9 +603,7 @@ class RAMSTKCommonDB:
             .all()
         ):
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_MEASURABLE_PARAMETERS[
-                _record.measurement_id
-            ] = (
+            user_configuration.RAMSTK_MEASURABLE_PARAMETERS[_record.measurement_id] = (
                 _attributes["code"],
                 _attributes["description"],
                 _attributes["measurement_type"],
@@ -684,9 +627,7 @@ class RAMSTKCommonDB:
             .all()
         ):
             _attributes = _record.get_attributes()
-            user_configuration.RAMSTK_MEASUREMENT_UNITS[
-                _record.measurement_id
-            ] = (
+            user_configuration.RAMSTK_MEASUREMENT_UNITS[_record.measurement_id] = (
                 _attributes["code"],
                 _attributes["description"],
                 _attributes["measurement_type"],
@@ -827,9 +768,7 @@ class RAMSTKCommonDB:
     @staticmethod
     def _do_load_stress_limits(
         record: RAMSTKCategoryRecord,
-    ) -> Tuple[
-        float, float, float, float, float, float, float, float, float, float
-    ]:
+    ) -> Tuple[float, float, float, float, float, float, float, float, float, float]:
         """Load the electrical stress limits for hardware categories.
 
         :param record: the RAMSTKCategoryRecord with the stress limit information.

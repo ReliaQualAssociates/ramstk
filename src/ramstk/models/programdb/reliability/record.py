@@ -223,9 +223,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     mult_adj_factor = Column(
         "fld_mult_adj_factor", Float, default=__defaults__["mult_adj_factor"]
     )
-    quality_id = Column(
-        "fld_quality_id", Integer, default=__defaults__["quality_id"]
-    )
+    quality_id = Column("fld_quality_id", Integer, default=__defaults__["quality_id"])
     reliability_goal = Column(
         "fld_reliability_goal", Float, default=__defaults__["reliability_goal"]
     )
@@ -355,15 +353,11 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.hazard_rate_active = 0.0
 
         if self.hazard_rate_type_id == 1:
-            self.hazard_rate_active = self.do_predict_active_hazard_rate(
-                attributes
-            )
+            self.hazard_rate_active = self.do_predict_active_hazard_rate(attributes)
         elif self.hazard_rate_type_id == 2:
             self.hazard_rate_active = self.hazard_rate_specified
         elif self.hazard_rate_type_id == 3:
-            self.hazard_rate_active = exponential.get_hazard_rate(
-                self.mtbf_specified
-            )
+            self.hazard_rate_active = exponential.get_hazard_rate(self.mtbf_specified)
         elif self.hazard_rate_type_id == 4:
             _function = {
                 1: exponential.get_hazard_rate(
@@ -474,22 +468,16 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :rtype: None
         """
         try:
-            self.mtbf_logistics = 1000000.0 / (
-                self.hazard_rate_logistics * multiplier
-            )
+            self.mtbf_logistics = 1000000.0 / (self.hazard_rate_logistics * multiplier)
         except ZeroDivisionError:
             self.mtbf_logistics = 0.0
 
         try:
-            self.mtbf_mission = 1000000.0 / (
-                self.hazard_rate_mission * multiplier
-            )
+            self.mtbf_mission = 1000000.0 / (self.hazard_rate_mission * multiplier)
         except ZeroDivisionError:
             self.mtbf_mission = 0.0
 
-    def do_calculate_reliability(
-        self, time: float, multiplier: float = 1.0
-    ) -> None:
+    def do_calculate_reliability(self, time: float, multiplier: float = 1.0) -> None:
         """Calculate the reliability related metrics.
 
         :param time: the time at which to calculate the reliabilities.

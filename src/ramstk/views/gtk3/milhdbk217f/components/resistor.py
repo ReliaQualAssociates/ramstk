@@ -52,8 +52,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         5: _lambda_p + _function_1,
         6: _lambda_p + _function_1,
         7: _lambda_p + _function_1,
-        8: _lambda_p
-        + "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        8: _lambda_p + "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         9: _lambda_p + _function_2,
         10: _lambda_p
         + "\u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>C</sub>\u03C0<sub"
@@ -197,9 +196,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The potentiometer taps factor for the resistor."
-                    ),
+                    "tooltip": _("The potentiometer taps factor for the resistor."),
                 },
                 "\u03C0<sub>TAPS</sub>:",
             ],
@@ -223,9 +220,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _(
-                        "The construction class factor for the resistor."
-                    ),
+                    "tooltip": _("The construction class factor for the resistor."),
                 },
                 "\u03C0<sub>C</sub>:",
             ],
@@ -261,8 +256,6 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
             self.txtPiR.do_update(str(self.fmt.format(attributes["piR"])))
             self.txtPiT.do_update(str(self.fmt.format(attributes["piT"])))
             self.txtPiNR.do_update(str(self.fmt.format(attributes["piNR"])))
-            self.txtPiTAPS.do_update(
-                str(self.fmt.format(attributes["piTAPS"]))
-            )
+            self.txtPiTAPS.do_update(str(self.fmt.format(attributes["piTAPS"])))
             self.txtPiV.do_update(str(self.fmt.format(attributes["piV"])))
             self.txtPiC.do_update(str(self.fmt.format(attributes["piC"])))

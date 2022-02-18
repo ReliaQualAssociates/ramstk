@@ -35,9 +35,7 @@ class OptionsDialog(RAMSTKDialog):
 
         :param parent: the parent window for this assistant.
         """
-        super().__init__(
-            _("RAMSTK Program Options Assistant"), dlgparent=parent
-        )
+        super().__init__(_("RAMSTK Program Options Assistant"), dlgparent=parent)
 
         # Initialize private dictionary attributes.
 

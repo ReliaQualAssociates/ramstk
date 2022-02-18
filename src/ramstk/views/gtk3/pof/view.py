@@ -104,9 +104,7 @@ class PoFWorkView(RAMSTKWorkView):
                 "Add a new PoF entity at the same level as the currently selected "
                 "entity."
             ),
-            _(
-                "Add a new PoF entity one level below the currently selected entity."
-            ),
+            _("Add a new PoF entity one level below the currently selected entity."),
             _("Remove the selected entity from the PoF."),
             _("Save changes to the currently selected PoF line."),
             _("Save changes to all PoF lines."),
@@ -224,12 +222,10 @@ class PoFWorkView(RAMSTKWorkView):
         :rtype: None
         """
         self._pnlPanel.lst_damage_models = [
-            x[1]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS.items()
+            x[1] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_DAMAGE_MODELS.items()
         ]
         self._pnlPanel.lst_load_history = [
-            x[1]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY.items()
+            x[1] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOAD_HISTORY.items()
         ]
         self._pnlPanel.lst_measurable_parameters = [
             x[1][1]

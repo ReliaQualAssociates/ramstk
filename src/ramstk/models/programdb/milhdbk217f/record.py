@@ -83,12 +83,8 @@ class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     C2 = Column("fld_c_two", Float, default=__defaults__["C2"])
     lambdaBD = Column("fld_lambda_bd", Float, default=__defaults__["lambdaBD"])
     lambdaBP = Column("fld_lambda_bp", Float, default=__defaults__["lambdaBP"])
-    lambdaCYC = Column(
-        "fld_lambda_cyc", Float, default=__defaults__["lambdaCYC"]
-    )
-    lambdaEOS = Column(
-        "fld_lambda_eos", Float, default=__defaults__["lambdaEOS"]
-    )
+    lambdaCYC = Column("fld_lambda_cyc", Float, default=__defaults__["lambdaCYC"])
+    lambdaEOS = Column("fld_lambda_eos", Float, default=__defaults__["lambdaEOS"])
     piA = Column("fld_pi_a", Float, default=__defaults__["piA"])
     piC = Column("fld_pi_c", Float, default=__defaults__["piC"])
     piCD = Column("fld_pi_cd", Float, default=__defaults__["piCD"])

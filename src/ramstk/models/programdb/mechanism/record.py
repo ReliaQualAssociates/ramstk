@@ -47,9 +47,7 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         {"extend_existing": True},
     )
 
-    revision_id = Column(
-        "fld_revision_id", Integer, primary_key=True, nullable=False
-    )
+    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
         "fld_hardware_id",
         Integer,

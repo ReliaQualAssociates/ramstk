@@ -47,9 +47,7 @@ class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     cost_remaining = Column("fld_cost_remaining", Float, default=0.0)
-    date_status = Column(
-        "fld_date_status", Date, unique=True, default=date.today()
-    )
+    date_status = Column("fld_date_status", Date, unique=True, default=date.today())
     time_remaining = Column("fld_time_remaining", Float, default=0.0)
 
     # Define the relationships to other tables in the RAMSTK Program database.

@@ -719,9 +719,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
-            _(
-                "Displays the Hazards Analysis for the currently selected Function."
-            )
+            _("Displays the Hazards Analysis for the currently selected Function.")
         )
 
         # Subscribe to PyPubSub messages.
@@ -744,9 +742,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         """
         return model[row][1] == self._parent_id
 
-    def do_load_severity(
-        self, criticalities: Dict[int, Tuple[str, str, int]]
-    ) -> None:
+    def do_load_severity(self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
         """Load the Gtk.CellRendererCombo() containing severities.
 
         :param criticalities: the dict containing the hazard severity

@@ -63,9 +63,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_calculate_similar_item, "request_calculate_similar_item"
-        )
+        pub.subscribe(self.do_calculate_similar_item, "request_calculate_similar_item")
         pub.subscribe(
             self.do_roll_up_change_descriptions,
             "request_roll_up_change_descriptions",
@@ -254,9 +252,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _attributes = (
-            self.tree.get_node(node_id).data[self._tag].get_attributes()
-        )
+        _attributes = self.tree.get_node(node_id).data[self._tag].get_attributes()
 
         _environment = {
             "from": _attributes["environment_from_id"],
@@ -291,9 +287,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _attributes = (
-            self.tree.get_node(node_id).data[self._tag].get_attributes()
-        )
+        _attributes = self.tree.get_node(node_id).data[self._tag].get_attributes()
 
         _sia: Dict[str, Any] = OrderedDict(
             {

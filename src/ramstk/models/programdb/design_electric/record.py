@@ -144,9 +144,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_application_id", Integer, default=__defaults__["application_id"]
     )
     area = Column("fld_area", Float, default=__defaults__["area"])
-    capacitance = Column(
-        "fld_capacitance", Float, default=__defaults__["capacitance"]
-    )
+    capacitance = Column("fld_capacitance", Float, default=__defaults__["capacitance"])
     configuration_id = Column(
         "fld_configuration_id",
         Integer,
@@ -187,9 +185,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Integer,
         default=__defaults__["environment_dormant_id"],
     )
-    family_id = Column(
-        "fld_family_id", Integer, default=__defaults__["family_id"]
-    )
+    family_id = Column("fld_family_id", Integer, default=__defaults__["family_id"])
     feature_size = Column(
         "fld_feature_size", Float, default=__defaults__["feature_size"]
     )
@@ -198,9 +194,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Float,
         default=__defaults__["frequency_operating"],
     )
-    insert_id = Column(
-        "fld_insert_id", Integer, default=__defaults__["insert_id"]
-    )
+    insert_id = Column("fld_insert_id", Integer, default=__defaults__["insert_id"])
     insulation_id = Column(
         "fld_insulation_id", Integer, default=__defaults__["insulation_id"]
     )
@@ -220,12 +214,8 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Integer,
         default=__defaults__["n_circuit_planes"],
     )
-    n_cycles = Column(
-        "fld_n_cycles", Integer, default=__defaults__["n_cycles"]
-    )
-    n_elements = Column(
-        "fld_n_elements", Integer, default=__defaults__["n_elements"]
-    )
+    n_cycles = Column("fld_n_cycles", Integer, default=__defaults__["n_cycles"])
+    n_elements = Column("fld_n_elements", Integer, default=__defaults__["n_elements"])
     n_hand_soldered = Column(
         "fld_n_hand_soldered", Integer, default=__defaults__["n_hand_soldered"]
     )
@@ -235,25 +225,15 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     operating_life = Column(
         "fld_operating_life", Float, default=__defaults__["operating_life"]
     )
-    overstress = Column(
-        "fld_overstress", Integer, default=__defaults__["overstress"]
-    )
-    package_id = Column(
-        "fld_package_id", Integer, default=__defaults__["package_id"]
-    )
+    overstress = Column("fld_overstress", Integer, default=__defaults__["overstress"])
+    package_id = Column("fld_package_id", Integer, default=__defaults__["package_id"])
     power_operating = Column(
         "fld_power_operating", Float, default=__defaults__["power_operating"]
     )
-    power_rated = Column(
-        "fld_power_rated", Float, default=__defaults__["power_rated"]
-    )
-    power_ratio = Column(
-        "fld_power_ratio", Float, default=__defaults__["power_ratio"]
-    )
+    power_rated = Column("fld_power_rated", Float, default=__defaults__["power_rated"])
+    power_ratio = Column("fld_power_ratio", Float, default=__defaults__["power_ratio"])
     reason = Column("fld_reason", String, default=__defaults__["reason"])
-    resistance = Column(
-        "fld_resistance", Float, default=__defaults__["resistance"]
-    )
+    resistance = Column("fld_resistance", Float, default=__defaults__["resistance"])
     specification_id = Column(
         "fld_specification_id",
         Integer,
@@ -313,9 +293,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Float,
         default=__defaults__["voltage_dc_operating"],
     )
-    voltage_esd = Column(
-        "fld_voltage_esd", Float, default=__defaults__["voltage_esd"]
-    )
+    voltage_esd = Column("fld_voltage_esd", Float, default=__defaults__["voltage_esd"])
     voltage_rated = Column(
         "fld_voltage_rated", Float, default=__defaults__["voltage_rated"]
     )
@@ -473,9 +451,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        _voltage_operating = (
-            self.voltage_ac_operating + self.voltage_dc_operating
-        )
+        _voltage_operating = self.voltage_ac_operating + self.voltage_dc_operating
 
         try:
             self.voltage_ratio = stress.calculate_stress_ratio(

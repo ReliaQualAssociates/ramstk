@@ -742,9 +742,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     elif _subcategory_id in [9, 11, 13, 14, 15]:
         _hazard_rate_active = _hazard_rate_active * _pi_taps * _pi_r * _pi_v
     elif _subcategory_id in [10, 12]:
-        _hazard_rate_active = (
-            _hazard_rate_active * _pi_taps * _pi_c * _pi_r * _pi_v
-        )
+        _hazard_rate_active = _hazard_rate_active * _pi_taps * _pi_c * _pi_r * _pi_v
     elif _subcategory_id != 8:
         _hazard_rate_active = _hazard_rate_active * _pi_r
 
@@ -754,9 +752,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 # pylint: disable=too-many-locals
-def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -825,10 +821,7 @@ def calculate_part_stress_lambda_b(
             )
             ** _f2
             * exp(
-                (
-                    (_power_ratio / _f3)
-                    * ((_temperature_active + 273.0) / 273.0) ** _f4
-                )
+                ((_power_ratio / _f3) * ((_temperature_active + 273.0) / 273.0) ** _f4)
                 ** _f5
             )
         )
@@ -853,9 +846,7 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     _power_ratio: float = float(attributes["power_ratio"])
 
     _temperature_case: float = _temperature_active + 55.0 * _power_ratio
-    _pi_t: float = exp(
-        -4056.0 * ((1.0 / (_temperature_case + 273.0)) - 1.0 / 298.0)
-    )
+    _pi_t: float = exp(-4056.0 * ((1.0 / (_temperature_case + 273.0)) - 1.0 / 298.0))
 
     attributes["temperature_case"] = _temperature_case
     attributes["piT"] = _pi_t
@@ -937,13 +928,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     _specification_id: Any = attributes["specification_id"]
 
     if _subcategory_id in [2, 6]:
-        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][
-            _specification_id
-        ][_environment_active_id - 1]
-    else:
-        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][
+        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
             _environment_active_id - 1
         ]
+    else:
+        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
 
     attributes["lambda_b"] = _base_hr
 
@@ -1007,9 +996,9 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         # set of lists, then the style ID selects the proper list of piR values
         # and then the resistance range breakpoint is used to select
         if _subcategory_id in [6, 7]:
-            _pi_r = PI_R[_subcategory_id][_specification_id - 1][
-                _family_id - 1
-            ][_index + 1]
+            _pi_r = PI_R[_subcategory_id][_specification_id - 1][_family_id - 1][
+                _index + 1
+            ]
         elif _subcategory_id not in [4, 8]:
             _pi_r = PI_R[_subcategory_id][_index + 1]
 

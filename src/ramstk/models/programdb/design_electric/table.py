@@ -49,9 +49,7 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         # This is the record class associated with the table being modelled.
-        self._record: Type[
-            RAMSTKDesignElectricRecord
-        ] = RAMSTKDesignElectricRecord
+        self._record: Type[RAMSTKDesignElectricRecord] = RAMSTKDesignElectricRecord
 
         # Initialize public dictionary attributes.
 

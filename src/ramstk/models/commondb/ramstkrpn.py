@@ -37,9 +37,7 @@ class RAMSTKRPN(RAMSTK_BASE, RAMSTKBaseRecord):
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    rpn_type = Column(
-        "fld_rpn_type", String(256), default=__defaults__["rpn_type"]
-    )
+    rpn_type = Column("fld_rpn_type", String(256), default=__defaults__["rpn_type"])
     value = Column("fld_value", Integer, default=__defaults__["value"])
 
     def get_attributes(self):

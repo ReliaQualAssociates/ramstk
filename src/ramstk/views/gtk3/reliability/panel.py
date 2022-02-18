@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class ReliabilityInputPanel(RAMSTKFixedPanel):
@@ -163,9 +159,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _(
-                        "The stated mean time between failure (MTBF)."
-                    ),
+                    "tooltip": _("The stated mean time between failure (MTBF)."),
                     "width": 125,
                 },
                 _("Stated MTBF:"),
@@ -347,12 +341,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
         """
         self._do_set_sensitive_assessed(attributes["hazard_rate_type_id"])
         self._do_set_sensitive_specified_ht(attributes["hazard_rate_type_id"])
-        self._do_set_sensitive_specified_mtbf(
-            attributes["hazard_rate_type_id"]
-        )
-        self._do_set_sensitive_specified_distribution(
-            attributes["hazard_rate_type_id"]
-        )
+        self._do_set_sensitive_specified_mtbf(attributes["hazard_rate_type_id"])
+        self._do_set_sensitive_specified_distribution(attributes["hazard_rate_type_id"])
 
     def _do_set_sensitive_assessed(self, type_id: int) -> None:
         """Set the widgets used in handbook assessments sensitive.
@@ -891,9 +881,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.txtLogisticsRtVar.do_update(
-            str(
-                self.fmt.format(attributes["reliability_log_variance"] or 0.0)
-            ),
+            str(self.fmt.format(attributes["reliability_log_variance"] or 0.0)),
             signal="changed",
         )
         self.txtMissionRt.do_update(
@@ -901,9 +889,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.txtMissionRtVar.do_update(
-            str(
-                self.fmt.format(attributes["reliability_miss_variance"] or 0.0)
-            ),
+            str(self.fmt.format(attributes["reliability_miss_variance"] or 0.0)),
             signal="changed",
         )
 
@@ -923,19 +909,14 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
 
         _fixed = self.get_children()[0].get_children()[0].get_children()[0]
         _widgets = (
-            self.get_children()[0]
-            .get_children()[0]
-            .get_children()[0]
-            .get_children()
+            self.get_children()[0].get_children()[0].get_children()[0].get_children()
         )
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
             if _widget.get_text() != "":
                 _lst_labels.append(_widget)
-                _x_pos[0] = max(
-                    _x_pos[0], _widget.get_preferred_size()[0].width
-                )
+                _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1
 
         _x_pos[0] += 10
@@ -1221,19 +1202,14 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
 
         _fixed = self.get_children()[0].get_children()[0].get_children()[0]
         _widgets = (
-            self.get_children()[0]
-            .get_children()[0]
-            .get_children()[0]
-            .get_children()
+            self.get_children()[0].get_children()[0].get_children()[0].get_children()
         )
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
             if _widget.get_text() != "":
                 _lst_labels.append(_widget)
-                _x_pos[0] = max(
-                    _x_pos[0], _widget.get_preferred_size()[0].width
-                )
+                _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1
 
         _x_pos[0] += 10

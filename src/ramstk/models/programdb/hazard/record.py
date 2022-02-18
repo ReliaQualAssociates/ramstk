@@ -169,9 +169,7 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         String(256),
         default=__defaults__["system_probability"],
     )
-    system_hri = Column(
-        "fld_system_hri", Integer, default=__defaults__["system_hri"]
-    )
+    system_hri = Column("fld_system_hri", Integer, default=__defaults__["system_hri"])
     system_mitigation = Column(
         "fld_system_mitigation",
         String,
@@ -190,15 +188,9 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     system_hri_f = Column(
         "fld_system_hri_f", Integer, default=__defaults__["system_hri_f"]
     )
-    user_blob_1 = Column(
-        "fld_user_blob_1", String, default=__defaults__["user_blob_1"]
-    )
-    user_blob_2 = Column(
-        "fld_user_blob_2", String, default=__defaults__["user_blob_2"]
-    )
-    user_blob_3 = Column(
-        "fld_user_blob_3", String, default=__defaults__["user_blob_3"]
-    )
+    user_blob_1 = Column("fld_user_blob_1", String, default=__defaults__["user_blob_1"])
+    user_blob_2 = Column("fld_user_blob_2", String, default=__defaults__["user_blob_2"])
+    user_blob_3 = Column("fld_user_blob_3", String, default=__defaults__["user_blob_3"])
     user_float_1 = Column(
         "fld_user_float_1", Float, default=__defaults__["user_float_1"]
     )
@@ -208,15 +200,9 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     user_float_3 = Column(
         "fld_user_float_3", Float, default=__defaults__["user_float_3"]
     )
-    user_int_1 = Column(
-        "fld_user_int_1", Integer, default=__defaults__["user_int_1"]
-    )
-    user_int_2 = Column(
-        "fld_user_int_2", Integer, default=__defaults__["user_int_2"]
-    )
-    user_int_3 = Column(
-        "fld_user_int_3", Integer, default=__defaults__["user_int_3"]
-    )
+    user_int_1 = Column("fld_user_int_1", Integer, default=__defaults__["user_int_1"])
+    user_int_2 = Column("fld_user_int_2", Integer, default=__defaults__["user_int_2"])
+    user_int_3 = Column("fld_user_int_3", Integer, default=__defaults__["user_int_3"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
 

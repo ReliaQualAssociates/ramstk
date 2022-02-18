@@ -50,9 +50,7 @@ class RevisionModuleView(RAMSTKModuleView):
     # Define private scalar class attributes.
     _tag: str = "revision"
     _tablabel: str = "Revision"
-    _tabtooltip: str = _(
-        "Displays the list of Revisions for the open RAMSTK Project."
-    )
+    _tabtooltip: str = _("Displays the list of Revisions for the open RAMSTK Project.")
 
     # Define public dictionary class attributes.
 
@@ -72,8 +70,7 @@ class RevisionModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-            + "/32x32/revision.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/revision.png"
         )
 
         # Initialize private list attributes.
@@ -110,13 +107,7 @@ class RevisionModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = (
-            self.get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-        )
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _prompt = _(
             "You are about to delete Revision {0:d} and all "
             "data associated with it.  Is this really what "
@@ -128,9 +119,7 @@ class RevisionModuleView(RAMSTKModuleView):
 
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
-            pub.sendMessage(
-                "request_delete_revision", node_id=self._revision_id
-            )
+            pub.sendMessage("request_delete_revision", node_id=self._revision_id)
 
         _dialog.do_destroy()
 

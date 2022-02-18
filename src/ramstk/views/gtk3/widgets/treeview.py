@@ -24,9 +24,7 @@ from .label import RAMSTKLabel
 from .widget import RAMSTKWidget
 
 
-def do_make_column(
-    cells: List[object], **kwargs: Dict[str, Any]
-) -> Gtk.TreeViewColumn:
+def do_make_column(cells: List[object], **kwargs: Dict[str, Any]) -> Gtk.TreeViewColumn:
     """Make a Gtk.TreeViewColumn().
 
     :param list cells: list of Gtk.CellRenderer()s that are to be packed in
@@ -46,9 +44,7 @@ def do_make_column(
             _column.pack_start(_cell, True)
 
     _label = RAMSTKLabel(_heading)  # type: ignore
-    _label.do_set_properties(
-        width=-1, height=-1, justify=Gtk.Justification.CENTER
-    )
+    _label.do_set_properties(width=-1, height=-1, justify=Gtk.Justification.CENTER)
     _column.set_widget(_label)
     _column.set_resizable(True)
     _column.set_alignment(0.5)
@@ -92,9 +88,7 @@ def do_set_cell_properties(cell: object, properties: Dict[str, Any]) -> None:
         cell.set_property("model", _cellmodel)
         cell.set_property("text-column", 0)
     elif isinstance(cell, Gtk.CellRendererSpin):
-        _adjustment = Gtk.Adjustment(
-            lower=_lower, upper=_upper, step_incr=_step
-        )
+        _adjustment = Gtk.Adjustment(lower=_lower, upper=_upper, step_incr=_step)
         cell.set_property("adjustment", _adjustment)
         cell.set_property("digits", _digits)
         cell.set_property("editable", _editable)
@@ -258,9 +252,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
 
         return _row
 
-    def do_insert_row(
-        self, data: Dict[str, Any], prow: Gtk.TreeIter = None
-    ) -> None:
+    def do_insert_row(self, data: Dict[str, Any], prow: Gtk.TreeIter = None) -> None:
         """Insert a new row in the treeview.
 
         :param data: the data dictionary for the new row to insert.
@@ -292,9 +284,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         for _item in items:
             _model.append([_item])
 
-    def do_load_tree(
-        self, tree: treelib.Tree, row: Gtk.TreeIter = None
-    ) -> None:
+    def do_load_tree(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> None:
         """Load the RAMSTKTreeView with the contents of the tree."""
         _row = None
         _node = tree.get_node(tree.root)
@@ -327,17 +317,13 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
             if self._has_pixbuf and _position == 0:
                 _pbcell = Gtk.CellRendererPixbuf()
                 _pbcell.set_property("xalign", 0.5)
-                _pbcell.set_property(
-                    "cell-background", _properties["bg_color"]
-                )
+                _pbcell.set_property("cell-background", _properties["bg_color"])
                 _column = do_make_column(
                     [_pbcell, _cell],
                     heading="",  # type: ignore
                     visible=True,  # type: ignore
                 )
-                _column.set_attributes(
-                    _pbcell, pixbuf=len(self.position.values())
-                )
+                _column.set_attributes(_pbcell, pixbuf=len(self.position.values()))
             else:
                 _column = do_make_column(
                     [_cell],
@@ -528,9 +514,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         except (TypeError, ValueError):  # It's a Gtk.CellRendererToggle
             pass
 
-    def _do_set_column_properties(
-        self, key: str, column: Gtk.TreeViewColumn
-    ) -> None:
+    def _do_set_column_properties(self, key: str, column: Gtk.TreeViewColumn) -> None:
         """Set the properties of the RAMSTKTreeView() column.
 
         :param key: the value of the key in the widgets and position dicts.

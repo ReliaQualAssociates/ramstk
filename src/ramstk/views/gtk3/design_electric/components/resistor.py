@@ -15,11 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import (
-    RAMSTKComboBox,
-    RAMSTKEntry,
-    RAMSTKFixedPanel,
-)
+from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
 
 class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -234,9 +230,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _(
-                        "The resistance (in \u03A9) of the resistor."
-                    ),
+                    "tooltip": _("The resistance (in \u03A9) of the resistor."),
                 },
                 _("Resistance (\u03A9):"),
                 "gfloat",
@@ -249,9 +243,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _(
-                        "The governing specification for the resistor."
-                    ),
+                    "tooltip": _("The governing specification for the resistor."),
                 },
                 _("Specification:"),
                 "gint",
@@ -290,9 +282,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _(
-                        "The method of construction of the resistor."
-                    ),
+                    "tooltip": _("The method of construction of the resistor."),
                 },
                 _("Construction:"),
                 "gint",
@@ -352,9 +342,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_style_combo()
         self.__do_load_construction_combo()
 
-    def _do_set_reliability_attributes(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -489,9 +477,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def __do_set_construction_combo_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_construction_combo_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the Resistor construction RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -509,9 +495,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         else:
             self.cmbConstruction.set_sensitive(False)
 
-    def __do_set_elements_entry_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_elements_entry_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set Resistor number of elements RAMSTKEntry() sensitive or not.
 
         :return: None
@@ -557,9 +541,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         else:
             self.cmbSpecification.set_sensitive(False)
 
-    def __do_set_style_combo_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_style_combo_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the Resistor style RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -574,9 +556,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         else:
             self.cmbStyle.set_sensitive(False)
 
-    def __do_set_type_combo_sensitive(
-        self, attributes: Dict[str, Any]
-    ) -> None:
+    def __do_set_type_combo_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set the Resistor type RAMSTKComboBox() sensitive or not.
 
         :return: None

@@ -117,16 +117,11 @@ class StakeholderWorkView(RAMSTKWorkView):
         """
         try:
             _new_key = (
-                max(
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS.keys()
-                )
-                + 1
+                max(self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS.keys()) + 1
             )
         except ValueError:
             _new_key = 1
-        self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = str(
-            new_text
-        )
+        self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = str(new_text)
 
     # pylint: disable=unused-argument
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
@@ -160,13 +155,7 @@ class StakeholderWorkView(RAMSTKWorkView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = (
-            self.get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-            .get_parent()
-        )
+        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
         _dialog = super().do_raise_dialog(parent=_parent)
         _dialog.do_set_message(
             message=_(

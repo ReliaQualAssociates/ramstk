@@ -183,13 +183,13 @@ def do_calculate_dormant_hazard_rate(
         _dormant_hr_mult = 1
     elif hw_info[0] == 2:
         if hw_info[1] in [1, 2]:
-            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][
-                env_info[0] - 1
-            ][env_info[1] - 1][0]
+            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
+                env_info[1] - 1
+            ][0]
         else:
-            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][
-                env_info[0] - 1
-            ][env_info[1] - 1][1]
+            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
+                env_info[1] - 1
+            ][1]
     else:
         _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
             env_info[1] - 1

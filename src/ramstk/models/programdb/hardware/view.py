@@ -185,9 +185,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_nswc")
         pub.subscribe(super().do_set_tree, "succeed_delete_reliability")
         pub.subscribe(self.do_calculate_hardware, "request_calculate_hardware")
-        pub.subscribe(
-            self.do_make_composite_ref_des, "request_make_comp_ref_des"
-        )
+        pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
     def do_calculate_cost(self, node_id: int) -> None:
         """Calculate the cost related metrics.
@@ -314,8 +312,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             )
         else:
             for _node_id in _record.successors(self.tree.identifier):
-                _total_power_dissipation += (
-                    self.do_calculate_power_dissipation(_node_id)
+                _total_power_dissipation += self.do_calculate_power_dissipation(
+                    _node_id
                 )
             _total_power_dissipation *= _record.data["hardware"].quantity
 
@@ -338,9 +336,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         _record = _node.data["hardware"]
 
         if self.tree.parent(node_id).identifier != 0:
-            _p_comp_ref_des = (
-                self.tree.parent(node_id).data["hardware"].comp_ref_des
-            )
+            _p_comp_ref_des = self.tree.parent(node_id).data["hardware"].comp_ref_des
         else:
             _p_comp_ref_des = ""
 
@@ -397,9 +393,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _par_node = self.tree.get_node(_design_electric.hardware_id)
                 _par_node.data["design_electric"] = _design_electric
             except ObjectDeletedError:
-                self._dic_trees["design_electric"].remove_node(
-                    _node.identifier
-                )
+                self._dic_trees["design_electric"].remove_node(_node.identifier)
 
     def _do_load_design_mechanic(self) -> None:
         """Load the design_mechanic into the tree.
@@ -414,9 +408,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _par_node = self.tree.get_node(_design_mechanic.hardware_id)
                 _par_node.data["design_mechanic"] = _design_mechanic
             except ObjectDeletedError:
-                self._dic_trees["design_mechanic"].remove_node(
-                    _node.identifier
-                )
+                self._dic_trees["design_mechanic"].remove_node(_node.identifier)
 
     def _do_load_milhdbk217f(self) -> None:
         """Load the MIL-HDBK-217F data into the tree.
