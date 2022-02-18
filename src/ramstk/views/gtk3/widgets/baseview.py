@@ -122,7 +122,7 @@ class RAMSTKBaseView(Gtk.HBox):
         self._lst_handler_id: List[int] = []
         self._lst_layouts: List[str] = [
             "allocation",
-            "failure_definition",
+            "definition",
             "fmea",
             "function",
             "hardware",
