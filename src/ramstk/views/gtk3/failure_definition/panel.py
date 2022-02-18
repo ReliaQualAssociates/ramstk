@@ -10,7 +10,6 @@
 from typing import Any, Dict, List
 
 # Third Party Imports
-import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -26,8 +25,8 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_failure_definitions"
-    _tag = "failure_definition"
+    _select_msg = "succeed_retrieve_all_definition"
+    _tag = "definition"
     _title = _("Failure Definition List")
 
     # Define public dictionary class attributes.
@@ -42,7 +41,7 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
 
         # Initialize private dictionary class attributes.
         self.tvwTreeView.dic_row_loader = {
-            "failure_definition": self.__do_load_failure_definition,
+            "definition": super().do_load_treerow,
         }
 
         # Initialize private list class attributes.
@@ -177,40 +176,3 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["function_id"]
         self.tvwTreeView.filt_model.refilter()
-
-    def __do_load_failure_definition(
-        self, node: treelib.Node, row: Gtk.TreeIter
-    ) -> Gtk.TreeIter:
-        """Load a failure definition into the RAMSTKTreeView().
-
-        :param node: the treelib Node() with the definition data to load.
-        :param row: the parent row of the definition to load.
-        :return: _new_row; the row that was just populated with definition
-            data.
-        :rtype: :class:`Gtk.TreeIter`
-        """
-        _new_row = None
-
-        [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
-
-        _attributes = [
-            _entity.revision_id,
-            _entity.function_id,
-            _entity.definition_id,
-            _entity.definition,
-        ]
-
-        try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
-        except (AttributeError, TypeError, ValueError):
-            _message = _(
-                "An error occurred when loading failure definition {0:s}.  "
-                "This might indicate it was missing it's data package, some "
-                "of the data in the package was missing, or some of the data "
-                "was the wrong type.  Row data was: {1}"
-            ).format(str(node.identifier), _attributes)
-            pub.sendMessage(
-                "do_log_warning_msg", logger_name="WARNING", message=_message
-            )
-
-        return _new_row

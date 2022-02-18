@@ -28,9 +28,10 @@ on:
 
 jobs:
   label-pr-closed:
+    name: Add Closed Label
     runs-on: ubuntu-latest
     steps:
-      - name: Add Closed Label
+      - name: Add label
         uses: andymckay/labeler@master
         with:
           add-labels: "status: closed"
