@@ -225,7 +225,7 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             self.confidence,
         )
 
-        self.time_variance = _sd**2.0
+        self.time_variance = _sd ** 2.0
 
     def calculate_task_cost(self):
         """Calculate the mean, standard error, and bounds on the task cost.
@@ -248,4 +248,4 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             self.confidence,
         )
 
-        self.cost_variance = _sd**2.0
+        self.cost_variance = _sd ** 2.0

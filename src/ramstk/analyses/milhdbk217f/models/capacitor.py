@@ -422,7 +422,7 @@ def calculate_capacitance_factor(
     }
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
-    _pi_cv = _f0 * capacitance**_f1
+    _pi_cv = _f0 * capacitance ** _f1
 
     return _pi_cv
 

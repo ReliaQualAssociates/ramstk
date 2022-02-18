@@ -355,7 +355,7 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
     :rtype: float
     """
     if n_circuit_planes > 2:
-        _pi_c = 0.65 * n_circuit_planes**0.63
+        _pi_c = 0.65 * n_circuit_planes ** 0.63
     else:
         _pi_c = 1.0
 
@@ -397,7 +397,7 @@ def calculate_insert_temperature(
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
-    _temperature_rise = _fo * current_operating**1.85
+    _temperature_rise = _fo * current_operating ** 1.85
 
     return _temperature_rise
 

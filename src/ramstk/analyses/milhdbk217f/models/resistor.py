@@ -728,7 +728,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     if _subcategory_id in [9, 10, 11, 12, 13, 14, 15]:
         attributes = get_voltage_factor(attributes)
         _pi_v = attributes["piV"]
-        _pi_taps: Any = (_n_elements**1.5 / 25.0) + 0.792
+        _pi_taps: Any = (_n_elements ** 1.5 / 25.0) + 0.792
         attributes["piTAPS"] = _pi_taps
 
     # Determine the consruction class factor (piC).

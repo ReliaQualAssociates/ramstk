@@ -1418,14 +1418,11 @@ def _get_section_6_3_application_factor(
         calculated.
     :rtype: dict
     """
-    attributes["application_id"] = (
-        attributes["application_id"]
-        or {
-            0: 0,
-            1: 2,
-            2: 1,
-        }[attributes["type_id"]]
-    )
+    attributes["application_id"] = attributes["application_id"] or {
+        0: 0,
+        1: 2,
+        2: 1,
+    }[attributes["type_id"]]
 
     attributes["piA"] = [
         1.5,
@@ -1449,14 +1446,11 @@ def _get_section_6_3_electrical_stress_factor(
         calculated.
     :rtype: dict
     """
-    attributes["voltage_ratio"] = (
-        attributes["voltage_ratio"]
-        or {
-            0: 0.0,
-            1: 0.5,
-            2: 0.8,
-        }[attributes["type_id"]]
-    )
+    attributes["voltage_ratio"] = attributes["voltage_ratio"] or {
+        0: 0.0,
+        1: 0.5,
+        2: 0.8,
+    }[attributes["type_id"]]
 
     attributes["piS"] = 0.045 * exp(3.1 * attributes["voltage_ratio"])
 
@@ -1477,14 +1471,11 @@ def _get_section_6_3_power_rating_factor(
         calculated.
     :rtype: dict
     """
-    attributes["power_rated"] = (
-        attributes["power_rated"]
-        or {
-            0: 0.0,
-            1: 0.5,
-            2: 100.0,
-        }[attributes["type_id"]]
-    )
+    attributes["power_rated"] = attributes["power_rated"] or {
+        0: 0.0,
+        1: 0.5,
+        2: 100.0,
+    }[attributes["type_id"]]
 
     if attributes["power_rated"] < 0.1:
         attributes["piR"] = 0.43

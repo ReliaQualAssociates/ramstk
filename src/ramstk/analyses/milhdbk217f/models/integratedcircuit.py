@@ -1197,7 +1197,7 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     _f0 = C2[_package][0]
     _f1 = C2[_package][1]
 
-    return _f0 * (n_active_pins**_f1)
+    return _f0 * (n_active_pins ** _f1)
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:

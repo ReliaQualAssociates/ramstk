@@ -307,7 +307,7 @@ def calculate_temperature_rise_input_power_weight(
     :rtype: float
     :raise: ZeroDivisionError if passed an weight=0.0.
     """
-    return 2.1 * (power_input / weight**0.6766)
+    return 2.1 * (power_input / weight ** 0.6766)
 
 
 def calculate_temperature_rise_power_loss_surface(
@@ -335,7 +335,7 @@ def calculate_temperature_rise_power_loss_weight(
     :rtype: float
     :raise: ZeroDivisionError if passed an weight=0.0.
     """
-    return 11.5 * (power_operating / weight**0.6766)
+    return 11.5 * (power_operating / weight ** 0.6766)
 
 
 def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
