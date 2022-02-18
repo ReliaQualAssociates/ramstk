@@ -6,6 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Usage Profile Views."""
 
+# Standard Library Imports
+from typing import Dict
+
 # Third Party Imports
 from pubsub import pub
 
@@ -134,20 +137,15 @@ class UsageProfileWorkView(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
 
-        _attributes = self.dic_pkeys
+        _attributes = self.__do_get_usage_profile_ids()
 
-        if self._tag == "mission":
-            _attributes.pop("environment_id")
-            pub.sendMessage(
-                "request_insert_mission_phase",
-                attributes=_attributes,
-            )
-        elif self._tag == "mission_phase":
-            pub.sendMessage(
-                "request_insert_environment",
-                attributes=_attributes,
-            )
-        elif self._tag == "environment":
+        if self._pnlPanel.level == "mission":
+            _level = "mission_phase"
+            _no_keys = ["environment_id"]
+        elif self._pnlPanel.level == "mission_phase":
+            _level = "environment"
+            _no_keys = []
+        else:
             _error = _("An environmental condition cannot have a child.")
             _parent = (
                 self.get_parent().get_parent().get_parent().get_parent().get_parent()
@@ -161,6 +159,14 @@ class UsageProfileWorkView(RAMSTKWorkView):
                 "fail_insert_usage_profile",
                 error_message=_error,
             )
+            return
+
+        for _key in _no_keys:
+            _attributes.pop(_key)
+
+        super().do_set_cursor_busy()
+
+        pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
     # pylint: disable=unused-argument
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> None:
@@ -170,9 +176,10 @@ class UsageProfileWorkView(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
 
-        _attributes = self.dic_pkeys
+        _attributes = self.__do_get_usage_profile_ids()
+
         if self._tag == "mission":
-            _attributes.pop("phase_id")
+            _attributes.pop("mission_phase_id")
             _attributes.pop("environment_id")
         elif self._tag == "mission_phase":
             _attributes.pop("environment_id")
@@ -181,6 +188,29 @@ class UsageProfileWorkView(RAMSTKWorkView):
             f"request_insert_{self._tag}",
             attributes=_attributes,
         )
+
+    def __do_get_usage_profile_ids(self) -> Dict[str, int]:
+        """Read each of the ID columns.
+
+        :return: _attributes
+        :rtype: dict
+        """
+        _attributes = {
+            "revision_id": self._revision_id,
+            "mission_id": 0,
+            "mission_phase_id": 0,
+            "environment_id": 0,
+            "parent_id": 0,
+            "record_id": 0,
+        }
+
+        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        _attributes["mission_id"] = _model.get_value(_row, 1)
+        _attributes["mission_phase_id"] = _model.get_value(_row, 2)
+        _attributes["environment_id"] = _model.get_value(_row, 3)
+
+        return _attributes
 
     def __make_ui(self) -> None:
         """Build the user interface for the usage profile list view.
