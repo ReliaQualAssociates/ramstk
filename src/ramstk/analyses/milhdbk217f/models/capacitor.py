@@ -270,7 +270,22 @@ PART_COUNT_LAMBDA_B = {
         2.8,
         28.0,
     ],
-    16: [0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2, 12.0, 4.1, 0.032, 1.9, 5.9, 85.0],
+    16: [
+        0.08,
+        0.27,
+        1.2,
+        0.71,
+        2.3,
+        0.69,
+        1.1,
+        6.2,
+        12.0,
+        4.1,
+        0.032,
+        1.9,
+        5.9,
+        85.0,
+    ],
     17: [
         0.033,
         0.13,
@@ -287,8 +302,38 @@ PART_COUNT_LAMBDA_B = {
         3.2,
         37.0,
     ],
-    18: [0.80, 0.33, 1.6, 0.87, 3.0, 1.0, 1.7, 9.9, 19.0, 8.1, 0.032, 2.5, 8.9, 100.0],
-    19: [0.4, 1.3, 6.8, 3.6, 13.0, 5.7, 10.0, 58.0, 90.0, 23.0, 20.0, 0.0, 0.0, 0.0],
+    18: [
+        0.80,
+        0.33,
+        1.6,
+        0.87,
+        3.0,
+        1.0,
+        1.7,
+        9.9,
+        19.0,
+        8.1,
+        0.032,
+        2.5,
+        8.9,
+        100.0,
+    ],
+    19: [
+        0.4,
+        1.3,
+        6.8,
+        3.6,
+        13.0,
+        5.7,
+        10.0,
+        58.0,
+        90.0,
+        23.0,
+        20.0,
+        0.0,
+        0.0,
+        0.0,
+    ],
 }
 PART_COUNT_PI_Q = [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
 PART_STRESS_PI_Q = {
@@ -314,7 +359,22 @@ PART_STRESS_PI_Q = {
 }
 PI_C = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
 PI_CF = {1: 0.1, 2: 1.0}
-PI_E = [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0]
+PI_E = [
+    1.0,
+    6.0,
+    9.0,
+    9.0,
+    19.0,
+    13.0,
+    29.0,
+    20.0,
+    43.0,
+    24.0,
+    0.5,
+    14.0,
+    32.0,
+    320.0,
+]
 REF_TEMPS = {
     65.0: 338.0,
     70.0: 343.0,
@@ -328,7 +388,9 @@ REF_TEMPS = {
 }
 
 
-def calculate_capacitance_factor(subcategory_id: int, capacitance: float) -> float:
+def calculate_capacitance_factor(
+    subcategory_id: int, capacitance: float
+) -> float:
     """Calculate the capacitance factor (piCV).
 
     :param subcategory_id: the capacitor subcategory identifier.
@@ -360,7 +422,7 @@ def calculate_capacitance_factor(subcategory_id: int, capacitance: float) -> flo
     }
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
-    _pi_cv = _f0 * capacitance ** _f1
+    _pi_cv = _f0 * capacitance**_f1
 
     return _pi_cv
 
@@ -482,7 +544,9 @@ def calculate_part_stress_lambda_b(
     # temperature closest (round up) to one of the keys in the REF_TEMPS dict.
     _ref_temp = REF_TEMPS.get(
         temperature_rated_max,
-        REF_TEMPS[min(REF_TEMPS.keys(), key=lambda k: abs(k - temperature_rated_max))],
+        REF_TEMPS[
+            min(REF_TEMPS.keys(), key=lambda k: abs(k - temperature_rated_max))
+        ],
     )
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
@@ -513,7 +577,9 @@ def calculate_series_resistance_factor(
     :raise: TypeError if passed a non-numerical input.
     :raise: ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
-    _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
+    _ckt_resistance = resistance / (
+        voltage_dc_operating + voltage_ac_operating
+    )
 
     if 0 < _ckt_resistance <= 0.1:
         _pi_sr = 0.33

@@ -7,7 +7,12 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK database models package."""
 
-from .basemodel import RAMSTKBaseRecord, RAMSTKBaseTable, RAMSTKBaseView  # isort:skip
+from .basemodel import (  # isort:skip
+    RAMSTKBaseRecord,  # isort:skip
+    RAMSTKBaseTable,  # isort:skip
+    RAMSTKBaseView,  # isort:skip
+)
+
 from .commondb.category.record import RAMSTKCategoryRecord  # isort:skip
 from .commondb.failure_mode.record import RAMSTKFailureModeRecord  # isort:skip
 from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip

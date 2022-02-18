@@ -119,8 +119,38 @@ PART_STRESS_PI_Q = {
     2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
 }
 PI_E = {
-    1: [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0, 34.0, 610.0],
-    2: [1.0, 4.0, 12.0, 5.0, 16.0, 5.0, 7.0, 6.0, 8.0, 24.0, 0.5, 13.0, 34.0, 610.0],
+    1: [
+        1.0,
+        6.0,
+        12.0,
+        5.0,
+        16.0,
+        6.0,
+        8.0,
+        7.0,
+        9.0,
+        24.0,
+        0.5,
+        13.0,
+        34.0,
+        610.0,
+    ],
+    2: [
+        1.0,
+        4.0,
+        12.0,
+        5.0,
+        16.0,
+        5.0,
+        7.0,
+        6.0,
+        8.0,
+        24.0,
+        0.5,
+        13.0,
+        34.0,
+        610.0,
+    ],
 }
 REF_TEMPS = {
     1: {1: 329.0, 2: 352.0, 3: 364.0, 4: 400.0, 5: 398.0, 6: 477.0},
@@ -170,24 +200,37 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     attributes["piC"] = float(attributes["construction_id"])
     attributes["piQ"] = get_part_stress_quality_factor(
-        attributes["subcategory_id"], attributes["quality_id"], attributes["family_id"]
+        attributes["subcategory_id"],
+        attributes["quality_id"],
+        attributes["family_id"],
     )
 
-    _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
-    if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
+    _power_input = (
+        attributes["voltage_dc_operating"] * attributes["current_operating"]
+    )
+    if (
+        attributes["subcategory_id"] == 2
+        and attributes["specification_id"] == 2
+    ):
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
             attributes["page_number"]
         )
     elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
-        attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(
+        attributes[
+            "temperature_rise"
+        ] = calculate_temperature_rise_power_loss_surface(
             attributes["power_operating"], attributes["area"]
         )
     elif attributes["power_operating"] > 0.0 and attributes["weight"] > 0.0:
-        attributes["temperature_rise"] = calculate_temperature_rise_power_loss_weight(
+        attributes[
+            "temperature_rise"
+        ] = calculate_temperature_rise_power_loss_weight(
             attributes["power_operating"], attributes["weight"]
         )
     elif _power_input > 0.0 and attributes["weight"] > 0.0:
-        attributes["temperature_rise"] = calculate_temperature_rise_input_power_weight(
+        attributes[
+            "temperature_rise"
+        ] = calculate_temperature_rise_input_power_weight(
             _power_input, attributes["weight"]
         )
     else:
@@ -264,7 +307,7 @@ def calculate_temperature_rise_input_power_weight(
     :rtype: float
     :raise: ZeroDivisionError if passed an weight=0.0.
     """
-    return 2.1 * (power_input / weight ** 0.6766)
+    return 2.1 * (power_input / weight**0.6766)
 
 
 def calculate_temperature_rise_power_loss_surface(
@@ -292,7 +335,7 @@ def calculate_temperature_rise_power_loss_weight(
     :rtype: float
     :raise: ZeroDivisionError if passed an weight=0.0.
     """
-    return 11.5 * (power_operating / weight ** 0.6766)
+    return 11.5 * (power_operating / weight**0.6766)
 
 
 def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
@@ -333,9 +376,9 @@ def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
     :raise: KeyError if passed an unknown subcategory ID or family ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    return PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["family_id"]][
-        id_keys["environment_active_id"] - 1
-    ]
+    return PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][
+        id_keys["family_id"]
+    ][id_keys["environment_active_id"] - 1]
 
 
 def get_part_stress_quality_factor(

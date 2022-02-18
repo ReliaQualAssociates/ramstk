@@ -15,7 +15,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+)
 
 
 class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -55,7 +59,11 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private dictionary class attributes.
     _dic_quality: Dict[int, List[Any]] = {
         1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["M"], [_("MIL-C-11693 Non-Established Reliability")], [_("Lower")]],
+        2: [
+            ["M"],
+            [_("MIL-C-11693 Non-Established Reliability")],
+            [_("Lower")],
+        ],
         3: [
             "S",
             "R",
@@ -400,7 +408,12 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
             [["CLR"]],
         ],
-        14: [[_("Style 16")], [_("Style 17")], [_("Style 71")], [_("All Others")]],
+        14: [
+            [_("Style 16")],
+            [_("Style 17")],
+            [_("Style 71")],
+            [_("All Others")],
+        ],
         15: [["CE"]],
         16: [
             ["CV11"],
@@ -520,7 +533,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The governing specification for the capacitor."),
+                    "tooltip": _(
+                        "The governing specification for the capacitor."
+                    ),
                 },
                 _("Specification:"),
                 "gint",
@@ -559,7 +574,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The method of construction of the capacitor."),
+                    "tooltip": _(
+                        "The method of construction of the capacitor."
+                    ),
                 },
                 _("Construction:"),
                 "gint",
@@ -572,7 +589,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The equivalent series resistance of the capacitor."),
+                    "tooltip": _(
+                        "The equivalent series resistance of the capacitor."
+                    ),
                 },
                 _("Equivalent Series Resistance (\u03A9):"),
                 "gfloat",
@@ -611,7 +630,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _quality: List[Any] = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
+            _quality: List[Any] = [
+                "S",
+                "R",
+                "P",
+                "M",
+                "L",
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _quality = self._dic_quality[self.subcategory_id]
@@ -621,7 +648,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.do_load_combo(_quality, signal="changed")
 
         try:
-            _specification: List[Any] = self._dic_specifications[self.subcategory_id]
+            _specification: List[Any] = self._dic_specifications[
+                self.subcategory_id
+            ]
         except KeyError:
             _specification = []
 
@@ -642,7 +671,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
         self.cmbConstruction.do_load_combo(_construction, signal="changed")
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -695,7 +726,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.__do_set_part_stress_sensitive(attributes)
 
     # pylint: disable=unused-argument
-    def __do_set_parts_count_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_parts_count_sensitive(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 
         :return: None
@@ -711,7 +744,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.txtCapacitance.set_sensitive(False)
             self.txtESR.set_sensitive(False)
 
-    def __do_set_part_stress_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_part_stress_sensitive(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Part Stress.
 
         :return: None

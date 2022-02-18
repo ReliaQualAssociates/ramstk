@@ -64,7 +64,9 @@ class RAMSTKModeTable(RAMSTKBaseTable):
         self.pkey = "mode_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_calculate_criticality, "request_calculate_criticality")
+        pub.subscribe(
+            self.do_calculate_criticality, "request_calculate_criticality"
+        )
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Any]

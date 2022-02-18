@@ -612,7 +612,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["validation_id"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.position["validation_id"]
+            )
             _name = _model.get_value(_row, self.tvwTreeView.position["name"])
             _title = _(f"Analyzing Validation Task {_code}: {_name}")
 
@@ -632,7 +634,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["validation_id"]
 
-            _attributes["measurement_unit"] = self._lst_measurement_units.index(
+            _attributes[
+                "measurement_unit"
+            ] = self._lst_measurement_units.index(
                 _attributes["measurement_unit"]
             )
             _attributes["task_type"] = self._lst_verification_types.index(
@@ -816,7 +820,9 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 {
                     "width": 50,
                     "editable": False,
-                    "tooltip": _("Displays the ID of the selected V&amp;V activity."),
+                    "tooltip": _(
+                        "Displays the ID of the selected V&amp;V activity."
+                    ),
                 },
                 _("Task Code:"),
                 "gchararray",
@@ -1364,7 +1370,9 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_calculate_task, "succeed_calculate_validation_task")
+        pub.subscribe(
+            self._on_calculate_task, "succeed_calculate_validation_task"
+        )
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]
@@ -1449,7 +1457,9 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
 
         return _date
 
-    def _on_calculate_task(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+    def _on_calculate_task(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Wrap _do_load_panel() on successful task calculation.
 
         :param attributes: the verification task attribute dict.
@@ -1465,7 +1475,9 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_children()[0]
+        _fixed: Gtk.Fixed = (
+            self.get_children()[0].get_children()[0].get_children()[0]
+        )
 
         _time_entry: RAMSTKEntry = _fixed.get_children()[9]
         _cost_entry: RAMSTKEntry = _fixed.get_children()[21]

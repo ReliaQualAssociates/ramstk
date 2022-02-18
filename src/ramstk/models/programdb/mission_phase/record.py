@@ -61,10 +61,16 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
 
-    description = Column("fld_description", String, default=__defaults__["description"])
+    description = Column(
+        "fld_description", String, default=__defaults__["description"]
+    )
     name = Column("fld_name", String(256), default=__defaults__["name"])
-    phase_start = Column("fld_phase_start", Float, default=__defaults__["phase_start"])
-    phase_end = Column("fld_phase_end", Float, default=__defaults__["phase_end"])
+    phase_start = Column(
+        "fld_phase_start", Float, default=__defaults__["phase_start"]
+    )
+    phase_end = Column(
+        "fld_phase_end", Float, default=__defaults__["phase_end"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
     mission: relationship = relationship(

@@ -232,7 +232,9 @@ class RAMSTKFileChooserButton(Gtk.FileChooserButton, RAMSTKWidget):
 class RAMSTKOptionButton(Gtk.RadioButton, RAMSTKWidget):
     """The RAMSTK Option Button class."""
 
-    def __init__(self, group: Gtk.RadioButton = None, label: str = _("")) -> None:
+    def __init__(
+        self, group: Gtk.RadioButton = None, label: str = _("")
+    ) -> None:
         """Initialize an instance of the RAMSTK OptionButton.
 
         :keyword group: the group the Gtk.RadioButton() belongs to, if any.
@@ -299,7 +301,9 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         _snap_to_ticks = kwargs.get("ticks", True)
 
         self.set_adjustment(
-            Gtk.Adjustment(_limits[0], _limits[1], _limits[2], _limits[3], _limits[4])
+            Gtk.Adjustment(
+                _limits[0], _limits[1], _limits[2], _limits[3], _limits[4]
+            )
         )
         self.set_numeric(_numeric)
         self.set_snap_to_ticks(_snap_to_ticks)

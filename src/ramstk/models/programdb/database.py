@@ -88,7 +88,9 @@ class RAMSTKProgramDB:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.user_configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+        self.user_configuration: RAMSTKUserConfiguration = (
+            RAMSTKUserConfiguration()
+        )
         self.program_dao: BaseDatabase = BaseDatabase()
 
         # Subscribe to PyPubSub messages.
@@ -137,12 +139,16 @@ class RAMSTKProgramDB:
 
         try:
             self.program_dao.do_connect(database)
-            pub.sendMessage("succeed_connect_program_database", dao=self.program_dao)
+            pub.sendMessage(
+                "succeed_connect_program_database", dao=self.program_dao
+            )
             pub.sendMessage(
                 "request_retrieve_revisions", attributes={"revision_id": None}
             )
         except DataAccessError as _error:
-            pub.sendMessage("fail_connect_program_database", error_message=_error.msg)
+            pub.sendMessage(
+                "fail_connect_program_database", error_message=_error.msg
+            )
 
     def do_close_program(self) -> None:
         """Close the open RAMSTK Program database.
@@ -155,7 +161,9 @@ class RAMSTKProgramDB:
             self.program_dao.do_disconnect()
             pub.sendMessage("succeed_disconnect_program_database")
         except AttributeError:
-            _error_msg = "Not currently connected to a database.  Nothing to close."
+            _error_msg = (
+                "Not currently connected to a database.  Nothing to close."
+            )
             pub.sendMessage(
                 "fail_disconnect_program_database", error_message=_error_msg
             )

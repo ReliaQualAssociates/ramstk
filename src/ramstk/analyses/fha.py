@@ -159,7 +159,9 @@ def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
     return fha
 
 
-def set_user_defined_floats(fha: Dict[str, Any], floats: List[float]) -> Dict[str, Any]:
+def set_user_defined_floats(
+    fha: Dict[str, Any], floats: List[float]
+) -> Dict[str, Any]:
     """Set the user-defined float values for the user-defined calculations.
 
     :param fha: the functional hazard assessment dict.
@@ -179,7 +181,9 @@ def set_user_defined_floats(fha: Dict[str, Any], floats: List[float]) -> Dict[st
     return fha
 
 
-def set_user_defined_ints(fha: Dict[str, Any], ints: List[int]) -> Dict[str, Any]:
+def set_user_defined_ints(
+    fha: Dict[str, Any], ints: List[int]
+) -> Dict[str, Any]:
     """Set the user-defined integer values for the user-defined calculations.
 
     :param fha: the functional hazard assessment dict.

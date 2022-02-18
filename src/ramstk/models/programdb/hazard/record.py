@@ -90,16 +90,24 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     potential_hazard = Column(
-        "fld_potential_hazard", String(256), default=__defaults__["potential_hazard"]
+        "fld_potential_hazard",
+        String(256),
+        default=__defaults__["potential_hazard"],
     )
     potential_cause = Column(
-        "fld_potential_cause", String(512), default=__defaults__["potential_cause"]
+        "fld_potential_cause",
+        String(512),
+        default=__defaults__["potential_cause"],
     )
     assembly_effect = Column(
-        "fld_assembly_effect", String(512), default=__defaults__["assembly_effect"]
+        "fld_assembly_effect",
+        String(512),
+        default=__defaults__["assembly_effect"],
     )
     assembly_severity = Column(
-        "fld_assembly_severity", String(256), default=__defaults__["assembly_severity"]
+        "fld_assembly_severity",
+        String(256),
+        default=__defaults__["assembly_severity"],
     )
     assembly_probability = Column(
         "fld_assembly_probability",
@@ -110,7 +118,9 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_assembly_hri", Integer, default=__defaults__["assembly_hri"]
     )
     assembly_mitigation = Column(
-        "fld_assembly_mitigation", String, default=__defaults__["assembly_mitigation"]
+        "fld_assembly_mitigation",
+        String,
+        default=__defaults__["assembly_mitigation"],
     )
     assembly_severity_f = Column(
         "fld_assembly_severity_f",
@@ -150,19 +160,27 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_system_effect", String(512), default=__defaults__["system_effect"]
     )
     system_severity = Column(
-        "fld_system_severity", String(256), default=__defaults__["system_severity"]
+        "fld_system_severity",
+        String(256),
+        default=__defaults__["system_severity"],
     )
     system_probability = Column(
         "fld_system_probability",
         String(256),
         default=__defaults__["system_probability"],
     )
-    system_hri = Column("fld_system_hri", Integer, default=__defaults__["system_hri"])
+    system_hri = Column(
+        "fld_system_hri", Integer, default=__defaults__["system_hri"]
+    )
     system_mitigation = Column(
-        "fld_system_mitigation", String, default=__defaults__["system_mitigation"]
+        "fld_system_mitigation",
+        String,
+        default=__defaults__["system_mitigation"],
     )
     system_severity_f = Column(
-        "fld_system_severity_f", String(256), default=__defaults__["system_severity_f"]
+        "fld_system_severity_f",
+        String(256),
+        default=__defaults__["system_severity_f"],
     )
     system_probability_f = Column(
         "fld_system_probability_f",
@@ -172,9 +190,15 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     system_hri_f = Column(
         "fld_system_hri_f", Integer, default=__defaults__["system_hri_f"]
     )
-    user_blob_1 = Column("fld_user_blob_1", String, default=__defaults__["user_blob_1"])
-    user_blob_2 = Column("fld_user_blob_2", String, default=__defaults__["user_blob_2"])
-    user_blob_3 = Column("fld_user_blob_3", String, default=__defaults__["user_blob_3"])
+    user_blob_1 = Column(
+        "fld_user_blob_1", String, default=__defaults__["user_blob_1"]
+    )
+    user_blob_2 = Column(
+        "fld_user_blob_2", String, default=__defaults__["user_blob_2"]
+    )
+    user_blob_3 = Column(
+        "fld_user_blob_3", String, default=__defaults__["user_blob_3"]
+    )
     user_float_1 = Column(
         "fld_user_float_1", Float, default=__defaults__["user_float_1"]
     )
@@ -184,9 +208,15 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     user_float_3 = Column(
         "fld_user_float_3", Float, default=__defaults__["user_float_3"]
     )
-    user_int_1 = Column("fld_user_int_1", Integer, default=__defaults__["user_int_1"])
-    user_int_2 = Column("fld_user_int_2", Integer, default=__defaults__["user_int_2"])
-    user_int_3 = Column("fld_user_int_3", Integer, default=__defaults__["user_int_3"])
+    user_int_1 = Column(
+        "fld_user_int_1", Integer, default=__defaults__["user_int_1"]
+    )
+    user_int_2 = Column(
+        "fld_user_int_2", Integer, default=__defaults__["user_int_2"]
+    )
+    user_int_3 = Column(
+        "fld_user_int_3", Integer, default=__defaults__["user_int_3"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
 

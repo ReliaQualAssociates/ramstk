@@ -144,9 +144,13 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_application_id", Integer, default=__defaults__["application_id"]
     )
     area = Column("fld_area", Float, default=__defaults__["area"])
-    capacitance = Column("fld_capacitance", Float, default=__defaults__["capacitance"])
+    capacitance = Column(
+        "fld_capacitance", Float, default=__defaults__["capacitance"]
+    )
     configuration_id = Column(
-        "fld_configuration_id", Integer, default=__defaults__["configuration_id"]
+        "fld_configuration_id",
+        Integer,
+        default=__defaults__["configuration_id"],
     )
     construction_id = Column(
         "fld_construction_id", Integer, default=__defaults__["construction_id"]
@@ -158,10 +162,14 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_contact_gauge", Integer, default=__defaults__["contact_gauge"]
     )
     contact_rating_id = Column(
-        "fld_contact_rating_id", Integer, default=__defaults__["contact_rating_id"]
+        "fld_contact_rating_id",
+        Integer,
+        default=__defaults__["contact_rating_id"],
     )
     current_operating = Column(
-        "fld_current_operating", Float, default=__defaults__["current_operating"]
+        "fld_current_operating",
+        Float,
+        default=__defaults__["current_operating"],
     )
     current_rated = Column(
         "fld_current_rated", Float, default=__defaults__["current_rated"]
@@ -179,19 +187,27 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         Integer,
         default=__defaults__["environment_dormant_id"],
     )
-    family_id = Column("fld_family_id", Integer, default=__defaults__["family_id"])
+    family_id = Column(
+        "fld_family_id", Integer, default=__defaults__["family_id"]
+    )
     feature_size = Column(
         "fld_feature_size", Float, default=__defaults__["feature_size"]
     )
     frequency_operating = Column(
-        "fld_frequency_operating", Float, default=__defaults__["frequency_operating"]
+        "fld_frequency_operating",
+        Float,
+        default=__defaults__["frequency_operating"],
     )
-    insert_id = Column("fld_insert_id", Integer, default=__defaults__["insert_id"])
+    insert_id = Column(
+        "fld_insert_id", Integer, default=__defaults__["insert_id"]
+    )
     insulation_id = Column(
         "fld_insulation_id", Integer, default=__defaults__["insulation_id"]
     )
     manufacturing_id = Column(
-        "fld_manufacturing_id", Integer, default=__defaults__["manufacturing_id"]
+        "fld_manufacturing_id",
+        Integer,
+        default=__defaults__["manufacturing_id"],
     )
     matching_id = Column(
         "fld_matching_id", Integer, default=__defaults__["matching_id"]
@@ -200,10 +216,16 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_n_active_pins", Integer, default=__defaults__["n_active_pins"]
     )
     n_circuit_planes = Column(
-        "fld_n_circuit_planes", Integer, default=__defaults__["n_circuit_planes"]
+        "fld_n_circuit_planes",
+        Integer,
+        default=__defaults__["n_circuit_planes"],
     )
-    n_cycles = Column("fld_n_cycles", Integer, default=__defaults__["n_cycles"])
-    n_elements = Column("fld_n_elements", Integer, default=__defaults__["n_elements"])
+    n_cycles = Column(
+        "fld_n_cycles", Integer, default=__defaults__["n_cycles"]
+    )
+    n_elements = Column(
+        "fld_n_elements", Integer, default=__defaults__["n_elements"]
+    )
     n_hand_soldered = Column(
         "fld_n_hand_soldered", Integer, default=__defaults__["n_hand_soldered"]
     )
@@ -213,35 +235,55 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     operating_life = Column(
         "fld_operating_life", Float, default=__defaults__["operating_life"]
     )
-    overstress = Column("fld_overstress", Integer, default=__defaults__["overstress"])
-    package_id = Column("fld_package_id", Integer, default=__defaults__["package_id"])
+    overstress = Column(
+        "fld_overstress", Integer, default=__defaults__["overstress"]
+    )
+    package_id = Column(
+        "fld_package_id", Integer, default=__defaults__["package_id"]
+    )
     power_operating = Column(
         "fld_power_operating", Float, default=__defaults__["power_operating"]
     )
-    power_rated = Column("fld_power_rated", Float, default=__defaults__["power_rated"])
-    power_ratio = Column("fld_power_ratio", Float, default=__defaults__["power_ratio"])
+    power_rated = Column(
+        "fld_power_rated", Float, default=__defaults__["power_rated"]
+    )
+    power_ratio = Column(
+        "fld_power_ratio", Float, default=__defaults__["power_ratio"]
+    )
     reason = Column("fld_reason", String, default=__defaults__["reason"])
-    resistance = Column("fld_resistance", Float, default=__defaults__["resistance"])
+    resistance = Column(
+        "fld_resistance", Float, default=__defaults__["resistance"]
+    )
     specification_id = Column(
-        "fld_specification_id", Integer, default=__defaults__["specification_id"]
+        "fld_specification_id",
+        Integer,
+        default=__defaults__["specification_id"],
     )
     technology_id = Column(
         "fld_technology_id", Integer, default=__defaults__["technology_id"]
     )
     temperature_active = Column(
-        "fld_temperature_active", Float, default=__defaults__["temperature_active"]
+        "fld_temperature_active",
+        Float,
+        default=__defaults__["temperature_active"],
     )
     temperature_case = Column(
         "fld_temperature_case", Float, default=__defaults__["temperature_case"]
     )
     temperature_dormant = Column(
-        "fld_temperature_dormant", Float, default=__defaults__["temperature_dormant"]
+        "fld_temperature_dormant",
+        Float,
+        default=__defaults__["temperature_dormant"],
     )
     temperature_hot_spot = Column(
-        "fld_temperature_hot_spot", Float, default=__defaults__["temperature_hot_spot"]
+        "fld_temperature_hot_spot",
+        Float,
+        default=__defaults__["temperature_hot_spot"],
     )
     temperature_junction = Column(
-        "fld_temperature_junction", Float, default=__defaults__["temperature_junction"]
+        "fld_temperature_junction",
+        Float,
+        default=__defaults__["temperature_junction"],
     )
     temperature_knee = Column(
         "fld_temperature_knee", Float, default=__defaults__["temperature_knee"]
@@ -262,12 +304,18 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     theta_jc = Column("fld_theta_jc", Float, default=__defaults__["theta_jc"])
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
     voltage_ac_operating = Column(
-        "fld_voltage_ac_operating", Float, default=__defaults__["voltage_ac_operating"]
+        "fld_voltage_ac_operating",
+        Float,
+        default=__defaults__["voltage_ac_operating"],
     )
     voltage_dc_operating = Column(
-        "fld_voltage_dc_operating", Float, default=__defaults__["voltage_dc_operating"]
+        "fld_voltage_dc_operating",
+        Float,
+        default=__defaults__["voltage_dc_operating"],
     )
-    voltage_esd = Column("fld_voltage_esd", Float, default=__defaults__["voltage_esd"])
+    voltage_esd = Column(
+        "fld_voltage_esd", Float, default=__defaults__["voltage_esd"]
+    )
     voltage_rated = Column(
         "fld_voltage_rated", Float, default=__defaults__["voltage_rated"]
     )
@@ -276,7 +324,9 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     weight = Column("fld_weight", Float, default=__defaults__["weight"])
     years_in_production = Column(
-        "fld_years_in_production", Integer, default=__defaults__["years_in_production"]
+        "fld_years_in_production",
+        Integer,
+        default=__defaults__["years_in_production"],
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -423,7 +473,9 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        _voltage_operating = self.voltage_ac_operating + self.voltage_dc_operating
+        _voltage_operating = (
+            self.voltage_ac_operating + self.voltage_dc_operating
+        )
 
         try:
             self.voltage_ratio = stress.calculate_stress_ratio(
@@ -483,7 +535,8 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         _reason = _reason + _rsn
 
         _ostress, _rsn = do_check_overstress(
-            derating.check_overstress(self.voltage_ratio, _voltage_limits), "voltage"
+            derating.check_overstress(self.voltage_ratio, _voltage_limits),
+            "voltage",
         )
         self.overstress = _overstress or _ostress
         self.reason = _reason + _rsn

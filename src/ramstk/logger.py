@@ -14,7 +14,9 @@ from typing import Dict
 # Third Party Imports
 from pubsub import pub
 
-LOGFORMAT = logging.Formatter("%(asctime)s - %(name)s - %(lineno)s : %(message)s")
+LOGFORMAT = logging.Formatter(
+    "%(asctime)s - %(name)s - %(lineno)s : %(message)s"
+)
 
 
 class RAMSTKLogManager:
@@ -42,9 +44,13 @@ class RAMSTKLogManager:
         self.log_file = log_file
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_log_fail_message, "fail_connect_program_database")
+        pub.subscribe(
+            self._do_log_fail_message, "fail_connect_program_database"
+        )
         pub.subscribe(self._do_log_fail_message, "fail_delete_environment")
-        pub.subscribe(self._do_log_fail_message, "fail_delete_failure_definition")
+        pub.subscribe(
+            self._do_log_fail_message, "fail_delete_failure_definition"
+        )
         pub.subscribe(self._do_log_fail_message, "fail_delete_fmea")
         pub.subscribe(self._do_log_fail_message, "fail_delete_function")
         pub.subscribe(self._do_log_fail_message, "fail_delete_hazard")
@@ -56,7 +62,9 @@ class RAMSTKLogManager:
         pub.subscribe(self._do_log_fail_message, "fail_insert_cause")
         pub.subscribe(self._do_log_fail_message, "fail_insert_control")
         pub.subscribe(self._do_log_fail_message, "fail_insert_environment")
-        pub.subscribe(self._do_log_fail_message, "fail_insert_failure_definition")
+        pub.subscribe(
+            self._do_log_fail_message, "fail_insert_failure_definition"
+        )
         pub.subscribe(self._do_log_fail_message, "fail_insert_mechanism")
         pub.subscribe(self._do_log_fail_message, "fail_insert_mission")
         pub.subscribe(self._do_log_fail_message, "fail_insert_mission_phase")

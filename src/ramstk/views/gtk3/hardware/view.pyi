@@ -8,10 +8,14 @@ from ramstk.configuration import (
 from ramstk.configuration import (
     RAMSTK_DORMANT_ENVIRONMENTS as RAMSTK_DORMANT_ENVIRONMENTS,
 )
-from ramstk.configuration import RAMSTK_HR_DISTRIBUTIONS as RAMSTK_HR_DISTRIBUTIONS
+from ramstk.configuration import (
+    RAMSTK_HR_DISTRIBUTIONS as RAMSTK_HR_DISTRIBUTIONS,
+)
 from ramstk.configuration import RAMSTK_HR_MODELS as RAMSTK_HR_MODELS
 from ramstk.configuration import RAMSTK_HR_TYPES as RAMSTK_HR_TYPES
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
@@ -87,7 +91,9 @@ from ramstk.views.gtk3.milhdbk217f import (
 from ramstk.views.gtk3.reliability import (
     AvailabilityResultsPanel as AvailabilityResultsPanel,
 )
-from ramstk.views.gtk3.reliability import ReliabilityInputPanel as ReliabilityInputPanel
+from ramstk.views.gtk3.reliability import (
+    ReliabilityInputPanel as ReliabilityInputPanel,
+)
 from ramstk.views.gtk3.reliability import (
     ReliabilityResultsPanel as ReliabilityResultsPanel,
 )
@@ -111,8 +117,12 @@ class HardwareModuleView(RAMSTKModuleView):
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None: ...
-    def _do_request_calculate_all_hardware(self, __button: Gtk.ToolButton) -> None: ...
+    def _do_request_calculate_hardware(
+        self, __button: Gtk.ToolButton
+    ) -> None: ...
+    def _do_request_calculate_all_hardware(
+        self, __button: Gtk.ToolButton
+    ) -> None: ...
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> Any: ...
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None: ...
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any: ...
@@ -135,7 +145,9 @@ class HardwareGeneralDataView(RAMSTKWorkView):
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
-    def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None: ...
+    def _do_request_make_comp_ref_des(
+        self, __button: Gtk.ToolButton
+    ) -> None: ...
     _record_id: Any
     _parent_id: Any
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...

@@ -131,7 +131,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 0.0,
                 {
-                    "tooltip": _("The base hazard rate for the semiconductor."),
+                    "tooltip": _(
+                        "The base hazard rate for the semiconductor."
+                    ),
                 },
                 "\u03BB<sub>b</sub>:",
             ],
@@ -155,7 +157,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The environment factor for the semiconductor."),
+                    "tooltip": _(
+                        "The environment factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>E</sub>:",
             ],
@@ -167,7 +171,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The temperature factor for the semiconductor."),
+                    "tooltip": _(
+                        "The temperature factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>T</sub>:",
             ],
@@ -179,7 +185,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The application factor for the semiconductor."),
+                    "tooltip": _(
+                        "The application factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>A</sub>:",
             ],
@@ -205,7 +213,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The power rating factor for the semiconductor."),
+                    "tooltip": _(
+                        "The power rating factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>R</sub>:",
             ],
@@ -217,7 +227,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The matching network factor for the semiconductor."),
+                    "tooltip": _(
+                        "The matching network factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>M</sub>:",
             ],
@@ -229,7 +241,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The forward current factor for the semiconductor."),
+                    "tooltip": _(
+                        "The forward current factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>I</sub>:",
             ],
@@ -241,7 +255,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The power degradation factor for the semiconductor."),
+                    "tooltip": _(
+                        "The power degradation factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>P</sub>:",
             ],
@@ -253,7 +269,9 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The electrical stress factor for the semiconductor."),
+                    "tooltip": _(
+                        "The electrical stress factor for the semiconductor."
+                    ),
                 },
                 "\u03C0<sub>S</sub>:",
             ],

@@ -65,9 +65,15 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
             _("RAMSTK Log Directory")
         )
 
-        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
+        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(
+            simple=True
+        )
+        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(
+            simple=True
+        )
+        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(
+            simple=True
+        )
         self.cmbReportSize: RAMSTKComboBox = RAMSTKComboBox(simple=True)
 
         self.txtFRMultiplier: RAMSTKEntry = RAMSTKEntry()
@@ -79,7 +85,9 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
-        self._configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+        self._configuration: RAMSTKUserConfiguration = (
+            RAMSTKUserConfiguration()
+        )
 
         # Initialize public dict instance attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -295,7 +303,9 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
         self._configuration = configuration
 
         self.cmbModuleBookTabPosition.do_update(
-            _positions[self._configuration.RAMSTK_TABPOS["modulebook"].lower()],
+            _positions[
+                self._configuration.RAMSTK_TABPOS["modulebook"].lower()
+            ],
             signal="changed",
         )
         self.cmbWorkBookTabPosition.do_update(
@@ -307,7 +317,8 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbReportSize.do_update(
-            _papersize[self._configuration.RAMSTK_REPORT_SIZE.lower()], signal="changed"
+            _papersize[self._configuration.RAMSTK_REPORT_SIZE.lower()],
+            signal="changed",
         )
 
         self.txtFRMultiplier.do_update(
@@ -342,7 +353,9 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
         )
         self.cmbReportSize.do_load_combo([["A4"], ["Letter"]])
 
-    def _do_select_path(self, button: Gtk.FileChooserButton, index: int) -> None:
+    def _do_select_path(
+        self, button: Gtk.FileChooserButton, index: int
+    ) -> None:
         """Select the path from the file chooser.
 
         :param button: the Gtk.FileChooserButton() that called this method.
@@ -423,7 +436,9 @@ class LookFeelPreferencesPanel(RAMSTKFixedPanel):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
-        self._configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+        self._configuration: RAMSTKUserConfiguration = (
+            RAMSTKUserConfiguration()
+        )
 
         # Initialize public dict instance attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -641,7 +656,9 @@ class LookFeelPreferencesPanel(RAMSTKFixedPanel):
             Gdk.color_parse(self._configuration.RAMSTK_COLORS["validationfg"])
         )
 
-    def _do_set_color(self, colorbutton: Gtk.ColorButton, ramstk_color: int) -> None:
+    def _do_set_color(
+        self, colorbutton: Gtk.ColorButton, ramstk_color: int
+    ) -> None:
         """Set the selected color.
 
         :param colorbutton: the Gtk.ColorButton() that called this method.
@@ -675,18 +692,30 @@ class LookFeelPreferencesPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         # ----- BUTTONS
-        self.btnRevisionBGColor.connect("color-set", self._do_set_color, "revisionbg")
-        self.btnRevisionFGColor.connect("color-set", self._do_set_color, "revisionfg")
-        self.btnFunctionBGColor.connect("color-set", self._do_set_color, "functionbg")
-        self.btnFunctionFGColor.connect("color-set", self._do_set_color, "functionfg")
+        self.btnRevisionBGColor.connect(
+            "color-set", self._do_set_color, "revisionbg"
+        )
+        self.btnRevisionFGColor.connect(
+            "color-set", self._do_set_color, "revisionfg"
+        )
+        self.btnFunctionBGColor.connect(
+            "color-set", self._do_set_color, "functionbg"
+        )
+        self.btnFunctionFGColor.connect(
+            "color-set", self._do_set_color, "functionfg"
+        )
         self.btnRequirementsBGColor.connect(
             "color-set", self._do_set_color, "requirementbg"
         )
         self.btnRequirementsFGColor.connect(
             "color-set", self._do_set_color, "requirementfg"
         )
-        self.btnHardwareBGColor.connect("color-set", self._do_set_color, "hardwarebg")
-        self.btnHardwareFGColor.connect("color-set", self._do_set_color, "hardwarefg")
+        self.btnHardwareBGColor.connect(
+            "color-set", self._do_set_color, "hardwarebg"
+        )
+        self.btnHardwareFGColor.connect(
+            "color-set", self._do_set_color, "hardwarefg"
+        )
         self.btnValidationBGColor.connect(
             "color-set", self._do_set_color, "validationbg"
         )
@@ -744,7 +773,9 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
-        self._configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+        self._configuration: RAMSTKUserConfiguration = (
+            RAMSTKUserConfiguration()
+        )
 
         # Initialize public dict instance attributes.
 
@@ -761,9 +792,9 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         self.cmbFormatFiles.do_set_properties(
             tooltip=_("Select the Tree View layout to edit.")
         )
-        self.cmbFormatFiles.dic_handler_id["changed"] = self.cmbFormatFiles.connect(
-            "changed", self._on_combo_changed
-        )
+        self.cmbFormatFiles.dic_handler_id[
+            "changed"
+        ] = self.cmbFormatFiles.connect("changed", self._on_combo_changed)
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_load_panel, "request_load_preferences")

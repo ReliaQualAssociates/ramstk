@@ -15,7 +15,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+)
 
 
 class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -151,7 +155,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The insulation class of the inductive device."),
+                    "tooltip": _(
+                        "The insulation class of the inductive device."
+                    ),
                 },
                 _("Insulation Class:"),
                 "gint",
@@ -267,7 +273,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.cmbSpecification.do_update(
                 attributes["specification_id"], signal="changed"
             )
-            self.cmbInsulation.do_update(attributes["insulation_id"], signal="changed")
+            self.cmbInsulation.do_update(
+                attributes["insulation_id"], signal="changed"
+            )
             self.cmbConstruction.do_update(
                 attributes["construction_id"], signal="changed"
             )
@@ -278,7 +286,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 str(self.fmt.format(attributes["weight"])), signal="changed"
             )  # noqa
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -370,7 +380,10 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("RF Transformer")],
                 ]
             else:
-                _data = [[_("RF Coils, Fixed or Molded")], [_("RF Coils, Variable")]]
+                _data = [
+                    [_("RF Coils, Fixed or Molded")],
+                    [_("RF Coils, Variable")],
+                ]
         else:
             _data = [
                 [_("Pulse Transformer")],
@@ -399,7 +412,11 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"], [_("Lower")]]
+            _data = [
+                [_("Established Reliability")],
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _data = self._dic_quality[self.subcategory_id]

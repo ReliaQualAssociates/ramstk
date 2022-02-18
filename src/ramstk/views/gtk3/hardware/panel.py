@@ -775,7 +775,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
             super().do_refresh_tree(node_id, package)
 
-    def __do_load_hardware(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_hardware(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a hardware item into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -833,7 +835,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
             self._lst_cost_types[_entity.cost_type_id],
             _entity.attachments,
             self.lst_categories[_entity.category_id],
-            self.dic_subcategories[_entity.category_id][_entity.subcategory_id],
+            self.dic_subcategories[_entity.category_id][
+                _entity.subcategory_id
+            ],
             _icon,
         ]
 
@@ -894,7 +898,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         super().__init__()
 
         # Initialize widgets.
-        self.chkRepairable: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Repairable"))
+        self.chkRepairable: RAMSTKCheckButton = RAMSTKCheckButton(
+            label=_("Repairable")
+        )
         self.cmbCategory: RAMSTKComboBox = RAMSTKComboBox()
         self.cmbSubcategory: RAMSTKComboBox = RAMSTKComboBox()
         self.txtAltPartNum: RAMSTKEntry = RAMSTKEntry()
@@ -970,7 +976,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 "",
                 {
                     "width": 600,
-                    "tooltip": _("The description of the selected hardware item."),
+                    "tooltip": _(
+                        "The description of the selected hardware item."
+                    ),
                 },
                 _("Description:"),
                 "gchararray",
@@ -983,7 +991,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 "",
                 {
-                    "tooltip": _("The part number of the selected hardware item."),
+                    "tooltip": _(
+                        "The part number of the selected hardware item."
+                    ),
                 },
                 _("Part Number:"),
                 "gchararray",
@@ -1155,7 +1165,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         if category_id > 0:
             _subcategories = SortedDict(self.dicSubcategories[category_id])
             _subcategory = [[_subcategories[_key]] for _key in _subcategories]
-            self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
+            self.cmbSubcategory.do_load_combo(
+                entries=_subcategory, signal="changed"
+            )
 
     def _do_set_comp_ref_des(self, comp_ref_des: str) -> None:
         """Set the value in the composite reference designator RAMSTKEntry().
@@ -1175,7 +1187,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
         """
-        pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
+        pub.sendMessage(
+            "changed_subcategory", subcategory_id=combo.get_active()
+        )
         for _table in [
             "design_electric",
             "hardware",
@@ -1426,7 +1440,9 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
         super().__init__()
 
         # Initialize widgets.
-        self.chkTagged: RAMSTKCheckButton = RAMSTKCheckButton(label=_("Tagged Part"))
+        self.chkTagged: RAMSTKCheckButton = RAMSTKCheckButton(
+            label=_("Tagged Part")
+        )
         self.txtAttachments: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
         self.txtRemarks: RAMSTKTextView = RAMSTKTextView(Gtk.TextBuffer())
 

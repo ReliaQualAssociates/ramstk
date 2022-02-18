@@ -239,7 +239,8 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
             tooltip=_("Save connection information to configuration file.")
         )
         self.cmbDialect.do_set_properties(
-            tooltip=_("Select SQL server dialect for this connection."), width=300
+            tooltip=_("Select SQL server dialect for this connection."),
+            width=300,
         )
         self.txtHost.do_set_properties(
             tooltip=_("Enter the database server hostname."), width=300
@@ -252,10 +253,12 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
             tooltip=_("Enter the name of the database to connect."), width=300
         )
         self.txtUser.do_set_properties(
-            tooltip=_("Enter the user name for the database server."), width=300
+            tooltip=_("Enter the user name for the database server."),
+            width=300,
         )
         self.txtPassword.do_set_properties(
-            tooltip=_("Enter the user password for the database server."), width=300
+            tooltip=_("Enter the user password for the database server."),
+            width=300,
         )
         self.txtPassword.set_visibility(False)
         self.txtPassword.set_property(

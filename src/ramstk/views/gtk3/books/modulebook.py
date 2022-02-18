@@ -128,7 +128,9 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        for _key in list(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[1:]:
+        for _key in list(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER)[
+            1:
+        ]:
             _mkey = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[_key]
             try:
                 _module = self._dic_module_views[_mkey]
@@ -172,7 +174,9 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # // should be raised for the user to understand why the Revision
         # // module was shown instead.
         try:
-            _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
+            _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[
+                page_num
+            ]
         except KeyError:
             _module = "revision"
 

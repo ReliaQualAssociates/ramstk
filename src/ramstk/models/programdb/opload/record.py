@@ -28,7 +28,12 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __tablename__ = "ramstk_op_load"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["fld_revision_id", "fld_hardware_id", "fld_mode_id", "fld_mechanism_id"],
+            [
+                "fld_revision_id",
+                "fld_hardware_id",
+                "fld_mode_id",
+                "fld_mechanism_id",
+            ],
             [
                 "ramstk_mechanism.fld_revision_id",
                 "ramstk_mechanism.fld_hardware_id",
@@ -39,14 +44,26 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         {"extend_existing": True},
     )
 
-    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
+    revision_id = Column(
+        "fld_revision_id", Integer, primary_key=True, nullable=False
+    )
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
-    mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
+    mechanism_id = Column(
+        "fld_mechanism_id", Integer, primary_key=True, nullable=False
+    )
     opload_id = Column(
-        "fld_opload_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_opload_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     description = Column(

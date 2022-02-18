@@ -98,7 +98,9 @@ class AllocationWorkView(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_hardware")
 
-    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+    def _do_set_record_id(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Set the allocation's record ID.
 
         :param attributes: the attribute dict for the selected allocation

@@ -151,7 +151,9 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The mating/unmating factor for the connection."),
+                    "tooltip": _(
+                        "The mating/unmating factor for the connection."
+                    ),
                 },
                 "\u03C0<sub>C</sub>:",
             ],

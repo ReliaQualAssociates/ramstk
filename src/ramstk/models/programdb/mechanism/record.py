@@ -47,9 +47,15 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         {"extend_existing": True},
     )
 
-    revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
+    revision_id = Column(
+        "fld_revision_id", Integer, primary_key=True, nullable=False
+    )
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column(
@@ -72,14 +78,18 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_rpn_detection", Integer, default=__defaults__["rpn_detection"]
     )
     rpn_detection_new = Column(
-        "fld_rpn_detection_new", Integer, default=__defaults__["rpn_detection_new"]
+        "fld_rpn_detection_new",
+        Integer,
+        default=__defaults__["rpn_detection_new"],
     )
     rpn_new = Column("fld_rpn_new", Integer, default=__defaults__["rpn_new"])
     rpn_occurrence = Column(
         "fld_rpn_occurrence", Integer, default=__defaults__["rpn_occurrence"]
     )
     rpn_occurrence_new = Column(
-        "fld_rpn_occurrence_new", Integer, default=__defaults__["rpn_occurrence_new"]
+        "fld_rpn_occurrence_new",
+        Integer,
+        default=__defaults__["rpn_occurrence_new"],
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.

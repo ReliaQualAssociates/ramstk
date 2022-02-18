@@ -62,7 +62,9 @@ def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
             )
         )
         cursor.execute(
-            sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database["database"]))
+            sql.SQL("CREATE DATABASE {}").format(
+                sql.Identifier(database["database"])
+            )
         )
         cursor.close()
         conn.close()
@@ -93,7 +95,9 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 
     return (
         engine,
-        scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine)),
+        scoped_session(
+            sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        ),
     )
 
 
@@ -182,14 +186,18 @@ class BaseDatabase:
             self.engine, self.session = do_open_session(self.database)
         except exc.OperationalError as _error:
             _error_msg = f"{str(_error.orig).capitalize()}: {self.cxnargs}"
-            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
+            pub.sendMessage(
+                "do_log_error_msg", logger_name="ERROR", message=_error_msg
+            )
             raise DataAccessError(_error_msg) from _error
         except TypeError as _error:
             _error_msg = (
                 f"Unknown dialect or non-string value in database "
                 f"connection: {self.cxnargs['dialect']}, {self.cxnargs['dbname']}"
             )
-            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
+            pub.sendMessage(
+                "do_log_error_msg", logger_name="ERROR", message=_error_msg
+            )
             raise DataAccessError(_error_msg) from _error
 
     def do_delete(self, item: object) -> None:
@@ -259,9 +267,7 @@ class BaseDatabase:
             self.session.commit()
         except AttributeError as _error:
             # This exception is raised when there is no database connection.
-            _error_message = (
-                "dao.do_insert: No database connected when attempting to add a record."
-            )
+            _error_message = "dao.do_insert: No database connected when attempting to add a record."
             pub.sendMessage(
                 "fail_insert_record",
                 error_message=_error_message,
@@ -270,7 +276,11 @@ class BaseDatabase:
         except exc.InternalError as _error:
             print("postgresql error: {}".format(_error.orig.pgcode))
             self.session.rollback()
-        except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
+        except (
+            exc.DataError,
+            exc.IntegrityError,
+            exc.StatementError,
+        ) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
             # unlikely to be user errors as the programmer should ensure

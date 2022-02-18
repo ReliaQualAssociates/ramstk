@@ -379,8 +379,13 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["units"])
-        for __, _unit in self.dic_units.items():  # pylint: disable=unused-variable
+        _model = self.tvwTreeView.get_cell_model(
+            self.tvwTreeView.position["units"]
+        )
+        for (
+            __,
+            _unit,
+        ) in self.dic_units.items():  # pylint: disable=unused-variable
             _model.append([_unit[1]])
 
     # noinspection PyUnusedLocal
@@ -444,7 +449,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _pixbuf = GdkPixbuf.Pixbuf()
-        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["environment"], 22, 22)
+        _icon = _pixbuf.new_from_file_at_size(
+            self.dic_icons["environment"], 22, 22
+        )
 
         _attributes = [
             _entity.revision_id,
@@ -480,7 +487,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_mission(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_mission(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a mission into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -494,7 +503,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()
 
         _pixbuf = GdkPixbuf.Pixbuf()
-        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission"], 22, 22)
+        _icon = _pixbuf.new_from_file_at_size(
+            self.dic_icons["mission"], 22, 22
+        )
 
         _attributes = [
             _entity.revision_id,
@@ -530,7 +541,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_phase(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_phase(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a mission phase into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -543,7 +556,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         _pixbuf = GdkPixbuf.Pixbuf()
-        _icon = _pixbuf.new_from_file_at_size(self.dic_icons["mission_phase"], 22, 22)
+        _icon = _pixbuf.new_from_file_at_size(
+            self.dic_icons["mission_phase"], 22, 22
+        )
 
         _attributes = [
             _entity.revision_id,

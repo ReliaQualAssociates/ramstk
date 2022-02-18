@@ -284,9 +284,54 @@ PI_E = {
             970.0,
         ],
     },
-    3: [1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0, 36.0, 650.0],
-    4: [1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0, 27.0, 500.0],
-    5: [1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0, 420.0],
+    3: [
+        1.0,
+        3.0,
+        14.0,
+        6.0,
+        18.0,
+        8.0,
+        12.0,
+        11.0,
+        13.0,
+        25.0,
+        0.5,
+        14.0,
+        36.0,
+        650.0,
+    ],
+    4: [
+        1.0,
+        2.0,
+        7.0,
+        5.0,
+        13.0,
+        5.0,
+        8.0,
+        16.0,
+        28.0,
+        19.0,
+        0.5,
+        10.0,
+        27.0,
+        500.0,
+    ],
+    5: [
+        1.0,
+        2.0,
+        7.0,
+        4.0,
+        11.0,
+        4.0,
+        6.0,
+        6.0,
+        8.0,
+        16.0,
+        0.5,
+        9.0,
+        24.0,
+        420.0,
+    ],
 }
 PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
 REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
@@ -310,14 +355,16 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
     :rtype: float
     """
     if n_circuit_planes > 2:
-        _pi_c = 0.65 * n_circuit_planes ** 0.63
+        _pi_c = 0.65 * n_circuit_planes**0.63
     else:
         _pi_c = 1.0
 
     return _pi_c
 
 
-def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
+def calculate_insert_temperature(
+    contact_gauge: int, current_operating: float
+) -> float:
     """Calculate the insert temperature.
 
     Operating current can be passed as float or integer:
@@ -350,7 +397,7 @@ def calculate_insert_temperature(contact_gauge: int, current_operating: float) -
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
-    _temperature_rise = _fo * current_operating ** 1.85
+    _temperature_rise = _fo * current_operating**1.85
 
     return _temperature_rise
 
@@ -386,8 +433,12 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     attributes["temperature_rise"] = calculate_insert_temperature(
         attributes["contact_gauge"], attributes["current_operating"]
     )
-    attributes["piC"] = calculate_complexity_factor(attributes["n_circuit_planes"])
-    attributes["piP"] = calculate_active_pins_factor(attributes["n_active_pins"])
+    attributes["piC"] = calculate_complexity_factor(
+        attributes["n_circuit_planes"]
+    )
+    attributes["piP"] = calculate_active_pins_factor(
+        attributes["n_active_pins"]
+    )
     attributes["piK"] = get_mate_unmate_factor(attributes["n_cycles"])
 
     if attributes["subcategory_id"] == 1:
@@ -399,14 +450,21 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     else:
         _factor_key = 5
     _contact_temp = (
-        attributes["temperature_active"] + attributes["temperature_rise"] + 273.0
+        attributes["temperature_active"]
+        + attributes["temperature_rise"]
+        + 273.0
     )
 
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
-        attributes["subcategory_id"], attributes["type_id"], _contact_temp, _factor_key
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        _contact_temp,
+        _factor_key,
     )
 
-    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"] * attributes["piE"]
+    )
     if attributes["subcategory_id"] == 3:
         attributes["hazard_rate_active"] = (
             attributes["hazard_rate_active"] * attributes["piP"]
@@ -426,14 +484,19 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         )
     else:
         attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piK"] * attributes["piP"]
+            attributes["hazard_rate_active"]
+            * attributes["piK"]
+            * attributes["piP"]
         )
 
     return attributes
 
 
 def calculate_part_stress_lambda_b(
-    subcategory_id: int, type_id: int, contact_temperature: float, factor_key: int
+    subcategory_id: int,
+    type_id: int,
+    contact_temperature: float,
+    factor_key: int,
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
@@ -474,7 +537,8 @@ def calculate_part_stress_lambda_b(
         _lambda_b = 0.00042
     else:
         _lambda_b = _f0 * exp(
-            (_f1 / contact_temperature) + (contact_temperature / _ref_temp) ** _f2
+            (_f1 / contact_temperature)
+            + (contact_temperature / _ref_temp) ** _f2
         )
 
     return _lambda_b
@@ -598,6 +662,8 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
             _environment_active_id - 1
         ]
     else:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][
+            _environment_active_id - 1
+        ]
 
     return _base_hr

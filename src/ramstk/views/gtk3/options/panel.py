@@ -15,7 +15,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKCheckButton, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKCheckButton,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+)
 
 
 class OptionsPanel(RAMSTKFixedPanel):
@@ -321,4 +325,6 @@ class OptionsPanel(RAMSTKFixedPanel):
 
         # Subscribe to PyPubSub messages.
 
-        pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
+        pub.sendMessage(
+            "request_get_option_attributes2", attributes={"site_id": 1}
+        )

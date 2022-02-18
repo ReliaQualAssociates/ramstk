@@ -34,7 +34,9 @@ class RAMSTKModel(RAMSTK_BASE, RAMSTKBaseRecord):
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    model_type = Column("fld_model_type", Integer, default=__defaults__["model_type"])
+    model_type = Column(
+        "fld_model_type", Integer, default=__defaults__["model_type"]
+    )
 
     def get_attributes(self) -> Dict[str, object]:
         """Retrieve current values of the RAMSTKModel data model attributes.

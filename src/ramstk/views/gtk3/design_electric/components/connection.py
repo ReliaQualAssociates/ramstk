@@ -15,7 +15,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+)
 
 
 class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -187,7 +191,10 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             5: _lst_insert_B,
             6: _lst_insert_B,
         },
-        3: {1: _lst_insert_B + _lst_insert_D, 2: _lst_insert_B + _lst_insert_D},
+        3: {
+            1: _lst_insert_B + _lst_insert_D,
+            2: _lst_insert_B + _lst_insert_D,
+        },
         4: {
             1: _lst_insert_C,
             2: _lst_insert_C,
@@ -250,7 +257,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 "wvw_editing_reliability",
                 0,
                 {
-                    "tooltip": _("The quality level of the connector/connection."),
+                    "tooltip": _(
+                        "The quality level of the connector/connection."
+                    ),
                 },
                 _("Quality Level:"),
                 "gint",
@@ -276,7 +285,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The governing specification for the connection."),
+                    "tooltip": _(
+                        "The governing specification for the connection."
+                    ),
                 },
                 _("Specification:"),
                 "gint",
@@ -302,7 +313,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 22,
                 {
-                    "tooltip": _("The gauge of the contacts in the connector."),
+                    "tooltip": _(
+                        "The gauge of the contacts in the connector."
+                    ),
                 },
                 _("Contact Gauge:"),
                 "gint",
@@ -315,7 +328,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The number of active pins in the connector."),
+                    "tooltip": _(
+                        "The number of active pins in the connector."
+                    ),
                 },
                 _("Active Pins:"),
                 "gint",
@@ -357,7 +372,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The number of wave soldered PTH connections."),
+                    "tooltip": _(
+                        "The number of wave soldered PTH connections."
+                    ),
                 },
                 _("Number of Wave Soldered PTH:"),
                 "gint",
@@ -370,7 +387,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The number of hand soldered PTH connections."),
+                    "tooltip": _(
+                        "The number of hand soldered PTH connections."
+                    ),
                 },
                 _("Number of Hand Soldered PTH:"),
                 "gint",
@@ -477,9 +496,13 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             _specifications = self._dic_specification[_type_id]
         except KeyError:
             _specifications = []
-        self.cmbSpecification.do_load_combo(entries=_specifications, signal="changed")
+        self.cmbSpecification.do_load_combo(
+            entries=_specifications, signal="changed"
+        )
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.

@@ -48,7 +48,9 @@ class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
 
-    definition = Column("fld_definition", String, default=__defaults__["definition"])
+    definition = Column(
+        "fld_definition", String, default=__defaults__["definition"]
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
 

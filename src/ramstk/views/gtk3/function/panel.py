@@ -432,7 +432,9 @@ class FunctionTreePanel(RAMSTKTreePanel):
         _model, _row = self.tvwTreeView.selection.get_selected()
 
         if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["function_code"])
+            _code = _model.get_value(
+                _row, self.tvwTreeView.position["function_code"]
+            )
             _name = _model.get_value(_row, self.tvwTreeView.position["name"])
             _title = _(f"Analyzing Function {_code}: {_name}")
 

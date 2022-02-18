@@ -251,7 +251,9 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         self.add(_scrollwindow)
 
-    def do_place_labels(self, x_pos: int, labels: List[RAMSTKLabel]) -> Gtk.Fixed:
+    def do_place_labels(
+        self, x_pos: int, labels: List[RAMSTKLabel]
+    ) -> Gtk.Fixed:
         """Place the labels on the Gtk.Fixed.
 
         :param x_pos: the x-coordinate position to place the RAMSTLabel() objects.
@@ -421,7 +423,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
+        self,
+        buffer: Gtk.TextBuffer,
+        key: str,
+        message: str,
+        textview: RAMSTKTextView,
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKTextView() widgets.
 
@@ -672,7 +678,9 @@ class RAMSTKPlotPanel(RAMSTKPanel):
         :rtype: None
         """
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+        )
         _scrollwindow.add(self.pltPlot.canvas)
 
         self.add(_scrollwindow)
@@ -805,7 +813,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_load_treerow(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def do_load_treerow(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a row into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the data to load.
@@ -847,7 +857,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         """
         self.tvwTreeView.widgets = {
-            _key: _value[1] for _key, _value in self.dic_attribute_widget_map.items()
+            _key: _value[1]
+            for _key, _value in self.dic_attribute_widget_map.items()
         }
         self.tvwTreeView.editable = {
             _key: _value[6]["editable"]
@@ -858,11 +869,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
             for _key, _value in self.dic_attribute_widget_map.items()
         }
         self.tvwTreeView.datatypes = {
-            _key: _value[8] for _key, _value in self.dic_attribute_widget_map.items()
+            _key: _value[8]
+            for _key, _value in self.dic_attribute_widget_map.items()
         }
 
         _scrollwindow: Gtk.ScrolledWindow = Gtk.ScrolledWindow()
-        _scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        _scrollwindow.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+        )
         _scrollwindow.add(self.tvwTreeView)
 
         self.add(_scrollwindow)
@@ -894,7 +908,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.do_make_columns()
 
         if self._filtered_tree:
-            self.tvwTreeView.filt_model = self.tvwTreeView.unfilt_model.filter_new()
+            self.tvwTreeView.filt_model = (
+                self.tvwTreeView.unfilt_model.filter_new()
+            )
             self.tvwTreeView.filt_model.set_visible_func(self.do_filter_tree)
             self.tvwTreeView.set_model(self.tvwTreeView.filt_model)
 
@@ -962,9 +978,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         :return: None
         """
-        self.tvwTreeView.dic_handler_id["changed"] = self.tvwTreeView.selection.connect(
-            "changed", self._on_row_change
-        )
+        self.tvwTreeView.dic_handler_id[
+            "changed"
+        ] = self.tvwTreeView.selection.connect("changed", self._on_row_change)
 
         for _key, _value in self.dic_attribute_widget_map.items():
             try:
@@ -1013,7 +1029,9 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _columns = self.tvwTreeView.get_columns()
         for i, _key in enumerate(self.tvwTreeView.headings):
             _label = RAMSTKLabel(
-                "<span weight='bold'>" + self.tvwTreeView.headings[_key] + "</span>"
+                "<span weight='bold'>"
+                + self.tvwTreeView.headings[_key]
+                + "</span>"
             )
             _label.do_set_properties(
                 height=-1, justify=Gtk.Justification.CENTER, wrap=True

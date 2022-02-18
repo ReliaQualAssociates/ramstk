@@ -52,7 +52,9 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         primary_key=True,
         nullable=False,
     )
-    mission_id = Column("fld_mission_id", Integer, primary_key=True, nullable=False)
+    mission_id = Column(
+        "fld_mission_id", Integer, primary_key=True, nullable=False
+    )
     mission_phase_id = Column(
         "fld_mission_phase_id", Integer, primary_key=True, nullable=False
     )
@@ -70,7 +72,9 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     maximum = Column("fld_maximum", Float, default=__defaults__["maximum"])
     mean = Column("fld_mean", Float, default=__defaults__["mean"])
     variance = Column("fld_variance", Float, default=__defaults__["variance"])
-    ramp_rate = Column("fld_ramp_rate", Float, default=__defaults__["ramp_rate"])
+    ramp_rate = Column(
+        "fld_ramp_rate", Float, default=__defaults__["ramp_rate"]
+    )
     low_dwell_time = Column(
         "fld_low_dwell_time", Float, default=__defaults__["low_dwell_time"]
     )

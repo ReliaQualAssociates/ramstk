@@ -125,7 +125,9 @@ class SimilarItemWorkView(RAMSTKWorkView):
             "selected_hardware",
         )
 
-    def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+    def _do_set_record_id(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Set the Similar Items's record ID.
 
         :param attributes: the attribute dict for the selected Similar Item record.

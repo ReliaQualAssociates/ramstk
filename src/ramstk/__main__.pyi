@@ -2,8 +2,12 @@
 from typing import Tuple
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration as RAMSTKSiteConfiguration,
+)
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.db import BaseDatabase as BaseDatabase
 from ramstk.db.common import do_load_variables as do_load_variables
 from ramstk.exim import Export as Export
@@ -13,10 +17,16 @@ from ramstk.models import RAMSTKActionTable as RAMSTKActionTable
 from ramstk.models import RAMSTKAllocationTable as RAMSTKAllocationTable
 from ramstk.models import RAMSTKCauseTable as RAMSTKCauseTable
 from ramstk.models import RAMSTKControlTable as RAMSTKControlTable
-from ramstk.models import RAMSTKDesignElectricTable as RAMSTKDesignElectricTable
-from ramstk.models import RAMSTKDesignMechanicTable as RAMSTKDesignMechanicTable
+from ramstk.models import (
+    RAMSTKDesignElectricTable as RAMSTKDesignElectricTable,
+)
+from ramstk.models import (
+    RAMSTKDesignMechanicTable as RAMSTKDesignMechanicTable,
+)
 from ramstk.models import RAMSTKEnvironmentTable as RAMSTKEnvironmentTable
-from ramstk.models import RAMSTKFailureDefinitionTable as RAMSTKFailureDefinitionTable
+from ramstk.models import (
+    RAMSTKFailureDefinitionTable as RAMSTKFailureDefinitionTable,
+)
 from ramstk.models import RAMSTKFMEAView as RAMSTKFMEAView
 from ramstk.models import RAMSTKFunctionTable as RAMSTKFunctionTable
 from ramstk.models import RAMSTKHardwareBoMView as RAMSTKHardwareBoMView
@@ -47,14 +57,18 @@ from ramstk.utilities import file_exists as file_exists
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import RAMSTKDesktop as RAMSTKDesktop
 from ramstk.views.gtk3 import _ as _
-from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect as RAMSTKDatabaseSelect
+from ramstk.views.gtk3.widgets import (
+    RAMSTKDatabaseSelect as RAMSTKDatabaseSelect,
+)
 
 def do_connect_to_site_db(conn_info) -> BaseDatabase: ...
 def do_first_run(configuration: RAMSTKSiteConfiguration) -> None: ...
 def do_initialize_databases(
     configuration: RAMSTKUserConfiguration, site_db: BaseDatabase
 ) -> RAMSTKProgramDB: ...
-def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager: ...
+def do_initialize_loggers(
+    log_file: str, log_level: str
+) -> RAMSTKLogManager: ...
 def do_read_site_configuration() -> RAMSTKSiteConfiguration: ...
 def do_read_user_configuration() -> Tuple[
     RAMSTKUserConfiguration, RAMSTKLogManager

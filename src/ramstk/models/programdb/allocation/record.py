@@ -63,21 +63,33 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     availability_alloc = Column(
-        "fld_availability_alloc", Float, default=__defaults__["availability_alloc"]
+        "fld_availability_alloc",
+        Float,
+        default=__defaults__["availability_alloc"],
     )
-    duty_cycle = Column("fld_duty_cycle", Float, default=__defaults__["duty_cycle"])
-    env_factor = Column("fld_env_factor", Integer, default=__defaults__["env_factor"])
+    duty_cycle = Column(
+        "fld_duty_cycle", Float, default=__defaults__["duty_cycle"]
+    )
+    env_factor = Column(
+        "fld_env_factor", Integer, default=__defaults__["env_factor"]
+    )
     goal_measure_id = Column(
         "fld_goal_measure_id", Integer, default=__defaults__["goal_measure_id"]
     )
     hazard_rate_alloc = Column(
-        "fld_hazard_rate_alloc", Float, default=__defaults__["hazard_rate_alloc"]
+        "fld_hazard_rate_alloc",
+        Float,
+        default=__defaults__["hazard_rate_alloc"],
     )
     hazard_rate_goal = Column(
         "fld_hazard_rate_goal", Float, default=__defaults__["hazard_rate_goal"]
     )
-    included = Column("fld_included", Integer, default=__defaults__["included"])
-    int_factor = Column("fld_int_factor", Integer, default=__defaults__["int_factor"])
+    included = Column(
+        "fld_included", Integer, default=__defaults__["included"]
+    )
+    int_factor = Column(
+        "fld_int_factor", Integer, default=__defaults__["int_factor"]
+    )
     allocation_method_id = Column(
         "fld_allocation_method_id",
         Integer,
@@ -86,22 +98,30 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     mission_time = Column(
         "fld_mission_time", Float, default=__defaults__["mission_time"]
     )
-    mtbf_alloc = Column("fld_mtbf_alloc", Float, default=__defaults__["mtbf_alloc"])
-    mtbf_goal = Column("fld_mtbf_goal", Float, default=__defaults__["mtbf_goal"])
+    mtbf_alloc = Column(
+        "fld_mtbf_alloc", Float, default=__defaults__["mtbf_alloc"]
+    )
+    mtbf_goal = Column(
+        "fld_mtbf_goal", Float, default=__defaults__["mtbf_goal"]
+    )
     n_sub_systems = Column(
         "fld_n_sub_systems", Integer, default=__defaults__["n_sub_systems"]
     )
     n_sub_elements = Column(
         "fld_n_sub_elements", Integer, default=__defaults__["n_sub_elements"]
     )
-    parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
+    parent_id = Column(
+        "fld_parent_id", Integer, default=__defaults__["parent_id"]
+    )
     percent_weight_factor = Column(
         "fld_percent_weight_factor",
         Float,
         default=__defaults__["percent_weight_factor"],
     )
     reliability_alloc = Column(
-        "fld_reliability_alloc", Float, default=__defaults__["reliability_alloc"]
+        "fld_reliability_alloc",
+        Float,
+        default=__defaults__["reliability_alloc"],
     )
     reliability_goal = Column(
         "fld_reliability_goal", Float, default=__defaults__["reliability_goal"]
@@ -109,7 +129,9 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     op_time_factor = Column(
         "fld_op_time_factor", Integer, default=__defaults__["op_time_factor"]
     )
-    soa_factor = Column("fld_soa_factor", Integer, default=__defaults__["soa_factor"])
+    soa_factor = Column(
+        "fld_soa_factor", Integer, default=__defaults__["soa_factor"]
+    )
     weight_factor = Column(
         "fld_weight_factor", Integer, default=__defaults__["weight_factor"]
     )

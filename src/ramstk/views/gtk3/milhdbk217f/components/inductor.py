@@ -93,7 +93,9 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 0.0,
                 {
-                    "tooltip": _("The base hazard rate for the inductive device."),
+                    "tooltip": _(
+                        "The base hazard rate for the inductive device."
+                    ),
                 },
                 "\u03BB<sub>b</sub>:",
             ],
@@ -105,7 +107,9 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The quality factor for the inductive device."),
+                    "tooltip": _(
+                        "The quality factor for the inductive device."
+                    ),
                 },
                 "\u03C0<sub>Q</sub>:",
             ],
@@ -117,7 +121,9 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The environment factor for the inductive device."),
+                    "tooltip": _(
+                        "The environment factor for the inductive device."
+                    ),
                 },
                 "\u03C0<sub>E</sub>:",
             ],
@@ -129,7 +135,9 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The construction factor for the inductive device."),
+                    "tooltip": _(
+                        "The construction factor for the inductive device."
+                    ),
                 },
                 "\u03C0<sub>C</sub>:",
             ],

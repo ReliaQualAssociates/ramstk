@@ -127,7 +127,9 @@ class FailureDefinitionTreePanel(RAMSTKTreePanel):
         super().do_set_callbacks()
 
         self.tvwTreeView.set_tooltip_text(
-            _("Displays the list of failure definitions for the selected revision.")
+            _(
+                "Displays the list of failure definitions for the selected revision."
+            )
         )
 
         # Subscribe to PyPubSub messages.

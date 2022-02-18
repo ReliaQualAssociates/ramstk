@@ -260,7 +260,22 @@ PART_COUNT_LAMBDA_B_DICT = {
         ],
     },
     8: {
-        1: [0.17, 0.51, 1.5, 1.0, 3.4, 1.8, 2.3, 5.4, 9.2, 7.2, 0.083, 2.8, 11.0, 63.0],
+        1: [
+            0.17,
+            0.51,
+            1.5,
+            1.0,
+            3.4,
+            1.8,
+            2.3,
+            5.4,
+            9.2,
+            7.2,
+            0.083,
+            2.8,
+            11.0,
+            63.0,
+        ],
         2: [
             0.42,
             1.3,
@@ -396,7 +411,22 @@ PART_COUNT_LAMBDA_B_LIST = {
         0.88,
         6.4,
     ],
-    6: [0.094, 0.23, 0.63, 0.46, 1.4, 0.60, 0.75, 1.3, 2.3, 2.4, 0.047, 1.1, 3.6, 28.0],
+    6: [
+        0.094,
+        0.23,
+        0.63,
+        0.46,
+        1.4,
+        0.60,
+        0.75,
+        1.3,
+        2.3,
+        2.4,
+        0.047,
+        1.1,
+        3.6,
+        28.0,
+    ],
     7: [
         0.074,
         0.15,
@@ -505,7 +535,10 @@ PART_STRESS_PI_Q_HF_DIODE: Dict[int, List[float]] = {
 }
 
 # Constants used to calculate the temperature factor (piT)
-PI_T_DICT: Dict[int, List[float]] = {1: [2903.0, 0.1, 2.0], 2: [5794.0, 0.38, 7.55]}
+PI_T_DICT: Dict[int, List[float]] = {
+    1: [2903.0, 0.1, 2.0],
+    2: [5794.0, 0.38, 7.55],
+}
 PI_T_LIST: Dict[int, List[float]] = {
     1: [3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 1925.0, 1925.0],
     2: [5260.0, 2100.0, 2100.0, 2100.0, 2100.0, 2100.0],
@@ -612,15 +645,150 @@ THETA_JC = [
 PI_C = [1.0, 2.0]
 
 PI_E = {
-    1: [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0],
-    2: [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0, 250.0],
-    3: [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0],
-    4: [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0],
-    5: [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0],
-    6: [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0, 250.0],
-    7: [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0, 250.0],
-    8: [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 7.5, 24.0, 250.0],
-    9: [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0, 32.0, 320.0],
+    1: [
+        1.0,
+        6.0,
+        9.0,
+        9.0,
+        19.0,
+        13.0,
+        29.0,
+        20.0,
+        43.0,
+        24.0,
+        0.5,
+        14.0,
+        32.0,
+        320.0,
+    ],
+    2: [
+        1.0,
+        2.0,
+        5.0,
+        4.0,
+        11.0,
+        4.0,
+        5.0,
+        7.0,
+        12.0,
+        16.0,
+        0.5,
+        9.0,
+        24.0,
+        250.0,
+    ],
+    3: [
+        1.0,
+        6.0,
+        9.0,
+        9.0,
+        19.0,
+        13.0,
+        29.0,
+        20.0,
+        43.0,
+        24.0,
+        0.5,
+        14.0,
+        32.0,
+        320.0,
+    ],
+    4: [
+        1.0,
+        6.0,
+        9.0,
+        9.0,
+        19.0,
+        13.0,
+        29.0,
+        20.0,
+        43.0,
+        24.0,
+        0.5,
+        14.0,
+        32.0,
+        320.0,
+    ],
+    5: [
+        1.0,
+        6.0,
+        9.0,
+        9.0,
+        19.0,
+        13.0,
+        29.0,
+        20.0,
+        43.0,
+        24.0,
+        0.5,
+        14.0,
+        32.0,
+        320.0,
+    ],
+    6: [
+        1.0,
+        2.0,
+        5.0,
+        4.0,
+        11.0,
+        4.0,
+        5.0,
+        7.0,
+        12.0,
+        16.0,
+        0.5,
+        9.0,
+        24.0,
+        250.0,
+    ],
+    7: [
+        1.0,
+        2.0,
+        5.0,
+        4.0,
+        11.0,
+        4.0,
+        5.0,
+        7.0,
+        12.0,
+        16.0,
+        0.5,
+        9.0,
+        24.0,
+        250.0,
+    ],
+    8: [
+        1.0,
+        2.0,
+        5.0,
+        4.0,
+        11.0,
+        4.0,
+        5.0,
+        7.0,
+        12.0,
+        16.0,
+        0.5,
+        7.5,
+        24.0,
+        250.0,
+    ],
+    9: [
+        1.0,
+        6.0,
+        9.0,
+        9.0,
+        19.0,
+        13.0,
+        29.0,
+        20.0,
+        43.0,
+        24.0,
+        0.5,
+        14.0,
+        32.0,
+        320.0,
+    ],
     10: [
         1.0,
         6.0,
@@ -637,9 +805,54 @@ PI_E = {
         32.0,
         320.0,
     ],
-    11: [1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0, 450.0],
-    12: [1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0, 450.0],
-    13: [1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0, 450.0],
+    11: [
+        1.0,
+        2.0,
+        8.0,
+        5.0,
+        12.0,
+        4.0,
+        6.0,
+        6.0,
+        8.0,
+        17.0,
+        0.5,
+        9.0,
+        24.0,
+        450.0,
+    ],
+    12: [
+        1.0,
+        2.0,
+        8.0,
+        5.0,
+        12.0,
+        4.0,
+        6.0,
+        6.0,
+        8.0,
+        17.0,
+        0.5,
+        9.0,
+        24.0,
+        450.0,
+    ],
+    13: [
+        1.0,
+        2.0,
+        8.0,
+        5.0,
+        12.0,
+        4.0,
+        6.0,
+        6.0,
+        8.0,
+        17.0,
+        0.5,
+        9.0,
+        24.0,
+        450.0,
+    ],
 }
 
 # Constants used to calculate the matching factor (piM).
@@ -672,7 +885,9 @@ def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_electrical_stress_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_electrical_stress_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Calculate the electrical stress factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -696,7 +911,9 @@ def calculate_electrical_stress_factor(attributes: Dict[str, Any]) -> Dict[str, 
     return attributes
 
 
-def calculate_junction_temperature(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_junction_temperature(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Calculate the junction temperature of the semiconductor device.
 
     .. note:: This function will also estimate the case temperature if it is
@@ -825,7 +1042,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -836,7 +1055,12 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]
     :raise: IndexError if passed an unknown type ID.
     :raise: KeyError if passed an unkown subcategory ID.
     """
-    _dic_lambdab_scalar: Dict[int, float] = {3: 0.00074, 5: 0.0083, 6: 0.18, 10: 0.0022}
+    _dic_lambdab_scalar: Dict[int, float] = {
+        3: 0.00074,
+        5: 0.0083,
+        6: 0.18,
+        10: 0.0022,
+    }
     _dic_lambdab_list: Dict[int, List[float]] = {
         1: [0.0038, 0.0010, 0.069, 0.003, 0.005, 0.0013, 0.0034, 0.002],
         2: [0.22, 0.18, 0.0023, 0.0081, 0.027, 0.0025, 0.0025],
@@ -860,7 +1084,9 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]
     }
 
     if attributes["subcategory_id"] in [3, 5, 6, 10]:
-        attributes["lambda_b"] = _dic_lambdab_scalar[attributes["subcategory_id"]]
+        attributes["lambda_b"] = _dic_lambdab_scalar[
+            attributes["subcategory_id"]
+        ]
     elif attributes["subcategory_id"] == 7:
         attributes["lambda_b"] = 0.032 * exp(
             0.354 * attributes["frequency_operating"]
@@ -879,18 +1105,22 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]
             )
     elif attributes["subcategory_id"] == 12:
         if attributes["application_id"] in [1, 3]:
-            attributes["lambda_b"] = 0.00043 * attributes["n_elements"] + 0.000043
+            attributes["lambda_b"] = (
+                0.00043 * attributes["n_elements"] + 0.000043
+            )
         else:
             attributes["lambda_b"] = 0.00043 * attributes["n_elements"]
     else:
-        attributes["lambda_b"] = _dic_lambdab_list[attributes["subcategory_id"]][
-            attributes["type_id"] - 1
-        ]
+        attributes["lambda_b"] = _dic_lambdab_list[
+            attributes["subcategory_id"]
+        ][attributes["type_id"] - 1]
 
     return attributes
 
 
-def calculate_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_power_rating_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Calculate the power rating factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -927,7 +1157,9 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: KeyError if passed an unknown subcategory ID.
     """
     if attributes["subcategory_id"] in [1, 2]:
-        _factors = PI_T_LIST[attributes["subcategory_id"]][attributes["type_id"] - 1]
+        _factors = PI_T_LIST[attributes["subcategory_id"]][
+            attributes["type_id"] - 1
+        ]
     elif attributes["subcategory_id"] == 7:
         _factors = PI_T_DICT[attributes["type_id"]]
     else:
@@ -940,7 +1172,10 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         if attributes["voltage_ratio"] <= 0.4:
             attributes["piT"] = _f1 * exp(
                 -_f0
-                * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
+                * (
+                    1.0 / (attributes["temperature_junction"] + 273.0)
+                    - 1.0 / 298.0
+                )
             )
         else:
             attributes["piT"] = (
@@ -948,13 +1183,19 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
                 * (attributes["voltage_ratio"] - 0.35)
                 * exp(
                     -_f0
-                    * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
+                    * (
+                        1.0 / (attributes["temperature_junction"] + 273.0)
+                        - 1.0 / 298.0
+                    )
                 )
             )
     else:
         attributes["piT"] = exp(
             -_factors
-            * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
+            * (
+                1.0 / (attributes["temperature_junction"] + 273.0)
+                - 1.0 / 298.0
+            )
         )
 
     return attributes
@@ -1020,18 +1261,20 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
     if attributes["subcategory_id"] in [1, 2, 3, 8, 11, 13]:
-        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_DICT[attributes["subcategory_id"]][
-            attributes["type_id"]
-        ][attributes["environment_active_id"] - 1]
+        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_DICT[
+            attributes["subcategory_id"]
+        ][attributes["type_id"]][attributes["environment_active_id"] - 1]
     else:
-        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_LIST[attributes["subcategory_id"]][
-            attributes["environment_active_id"] - 1
-        ]
+        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_LIST[
+            attributes["subcategory_id"]
+        ][attributes["environment_active_id"] - 1]
 
     return attributes
 
 
-def get_part_count_quality_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_count_quality_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Retrieve the parts count quality factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -1059,7 +1302,9 @@ def get_part_count_quality_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_part_stress_quality_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_stress_quality_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Select the part stress quality factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -1108,7 +1353,9 @@ def _get_section_6_1_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_2_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_2_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for HF diodes.
 
     This function is for MIL-HDBK-217F, Section 6.2 devices.  The
@@ -1134,7 +1381,9 @@ def _get_section_6_2_application_factor(attributes: Dict[str, Any]) -> Dict[str,
     return attributes
 
 
-def _get_section_6_2_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_2_power_rating_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piR and set default values for HF diodes.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The
@@ -1155,7 +1404,9 @@ def _get_section_6_2_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_3_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_3_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for LF, LP BJT.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The
@@ -1167,11 +1418,14 @@ def _get_section_6_3_application_factor(attributes: Dict[str, Any]) -> Dict[str,
         calculated.
     :rtype: dict
     """
-    attributes["application_id"] = attributes["application_id"] or {
-        0: 0,
-        1: 2,
-        2: 1,
-    }[attributes["type_id"]]
+    attributes["application_id"] = (
+        attributes["application_id"]
+        or {
+            0: 0,
+            1: 2,
+            2: 1,
+        }[attributes["type_id"]]
+    )
 
     attributes["piA"] = [
         1.5,
@@ -1195,18 +1449,23 @@ def _get_section_6_3_electrical_stress_factor(
         calculated.
     :rtype: dict
     """
-    attributes["voltage_ratio"] = attributes["voltage_ratio"] or {
-        0: 0.0,
-        1: 0.5,
-        2: 0.8,
-    }[attributes["type_id"]]
+    attributes["voltage_ratio"] = (
+        attributes["voltage_ratio"]
+        or {
+            0: 0.0,
+            1: 0.5,
+            2: 0.8,
+        }[attributes["type_id"]]
+    )
 
     attributes["piS"] = 0.045 * exp(3.1 * attributes["voltage_ratio"])
 
     return attributes
 
 
-def _get_section_6_3_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_3_power_rating_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piR and set default values for LF, LP BJT.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The rated power
@@ -1218,11 +1477,14 @@ def _get_section_6_3_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
         calculated.
     :rtype: dict
     """
-    attributes["power_rated"] = attributes["power_rated"] or {
-        0: 0.0,
-        1: 0.5,
-        2: 100.0,
-    }[attributes["type_id"]]
+    attributes["power_rated"] = (
+        attributes["power_rated"]
+        or {
+            0: 0.0,
+            1: 0.5,
+            2: 100.0,
+        }[attributes["type_id"]]
+    )
 
     if attributes["power_rated"] < 0.1:
         attributes["piR"] = 0.43
@@ -1232,7 +1494,9 @@ def _get_section_6_3_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_4_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_4_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for LF Si FET.
 
     This function is for MIL-HDBK-217F, Section 6.4 devices.  The
@@ -1279,7 +1543,9 @@ def _get_section_6_6_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_6_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_6_power_rating_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piR and set default values for HF, LN BJT.
 
     This function is for MIL-HDBK-217F, Section 6.6 devices.  The rated power
@@ -1301,7 +1567,9 @@ def _get_section_6_6_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_7_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_7_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for HF and HP BJT devices.
 
     This function is for MIL-HDBK-217F, Section 6.7 devices.  The
@@ -1324,7 +1592,9 @@ def _get_section_6_7_application_factor(attributes: Dict[str, Any]) -> Dict[str,
     return attributes
 
 
-def _get_section_6_8_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_8_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for GaAs FET.
 
     This function is for MIL-HDBK-217F, Section 6.8 devices.  The
@@ -1371,7 +1641,9 @@ def _get_section_6_10_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_13_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_13_application_factor(
+    attributes: Dict[str, Any]
+) -> Dict[str, Any]:
     """Get piA and set default values for laser diodes.
 
     This function is for MIL-HDBK-217F, Section 6.13 devices.  The

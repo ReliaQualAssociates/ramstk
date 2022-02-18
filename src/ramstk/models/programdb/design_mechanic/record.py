@@ -93,18 +93,28 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     altitude_operating = Column(
-        "fld_altitude_operating", Float, default=__defaults__["altitude_operating"]
+        "fld_altitude_operating",
+        Float,
+        default=__defaults__["altitude_operating"],
     )
     application_id = Column(
         "fld_application_id", Integer, default=__defaults__["application_id"]
     )
-    balance_id = Column("fld_balance_id", Integer, default=__defaults__["balance_id"])
-    clearance = Column("fld_clearance", Float, default=__defaults__["clearance"])
-    casing_id = Column("fld_casing_id", Integer, default=__defaults__["casing_id"])
+    balance_id = Column(
+        "fld_balance_id", Integer, default=__defaults__["balance_id"]
+    )
+    clearance = Column(
+        "fld_clearance", Float, default=__defaults__["clearance"]
+    )
+    casing_id = Column(
+        "fld_casing_id", Integer, default=__defaults__["casing_id"]
+    )
     contact_pressure = Column(
         "fld_contact_pressure", Float, default=__defaults__["contact_pressure"]
     )
-    deflection = Column("fld_deflection", Float, default=__defaults__["deflection"])
+    deflection = Column(
+        "fld_deflection", Float, default=__defaults__["deflection"]
+    )
     diameter_coil = Column(
         "fld_diameter_coil", Float, default=__defaults__["diameter_coil"]
     )
@@ -117,27 +127,41 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     diameter_wire = Column(
         "fld_diameter_wire", Float, default=__defaults__["diameter_wire"]
     )
-    filter_size = Column("fld_filter_size", Float, default=__defaults__["filter_size"])
-    flow_design = Column("fld_flow_design", Float, default=__defaults__["flow_design"])
+    filter_size = Column(
+        "fld_filter_size", Float, default=__defaults__["filter_size"]
+    )
+    flow_design = Column(
+        "fld_flow_design", Float, default=__defaults__["flow_design"]
+    )
     flow_operating = Column(
         "fld_flow_operating", Float, default=__defaults__["flow_operating"]
     )
     frequency_operating = Column(
-        "fld_frequency_operating", Float, default=__defaults__["frequency_operating"]
+        "fld_frequency_operating",
+        Float,
+        default=__defaults__["frequency_operating"],
     )
     friction = Column("fld_friction", Float, default=__defaults__["friction"])
-    impact_id = Column("fld_impact_id", Integer, default=__defaults__["impact_id"])
+    impact_id = Column(
+        "fld_impact_id", Integer, default=__defaults__["impact_id"]
+    )
     leakage_allowable = Column(
-        "fld_leakage_allowable", Float, default=__defaults__["leakage_allowable"]
+        "fld_leakage_allowable",
+        Float,
+        default=__defaults__["leakage_allowable"],
     )
     length = Column("fld_length", Float, default=__defaults__["length"])
     length_compressed = Column(
-        "fld_length_compressed", Float, default=__defaults__["length_compressed"]
+        "fld_length_compressed",
+        Float,
+        default=__defaults__["length_compressed"],
     )
     length_relaxed = Column(
         "fld_length_relaxed", Float, default=__defaults__["length_relaxed"]
     )
-    load_design = Column("fld_load_design", Float, default=__defaults__["load_design"])
+    load_design = Column(
+        "fld_load_design", Float, default=__defaults__["load_design"]
+    )
     load_id = Column("fld_load_id", Integer, default=__defaults__["load_id"])
     load_operating = Column(
         "fld_load_operating", Float, default=__defaults__["load_operating"]
@@ -146,7 +170,9 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_lubrication_id", Integer, default=__defaults__["lubrication_id"]
     )
     manufacturing_id = Column(
-        "fld_manufacturing_id", Integer, default=__defaults__["manufacturing_id"]
+        "fld_manufacturing_id",
+        Integer,
+        default=__defaults__["manufacturing_id"],
     )
     material_id = Column(
         "fld_material_id", Integer, default=__defaults__["material_id"]
@@ -155,11 +181,17 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_meyer_hardness", Float, default=__defaults__["meyer_hardness"]
     )
     misalignment_angle = Column(
-        "fld_misalignment_angle", Float, default=__defaults__["misalignment_angle"]
+        "fld_misalignment_angle",
+        Float,
+        default=__defaults__["misalignment_angle"],
     )
     n_ten = Column("fld_n_ten", Integer, default=__defaults__["n_ten"])
-    n_cycles = Column("fld_n_cycles", Integer, default=__defaults__["n_cycles"])
-    n_elements = Column("fld_n_elements", Integer, default=__defaults__["n_elements"])
+    n_cycles = Column(
+        "fld_n_cycles", Integer, default=__defaults__["n_cycles"]
+    )
+    n_elements = Column(
+        "fld_n_elements", Integer, default=__defaults__["n_elements"]
+    )
     offset = Column("fld_offset", Float, default=__defaults__["offset"])
     particle_size = Column(
         "fld_particle_size", Float, default=__defaults__["particle_size"]
@@ -171,19 +203,27 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_pressure_delta", Float, default=__defaults__["pressure_delta"]
     )
     pressure_downstream = Column(
-        "fld_pressure_downstream", Float, default=__defaults__["pressure_downstream"]
+        "fld_pressure_downstream",
+        Float,
+        default=__defaults__["pressure_downstream"],
     )
     pressure_rated = Column(
         "fld_pressure_rated", Float, default=__defaults__["pressure_rated"]
     )
     pressure_upstream = Column(
-        "fld_pressure_upstream", Float, default=__defaults__["pressure_upstream"]
+        "fld_pressure_upstream",
+        Float,
+        default=__defaults__["pressure_upstream"],
     )
-    rpm_design = Column("fld_rpm_design", Float, default=__defaults__["rpm_design"])
+    rpm_design = Column(
+        "fld_rpm_design", Float, default=__defaults__["rpm_design"]
+    )
     rpm_operating = Column(
         "fld_rpm_operating", Float, default=__defaults__["rpm_operating"]
     )
-    service_id = Column("fld_service_id", Integer, default=__defaults__["service_id"])
+    service_id = Column(
+        "fld_service_id", Integer, default=__defaults__["service_id"]
+    )
     spring_index = Column(
         "fld_spring_index", Float, default=__defaults__["spring_index"]
     )
@@ -193,14 +233,20 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     technology_id = Column(
         "fld_technology_id", Integer, default=__defaults__["technology_id"]
     )
-    thickness = Column("fld_thickness", Float, default=__defaults__["thickness"])
-    torque_id = Column("fld_torque_id", Integer, default=__defaults__["torque_id"])
+    thickness = Column(
+        "fld_thickness", Float, default=__defaults__["thickness"]
+    )
+    torque_id = Column(
+        "fld_torque_id", Integer, default=__defaults__["torque_id"]
+    )
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
     viscosity_design = Column(
         "fld_viscosity_design", Float, default=__defaults__["viscosity_design"]
     )
     viscosity_dynamic = Column(
-        "fld_viscosity_dynamic", Float, default=__defaults__["viscosity_dynamic"]
+        "fld_viscosity_dynamic",
+        Float,
+        default=__defaults__["viscosity_dynamic"],
     )
     water_per_cent = Column(
         "fld_water_per_cent", Float, default=__defaults__["water_per_cent"]

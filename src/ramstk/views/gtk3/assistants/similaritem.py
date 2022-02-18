@@ -27,7 +27,9 @@ from ramstk.views.gtk3.widgets import (
 class EditFunction(RAMSTKDialog):
     """Assistant for editing similar item functions."""
 
-    def __init__(self, treeview: RAMSTKTreeView, **kwargs: Dict[str, Any]) -> None:
+    def __init__(
+        self, treeview: RAMSTKTreeView, **kwargs: Dict[str, Any]
+    ) -> None:
         """Initialize instance of the Similar Item Function Editor Assistant.
 
         :param treeview: the Similar Item Work View RAMSTKTreeView().

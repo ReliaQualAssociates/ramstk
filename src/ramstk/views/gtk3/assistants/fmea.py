@@ -17,7 +17,10 @@ class AddControlAction(RAMSTKDialog):
     def __init__(self, parent=None):
         """Initialize on instance of the Add Control or Action Assistant."""
         super().__init__(
-            _("RAMSTK FMEA/FMECA Design Control and " "Action Addition Assistant"),
+            _(
+                "RAMSTK FMEA/FMECA Design Control and "
+                "Action Addition Assistant"
+            ),
             dlgparent=parent,
         )
 
@@ -66,7 +69,10 @@ class AddControlAction(RAMSTKDialog):
         _y_pos: int = _label.get_preferred_size()[0].height + 50
 
         self.rdoControl.set_tooltip_text(
-            _("Select to add a design control " "to the selected failure cause.")
+            _(
+                "Select to add a design control "
+                "to the selected failure cause."
+            )
         )
         self.rdoAction.set_tooltip_text(
             _("Select to add an action to the selected failure cause.")

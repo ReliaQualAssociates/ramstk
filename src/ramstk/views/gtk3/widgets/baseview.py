@@ -84,7 +84,9 @@ class RAMSTKBaseView(Gtk.HBox):
     }
 
     # Define public class scalar attributes.
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = (
+        RAMSTKUserConfiguration()
+    )
 
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
@@ -99,7 +101,9 @@ class RAMSTKBaseView(Gtk.HBox):
         self.RAMSTK_USER_CONFIGURATION = configuration
         self.RAMSTK_LOGGER = logger
         self.RAMSTK_LOGGER.do_create_logger(
-            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL, to_tty=False
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False,
         )
 
         # Initialize private dictionary attributes.
@@ -140,7 +144,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize private scalar attributes.
         self._img_tab: Gtk.Image = Gtk.Image()
-        self._mission_time: float = float(self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME)
+        self._mission_time: float = float(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_MTIME
+        )
         self._notebook: Gtk.Notebook = Gtk.Notebook()
         self._pnlPanel: RAMSTKPanel = RAMSTKPanel()
         self._revision_id: int = 0
@@ -158,7 +164,9 @@ class RAMSTKBaseView(Gtk.HBox):
 
         # Initialize public scalar attributes.
         self.fmt: str = (
-            "{0:0." + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES) + "G}"
+            "{0:0."
+            + str(self.RAMSTK_USER_CONFIGURATION.RAMSTK_DEC_PLACES)
+            + "G}"
         )
         self.hbx_tab_label: Gtk.HBox = Gtk.HBox()
 
@@ -173,12 +181,22 @@ class RAMSTKBaseView(Gtk.HBox):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_set_cursor_active, "request_set_cursor_active")
         pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
+        pub.subscribe(
+            self.do_set_cursor_active, f"succeed_calculate_{self._tag}"
+        )
         pub.subscribe(self.do_set_cursor_active, "succeed_update_all")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}")
+        pub.subscribe(
+            self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}"
+        )
+        pub.subscribe(
+            self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}"
+        )
+        pub.subscribe(
+            self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}"
+        )
+        pub.subscribe(
+            self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}"
+        )
 
         pub.subscribe(self.on_select_revision, "selected_revision")
 
@@ -194,8 +212,12 @@ class RAMSTKBaseView(Gtk.HBox):
         )
 
         try:
-            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}bg"]
-            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}fg"]
+            _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                f"{self._tag}bg"
+            ]
+            _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[
+                f"{self._tag}fg"
+            ]
         except KeyError:
             _bg_color = "#FFFFFF"
             _fg_color = "#000000"
@@ -379,7 +401,13 @@ class RAMSTKBaseView(Gtk.HBox):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
+        _parent = (
+            self.get_parent()
+            .get_parent()
+            .get_parent()
+            .get_parent()
+            .get_parent()
+        )
         _prompt = _(
             f"You are about to delete {self._tag.title()} "
             f"{self.dic_pkeys['record_id']} and all data associated with it.  Is this "
@@ -585,11 +613,15 @@ class RAMSTKBaseView(Gtk.HBox):
         :rtype: None
         """
         _scrolledwindow = Gtk.ScrolledWindow()
-        _scrolledwindow.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        _scrolledwindow.set_policy(
+            Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC
+        )
         _scrolledwindow.add_with_viewport(do_make_buttonbox(self, **kwargs))
         self.pack_start(_scrolledwindow, False, False, 0)
 
-    def on_button_press(self, treeview: RAMSTKTreeView, event: Gdk.EventButton) -> None:
+    def on_button_press(
+        self, treeview: RAMSTKTreeView, event: Gdk.EventButton
+    ) -> None:
         """Handle mouse clicks on the View's RTKTreeView().
 
         :param treeview: the RAMSTKTreeView() that called this method.  If is

@@ -80,7 +80,9 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_mission")
         pub.subscribe(super().do_set_tree, "succeed_delete_mission_phase")
 
-    def _do_load_environments(self, mission_phase_id: int, parent_id: str) -> None:
+    def _do_load_environments(
+        self, mission_phase_id: int, parent_id: str
+    ) -> None:
         """Load the environments into the tree for the passed phase ID.
 
         :param mission_phase_id: the mission phase ID to load the environments for.

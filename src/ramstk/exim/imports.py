@@ -430,11 +430,15 @@ class Import:
 
         _allocation.revision_id = _get_input_value(_map, row, "Revision ID", 1)
         _allocation.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
-        _allocation.parent_id = _get_input_value(_map, row, "Parent Assembly", 1)
+        _allocation.parent_id = _get_input_value(
+            _map, row, "Parent Assembly", 1
+        )
 
         return _allocation
 
-    def _do_insert_design_electric(self, row: pd.Series) -> RAMSTKDesignElectricRecord:
+    def _do_insert_design_electric(
+        self, row: pd.Series
+    ) -> RAMSTKDesignElectricRecord:
         """Insert a new Design Electric entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -446,26 +450,44 @@ class Import:
 
         _map = self._dic_field_map["Hardware"]
 
-        _design_electric.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
+        _design_electric.hardware_id = _get_input_value(
+            _map, row, "Hardware ID", 1
+        )
 
         _map = self._dic_field_map["Design Electric"]
         _design_electric.set_attributes(
             {
-                "application_id": _get_input_value(_map, row, "Application ID", 0),
+                "application_id": _get_input_value(
+                    _map, row, "Application ID", 0
+                ),
                 "area": _get_input_value(_map, row, "Area", 0.0),
-                "capacitance": _get_input_value(_map, row, "Capacitance", 0.000001),
-                "configuration_id": _get_input_value(_map, row, "Configuration ID", 0),
-                "construction_id": _get_input_value(_map, row, "Construction ID", 0),
-                "contact_form_id": _get_input_value(_map, row, "Contact Form ID", 0),
-                "contact_gauge": _get_input_value(_map, row, "Contact Gauge", 20),
+                "capacitance": _get_input_value(
+                    _map, row, "Capacitance", 0.000001
+                ),
+                "configuration_id": _get_input_value(
+                    _map, row, "Configuration ID", 0
+                ),
+                "construction_id": _get_input_value(
+                    _map, row, "Construction ID", 0
+                ),
+                "contact_form_id": _get_input_value(
+                    _map, row, "Contact Form ID", 0
+                ),
+                "contact_gauge": _get_input_value(
+                    _map, row, "Contact Gauge", 20
+                ),
                 "contact_rating_id": _get_input_value(
                     _map, row, "Contact Rating ID", 0
                 ),
                 "current_operating": _get_input_value(
                     _map, row, "Current Operating", 0.0
                 ),
-                "current_rated": _get_input_value(_map, row, "Current Rated", 0.0),
-                "current_ratio": _get_input_value(_map, row, "Current Ratio", 0.0),
+                "current_rated": _get_input_value(
+                    _map, row, "Current Rated", 0.0
+                ),
+                "current_ratio": _get_input_value(
+                    _map, row, "Current Ratio", 0.0
+                ),
                 "environment_active_id": _get_input_value(
                     _map, row, "Environment Active ID", 0
                 ),
@@ -473,30 +495,52 @@ class Import:
                     _map, row, "Environment Dormant ID", 0
                 ),
                 "family_id": _get_input_value(_map, row, "Family ID", 0),
-                "feature_size": _get_input_value(_map, row, "Feature Size", 1.0),
+                "feature_size": _get_input_value(
+                    _map, row, "Feature Size", 1.0
+                ),
                 "frequency_operating": _get_input_value(
                     _map, row, "Frequency Operating", 0.0
                 ),
                 "insert_id": _get_input_value(_map, row, "Insert ID", 0),
-                "insulation_id": _get_input_value(_map, row, "Insulation ID", 0),
-                "manufacturing_id": _get_input_value(_map, row, "Manufacturing ID", 0),
+                "insulation_id": _get_input_value(
+                    _map, row, "Insulation ID", 0
+                ),
+                "manufacturing_id": _get_input_value(
+                    _map, row, "Manufacturing ID", 0
+                ),
                 "matching_id": _get_input_value(_map, row, "Matching ID", 0),
-                "n_active_pins": _get_input_value(_map, row, "N Active Pins", 0),
-                "n_circuit_planes": _get_input_value(_map, row, "N Circuit Planes", 1),
+                "n_active_pins": _get_input_value(
+                    _map, row, "N Active Pins", 0
+                ),
+                "n_circuit_planes": _get_input_value(
+                    _map, row, "N Circuit Planes", 1
+                ),
                 "n_cycles": _get_input_value(_map, row, "N Cycles", 0),
                 "n_elements": _get_input_value(_map, row, "N Elements", 0),
-                "n_hand_soldered": _get_input_value(_map, row, "N Hand Soldered", 0),
-                "n_wave_soldered": _get_input_value(_map, row, "N Wave Soldered", 0),
-                "operating_life": _get_input_value(_map, row, "Operating Life", 0.0),
+                "n_hand_soldered": _get_input_value(
+                    _map, row, "N Hand Soldered", 0
+                ),
+                "n_wave_soldered": _get_input_value(
+                    _map, row, "N Wave Soldered", 0
+                ),
+                "operating_life": _get_input_value(
+                    _map, row, "Operating Life", 0.0
+                ),
                 "overstress": _get_input_value(_map, row, "Overstress", 0),
                 "package_id": _get_input_value(_map, row, "Package ID", 0),
-                "power_operating": _get_input_value(_map, row, "Power Operating", 0.0),
+                "power_operating": _get_input_value(
+                    _map, row, "Power Operating", 0.0
+                ),
                 "power_rated": _get_input_value(_map, row, "Power Rated", 0.0),
                 "power_ratio": _get_input_value(_map, row, "Power Ratio", 0.0),
                 "reason": _get_input_value(_map, row, "Reason", ""),
                 "resistance": _get_input_value(_map, row, "Resistance", 0.0),
-                "specification_id": _get_input_value(_map, row, "Specification ID", 0),
-                "technology_id": _get_input_value(_map, row, "Technology ID", 0),
+                "specification_id": _get_input_value(
+                    _map, row, "Specification ID", 0
+                ),
+                "technology_id": _get_input_value(
+                    _map, row, "Technology ID", 0
+                ),
                 "temperature_active": _get_input_value(
                     _map, row, "Temperature, Active", 30.0
                 ),
@@ -533,8 +577,12 @@ class Import:
                     _map, row, "Voltage, DC Operating", 0.0
                 ),
                 "voltage_esd": _get_input_value(_map, row, "Voltage ESD", 0.0),
-                "voltage_rated": _get_input_value(_map, row, "Voltage, Rated", 0.0),
-                "voltage_ratio": _get_input_value(_map, row, "Voltage Ratio", 0.0),
+                "voltage_rated": _get_input_value(
+                    _map, row, "Voltage, Rated", 0.0
+                ),
+                "voltage_ratio": _get_input_value(
+                    _map, row, "Voltage Ratio", 0.0
+                ),
                 "weight": _get_input_value(_map, row, "Weight", 1.0),
                 "years_in_production": _get_input_value(
                     _map, row, "Years in Production", 2
@@ -544,7 +592,9 @@ class Import:
 
         return _design_electric
 
-    def _do_insert_design_mechanic(self, row: pd.Series) -> RAMSTKDesignMechanicRecord:
+    def _do_insert_design_mechanic(
+        self, row: pd.Series
+    ) -> RAMSTKDesignMechanicRecord:
         """Insert a new Design Mechanic entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -555,7 +605,9 @@ class Import:
         _design_mechanic = RAMSTKDesignMechanicRecord()
 
         _map = self._dic_field_map["Hardware"]
-        _design_mechanic.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
+        _design_mechanic.hardware_id = _get_input_value(
+            _map, row, "Hardware ID", 1
+        )
 
         _map = self._dic_field_map["Design Mechanic"]
         _design_mechanic.set_attributes(
@@ -563,7 +615,9 @@ class Import:
                 "altitude_operating": _get_input_value(
                     _map, row, "Altitude, Operating", 0.0
                 ),
-                "application_id": _get_input_value(_map, row, "Application ID", 0),
+                "application_id": _get_input_value(
+                    _map, row, "Application ID", 0
+                ),
                 "balance_id": _get_input_value(_map, row, "Balance ID", 0),
                 "clearance": _get_input_value(_map, row, "Clearance", 0.0),
                 "casing_id": _get_input_value(_map, row, "Casing ID", 0),
@@ -571,13 +625,25 @@ class Import:
                     _map, row, "Contact Pressure", 0.0
                 ),
                 "deflection": _get_input_value(_map, row, "Deflection", 0.0),
-                "diameter_coil": _get_input_value(_map, row, "Diameter, Coil", 0.0),
-                "diameter_inner": _get_input_value(_map, row, "Diameter, Inner", 0.0),
-                "diameter_outer": _get_input_value(_map, row, "Diameter, Outer", 0.0),
-                "diameter_wire": _get_input_value(_map, row, "Diameter, Wire", 0.0),
+                "diameter_coil": _get_input_value(
+                    _map, row, "Diameter, Coil", 0.0
+                ),
+                "diameter_inner": _get_input_value(
+                    _map, row, "Diameter, Inner", 0.0
+                ),
+                "diameter_outer": _get_input_value(
+                    _map, row, "Diameter, Outer", 0.0
+                ),
+                "diameter_wire": _get_input_value(
+                    _map, row, "Diameter, Wire", 0.0
+                ),
                 "filter_size": _get_input_value(_map, row, "Filter Size", 0.0),
-                "flow_design": _get_input_value(_map, row, "Flow, Design", 0.0),
-                "flow_operating": _get_input_value(_map, row, "Flow, Operating", 0.0),
+                "flow_design": _get_input_value(
+                    _map, row, "Flow, Design", 0.0
+                ),
+                "flow_operating": _get_input_value(
+                    _map, row, "Flow, Operating", 0.0
+                ),
                 "frequency_operating": _get_input_value(
                     _map, row, "Frequency, Operating", 0.0
                 ),
@@ -590,14 +656,24 @@ class Import:
                 "length_compressed": _get_input_value(
                     _map, row, "Length, Compressed", 0.0
                 ),
-                "length_relaxed": _get_input_value(_map, row, "Length, Relaxed", 0.0),
+                "length_relaxed": _get_input_value(
+                    _map, row, "Length, Relaxed", 0.0
+                ),
                 "load_design": _get_input_value(_map, row, "Design Load", 0.0),
                 "load_id": _get_input_value(_map, row, "Load ID", 0),
-                "load_operating": _get_input_value(_map, row, "Operating Load", 0.0),
-                "lubrication_id": _get_input_value(_map, row, "Lubrication ID", 0),
-                "manufacturing_id": _get_input_value(_map, row, "Manufacturing ID", 0),
+                "load_operating": _get_input_value(
+                    _map, row, "Operating Load", 0.0
+                ),
+                "lubrication_id": _get_input_value(
+                    _map, row, "Lubrication ID", 0
+                ),
+                "manufacturing_id": _get_input_value(
+                    _map, row, "Manufacturing ID", 0
+                ),
                 "material_id": _get_input_value(_map, row, "Material ID", 0),
-                "meyer_hardness": _get_input_value(_map, row, "Meyer Hardness", 0.0),
+                "meyer_hardness": _get_input_value(
+                    _map, row, "Meyer Hardness", 0.0
+                ),
                 "misalignment_angle": _get_input_value(
                     _map, row, "Misalignment Angle", 0.0
                 ),
@@ -605,7 +681,9 @@ class Import:
                 "n_cycles": _get_input_value(_map, row, "N Cycles", 0.0),
                 "n_elements": _get_input_value(_map, row, "N Elements", 0),
                 "offset": _get_input_value(_map, row, "Offset", 0.0),
-                "particle_size": _get_input_value(_map, row, "Particle Size", 0.0),
+                "particle_size": _get_input_value(
+                    _map, row, "Particle Size", 0.0
+                ),
                 "pressure_contact": _get_input_value(
                     _map, row, "Contact Pressure", 0.0
                 ),
@@ -615,16 +693,24 @@ class Import:
                 "pressure_downstream": _get_input_value(
                     _map, row, "Downstream Pressure", 0.0
                 ),
-                "pressure_rated": _get_input_value(_map, row, "Rated Pressure", 0.0),
+                "pressure_rated": _get_input_value(
+                    _map, row, "Rated Pressure", 0.0
+                ),
                 "pressure_upstream": _get_input_value(
                     _map, row, "Upstream Pressure", 0.0
                 ),
                 "rpm_design": _get_input_value(_map, row, "Design RPM", 0.0),
-                "rpm_operating": _get_input_value(_map, row, "Operating RPM", 0.0),
+                "rpm_operating": _get_input_value(
+                    _map, row, "Operating RPM", 0.0
+                ),
                 "service_id": _get_input_value(_map, row, "Service ID", 0),
                 "spring_index": _get_input_value(_map, row, "Spring Index", 0),
-                "surface_finish": _get_input_value(_map, row, "Surface Finish", 0.0),
-                "technology_id": _get_input_value(_map, row, "Technology ID", 0),
+                "surface_finish": _get_input_value(
+                    _map, row, "Surface Finish", 0.0
+                ),
+                "technology_id": _get_input_value(
+                    _map, row, "Technology ID", 0
+                ),
                 "thickness": _get_input_value(_map, row, "Thickness", 0.0),
                 "torque_id": _get_input_value(_map, row, "Torque ID", 0),
                 "type_id": _get_input_value(_map, row, "Type ID", 0),
@@ -635,7 +721,9 @@ class Import:
                     _map, row, "Dynamic Viscosity", 0.0
                 ),
                 "water_per_cent": _get_input_value(_map, row, "% Water", 0.0),
-                "width_minimum": _get_input_value(_map, row, "Minimum Width", 0.0),
+                "width_minimum": _get_input_value(
+                    _map, row, "Minimum Width", 0.0
+                ),
             }
         )
 
@@ -654,12 +742,16 @@ class Import:
 
         _function.revision_id = _get_input_value(_map, row, "Revision ID", 1)
         _function.function_id = _get_input_value(_map, row, "Function ID", 1)
-        _function.function_code = _get_input_value(_map, row, "Function Code", "")
+        _function.function_code = _get_input_value(
+            _map, row, "Function Code", ""
+        )
         _function.level = _get_input_value(_map, row, "Level", 0)
         _function.name = _get_input_value(_map, row, "Function Name", "")
         _function.parent_id = _get_input_value(_map, row, "Parent", 1)
         _function.remarks = _get_input_value(_map, row, "Remarks", "")
-        _function.safety_critical = _get_input_value(_map, row, "Safety Critical", 0)
+        _function.safety_critical = _get_input_value(
+            _map, row, "Safety Critical", 0
+        )
         _function.type_id = _get_input_value(_map, row, "Type", "")
 
         return _function
@@ -682,16 +774,24 @@ class Import:
         )
         _hardware.cage_code = _get_input_value(_map, row, "CAGE Code", "")
         _hardware.category_id = _get_input_value(_map, row, "Category ID", 0)
-        _hardware.comp_ref_des = _get_input_value(_map, row, "Composite Ref. Des.", "")
+        _hardware.comp_ref_des = _get_input_value(
+            _map, row, "Composite Ref. Des.", ""
+        )
         _hardware.cost = _get_input_value(_map, row, "Cost", 0.0)
         _hardware.cost_type_id = _get_input_value(_map, row, "Cost Type", 0)
         _hardware.description = _get_input_value(_map, row, "Description", "")
         _hardware.duty_cycle = _get_input_value(_map, row, "Duty Cycle", 100.0)
-        _hardware.figure_number = _get_input_value(_map, row, "Figure Number", "")
+        _hardware.figure_number = _get_input_value(
+            _map, row, "Figure Number", ""
+        )
         _hardware.lcn = _get_input_value(_map, row, "LCN", "")
         _hardware.level = _get_input_value(_map, row, "Level", 0)
-        _hardware.manufacturer_id = _get_input_value(_map, row, "Manufacturer", 0)
-        _hardware.mission_time = _get_input_value(_map, row, "Mission Time", 24.0)
+        _hardware.manufacturer_id = _get_input_value(
+            _map, row, "Manufacturer", 0
+        )
+        _hardware.mission_time = _get_input_value(
+            _map, row, "Mission Time", 24.0
+        )
         _hardware.name = _get_input_value(_map, row, "Name", "")
         _hardware.nsn = _get_input_value(_map, row, "NSN", "")
         _hardware.page_number = _get_input_value(_map, row, "Page Number", "")
@@ -699,13 +799,17 @@ class Import:
         _hardware.part = _get_input_value(_map, row, "Part", 0)
         _hardware.part_number = _get_input_value(_map, row, "Part Number", "")
         _hardware.quantity = _get_input_value(_map, row, "Quantity", 1)
-        _hardware.ref_des = _get_input_value(_map, row, "Reference Designator", "")
+        _hardware.ref_des = _get_input_value(
+            _map, row, "Reference Designator", ""
+        )
         _hardware.remarks = _get_input_value(_map, row, "Remarks", "")
         _hardware.repairable = _get_input_value(_map, row, "Repairable", 1)
         _hardware.specification_number = _get_input_value(
             _map, row, "Specification", ""
         )
-        _hardware.subcategory_id = _get_input_value(_map, row, "Subcategory ID", 0)
+        _hardware.subcategory_id = _get_input_value(
+            _map, row, "Subcategory ID", 0
+        )
         _hardware.tagged_part = _get_input_value(_map, row, "Tagged Part", 0)
         _hardware.year_of_manufacture = _get_input_value(
             _map, row, "Year of Manufacture", 1900
@@ -743,7 +847,9 @@ class Import:
 
         return _nswc
 
-    def _do_insert_reliability(self, row: pd.Series) -> RAMSTKReliabilityRecord:
+    def _do_insert_reliability(
+        self, row: pd.Series
+    ) -> RAMSTKReliabilityRecord:
         """Insert a new Reliability entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -754,7 +860,9 @@ class Import:
         _reliability = RAMSTKReliabilityRecord()
 
         _map = self._dic_field_map["Hardware"]
-        _reliability.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
+        _reliability.hardware_id = _get_input_value(
+            _map, row, "Hardware ID", 1
+        )
 
         _map = self._dic_field_map["Reliability"]
         _reliability.add_adj_factor = _get_input_value(
@@ -778,7 +886,9 @@ class Import:
         _reliability.location_parameter = _get_input_value(
             _map, row, "Location Parameter", 0.0
         )
-        _reliability.mtbf_specified = _get_input_value(_map, row, "Specified MTBF", 0.0)
+        _reliability.mtbf_specified = _get_input_value(
+            _map, row, "Specified MTBF", 0.0
+        )
         _reliability.mult_adj_factor = _get_input_value(
             _map, row, "Multiplicative Adjustment Factor", 1.0
         )
@@ -801,7 +911,9 @@ class Import:
 
         return _reliability
 
-    def _do_insert_requirement(self, row: pd.Series) -> RAMSTKRequirementRecord:
+    def _do_insert_requirement(
+        self, row: pd.Series
+    ) -> RAMSTKRequirementRecord:
         """Insert a new Requirement entity to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input data.
@@ -811,19 +923,31 @@ class Import:
         _requirement = RAMSTKRequirementRecord()
         _map = self._dic_field_map["Requirement"]
 
-        _requirement.revision_id = _get_input_value(_map, row, "Revision ID", 1)
-        _requirement.requirement_id = _get_input_value(_map, row, "Requirement ID", 1)
+        _requirement.revision_id = _get_input_value(
+            _map, row, "Revision ID", 1
+        )
+        _requirement.requirement_id = _get_input_value(
+            _map, row, "Requirement ID", 1
+        )
         _requirement.derived = _get_input_value(_map, row, "Derived?", 0)
-        _requirement.description = _get_input_value(_map, row, "Requirement", "")
-        _requirement.figure_number = _get_input_value(_map, row, "Figure Number", "")
+        _requirement.description = _get_input_value(
+            _map, row, "Requirement", ""
+        )
+        _requirement.figure_number = _get_input_value(
+            _map, row, "Figure Number", ""
+        )
         _requirement.owner = _get_input_value(_map, row, "Owner", "")
-        _requirement.page_number = _get_input_value(_map, row, "Page Number", "")
+        _requirement.page_number = _get_input_value(
+            _map, row, "Page Number", ""
+        )
         _requirement.parent_id = _get_input_value(_map, row, "Parent ID", 1)
         _requirement.priority = _get_input_value(_map, row, "Priority", 1)
         _requirement.requirement_code = _get_input_value(
             _map, row, "Requirement Code", ""
         )
-        _requirement.specification = _get_input_value(_map, row, "Specification", "")
+        _requirement.specification = _get_input_value(
+            _map, row, "Specification", ""
+        )
         _requirement.requirement_type = _get_input_value(
             _map, row, "Requirement Type", ""
         )
@@ -834,7 +958,9 @@ class Import:
 
         return _requirement
 
-    def _do_insert_similar_item(self, row: pd.Series) -> RAMSTKSimilarItemRecord:
+    def _do_insert_similar_item(
+        self, row: pd.Series
+    ) -> RAMSTKSimilarItemRecord:
         """Insert a new Similar Item record to the RAMSTK db.
 
         :param row: the row from the pandas DataFrame containing the input
@@ -846,9 +972,15 @@ class Import:
         _similar_item = RAMSTKSimilarItemRecord()
         _map = self._dic_field_map["Hardware"]
 
-        _similar_item.revision_id = _get_input_value(_map, row, "Revision ID", 1)
-        _similar_item.hardware_id = _get_input_value(_map, row, "Hardware ID", 1)
-        _similar_item.parent_id = _get_input_value(_map, row, "Parent Assembly", 1)
+        _similar_item.revision_id = _get_input_value(
+            _map, row, "Revision ID", 1
+        )
+        _similar_item.hardware_id = _get_input_value(
+            _map, row, "Hardware ID", 1
+        )
+        _similar_item.parent_id = _get_input_value(
+            _map, row, "Parent Assembly", 1
+        )
 
         return _similar_item
 
@@ -863,7 +995,9 @@ class Import:
         _map = self._dic_field_map["Validation"]
 
         _validation.revision_id = _get_input_value(_map, row, "Revision ID", 1)
-        _validation.validation_id = _get_input_value(_map, row, "Validation ID", 1)
+        _validation.validation_id = _get_input_value(
+            _map, row, "Validation ID", 1
+        )
         _validation.acceptable_maximum = _get_input_value(
             _map, row, "Acceptable Maximum", 0.0
         )
@@ -876,13 +1010,27 @@ class Import:
         _validation.acceptable_variance = _get_input_value(
             _map, row, "Acceptable Variance", 0.0
         )
-        _validation.confidence = _get_input_value(_map, row, "s-Confidence", 75.0)
-        _validation.cost_average = _get_input_value(_map, row, "Average Task Cost", 0.0)
-        _validation.cost_maximum = _get_input_value(_map, row, "Maximum Task Cost", 0.0)
-        _validation.cost_minimum = _get_input_value(_map, row, "Minimum Task Cost", 0.0)
-        _validation.date_start = _get_input_value(_map, row, "Start Date", date.today())
-        _validation.date_end = _get_input_value(_map, row, "End Date", date.today())
-        _validation.description = _get_input_value(_map, row, "Task Description", "")
+        _validation.confidence = _get_input_value(
+            _map, row, "s-Confidence", 75.0
+        )
+        _validation.cost_average = _get_input_value(
+            _map, row, "Average Task Cost", 0.0
+        )
+        _validation.cost_maximum = _get_input_value(
+            _map, row, "Maximum Task Cost", 0.0
+        )
+        _validation.cost_minimum = _get_input_value(
+            _map, row, "Minimum Task Cost", 0.0
+        )
+        _validation.date_start = _get_input_value(
+            _map, row, "Start Date", date.today()
+        )
+        _validation.date_end = _get_input_value(
+            _map, row, "End Date", date.today()
+        )
+        _validation.description = _get_input_value(
+            _map, row, "Task Description", ""
+        )
         _validation.measurement_unit = _get_input_value(
             _map, row, "Unit of Measure", ""
         )
@@ -892,9 +1040,15 @@ class Import:
         _validation.task_specification = _get_input_value(
             _map, row, "Task Specification", ""
         )
-        _validation.time_average = _get_input_value(_map, row, "Average Task Time", 0.0)
-        _validation.time_maximum = _get_input_value(_map, row, "Maximum Task Time", 0.0)
-        _validation.time_minimum = _get_input_value(_map, row, "Minimum Task Time", 0.0)
+        _validation.time_average = _get_input_value(
+            _map, row, "Average Task Time", 0.0
+        )
+        _validation.time_maximum = _get_input_value(
+            _map, row, "Maximum Task Time", 0.0
+        )
+        _validation.time_minimum = _get_input_value(
+            _map, row, "Minimum Task Time", 0.0
+        )
 
         return _validation
 

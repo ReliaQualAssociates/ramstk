@@ -177,7 +177,9 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.

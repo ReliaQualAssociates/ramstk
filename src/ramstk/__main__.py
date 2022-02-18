@@ -18,7 +18,10 @@ from typing import Tuple
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration,
+    RAMSTKUserConfiguration,
+)
 from ramstk.db import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.exim import Export, Import
@@ -113,7 +116,8 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
         dao=BaseDatabase(),
         database=configuration.RAMSTK_COM_INFO,
         icons={
-            "refresh": configuration.RAMSTK_SITE_DIR + "/icons/32x32/view-refresh.png",
+            "refresh": configuration.RAMSTK_SITE_DIR
+            + "/icons/32x32/view-refresh.png",
             "save": configuration.RAMSTK_SITE_DIR + "/icons/32x32/save.png",
         },
     )
@@ -158,7 +162,9 @@ def do_initialize_databases(
     _program_db.dic_tables["design_electric"] = RAMSTKDesignElectricTable()
     _program_db.dic_tables["design_mechanic"] = RAMSTKDesignMechanicTable()
     _program_db.dic_tables["environment"] = RAMSTKEnvironmentTable()
-    _program_db.dic_tables["failure_definition"] = RAMSTKFailureDefinitionTable()
+    _program_db.dic_tables[
+        "failure_definition"
+    ] = RAMSTKFailureDefinitionTable()
     _program_db.dic_tables["function"] = RAMSTKFunctionTable()
     _program_db.dic_tables["hardware"] = RAMSTKHardwareTable()
     _program_db.dic_tables["hazards"] = RAMSTKHazardTable()
@@ -244,9 +250,13 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
         :return: None
         :rtype: None
         """
-        pub.sendMessage("do_log_debug_msg", logger_name="DEBUG", message=error_message)
+        pub.sendMessage(
+            "do_log_debug_msg", logger_name="DEBUG", message=error_message
+        )
 
-    pub.subscribe(on_fail_create_site_configuration, "fail_create_site_configuration")
+    pub.subscribe(
+        on_fail_create_site_configuration, "fail_create_site_configuration"
+    )
 
     pub.sendMessage(
         "do_log_info_msg",
@@ -271,7 +281,9 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     return _configuration
 
 
-def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogManager]:
+def do_read_user_configuration() -> Tuple[
+    RAMSTKUserConfiguration, RAMSTKLogManager
+]:
     """Create a user configuration instance.
 
     :return: _configuration; the RAMSTKUserConfiguraion() instance to use for
@@ -288,7 +300,9 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
         """
         print(error_message)
 
-    pub.subscribe(on_fail_create_user_configuration, "fail_create_user_configuration")
+    pub.subscribe(
+        on_fail_create_user_configuration, "fail_create_user_configuration"
+    )
 
     _configuration = RAMSTKUserConfiguration()
 
@@ -296,15 +310,21 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
     _configuration.get_user_configuration()
 
     if _configuration.RAMSTK_DATA_DIR == "":
-        _configuration.RAMSTK_DATA_DIR = _configuration.RAMSTK_CONF_DIR + "/layouts"
+        _configuration.RAMSTK_DATA_DIR = (
+            _configuration.RAMSTK_CONF_DIR + "/layouts"
+        )
         _configuration.set_user_configuration()
 
     if _configuration.RAMSTK_ICON_DIR == "":
-        _configuration.RAMSTK_ICON_DIR = _configuration.RAMSTK_CONF_DIR + "/icons"
+        _configuration.RAMSTK_ICON_DIR = (
+            _configuration.RAMSTK_CONF_DIR + "/icons"
+        )
         _configuration.set_user_configuration()
 
     if _configuration.RAMSTK_LOG_DIR == "":
-        _configuration.RAMSTK_LOG_DIR = _configuration.RAMSTK_CONF_DIR + "/logs"
+        _configuration.RAMSTK_LOG_DIR = (
+            _configuration.RAMSTK_CONF_DIR + "/logs"
+        )
         _configuration.set_user_configuration()
 
     _logger = do_initialize_loggers(
@@ -340,7 +360,9 @@ def the_one_ring() -> None:
         message="Validating the RAMSTK license.",
     )
     pub.sendMessage(
-        "do_log_debug_msg", logger_name="DEBUG", message="Validated the RAMSTK license."
+        "do_log_debug_msg",
+        logger_name="DEBUG",
+        message="Validated the RAMSTK license.",
     )
 
     site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
@@ -351,7 +373,10 @@ def the_one_ring() -> None:
         message="Initializing the RAMSTK application.",
     )
 
-    _program_db, _site_db = do_initialize_databases(  # pylint: disable=unused-variable
+    (
+        _program_db,
+        _site_db,
+    ) = do_initialize_databases(  # pylint: disable=unused-variable
         user_configuration, site_db
     )
 

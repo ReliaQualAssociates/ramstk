@@ -2,7 +2,9 @@
 from typing import Any
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.db.base import BaseDatabase as BaseDatabase
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
@@ -10,7 +12,9 @@ from ramstk.views.gtk3.widgets.dialog import (
     RAMSTKDatabaseSelect as RAMSTKDatabaseSelect,
 )
 from ramstk.views.gtk3.widgets.dialog import RAMSTKDialog as RAMSTKDialog
-from ramstk.views.gtk3.widgets.dialog import RAMSTKMessageDialog as RAMSTKMessageDialog
+from ramstk.views.gtk3.widgets.dialog import (
+    RAMSTKMessageDialog as RAMSTKMessageDialog,
+)
 from ramstk.views.gtk3.widgets.label import RAMSTKLabel as RAMSTKLabel
 
 class CreateProject:

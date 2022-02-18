@@ -16,7 +16,11 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKModuleView, RAMSTKPanel, RAMSTKWorkView
+from ramstk.views.gtk3.widgets import (
+    RAMSTKModuleView,
+    RAMSTKPanel,
+    RAMSTKWorkView,
+)
 
 # RAMSTK Local Imports
 from . import FunctionGeneralDataPanel, FunctionTreePanel
@@ -45,7 +49,9 @@ class FunctionModuleView(RAMSTKModuleView):
     # Define private scalar class attributes.
     _tag: str = "function"
     _tablabel: str = "Function"
-    _tabtooltip: str = _("Displays the functional hierarchy for the selected Revision.")
+    _tabtooltip: str = _(
+        "Displays the functional hierarchy for the selected Revision."
+    )
 
     # Define public dictionary class attributes.
 
@@ -65,7 +71,8 @@ class FunctionModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/function.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + "/32x32/function.png"
         )
 
         # Initialize private list attributes.

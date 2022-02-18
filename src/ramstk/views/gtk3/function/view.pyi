@@ -2,7 +2,9 @@
 from typing import Any, Dict, List
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets import RAMSTKModuleView as RAMSTKModuleView

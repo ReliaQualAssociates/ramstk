@@ -13,7 +13,11 @@ from typing import Any, Dict
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, RAMSTKLabel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+    RAMSTKLabel,
+)
 
 
 class MilHdbk217FResultPanel(RAMSTKFixedPanel):
@@ -123,7 +127,9 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
             self.category_id = attributes["category_id"]
             self.subcategory_id = attributes["subcategory_id"]
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -152,7 +158,9 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
             )
         elif self._hazard_rate_method_id == 2:
             try:
-                self.lblModel.set_markup(self._dic_part_stress[self.subcategory_id])
+                self.lblModel.set_markup(
+                    self._dic_part_stress[self.subcategory_id]
+                )
             except KeyError:
                 self.lblModel.set_markup("No Model")
         else:

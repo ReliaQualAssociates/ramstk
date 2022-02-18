@@ -446,7 +446,9 @@ class PoFTreePanel(RAMSTKTreePanel):
         """
         return model[row][0] == self._parent_id
 
-    def do_get_pof_level(self, model: Gtk.TreeModel, row: Gtk.TreeIter) -> None:
+    def do_get_pof_level(
+        self, model: Gtk.TreeModel, row: Gtk.TreeIter
+    ) -> None:
         """Determine the FMEA level of the selected FMEA row.
 
         :param model: the FMEA Gtk.TreeModel().
@@ -624,7 +626,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_mode(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_mode(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a failure mode record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
@@ -636,7 +640,9 @@ class PoFTreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["mode"], 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self.dic_icons["mode"], 22, 22
+        )
 
         _attributes = [
             _entity.hardware_id,
@@ -674,7 +680,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_opload(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_opload(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a failure mechanism record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mechanism data to load.
@@ -686,7 +694,9 @@ class PoFTreePanel(RAMSTKTreePanel):
         [[__, _entity]] = node.data.items()  # pylint: disable=unused-variable
 
         # noinspection PyArgumentList
-        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(self.dic_icons["opload"], 22, 22)
+        _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
+            self.dic_icons["opload"], 22, 22
+        )
 
         _attributes = [
             _entity.hardware_id,
@@ -725,7 +735,9 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         return _new_row
 
-    def __do_load_opstress(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
+    def __do_load_opstress(
+        self, node: treelib.Node, row: Gtk.TreeIter
+    ) -> Gtk.TreeIter:
         """Load a failure mechanism record into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mechanism data to load.

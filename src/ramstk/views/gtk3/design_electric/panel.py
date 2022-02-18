@@ -90,7 +90,9 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The operating environment for the hardware item."),
+                    "tooltip": _(
+                        "The operating environment for the hardware item."
+                    ),
                     "width": 200,
                 },
                 _("Active Environment:"),
@@ -120,7 +122,9 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The storage environment for the hardware item."),
+                    "tooltip": _(
+                        "The storage environment for the hardware item."
+                    ),
                     "width": 200,
                 },
                 _("Dormant Environment:"),
@@ -134,7 +138,9 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The ambient temperature in the storage environment."),
+                    "tooltip": _(
+                        "The ambient temperature in the storage environment."
+                    ),
                     "width": 125,
                 },
                 _("Dormant Temperature (\u00B0C):"),
@@ -148,7 +154,9 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 1.0,
                 {
-                    "tooltip": _("The mission time of the selected hardware item."),
+                    "tooltip": _(
+                        "The mission time of the selected hardware item."
+                    ),
                     "width": 125,
                 },
                 _("Mission Time:"),
@@ -162,7 +170,9 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 100.0,
                 {
-                    "tooltip": _("The duty cycle of the selected hardware item."),
+                    "tooltip": _(
+                        "The duty cycle of the selected hardware item."
+                    ),
                     "width": 125,
                 },
                 _("Duty Cycle:"),
@@ -324,7 +334,9 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The rated current (in A) of the hardware item."),
+                    "tooltip": _(
+                        "The rated current (in A) of the hardware item."
+                    ),
                     "width": 125,
                 },
                 _("Rated Current (A):"),
@@ -338,7 +350,9 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The operating current (in A) of the hardware item."),
+                    "tooltip": _(
+                        "The operating current (in A) of the hardware item."
+                    ),
                     "width": 200,
                 },
                 _("Operating Current (A):"),
@@ -352,7 +366,9 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The rated power (in W) of the hardware item."),
+                    "tooltip": _(
+                        "The rated power (in W) of the hardware item."
+                    ),
                     "width": 125,
                 },
                 _("Rated Power (W):"),
@@ -366,7 +382,9 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The operating power (in W) of the hardware item."),
+                    "tooltip": _(
+                        "The operating power (in W) of the hardware item."
+                    ),
                     "width": 200,
                 },
                 _("Operating Power (W):"),
@@ -380,7 +398,9 @@ class DesignElectricStressInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The rated voltage (in V) of the hardware item."),
+                    "tooltip": _(
+                        "The rated voltage (in V) of the hardware item."
+                    ),
                     "width": 125,
                 },
                 _("Rated Voltage (V):"),

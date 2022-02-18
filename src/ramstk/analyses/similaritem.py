@@ -161,7 +161,9 @@ def calculate_topic_633(
     _change_factor_2 = ENVIRONMENT_FROM_TO[
         (environment["from"], environment["to"])  # type: ignore
     ]  # type: ignore
-    _change_factor_3 = TEMPERATURE_FROM_TO[(temperature["from"], temperature["to"])]
+    _change_factor_3 = TEMPERATURE_FROM_TO[
+        (temperature["from"], temperature["to"])
+    ]
 
     _result_1 = float(
         hazard_rate / (_change_factor_1 * _change_factor_2 * _change_factor_3)
@@ -424,7 +426,9 @@ def set_user_defined_floats(
     return sia
 
 
-def set_user_defined_ints(sia: Dict[str, int], ints: List[int]) -> Dict[str, int]:
+def set_user_defined_ints(
+    sia: Dict[str, int], ints: List[int]
+) -> Dict[str, int]:
     """Set the user-defined integer values for the user-defined calculations.
 
     :param sia: the similar item assessment dict.

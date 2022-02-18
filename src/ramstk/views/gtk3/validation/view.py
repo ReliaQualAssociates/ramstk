@@ -76,7 +76,8 @@ class ValidationModuleView(RAMSTKModuleView):
 
         # Initialize private dictionary attributes.
         self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/validation.png"
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+            + "/32x32/validation.png"
         )
 
         # Initialize private list attributes.
@@ -113,7 +114,13 @@ class ValidationModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
+        _parent = (
+            self.get_parent()
+            .get_parent()
+            .get_parent()
+            .get_parent()
+            .get_parent()
+        )
         _prompt = _(
             "You are about to delete Validation {0:d} and all "
             "data associated with it.  Is this really what "
@@ -126,7 +133,8 @@ class ValidationModuleView(RAMSTKModuleView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_validation", node_id=self.dic_pkeys["record_id"]
+                "request_delete_validation",
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -245,7 +253,9 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlTaskDescription: RAMSTKPanel = ValidationTaskDescriptionPanel()
+        self._pnlTaskDescription: RAMSTKPanel = (
+            ValidationTaskDescriptionPanel()
+        )
         self._pnlTaskEffort: RAMSTKPanel = ValidationTaskEffortPanel()
         # self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
 
@@ -259,7 +269,8 @@ class ValidationGeneralDataView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            super().do_set_cursor_active_on_fail, "fail_calculate_validation_task"
+            super().do_set_cursor_active_on_fail,
+            "fail_calculate_validation_task",
         )
 
         pub.subscribe(self._do_set_record_id, "selected_validation")

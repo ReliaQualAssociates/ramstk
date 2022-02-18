@@ -48,7 +48,9 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKDesignMechanicRecord] = RAMSTKDesignMechanicRecord
+        self._record: Type[
+            RAMSTKDesignMechanicRecord
+        ] = RAMSTKDesignMechanicRecord
 
         # Initialize public dictionary attributes.
 

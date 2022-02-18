@@ -97,7 +97,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_part_count_lambda_b(application_id: int, environment_active_id: int) -> float:
+def get_part_count_lambda_b(
+    application_id: int, environment_active_id: int
+) -> float:
     """Retrieve the part count hazard rate for a lamp.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts

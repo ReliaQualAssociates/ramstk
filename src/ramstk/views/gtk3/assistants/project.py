@@ -24,7 +24,9 @@ from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 class CreateProject:
     """The class used to create a new RAMSTK Project database."""
 
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = (
+        RAMSTKUserConfiguration()
+    )
 
     def __init__(
         self,
@@ -84,7 +86,9 @@ class CreateProject:
         _dialog.show_all()
 
         if _dialog.run() == Gtk.ResponseType.YES:
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"] = database
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO[
+                "database"
+            ] = database
         else:
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"] = ""
 
@@ -131,7 +135,9 @@ class CreateProject:
 class OpenProject:
     """Assistant to guide user through process of creating RAMSTK Project."""
 
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = (
+        RAMSTKUserConfiguration()
+    )
 
     def __init__(
         self,
@@ -189,7 +195,9 @@ class OpenProject:
 
             _response = _dialog.do_run()
             if _response == Gtk.ResponseType.OK:
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = _dialog.database
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = (
+                    _dialog.database
+                )
 
                 if _dialog.exists:
                     pub.sendMessage(

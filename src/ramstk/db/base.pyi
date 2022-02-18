@@ -9,7 +9,9 @@ from sqlalchemy.orm import scoped_session
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError as DataAccessError
 
-def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None: ...
+def do_create_program_db(
+    database: Dict[str, str], sql_file: TextIO
+) -> None: ...
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]: ...
 
 class BaseDatabase:

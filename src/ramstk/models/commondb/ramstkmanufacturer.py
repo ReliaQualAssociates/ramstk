@@ -36,8 +36,12 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseRecord):
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]
     )
-    location = Column("fld_location", String(512), default=__defaults__["location"])
-    cage_code = Column("fld_cage_code", String(512), default=__defaults__["cage_code"])
+    location = Column(
+        "fld_location", String(512), default=__defaults__["location"]
+    )
+    cage_code = Column(
+        "fld_cage_code", String(512), default=__defaults__["cage_code"]
+    )
 
     def get_attributes(self):
         """Retrieve current values of RAMSTKManufacturer data model attributes.

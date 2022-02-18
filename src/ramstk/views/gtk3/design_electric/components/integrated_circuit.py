@@ -15,7 +15,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import _
-from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+from ramstk.views.gtk3.widgets import (
+    RAMSTKComboBox,
+    RAMSTKEntry,
+    RAMSTKFixedPanel,
+)
 
 
 class ICDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -150,7 +154,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 "wvw_editing_reliability",
                 0,
                 {
-                    "tooltip": _("The quality level of the integrated circuit."),
+                    "tooltip": _(
+                        "The quality level of the integrated circuit."
+                    ),
                 },
                 _("Quality Level:"),
                 "gint",
@@ -163,7 +169,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The type of package housing the integrated circuit."),
+                    "tooltip": _(
+                        "The type of package housing the integrated circuit."
+                    ),
                 },
                 _("Package:"),
                 "gint",
@@ -315,7 +323,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The error correction code used by the EEPROM."),
+                    "tooltip": _(
+                        "The error correction code used by the EEPROM."
+                    ),
                 },
                 _("Error Correction Code:"),
                 "gint",
@@ -354,7 +364,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0.0,
                 {
-                    "tooltip": _("The feature size (in microns) of the VLSI device."),
+                    "tooltip": _(
+                        "The feature size (in microns) of the VLSI device."
+                    ),
                     "width": 125,
                 },
                 _("Feature Size:"),
@@ -368,7 +380,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 f"wvw_editing_{self._tag}",
                 0,
                 {
-                    "tooltip": _("The manufacturing process for the VLSI device."),
+                    "tooltip": _(
+                        "The manufacturing process for the VLSI device."
+                    ),
                 },
                 _("Manufacturing Process:"),
                 "gint",
@@ -484,7 +498,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_reliability_attributes(
+        self, attributes: Dict[str, Any]
+    ) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.

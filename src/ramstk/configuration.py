@@ -258,14 +258,16 @@ class RAMSTKSiteConfiguration:
         }
 
         try:
-            with open(self.RAMSTK_SITE_CONF, "w", encoding="utf-8") as _site_conf:
+            with open(
+                self.RAMSTK_SITE_CONF, "w", encoding="utf-8"
+            ) as _site_conf:
                 toml.dump(_dic_site_configuration, _site_conf)
             pub.sendMessage("succeed_create_site_configuration")
         except FileNotFoundError:
-            _error_msg = (
-                f"Failed to write site configuration file {self.RAMSTK_SITE_CONF}."
+            _error_msg = f"Failed to write site configuration file {self.RAMSTK_SITE_CONF}."
+            pub.sendMessage(
+                "fail_create_site_configuration", error_message=_error_msg
             )
-            pub.sendMessage("fail_create_site_configuration", error_message=_error_msg)
 
     def get_site_configuration(self) -> None:
         """Read the site configuration file.
@@ -285,10 +287,10 @@ class RAMSTKSiteConfiguration:
             self.RAMSTK_COM_INFO["password"] = _config["backend"]["password"]
 
         else:
-            _error_msg = (
-                f"Failed to read Site configuration file {self.RAMSTK_SITE_CONF}."
+            _error_msg = f"Failed to read Site configuration file {self.RAMSTK_SITE_CONF}."
+            pub.sendMessage(
+                "fail_get_site_configuration", error_message=_error_msg
             )
-            pub.sendMessage("fail_get_site_configuration", error_message=_error_msg)
 
     def set_site_configuration(self) -> None:
         """Set the site-wide RAMSTK configuration file values."""
@@ -536,27 +538,52 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         ] = {}
         # User.
         self.RAMSTK_HAZARDS: Dict[int, Tuple[str, str]] = {}  # User.
-        self.RAMSTK_INCIDENT_CATEGORY: Dict[int, Tuple[str, str, str, str]] = {}
+        self.RAMSTK_INCIDENT_CATEGORY: Dict[
+            int, Tuple[str, str, str, str]
+        ] = {}
         self.RAMSTK_INCIDENT_STATUS: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_INCIDENT_TYPE: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_LOAD_HISTORY: Dict[int, str] = {}  # User.
-        self.RAMSTK_MANUFACTURERS: Dict[int, Tuple[str, str, str]] = {}  # User.
-        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[int, Tuple[str, str, str]] = {}  # User.
-        self.RAMSTK_MEASUREMENT_UNITS: Dict[int, Tuple[str, str, str]] = {}  # Admin.
+        self.RAMSTK_MANUFACTURERS: Dict[
+            int, Tuple[str, str, str]
+        ] = {}  # User.
+        self.RAMSTK_MEASURABLE_PARAMETERS: Dict[
+            int, Tuple[str, str, str]
+        ] = {}  # User.
+        self.RAMSTK_MEASUREMENT_UNITS: Dict[
+            int, Tuple[str, str, str]
+        ] = {}  # Admin.
         self.RAMSTK_MODULES: Dict[str, str] = {}  # Static.
         self.RAMSTK_REQUIREMENT_TYPE: Dict[int, Tuple[str, str, str]] = {}
         self.RAMSTK_RPN_DETECTION: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_OCCURRENCE: Dict[int, str] = {}  # User.
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
-        self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}  # Admin
+        self.RAMSTK_SEVERITY: Dict[
+            str, Tuple[str, str, str, str]
+        ] = {}  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[int, str] = {}  # User.
         self.RAMSTK_STRESS_LIMITS: Dict[
             int,
-            Tuple[float, float, float, float, float, float, float, float, float, float],
+            Tuple[
+                float,
+                float,
+                float,
+                float,
+                float,
+                float,
+                float,
+                float,
+                float,
+                float,
+            ],
         ] = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[int, Dict[str, str]] = {}  # Static.
-        self.RAMSTK_USERS: Dict[int, Tuple[str, str, str, str, str]] = {}  # Admin.
-        self.RAMSTK_VALIDATION_TYPE: Dict[int, Tuple[str, str, str]] = {}  # Admin.
+        self.RAMSTK_USERS: Dict[
+            int, Tuple[str, str, str, str, str]
+        ] = {}  # Admin.
+        self.RAMSTK_VALIDATION_TYPE: Dict[
+            int, Tuple[str, str, str]
+        ] = {}  # Admin.
 
         self.RAMSTK_COLORS: Dict[str, str] = {}
         self.RAMSTK_FORMAT_FILE: Dict[str, str] = {}
@@ -743,14 +770,17 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
 
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
-        for _file in glob.glob(f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts/*.toml"):
+        for _file in glob.glob(
+            f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts/*.toml"
+        ):
             file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
             dir_util.copy_tree(
-                f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/", self.RAMSTK_ICON_DIR
+                f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/",
+                self.RAMSTK_ICON_DIR,
             )
 
         except DistutilsFileError:
@@ -759,7 +789,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/ to user's icon "
                 f"directory {self.RAMSTK_ICON_DIR} failed."
             )
-            pub.sendMessage("fail_copy_icons_to_user", error_message=_error_msg)
+            pub.sendMessage(
+                "fail_copy_icons_to_user", error_message=_error_msg
+            )
 
         # Create the default RAMSTK user configuration file.
         _dic_user_configuration = {
@@ -844,27 +876,128 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                     125.0,
                     125.0,
                 ],
-                "semiconductor": [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                "resistor": [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                "capacitor": [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
-                "inductor": [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
-                "relay": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                "switch": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                "connection": [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
-                "meter": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-                "miscellaneous": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+                "semiconductor": [
+                    1.0,
+                    1.0,
+                    0.7,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "resistor": [
+                    1.0,
+                    1.0,
+                    0.5,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "capacitor": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.6,
+                    0.9,
+                    10.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "inductor": [
+                    0.6,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.5,
+                    0.9,
+                    15.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "relay": [
+                    0.75,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "switch": [
+                    0.75,
+                    0.9,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "connection": [
+                    0.7,
+                    0.9,
+                    1.0,
+                    1.0,
+                    0.7,
+                    0.9,
+                    25.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "meter": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
+                "miscellaneous": [
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    1.0,
+                    0.0,
+                    0.0,
+                    125.0,
+                    125.0,
+                ],
             },
         }
 
         try:
-            with open(self.RAMSTK_PROG_CONF, "w", encoding="utf-8") as _user_conf:
+            with open(
+                self.RAMSTK_PROG_CONF, "w", encoding="utf-8"
+            ) as _user_conf:
                 toml.dump(_dic_user_configuration, _user_conf)
             pub.sendMessage("succeed_create_user_configuration")
         except TypeError:
-            _error_msg = (
-                f"User configuration file {self.RAMSTK_PROG_CONF} is not a file."
+            _error_msg = f"User configuration file {self.RAMSTK_PROG_CONF} is not a file."
+            pub.sendMessage(
+                "fail_create_user_configuration", error_message=_error_msg
             )
-            pub.sendMessage("fail_create_user_configuration", error_message=_error_msg)
 
     def get_user_configuration(self) -> None:
         """Read the RAMSTK user configuration file.
@@ -888,9 +1021,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             # file keys are human-readable nouns.  This converts the noun key
             # to the equivalent integer key.
             for _category in enumerate(self._lst_categories):
-                self.RAMSTK_STRESS_LIMITS[_category[0] + 1] = _config["stress"][
-                    _category[1]
-                ]
+                self.RAMSTK_STRESS_LIMITS[_category[0] + 1] = _config[
+                    "stress"
+                ][_category[1]]
 
             self.RAMSTK_BACKEND = _config["backend"]["dialect"]
             self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["dialect"]
@@ -906,12 +1039,16 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_PROG_DIR = _config["directories"]["progdir"]
 
             self.RAMSTK_REPORT_SIZE = _config["general"]["reportsize"]
-            self.RAMSTK_HR_MULTIPLIER = float(_config["general"]["frmultiplier"])
+            self.RAMSTK_HR_MULTIPLIER = float(
+                _config["general"]["frmultiplier"]
+            )
             self.RAMSTK_DEC_PLACES = int(_config["general"]["decimal"])
             self.RAMSTK_MTIME = float(_config["general"]["calcreltime"])
             self.RAMSTK_MODE_SOURCE = _config["general"]["modesource"]
             self.RAMSTK_TABPOS["listbook"] = _config["general"]["listtabpos"]
-            self.RAMSTK_TABPOS["modulebook"] = _config["general"]["moduletabpos"]
+            self.RAMSTK_TABPOS["modulebook"] = _config["general"][
+                "moduletabpos"
+            ]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
             self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
             if self.RAMSTK_LOG_DIR == "":
@@ -919,13 +1056,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
             else:
                 self.RAMSTK_USER_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_run.log"
-                self.RAMSTK_IMPORT_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_import.log"
+                self.RAMSTK_IMPORT_LOG = (
+                    f"{self.RAMSTK_LOG_DIR}/ramstk_import.log"
+                )
 
         else:
-            _error_msg = (
-                f"Failed to read User configuration file {self.RAMSTK_PROG_CONF}."
+            _error_msg = f"Failed to read User configuration file {self.RAMSTK_PROG_CONF}."
+            pub.sendMessage(
+                "fail_get_user_configuration", error_message=_error_msg
             )
-            pub.sendMessage("fail_get_user_configuration", error_message=_error_msg)
 
     def set_user_configuration(self) -> None:
         """Write changes to the user's configuration file.
@@ -1036,7 +1175,9 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         if dir_exists(self.RAMSTK_CONF_DIR + self._data_sub_dir):
             self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
         else:
-            self.RAMSTK_DATA_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts"
+            self.RAMSTK_DATA_DIR = (
+                f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts"
+            )
 
         if dir_exists(self.RAMSTK_CONF_DIR + self._icon_sub_dir):
             self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir

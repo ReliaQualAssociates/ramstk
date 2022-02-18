@@ -14,7 +14,22 @@ from typing import Any, Dict
 
 PART_COUNT_LAMBDA_B = {
     1: {
-        1: [0.13, 0.28, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0, 7.0, 0.66, 3.5, 10.0, 0.0],
+        1: [
+            0.13,
+            0.28,
+            2.1,
+            1.1,
+            3.8,
+            1.1,
+            1.4,
+            1.9,
+            2.0,
+            7.0,
+            0.66,
+            3.5,
+            10.0,
+            0.0,
+        ],
         2: [
             0.43,
             0.89,
@@ -31,9 +46,54 @@ PART_COUNT_LAMBDA_B = {
             32.0,
             0.0,
         ],
-        3: [0.13, 0.26, 2.1, 1.1, 3.8, 1.1, 1.4, 1.9, 2.0, 7.0, 0.66, 3.5, 10.0, 0.0],
-        4: [0.11, 0.23, 1.8, 0.92, 3.3, 0.96, 1.2, 2.1, 2.3, 6.5, 0.54, 3.0, 9.0, 0.0],
-        5: [0.29, 0.60, 4.8, 2.4, 8.2, 2.3, 2.9, 4.1, 4.5, 15.0, 0.14, 7.6, 22.0, 0.0],
+        3: [
+            0.13,
+            0.26,
+            2.1,
+            1.1,
+            3.8,
+            1.1,
+            1.4,
+            1.9,
+            2.0,
+            7.0,
+            0.66,
+            3.5,
+            10.0,
+            0.0,
+        ],
+        4: [
+            0.11,
+            0.23,
+            1.8,
+            0.92,
+            3.3,
+            0.96,
+            1.2,
+            2.1,
+            2.3,
+            6.5,
+            0.54,
+            3.0,
+            9.0,
+            0.0,
+        ],
+        5: [
+            0.29,
+            0.60,
+            4.8,
+            2.4,
+            8.2,
+            2.3,
+            2.9,
+            4.1,
+            4.5,
+            15.0,
+            0.14,
+            7.6,
+            22.0,
+            0.0,
+        ],
         6: [
             0.88,
             1.8,
@@ -52,7 +112,22 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
     2: {
-        1: [0.40, 1.2, 4.8, 2.4, 6.8, 4.8, 7.6, 8.4, 13.0, 9.2, 0.16, 4.8, 13.0, 240.0],
+        1: [
+            0.40,
+            1.2,
+            4.8,
+            2.4,
+            6.8,
+            4.8,
+            7.6,
+            8.4,
+            13.0,
+            9.2,
+            0.16,
+            4.8,
+            13.0,
+            240.0,
+        ],
         2: [
             0.50,
             1.5,
@@ -188,7 +263,9 @@ def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
     return _pi_cyc
 
 
-def calculate_load_stress_factor(technology_id: int, current_ratio: float) -> float:
+def calculate_load_stress_factor(
+    technology_id: int, current_ratio: float
+) -> float:
     """Calculate the load stress factor (piL).
 
     Only subcategory 1 relays use this in their calculation.
@@ -311,7 +388,10 @@ def calculate_part_stress_lambda_b(
 
 
 def get_application_construction_factor(
-    quality_id: int, contact_rating_id: int, construction_id: int, application_id: int
+    quality_id: int,
+    contact_rating_id: int,
+    construction_id: int,
+    application_id: int,
 ) -> float:
     """Calculate the construction factor (piF) for the relay.
 
@@ -329,7 +409,9 @@ def get_application_construction_factor(
     else:
         _quality = 2
 
-    return PI_F[contact_rating_id][application_id][construction_id][_quality - 1]
+    return PI_F[contact_rating_id][application_id][construction_id][
+        _quality - 1
+    ]
 
 
 def get_environment_factor(
@@ -397,4 +479,6 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     _type_id = kwargs.get("type_id", 0)
     _environment_active_id = kwargs.get("environment_active_id", 0)
 
-    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
+    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
+        _environment_active_id - 1
+    ]

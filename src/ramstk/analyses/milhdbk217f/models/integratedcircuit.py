@@ -14,7 +14,23 @@ from typing import Any, Dict, Tuple
 
 ACTIVATION_ENERGY = {
     1: 0.65,
-    2: [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.45, 0.45, 0.5, 0.5, 0.6, 0.6, 0.6],
+    2: [
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.45,
+        0.45,
+        0.5,
+        0.5,
+        0.6,
+        0.6,
+        0.6,
+    ],
     3: 0.65,
     4: 0.65,
     5: 0.6,
@@ -26,7 +42,10 @@ ACTIVATION_ENERGY = {
 }
 C1 = {
     1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
-    2: [[0.0025, 0.005, 0.01, 0.02, 0.04, 0.08], [0.01, 0.02, 0.04, 0.08, 0.16, 0.29]],
+    2: [
+        [0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
+        [0.01, 0.02, 0.04, 0.08, 0.16, 0.29],
+    ],
     3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
     4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
     5: [[0.00065, 0.0013, 0.0026, 0.0052], [0.0094, 0.019, 0.038, 0.075]],
@@ -1003,7 +1022,22 @@ PART_COUNT_LAMBDA_B = {
     },
 }
 PI_A = {1: [1.0, 3.0, 3.0], 2: [1.0]}
-PI_E = [0.5, 2.0, 4.0, 4.0, 6.0, 4.0, 5.0, 5.0, 8.0, 8.0, 0.5, 5.0, 12.0, 220.0]
+PI_E = [
+    0.5,
+    2.0,
+    4.0,
+    4.0,
+    6.0,
+    4.0,
+    5.0,
+    5.0,
+    8.0,
+    8.0,
+    0.5,
+    5.0,
+    12.0,
+    220.0,
+]
 PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 PI_Q = [0.25, 1.0, 2.0]
 
@@ -1035,7 +1069,10 @@ def calculate_junction_temperature(
 
 
 def calculate_lambda_cyclic_factors(
-    n_cycles: int, construction_id: int, n_elements: int, temperature_junction: float
+    n_cycles: int,
+    construction_id: int,
+    n_elements: int,
+    temperature_junction: float,
 ) -> Tuple[float, float, float, float]:
     """Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
@@ -1085,7 +1122,10 @@ def calculate_lambda_cyclic_factors(
 
 
 def calculate_temperature_factor(
-    subcategory_id: int, family_id: int, type_id: int, temperature_junction: float
+    subcategory_id: int,
+    family_id: int,
+    type_id: int,
+    temperature_junction: float,
 ) -> float:
     """Calculate the temperature factor (piT).
 
@@ -1109,7 +1149,8 @@ def calculate_temperature_factor(
         _ea = ACTIVATION_ENERGY[subcategory_id]
 
     return 0.1 * exp(
-        (-_ea / 8.617e-5) * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
+        (-_ea / 8.617e-5)
+        * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
     )
 
 
@@ -1156,7 +1197,7 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     _f0 = C2[_package][0]
     _f1 = C2[_package][1]
 
-    return _f0 * (n_active_pins ** _f1)
+    return _f0 * (n_active_pins**_f1)
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -1201,7 +1242,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes["type_id"],
         attributes["temperature_junction"],
     )
-    attributes["piL"] = 0.01 * exp(5.35 - 0.35 * attributes["years_in_production"])
+    attributes["piL"] = 0.01 * exp(
+        5.35 - 0.35 * attributes["years_in_production"]
+    )
 
     if attributes["subcategory_id"] in [1, 2, 3, 4]:
         attributes["C1"] = get_die_complexity_factor(
@@ -1232,7 +1275,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes["package_id"], attributes["n_active_pins"]
         )
         if attributes["subcategory_id"] == 6:
-            attributes["piECC"] = get_error_correction_factor(attributes["type_id"])
+            attributes["piECC"] = get_error_correction_factor(
+                attributes["type_id"]
+            )
             (_a_1, _a_2, _b_1, _b_2) = calculate_lambda_cyclic_factors(
                 attributes["n_cycles"],
                 attributes["construction_id"],
@@ -1277,11 +1322,15 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             * attributes["piL"]
         )
     elif attributes["subcategory_id"] == 10:
-        attributes["lambdaBD"] = get_die_base_hazard_rate(attributes["type_id"])
+        attributes["lambdaBD"] = get_die_base_hazard_rate(
+            attributes["type_id"]
+        )
         attributes["lambdaBP"] = calculate_package_base_hazard_rate(
             attributes["n_active_pins"]
         )
-        attributes["lambdaEOS"] = calculate_eos_hazard_rate(attributes["voltage_esd"])
+        attributes["lambdaEOS"] = calculate_eos_hazard_rate(
+            attributes["voltage_esd"]
+        )
         attributes["piCD"] = calculate_die_complexity_factor(
             attributes["area"], attributes["feature_size"]
         )
@@ -1321,7 +1370,10 @@ def get_application_factor(type_id: int, application_id: int) -> float:
 
 
 def get_die_complexity_factor(
-    subcategory_id: int, technology_id: int, application_id: int, n_elements: int
+    subcategory_id: int,
+    technology_id: int,
+    application_id: int,
+    n_elements: int,
 ) -> float:
     """Retrieve the die complexity hazard rate (C1).
 
@@ -1368,7 +1420,9 @@ def get_die_complexity_factor(
 
     # This will retrieve the breakpoint value for the number of elements
     # closest (round up) to the number of elements passed.
-    _index = min(range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements))
+    _index = min(
+        range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements)
+    )
 
     return C1[subcategory_id][_technology - 1][_index]
 
@@ -1497,15 +1551,18 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
 
     if id_keys["subcategory_id"] in [3, 9]:
         _index = (
-            _dic_breakpoints[id_keys["subcategory_id"]][id_keys["technology_id"]].index(
-                n_elements
-            )
+            _dic_breakpoints[id_keys["subcategory_id"]][
+                id_keys["technology_id"]
+            ].index(n_elements)
             + 1
         )
     else:
         _lst_index = _dic_breakpoints[id_keys["subcategory_id"]]
         _index = (
-            min(range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements))
+            min(
+                range(len(_lst_index)),
+                key=lambda i: abs(_lst_index[i] - n_elements),
+            )
             + 1
         )
 

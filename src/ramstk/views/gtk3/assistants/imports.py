@@ -69,7 +69,11 @@ class ImportProject(Gtk.Assistant):
         pub.subscribe(self._do_load_import_fields, "succeed_read_import_file")
 
     def _do_edit_cell(
-        self, __cell: Gtk.CellRenderer, path: str, new_text: str, model: Gtk.TreeModel
+        self,
+        __cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        model: Gtk.TreeModel,
     ) -> None:
         """Handle Gtk.CellRenderer() edits.
 
@@ -169,7 +173,9 @@ class ImportProject(Gtk.Assistant):
 
         if _file is not None:
             pub.sendMessage(
-                "request_read_import_file", file_type=_file_type, file_name=_file
+                "request_read_import_file",
+                file_type=_file_type,
+                file_name=_file,
             )
 
         self.set_page_complete(_page, True)
@@ -216,9 +222,9 @@ class ImportProject(Gtk.Assistant):
         self.connect("apply", self._do_request_import)
 
         # ----- COMBOBOX
-        self.cmbSelectModule.dic_handler_id["changed"] = self.cmbSelectModule.connect(
-            "changed", self._on_combo_changed
-        )
+        self.cmbSelectModule.dic_handler_id[
+            "changed"
+        ] = self.cmbSelectModule.connect("changed", self._on_combo_changed)
 
         # ----- FILECHOOSER
         self._filechooser.connect("selection_changed", self._do_select_file)
@@ -365,7 +371,9 @@ class ImportProject(Gtk.Assistant):
 
         self.append_page(_page)
         self.set_page_type(_page, Gtk.AssistantPageType.CONTENT)
-        self.set_page_title(_page, _("Map Input File Fields to RAMSTK Database Fields"))
+        self.set_page_title(
+            _page, _("Map Input File Fields to RAMSTK Database Fields")
+        )
 
     def __make_ui(self):
         """Build the user interface.

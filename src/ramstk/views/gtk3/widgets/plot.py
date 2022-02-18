@@ -63,7 +63,10 @@ class RAMSTKPlot:
         self.axis = self.figure.add_subplot(111)
 
     def do_load_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Load the RAMSTKPlot.
 
@@ -122,7 +125,12 @@ class RAMSTKPlot:
         :rtype: None
         """
         _line = Line2D(
-            x_values, y_values, lw=0.0, color=color, marker=marker, markersize=10
+            x_values,
+            y_values,
+            lw=0.0,
+            color=color,
+            marker=marker,
+            markersize=10,
         )
         self.axis.add_line(_line)
 
@@ -143,7 +151,9 @@ class RAMSTKPlot:
         self.canvas.reparent(parent)
 
     # noinspection PyUnresolvedReferences
-    def do_expand_plot(self, event: matplotlib.backend_bases.MouseEvent) -> None:
+    def do_expand_plot(
+        self, event: matplotlib.backend_bases.MouseEvent
+    ) -> None:
         """Display a plot in it's own window.
 
         :param event: the matplotlib.backend_bases.MouseEvent() that called
@@ -171,7 +181,9 @@ class RAMSTKPlot:
             _window.show_all()
 
     # noinspection PyUnresolvedReferences
-    def do_make_labels(self, label: str, **kwargs: Any) -> matplotlib.text.Text:
+    def do_make_labels(
+        self, label: str, **kwargs: Any
+    ) -> matplotlib.text.Text:
         """Make the abscissa or ordinate label.
 
         Accepts keyword arguments:
@@ -306,7 +318,10 @@ class RAMSTKPlot:
         )
 
     def _do_make_date_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a date plot.
 
@@ -321,12 +336,17 @@ class RAMSTKPlot:
         _marker = kwargs.get("marker", "g-")
 
         if y_values is not None:
-            self.axis.plot_date(x_values, y_values, _marker, xdate=True, linewidth=2)
+            self.axis.plot_date(
+                x_values, y_values, _marker, xdate=True, linewidth=2
+            )
             self._lst_min.append(min(y_values))
             self._lst_max.append(max(y_values))
 
     def _do_make_histogram(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a histogram.
 
@@ -345,12 +365,17 @@ class RAMSTKPlot:
         if y_values is not None:
             self.axis.grid(False, which="both")
             # pylint: disable=unused-variable
-            _values, _edges, __ = self.axis.hist(x_values, bins=y_values, color=_marker)
+            _values, _edges, __ = self.axis.hist(
+                x_values, bins=y_values, color=_marker
+            )
             self._lst_min.append(min(_values))
             self._lst_max.append(max(_values) + 1)
 
     def _do_make_scatter_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a scatter plot.
 
@@ -371,7 +396,10 @@ class RAMSTKPlot:
             self._lst_max.append(max(y_values))
 
     def _do_make_step_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a step plot.
 

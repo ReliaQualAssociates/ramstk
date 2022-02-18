@@ -50,7 +50,9 @@ class RAMSTKFailureModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         String(512),
         default=__defaults__["description"],
     )
-    mode_ratio = Column("fld_mode_ratio", Float, default=__defaults__["mode_ratio"])
+    mode_ratio = Column(
+        "fld_mode_ratio", Float, default=__defaults__["mode_ratio"]
+    )
     source = Column("fld_source", String(128), default=__defaults__["source"])
 
     # Define the relationships to other tables in the RAMSTK Program database.

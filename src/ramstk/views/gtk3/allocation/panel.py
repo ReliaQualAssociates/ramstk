@@ -180,7 +180,9 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
             ]
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+    def _do_set_sensitive(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Set widget sensitivity as needed for the selected R(t) goal.
 
         :return: None
@@ -798,11 +800,15 @@ class AllocationTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_allocation")
-        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
+        pub.subscribe(
+            self._do_set_hardware_attributes, "succeed_get_hardware_tree"
+        )
         pub.subscribe(
             self._do_set_reliability_attributes, "succeed_get_reliability_tree"
         )
-        pub.subscribe(self._on_method_changed, "succeed_change_allocation_method")
+        pub.subscribe(
+            self._on_method_changed, "succeed_change_allocation_method"
+        )
         pub.subscribe(self._on_select_hardware, "selected_hardware")
 
     # pylint: disable=unused-argument
@@ -838,7 +844,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-            _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
+            _row = self.tvwTreeView.do_get_row_by_value(
+                1, _hardware.hardware_id
+            )
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -855,7 +863,9 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _reliability = _node.data["reliability"]
-            _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
+            _row = self.tvwTreeView.do_get_row_by_value(
+                1, _reliability.hardware_id
+            )
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -918,9 +928,13 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
-        pub.sendMessage("request_get_allocation_attributes", node_id=self._parent_id)
+        pub.sendMessage(
+            "request_get_allocation_attributes", node_id=self._parent_id
+        )
 
-    def __do_load_allocation(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
+    def __do_load_allocation(
+        self, node: Any = "", row: Gtk.TreeIter = None
+    ) -> None:
         """Load the allocation RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.

@@ -53,7 +53,9 @@ class RAMSTKBaseRecord:
         for _key in attributes:
             getattr(self, _key)
             setattr(
-                self, _key, none_to_default(attributes[_key], self.__defaults__[_key])
+                self,
+                _key,
+                none_to_default(attributes[_key], self.__defaults__[_key]),
             )
 
 
@@ -119,11 +121,15 @@ class RAMSTKBaseTable:
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_connect, "succeed_connect_program_database")
         pub.subscribe(self.do_delete, f"request_delete_{self._tag}")
-        pub.subscribe(self.do_get_attributes, f"request_get_{self._tag}_attributes")
+        pub.subscribe(
+            self.do_get_attributes, f"request_get_{self._tag}_attributes"
+        )
         pub.subscribe(self.do_get_tree, f"request_get_{self._tag}_tree")
         pub.subscribe(self.do_insert, f"request_insert_{self._tag}")
         pub.subscribe(self.do_select_all, self._select_msg)
-        pub.subscribe(self.do_set_attributes, f"request_set_{self._tag}_attributes")
+        pub.subscribe(
+            self.do_set_attributes, f"request_set_{self._tag}_attributes"
+        )
         pub.subscribe(self.do_set_attributes, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_set_attributes, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_set_attributes, f"wvw_editing_{self._tag}")
@@ -172,7 +178,9 @@ class RAMSTKBaseTable:
             self.dao.do_delete(_record)
 
             self.tree.remove_node(node_id)
-            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+            self.last_id = self.dao.get_last_id(
+                self._db_tablename, self._db_id_colname
+            )
 
             pub.sendMessage(
                 f"succeed_delete_{self._tag}",
@@ -254,7 +262,9 @@ class RAMSTKBaseTable:
             _identifier = self.last_id + 1
 
             self.dao.do_insert(_record)
-            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+            self.last_id = self.dao.get_last_id(
+                self._db_tablename, self._db_id_colname
+            )
 
             self.tree.create_node(
                 tag=self._tag,
@@ -301,7 +311,12 @@ class RAMSTKBaseTable:
         """
         try:
             _entity = self.tree.get_node(node_id).data[self._tag]
-        except (AttributeError, KeyError, treelib.tree.NodeIDAbsentError, TypeError):
+        except (
+            AttributeError,
+            KeyError,
+            treelib.tree.NodeIDAbsentError,
+            TypeError,
+        ):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 f"{_method_name}: No data package for node ID {node_id} in module "
@@ -343,9 +358,13 @@ class RAMSTKBaseTable:
             _keys = [self._lst_id_columns[0]]
             _values = [self._revision_id]
         else:
-            _keys = [_key for _key in self._lst_id_columns if _key in attributes]
+            _keys = [
+                _key for _key in self._lst_id_columns if _key in attributes
+            ]
             _values = [
-                attributes[_key] for _key in self._lst_id_columns if _key in attributes
+                attributes[_key]
+                for _key in self._lst_id_columns
+                if _key in attributes
             ]
 
         for _record in self.dao.do_select_all(
@@ -365,7 +384,9 @@ class RAMSTKBaseTable:
                 parent=self._parent_id,
                 data={self._tag: _record},
             )
-        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+        self.last_id = self.dao.get_last_id(
+            self._db_tablename, self._db_id_colname
+        )
 
         # ISSUE: Remove deprecated PyPubSub sendMessage
         #
@@ -498,9 +519,7 @@ class RAMSTKBaseTable:
                     f"{self._tag.replace('_', ' ')} ID {node_id} was the wrong type."
                 )
             else:
-                _error_msg = (
-                    f"{_method_name}: Attempting to update the root node {node_id}."
-                )
+                _error_msg = f"{_method_name}: Attempting to update the root node {node_id}."
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",

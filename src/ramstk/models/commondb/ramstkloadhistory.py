@@ -23,7 +23,11 @@ class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseRecord):
     __table_args__ = {"extend_existing": True}
 
     history_id = Column(
-        "fld_history_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_history_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
     description = Column(
         "fld_description", String(512), default=__defaults__["description"]

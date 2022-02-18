@@ -73,18 +73,26 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     acceptable_maximum = Column(
-        "fld_acceptable_maximum", Float, default=__defaults__["acceptable_maximum"]
+        "fld_acceptable_maximum",
+        Float,
+        default=__defaults__["acceptable_maximum"],
     )
     acceptable_mean = Column(
         "fld_acceptable_mean", Float, default=__defaults__["acceptable_mean"]
     )
     acceptable_minimum = Column(
-        "fld_acceptable_minimum", Float, default=__defaults__["acceptable_minimum"]
+        "fld_acceptable_minimum",
+        Float,
+        default=__defaults__["acceptable_minimum"],
     )
     acceptable_variance = Column(
-        "fld_acceptable_variance", Float, default=__defaults__["acceptable_variance"]
+        "fld_acceptable_variance",
+        Float,
+        default=__defaults__["acceptable_variance"],
     )
-    confidence = Column("fld_confidence", Float, default=__defaults__["confidence"])
+    confidence = Column(
+        "fld_confidence", Float, default=__defaults__["confidence"]
+    )
     cost_average = Column(
         "fld_cost_average", Float, default=__defaults__["cost_average"]
     )
@@ -92,7 +100,9 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     cost_maximum = Column(
         "fld_cost_maximum", Float, default=__defaults__["cost_maximum"]
     )
-    cost_mean = Column("fld_cost_mean", Float, default=__defaults__["cost_mean"])
+    cost_mean = Column(
+        "fld_cost_mean", Float, default=__defaults__["cost_mean"]
+    )
     cost_minimum = Column(
         "fld_cost_minimum", Float, default=__defaults__["cost_minimum"]
     )
@@ -101,10 +111,16 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_cost_variance", Float, default=__defaults__["cost_variance"]
     )
     date_end = Column("fld_date_end", Date, default=__defaults__["date_end"])
-    date_start = Column("fld_date_start", Date, default=__defaults__["date_start"])
-    description = Column("fld_description", String, default=__defaults__["description"])
+    date_start = Column(
+        "fld_date_start", Date, default=__defaults__["date_start"]
+    )
+    description = Column(
+        "fld_description", String, default=__defaults__["description"]
+    )
     measurement_unit = Column(
-        "fld_measurement_unit", Integer, default=__defaults__["measurement_unit"]
+        "fld_measurement_unit",
+        Integer,
+        default=__defaults__["measurement_unit"],
     )
     name = Column("fld_name", String(256), default=__defaults__["name"])
     status = Column("fld_status", Float, default=__defaults__["status"])
@@ -121,7 +137,9 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     time_maximum = Column(
         "fld_time_maximum", Float, default=__defaults__["time_maximum"]
     )
-    time_mean = Column("fld_time_mean", Float, default=__defaults__["time_mean"])
+    time_mean = Column(
+        "fld_time_mean", Float, default=__defaults__["time_mean"]
+    )
     time_minimum = Column(
         "fld_time_minimum", Float, default=__defaults__["time_minimum"]
     )
@@ -195,11 +213,19 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        (self.time_ll, self.time_mean, self.time_ul, _sd) = do_calculate_beta_bounds(
-            self.time_minimum, self.time_average, self.time_maximum, self.confidence
+        (
+            self.time_ll,
+            self.time_mean,
+            self.time_ul,
+            _sd,
+        ) = do_calculate_beta_bounds(
+            self.time_minimum,
+            self.time_average,
+            self.time_maximum,
+            self.confidence,
         )
 
-        self.time_variance = _sd ** 2.0
+        self.time_variance = _sd**2.0
 
     def calculate_task_cost(self):
         """Calculate the mean, standard error, and bounds on the task cost.
@@ -210,8 +236,16 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        (self.cost_ll, self.cost_mean, self.cost_ul, _sd) = do_calculate_beta_bounds(
-            self.cost_minimum, self.cost_average, self.cost_maximum, self.confidence
+        (
+            self.cost_ll,
+            self.cost_mean,
+            self.cost_ul,
+            _sd,
+        ) = do_calculate_beta_bounds(
+            self.cost_minimum,
+            self.cost_average,
+            self.cost_maximum,
+            self.confidence,
         )
 
-        self.cost_variance = _sd ** 2.0
+        self.cost_variance = _sd**2.0

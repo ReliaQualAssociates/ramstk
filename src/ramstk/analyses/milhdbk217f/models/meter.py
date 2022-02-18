@@ -62,16 +62,76 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
     2: {
-        1: [0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4, 0.0, 0.0],
-        2: [0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2, 0.0, 0.0],
+        1: [
+            0.09,
+            0.36,
+            2.3,
+            1.1,
+            3.2,
+            2.5,
+            3.8,
+            5.2,
+            6.6,
+            5.4,
+            0.099,
+            5.4,
+            0.0,
+            0.0,
+        ],
+        2: [
+            0.15,
+            0.61,
+            2.8,
+            1.8,
+            5.4,
+            4.3,
+            6.4,
+            8.9,
+            11.0,
+            9.2,
+            0.17,
+            9.2,
+            0.0,
+            0.0,
+        ],
     },
 }
 PART_COUNT_PI_Q = {1: [1.0, 1.0], 2: [1.0, 3.4]}
 PART_STRESS_LAMBDA_B = {1: [20.0, 30.0, 80.0], 2: 0.09}
 PART_STRESS_PI_Q = {2: [1.0, 3.4]}
 PI_E = {
-    1: [1.0, 2.0, 12.0, 7.0, 18.0, 5.0, 8.0, 16.0, 25.0, 26.0, 0.5, 14.0, 38.0, 0.0],
-    2: [1.0, 4.0, 25.0, 12.0, 35.0, 28.0, 42.0, 58.0, 73.0, 60.0, 1.1, 60.0, 0.0, 0.0],
+    1: [
+        1.0,
+        2.0,
+        12.0,
+        7.0,
+        18.0,
+        5.0,
+        8.0,
+        16.0,
+        25.0,
+        26.0,
+        0.5,
+        14.0,
+        38.0,
+        0.0,
+    ],
+    2: [
+        1.0,
+        4.0,
+        25.0,
+        12.0,
+        35.0,
+        28.0,
+        42.0,
+        58.0,
+        73.0,
+        60.0,
+        1.1,
+        60.0,
+        0.0,
+        0.0,
+    ],
 }
 PI_F = [1.0, 1.0, 2.8]
 
@@ -115,7 +175,9 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         attributes["piA"] = 1.7 if (attributes["type_id"]) - (1) else 1.0
         attributes["piF"] = PI_F[attributes["application_id"] - 1]
 
-    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"] * attributes["piE"]
+    )
     if attributes["subcategory_id"] == 2:
         attributes["hazard_rate_active"] = (
             attributes["hazard_rate_active"]
@@ -169,7 +231,9 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     _type_id = kwargs.get("type_id", 0)
     _environment_active_id = kwargs.get("environment_active_id", 0)
 
-    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
+    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
+        _environment_active_id - 1
+    ]
 
 
 def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:

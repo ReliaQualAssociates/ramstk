@@ -42,7 +42,9 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
         "\u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>"
         "\u03C0<sub>E</sub></span>"
     )
-    _function_2 = "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+    _function_2 = (
+        "\u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+    )
 
     # Define private dict class attributes.
     _dic_part_stress: Dict[int, str] = {
@@ -172,7 +174,9 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
                 "",
                 1.0,
                 {
-                    "tooltip": _("The configuration factor for the capacitor."),
+                    "tooltip": _(
+                        "The configuration factor for the capacitor."
+                    ),
                 },
                 "\u03C0<sub>CF</sub>:",
             ],
