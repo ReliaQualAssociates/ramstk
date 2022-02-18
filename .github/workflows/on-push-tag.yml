@@ -81,4 +81,5 @@ jobs:
           title: ${{ steps.prvars.outputs.title }}
           body: ${{ steps.prvars.outputs.body }}
           branch: ${{ steps.prvars.outputs.branch }}
+          base: master
           labels: Release
