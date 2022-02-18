@@ -22,7 +22,7 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_phase_id"
+    _db_id_colname = "fld_mission_phase_id"
     _db_tablename = "ramstk_mission_phase"
     _select_msg = "selected_revision"
     _tag = "mission_phase"
@@ -43,7 +43,7 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "mission_id",
-            "phase_id",
+            "mission_phase_id",
             "parent_id",
             "record_id",
         ]
@@ -56,7 +56,7 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "phase_id"
+        self.pkey = "mission_phase_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -72,6 +72,6 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.mission_id = attributes["mission_id"]
-        _new_record.phase_id = self.last_id + 1
+        _new_record.mission_phase_id = self.last_id + 1
 
         return _new_record

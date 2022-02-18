@@ -23,7 +23,12 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     shares a One-to-Many relationship with ramstk_environment.
     """
 
-    __defaults__ = {"description": "", "name": "", "phase_start": 0.0, "phase_end": 0.0}
+    __defaults__ = {
+        "description": "",
+        "name": "",
+        "phase_start": 0.0,
+        "phase_end": 0.0,
+    }
     __tablename__ = "ramstk_mission_phase"
     __table_args__ = (
         ForeignKeyConstraint(
@@ -48,8 +53,8 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         primary_key=True,
         nullable=False,
     )
-    phase_id = Column(
-        "fld_phase_id",
+    mission_phase_id = Column(
+        "fld_mission_phase_id",
         Integer,
         primary_key=True,
         autoincrement=True,
@@ -72,23 +77,17 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="all,delete",
     )
 
-    is_mission = False
-    is_phase = True
-    is_env = False
-
     def get_attributes(self):
         """Retrieve current values of the Mission Phase data model attributes.
 
         :return: value of instance attributes
         :rtype: tuple
         """
-        _values = {
+        return {
             "mission_id": self.mission_id,
-            "phase_id": self.phase_id,
+            "mission_phase_id": self.mission_phase_id,
             "description": self.description,
             "name": self.name,
             "phase_start": self.phase_start,
             "phase_end": self.phase_end,
         }
-
-        return _values

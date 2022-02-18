@@ -11,7 +11,7 @@ def mock_program_dao(monkeypatch):
     _environment_1 = RAMSTKEnvironmentRecord()
     _environment_1.revision_id = 1
     _environment_1.mission_id = 1
-    _environment_1.phase_id = 1
+    _environment_1.mission_phase_id = 1
     _environment_1.environment_id = 1
     _environment_1.name = "Condition Name"
     _environment_1.units = "Units"
@@ -26,7 +26,7 @@ def mock_program_dao(monkeypatch):
     _environment_2 = RAMSTKEnvironmentRecord()
     _environment_2.revision_id = 1
     _environment_2.mission_id = 1
-    _environment_2.phase_id = 1
+    _environment_2.mission_phase_id = 1
     _environment_2.environment_id = 2
     _environment_2.name = "Condition Name"
     _environment_2.units = "Units"
@@ -41,7 +41,7 @@ def mock_program_dao(monkeypatch):
     _environment_3 = RAMSTKEnvironmentRecord()
     _environment_3.revision_id = 1
     _environment_3.mission_id = 1
-    _environment_3.phase_id = 1
+    _environment_3.mission_phase_id = 1
     _environment_3.environment_id = 3
     _environment_3.name = "Condition Name"
     _environment_3.units = "Units"
@@ -68,7 +68,7 @@ def test_attributes():
     yield {
         "revision_id": 1,
         "mission_id": 1,
-        "phase_id": 1,
+        "mission_phase_id": 1,
         "environment_id": 1,
         "name": "Condition Name",
         "units": "Units",
