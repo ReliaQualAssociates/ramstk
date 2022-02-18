@@ -47,6 +47,7 @@ jobs:
           excludeLabels: "Release"
           issues: false
           issuesWoLabels: false
+          maxIssues: 100
           pullRequests: true
           prWoLabels: false
           author: true
