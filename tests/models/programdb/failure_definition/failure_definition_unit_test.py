@@ -31,14 +31,14 @@ def test_tablemodel(mock_program_dao):
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_failure_definition_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_failure_definition_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_failure_definition")
-    pub.unsubscribe(dut.do_update, "request_update_failure_definition")
-    pub.unsubscribe(dut.do_get_tree, "request_get_failure_definition_tree")
+    pub.unsubscribe(dut.do_get_attributes, "request_get_definition_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_definition_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_definition")
+    pub.unsubscribe(dut.do_update, "request_update_definition")
+    pub.unsubscribe(dut.do_get_tree, "request_get_definition_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_failure_definition")
-    pub.unsubscribe(dut.do_insert, "request_insert_failure_definition")
+    pub.unsubscribe(dut.do_delete, "request_delete_definition")
+    pub.unsubscribe(dut.do_insert, "request_insert_definition")
 
     # Delete the device under test.
     del dut
@@ -68,36 +68,32 @@ class TestCreateModels:
         assert isinstance(test_tablemodel.dao, MockDAO)
         assert test_tablemodel._db_id_colname == "fld_definition_id"
         assert test_tablemodel._db_tablename == "ramstk_failure_definition"
-        assert test_tablemodel._tag == "failure_definition"
+        assert test_tablemodel._tag == "definition"
         assert test_tablemodel._root == 0
         assert test_tablemodel._revision_id == 0
         assert pub.isSubscribed(
             test_tablemodel.do_get_attributes,
-            "request_get_failure_definition_attributes",
+            "request_get_definition_attributes",
         )
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
+        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_definition")
         assert pub.isSubscribed(
-            test_tablemodel.do_update, "request_update_failure_definition"
+            test_tablemodel.do_update_all, "request_update_all_definitions"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_failure_definitions"
-        )
-        assert pub.isSubscribed(
-            test_tablemodel.do_get_tree, "request_get_failure_definition_tree"
+            test_tablemodel.do_get_tree, "request_get_definition_tree"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_set_attributes,
-            "request_set_failure_definition_attributes",
+            "request_set_definition_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "wvw_editing_failure_definition"
+            test_tablemodel.do_set_attributes, "wvw_editing_definition"
         )
-        assert pub.isSubscribed(
-            test_tablemodel.do_delete, "request_delete_failure_definition"
-        )
+        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_definition")
         assert pub.isSubscribed(
             test_tablemodel.do_insert,
-            "request_insert_failure_definition",
+            "request_insert_definition",
         )
 
 
@@ -113,7 +109,7 @@ class TestSelectMethods:
 
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(
-            test_tablemodel.tree.get_node(1).data["failure_definition"],
+            test_tablemodel.tree.get_node(1).data["definition"],
             RAMSTKFailureDefinitionRecord,
         )
 
@@ -151,7 +147,7 @@ class TestInsertMethods:
 
         assert test_tablemodel.last_id == 3
         assert isinstance(
-            test_tablemodel.tree[3].data["failure_definition"],
+            test_tablemodel.tree[3].data["definition"],
             RAMSTKFailureDefinitionRecord,
         )
 
