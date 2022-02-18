@@ -4,6 +4,12 @@
 #     - Remove 'status: inprogress' label.
 #     - Add 'status: closed' label.
 # - Job 2:
+#     - Get PR labels.
+#     - IF 'endgame:merged':
+#         - Imports signing GPG key.
+#         - Signs and pushes 'latest' tag.
+#         - Updates draft release notes.
+# - Job 3:
 #     - Gets list of PR labels.
 #     - Get current version from VERSION.
 #     - Determine next Semantic version.
@@ -30,8 +36,55 @@ jobs:
           add-labels: "status: closed"
           remove-labels: "status: inprogress"
 
+  tag-latest:
+    name: Tag Repository as 'latest'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Check for merge
+        if: contains(steps.prlabels.outputs.labels, ' endgame:merged ')
+        run: echo "do_tag_latest=1" >> $GITHUB_ENV
+
+      - name: Import GPG key
+        id: import_gpg
+        if: ${{ env.do_tag_latest == 1 }}
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Push 'latest' tag
+        if: ${{ env.do_tag_latest == 1 }}
+        run: |
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
+          git tag -s -f -a -m"push latest tag" latest
+          git push -f --tags && echo "do_release_latest=1" >> $GITHUB_ENV
+
+      - name: Draft 'latest' release notes
+        if: ${{ env.do_release_latest == 1 }}
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "Next Release"
+          tag: "latest"
+          version: "latest"
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   tag-version:
     name: Push Version Tag
+    needs: tag-latest
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

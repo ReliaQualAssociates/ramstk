@@ -30,6 +30,7 @@ jobs:
 
       - name: Get release version
         id: relversion
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
         run: echo "::set-output name=rel_version::$(echo $(cat VERSION))"
 
       - name: Cut release

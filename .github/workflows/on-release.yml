@@ -6,9 +6,10 @@
 #     - Test install from Test PyPi.
 #     - Upload to PyPi.
 #     - Add wheel to GitHub release.
-#     - Build user documentation.
-#     - Add user documentation to GitHub release.
+#     - Build pdf documentation.
+#     - Add pdf documentation to GitHub release.
 # - Job 2:
+#     - CLose old milestone.
 #     - Create new minor version milestone.
 #     - Create new major version milestone.
 name: Publish Release Workflow
@@ -75,6 +76,11 @@ jobs:
         uses: WyriHaximus/github-action-next-semvers@v1.1.0
         with:
           version: ${{ steps.newversion.outputs.version }}
+
+      - name: Close old milestone
+        uses: WyriHaximus/github-action-close-milestone@master
+        with:
+          number: ${{ steps.newversion.outputs.version }}
 
       - name: Create new minor release milestone
         uses: WyriHaximus/github-action-create-milestone@master
