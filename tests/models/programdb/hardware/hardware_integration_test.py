@@ -101,31 +101,45 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
+        assert isinstance(
+            tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
+        )
         print("\033[36m\nsucceed_retrieve_hardware topic was broadcast.")
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
         assert isinstance(
-            tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
+            tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
         )
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"], RAMSTKDesignMechanicRecord
+            tree.get_node(1).data["design_electric"],
+            RAMSTKDesignElectricRecord,
         )
-        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
+        assert isinstance(
+            tree.get_node(1).data["design_mechanic"],
+            RAMSTKDesignMechanicRecord,
+        )
+        assert isinstance(
+            tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord
+        )
         assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
+        assert isinstance(
+            tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord
+        )
         print("\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
+    def test_do_select_all_populated_tree(
+        self, test_attributes, test_tablemodel
+    ):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_hardware")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_hardware")
+        pub.unsubscribe(
+            self.on_succeed_select_all, "succeed_retrieve_hardware"
+        )
 
     @pytest.mark.integration
     def test_on_select_all(
@@ -139,7 +153,9 @@ class TestSelectMethods:
         test_reliability,
     ):
         """should return records tree with hardware tables."""
-        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
+        pub.subscribe(
+            self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom"
+        )
 
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
         test_design_electric.do_select_all(
@@ -148,12 +164,19 @@ class TestSelectMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
+            test_viewmodel.tree.get_node(1).data["hardware"],
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -176,7 +199,8 @@ class TestSelectMethods:
             RAMSTKReliabilityRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["hardware"], RAMSTKHardwareRecord
+            test_viewmodel.tree.get_node(2).data["hardware"],
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(2).data["design_electric"],
@@ -199,7 +223,9 @@ class TestSelectMethods:
             RAMSTKReliabilityRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
+        pub.unsubscribe(
+            self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom"
+        )
 
     @pytest.mark.integration
     def test_on_select_all_tree_loaded(
@@ -220,12 +246,19 @@ class TestSelectMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
+            test_viewmodel.tree.get_node(1).data["hardware"],
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -248,12 +281,15 @@ class TestSelectMethods:
             RAMSTKReliabilityRecord,
         )
 
-        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
+        pub.subscribe(
+            self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom"
+        )
 
         test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
+            test_viewmodel.tree.get_node(1).data["hardware"],
+            RAMSTKHardwareRecord,
         )
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["design_electric"],
@@ -276,7 +312,9 @@ class TestSelectMethods:
             RAMSTKReliabilityRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
+        pub.unsubscribe(
+            self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom"
+        )
 
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(
@@ -311,7 +349,9 @@ class TestInsertMethods:
 
     def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(9).data["hardware"], RAMSTKHardwareRecord)
+        assert isinstance(
+            tree.get_node(9).data["hardware"], RAMSTKHardwareRecord
+        )
         assert tree.get_node(9).data["hardware"].hardware_id == 9
         print("\033[36m\nsucceed_insert_hardware topic was broadcast.")
 
@@ -321,7 +361,9 @@ class TestInsertMethods:
             "returned:\n\tKey (fld_revision_id)=(9) is not present in table "
             '"ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_hardware topic was broadcast on no hardware.")
+        print(
+            "\033[35m\nfail_insert_hardware topic was broadcast on no hardware."
+        )
 
     def on_succeed_insert_hardware(self, tree):
         assert isinstance(tree, Tree)
@@ -334,7 +376,9 @@ class TestInsertMethods:
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a record to the record tree and update last_id."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_hardware")
+        pub.subscribe(
+            self.on_succeed_insert_sibling, "succeed_insert_hardware"
+        )
 
         assert test_tablemodel.tree.get_node(9) is None
 
@@ -346,7 +390,9 @@ class TestInsertMethods:
             RAMSTKHardwareRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_hardware")
+        pub.unsubscribe(
+            self.on_succeed_insert_sibling, "succeed_insert_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
@@ -360,7 +406,9 @@ class TestInsertMethods:
 
         assert test_tablemodel.tree.get_node(10) is None
 
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_hardware")
+        pub.unsubscribe(
+            self.on_fail_insert_no_revision, "fail_insert_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_insert_hardware(
@@ -381,13 +429,21 @@ class TestInsertMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         assert not test_viewmodel.tree.contains(10)
 
-        pub.subscribe(self.on_succeed_insert_hardware, "succeed_retrieve_hardware_bom")
+        pub.subscribe(
+            self.on_succeed_insert_hardware, "succeed_retrieve_hardware_bom"
+        )
 
         pub.sendMessage(
             "request_insert_hardware",
@@ -422,12 +478,20 @@ class TestDeleteMethods:
         print("\033[36m\nsucceed_delete_hardware topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Hardware ID 300.")
-        print("\033[35m\nfail_delete_hardware topic was broadcast on non-existent ID.")
+        assert error_message == (
+            "Attempted to delete non-existent Hardware ID 300."
+        )
+        print(
+            "\033[35m\nfail_delete_hardware topic was broadcast on non-existent ID."
+        )
 
     def on_fail_delete_no_data_package(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Hardware ID 2.")
-        print("\033[35m\nfail_delete_hardware topic was broadcast on no data package.")
+        assert error_message == (
+            "Attempted to delete non-existent Hardware ID 2."
+        )
+        print(
+            "\033[35m\nfail_delete_hardware topic was broadcast on no data package."
+        )
 
     def on_succeed_delete_hardware(self, tree):
         assert isinstance(tree, Tree)
@@ -453,24 +517,36 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_tablemodel):
         """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_hardware")
+        pub.subscribe(
+            self.on_fail_delete_non_existent_id, "fail_delete_hardware"
+        )
 
         pub.sendMessage("request_delete_hardware", node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_hardware")
+        pub.unsubscribe(
+            self.on_fail_delete_non_existent_id, "fail_delete_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_delete_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_hardware")
+        pub.subscribe(
+            self.on_fail_delete_no_data_package, "fail_delete_hardware"
+        )
 
         test_tablemodel.tree.get_node(2).data.pop("hardware")
         pub.sendMessage("request_delete_hardware", node_id=2)
 
-        assert not isinstance(test_tablemodel.tree.get_node(6), RAMSTKHardwareRecord)
-        assert not isinstance(test_tablemodel.tree.get_node(7), RAMSTKHardwareRecord)
+        assert not isinstance(
+            test_tablemodel.tree.get_node(6), RAMSTKHardwareRecord
+        )
+        assert not isinstance(
+            test_tablemodel.tree.get_node(7), RAMSTKHardwareRecord
+        )
 
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_hardware")
+        pub.unsubscribe(
+            self.on_fail_delete_no_data_package, "fail_delete_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_delete_hardware(
@@ -491,13 +567,21 @@ class TestDeleteMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         assert test_viewmodel.tree.contains(5)
 
-        pub.subscribe(self.on_succeed_delete_hardware, "succeed_retrieve_hardware_bom")
+        pub.subscribe(
+            self.on_succeed_delete_hardware, "succeed_retrieve_hardware_bom"
+        )
 
         pub.sendMessage("request_delete_hardware", node_id=5)
 
@@ -528,21 +612,33 @@ class TestUpdateMethods:
             "do_update: The value for one or more attributes for hardware ID 1 was the "
             "wrong type."
         )
-        print("\033[35m\nfail_update_hardware topic was broadcast on wrong data type.")
+        print(
+            "\033[35m\nfail_update_hardware topic was broadcast on wrong data type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_hardware topic was broadcast on root node.")
+        assert error_message == (
+            "do_update: Attempting to update the root node 0."
+        )
+        print(
+            "\033[35m\nfail_update_hardware topic was broadcast on root node."
+        )
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent hardware with hardware ID 100."
         )
-        print("\033[35m\nfail_update_hardware topic was broadcast on non-existent ID.")
+        print(
+            "\033[35m\nfail_update_hardware topic was broadcast on non-existent ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for hardware ID 1.")
-        print("\033[35m\nfail_update_hardware topic was broadcast on no data package.")
+        assert error_message == (
+            "do_update: No data package found for hardware ID 1."
+        )
+        print(
+            "\033[35m\nfail_update_hardware topic was broadcast on no data package."
+        )
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
@@ -571,19 +667,27 @@ class TestUpdateMethods:
         pub.sendMessage("request_update_all_hardware")
 
         assert (
-            test_tablemodel.tree.get_node(1).data["hardware"].total_power_dissipation
+            test_tablemodel.tree.get_node(1)
+            .data["hardware"]
+            .total_power_dissipation
             == 5
         )
         assert (
-            test_tablemodel.tree.get_node(1).data["hardware"].specification_number
+            test_tablemodel.tree.get_node(1)
+            .data["hardware"]
+            .specification_number
             == "81"
         )
         assert (
-            test_tablemodel.tree.get_node(2).data["hardware"].total_power_dissipation
+            test_tablemodel.tree.get_node(2)
+            .data["hardware"]
+            .total_power_dissipation
             == 12
         )
         assert (
-            test_tablemodel.tree.get_node(2).data["hardware"].specification_number
+            test_tablemodel.tree.get_node(2)
+            .data["hardware"]
+            .specification_number
             == "71"
         )
 
@@ -592,19 +696,24 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_hardware")
+        pub.subscribe(
+            self.on_fail_update_wrong_data_type, "fail_update_hardware"
+        )
 
         _hardware = test_tablemodel.do_select(1)
         _hardware.specification_number = {1: 2}
         pub.sendMessage("request_update_hardware", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hardware")
+        pub.unsubscribe(
+            self.on_fail_update_wrong_data_type, "fail_update_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when attempting to update the root node."""
         pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_hardware"
+            self.on_fail_update_root_node_wrong_data_type,
+            "fail_update_hardware",
         )
 
         _hardware = test_tablemodel.do_select(1)
@@ -612,27 +721,36 @@ class TestUpdateMethods:
         pub.sendMessage("request_update_hardware", node_id=0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_hardware"
+            self.on_fail_update_root_node_wrong_data_type,
+            "fail_update_hardware",
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_hardware")
+        pub.subscribe(
+            self.on_fail_update_non_existent_id, "fail_update_hardware"
+        )
 
         pub.sendMessage("request_update_hardware", node_id=100)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_hardware")
+        pub.unsubscribe(
+            self.on_fail_update_non_existent_id, "fail_update_hardware"
+        )
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_hardware")
+        pub.subscribe(
+            self.on_fail_update_no_data_package, "fail_update_hardware"
+        )
 
         test_tablemodel.tree.get_node(1).data.pop("hardware")
         pub.sendMessage("request_update_hardware", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_hardware")
+        pub.unsubscribe(
+            self.on_fail_update_no_data_package, "fail_update_hardware"
+        )
 
 
 @pytest.mark.usefixtures("test_tablemodel", "test_toml_user_configuration")
@@ -679,7 +797,9 @@ class TestGetterSetter:
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
+        assert isinstance(
+            tree.get_node(1).data["hardware"], RAMSTKHardwareRecord
+        )
         print("\033[36m\nsucceed_get_hardware_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
@@ -690,7 +810,9 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_get_attributes(self, test_tablemodel):
         """should return the attributes dict."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hardware_attributes")
+        pub.subscribe(
+            self.on_succeed_get_attributes, "succeed_get_hardware_attributes"
+        )
 
         test_tablemodel.do_get_attributes(
             node_id=2,
@@ -717,7 +839,9 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_set_attributes(self):
         """should set the value of the attribute requested."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_hardware_tree")
+        pub.subscribe(
+            self.on_succeed_set_attributes, "succeed_get_hardware_tree"
+        )
 
         pub.sendMessage(
             "request_set_hardware_attributes",
@@ -725,7 +849,9 @@ class TestGetterSetter:
             package={"cage_code": "DE34T1"},
         )
 
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_hardware_tree")
+        pub.unsubscribe(
+            self.on_succeed_set_attributes, "succeed_get_hardware_tree"
+        )
 
 
 @pytest.mark.usefixtures(
@@ -761,9 +887,15 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.part = 1
@@ -797,9 +929,15 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         _hardware = test_tablemodel.do_select(2)
         _hardware.part = 0
@@ -839,9 +977,15 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.category_id = 3
@@ -883,9 +1027,21 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+            }
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+            }
+        )
 
         _hardware = test_tablemodel.do_select(2)
         _hardware.part = 0
@@ -897,7 +1053,6 @@ class TestAnalysisMethods:
         test_viewmodel.do_calculate_hardware(2)
         _attributes = test_reliability.do_select(2).get_attributes()
 
-        # assert _attributes["hazard_rate_active"] == pytest.approx(0.0007829)
         assert _attributes["hazard_rate_active"] == 0.0
 
     @pytest.mark.skip
@@ -920,9 +1075,15 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
 
         _hardware = test_tablemodel.do_select(2)
         _hardware.part = 1
@@ -957,9 +1118,15 @@ class TestAnalysisMethods:
         test_design_mechanic.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_nswc.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_reliability.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
         test_design_electric._dic_stress_limits = (
             test_toml_user_configuration.RAMSTK_STRESS_LIMITS
         )
@@ -992,11 +1159,17 @@ class TestAnalysisMethods:
         assert _attributes["total_power_dissipation"] == 0.0059
 
         _attributes = test_reliability.do_select(3).get_attributes()
-        assert _attributes["hazard_rate_active"] == pytest.approx(5.2230231e-05)
-        assert _attributes["hazard_rate_dormant"] == pytest.approx(3.1338139e-06)
-        assert _attributes["hazard_rate_logistics"] == pytest.approx(0.04505536)
+        assert _attributes["hazard_rate_active"] == pytest.approx(
+            5.2230231e-05
+        )
+        assert _attributes["hazard_rate_dormant"] == pytest.approx(
+            3.1338139e-06
+        )
+        assert _attributes["hazard_rate_logistics"] == pytest.approx(
+            0.04505536
+        )
         assert _attributes["hazard_rate_mission"] == pytest.approx(0.04991278)
-        assert _attributes["mtbf_logistics"] == pytest.approx(22.1949155)
-        assert _attributes["mtbf_mission"] == pytest.approx(20.0349508)
-        assert _attributes["reliability_logistics"] == pytest.approx(0.01104766)
-        assert _attributes["reliability_mission"] == pytest.approx(0.006796975)
+        assert _attributes["mtbf_logistics"] == pytest.approx(22194915.5489607)
+        assert _attributes["mtbf_mission"] == pytest.approx(20034950.7654636)
+        assert _attributes["reliability_logistics"] == pytest.approx(0.9999955)
+        assert _attributes["reliability_mission"] == pytest.approx(0.9999950)

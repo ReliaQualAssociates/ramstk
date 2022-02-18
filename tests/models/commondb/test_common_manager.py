@@ -32,9 +32,6 @@ def test_datamanager(test_common_dao):
 
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.do_create_common, "request_create_common")
-    # pub.unsubscribe(dut.do_open_program, "request_open_program")
-    # pub.unsubscribe(dut.do_close_program, "request_close_program")
-    # pub.unsubscribe(dut.do_save_program, "request_update_program")
 
     # Delete the device under test.
     del dut
@@ -60,7 +57,7 @@ class TestCommonManager:
 
     def on_fail_read_license(self, error_message):
         assert error_message == (
-            "Unable to read license key file.  Defaulting " "to a 30-day demo license."
+            "Unable to read license key file.  Defaulting to a 30-day demo license."
         )
         print("\033[35m\nfail_read_license topic was broadcast.")
 
@@ -94,7 +91,8 @@ class TestCommonManager:
     ):
         """do_create_common() should return None."""
         pub.subscribe(
-            self.on_succeed_create_postgres_common, "succeed_create_common_database"
+            self.on_succeed_create_postgres_common,
+            "succeed_create_common_database",
         )
 
         test_common_db = {
@@ -123,7 +121,8 @@ class TestCommonManager:
         test_datamanager.common_dao.do_disconnect()
 
         pub.unsubscribe(
-            self.on_succeed_create_postgres_common, "succeed_create_common_database"
+            self.on_succeed_create_postgres_common,
+            "succeed_create_common_database",
         )
 
     @pytest.mark.integration
@@ -138,7 +137,8 @@ class TestCommonManager:
     ):
         """do_create_common() should return None."""
         pub.subscribe(
-            self.on_succeed_create_postgres_common, "succeed_create_common_database"
+            self.on_succeed_create_postgres_common,
+            "succeed_create_common_database",
         )
 
         test_common_db = {
@@ -157,7 +157,8 @@ class TestCommonManager:
         )
 
         pub.unsubscribe(
-            self.on_succeed_create_postgres_common, "succeed_create_common_database"
+            self.on_succeed_create_postgres_common,
+            "succeed_create_common_database",
         )
 
     @pytest.mark.integration
@@ -211,7 +212,7 @@ class TestCommonManager:
         )
 
         assert _user_configuration.RAMSTK_ACTION_CATEGORY[38] == (
-            "" "ENGD",
+            "ENGD",
             "Engineering, Design",
             "action",
             1,
@@ -297,7 +298,6 @@ class TestCommonManager:
         )
         assert _user_configuration.RAMSTK_STAKEHOLDERS[1] == "Customer"
         assert _user_configuration.RAMSTK_RPN_DETECTION[1] == {
-            ""
             "description": "Design control will almost certainly detect a potential "
             "mechanism/cause and subsequent failure mode.",
             "name": "Almost Certain",
@@ -306,14 +306,14 @@ class TestCommonManager:
             "value": 1,
         }
         assert _user_configuration.RAMSTK_RPN_OCCURRENCE[1] == {
-            "" "description": "Failure rate is 1 in 1,500,000.",
+            "description": "Failure rate is 1 in 1,500,000.",
             "name": "Remote",
             "rpn_id": 11,
             "rpn_type": "occurrence",
             "value": 1,
         }
         assert _user_configuration.RAMSTK_RPN_SEVERITY[1] == {
-            "" "description": "No effect.",
+            "description": "No effect.",
             "name": "None",
             "rpn_id": 1,
             "rpn_type": "severity",
