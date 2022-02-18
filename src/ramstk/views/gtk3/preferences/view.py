@@ -143,7 +143,8 @@ class PreferencesDialog(RAMSTKBaseView):
         }
 
         copyfile(
-            self._pnlTreeViewLayout.fmt_file, self._pnlTreeViewLayout.fmt_file + "_bak"
+            self._pnlTreeViewLayout.fmt_file,
+            self._pnlTreeViewLayout.fmt_file + "_bak",
         )
 
         # Get the format file for the Gtk.TreeView to be edited.  Make a

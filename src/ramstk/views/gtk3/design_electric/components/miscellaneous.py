@@ -181,7 +181,8 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
-            [[_("Incandescent, AC")], [_("Incandescent, DC")]], signal="changed"
+            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
+            signal="changed",
         )
 
         # Load the type RAMSTKComboBox().

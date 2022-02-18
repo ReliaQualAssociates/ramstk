@@ -43,7 +43,15 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private dict class attributes.
     _dic_quality: Dict[int, List[List[str]]] = {
         1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-R-10509"], ["MIL-R-22684"], [_("Lower")]],
+        2: [
+            ["S"],
+            ["R"],
+            ["P"],
+            ["M"],
+            ["MIL-R-10509"],
+            ["MIL-R-22684"],
+            [_("Lower")],
+        ],
         3: [["MIL-SPEC"], [_("Lower")]],
         4: [["MIL-SPEC"], [_("Lower")]],
         5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
@@ -60,7 +68,12 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     }
     # Key is subcategory ID; index is specification ID.
     _dic_specifications: Dict[int, List[List[str]]] = {
-        2: [["MIL-R-10509"], ["MIL-R-22684"], ["MIL-R-39017"], ["MIL-R-55182"]],
+        2: [
+            ["MIL-R-10509"],
+            ["MIL-R-22684"],
+            ["MIL-R-39017"],
+            ["MIL-R-55182"],
+        ],
         6: [["MIL-R-26"], ["MIL-R-39007"]],
         7: [["MIL-R-18546"], ["MIL-R-39009"]],
         15: [["MIL-R-23285"], ["MIL-R-39023"]],
@@ -470,7 +483,10 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [10, 12]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
+            10,
+            12,
+        ]:
             self.cmbConstruction.set_sensitive(True)
             self.cmbConstruction.do_update(
                 attributes["construction_id"],
@@ -511,7 +527,12 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [2, 6, 7, 15]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
+            2,
+            6,
+            7,
+            15,
+        ]:
             self.cmbSpecification.set_sensitive(True)
             self.cmbSpecification.do_update(
                 attributes["specification_id"],

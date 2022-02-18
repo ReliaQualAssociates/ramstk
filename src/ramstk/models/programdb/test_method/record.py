@@ -23,7 +23,11 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     This table shared a Many-to-One relationship with ramstk_op_stress.
     """
 
-    __defaults__ = {"description": "", "boundary_conditions": "", "remarks": ""}
+    __defaults__ = {
+        "description": "",
+        "boundary_conditions": "",
+        "remarks": "",
+    }
     __tablename__ = "ramstk_test_method"
     __table_args__ = (
         ForeignKeyConstraint(
@@ -47,7 +51,11 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)

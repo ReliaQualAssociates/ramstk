@@ -46,7 +46,11 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
@@ -54,7 +58,11 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_cause_id", Integer, primary_key=True, nullable=False, unique=True
     )
     control_id = Column(
-        "fld_control_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_control_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     description = Column(

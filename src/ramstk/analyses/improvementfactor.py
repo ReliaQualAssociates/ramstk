@@ -11,7 +11,10 @@ from typing import Dict, Tuple
 
 
 def calculate_improvement(
-    planned_rank: int, customer_rank: int, priority: int, **kwargs: Dict[str, float]
+    planned_rank: int,
+    customer_rank: int,
+    priority: int,
+    **kwargs: Dict[str, float],
 ) -> Tuple[float, float]:
     """Calculate the stakeholder improvement factor and overall weighting.
 

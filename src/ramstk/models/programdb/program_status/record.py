@@ -39,7 +39,11 @@ class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
     status_id = Column(
-        "fld_status_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_status_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     cost_remaining = Column("fld_cost_remaining", Float, default=0.0)

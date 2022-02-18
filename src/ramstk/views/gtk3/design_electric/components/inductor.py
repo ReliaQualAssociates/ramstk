@@ -370,7 +370,10 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("RF Transformer")],
                 ]
             else:
-                _data = [[_("RF Coils, Fixed or Molded")], [_("RF Coils, Variable")]]
+                _data = [
+                    [_("RF Coils, Fixed or Molded")],
+                    [_("RF Coils, Variable")],
+                ]
         else:
             _data = [
                 [_("Pulse Transformer")],
@@ -399,7 +402,11 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"], [_("Lower")]]
+            _data = [
+                [_("Established Reliability")],
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _data = self._dic_quality[self.subcategory_id]

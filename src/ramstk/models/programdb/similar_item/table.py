@@ -65,7 +65,8 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_calculate_similar_item, "request_calculate_similar_item")
         pub.subscribe(
-            self.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
+            self.do_roll_up_change_descriptions,
+            "request_roll_up_change_descriptions",
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden

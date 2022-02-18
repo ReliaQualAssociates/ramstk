@@ -5,7 +5,9 @@ from typing import Any, Dict, List
 from ramstk.analyses import derating as derating
 from ramstk.analyses import stress as stress
 from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
-from ramstk.models import RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord
+from ramstk.models import (
+    RAMSTKDesignElectricRecord as RAMSTKDesignElectricRecord,
+)
 
 class RAMSTKDesignElectricTable(RAMSTKBaseTable):
     _db_id_colname: str

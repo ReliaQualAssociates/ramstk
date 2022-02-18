@@ -204,7 +204,10 @@ class UsageProfileWorkView(RAMSTKWorkView):
             "record_id": 0,
         }
 
-        _model, _row = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
 
         _attributes["mission_id"] = _model.get_value(_row, 1)
         _attributes["mission_phase_id"] = _model.get_value(_row, 2)

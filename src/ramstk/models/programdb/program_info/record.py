@@ -52,13 +52,19 @@ class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __table_args__ = {"extend_existing": True}
 
     revision_id = Column(
-        "fld_revision_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_revision_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
     function_active = Column(
         "fld_function_active", Integer, default=__defaults__["function_active"]
     )
     requirement_active = Column(
-        "fld_requirement_active", Integer, default=__defaults__["requirement_active"]
+        "fld_requirement_active",
+        Integer,
+        default=__defaults__["requirement_active"],
     )
     hardware_active = Column(
         "fld_hardware_active", Integer, default=__defaults__["hardware_active"]
@@ -83,13 +89,19 @@ class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_hazard_active", Integer, default=__defaults__["hazard_active"]
     )
     stakeholder_active = Column(
-        "fld_stakeholder_active", Integer, default=__defaults__["stakeholder_active"]
+        "fld_stakeholder_active",
+        Integer,
+        default=__defaults__["stakeholder_active"],
     )
     allocation_active = Column(
-        "fld_allocation_active", Integer, default=__defaults__["allocation_active"]
+        "fld_allocation_active",
+        Integer,
+        default=__defaults__["allocation_active"],
     )
     similar_item_active = Column(
-        "fld_similar_item_active", Integer, default=__defaults__["similar_item_active"]
+        "fld_similar_item_active",
+        Integer,
+        default=__defaults__["similar_item_active"],
     )
     fmea_active = Column(
         "fld_fmea_active", Integer, default=__defaults__["fmea_active"]

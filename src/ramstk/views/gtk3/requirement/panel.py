@@ -892,7 +892,8 @@ class RequirementTreePanel(RAMSTKTreePanel):
             )
 
             _title = _("Analyzing Requirement {0:s}: {1:s}").format(
-                str(_attributes["requirement_code"]), str(_attributes["description"])
+                str(_attributes["requirement_code"]),
+                str(_attributes["description"]),
             )
 
             pub.sendMessage("selected_requirement", attributes=_attributes)

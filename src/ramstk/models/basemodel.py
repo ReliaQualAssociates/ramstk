@@ -53,7 +53,9 @@ class RAMSTKBaseRecord:
         for _key in attributes:
             getattr(self, _key)
             setattr(
-                self, _key, none_to_default(attributes[_key], self.__defaults__[_key])
+                self,
+                _key,
+                none_to_default(attributes[_key], self.__defaults__[_key]),
             )
 
 
@@ -301,7 +303,12 @@ class RAMSTKBaseTable:
         """
         try:
             _entity = self.tree.get_node(node_id).data[self._tag]
-        except (AttributeError, KeyError, treelib.tree.NodeIDAbsentError, TypeError):
+        except (
+            AttributeError,
+            KeyError,
+            treelib.tree.NodeIDAbsentError,
+            TypeError,
+        ):
             _method_name = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
                 f"{_method_name}: No data package for node ID {node_id} in module "

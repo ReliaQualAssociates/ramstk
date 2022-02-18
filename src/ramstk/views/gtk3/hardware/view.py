@@ -821,7 +821,9 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
 
         # Create a logger specifically for this class.
         self.RAMSTK_LOGGER.do_create_logger(
-            __name__, self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL, to_tty=False
+            __name__,
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL,
+            to_tty=False,
         )
 
         # Initialize private dictionary attributes.

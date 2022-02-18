@@ -14,7 +14,23 @@ from typing import Any, Dict, Tuple
 
 ACTIVATION_ENERGY = {
     1: 0.65,
-    2: [0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.45, 0.45, 0.5, 0.5, 0.6, 0.6, 0.6],
+    2: [
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.4,
+        0.45,
+        0.45,
+        0.5,
+        0.5,
+        0.6,
+        0.6,
+        0.6,
+    ],
     3: 0.65,
     4: 0.65,
     5: 0.6,
@@ -26,7 +42,10 @@ ACTIVATION_ENERGY = {
 }
 C1 = {
     1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
-    2: [[0.0025, 0.005, 0.01, 0.02, 0.04, 0.08], [0.01, 0.02, 0.04, 0.08, 0.16, 0.29]],
+    2: [
+        [0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
+        [0.01, 0.02, 0.04, 0.08, 0.16, 0.29],
+    ],
     3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
     4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
     5: [[0.00065, 0.0013, 0.0026, 0.0052], [0.0094, 0.019, 0.038, 0.075]],
@@ -1003,7 +1022,22 @@ PART_COUNT_LAMBDA_B = {
     },
 }
 PI_A = {1: [1.0, 3.0, 3.0], 2: [1.0]}
-PI_E = [0.5, 2.0, 4.0, 4.0, 6.0, 4.0, 5.0, 5.0, 8.0, 8.0, 0.5, 5.0, 12.0, 220.0]
+PI_E = [
+    0.5,
+    2.0,
+    4.0,
+    4.0,
+    6.0,
+    4.0,
+    5.0,
+    5.0,
+    8.0,
+    8.0,
+    0.5,
+    5.0,
+    12.0,
+    220.0,
+]
 PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 PI_Q = [0.25, 1.0, 2.0]
 
@@ -1035,7 +1069,10 @@ def calculate_junction_temperature(
 
 
 def calculate_lambda_cyclic_factors(
-    n_cycles: int, construction_id: int, n_elements: int, temperature_junction: float
+    n_cycles: int,
+    construction_id: int,
+    n_elements: int,
+    temperature_junction: float,
 ) -> Tuple[float, float, float, float]:
     """Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
@@ -1085,7 +1122,10 @@ def calculate_lambda_cyclic_factors(
 
 
 def calculate_temperature_factor(
-    subcategory_id: int, family_id: int, type_id: int, temperature_junction: float
+    subcategory_id: int,
+    family_id: int,
+    type_id: int,
+    temperature_junction: float,
 ) -> float:
     """Calculate the temperature factor (piT).
 
@@ -1321,7 +1361,10 @@ def get_application_factor(type_id: int, application_id: int) -> float:
 
 
 def get_die_complexity_factor(
-    subcategory_id: int, technology_id: int, application_id: int, n_elements: int
+    subcategory_id: int,
+    technology_id: int,
+    application_id: int,
+    n_elements: int,
 ) -> float:
     """Retrieve the die complexity hazard rate (C1).
 
@@ -1505,7 +1548,10 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
     else:
         _lst_index = _dic_breakpoints[id_keys["subcategory_id"]]
         _index = (
-            min(range(len(_lst_index)), key=lambda i: abs(_lst_index[i] - n_elements))
+            min(
+                range(len(_lst_index)),
+                key=lambda i: abs(_lst_index[i] - n_elements),
+            )
             + 1
         )
 

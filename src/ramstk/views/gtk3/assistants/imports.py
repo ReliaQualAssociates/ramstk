@@ -69,7 +69,11 @@ class ImportProject(Gtk.Assistant):
         pub.subscribe(self._do_load_import_fields, "succeed_read_import_file")
 
     def _do_edit_cell(
-        self, __cell: Gtk.CellRenderer, path: str, new_text: str, model: Gtk.TreeModel
+        self,
+        __cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        model: Gtk.TreeModel,
     ) -> None:
         """Handle Gtk.CellRenderer() edits.
 
@@ -169,7 +173,9 @@ class ImportProject(Gtk.Assistant):
 
         if _file is not None:
             pub.sendMessage(
-                "request_read_import_file", file_type=_file_type, file_name=_file
+                "request_read_import_file",
+                file_type=_file_type,
+                file_name=_file,
             )
 
         self.set_page_complete(_page, True)

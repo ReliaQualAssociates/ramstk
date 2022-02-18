@@ -144,7 +144,11 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private list class attributes.
 
     # Index is the technology ID (load type).
-    _lst_technology: List[List[str]] = [[_("Resistive")], [_("Inductive")], [_("Lamp")]]
+    _lst_technology: List[List[str]] = [
+        [_("Resistive")],
+        [_("Inductive")],
+        [_("Lamp")],
+    ]
 
     # Index is the contact form ID.
     _lst_contact_form: List[List[str]] = [
@@ -489,7 +493,11 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"], [_("Lower")]]
+            _data = [
+                [_("Established Reliability")],
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _data = self._dic_quality[self.subcategory_id]

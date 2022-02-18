@@ -900,7 +900,10 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         _lst_labels: List[object] = []
-        _x_pos: List[int] = [0, self.txtActiveHt.get_preferred_size()[0].width + 5]
+        _x_pos: List[int] = [
+            0,
+            self.txtActiveHt.get_preferred_size()[0].width + 5,
+        ]
         _y_pos: List[int] = []
         _n_rows: int = 0
 
@@ -1190,7 +1193,10 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         _lst_labels: List[object] = []
-        _x_pos: List[int] = [0, self.txtLogisticsAt.get_preferred_size()[0].width + 5]
+        _x_pos: List[int] = [
+            0,
+            self.txtLogisticsAt.get_preferred_size()[0].width + 5,
+        ]
         _y_pos: List[int] = []
         _n_rows: int = 0
 

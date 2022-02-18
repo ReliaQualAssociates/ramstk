@@ -63,7 +63,10 @@ class RAMSTKPlot:
         self.axis = self.figure.add_subplot(111)
 
     def do_load_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Load the RAMSTKPlot.
 
@@ -122,7 +125,12 @@ class RAMSTKPlot:
         :rtype: None
         """
         _line = Line2D(
-            x_values, y_values, lw=0.0, color=color, marker=marker, markersize=10
+            x_values,
+            y_values,
+            lw=0.0,
+            color=color,
+            marker=marker,
+            markersize=10,
         )
         self.axis.add_line(_line)
 
@@ -306,7 +314,10 @@ class RAMSTKPlot:
         )
 
     def _do_make_date_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a date plot.
 
@@ -326,7 +337,10 @@ class RAMSTKPlot:
             self._lst_max.append(max(y_values))
 
     def _do_make_histogram(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a histogram.
 
@@ -350,7 +364,10 @@ class RAMSTKPlot:
             self._lst_max.append(max(_values) + 1)
 
     def _do_make_scatter_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a scatter plot.
 
@@ -371,7 +388,10 @@ class RAMSTKPlot:
             self._lst_max.append(max(y_values))
 
     def _do_make_step_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None:
         """Make a step plot.
 

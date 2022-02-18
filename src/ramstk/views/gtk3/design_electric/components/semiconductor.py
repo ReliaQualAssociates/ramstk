@@ -514,7 +514,13 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("Nonhermetic without Facet Coating")],
                 ]
             else:
-                _data = [["JANTXV"], ["JANTX"], ["JAN"], [_("Lower")], [_("Plastic")]]
+                _data = [
+                    ["JANTXV"],
+                    ["JANTX"],
+                    ["JAN"],
+                    [_("Lower")],
+                    [_("Plastic")],
+                ]
         else:
             try:
                 _data = self._dic_quality[self.subcategory_id]
@@ -530,7 +536,11 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         try:
             if self._hazard_rate_method_id == 1 and self.subcategory_id == 11:
-                _data = [[_("Photodetector")], [_("Opto-Isolator")], [_("Emitter")]]
+                _data = [
+                    [_("Photodetector")],
+                    [_("Opto-Isolator")],
+                    [_("Emitter")],
+                ]
             else:
                 _data = self._dic_types[self.subcategory_id]
         except KeyError:

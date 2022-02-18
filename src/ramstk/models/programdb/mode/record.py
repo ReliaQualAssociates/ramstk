@@ -55,17 +55,28 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __table_args__ = (
         ForeignKeyConstraint(
             ["fld_revision_id", "fld_hardware_id"],
-            ["ramstk_hardware.fld_revision_id", "ramstk_hardware.fld_hardware_id"],
+            [
+                "ramstk_hardware.fld_revision_id",
+                "ramstk_hardware.fld_hardware_id",
+            ],
         ),
         {"extend_existing": True},
     )
 
     revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column(
-        "fld_mode_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_mode_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     critical_item = Column(
@@ -75,10 +86,14 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_description", String(512), default=__defaults__["description"]
     )
     design_provisions = Column(
-        "fld_design_provisions", String, default=__defaults__["design_provisions"]
+        "fld_design_provisions",
+        String,
+        default=__defaults__["design_provisions"],
     )
     detection_method = Column(
-        "fld_detection_method", String(512), default=__defaults__["detection_method"]
+        "fld_detection_method",
+        String(512),
+        default=__defaults__["detection_method"],
     )
     effect_end = Column(
         "fld_effect_end", String(512), default=__defaults__["effect_end"]
@@ -90,7 +105,9 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_effect_next", String(512), default=__defaults__["effect_next"]
     )
     effect_probability = Column(
-        "fld_effect_probability", Float, default=__defaults__["effect_probability"]
+        "fld_effect_probability",
+        Float,
+        default=__defaults__["effect_probability"],
     )
     hazard_rate_source = Column(
         "fld_hazard_rate_source",
@@ -98,7 +115,9 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_source"],
     )
     isolation_method = Column(
-        "fld_isolation_method", String(512), default=__defaults__["isolation_method"]
+        "fld_isolation_method",
+        String(512),
+        default=__defaults__["isolation_method"],
     )
     mission = Column("fld_mission", String(64), default=__defaults__["mission"])
     mission_phase = Column(
@@ -114,24 +133,34 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_mode_op_time", Float, default=__defaults__["mode_op_time"]
     )
     mode_probability = Column(
-        "fld_mode_probability", String(64), default=__defaults__["mode_probability"]
+        "fld_mode_probability",
+        String(64),
+        default=__defaults__["mode_probability"],
     )
     mode_ratio = Column("fld_mode_ratio", Float, default=__defaults__["mode_ratio"])
     operator_actions = Column(
-        "fld_operator_actions", String, default=__defaults__["operator_actions"]
+        "fld_operator_actions",
+        String,
+        default=__defaults__["operator_actions"],
     )
     other_indications = Column(
-        "fld_other_indications", String(512), default=__defaults__["other_indications"]
+        "fld_other_indications",
+        String(512),
+        default=__defaults__["other_indications"],
     )
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
     rpn_severity = Column(
         "fld_rpn_severity", Integer, default=__defaults__["rpn_severity"]
     )
     rpn_severity_new = Column(
-        "fld_rpn_severity_new", Integer, default=__defaults__["rpn_severity_new"]
+        "fld_rpn_severity_new",
+        Integer,
+        default=__defaults__["rpn_severity_new"],
     )
     severity_class = Column(
-        "fld_severity_class", String(64), default=__defaults__["severity_class"]
+        "fld_severity_class",
+        String(64),
+        default=__defaults__["severity_class"],
     )
     single_point = Column(
         "fld_single_point", Integer, default=__defaults__["single_point"]

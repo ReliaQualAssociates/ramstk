@@ -31,7 +31,10 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKSiteConfiguration,
+    RAMSTKUserConfiguration,
+)
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -421,7 +424,9 @@ def setup_test_db(db_config) -> None:
         )
     )
     cursor.execute(
-        sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_config["database"]))
+        sql.SQL("CREATE DATABASE {}").format(
+            sql.Identifier(db_config["database"])
+        )
     )
     cursor.close()
     conn.close()
@@ -455,11 +460,15 @@ def teardown_test_db(db_config) -> None:
     conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 
     cursor = conn.cursor()
-    cursor.execute(
-        sql.SQL("DROP DATABASE IF EXISTS {}").format(
-            sql.Identifier(db_config["database"])
+    try:
+        cursor.execute(
+            sql.SQL("DROP DATABASE IF EXISTS {}").format(
+                sql.Identifier(db_config["database"])
+            )
         )
-    )
+    except psycopg2.errors.ObjectInUse as e:
+        print(e)
+
     cursor.close()
     conn.close()
 
@@ -484,7 +493,7 @@ def test_config_dir():
     """
     _config_dir = VIRTUAL_ENV + "/share/RAMSTK"
 
-    # Setup the test configuration directories.
+    # Set up the test configuration directories.
     setup_test_directory(test_dir=_config_dir)
 
     # Copy files to the test configuration directories.
@@ -500,7 +509,7 @@ def test_import_dir():
     # in.  A test would need to add the appropriate file extension.
     _import_dir = TMP_DIR + "/test_imports"
 
-    # Setup the test import directory.
+    # Set up the test import directory.
     setup_test_directory(test_dir=_import_dir)
 
     yield _import_dir
@@ -516,7 +525,7 @@ def test_export_dir():
     # in.  A test would need to add the appropriate file extension.
     _export_dir = TMP_DIR + "/test_exports/"
 
-    # Setup the test export directory.
+    # Set up the test export directory.
     setup_test_directory(test_dir=_export_dir)
 
     yield _export_dir
@@ -544,7 +553,8 @@ def make_home_config_dir():
         "./data/sqlite_program_db.sql", _config_dir + "/sqlite_program_db.sql"
     )
     shutil.copyfile(
-        "./data/postgres_program_db.sql", _config_dir + "/postgres_program_db.sql"
+        "./data/postgres_program_db.sql",
+        _config_dir + "/postgres_program_db.sql",
     )
 
     yield _config_dir
@@ -569,7 +579,9 @@ def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    db_name = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=10)
+    )
 
     # This will create a RAMSTK Common database using the
     # test_common_db.sql file in ./data for each group of tests collected in a
@@ -584,7 +596,7 @@ def test_common_dao():
         "database": "test_common_db_{}".format(db_name),
     }
 
-    # Setup the test database.
+    # Set up the test database.
     setup_test_db(db_config=test_config)
 
     # Populate the test database.
@@ -608,7 +620,9 @@ def test_program_dao():
     """Create a test DAO object for testing against a RAMSTK Program DB."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    db_name = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=10)
+    )
 
     # This will create a RAMSTK Program database using the
     # test_program_db.sql file in tests/__data for each group of tests collected in a
@@ -623,7 +637,7 @@ def test_program_dao():
         "database": "test_program_db_{}".format(db_name),
     }
 
-    # Setup the test database.
+    # Set up the test database.
     setup_test_db(db_config=test_config)
 
     # Populate the test database.
@@ -647,10 +661,12 @@ def test_simple_database():
     """Create a simple test database using postgres."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    db_name = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=10)
+    )
 
     # This temporary database has two tables (RAMSTKRevision and
-    # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
+    # RAMSTKSiteInfo) and is used primarily to test the connection, insert,
     # insert_many, delete, and update methods of the database drivers.
     test_config = {
         "dialect": "postgres",
@@ -661,7 +677,7 @@ def test_simple_database():
         "database": "test_simple_db_{}".format(db_name),
     }
 
-    # Setup the test database.
+    # Set up the test database.
     setup_test_db(db_config=test_config)
 
     # Populate the test database.
@@ -685,10 +701,12 @@ def test_simple_program_database():
     """Create a simple test database using postgres."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+    db_name = "".join(
+        random.choices(string.ascii_uppercase + string.digits, k=10)
+    )
 
     # This temporary database has two tables (RAMSTKRevision and
-    # RAMSTKSiteInfo) and is used primarily to test the connect, insert,
+    # RAMSTKSiteInfo) and is used primarily to test the connection, insert,
     # insert_many, delete, and update methods of the database drivers.
     test_config = {
         "dialect": "postgres",
@@ -699,7 +717,7 @@ def test_simple_program_database():
         "database": "test_simple_program_db_{}".format(db_name),
     }
 
-    # Setup the test database.
+    # Set up the test database.
     setup_test_db(db_config=test_config)
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
@@ -764,7 +782,9 @@ def test_toml_site_configuration(test_config_dir):
         },
     }
 
-    toml.dump(_dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF, "w"))
+    toml.dump(
+        _dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF, "w")
+    )
 
     yield _site_config
 
@@ -776,7 +796,9 @@ def test_toml_user_configuration(make_home_config_dir):
     _user_config._INSTALL_PREFIX = VIRTUAL_ENV
     _user_config.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
     _user_config.RAMSTK_CONF_DIR = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
-    _user_config.RAMSTK_PROG_CONF = _user_config.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+    _user_config.RAMSTK_PROG_CONF = (
+        _user_config.RAMSTK_CONF_DIR + "/RAMSTK.toml"
+    )
     _user_config.RAMSTK_DATA_DIR = _user_config.RAMSTK_CONF_DIR + "/layouts"
     _user_config.RAMSTK_ICON_DIR = _user_config.RAMSTK_CONF_DIR + "/icons"
     _user_config.RAMSTK_LOG_DIR = _user_config.RAMSTK_CONF_DIR + "/logs"
@@ -851,20 +873,88 @@ def test_toml_user_configuration(make_home_config_dir):
             "validationfg": "#000000",
         },
         "stress": {
-            "integratedcircuit": [0.8, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "semiconductor": [1.0, 1.0, 0.7, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            "integratedcircuit": [
+                0.8,
+                0.9,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
+            "semiconductor": [
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
             "resistor": [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "capacitor": [1.0, 1.0, 1.0, 1.0, 0.6, 0.9, 10.0, 0.0, 125.0, 125.0],
-            "inductor": [0.6, 0.9, 1.0, 1.0, 0.5, 0.9, 15.0, 0.0, 125.0, 125.0],
+            "capacitor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                0.6,
+                0.9,
+                10.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
+            "inductor": [
+                0.6,
+                0.9,
+                1.0,
+                1.0,
+                0.5,
+                0.9,
+                15.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
             "relay": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
             "switch": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "connection": [0.7, 0.9, 1.0, 1.0, 0.7, 0.9, 25.0, 0.0, 125.0, 125.0],
+            "connection": [
+                0.7,
+                0.9,
+                1.0,
+                1.0,
+                0.7,
+                0.9,
+                25.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
             "meter": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "miscellaneous": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
+            "miscellaneous": [
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                1.0,
+                0.0,
+                0.0,
+                125.0,
+                125.0,
+            ],
         },
     }
 
-    toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w"))
+    toml.dump(
+        _dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w")
+    )
     _user_config.get_user_configuration()
 
     yield _user_config

@@ -5,7 +5,9 @@ from typing import Any
 from treelib import Tree as Tree
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3.function import FunctionModuleView as FunctionModuleView

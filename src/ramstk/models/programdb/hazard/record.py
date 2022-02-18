@@ -90,16 +90,24 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     potential_hazard = Column(
-        "fld_potential_hazard", String(256), default=__defaults__["potential_hazard"]
+        "fld_potential_hazard",
+        String(256),
+        default=__defaults__["potential_hazard"],
     )
     potential_cause = Column(
-        "fld_potential_cause", String(512), default=__defaults__["potential_cause"]
+        "fld_potential_cause",
+        String(512),
+        default=__defaults__["potential_cause"],
     )
     assembly_effect = Column(
-        "fld_assembly_effect", String(512), default=__defaults__["assembly_effect"]
+        "fld_assembly_effect",
+        String(512),
+        default=__defaults__["assembly_effect"],
     )
     assembly_severity = Column(
-        "fld_assembly_severity", String(256), default=__defaults__["assembly_severity"]
+        "fld_assembly_severity",
+        String(256),
+        default=__defaults__["assembly_severity"],
     )
     assembly_probability = Column(
         "fld_assembly_probability",
@@ -110,7 +118,9 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_assembly_hri", Integer, default=__defaults__["assembly_hri"]
     )
     assembly_mitigation = Column(
-        "fld_assembly_mitigation", String, default=__defaults__["assembly_mitigation"]
+        "fld_assembly_mitigation",
+        String,
+        default=__defaults__["assembly_mitigation"],
     )
     assembly_severity_f = Column(
         "fld_assembly_severity_f",
@@ -150,7 +160,9 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_system_effect", String(512), default=__defaults__["system_effect"]
     )
     system_severity = Column(
-        "fld_system_severity", String(256), default=__defaults__["system_severity"]
+        "fld_system_severity",
+        String(256),
+        default=__defaults__["system_severity"],
     )
     system_probability = Column(
         "fld_system_probability",
@@ -159,10 +171,14 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     system_hri = Column("fld_system_hri", Integer, default=__defaults__["system_hri"])
     system_mitigation = Column(
-        "fld_system_mitigation", String, default=__defaults__["system_mitigation"]
+        "fld_system_mitigation",
+        String,
+        default=__defaults__["system_mitigation"],
     )
     system_severity_f = Column(
-        "fld_system_severity_f", String(256), default=__defaults__["system_severity_f"]
+        "fld_system_severity_f",
+        String(256),
+        default=__defaults__["system_severity_f"],
     )
     system_probability_f = Column(
         "fld_system_probability_f",

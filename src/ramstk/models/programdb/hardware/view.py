@@ -203,7 +203,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_cost(_node.identifier)
                 _total_cost += _node.data["hardware"].total_cost
-                _total_cost = _total_cost * _record.quantity
+                _total_cost *= _record.quantity
             _record.set_attributes({"total_cost": _total_cost})
 
     def do_calculate_hardware(self, node_id: int) -> None:
@@ -258,9 +258,12 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         _record.data["reliability"].do_calculate_hazard_rate_mission(
             _attributes["duty_cycle"]
         )
-        _record.data["reliability"].do_calculate_mtbf()
+        _record.data["reliability"].do_calculate_mtbf(
+            multiplier=self._hr_multiplier,
+        )
         _record.data["reliability"].do_calculate_reliability(
-            _attributes["mission_time"]
+            _attributes["mission_time"],
+            multiplier=self._hr_multiplier,
         )
 
         pub.sendMessage(
@@ -288,7 +291,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_part_count(_node.identifier)
                 _total_part_count += _node.data["hardware"].total_part_count
-                _total_part_count = _total_part_count * _record.quantity
+                _total_part_count *= _record.quantity
 
             _record.set_attributes({"total_part_count": _total_part_count})
 
@@ -312,9 +315,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
-            _total_power_dissipation = (
-                _total_power_dissipation * _record.data["hardware"].quantity
-            )
+            _total_power_dissipation *= _record.data["hardware"].quantity
 
         _record.data["hardware"].set_attributes(
             {"total_power_dissipation": _total_power_dissipation}
@@ -340,8 +341,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             _p_comp_ref_des = ""
 
         if _p_comp_ref_des != "":
-            _record.comp_ref_des = _p_comp_ref_des + ":" + _record.ref_des
-            _node.tag = _p_comp_ref_des + ":" + _record.ref_des
+            _record.comp_ref_des = f"{_p_comp_ref_des}:{_record.ref_des}"
+            _node.tag = f"{_p_comp_ref_des}:{_record.ref_des}"
         else:
             _record.comp_ref_des = _record.ref_des
             _node.tag = _record.ref_des

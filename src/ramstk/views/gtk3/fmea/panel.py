@@ -1496,7 +1496,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["action_category"], self.lst_action_category
+            self.tvwTreeView.position["action_category"],
+            self.lst_action_category,
         )
 
     def __do_load_action_status(self) -> None:
@@ -1943,7 +1944,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["mode_probability"], self.lst_mode_probability
+            self.tvwTreeView.position["mode_probability"],
+            self.lst_mode_probability,
         )
 
     def __do_load_rpn_detection(self) -> None:
@@ -1986,7 +1988,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["severity_class"], self.lst_severity_class
+            self.tvwTreeView.position["severity_class"],
+            self.lst_severity_class,
         )
 
     def __do_load_users(self) -> None:

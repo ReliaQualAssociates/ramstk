@@ -421,7 +421,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
+        self,
+        buffer: Gtk.TextBuffer,
+        key: str,
+        message: str,
+        textview: RAMSTKTextView,
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKTextView() widgets.
 

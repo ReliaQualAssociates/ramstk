@@ -307,7 +307,8 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbReportSize.do_update(
-            _papersize[self._configuration.RAMSTK_REPORT_SIZE.lower()], signal="changed"
+            _papersize[self._configuration.RAMSTK_REPORT_SIZE.lower()],
+            signal="changed",
         )
 
         self.txtFRMultiplier.do_update(

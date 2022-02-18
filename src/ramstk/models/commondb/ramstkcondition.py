@@ -17,7 +17,10 @@ from ramstk.models import RAMSTKBaseRecord
 class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_condition in RAMSTK Common database."""
 
-    __defaults__ = {"description": "Condition Description", "condition_type": ""}
+    __defaults__ = {
+        "description": "Condition Description",
+        "condition_type": "",
+    }
     __tablename__ = "ramstk_condition"
     __table_args__ = {"extend_existing": True}
 
@@ -32,7 +35,9 @@ class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_description", String(512), default=__defaults__["description"]
     )
     condition_type = Column(
-        "fld_condition_type", String(256), default=__defaults__["condition_type"]
+        "fld_condition_type",
+        String(256),
+        default=__defaults__["condition_type"],
     )
 
     def get_attributes(self):

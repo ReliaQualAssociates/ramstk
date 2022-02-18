@@ -187,7 +187,10 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             5: _lst_insert_B,
             6: _lst_insert_B,
         },
-        3: {1: _lst_insert_B + _lst_insert_D, 2: _lst_insert_B + _lst_insert_D},
+        3: {
+            1: _lst_insert_B + _lst_insert_D,
+            2: _lst_insert_B + _lst_insert_D,
+        },
         4: {
             1: _lst_insert_C,
             2: _lst_insert_C,

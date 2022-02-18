@@ -55,7 +55,11 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     # Define private dictionary class attributes.
     _dic_quality: Dict[int, List[Any]] = {
         1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["M"], [_("MIL-C-11693 Non-Established Reliability")], [_("Lower")]],
+        2: [
+            ["M"],
+            [_("MIL-C-11693 Non-Established Reliability")],
+            [_("Lower")],
+        ],
         3: [
             "S",
             "R",
@@ -400,7 +404,12 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
             [["CLR"]],
         ],
-        14: [[_("Style 16")], [_("Style 17")], [_("Style 71")], [_("All Others")]],
+        14: [
+            [_("Style 16")],
+            [_("Style 17")],
+            [_("Style 71")],
+            [_("All Others")],
+        ],
         15: [["CE"]],
         16: [
             ["CV11"],
@@ -611,7 +620,15 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _quality: List[Any] = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
+            _quality: List[Any] = [
+                "S",
+                "R",
+                "P",
+                "M",
+                "L",
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _quality = self._dic_quality[self.subcategory_id]

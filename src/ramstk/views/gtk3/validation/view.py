@@ -126,7 +126,8 @@ class ValidationModuleView(RAMSTKModuleView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_validation", node_id=self.dic_pkeys["record_id"]
+                "request_delete_validation",
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()
@@ -259,7 +260,8 @@ class ValidationGeneralDataView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            super().do_set_cursor_active_on_fail, "fail_calculate_validation_task"
+            super().do_set_cursor_active_on_fail,
+            "fail_calculate_validation_task",
         )
 
         pub.subscribe(self._do_set_record_id, "selected_validation")

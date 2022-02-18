@@ -2,7 +2,9 @@
 from typing import Any, List
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
+from ramstk.configuration import (
+    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
+)
 from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
@@ -22,7 +24,11 @@ class ImportProject(Gtk.Assistant):
         parent: object,
     ) -> None: ...
     def _do_edit_cell(
-        self, __cell: Gtk.CellRenderer, path: str, new_text: str, model: Gtk.TreeModel
+        self,
+        __cell: Gtk.CellRenderer,
+        path: str,
+        new_text: str,
+        model: Gtk.TreeModel,
     ) -> None: ...
     def _do_load_db_fields(self, db_fields: List[str]) -> None: ...
     def _do_load_import_fields(self, import_fields: List[str]) -> None: ...

@@ -47,7 +47,11 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __table_args__ = {"extend_existing": True}
 
     site_id = Column(
-        "fld_site_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_site_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
     site_name = Column("fld_site_name", String(512), default=__defaults__["site_name"])
     product_key = Column(
@@ -55,16 +59,24 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     expire_on = Column("fld_expire_on", Date, default=__defaults__["expire_on"])
     function_enabled = Column(
-        "fld_function_enabled", Integer, default=__defaults__["function_enabled"]
+        "fld_function_enabled",
+        Integer,
+        default=__defaults__["function_enabled"],
     )
     requirement_enabled = Column(
-        "fld_requirement_enabled", Integer, default=__defaults__["requirement_enabled"]
+        "fld_requirement_enabled",
+        Integer,
+        default=__defaults__["requirement_enabled"],
     )
     hardware_enabled = Column(
-        "fld_hardware_enabled", Integer, default=__defaults__["hardware_enabled"]
+        "fld_hardware_enabled",
+        Integer,
+        default=__defaults__["hardware_enabled"],
     )
     software_enabled = Column(
-        "fld_software_enabled", Integer, default=__defaults__["software_enabled"]
+        "fld_software_enabled",
+        Integer,
+        default=__defaults__["software_enabled"],
     )
     rcm_enabled = Column(
         "fld_rcm_enabled", Integer, default=__defaults__["rcm_enabled"]
@@ -73,10 +85,14 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_testing_enabled", Integer, default=__defaults__["testing_enabled"]
     )
     incident_enabled = Column(
-        "fld_incident_enabled", Integer, default=__defaults__["incident_enabled"]
+        "fld_incident_enabled",
+        Integer,
+        default=__defaults__["incident_enabled"],
     )
     survival_enabled = Column(
-        "fld_survival_enabled", Integer, default=__defaults__["survival_enabled"]
+        "fld_survival_enabled",
+        Integer,
+        default=__defaults__["survival_enabled"],
     )
     vandv_enabled = Column(
         "fld_vandv_enabled", Integer, default=__defaults__["vandv_enabled"]
@@ -85,10 +101,14 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_hazard_enabled", Integer, default=__defaults__["hazard_enabled"]
     )
     stakeholder_enabled = Column(
-        "fld_stakeholder_enabled", Integer, default=__defaults__["stakeholder_enabled"]
+        "fld_stakeholder_enabled",
+        Integer,
+        default=__defaults__["stakeholder_enabled"],
     )
     allocation_enabled = Column(
-        "fld_allocation_enabled", Integer, default=__defaults__["allocation_enabled"]
+        "fld_allocation_enabled",
+        Integer,
+        default=__defaults__["allocation_enabled"],
     )
     similar_item_enabled = Column(
         "fld_similar_item_enabled",
