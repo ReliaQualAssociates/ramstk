@@ -44,7 +44,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag: str = "failure_definition"
+    _tag: str = "definition"
     _tablabel = "<span weight='bold'>" + _("Failure\nDefinitions") + "</span>"
     _tabtooltip = _("Displays failure definitions for the selected revision.")
 
@@ -67,7 +67,9 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_delete)
+        self._lst_icons.insert(0, "add")
         self._lst_icons.insert(1, "remove")
         self._lst_mnu_labels = [
             _("Add Definition"),
@@ -95,6 +97,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_failure_definition")
+        pub.subscribe(self._on_select_function, "selected_function")
 
     # pylint: disable=unused-argument
     def _do_request_delete(self, __button: Gtk.ToolButton) -> None:
@@ -117,7 +120,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_failure_definition",
+                "request_delete_definition",
                 node_id=self.dic_pkeys["record_id"],
             )
 
@@ -135,6 +138,19 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         self.dic_pkeys["definition_id"] = attributes["definition_id"]
         self.dic_pkeys["parent_id"] = 0
         self.dic_pkeys["record_id"] = attributes["definition_id"]
+
+    def _on_select_function(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
+        """Set the parent ID when a function is selected.
+
+        :param attributes: the function dict for the selected function ID.
+        :return: None
+        :rtype: None
+        """
+        self.dic_pkeys["parent_id"] = attributes["function_id"]
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["function_id"] = attributes["function_id"]
 
     def __make_ui(self) -> None:
         """Build the user interface for the failure definition list view.

@@ -739,8 +739,8 @@ class TestGetterSetter:
         assert DUT.RAMSTK_COLORS == {
             "allocationbg": "#FFFFFF",
             "allocationfg": "#000000",
-            "failure_definitionbg": "#FFFFFF",
-            "failure_definitionfg": "#000000",
+            "definitionbg": "#FFFFFF",
+            "definitionfg": "#000000",
             "fmeabg": "#FFFFFF",
             "fmeafg": "#000000",
             "functionbg": "#FFFFFF",
@@ -764,7 +764,7 @@ class TestGetterSetter:
         }
         assert DUT.RAMSTK_FORMAT_FILE == {
             "allocation": "allocation.toml",
-            "failure_definition": "failure_definition.toml",
+            "definition": "failure_definition.toml",
             "fmea": "fmea.toml",
             "function": "function.toml",
             "hardware": "hardware.toml",
