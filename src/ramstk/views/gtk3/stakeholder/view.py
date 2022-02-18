@@ -73,10 +73,13 @@ class StakeholderWorkView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_delete)
         self._lst_callbacks.insert(2, self._do_request_calculate)
+        self._lst_icons.insert(0, "add")
         self._lst_icons.insert(1, "remove")
         self._lst_icons.insert(2, "calculate")
+        self._lst_mnu_labels.insert(0, _("Add New Input"))
         self._lst_mnu_labels.insert(1, _("Delete Selected Input"))
         self._lst_mnu_labels.insert(2, _("Calculate Inputs"))
         self._lst_tooltips.insert(0, _("Add a new stakeholder input."))

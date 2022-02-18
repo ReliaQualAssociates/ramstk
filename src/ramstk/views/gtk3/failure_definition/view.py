@@ -67,7 +67,9 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, self._do_request_delete)
+        self._lst_icons.insert(0, "add")
         self._lst_icons.insert(1, "remove")
         self._lst_mnu_labels = [
             _("Add Definition"),
