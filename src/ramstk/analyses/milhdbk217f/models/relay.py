@@ -251,16 +251,14 @@ def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
     :return: _pi_cyc; the calculate cycling factor.
     :rtype: float
     """
-    if quality_id in [1, 2, 3, 4, 5, 6] and n_cycles < 1.0:
-        _pi_cyc = 0.1
+    if quality_id in {1, 2, 3, 4, 5, 6} and n_cycles < 1.0:
+        return 0.1
     elif quality_id == 7 and n_cycles > 1000.0:
-        _pi_cyc = (n_cycles / 100.0) ** 2.0
+        return (n_cycles / 100.0) ** 2.0
     elif quality_id == 7 and 10.0 < n_cycles < 1000.0:
-        _pi_cyc = n_cycles / 10.0
+        return n_cycles / 10.0
     else:
-        _pi_cyc = 0.0
-
-    return _pi_cyc
+        return 0.0
 
 
 def calculate_load_stress_factor(technology_id: int, current_ratio: float) -> float:
@@ -274,15 +272,13 @@ def calculate_load_stress_factor(technology_id: int, current_ratio: float) -> fl
     :rtype: float
     """
     if technology_id == 1:
-        _pi_l = (current_ratio / 0.8) ** 2.0
+        return (current_ratio / 0.8) ** 2.0
     elif technology_id == 2:
-        _pi_l = (current_ratio / 0.4) ** 2.0
+        return (current_ratio / 0.4) ** 2.0
     elif technology_id == 3:
-        _pi_l = (current_ratio / 0.2) ** 2.0
+        return (current_ratio / 0.2) ** 2.0
     else:
-        _pi_l = 0.0
-
-    return _pi_l
+        return 0.0
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -402,11 +398,7 @@ def get_application_construction_factor(
     :raise: KeyError if passed an unknown contact rating ID, construction ID,
         or application ID.
     """
-    if quality_id in [1, 2, 3, 4, 5, 6]:
-        _quality = 1
-    else:
-        _quality = 2
-
+    _quality = 1 if quality_id in {1, 2, 3, 4, 5, 6} else 2
     return PI_F[contact_rating_id][application_id][construction_id][_quality - 1]
 
 
@@ -423,17 +415,12 @@ def get_environment_factor(
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    if quality_id in [1, 2, 3, 4, 5, 6]:
-        _quality = 1
-    else:
-        _quality = 2
-
-    if subcategory_id == 1:
-        _pi_e = PI_E[subcategory_id][_quality][environment_active_id - 1]
-    else:
-        _pi_e = PI_E[subcategory_id][environment_active_id - 1]
-
-    return _pi_e
+    _quality = 1 if quality_id in {1, 2, 3, 4, 5, 6} else 2
+    return (
+        PI_E[subcategory_id][_quality][environment_active_id - 1]
+        if subcategory_id == 1
+        else PI_E[subcategory_id][environment_active_id - 1]
+    )
 
 
 def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:

@@ -133,7 +133,7 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   soa_factor, weight_factor} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "hardware_id": self.hardware_id,
             "availability_alloc": self.availability_alloc,
@@ -158,5 +158,3 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "soa_factor": self.soa_factor,
             "weight_factor": self.weight_factor,
         }
-
-        return _attributes

@@ -59,12 +59,10 @@ class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "status_id": self.status_id,
             "cost_remaining": self.cost_remaining,
             "date_status": self.date_status,
             "time_remaining": self.time_remaining,
         }
-
-        return _attributes

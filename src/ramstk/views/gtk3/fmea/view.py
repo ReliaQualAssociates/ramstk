@@ -275,9 +275,10 @@ class FMEAWorkView(RAMSTKWorkView):
             x[1][0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
         ]
         self._pnlPanel.lst_users = [
-            x[1][0] + ", " + x[1][1]
+            f'{x[1][0]}, {x[1][1]}'
             for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS.items()
         ]
+
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
     def __do_load_rpn_lists(self) -> None:

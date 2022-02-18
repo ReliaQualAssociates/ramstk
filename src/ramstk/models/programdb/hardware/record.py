@@ -230,7 +230,7 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   total_power_dissipation, year_of_manufacture} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "hardware_id": self.hardware_id,
             "alt_part_number": self.alt_part_number,
@@ -267,8 +267,6 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "total_power_dissipation": self.total_power_dissipation,
             "year_of_manufacture": self.year_of_manufacture,
         }
-
-        return _attributes
 
     def do_calculate_total_cost(self) -> None:
         """Calculate the total cost of the hardware item."""

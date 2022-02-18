@@ -204,7 +204,7 @@ class RAMSTKPlot:
         _label = None
 
         if _set_x:
-            _label = self.axis.set_xlabel(
+            return self.axis.set_xlabel(
                 label,
                 {
                     "fontsize": _fontsize,
@@ -216,7 +216,7 @@ class RAMSTKPlot:
                 },
             )
         else:
-            _label = self.axis.set_ylabel(
+            return self.axis.set_ylabel(
                 label,
                 {
                     "fontsize": _fontsize,
@@ -226,8 +226,6 @@ class RAMSTKPlot:
                     "rotation": "vertical",
                 },
             )
-
-        return _label
 
     # pylint: disable=too-many-arguments
     def do_make_legend(self, text: List[str], **kwargs: Any) -> None:

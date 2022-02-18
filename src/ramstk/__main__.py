@@ -113,21 +113,23 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
         dao=BaseDatabase(),
         database=configuration.RAMSTK_COM_INFO,
         icons={
-            "refresh": configuration.RAMSTK_SITE_DIR + "/icons/32x32/view-refresh.png",
-            "save": configuration.RAMSTK_SITE_DIR + "/icons/32x32/save.png",
+            "refresh": configuration.RAMSTK_SITE_DIR
+            + "/icons/32x32/view-refresh.png",
+            "save": f'{configuration.RAMSTK_SITE_DIR}/icons/32x32/save.png',
         },
     )
+
 
     if _dialog.do_run() == Gtk.ResponseType.OK:
         _site_dir = configuration.RAMSTK_SITE_DIR
         _home = os.path.expanduser("~")
-        _user_dir = _home + "/.config/RAMSTK"
+        _user_dir = f'{_home}/.config/RAMSTK'
         if not os.path.isdir(_user_dir):
-            shutil.copytree(_site_dir + "/icons", _user_dir + "/icons/")
-            shutil.copytree(_site_dir + "/layouts", _user_dir + "/layouts/")
-            shutil.copy(_site_dir + "/RAMSTK.toml", _user_dir)
-            shutil.copy(_site_dir + "/postgres_program_db.sql", _user_dir)
-            os.makedirs(_user_dir + "/logs")
+            shutil.copytree(f'{_site_dir}/icons', f'{_user_dir}/icons/')
+            shutil.copytree(f'{_site_dir}/layouts', f'{_user_dir}/layouts/')
+            shutil.copy(f'{_site_dir}/RAMSTK.toml', _user_dir)
+            shutil.copy(f'{_site_dir}/postgres_program_db.sql', _user_dir)
+            os.makedirs(f'{_user_dir}/logs')
 
         configuration.RAMSTK_COM_INFO = _dialog.database
     else:

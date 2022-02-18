@@ -123,7 +123,7 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   rpn_occurrence_new} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "mode_id": self.mode_id,
             "mechanism_id": self.mechanism_id,
             "description": self.description,
@@ -135,5 +135,3 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "rpn_occurrence": self.rpn_occurrence,
             "rpn_occurrence_new": self.rpn_occurrence_new,
         }
-
-        return _attributes

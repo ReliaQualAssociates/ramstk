@@ -248,7 +248,7 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   viscosity_dynamic, water_per_cent, width_minimum} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "altitude_operating": self.altitude_operating,
             "application_id": self.application_id,
@@ -303,5 +303,3 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "water_per_cent": self.water_per_cent,
             "width_minimum": self.width_minimum,
         }
-
-        return _attributes

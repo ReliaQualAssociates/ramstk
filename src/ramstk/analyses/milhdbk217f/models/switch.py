@@ -390,11 +390,10 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> float:
     _environment_active_id: Any = attributes["environment_active_id"]
     _subcategory_id: Any = attributes["subcategory_id"]
 
-    if _subcategory_id == 5:
-        _base_hr: float = PART_COUNT_LAMBDA_B_BREAKER[_construction_id][
+    return (
+        PART_COUNT_LAMBDA_B_BREAKER[_construction_id][
             _environment_active_id - 1
         ]
-    else:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-
-    return _base_hr
+        if _subcategory_id == 5
+        else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+    )

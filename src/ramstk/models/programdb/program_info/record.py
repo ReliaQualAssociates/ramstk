@@ -128,7 +128,7 @@ class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   last_saved_by, method} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "function_active": self.function_active,
             "requirement_active": self.requirement_active,
@@ -152,5 +152,3 @@ class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "last_saved": self.last_saved,
             "last_saved_by": self.last_saved_by,
         }
-
-        return _attributes

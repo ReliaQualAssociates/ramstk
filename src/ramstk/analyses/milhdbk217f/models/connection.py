@@ -354,12 +354,7 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
     :return: _pi_c; the calculated value of the complexity factor.
     :rtype: float
     """
-    if n_circuit_planes > 2:
-        _pi_c = 0.65 * n_circuit_planes ** 0.63
-    else:
-        _pi_c = 1.0
-
-    return _pi_c
+    return 0.65 * n_circuit_planes ** 0.63 if n_circuit_planes > 2 else 1.0
 
 
 def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
@@ -395,9 +390,7 @@ def calculate_insert_temperature(contact_gauge: int, current_operating: float) -
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
-    _temperature_rise = _fo * current_operating ** 1.85
-
-    return _temperature_rise
+    return _fo * current_operating ** 1.85
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -503,32 +496,30 @@ def calculate_part_stress_lambda_b(
     :raise: IndexError if passed an unknown type ID.
     :raise: ZeroDivisionError if passed contact temperature = 0.0.
     """
-    # Factors are used to calculate base hazard rate for circular/rack and
-    # panel connectors.  Key is from dictionary above (1 - 4) or contact
-    # gauge (22 - 12).
-    _dic_factors = {
-        1: [0.2, -1592.0, 5.36],
-        2: [0.431, -2073.6, 4.66],
-        3: [0.19, -1298.0, 4.25],
-        4: [0.77, -1528.8, 4.72],
-        5: [0.216, -2073.6, 4.66],
-    }
-
     _ref_temp = REF_TEMPS[factor_key]
-    _f0 = _dic_factors[factor_key][0]
-    _f1 = _dic_factors[factor_key][1]
-    _f2 = _dic_factors[factor_key][2]
-
-    if subcategory_id in [4, 5]:
-        _lambda_b = PART_STRESS_LAMBDA_B[subcategory_id][type_id - 1]
+    if subcategory_id in {4, 5}:
+        return PART_STRESS_LAMBDA_B[subcategory_id][type_id - 1]
     elif subcategory_id == 3:
-        _lambda_b = 0.00042
+        return 0.00042
     else:
-        _lambda_b = _f0 * exp(
+        # Factors are used to calculate base hazard rate for circular/rack and
+        # panel connectors.  Key is from dictionary above (1 - 4) or contact
+        # gauge (22 - 12).
+        _dic_factors = {
+            1: [0.2, -1592.0, 5.36],
+            2: [0.431, -2073.6, 4.66],
+            3: [0.19, -1298.0, 4.25],
+            4: [0.77, -1528.8, 4.72],
+            5: [0.216, -2073.6, 4.66],
+        }
+
+        _f0 = _dic_factors[factor_key][0]
+        _f1 = _dic_factors[factor_key][1]
+        _f2 = _dic_factors[factor_key][2]
+
+        return _f0 * exp(
             (_f1 / contact_temperature) + (contact_temperature / _ref_temp) ** _f2
         )
-
-    return _lambda_b
 
 
 def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
@@ -589,17 +580,15 @@ def get_mate_unmate_factor(n_cycles: float) -> float:
     :rtype: float
     """
     if n_cycles <= 0.05:
-        _pi_k = PI_K[0]
+        return PI_K[0]
     elif 0.05 < n_cycles <= 0.5:
-        _pi_k = PI_K[1]
+        return PI_K[1]
     elif 0.5 < n_cycles <= 5.0:
-        _pi_k = PI_K[2]
+        return PI_K[2]
     elif 5.0 < n_cycles <= 50.0:
-        _pi_k = PI_K[3]
+        return PI_K[3]
     else:
-        _pi_k = PI_K[4]
-
-    return _pi_k
+        return PI_K[4]
 
 
 def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
@@ -644,11 +633,10 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     _type_id = kwargs.get("type_id", 0)
     _environment_active_id = kwargs.get("environment_active_id", 0)
 
-    if _subcategory_id in [1, 5]:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
+    return (
+        PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
             _environment_active_id - 1
         ]
-    else:
-        _base_hr = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-
-    return _base_hr
+        if _subcategory_id in [1, 5]
+        else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+    )
