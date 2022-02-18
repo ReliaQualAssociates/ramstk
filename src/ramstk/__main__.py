@@ -354,11 +354,9 @@ def the_one_ring() -> None:
     )
 
     (
-        _program_db,
+        _program_db,  # pylint: disable=unused-variable
         _site_db,
-    ) = do_initialize_databases(  # pylint: disable=unused-variable
-        user_configuration, site_db
-    )
+    ) = do_initialize_databases(user_configuration, site_db)
 
     user_configuration = _site_db.do_load_site_variables(user_configuration)
 

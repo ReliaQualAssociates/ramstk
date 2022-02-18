@@ -381,9 +381,9 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         """
         _model = self.tvwTreeView.get_cell_model(self.tvwTreeView.position["units"])
         for (
-            __,
+            __,  # pylint: disable=unused-variable
             _unit,
-        ) in self.dic_units.items():  # pylint: disable=unused-variable
+        ) in self.dic_units.items():
             _model.append([_unit[1]])
 
     # noinspection PyUnusedLocal
