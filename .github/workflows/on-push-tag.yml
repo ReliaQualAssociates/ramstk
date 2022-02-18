@@ -29,8 +29,7 @@ jobs:
       - name: Get new tag
         id: newversion
         run: |
-          new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-
+          new_tag=${GITHUB_REF/refs\/tags\//}
           echo "::set-output name=new_version::$(echo $new_tag)"
 
       - name: Generate release changelog
