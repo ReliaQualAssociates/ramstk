@@ -10,8 +10,6 @@ name: Push Version Tag Workflow
 
 on:
   push:
-    branches:
-      - master
     tags:
       - "v*"
 
@@ -24,7 +22,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-          ref: master
 
       - name: Get new tag
         id: newversion
@@ -32,6 +29,7 @@ jobs:
           new_tag=${GITHUB_REF/refs\/tags\//}
           echo "::set-output name=new_version::$(echo $new_tag)"
           echo "New tag is: $new_tag"
+          echo "GitHub ref: ${{ github.ref }}"
           
       - name: Generate release changelog
         uses: heinrichreimer/github-changelog-generator-action@master
