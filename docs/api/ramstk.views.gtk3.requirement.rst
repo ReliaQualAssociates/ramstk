@@ -1,29 +1,12 @@
-ramstk.views.gtk3.requirement package
-=====================================
+Requirement View Package
+========================
 
-Submodules
-----------
-
-ramstk.views.gtk3.requirement.moduleview module
------------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.requirement.moduleview
+.. automodule:: ramstk.views.gtk3.requirement.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.requirement.workview module
----------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.requirement.workview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.requirement
+.. automodule:: ramstk.views.gtk3.requirement.view
    :members:
    :undoc-members:
    :show-inheritance:

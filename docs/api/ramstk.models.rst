@@ -6,12 +6,3 @@ RAMSTK Data Model Package
 
    ramstk.models.commondb
    ramstk.models.programdb
-   ramstk.models.allocation
-
-Database Table Module
----------------------
-
-.. automodule:: ramstk.models.tables
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -1,29 +1,12 @@
-ramstk.views.gtk3.validation package
-====================================
+Validation & Verification View package
+======================================
 
-Submodules
-----------
-
-ramstk.views.gtk3.validation.moduleview module
-----------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.validation.moduleview
+.. automodule:: ramstk.views.gtk3.validation.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.views.gtk3.validation.workview module
---------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.validation.workview
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.validation
+.. automodule:: ramstk.views.gtk3.validation.view
    :members:
    :undoc-members:
    :show-inheritance:

@@ -142,8 +142,6 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
             self._get_database()
             self.exists = self.database["database"] in self._lst_databases
             _return = Gtk.ResponseType.OK
-        elif self.run() == Gtk.ResponseType.CANCEL:
-            _return = Gtk.ResponseType.CANCEL
 
         return _return
 
@@ -259,6 +257,12 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
         self.txtPassword.do_set_properties(
             tooltip=_("Enter the user password for the database server."), width=300
         )
+        self.txtPassword.set_visibility(False)
+        self.txtPassword.set_property(
+            "input-purpose",
+            Gtk.InputPurpose.PASSWORD,
+        )
+        self.txtPassword.set_invisible_char("*")
 
         self.tvwTreeView.selection = self.tvwTreeView.get_selection()
 
@@ -342,19 +346,19 @@ class RAMSTKDateSelect(Gtk.Dialog):
             cancelled.
         :rtype: str
         """
+        _date = "1970-01-01"
+
         if self.run() == Gtk.ResponseType.ACCEPT:
-            _date = self._calendar.get_date()
+            _getdate = self._calendar.get_date()
             _date = (
                 datetime(
-                    _date[0],
-                    _date[1] + 1,
-                    _date[2],
+                    _getdate[0],
+                    _getdate[1] + 1,
+                    _getdate[2],
                 )
                 .date()
                 .strftime("%Y-%m-%d")
             )
-        else:
-            _date = "1970-01-01"
 
         return _date
 
@@ -418,8 +422,6 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
             _filename = self.get_filename()
             # pylint: disable=unused-variable
             __, _extension = os.path.splitext(_filename)
-        elif self.run() == Gtk.ResponseType.REJECT:
-            self.do_destroy()
 
         return _filename, _extension
 
@@ -461,7 +463,12 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         :return: None
         :rtype: None
         """
-        _message_type = Gtk.MessageType.INFO
+        _dic_message_type = {
+            "error": Gtk.MessageType.ERROR,
+            "warning": Gtk.MessageType.WARNING,
+            "information": Gtk.MessageType.INFO,
+            "question": Gtk.MessageType.QUESTION,
+        }
 
         _prompt = self.get_property("text")
         # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
@@ -491,22 +498,18 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
                 "persists.</b>",
             )
         )
-        if message_type == "error":
-            self.set_markup(_prompt)
-            _message_type = Gtk.MessageType.ERROR
-            self.add_buttons("_OK", Gtk.ResponseType.OK)
-        elif message_type == "information":
-            _message_type = Gtk.MessageType.INFO
+        self.set_markup(_prompt)
+        self.set_property("message-type", _dic_message_type[message_type])
+
+        if message_type in {"error", "warning", "information"}:
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "question":
-            _message_type = Gtk.MessageType.QUESTION
-            self.add_buttons("_Yes", Gtk.ResponseType.YES, "_No", Gtk.ResponseType.NO)
-
-        elif message_type == "warning":
-            self.set_markup(_prompt)
-            _message_type = Gtk.MessageType.WARNING
-            self.add_buttons("_OK", Gtk.ResponseType.OK)
-        self.set_property("message-type", _message_type)
+            self.add_buttons(
+                "_Yes",
+                Gtk.ResponseType.YES,
+                "_No",
+                Gtk.ResponseType.NO,
+            )
 
     def do_run(self) -> Any:
         """Run the RAMSTK Message Dialog."""

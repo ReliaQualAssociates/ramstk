@@ -1,19 +1,13 @@
 Revision View Package
 =====================
 
-Revision Moduleview Module
---------------------------
-
-.. automodule:: ramstk.views.gtk3.revision.moduleview
+.. automodule:: ramstk.views.gtk3.revision.panel
    :members:
    :undoc-members:
    :private-members:
    :show-inheritance:
 
-Revision Workview Module
-------------------------
-
-.. automodule:: ramstk.views.gtk3.revision.workview
+.. automodule:: ramstk.views.gtk3.revision.view
    :members:
    :undoc-members:
    :private-members:

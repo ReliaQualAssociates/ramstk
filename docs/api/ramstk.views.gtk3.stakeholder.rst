@@ -1,21 +1,12 @@
-ramstk.views.gtk3.stakeholder package
-=====================================
+Stakeholder View Package
+========================
 
-Submodules
-----------
-
-ramstk.views.gtk3.stakeholder.listview module
----------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.stakeholder.listview
+.. automodule:: ramstk.views.gtk3.stakeholder.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.stakeholder
+.. automodule:: ramstk.views.gtk3.stakeholder.view
    :members:
    :undoc-members:
    :show-inheritance:

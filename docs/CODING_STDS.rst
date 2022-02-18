@@ -159,8 +159,7 @@ Naming Conventions for RAMSTK
    +===========================================================================+
    | **NOT** be included in any code checked in to the RAMSTK git repository.  |
    +---------------------------------------------------------------------------+
-   | Be converted to an ISSUE tag when an issue is created to track the        |
-   | condition.                                                                |
+   | Be converted to an CR tag when an issue is created to track the condition.|
    +---------------------------------------------------------------------------+
 
 #. CR tags shall:
@@ -170,7 +169,10 @@ Naming Conventions for RAMSTK
    +===========================================================================+
    | Include the issue number and brief description.  For example:             |
    |                                                                           |
-   |    CR 88: Handle Errors in FMEA WorkView _do_load_tree() Method           |
+   |    CR 88: Handle Errors in FMEA WorkView \_do\_load\_tree() Method        |
+   +---------------------------------------------------------------------------+
+   | Be removed from the code when the code is checked into the pull request   |
+   | addressing the issue.                                                     |
    +---------------------------------------------------------------------------+
 
 Design Conventions for RAMSTK
@@ -183,7 +185,10 @@ Design Conventions for RAMSTK
 #. Data managers are used to control the flow of data between the data base, the views, and the analysis manager.
 #. Analysis managers are used to control the flow of analyses.
 
-2100. *Data Managers*
+2100. *Record Model*
+#. There **shall** be a record model meta-class.
+
+2200. *Table Model*
 #. There **shall** be a data manager meta-class.
 #. All data managers **shall** have the following methods:
 
@@ -253,7 +258,7 @@ Design Conventions for RAMSTK
    | If the function or method does something, it should begin with set\_      |
    | (public) or \_set\_ (private).  For example:                              |
    |                                                                           |
-   |    \_set\_assessment\_points(self, **kwargs)                              |
+   |    \_set\_assessment\_points(self, \*\*kwargs)                            |
    +---------------------------------------------------------------------------+
    | Conform with all naming conventions.                                      |
    +---------------------------------------------------------------------------+

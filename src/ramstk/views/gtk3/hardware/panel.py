@@ -631,6 +631,10 @@ class HardwareTreePanel(RAMSTKTreePanel):
             self._on_module_switch,
             "mvwSwitchedPage",
         )
+        pub.subscribe(
+            self._on_workview_edit,
+            f"wvw_editing_{self._tag}",
+        )
 
     def do_load_comboboxes(self) -> None:
         """Load the Gtk.CellRendererCombo()s.
@@ -742,6 +746,34 @@ class HardwareTreePanel(RAMSTKTreePanel):
                     f"request_get_{_table}_attributes",
                     node_id=self._record_id,
                 )
+
+    def _on_workview_edit(self, node_id: int, package: Dict[str, Any]) -> None:
+        """Update the module view RAMSTKTreeView() with attribute changes.
+
+        This is a wrapper for the metaclass method do_refresh_tree().  It is
+        necessary to handle RAMSTKComboBox() changes because the package value will
+        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+
+        :param node_id: the ID of the hardware item being edited.
+        :param package: the key:value for the data being updated.
+        :return: None
+        """
+        [[_key, _value]] = package.items()
+
+        _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
+        _cell = _column.get_cells()[-1]
+
+        if isinstance(_cell, Gtk.CellRendererCombo):
+            if _key == "manufacturer_id":
+                package[_key] = self.lst_manufacturers[_value]
+            elif _key == "cost_type_id":
+                package[_key] = self._lst_cost_types[_value]
+            elif _key == "category_id":
+                package[_key] = self.lst_categories[_value]
+            # elif _key == "subcategory_id":
+            #    package[_key] = self.dic_subcategories[][_value]
+
+            super().do_refresh_tree(node_id, package)
 
     def __do_load_hardware(self, node: treelib.Node, row: Gtk.TreeIter) -> Gtk.TreeIter:
         """Load a hardware item into the RAMSTKTreeView().

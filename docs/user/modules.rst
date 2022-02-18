@@ -9,10 +9,14 @@ This chapter describes each of the `RAMSTK` modules in detail.
 
    revision
    usage_profile
-   failure_definition
    function
+   failure_definition
    hazards
    requirement
    stakeholder
    hardware
+   allocation
+   similar_item
+   fmea
+   pof
    validation

@@ -32,49 +32,49 @@ available for display in the Revision tab of the Module Book.
 .. tabularcolumns:: |r|l|
 .. table:: **Revision Attributes Available to Module Book**
 
-   +----------------------------------+----------+
-   | Attribute                        | Editable |
-   +==================================+==========+
-   | Revision ID                      | No       |
-   +----------------------------------+----------+
-   | Predicted Availability           | No       |
-   +----------------------------------+----------+
-   | Mission Availability             | No       |
-   +----------------------------------+----------+
-   | Total Cost                       | No       |
-   +----------------------------------+----------+
-   | Active Failure Rate              | No       |
-   +----------------------------------+----------+
-   | Dormant Failure Rate             | No       |
-   +----------------------------------+----------+
-   | Mission Failure Rate             | No       |
-   +----------------------------------+----------+
-   | Predicted Failure Rate           | No       |
-   +----------------------------------+----------+
-   | Software Failure Rate            | No       |
-   +----------------------------------+----------+
-   | Mean Maintenance Time            | No       |
-   +----------------------------------+----------+
-   | Mean Corrective Maintenance Time | No       |
-   +----------------------------------+----------+
-   | Mean Predictive Maintenance Time | No       |
-   +----------------------------------+----------+
-   | Mission MTBF                     | No       |
-   +----------------------------------+----------+
-   | Predicted MTBF                   | No       |
-   +----------------------------------+----------+
-   | Mean Time to Repair              | No       |
-   +----------------------------------+----------+
-   | Revision Name                    | Yes      |
-   +----------------------------------+----------+
-   | Mission Reliability              | No       |
-   +----------------------------------+----------+
-   | Predicted Reliability            | No       |
-   +----------------------------------+----------+
-   | Remarks                          | Yes      |
-   +----------------------------------+----------+
-   | Revision Code                    | Yes      |
-   +----------------------------------+----------+
+   +----------------------------------+----------+-----------------------------+
+   | Attribute                        | Editable | Source of Data              |
+   +==================================+==========+=============================+
+   | Revision ID                      | No       | Assigned by database.       |
+   +----------------------------------+----------+-----------------------------+
+   | Predicted Availability           | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mission Availability             | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Total Cost                       | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Active Failure Rate              | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Dormant Failure Rate             | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mission Failure Rate             | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Predicted Failure Rate           | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Software Failure Rate            | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mean Maintenance Time            | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mean Corrective Maintenance Time | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mean Predictive Maintenance Time | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mission MTBF                     | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Predicted MTBF                   | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Mean Time to Repair              | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Revision Name                    | Yes      | Free form entry.            |
+   +----------------------------------+----------+-----------------------------+
+   | Mission Reliability              | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Predicted Reliability            | No       | Calculated value.           |
+   +----------------------------------+----------+-----------------------------+
+   | Remarks                          | Yes      | Free form entry.            |
+   +----------------------------------+----------+-----------------------------+
+   | Revision Code                    | Yes      | Free form entry.            |
+   +----------------------------------+----------+-----------------------------+
 
 Selecting the Revision you wish to work with from the displayed list will
 load the other work stream modules with their revision-specific data.  This
@@ -112,8 +112,7 @@ open `RAMSTK` Program database.
 To save changes to all Revisions:
 
 * Press the 'Save All' button to the left of the revision list.
-* Right click on the revision list and select 'Save All' from the pop-up
-menu.
+* Right click on the revision list and select 'Save All' from the pop-up menu.
 
 Pending changes to all Revisions are committed to the open `RAMSTK` Program
 database.
@@ -128,15 +127,15 @@ following attributes are displayed in the Revision's General Data page.
 .. tabularcolumns:: |r|l|
 .. table:: **Revision Attributes in the Work Book**
 
-   +----------------------+----------+
-   | Attribute            | Editable |
-   +======================+==========+
-   | Revision Code        | Yes      |
-   +----------------------+----------+
-   | Revision Name        | Yes      |
-   +----------------------+----------+
-   | Remarks              | Yes      |
-   +----------------------+----------+
+   +----------------------+----------+------------------------------------+
+   | Attribute            | Editable | Source of Data                     |
+   +======================+==========+====================================+
+   | Revision Code        | Yes      | Free form entry.                   |
+   +----------------------+----------+------------------------------------+
+   | Revision Name        | Yes      | Free form entry.                   |
+   +----------------------+----------+------------------------------------+
+   | Remarks              | Yes      | Free form entry.                   |
+   +----------------------+----------+------------------------------------+
 
 The revision code is used as identifier for a specific Revision.  The coding
 scheme is defined by you depending on your concept of a revision.  The table
@@ -189,13 +188,6 @@ open `RAMSTK` Program database.
 To save changes to all Revisions, press the 'Save All' button to the left of
 the work space.  All pending changes to all Revisions are committed to the
 open `RAMSTK` Program database.
-
-List Book
----------
-There are two lists associated with the Revision work stream.  These are the
-:ref:`sec-usage-profile` and :ref:`sec-failure-definitions`.
-
-There are no matrices associated with the Revision work stream.
 
 Analyzing the Revision
 ----------------------

@@ -1,8 +1,8 @@
 # This workflow runs when a version tag is pushed.
 #
 # - Job 1:
-#     - Create release.
-#     - Get release version.
+#     - Get new tag.
+#     - Create new release notes.
 #     - Update CHANGELOG.md
 #     - Update pyproject.toml and VERSION with new version.
 #     - Set PR variable.
@@ -25,12 +25,12 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: master
 
       - name: Get new tag
         id: newversion
         run: |
           new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-          new_tag=$(echo $tag_version | cut -d 'v' -f2)
 
           echo "::set-output name=new_version::$(echo $new_tag)"
 

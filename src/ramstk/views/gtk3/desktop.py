@@ -440,7 +440,6 @@ class RAMSTKDesktop(Gtk.Window):
         :rtype: None
         """
         self.connect("delete_event", destroy)
-        self.connect("window_state_event", self._on_window_state_event)
         self.connect("button_press_event", self._on_button_press)
 
     def __set_properties(self) -> None:
@@ -583,17 +582,3 @@ class RAMSTKDesktop(Gtk.Window):
         except AttributeError as _error:
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
             self.do_raise_dialog(severity="warning", user_msg=_error)
-
-    @staticmethod
-    def _on_window_state_event(window: Gtk.Window, event: Gdk.EventWindowState) -> None:
-        """Iconify or deiconify the desktop.
-
-        :return: None
-        :rtype: None
-        """
-        if event.new_window_state == Gdk.WindowState.ICONIFIED:
-            window.iconify()
-        elif event.new_window_state == 0:
-            window.deiconify()
-        elif event.new_window_state == Gdk.WindowState.MAXIMIZED:
-            window.maximize()

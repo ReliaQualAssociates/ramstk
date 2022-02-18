@@ -1,21 +1,12 @@
-ramstk.views.gtk3.fmea package
-==============================
+FMEA View Package
+=================
 
-Submodules
-----------
-
-ramstk.views.gtk3.fmea.workview module
---------------------------------------
-
-.. automodule:: ramstk.views.gtk3.fmea.workview
+.. automodule:: ramstk.views.gtk3.fmea.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.fmea
+.. automodule:: ramstk.views.gtk3.fmea.view
    :members:
    :undoc-members:
    :show-inheritance:

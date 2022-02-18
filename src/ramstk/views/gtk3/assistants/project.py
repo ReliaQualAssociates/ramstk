@@ -24,7 +24,7 @@ from ramstk.views.gtk3.widgets.label import RAMSTKLabel
 class CreateProject:
     """The class used to create a new RAMSTK Project database."""
 
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
     def __init__(
         self,
@@ -75,8 +75,9 @@ class CreateProject:
 
         _label = RAMSTKLabel(
             _(
-                "RAMSTK Program database already exists:" "\n\n\t\t{0:s}\n\nOverwrite?"
-            ).format(database)
+                f"RAMSTK Program database already exists:\n\n\t\t"
+                f"{database}\n\nOverwrite?"
+            )
         )
         _label.do_set_properties(width=-1, height=-1, bold=False, wrap=True)
         _dialog.vbox.pack_start(_label, True, True, 0)
@@ -97,10 +98,9 @@ class CreateProject:
         """
         _dialog = RAMSTKDatabaseSelect(
             dlgtitle=(
-                "Select RAMSTK Program "
-                "Database on the {0:s} Server".format(
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["dialect"]
-                )
+                f"Select RAMSTK Program Database on the "
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']} "
+                f"Server"
             ),
             dlgparent=self._parent,
             dao=BaseDatabase(),
@@ -131,7 +131,7 @@ class CreateProject:
 class OpenProject:
     """Assistant to guide user through process of creating RAMSTK Project."""
 
-    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = None  # type: ignore
+    RAMSTK_USER_CONFIGURATION: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
 
     def __init__(
         self,
@@ -172,10 +172,9 @@ class OpenProject:
         else:
             _dialog = RAMSTKDatabaseSelect(
                 dlgtitle=(
-                    "Select RAMSTK Program "
-                    "Database on the {0:s} Server".format(
-                        self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["dialect"]
-                    )
+                    f"Select RAMSTK Program Database on the "
+                    f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']} "
+                    f"Server"
                 ),
                 dlgparent=self._parent,
                 dao=BaseDatabase(),
@@ -188,7 +187,8 @@ class OpenProject:
                 },
             )
 
-            if _dialog.do_run() == Gtk.ResponseType.OK:
+            _response = _dialog.do_run()
+            if _response == Gtk.ResponseType.OK:
                 self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO = _dialog.database
 
                 if _dialog.exists:

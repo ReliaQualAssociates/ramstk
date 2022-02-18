@@ -5,7 +5,6 @@ RAMSTK Packages
    :maxdepth: 2
 
    ramstk.analyses
-   ramstk.controllers
    ramstk.db
    ramstk.exim
    ramstk.models
@@ -35,14 +34,6 @@ RAMSTK Logger
    :undoc-members:
    :show-inheritance:
 
-ramstk.ramstk module
---------------------
-
-.. automodule:: ramstk.ramstk
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 RAMSTK Utilities
 ----------------
 
@@ -51,10 +42,10 @@ RAMSTK Utilities
    :undoc-members:
    :show-inheritance:
 
-Module Contents
----------------
+RAMSTK
+------
 
-.. automodule:: ramstk
+.. automodule:: ramstk.__main__
    :members:
    :undoc-members:
    :show-inheritance:

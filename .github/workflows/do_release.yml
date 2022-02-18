@@ -1,0 +1,46 @@
+# This workflow runs when a pull request is closed.
+#
+# - Job 1:
+#     - Gets list of PR labels.
+#     - Get release version from VERSION.
+#     - IF 'Release' label:
+#         - Cut release.
+name: Do Release Workflow
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+jobs:
+  cut-release:
+    name: Cut New Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Get PR labels
+        id: prlabels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: Get release version
+        id: relversion
+        run: echo "::set-output name=rel_version::$(echo $(cat VERSION))"
+
+      - name: Cut release
+        id: cut_release
+        if: contains(steps.prlabels.outputs.labels, ' Release ')
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "v${{ steps.relversion.outputs.rel_version }}"
+          tag: "v${{ steps.relversion.outputs.rel_version }}"
+          version: "${{ steps.relversion.outputs.rel_version }}"
+          prerelease: false
+          publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

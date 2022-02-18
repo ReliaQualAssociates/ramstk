@@ -1,18 +1,12 @@
 Function View Package
 =====================
 
-Function Moduleview Module
---------------------------
-
-.. automodule:: ramstk.views.gtk3.function.moduleview
+.. automodule:: ramstk.views.gtk3.function.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Function Workview Module
-------------------------
-
-.. automodule:: ramstk.views.gtk3.function.workview
+.. automodule:: ramstk.views.gtk3.function.view
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,21 +1,12 @@
-ramstk.views.gtk3.similar\_item package
-=======================================
+Similar Item View Package
+=========================
 
-Submodules
-----------
-
-ramstk.views.gtk3.similar\_item.workview module
------------------------------------------------
-
-.. automodule:: ramstk.views.gtk3.similar_item.workview
+.. automodule:: ramstk.views.gtk3.similar_item.panel
    :members:
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: ramstk.views.gtk3.similar_item
+.. automodule:: ramstk.views.gtk3.similar_item.view
    :members:
    :undoc-members:
    :show-inheritance:
