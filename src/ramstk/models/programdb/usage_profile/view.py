@@ -80,10 +80,10 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         pub.subscribe(super().do_set_tree, "succeed_delete_mission")
         pub.subscribe(super().do_set_tree, "succeed_delete_mission_phase")
 
-    def _do_load_environments(self, phase_id: int, parent_id: str) -> None:
+    def _do_load_environments(self, mission_phase_id: int, parent_id: str) -> None:
         """Load the environments into the tree for the passed phase ID.
 
-        :param phase_id: the mission phase ID to load the environments for.
+        :param mission_phase_id: the mission phase ID to load the environments for.
         :param parent_id: the parent node ID.
         :return: None
         :rtype: None
@@ -92,7 +92,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
             _environment = _node.data["environment"]
             _node_id = f"{parent_id}.{_environment.environment_id}"
 
-            if _environment.phase_id == phase_id:
+            if _environment.mission_phase_id == mission_phase_id:
                 self.tree.create_node(
                     tag="environment",
                     identifier=_node_id,
@@ -131,7 +131,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["mission_phase"].all_nodes()[1:]:
             _mission_phase = _node.data["mission_phase"]
-            _node_id = f"{mission_id}.{_mission_phase.phase_id}"
+            _node_id = f"{mission_id}.{_mission_phase.mission_phase_id}"
 
             if _mission_phase.mission_id == mission_id:
                 self.tree.create_node(
@@ -143,6 +143,6 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
 
                 if self._dic_trees["environment"].depth() > 0:
                     self._dic_load_functions["environment"](  # type: ignore
-                        _mission_phase.phase_id,
+                        _mission_phase.mission_phase_id,
                         _node_id,
                     )

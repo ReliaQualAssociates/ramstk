@@ -23,7 +23,11 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     shares a One-to-Many relationship with ramstk_mission_phase.
     """
 
-    __defaults__ = {"description": "", "mission_time": 0.0, "time_units": "hours"}
+    __defaults__ = {
+        "description": "",
+        "mission_time": 0.0,
+        "time_units": "hours",
+    }
     __tablename__ = "ramstk_mission"
     __table_args__ = (
         UniqueConstraint(
@@ -60,10 +64,6 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         cascade="all,delete",
     )
 
-    is_mission = True
-    is_phase = False
-    is_env = False
-
     def get_attributes(self):
         """Retrieve current values of the RAMSTKMission data model attributes.
 
@@ -71,12 +71,10 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   time_units)
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "mission_id": self.mission_id,
             "description": self.description,
             "mission_time": self.mission_time,
             "time_units": self.time_units,
         }
-
-        return _attributes

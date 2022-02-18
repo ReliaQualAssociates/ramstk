@@ -191,7 +191,7 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
@@ -206,7 +206,7 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
@@ -220,7 +220,7 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")

@@ -39,7 +39,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
             False,
             False,
         ],
-        "phase": [
+        "mission_phase": [
             False,
             False,
             True,
@@ -136,7 +136,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 _("Mission ID"),
                 "gint",
             ],
-            "phase_id": [
+            "mission_phase_id": [
                 2,
                 Gtk.CellRendererText(),
                 "edited",
@@ -237,7 +237,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                "wvw_editing_phase",
+                "wvw_editing_mission_phase",
                 0.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -253,7 +253,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
                 Gtk.CellRendererText(),
                 "edited",
                 super().on_cell_edit,
-                "wvw_editing_phase",
+                "wvw_editing_mission_phase",
                 1.0,
                 {
                     "bg_color": "#FFFFFF",
@@ -369,7 +369,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
 
         self.level = {
             "100": "mission",
-            "110": "phase",
+            "110": "mission_phase",
             "111": "environment",
         }[_cid]
 
@@ -449,7 +449,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         _attributes = [
             _entity.revision_id,
             _entity.mission_id,
-            _entity.phase_id,
+            _entity.mission_phase_id,
             _entity.environment_id,
             _entity.name,
             "",
@@ -548,7 +548,7 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         _attributes = [
             _entity.revision_id,
             _entity.mission_id,
-            _entity.phase_id,
+            _entity.mission_phase_id,
             0,
             _entity.name,
             _entity.description,
