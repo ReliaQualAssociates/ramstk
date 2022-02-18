@@ -11,7 +11,7 @@ name: Push Version Tag Workflow
 on:
   push:
     tags:
-      - "v*"
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
   create-release:
