@@ -18,6 +18,8 @@ on:
       - master
     paths:
       - "**.py"
+    tags-ignore:
+      - "*"
   pull_request:
     paths:
       - "**.py"

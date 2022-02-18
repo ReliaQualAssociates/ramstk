@@ -66,20 +66,12 @@ jobs:
             ./pyproject.toml
             ./docs/conf.py
 
-      - name: Set release pull request variables
-        id: prvars
-        run: |
-          echo ::set-output name=title::"release: v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=body::"Please cut release v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=message::"release: v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=branch::"release/v${{ steps.newversion.outputs.new_version }}"
-
       - name: Cut release pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: ${{ steps.prvars.outputs.message }}
-          title: ${{ steps.prvars.outputs.title }}
-          body: ${{ steps.prvars.outputs.body }}
-          branch: ${{ steps.prvars.outputs.branch }}
+          commit-message: "release: ${{ steps.newversion.outputs.new_version }}"
+          title: "release: ${{ steps.newversion.outputs.new_version }}"
+          body: "Please cut release ${{ steps.newversion.outputs.new_version }}"
+          branch: "release/${{ steps.newversion.outputs.new_version }}"
           base: master
           labels: Release
