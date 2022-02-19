@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.15.19](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.19) (2022-02-19)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.18...v0.15.19)
+
+Bug Fixes
+
+- fix: component widgets not loading saved values [\#979](https://github.com/ReliaQualAssociates/ramstk/pull/979) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.18](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.18) (2022-02-18)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.17...v0.15.18)
@@ -176,14 +184,6 @@ Bug Fixes
 ## [v0.15.4](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.4) (2022-01-20)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.3...v0.15.4)
-
-Bug Fixes
-
-- fix: PoF analysis not loading correctly [\#872](https://github.com/ReliaQualAssociates/ramstk/pull/872) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: update action workflows [\#870](https://github.com/ReliaQualAssociates/ramstk/pull/870) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.3](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.3) (2022-01-19)
 
