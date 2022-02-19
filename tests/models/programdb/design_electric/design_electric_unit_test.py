@@ -433,10 +433,10 @@ class TestAnalysisMethods:
         assert _design_electric.overstress
         assert (
             _design_electric.reason
-            == "Operating current is greater than limit in a harsh "
-            "environment.\nOperating current is greater than limit in a mild "
-            "environment.\nOperating power is greater than limit in a harsh "
-            "environment.\n"
+            == "Operating current ratio is greater than the harsh environment limit "
+            "of 1.0.\nOperating current ratio is greater than the mild environment "
+            "limit of 1.0.\nOperating power ratio is greater than the harsh "
+            "environment limit of 0.5.\n"
         )
 
         _design_electric.do_derating_analysis(
@@ -452,9 +452,10 @@ class TestAnalysisMethods:
         assert _design_electric.overstress
         assert (
             _design_electric.reason
-            == "Operating current is greater than limit in a harsh environment.\n"
-            "Operating current is greater than limit in a mild environment.\n"
-            "Operating voltage is greater than limit in a harsh environment.\n"
+            == "Operating current ratio is greater than the harsh environment limit "
+            "of 0.6.\nOperating current ratio is greater than the mild environment "
+            "limit of 0.9.\nOperating voltage ratio is greater than the harsh "
+            "environment limit of 0.5.\n"
         )
 
     @pytest.mark.unit
@@ -486,13 +487,13 @@ class TestAnalysisMethods:
         assert _design_electric.overstress
         assert (
             _design_electric.reason
-            == "Operating current is less than limit in a harsh "
-            "environment.\nOperating current is less than limit in a mild "
-            "environment.\nOperating power is less than limit in a harsh "
-            "environment.\nOperating power is less than limit in a mild "
-            "environment.\nOperating voltage is less than limit in a harsh "
-            "environment.\nOperating voltage is less than limit in a mild "
-            "environment.\n"
+            == "Operating current ratio is less than the harsh environment limit of "
+            "0.0.\nOperating current ratio is less than the mild environment limit "
+            "of 0.0.\nOperating power ratio is less than the harsh environment "
+            "limit of 0.0.\nOperating power ratio is less than the mild "
+            "environment limit of 0.0.\nOperating voltage ratio is less than the "
+            "harsh environment limit of 0.0.\nOperating voltage ratio is less than "
+            "the mild environment limit of 0.0.\n"
         )
 
     @pytest.mark.unit
