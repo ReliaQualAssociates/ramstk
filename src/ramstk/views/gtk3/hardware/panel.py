@@ -736,11 +736,14 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "request_set_title",
                 title=_title,
             )
+
+            # We need the reliability attributes to be requested first so the
+            # component panels will get reliability attributes first.  Some of the
+            # reliability attributes control widget sensitivity on the component panels.
             for _table in [
-                "design_electric",
-                "hardware",
-                "milhdbk217f",
                 "reliability",
+                "design_electric",
+                "milhdbk217f",
             ]:
                 pub.sendMessage(
                     f"request_get_{_table}_attributes",
@@ -1175,16 +1178,14 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
         """
+        pub.sendMessage(
+            "request_set_hardware_attributes",
+            node_id=self._record_id,
+            package={
+                "subcategory_id": combo.get_active(),
+            },
+        )
         pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
-        for _table in [
-            "design_electric",
-            "hardware",
-            "reliability",
-        ]:
-            pub.sendMessage(
-                f"request_get_{_table}_attributes",
-                node_id=self._record_id,
-            )
 
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
         """Request to have the subcategory RAMSTKComboBox() loaded.

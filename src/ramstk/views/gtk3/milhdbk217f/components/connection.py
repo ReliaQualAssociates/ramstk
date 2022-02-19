@@ -67,6 +67,8 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
+    _record_field: str = "hardware_id"
+    _tag: str = "milhdbk217f"
     _title: str = _("Connection MIL-HDBK-217F Results")
 
     # Define public dictionary class attributes.
