@@ -5,6 +5,18 @@
 #     - Get release version from VERSION.
 #     - IF 'Release' label:
 #         - Cut release.
+# - Job 2 (needs job 1):
+#     - Build artifacts.
+#     - Upload to Test PyPi.
+#     - Test install from Test PyPi.
+#     - Upload to PyPi.
+#     - Add wheel to GitHub release.
+#     - Build pdf documentation.
+#     - Add pdf documentation to GitHub release.
+# - Job 3 (needs job 1):
+#     - Close old milestone.
+#     - Create new minor version milestone.
+#     - Create new major version milestone.
 name: Do Release Workflow
 
 on:
@@ -43,5 +55,83 @@ jobs:
           version: "${{ steps.relversion.outputs.rel_version }}"
           prerelease: false
           publish: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-deploy:
+    name: Build and Deploy RAMSTK
+    needs: cut-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Build release
+        id: build
+        run: |
+          pip install -U pip poetry twine
+          make build && echo "build_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to Test PyPi
+        if: ${{ env.build_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Test install from Test PyPI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb
+          pip install \
+          --index-url https://test.pypi.org/simple/ \
+          --extra-index-url https://pypi.org/simple \
+          ramstk && echo "install_ok=1" >> $GITHUB_ENV
+
+      - name: Publish to PyPi
+        if: ${{ env.install_ok == 1 }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+
+  create_new_milestone:
+    name: Create New Milestone
+    needs: cut-release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.2.0
+        with:
+          fetch-depth: 0
+
+      - name: Get new version
+        id: newversion
+        run: |
+          echo "::set-output name=version::$(echo $(cat VERSION))"
+
+      - name: Get next semantic version
+        id: nextversion
+        uses: WyriHaximus/github-action-next-semvers@v1.1.0
+        with:
+          version: ${{ steps.newversion.outputs.version }}
+
+      - name: Close old milestone
+        uses: WyriHaximus/github-action-close-milestone@master
+        with:
+          number: ${{ steps.newversion.outputs.version }}
+
+      - name: Create new minor release milestone
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "${{ steps.nextversion.outputs.v_minor }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create new major release milestone
+        uses: WyriHaximus/github-action-create-milestone@master
+        with:
+          title: "${{ steps.nextversion.outputs.v_major }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
