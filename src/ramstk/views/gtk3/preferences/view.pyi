@@ -2,9 +2,7 @@
 from typing import Callable, List
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.utilities import integer_to_boolean as integer_to_boolean
 from ramstk.views.gtk3 import Gtk as Gtk

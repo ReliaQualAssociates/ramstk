@@ -2,9 +2,7 @@
 from typing import Any, List
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _

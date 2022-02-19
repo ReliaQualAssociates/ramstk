@@ -3,9 +3,7 @@ from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.models import RAMSTKBaseTable as RAMSTKBaseTable
-from ramstk.models import (
-    RAMSTKProgramStatusRecord as RAMSTKProgramStatusRecord,
-)
+from ramstk.models import RAMSTKProgramStatusRecord as RAMSTKProgramStatusRecord
 
 class RAMSTKProgramStatusTable(RAMSTKBaseTable):
     _db_id_colname: str

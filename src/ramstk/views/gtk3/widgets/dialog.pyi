@@ -9,14 +9,10 @@ from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import Pango as Pango
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.widgets.button import RAMSTKButton as RAMSTKButton
-from ramstk.views.gtk3.widgets.button import (
-    RAMSTKCheckButton as RAMSTKCheckButton,
-)
+from ramstk.views.gtk3.widgets.button import RAMSTKCheckButton as RAMSTKCheckButton
 from ramstk.views.gtk3.widgets.combo import RAMSTKComboBox as RAMSTKComboBox
 from ramstk.views.gtk3.widgets.entry import RAMSTKEntry as RAMSTKEntry
-from ramstk.views.gtk3.widgets.label import (
-    do_make_label_group as do_make_label_group,
-)
+from ramstk.views.gtk3.widgets.label import do_make_label_group as do_make_label_group
 
 class RAMSTKDialog(Gtk.Dialog):
     def __init__(self, dlgtitle: str, **kwargs: Any) -> None: ...

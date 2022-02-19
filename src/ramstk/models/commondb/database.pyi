@@ -3,12 +3,8 @@ import gettext
 from typing import Dict, Tuple, Union
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration as RAMSTKSiteConfiguration,
-)
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKSiteConfiguration as RAMSTKSiteConfiguration
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.db import BaseDatabase as BaseDatabase
 from ramstk.db import do_create_program_db as do_create_program_db
 from ramstk.models import RAMSTKCategoryRecord as RAMSTKCategoryRecord
