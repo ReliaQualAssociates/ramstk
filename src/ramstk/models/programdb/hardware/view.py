@@ -266,14 +266,11 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             multiplier=self._hr_multiplier,
         )
 
-        pub.sendMessage(
-            "request_get_milhdbk217f_attributes",
-            node_id=node_id,
-        )
-        pub.sendMessage(
-            "request_get_reliability_attributes",
-            node_id=node_id,
-        )
+        for _table in ["design_electric", "milhdbk217f", "reliability"]:
+            pub.sendMessage(
+                f"request_get_{_table}_attributes",
+                node_id=node_id,
+            )
 
     def do_calculate_part_count(self, node_id: int) -> None:
         """Calculate the total part count of a hardware item.

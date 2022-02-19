@@ -2,9 +2,7 @@
 from typing import Any
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKUserConfiguration as RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager as RAMSTKLogManager
 from ramstk.views.gtk3.function import FunctionWorkView as FunctionWorkView
 from ramstk.views.gtk3.revision import RevisionWorkView as RevisionWorkView

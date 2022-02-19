@@ -608,7 +608,7 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(
             self._do_set_hardware_attributes,
-            "succeed_get_hardware_attributes",
+            "selected_hardware",
         )
 
     def _do_load_derating_curve(
@@ -697,6 +697,8 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
             self._do_load_derating_curve(attributes, stress="power")
         elif self._category_id in [6, 7]:
             self._do_load_derating_curve(attributes, stress="current")
+        else:
+            self.pltPlot.axis.cla()
 
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
@@ -705,10 +707,9 @@ class DesignElectricStressResultPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if attributes["hardware_id"] == self._record_id:
-            self._category_id = attributes["category_id"]
-            self._part_number = attributes["part_number"]
-            self._ref_des = attributes["ref_des"]
+        self._category_id = attributes["category_id"]
+        self._part_number = attributes["part_number"]
+        self._ref_des = attributes["ref_des"]
 
     def __make_ui(self) -> None:
         """Make the Hardware stress results page.

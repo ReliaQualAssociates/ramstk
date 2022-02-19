@@ -40,7 +40,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field: str = "hardware_id"
-    _select_msg: str = "selected_hardware"
+    _select_msg: str = "succeed_get_milhdbk217f_attributes"
     _tag: str = "milhdbk217f"
 
     # Define public dictionary class attributes.
@@ -78,7 +78,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(
             self._do_set_hardware_attributes,
-            "succeed_get_hardware_attributes",
+            "selected_hardware",
         )
         pub.subscribe(
             self._do_set_reliability_attributes,
@@ -119,9 +119,8 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if attributes["hardware_id"] == self._record_id:
-            self.category_id = attributes["category_id"]
-            self.subcategory_id = attributes["subcategory_id"]
+        self.category_id = attributes["category_id"]
+        self.subcategory_id = attributes["subcategory_id"]
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
@@ -130,14 +129,8 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if attributes["hardware_id"] == self._record_id:
-            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-            self._lambda_b = attributes["lambda_b"]
-
-            pub.sendMessage(
-                f"request_get_{self._tag}_attributes",
-                node_id=self._record_id,
-            )
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._lambda_b = attributes["lambda_b"]
 
     def __do_set_model_label(self) -> None:
         """Set the text displayed in the hazard rate model RAMSTKLabel().

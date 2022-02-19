@@ -14,6 +14,42 @@ on:
       - "*"
 
 jobs:
+  tag-latest:
+    name: Tag Repository as 'latest'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Push 'latest' tag
+        run: |
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
+          git tag -s -f -a -m"push latest tag" latest
+          git push -f --tags && echo "do_release_latest=1" >> $GITHUB_ENV
+
+      - name: Draft 'latest' release notes
+        if: ${{ env.do_release_latest == 1 }}
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "Next Release"
+          tag: "latest"
+          version: "latest"
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   build_documentation:
     name: Build RAMSTK Documentation
     runs-on: ubuntu-latest

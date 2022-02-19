@@ -99,7 +99,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field = "hardware_id"
-    _select_msg = "selected_hardware"
+    _select_msg = "succeed_get_design_electric_attributes"
     _tag = "design_electric"
     _title = _("Integrated Circuit Design Inputs")
 
@@ -491,20 +491,14 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if attributes["hardware_id"] == self._record_id:
-            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-            self._quality_id = attributes["quality_id"]
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
 
-            self.cmbQuality.set_sensitive(True)
-            self.cmbQuality.do_update(
-                self._quality_id,
-                signal="changed",
-            )
-
-            pub.sendMessage(
-                f"request_get_{self._tag}_attributes",
-                node_id=self._record_id,
-            )
+        self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected IC.

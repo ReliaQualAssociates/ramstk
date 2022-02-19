@@ -8,7 +8,7 @@
 """RAMSTKDesignElectric Table Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -21,40 +21,42 @@ from ramstk.models import RAMSTKBaseRecord
 
 
 def do_check_overstress(
-    overstress: Dict[str, List[float]], stress_type: str
-) -> Tuple[bool, str]:
-    """Check the overstress condition and build a reason message.
+    overstress: Dict[str, List[float]], stress_type: str, limits: Dict[str, List[float]]
+) -> Tuple[int, str]:
+    """Check the over stress condition and build a reason message.
 
     :param overstress: the dict containing the results of the
-        overstress analysis.
-    :param stress_type: the overstress type being checked.
+        over stress analysis.
+    :param stress_type: the over stress type being checked.
     :return: (_overstress, _reason); whether a component is overstressed and the reason.
     :rtype: tuple
     """
-    _overstress = False
+    _overstress = 0
     _reason = ""
 
     if overstress["harsh"][0]:
-        _overstress = True
+        _overstress = 1
         _reason = _reason + (
-            f"Operating {stress_type} is less than limit in a harsh environment.\n"
+            f"Operating {stress_type} ratio is less than the harsh environment limit "
+            f"of {limits['harsh'][0]}.\n"
         )
     if overstress["harsh"][1]:
-        _overstress = True
+        _overstress = 1
         _reason = _reason + (
-            f"Operating {stress_type} is greater than limit "
-            f"in a harsh environment.\n"
+            f"Operating {stress_type} ratio is greater than the harsh environment "
+            f"limit of {limits['harsh'][1]}.\n"
         )
     if overstress["mild"][0]:
-        _overstress = True
+        _overstress = 1
         _reason = _reason + (
-            f"Operating {stress_type} is less than limit in a mild environment.\n"
+            f"Operating {stress_type} ratio is less than the mild environment limit of "
+            f"{limits['mild'][0]}.\n"
         )
     if overstress["mild"][1]:
-        _overstress = True
+        _overstress = 1
         _reason = _reason + (
-            f"Operating {stress_type} is greater than limit "
-            f"in a mild environment.\n"
+            f"Operating {stress_type} ratio is greater than the mild environment limit "
+            f"of {limits['mild'][1]}.\n"
         )
 
     return _overstress, _reason
@@ -309,7 +311,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self) -> Dict[str, Any]:
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of RAMSTKDesignElectric model attributes.
 
         :return: {hardware_id, application_id, area, capacitance,
@@ -331,7 +333,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   voltage_ratio, weight, years_in_production} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "application_id": self.application_id,
             "area": self.area,
@@ -388,8 +390,6 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "weight": self.weight,
             "years_in_production": self.years_in_production,
         }
-
-        return _attributes
 
     def do_calculate_current_ratio(self) -> None:
         """Calculate the current ratio.
@@ -481,7 +481,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        _overstress = False
+        _overstress = 0
         _reason = ""
 
         _current_limits = {
@@ -500,19 +500,23 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         _ostress, _rsn = do_check_overstress(
             derating.check_overstress(self.current_ratio, _current_limits),
             "current",
+            _current_limits,
         )
         _overstress = _overstress or _ostress
-        _reason = _reason + _rsn
+        _reason += _rsn
 
         _ostress, _rsn = do_check_overstress(
-            derating.check_overstress(self.power_ratio, _power_limits), "power"
+            derating.check_overstress(self.power_ratio, _power_limits),
+            "power",
+            _power_limits,
         )
         _overstress = _overstress or _ostress
-        _reason = _reason + _rsn
+        _reason += _rsn
 
         _ostress, _rsn = do_check_overstress(
             derating.check_overstress(self.voltage_ratio, _voltage_limits),
             "voltage",
+            _voltage_limits,
         )
         self.overstress = _overstress or _ostress
         self.reason = _reason + _rsn
@@ -524,11 +528,11 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: None
         :rtype: None
         """
-        if category_id in [1, 2, 5, 6, 7, 8]:
+        if category_id in {1, 2, 5, 6, 7, 8}:
             self.do_calculate_current_ratio()
 
         if category_id == 3:
             self.do_calculate_power_ratio()
 
-        if category_id in [4, 5, 8]:
+        if category_id in {4, 5, 8}:
             self.do_calculate_voltage_ratio()

@@ -17,6 +17,7 @@ name: Publish Release Workflow
 on:
   release:
     types:
+      - created
       - published
 
 jobs:
