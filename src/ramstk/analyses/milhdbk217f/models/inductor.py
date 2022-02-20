@@ -208,7 +208,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
     if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
-            attributes["page_number"]
+            int(attributes["page_number"])
         )
     elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
         attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(
@@ -277,9 +277,7 @@ def calculate_part_stress_lambda_b(
     _ref_temp = REF_TEMPS[subcategory_id][insulation_id]
     _f0 = _dic_factors[subcategory_id][insulation_id][0]
     _f1 = _dic_factors[subcategory_id][insulation_id][1]
-    _lambda_b = _f0 * exp(((temperature_hot_spot + 273.0) / _ref_temp) ** _f1)
-
-    return _lambda_b
+    return _f0 * exp(((temperature_hot_spot + 273.0) / _ref_temp) ** _f1)
 
 
 def calculate_temperature_rise_input_power_weight(
@@ -383,12 +381,11 @@ def get_part_stress_quality_factor(
     :raise: IndexError if passed an unknown quality ID.
     :raise: KeyError if passed an unknown subcategory ID or family ID.
     """
-    if subcategory_id == 1:
-        _pi_q = PART_STRESS_PI_Q[subcategory_id][family_id][quality_id - 1]
-    else:
-        _pi_q = PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
-
-    return _pi_q
+    return (
+        PART_STRESS_PI_Q[subcategory_id][family_id][quality_id - 1]
+        if subcategory_id == 1
+        else PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
+    )
 
 
 def get_temperature_rise_spec_sheet(page_number: int) -> float:

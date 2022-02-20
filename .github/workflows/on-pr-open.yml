@@ -8,7 +8,10 @@ name: Open Pull Request Workflow
 
 on:
   pull_request:
-    types: [opened]
+    branches:
+      - master
+    types:
+      - opened
 
 jobs:
   good-pr-title:
