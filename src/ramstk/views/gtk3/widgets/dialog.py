@@ -474,33 +474,18 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         }
 
         _prompt = self.get_property("text")
-        # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
-        # e-mail address.
-        _hyper = (
-            "<a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
-            "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;"
-            "body=RAMSTK MODULE:%0d%0a%0d%0a"
-            "RAMSTK VERSION:%20%0d%0a%0d%0a"
-            "YOUR HARDWARE:%20%0d%0a%0d%0a"
-            "YOUR OS:%20%0d%0a%0d%0a"
-            "DETAILED PROBLEM DESCRIPTION:%20%0d%0a'>"
-        )
-        _prompt = (
-            "<b>"
-            + _prompt
-            + _(
-                "  Check the error log for additional information "
-                "(if any).  Please e-mail <span foreground='blue' "
-                "underline='single'>",
+
+        if message_type == "error":
+            # Set the prompt to bold text with a hyperlink to the RAMSTK bugs
+            # e-mail address.
+            _prompt = (
+                f"<b>{_prompt}</b>\n\nCheck the error log for additional information "
+                f"(if any).  Please <span foreground='blue' underline='single'><a "
+                f"href='https://github.com/ReliaQualAssociates/ramstk/issues'>raise "
+                f"an issue</a></span> with a detailed description of the problem and "
+                f"the error log attached if the problem persists."
             )
-            + _hyper
-            + _(
-                "bugs@reliaqual.com</a></span> with a detailed "
-                "description of the problem, the workflow you are "
-                "using and the error log attached if the problem "
-                "persists.</b>",
-            )
-        )
+
         self.set_markup(_prompt)
         self.set_property("message-type", _dic_message_type[message_type])
 
