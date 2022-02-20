@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.15.21](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.21) (2022-02-20)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.20...v0.15.21)
+
+Bug Fixes
+
+- fix: prevent adding sibling to top level hardware item [\#986](https://github.com/ReliaQualAssociates/ramstk/pull/986) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.20](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.20) (2022-02-20)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.19...v0.15.20)
@@ -157,7 +165,7 @@ Bug Fixes
 
 ## [v0.15.7](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.7) (2022-01-23)
 
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/0.15.6...v0.15.7)
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.6...v0.15.7)
 
 Bug Fixes
 
@@ -168,25 +176,17 @@ Bug Fixes
 - ci: update CHANGELOG.md when opening PR [\#888](https://github.com/ReliaQualAssociates/ramstk/pull/888) ([weibullguy](https://github.com/weibullguy))
 - ci: update on-merge workflow to use ref [\#884](https://github.com/ReliaQualAssociates/ramstk/pull/884) ([weibullguy](https://github.com/weibullguy))
 
-## [0.15.6](https://github.com/ReliaQualAssociates/ramstk/tree/0.15.6) (2022-01-23)
+## [v0.15.6](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.6) (2022-01-23)
 
-[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.5...0.15.6)
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.5...v0.15.6)
 
 Bug Fixes
 
 - fix: PoF changes can now be saved [\#882](https://github.com/ReliaQualAssociates/ramstk/pull/882) ([weibullguy](https://github.com/weibullguy))
 
-**Merged pull requests:**
-
-- ci: move job to update version files to PR close workflow [\#880](https://github.com/ReliaQualAssociates/ramstk/pull/880) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.5](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.5) (2022-01-22)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.4...v0.15.5)
-
-**Merged pull requests:**
-
-- ci: update workflows [\#879](https://github.com/ReliaQualAssociates/ramstk/pull/879) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.4](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.4) (2022-01-20)
 
