@@ -617,6 +617,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         self.lst_manufacturers: List[str] = [""]
 
         # Initialize public scalar class attributes.
+        self.part: int = 0
 
         super().do_set_properties()
         super().do_make_panel()
@@ -710,6 +711,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         if _attributes:
             self._record_id = _attributes["hardware_id"]
             self._parent_id = _attributes["parent_id"]
+            self.part = _attributes["part"]
 
             _attributes["category_id"] = self.lst_categories.index(
                 _attributes["category_id"]

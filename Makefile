@@ -95,7 +95,7 @@ help:
 	@echo "	install 				install RAMSTK and all data files in the current (virtualenv) environment."
 	@echo "	install.dev				install only the RAMSTK code in the current (virtualenv) environment."
 	@echo "	uninstall 				remove RAMSTK from the current (virtualenv) environment."
-	@echo "	dist					build source and wheel packages."
+	@echo "	build					build source and wheel packages."
 	@echo "	release					package and upload a release to PyPi."
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
