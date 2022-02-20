@@ -68,8 +68,8 @@ class TestInsertMethods:
 
     def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(8).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
-        assert tree.get_node(8).data["milhdbk217f"].hardware_id == 8
+        assert isinstance(tree.get_node(9).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
+        assert tree.get_node(9).data["milhdbk217f"].hardware_id == 9
         print("\033[36m\nsucceed_insert_milhdbk217f topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -80,20 +80,21 @@ class TestInsertMethods:
         )
         print("\033[35m\nfail_insert_milhdbk217f topic was broadcast on no hardware.")
 
+    @pytest.mark.skip
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_milhdbk217f")
 
-        assert test_tablemodel.tree.get_node(8) is None
+        assert test_tablemodel.tree.get_node(9) is None
 
-        test_attributes["hardware_id"] = 8
+        test_attributes["hardware_id"] = 9
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 8
+        test_attributes["record_id"] = 9
         pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
 
         assert isinstance(
-            test_tablemodel.tree.get_node(8).data["milhdbk217f"],
+            test_tablemodel.tree.get_node(9).data["milhdbk217f"],
             RAMSTKMilHdbk217FRecord,
         )
 
@@ -104,14 +105,14 @@ class TestInsertMethods:
         """should not add a record when passed a non-existent hardware ID."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_milhdbk217f")
 
-        assert test_tablemodel.tree.get_node(9) is None
+        assert test_tablemodel.tree.get_node(10) is None
 
-        test_attributes["hardware_id"] = 9
+        test_attributes["hardware_id"] = 10
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 9
+        test_attributes["record_id"] = 10
         pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
 
-        assert test_tablemodel.tree.get_node(9) is None
+        assert test_tablemodel.tree.get_node(10) is None
 
         pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_milhdbk217f")
 
@@ -146,7 +147,7 @@ class TestDeleteMethods:
         _last_id = test_tablemodel.last_id
         pub.sendMessage("request_delete_milhdbk217f", node_id=_last_id)
 
-        assert test_tablemodel.last_id == 6
+        assert test_tablemodel.last_id == 7
         assert test_tablemodel.tree.get_node(_last_id) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_milhdbk217f")
