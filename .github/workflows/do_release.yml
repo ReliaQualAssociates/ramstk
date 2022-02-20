@@ -46,7 +46,7 @@ jobs:
         run: echo "::set-output name=rel_version::$(echo $(cat VERSION))"
 
       - name: Cut release
-        id: cut_release
+        id: cutrelease
         if: contains(steps.prlabels.outputs.labels, ' Release ')
         uses: release-drafter/release-drafter@master
         with:
@@ -57,6 +57,15 @@ jobs:
           publish: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print release info
+        run: |
+          echo ${{ steps.cutrelease.outputs.id }}
+          echo ${{ steps.cutrelease.outputs.name }}
+          echo ${{ steps.cutrelease.outputs.tag_name }}
+          echo ${{ steps.cutrelease.outputs.body }}
+          echo ${{ steps.cutrelease.outputs.html_url }}
+          echo ${{ steps.cutrelease.outputs.upload_url }}
 
   build-deploy:
     name: Build and Deploy RAMSTK

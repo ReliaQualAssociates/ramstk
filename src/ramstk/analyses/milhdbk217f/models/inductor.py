@@ -208,7 +208,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
     if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
-            attributes["page_number"]
+            int(attributes["page_number"])
         )
     elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
         attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(
