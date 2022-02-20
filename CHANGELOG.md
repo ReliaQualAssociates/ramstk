@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.15.20](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.20) (2022-02-20)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.19...v0.15.20)
+
+Bug Fixes
+
+- fix: hazard rate calculations not recursively calculated [\#982](https://github.com/ReliaQualAssociates/ramstk/pull/982) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- ci: add commit key so action can trigger new workflow [\#981](https://github.com/ReliaQualAssociates/ramstk/pull/981) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.19](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.19) (2022-02-19)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.18...v0.15.19)
@@ -172,14 +184,9 @@ Bug Fixes
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.4...v0.15.5)
 
-Bug Fixes
-
-- fix: able to insert PoF records [\#876](https://github.com/ReliaQualAssociates/ramstk/pull/876) ([weibullguy](https://github.com/weibullguy))
-
 **Merged pull requests:**
 
 - ci: update workflows [\#879](https://github.com/ReliaQualAssociates/ramstk/pull/879) ([weibullguy](https://github.com/weibullguy))
-- ci: move documentation build and deploy action to separate workflow [\#874](https://github.com/ReliaQualAssociates/ramstk/pull/874) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.4](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.4) (2022-01-20)
 
