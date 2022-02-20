@@ -58,7 +58,7 @@ jobs:
       - name: Build html documentation
         run: |
           cd docs
-          pip install -r requirements
+          pip install -r requirements.txt
           make html
           cd ..
 
