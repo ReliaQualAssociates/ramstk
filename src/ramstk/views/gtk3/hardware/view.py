@@ -212,21 +212,39 @@ class HardwareModuleView(RAMSTKModuleView):
             "record_id": self.dic_pkeys["record_id"],
         }
 
+        if self._pnlPanel.part == 1:
+            _message = _(
+                "You cannot add a sibling item to a part.  First set the "
+                "component category to nothing to convert this part to an "
+                "assembly and then try again."
+            )
+            _parent = (
+                self.get_parent().get_parent().get_parent().get_parent().get_parent()
+            )
+            _dialog = super().do_raise_dialog(parent=_parent)
+            _dialog.do_set_message(message=_message)
+            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_run()
+            _dialog.do_destroy()
+            return
+
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
             attributes=copy(_attributes),
         )
+
+        # See Issue #985.
         _attributes.pop("part")
-        for _message in [
-            "request_insert_design_electric",
-            "request_insert_design_mechanic",
-            "request_insert_milhdbk217f",
-            "request_insert_nswc",
-            "request_insert_reliability",
+        for _table in [
+            "design_electric",
+            "design_mechanic",
+            "milhdbk217f",
+            "nswc",
+            "reliability",
         ]:
             pub.sendMessage(
-                _message,
+                f"request_insert_{_table}",
                 attributes=copy(_attributes),
             )
 
@@ -244,21 +262,39 @@ class HardwareModuleView(RAMSTKModuleView):
             "record_id": self.dic_pkeys["record_id"],
         }
 
+        if self._pnlPanel.part == 1:
+            _message = _(
+                "You cannot add a part to another part.  First set the "
+                "component category to nothing to convert this part to an "
+                "assembly and then try again."
+            )
+            _parent = (
+                self.get_parent().get_parent().get_parent().get_parent().get_parent()
+            )
+            _dialog = super().do_raise_dialog(parent=_parent)
+            _dialog.do_set_message(message=_message)
+            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_run()
+            _dialog.do_destroy()
+            return
+
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
             attributes=copy(_attributes),
         )
+
+        # See Issue #985.
         _attributes.pop("part")
-        for _message in [
-            "request_insert_design_electric",
-            "request_insert_design_mechanic",
-            "request_insert_milhdbk217f",
-            "request_insert_nswc",
-            "request_insert_reliability",
+        for _table in [
+            "design_electric",
+            "design_mechanic",
+            "milhdbk217f",
+            "nswc",
+            "reliability",
         ]:
             pub.sendMessage(
-                _message,
+                f"request_insert_{_table}",
                 attributes=copy(_attributes),
             )
 
@@ -276,21 +312,41 @@ class HardwareModuleView(RAMSTKModuleView):
             "record_id": self.dic_pkeys["record_id"],
         }
 
+        if self.dic_pkeys["parent_id"] == 0:
+            _message = _(
+                "You cannot have two top-level items for a single revision.  "
+                "If you want to add a new system, you need create a new RAMSTK "
+                "Program database.  If you want to add a new configuration, "
+                "variant, etc. of the system in this Program database, "
+                "add a new Revision."
+            )
+            _parent = (
+                self.get_parent().get_parent().get_parent().get_parent().get_parent()
+            )
+            _dialog = super().do_raise_dialog(parent=_parent)
+            _dialog.do_set_message(message=_message)
+            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_run()
+            _dialog.do_destroy()
+            return
+
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
             attributes=copy(_attributes),
         )
+
+        # See Issue #985.
         _attributes.pop("part")
-        for _message in [
-            "request_insert_design_electric",
-            "request_insert_design_mechanic",
-            "request_insert_milhdbk217f",
-            "request_insert_nswc",
-            "request_insert_reliability",
+        for _table in [
+            "design_electric",
+            "design_mechanic",
+            "milhdbk217f",
+            "nswc",
+            "reliability",
         ]:
             pub.sendMessage(
-                _message,
+                f"request_insert_{_table}",
                 attributes=copy(_attributes),
             )
 
