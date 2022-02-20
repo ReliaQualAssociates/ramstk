@@ -353,7 +353,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.hazard_rate_active = 0.0
 
         if self.hazard_rate_type_id == 1:
-            self.hazard_rate_active = self.do_predict_active_hazard_rate(attributes)
+            self.do_predict_active_hazard_rate(attributes)
         elif self.hazard_rate_type_id == 2:
             self.hazard_rate_active = self.hazard_rate_specified
         elif self.hazard_rate_type_id == 3:
