@@ -55,10 +55,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Execute Sphinx
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
+      - name: Build html documentation
+        run: |
+          cd docs
+          make html
+          cd ..
+
+      - name: Build pdf documentation
+        run: |
+          cd docs
+          make latexpdf LATEXMKOPTS="-silent -f"
+          cd ..
 
       - name: Import GPG key
         id: import_gpg
@@ -69,7 +76,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Commit RAMSTK Documentation Changes
+      - name: Commit RAMSTK documentation changes
         run: |
           git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
           cp -fvr docs/_build/html/* gh-pages/
@@ -79,7 +86,7 @@ jobs:
           git add .
           git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
 
-      - name: Push RAMSTK Documentation Changes
+      - name: Push RAMSTK documentation changes
         if: env.do_push == 1
         uses: ad-m/github-push-action@master
         with:
