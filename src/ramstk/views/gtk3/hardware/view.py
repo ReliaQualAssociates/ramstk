@@ -480,9 +480,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons["comp_ref_des"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/rollup.png"
-        )
+        self._dic_icons[
+            "comp_ref_des"
+        ] = f'{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/rollup.png'
+
 
         # Initialize private list attributes.
 
