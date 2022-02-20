@@ -18,8 +18,7 @@ on:
       - master
     paths:
       - "**.py"
-    paths-ignore:
-      - "docs/**"
+      - "!docs/**"
     tags-ignore:
       - "*"
   pull_request:
