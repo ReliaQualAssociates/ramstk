@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -11,69 +11,69 @@ from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
 
 def do_check_overstress(
     overstress: Dict[str, List[float]], stress_type: str
-) -> Tuple[bool, str]: ...
+) -> Tuple[int, str]: ...
 
 class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
-    __defaults__: Any
+    __defaults__: Dict[str, Union[float, int, str]]
     __tablename__: str
-    __table_args__: Any
-    revision_id: Any
-    hardware_id: Any
-    application_id: Any
-    area: Any
-    capacitance: Any
-    configuration_id: Any
-    construction_id: Any
-    contact_form_id: Any
-    contact_gauge: Any
-    contact_rating_id: Any
-    current_operating: Any
-    current_rated: Any
-    current_ratio: Any
-    environment_active_id: Any
-    environment_dormant_id: Any
-    family_id: Any
-    feature_size: Any
-    frequency_operating: Any
-    insert_id: Any
-    insulation_id: Any
-    manufacturing_id: Any
-    matching_id: Any
-    n_active_pins: Any
-    n_circuit_planes: Any
-    n_cycles: Any
-    n_elements: Any
-    n_hand_soldered: Any
-    n_wave_soldered: Any
-    operating_life: Any
-    overstress: Any
-    package_id: Any
-    power_operating: Any
-    power_rated: Any
-    power_ratio: Any
-    reason: Any
-    resistance: Any
-    specification_id: Any
-    technology_id: Any
-    temperature_active: Any
-    temperature_case: Any
-    temperature_dormant: Any
-    temperature_hot_spot: Any
-    temperature_junction: Any
-    temperature_knee: Any
-    temperature_rated_max: Any
-    temperature_rated_min: Any
-    temperature_rise: Any
-    theta_jc: Any
-    type_id: Any
-    voltage_ac_operating: Any
-    voltage_dc_operating: Any
-    voltage_esd: Any
-    voltage_rated: Any
-    voltage_ratio: Any
-    weight: Any
-    years_in_production: Any
-    def get_attributes(self) -> Dict[str, Any]: ...
+    __table_args__: Dict[str, bool]
+    revision_id: int
+    hardware_id: int
+    application_id: int
+    area: float
+    capacitance: float
+    configuration_id: int
+    construction_id: int
+    contact_form_id: int
+    contact_gauge: float
+    contact_rating_id: int
+    current_operating: float
+    current_rated: float
+    current_ratio: float
+    environment_active_id: int
+    environment_dormant_id: int
+    family_id: int
+    feature_size: float
+    frequency_operating: float
+    insert_id: int
+    insulation_id: int
+    manufacturing_id: int
+    matching_id: int
+    n_active_pins: int
+    n_circuit_planes: int
+    n_cycles: int
+    n_elements: int
+    n_hand_soldered: int
+    n_wave_soldered: int
+    operating_life: float
+    overstress: int
+    package_id: int
+    power_operating: float
+    power_rated: float
+    power_ratio: float
+    reason: str
+    resistance: float
+    specification_id: int
+    technology_id: int
+    temperature_active: float
+    temperature_case: float
+    temperature_dormant: float
+    temperature_hot_spot: float
+    temperature_junction: float
+    temperature_knee: float
+    temperature_rated_max: float
+    temperature_rated_min: float
+    temperature_rise: float
+    theta_jc: float
+    type_id: int
+    voltage_ac_operating: float
+    voltage_dc_operating: float
+    voltage_esd: float
+    voltage_rated: float
+    voltage_ratio: float
+    weight: float
+    years_in_production: int
+    def get_attributes(self) -> Dict[str, Union[float, int, str]]: ...
     def do_calculate_current_ratio(self) -> None: ...
     def do_calculate_power_ratio(self) -> None: ...
     def do_calculate_voltage_ratio(self) -> None: ...

@@ -36,11 +36,11 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __tablename__ = "ramstk_environment"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["fld_revision_id", "fld_mission_id", "fld_phase_id"],
+            ["fld_revision_id", "fld_mission_id", "fld_mission_phase_id"],
             [
                 "ramstk_mission_phase.fld_revision_id",
                 "ramstk_mission_phase.fld_mission_id",
-                "ramstk_mission_phase.fld_phase_id",
+                "ramstk_mission_phase.fld_mission_phase_id",
             ],
         ),
         {"extend_existing": True},
@@ -53,7 +53,9 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
     mission_id = Column("fld_mission_id", Integer, primary_key=True, nullable=False)
-    phase_id = Column("fld_phase_id", Integer, primary_key=True, nullable=False)
+    mission_phase_id = Column(
+        "fld_mission_phase_id", Integer, primary_key=True, nullable=False
+    )
     environment_id = Column(
         "fld_environment_id",
         Integer,
@@ -82,20 +84,16 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         back_populates="environment",
     )
 
-    is_mission = False
-    is_phase = False
-    is_env = True
-
     def get_attributes(self):
         """Retrieve current values of RAMSTKEnvironment data model attributes.
 
-        :return: {phase_id, environment_id, name, units, minimum,
+        :return: {mission_phase_id, environment_id, name, units, minimum,
                   maximum, mean, variance, ramp_rate, low_dwell_time,
                   high_dwell_time} pairs.
         :rtype: dict
         """
         return {
-            "phase_id": self.phase_id,
+            "mission_phase_id": self.mission_phase_id,
             "environment_id": self.environment_id,
             "name": self.name,
             "units": self.units,

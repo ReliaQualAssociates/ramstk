@@ -98,7 +98,9 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
         }
 
         _status = pd.DataFrame(
-            _dic_actual.values(), index=_dic_actual.keys(), columns=["cost", "time"]
+            _dic_actual.values(),
+            index=_dic_actual.keys(),
+            columns=["cost", "time"],
         ).sort_index()
 
         pub.sendMessage("succeed_get_actual_status", status=_status)

@@ -42,7 +42,7 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "mission_id",
-            "phase_id",
+            "mission_phase_id",
             "environment_id",
             "parent_id",
             "record_id",
@@ -72,7 +72,7 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.mission_id = attributes["mission_id"]
-        _new_record.phase_id = attributes["phase_id"]
+        _new_record.mission_phase_id = attributes["mission_phase_id"]
         _new_record.environment_id = self.last_id + 1
 
         return _new_record

@@ -14,15 +14,14 @@ on:
       - "*"
 
 jobs:
-  build_documentation:
-    name: Build RAMSTK Documentation
+  tag-latest:
+    name: Tag Repository as 'latest'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Execute Sphinx
-        uses: ammaraskar/sphinx-action@master
+      - name: Checkout repository
+        uses: actions/checkout@v2
         with:
-          docs-folder: "docs/"
+          fetch-depth: 0
 
       - name: Import GPG key
         id: import_gpg
@@ -33,7 +32,54 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
 
-      - name: Commit RAMSTK Documentation Changes
+      - name: Push 'latest' tag
+        run: |
+          git config --global user.email "${{ steps.import_gpg.outputs.email }}"
+          git config --global user.name "${{ steps.import_gpg.outputs.name }}"
+          git tag -s -f -a -m"push latest tag" latest
+          git push -f --tags && echo "do_release_latest=1" >> $GITHUB_ENV
+
+      - name: Draft 'latest' release notes
+        if: ${{ env.do_release_latest == 1 }}
+        uses: release-drafter/release-drafter@master
+        with:
+          name: "Next Release"
+          tag: "latest"
+          version: "latest"
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build_documentation:
+    name: Build RAMSTK Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build html documentation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends latexmk
+          cd docs
+          pip install -r requirements.txt
+          make html
+          cd ..
+
+      - name: Build pdf documentation
+        run: |
+          cd docs
+          make latexpdf LATEXMKOPTS="-silent -f"
+          cd ..
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v4
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+
+      - name: Commit RAMSTK documentation changes
         run: |
           git clone https://github.com/ReliaQualAssociates/ramstk.git --branch gh-pages --single-branch gh-pages
           cp -fvr docs/_build/html/* gh-pages/
@@ -43,7 +89,7 @@ jobs:
           git add .
           git commit -a -m "Update documentation" && echo "do_push=1" >> $GITHUB_ENV || echo "Nothing to commit, working tree clean."
 
-      - name: Push RAMSTK Documentation Changes
+      - name: Push RAMSTK documentation changes
         if: env.do_push == 1
         uses: ad-m/github-push-action@master
         with:

@@ -340,7 +340,9 @@ def the_one_ring() -> None:
         message="Validating the RAMSTK license.",
     )
     pub.sendMessage(
-        "do_log_debug_msg", logger_name="DEBUG", message="Validated the RAMSTK license."
+        "do_log_debug_msg",
+        logger_name="DEBUG",
+        message="Validated the RAMSTK license.",
     )
 
     site_db = do_connect_to_site_db(site_configuration.RAMSTK_COM_INFO)
@@ -351,9 +353,10 @@ def the_one_ring() -> None:
         message="Initializing the RAMSTK application.",
     )
 
-    _program_db, _site_db = do_initialize_databases(  # pylint: disable=unused-variable
-        user_configuration, site_db
-    )
+    (
+        _program_db,  # pylint: disable=unused-variable
+        _site_db,
+    ) = do_initialize_databases(user_configuration, site_db)
 
     user_configuration = _site_db.do_load_site_variables(user_configuration)
 

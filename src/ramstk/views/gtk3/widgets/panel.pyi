@@ -54,7 +54,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         self, entry: RAMSTKEntry, key: str, message: str
     ) -> Dict[Union[str, Any], Any]: ...
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
+        self,
+        buffer: Gtk.TextBuffer,
+        key: str,
+        message: str,
+        textview: RAMSTKTextView,
     ) -> Dict[Union[str, Any], Any]: ...
     def on_edit(self, node_id: List[int], package: Dict[str, Any]) -> None: ...
     def on_toggled(

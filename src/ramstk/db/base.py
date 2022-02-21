@@ -270,7 +270,11 @@ class BaseDatabase:
         except exc.InternalError as _error:
             print("postgresql error: {}".format(_error.orig.pgcode))
             self.session.rollback()
-        except (exc.DataError, exc.IntegrityError, exc.StatementError) as _error:
+        except (
+            exc.DataError,
+            exc.IntegrityError,
+            exc.StatementError,
+        ) as _error:
             # This exception is raised when there is an error during
             # execution of a SQL statement.  These types of errors are
             # unlikely to be user errors as the programmer should ensure

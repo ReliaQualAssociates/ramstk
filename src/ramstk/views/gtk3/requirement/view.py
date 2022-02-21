@@ -134,7 +134,8 @@ class RequirementModuleView(RAMSTKModuleView):
         if _dialog.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
-                "request_delete_requirement", node_id=self.dic_pkeys["record_id"]
+                "request_delete_requirement",
+                node_id=self.dic_pkeys["record_id"],
             )
 
         _dialog.do_destroy()

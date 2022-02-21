@@ -63,7 +63,9 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     availability_alloc = Column(
-        "fld_availability_alloc", Float, default=__defaults__["availability_alloc"]
+        "fld_availability_alloc",
+        Float,
+        default=__defaults__["availability_alloc"],
     )
     duty_cycle = Column("fld_duty_cycle", Float, default=__defaults__["duty_cycle"])
     env_factor = Column("fld_env_factor", Integer, default=__defaults__["env_factor"])
@@ -71,7 +73,9 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_goal_measure_id", Integer, default=__defaults__["goal_measure_id"]
     )
     hazard_rate_alloc = Column(
-        "fld_hazard_rate_alloc", Float, default=__defaults__["hazard_rate_alloc"]
+        "fld_hazard_rate_alloc",
+        Float,
+        default=__defaults__["hazard_rate_alloc"],
     )
     hazard_rate_goal = Column(
         "fld_hazard_rate_goal", Float, default=__defaults__["hazard_rate_goal"]
@@ -101,7 +105,9 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["percent_weight_factor"],
     )
     reliability_alloc = Column(
-        "fld_reliability_alloc", Float, default=__defaults__["reliability_alloc"]
+        "fld_reliability_alloc",
+        Float,
+        default=__defaults__["reliability_alloc"],
     )
     reliability_goal = Column(
         "fld_reliability_goal", Float, default=__defaults__["reliability_goal"]

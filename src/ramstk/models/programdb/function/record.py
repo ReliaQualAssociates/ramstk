@@ -84,7 +84,9 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_logistics"],
     )
     hazard_rate_mission = Column(
-        "fld_hazard_rate_mission", Float, default=__defaults__["hazard_rate_mission"]
+        "fld_hazard_rate_mission",
+        Float,
+        default=__defaults__["hazard_rate_mission"],
     )
     level = Column("fld_level", Integer, default=__defaults__["level"])
     mmt = Column("fld_mmt", Float, default=__defaults__["mmt"])
@@ -104,10 +106,14 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_safety_critical", Integer, default=__defaults__["safety_critical"]
     )
     total_mode_count = Column(
-        "fld_total_mode_count", Integer, default=__defaults__["total_mode_count"]
+        "fld_total_mode_count",
+        Integer,
+        default=__defaults__["total_mode_count"],
     )
     total_part_count = Column(
-        "fld_total_part_count", Integer, default=__defaults__["total_part_count"]
+        "fld_total_part_count",
+        Integer,
+        default=__defaults__["total_part_count"],
     )
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
 

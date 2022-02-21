@@ -96,31 +96,49 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
 
     change_description_1 = Column(
-        "fld_change_description_1", String, default=__defaults__["change_description_1"]
+        "fld_change_description_1",
+        String,
+        default=__defaults__["change_description_1"],
     )
     change_description_2 = Column(
-        "fld_change_description_2", String, default=__defaults__["change_description_2"]
+        "fld_change_description_2",
+        String,
+        default=__defaults__["change_description_2"],
     )
     change_description_3 = Column(
-        "fld_change_description_3", String, default=__defaults__["change_description_3"]
+        "fld_change_description_3",
+        String,
+        default=__defaults__["change_description_3"],
     )
     change_description_4 = Column(
-        "fld_change_description_4", String, default=__defaults__["change_description_4"]
+        "fld_change_description_4",
+        String,
+        default=__defaults__["change_description_4"],
     )
     change_description_5 = Column(
-        "fld_change_description_5", String, default=__defaults__["change_description_5"]
+        "fld_change_description_5",
+        String,
+        default=__defaults__["change_description_5"],
     )
     change_description_6 = Column(
-        "fld_change_description_6", String, default=__defaults__["change_description_6"]
+        "fld_change_description_6",
+        String,
+        default=__defaults__["change_description_6"],
     )
     change_description_7 = Column(
-        "fld_change_description_7", String, default=__defaults__["change_description_7"]
+        "fld_change_description_7",
+        String,
+        default=__defaults__["change_description_7"],
     )
     change_description_8 = Column(
-        "fld_change_description_8", String, default=__defaults__["change_description_8"]
+        "fld_change_description_8",
+        String,
+        default=__defaults__["change_description_8"],
     )
     change_description_9 = Column(
-        "fld_change_description_9", String, default=__defaults__["change_description_9"]
+        "fld_change_description_9",
+        String,
+        default=__defaults__["change_description_9"],
     )
     change_description_10 = Column(
         "fld_change_description_10",
@@ -158,10 +176,14 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_change_factor_10", Float, default=__defaults__["change_factor_10"]
     )
     environment_from_id = Column(
-        "fld_environment_from_id", Integer, default=__defaults__["environment_from_id"]
+        "fld_environment_from_id",
+        Integer,
+        default=__defaults__["environment_from_id"],
     )
     environment_to_id = Column(
-        "fld_environment_to_id", Integer, default=__defaults__["environment_to_id"]
+        "fld_environment_to_id",
+        Integer,
+        default=__defaults__["environment_to_id"],
     )
     function_1 = Column(
         "fld_function_1", String(128), default=__defaults__["function_1"]

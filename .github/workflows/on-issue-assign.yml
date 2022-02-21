@@ -1,3 +1,13 @@
+# This workflow runs when an issue is assigned.
+#
+# - Job 1:
+#     - Checks for dobranch label
+#     - IF dobranch label exists:
+#         - Creates a new branch in the repository using the rules in
+#           issue-branch.yml
+# - Job 2:
+#     - Removes status: backlog label and adds status: inprogress label to
+#       issue.
 name: Issue Assigned Workflow
 on:
   issues:

@@ -3,7 +3,7 @@ pixbuf='True'
 [defaulttitle]
 revision_id='Revision ID'
 mission_id='Mission ID'
-phase_id='Phase ID'
+mission_phase_id='Phase ID'
 environment_id='Environment ID'
 name='Name'
 description='Description'
@@ -19,7 +19,7 @@ variance='Variance'
 [usertitle]
 revision_id='Revision ID'
 mission_id='Mission ID'
-phase_id='Phase ID'
+mission_phase_id='Phase ID'
 environment_id='Environment ID'
 name='Name'
 description='Description'
@@ -35,7 +35,7 @@ variance='Variance'
 [position]
 revision_id=0
 mission_id=1
-phase_id=2
+mission_phase_id=2
 environment_id=3
 name=4
 description=5
@@ -51,7 +51,7 @@ variance=13
 [editable]
 revision_id='False'
 mission_id='False'
-phase_id='False'
+mission_phase_id='False'
 environment_id='False'
 name='True'
 description='True'
@@ -67,7 +67,7 @@ variance='True'
 [visible]
 revision_id='False'
 mission_id='True'
-phase_id='True'
+mission_phase_id='True'
 environment_id='True'
 name='True'
 description='True'

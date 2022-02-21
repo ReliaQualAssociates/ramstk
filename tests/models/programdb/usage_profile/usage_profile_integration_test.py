@@ -80,7 +80,7 @@ def test_environment(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKEnvironmentTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1, "mission_phase_id": 1})
 
     yield dut
 
@@ -147,7 +147,9 @@ class TestSelectMethods:
 
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 1}
+        )
 
         assert isinstance(
             test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
@@ -192,7 +194,9 @@ class TestSelectMethods:
         """should clear existing nodes from the records tree and then re-populate."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 1}
+        )
 
         assert isinstance(
             test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
@@ -269,7 +273,9 @@ class TestInsertMethods:
         """should add a new mission record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 1}
+        )
 
         assert not test_viewmodel.tree.contains("4")
 
@@ -296,7 +302,9 @@ class TestInsertMethods:
         """should add a new mission phase record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 1}
+        )
 
         assert not test_viewmodel.tree.contains("1.4")
 
@@ -309,7 +317,7 @@ class TestInsertMethods:
             attributes={
                 "revision_id": 1,
                 "mission_id": 1,
-                "phase_id": 1,
+                "mission_phase_id": 1,
                 "parent_id": 1,
                 "record_id": 1,
             },
@@ -329,7 +337,7 @@ class TestInsertMethods:
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(
-            attributes={"revision_id": 1, "mission_id": 1, "phase_id": 1}
+            attributes={"revision_id": 1, "mission_id": 1, "mission_phase_id": 1}
         )
 
         assert not test_viewmodel.tree.contains("1.1.4")
@@ -343,7 +351,7 @@ class TestInsertMethods:
             attributes={
                 "revision_id": 1,
                 "mission_id": 1,
-                "phase_id": 1,
+                "mission_phase_id": 1,
                 "environment_id": 1,
                 "parent_id": 1,
                 "record_id": 1,
@@ -401,7 +409,9 @@ class TestDeleteMethods:
         """should remove deleted environment record from the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 3})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 3})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 3}
+        )
 
         assert test_viewmodel.tree.contains("3.3.3")
         assert test_viewmodel.tree.contains("3.3")
@@ -424,7 +434,9 @@ class TestDeleteMethods:
         """should remove deleted phase and environment records from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 2})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 2})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 2}
+        )
 
         assert test_viewmodel.tree.contains("2.2.2")
         assert test_viewmodel.tree.contains("2.2")
@@ -447,7 +459,9 @@ class TestDeleteMethods:
         """should remove deleted mission, phase, and environment from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1, "phase_id": 1})
+        test_environment.do_select_all(
+            attributes={"revision_id": 1, "mission_phase_id": 1}
+        )
 
         assert test_viewmodel.tree.contains("1.1.1")
         assert test_viewmodel.tree.contains("1.1")

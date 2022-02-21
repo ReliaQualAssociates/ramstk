@@ -67,7 +67,7 @@ class TestCreateModels:
         assert isinstance(test_tablemodel, RAMSTKMissionPhaseTable)
         assert isinstance(test_tablemodel.tree, Tree)
         assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_phase_id"
+        assert test_tablemodel._db_id_colname == "fld_mission_phase_id"
         assert test_tablemodel._db_tablename == "ramstk_mission_phase"
         assert test_tablemodel._tag == "mission_phase"
         assert test_tablemodel._root == 0
@@ -121,7 +121,7 @@ class TestSelectMethods:
         _mission_phase = test_tablemodel.do_select(1)
 
         assert isinstance(_mission_phase, RAMSTKMissionPhaseRecord)
-        assert _mission_phase.phase_id == 1
+        assert _mission_phase.mission_phase_id == 1
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
@@ -173,7 +173,7 @@ class TestGetterSetter:
         _attributes = test_recordmodel.get_attributes()
 
         assert isinstance(_attributes, dict)
-        assert _attributes["phase_id"] == 1
+        assert _attributes["mission_phase_id"] == 1
         assert _attributes["description"] == "Phase #1 for mission #1"
         assert _attributes["name"] == "Start Up"
         assert _attributes["phase_start"] == 0.0
@@ -184,7 +184,7 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
@@ -198,7 +198,7 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
@@ -211,7 +211,7 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("phase_id")
+        test_attributes.pop("mission_phase_id")
         test_attributes.pop("parent_id")
         test_attributes.pop("record_id")
         with pytest.raises(AttributeError):

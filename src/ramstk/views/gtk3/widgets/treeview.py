@@ -303,7 +303,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         for _key, _position in self.position.items():
             _cell = self.widgets[_key]
-            _properties = {"editable": self.editable[_key], **self.cellprops[_key]}
+            _properties = {
+                "editable": self.editable[_key],
+                **self.cellprops[_key],
+            }
             do_set_cell_properties(
                 _cell,
                 properties=_properties,

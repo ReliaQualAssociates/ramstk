@@ -41,6 +41,8 @@ class MeterMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     # Define private class list class attributes.
 
     # Define private scalar class attributes.
+    _record_field: str = "hardware_id"
+    _tag: str = "milhdbk217f"
     _title: str = _("Meter MIL-HDBK-217F Results")
 
     # Define public dictionary class attributes.

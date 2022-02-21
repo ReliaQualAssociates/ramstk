@@ -67,7 +67,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         pub.subscribe(self.do_calculate_plan, "request_calculate_plan")
         pub.subscribe(self._do_calculate_task, "request_calculate_validation_task")
         pub.subscribe(
-            self._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
+            self._do_calculate_all_tasks,
+            "request_calculate_all_validation_tasks",
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -112,7 +113,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
             # start date.  The earliest start date will be assigned the
             # total number of hours in the validation program.
             _start_date = min(
-                _start_date, pd.to_datetime(_node.data["validation"].date_start)
+                _start_date,
+                pd.to_datetime(_node.data["validation"].date_start),
             )
             _time_ll += _node.data["validation"].time_ll
             _time_mean += _node.data["validation"].time_mean

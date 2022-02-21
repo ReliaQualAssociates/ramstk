@@ -82,10 +82,14 @@ class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_mild_vr_limit", Float, default=__defaults__["mild_vr_limit"]
     )
     harsh_deltat_limit = Column(
-        "fld_harsh_deltat_limit", Float, default=__defaults__["harsh_deltat_limit"]
+        "fld_harsh_deltat_limit",
+        Float,
+        default=__defaults__["harsh_deltat_limit"],
     )
     mild_deltat_limit = Column(
-        "fld_mild_deltat_limit", Float, default=__defaults__["mild_deltat_limit"]
+        "fld_mild_deltat_limit",
+        Float,
+        default=__defaults__["mild_deltat_limit"],
     )
     harsh_maxt_limit = Column(
         "fld_harsh_maxt_limit", Float, default=__defaults__["harsh_maxt_limit"]

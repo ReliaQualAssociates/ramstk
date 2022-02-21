@@ -98,7 +98,11 @@ class RAMSTKCauseTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _sod = {"rpn_severity": severity, "rpn_occurrence": 10, "rpn_detection": 10}
+        _sod = {
+            "rpn_severity": severity,
+            "rpn_occurrence": 10,
+            "rpn_detection": 10,
+        }
 
         for _node in self.tree.all_nodes()[1:]:
             _sod["rpn_occurrence"] = _node.data[self._tag].rpn_occurrence

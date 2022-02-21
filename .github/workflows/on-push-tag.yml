@@ -10,14 +10,12 @@ name: Push Version Tag Workflow
 
 on:
   push:
-    branches:
-      - master
     tags:
-      - "v*"
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
-  create-release:
-    name: Create Release
+  request-release:
+    name: Request Release PR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -29,9 +27,10 @@ jobs:
       - name: Get new tag
         id: newversion
         run: |
-          new_tag=$(git describe $(git rev-list --tags --max-count=1 --skip=1) | cut -d '-' -f1 | cut -d 'v' -f2)
-
+          new_tag=${GITHUB_REF/refs\/tags\//}
           echo "::set-output name=new_version::$(echo $new_tag)"
+          echo "New tag is: $new_tag"
+          echo "GitHub ref: ${{ github.ref }}"
 
       - name: Generate release changelog
         uses: heinrichreimer/github-changelog-generator-action@master
@@ -48,6 +47,7 @@ jobs:
           excludeLabels: "Release"
           issues: false
           issuesWoLabels: false
+          maxIssues: 100
           pullRequests: true
           prWoLabels: false
           author: true
@@ -66,19 +66,12 @@ jobs:
             ./pyproject.toml
             ./docs/conf.py
 
-      - name: Set release pull request variables
-        id: prvars
-        run: |
-          echo ::set-output name=title::"release: v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=body::"Please cut release v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=message::"release: v${{ steps.newversion.outputs.new_version }}"
-          echo ::set-output name=branch::"release/v${{ steps.newversion.outputs.new_version }}"
-
-      - name: Cut release pull request
+      - name: Request release pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          commit-message: ${{ steps.prvars.outputs.message }}
-          title: ${{ steps.prvars.outputs.title }}
-          body: ${{ steps.prvars.outputs.body }}
-          branch: ${{ steps.prvars.outputs.branch }}
+          commit-message: "release: ${{ steps.newversion.outputs.new_version }}"
+          title: "release: ${{ steps.newversion.outputs.new_version }}"
+          body: "Please cut release ${{ steps.newversion.outputs.new_version }}"
+          branch: "release/${{ steps.newversion.outputs.new_version }}"
+          base: master
           labels: Release

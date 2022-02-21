@@ -36,7 +36,12 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     __tablename__ = "ramstk_cause"
     __table_args__ = (
         ForeignKeyConstraint(
-            ["fld_revision_id", "fld_hardware_id", "fld_mode_id", "fld_mechanism_id"],
+            [
+                "fld_revision_id",
+                "fld_hardware_id",
+                "fld_mode_id",
+                "fld_mechanism_id",
+            ],
             [
                 "ramstk_mechanism.fld_revision_id",
                 "ramstk_mechanism.fld_hardware_id",
@@ -49,7 +54,11 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
 
     revision_id = Column("fld_revision_id", Integer, primary_key=True, nullable=False)
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, default=-1, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        default=-1,
+        nullable=False,
     )
     mode_id = Column("fld_mode_id", Integer, primary_key=True, nullable=False)
     mechanism_id = Column("fld_mechanism_id", Integer, primary_key=True, nullable=False)
@@ -70,14 +79,18 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_rpn_detection", Integer, default=__defaults__["rpn_detection"]
     )
     rpn_detection_new = Column(
-        "fld_rpn_detection_new", Integer, default=__defaults__["rpn_detection_new"]
+        "fld_rpn_detection_new",
+        Integer,
+        default=__defaults__["rpn_detection_new"],
     )
     rpn_new = Column("fld_rpn_new", Integer, default=__defaults__["rpn_new"])
     rpn_occurrence = Column(
         "fld_rpn_occurrence", Integer, default=__defaults__["rpn_occurrence"]
     )
     rpn_occurrence_new = Column(
-        "fld_rpn_occurrence_new", Integer, default=__defaults__["rpn_occurrence_new"]
+        "fld_rpn_occurrence_new",
+        Integer,
+        default=__defaults__["rpn_occurrence_new"],
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
@@ -85,10 +98,14 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "RAMSTKMechanismRecord", back_populates="cause"
     )
     control: relationship = relationship(
-        "RAMSTKControlRecord", back_populates="cause", cascade="delete, delete-orphan"
+        "RAMSTKControlRecord",
+        back_populates="cause",
+        cascade="delete, delete-orphan",
     )
     action: relationship = relationship(
-        "RAMSTKActionRecord", back_populates="cause", cascade="delete, delete-orphan"
+        "RAMSTKActionRecord",
+        back_populates="cause",
+        cascade="delete, delete-orphan",
     )
 
     is_mode = False

@@ -187,6 +187,52 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         pub.subscribe(self.do_calculate_hardware, "request_calculate_hardware")
         pub.subscribe(self.do_make_composite_ref_des, "request_make_comp_ref_des")
 
+    def do_calculate_assembly_hazard_rates(self, node_id: int) -> None:
+        """Calculate the hazard rates for assemblies.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id)
+
+        # There are no children for this node or it is using one of the specified
+        # hazard rate methods.  The specified methods will ignore the hazard rates of
+        # any children.
+        if _record.is_leaf() or _record.data["reliability"].hazard_rate_type_id != 1:
+            _attributes = {
+                **_record.data["hardware"].get_attributes(),
+                **_record.data["design_mechanic"].get_attributes(),
+                **_record.data["design_electric"].get_attributes(),
+                **_record.data["milhdbk217f"].get_attributes(),
+                **_record.data["nswc"].get_attributes(),
+                **_record.data["reliability"].get_attributes(),
+            }
+
+            _record.data["reliability"].do_calculate_hazard_rate_active(
+                self._hr_multiplier,
+                _attributes,
+                time=_record.data["hardware"].mission_time,
+            )
+        else:
+            _hazard_rate_active: float = 0.0
+            _hazard_rate_dormant: float = 0.0
+
+            for _node in self.tree.children(node_id):
+                self.do_calculate_hazard_rates(_node.identifier)
+                _hazard_rate_active += _node.data["reliability"].hazard_rate_active
+                _hazard_rate_dormant += _node.data["reliability"].hazard_rate_dormant
+
+            _hazard_rate_active = (
+                (_hazard_rate_active + _record.data["reliability"].add_adj_factor)
+                * _record.data["reliability"].mult_adj_factor
+                * (_record.data["hardware"].duty_cycle / 100.0)
+                * _record.data["hardware"].quantity
+            )
+
+            _record.data["reliability"].hazard_rate_active = _hazard_rate_active
+            _record.data["reliability"].hazard_rate_dormant = _hazard_rate_dormant
+
     def do_calculate_cost(self, node_id: int) -> None:
         """Calculate the cost related metrics.
 
@@ -203,7 +249,9 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_cost(_node.identifier)
                 _total_cost += _node.data["hardware"].total_cost
-                _total_cost *= _record.quantity
+
+            _total_cost *= _record.quantity
+            _record.set_attributes({"cost": _total_cost})
             _record.set_attributes({"total_cost": _total_cost})
 
     def do_calculate_hardware(self, node_id: int) -> None:
@@ -213,63 +261,41 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :return: None
         :rtype: None
         """
-        # ISSUE: Assembly hazard rates not rolling up
-        #
-        # When calculating assemblies, the hazard rate, MTBF, reliability,
-        # etc. metrics are not being calculated for each assembly.
-        #
-        # priority: high
-        # bump: patch
-        _record = self.tree.get_node(node_id)
-        _attributes = {
-            **_record.data["hardware"].get_attributes(),
-            **_record.data["design_mechanic"].get_attributes(),
-            **_record.data["design_electric"].get_attributes(),
-            **_record.data["milhdbk217f"].get_attributes(),
-            **_record.data["nswc"].get_attributes(),
-            **_record.data["reliability"].get_attributes(),
-        }
-
         self.do_calculate_cost(node_id)
         self.do_calculate_part_count(node_id)
         self.do_calculate_power_dissipation(node_id)
-        if _attributes["part"] == 1:
-            _record.data["design_electric"].do_stress_analysis(
-                _attributes["category_id"]
-            )
-            _record.data["design_electric"].do_derating_analysis(
-                self._dic_stress_limits[_attributes["category_id"]]
+        self.do_calculate_hazard_rates(node_id)
+
+        for _table in ["design_electric", "milhdbk217f", "reliability"]:
+            pub.sendMessage(
+                f"request_get_{_table}_attributes",
+                node_id=node_id,
             )
 
-        _record.data["reliability"].do_calculate_hazard_rate_active(
-            self._hr_multiplier,
-            _attributes,
-            time=_attributes["mission_time"],
-        )
+    def do_calculate_hazard_rates(self, node_id: int) -> None:
+        """Calculate the hazard rate of a hardware item.
 
-        if _attributes["part"] == 1:
-            _record.data["reliability"].do_calculate_hazard_rate_dormant(
-                _attributes["category_id"],
-                _attributes["subcategory_id"],
-                _attributes["environment_active_id"],
-                _attributes["environment_dormant_id"],
-            )
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id)
+
+        if _record.data["hardware"].part == 1:
+            self.do_calculate_part_hazard_rates(node_id)
+        else:
+            self.do_calculate_assembly_hazard_rates(node_id)
+
         _record.data["reliability"].do_calculate_hazard_rate_logistics()
         _record.data["reliability"].do_calculate_hazard_rate_mission(
-            _attributes["duty_cycle"]
+            _record.data["hardware"].duty_cycle
         )
-        _record.data["reliability"].do_calculate_mtbf()
+        _record.data["reliability"].do_calculate_mtbf(
+            multiplier=self._hr_multiplier,
+        )
         _record.data["reliability"].do_calculate_reliability(
-            _attributes["mission_time"]
-        )
-
-        pub.sendMessage(
-            "request_get_milhdbk217f_attributes",
-            node_id=node_id,
-        )
-        pub.sendMessage(
-            "request_get_reliability_attributes",
-            node_id=node_id,
+            _record.data["hardware"].mission_time,
+            multiplier=self._hr_multiplier,
         )
 
     def do_calculate_part_count(self, node_id: int) -> None:
@@ -288,9 +314,57 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             for _node in self.tree.children(node_id):
                 self.do_calculate_part_count(_node.identifier)
                 _total_part_count += _node.data["hardware"].total_part_count
-                _total_part_count *= _record.quantity
 
+            _total_part_count *= _record.quantity
             _record.set_attributes({"total_part_count": _total_part_count})
+
+    def do_calculate_part_hazard_rates(self, node_id: int) -> None:
+        """Calculate the hazard rates for parts.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id)
+        _attributes = {
+            **_record.data["hardware"].get_attributes(),
+            **_record.data["design_mechanic"].get_attributes(),
+            **_record.data["design_electric"].get_attributes(),
+            **_record.data["milhdbk217f"].get_attributes(),
+            **_record.data["nswc"].get_attributes(),
+            **_record.data["reliability"].get_attributes(),
+        }
+
+        self.do_calculate_part_stress(node_id)
+
+        _record.data["reliability"].do_calculate_hazard_rate_active(
+            self._hr_multiplier,
+            _attributes,
+            time=_record.data["hardware"].mission_time,
+        )
+
+        _record.data["reliability"].do_calculate_hazard_rate_dormant(
+            _record.data["hardware"].category_id,
+            _record.data["hardware"].subcategory_id,
+            _record.data["design_electric"].environment_active_id,
+            _record.data["design_electric"].environment_dormant_id,
+        )
+
+    def do_calculate_part_stress(self, node_id: int) -> None:
+        """Calculate the electrical, mechanical, and thermal stress ratios on a part.
+
+        :param node_id: the record ID to calculate.
+        :return: None
+        :rtype: None
+        """
+        _record = self.tree.get_node(node_id)
+
+        _record.data["design_electric"].do_stress_analysis(
+            _record.data["hardware"].category_id
+        )
+        _record.data["design_electric"].do_derating_analysis(
+            self._dic_stress_limits[_record.data["hardware"].category_id]
+        )
 
     def do_calculate_power_dissipation(self, node_id: int) -> float:
         """Calculate the total power dissipation of a hardware item.
@@ -312,7 +386,11 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 _total_power_dissipation += self.do_calculate_power_dissipation(
                     _node_id
                 )
+
             _total_power_dissipation *= _record.data["hardware"].quantity
+            _record.data["design_electric"].set_attributes(
+                {"power_operating": _total_power_dissipation}
+            )
 
         _record.data["hardware"].set_attributes(
             {"total_power_dissipation": _total_power_dissipation}
@@ -338,8 +416,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             _p_comp_ref_des = ""
 
         if _p_comp_ref_des != "":
-            _record.comp_ref_des = _p_comp_ref_des + ":" + _record.ref_des
-            _node.tag = _p_comp_ref_des + ":" + _record.ref_des
+            _record.comp_ref_des = f"{_p_comp_ref_des}:{_record.ref_des}"
+            _node.tag = f"{_p_comp_ref_des}:{_record.ref_des}"
         else:
             _record.comp_ref_des = _record.ref_des
             _node.tag = _record.ref_des

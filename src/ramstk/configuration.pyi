@@ -70,7 +70,19 @@ class RAMSTKUserConfiguration:
     RAMSTK_SEVERITY: Any = ...
     RAMSTK_STAKEHOLDERS: Any = ...
     RAMSTK_STRESS_LIMITS: Dict[
-        int, Tuple[float, float, float, float, float, float, float, float, float, float]
+        int,
+        Tuple[
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+            float,
+        ],
     ] = ...
     RAMSTK_SUBCATEGORIES: Any = ...
     RAMSTK_USERS: Any = ...

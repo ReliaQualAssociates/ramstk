@@ -45,12 +45,12 @@ INSERT INTO "ramstk_mission" VALUES(1,3,'Test Mission 3',0.0,'hours');
 CREATE TABLE ramstk_mission_phase (
     fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
-    fld_phase_id INTEGER NOT NULL,
+    fld_mission_phase_id INTEGER NOT NULL,
     fld_description VARCHAR,
     fld_name VARCHAR(256),
     fld_phase_start FLOAT,
     fld_phase_end FLOAT,
-    PRIMARY KEY (fld_phase_id),
+    PRIMARY KEY (fld_mission_phase_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE
 );
@@ -60,7 +60,7 @@ INSERT INTO "ramstk_mission_phase" VALUES(1,3,3,'Test Mission Phase 3','',0.0,0.
 CREATE TABLE ramstk_environment (
     fld_revision_id INTEGER NOT NULL,
     fld_mission_id INTEGER NOT NULL,
-    fld_phase_id INTEGER NOT NULL,
+    fld_mission_phase_id INTEGER NOT NULL,
     fld_environment_id INTEGER NOT NULL,
     fld_name VARCHAR(256),
     fld_units VARCHAR(128),
@@ -74,7 +74,7 @@ CREATE TABLE ramstk_environment (
     PRIMARY KEY (fld_environment_id),
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_mission_id) REFERENCES ramstk_mission (fld_mission_id) ON DELETE CASCADE,
-    FOREIGN KEY(fld_phase_id) REFERENCES ramstk_mission_phase (fld_phase_id) ON DELETE CASCADE
+    FOREIGN KEY(fld_mission_phase_id) REFERENCES ramstk_mission_phase (fld_mission_phase_id) ON DELETE CASCADE
 );
 INSERT INTO "ramstk_environment" VALUES(1,1,1,1,'Condition Name','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_environment" VALUES(1,2,2,2,'Condition Name 2','Units',0.0,0.0,0.0,0.0,0.0,0.0,0.0);
@@ -437,6 +437,7 @@ INSERT INTO "ramstk_design_electric" VALUES(1,4,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,
 INSERT INTO "ramstk_design_electric" VALUES(1,5,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
 INSERT INTO "ramstk_design_electric" VALUES(1,6,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
 INSERT INTO "ramstk_design_electric" VALUES(1,7,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
+INSERT INTO "ramstk_design_electric" VALUES(1,8,0,0.0,0.0,0,0,0,0,0,0.0,0.0,0.0,0,0,0,0.0,0.0,0,0,0,0,0,1,0,0,0,0,0.0,0,0,0.0,0.0,0.0,'',0.0,0,0,35.0,0.0,25.0,0.0,0.0,25.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1);
 CREATE TABLE ramstk_design_mechanic (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -502,6 +503,7 @@ INSERT INTO "ramstk_design_mechanic" VALUES(1,4,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.
 INSERT INTO "ramstk_design_mechanic" VALUES(1,5,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_design_mechanic" VALUES(1,6,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_design_mechanic" VALUES(1,7,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_design_mechanic" VALUES(1,8,0.0,0,0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0,0.0,0,0,0,0.0,0.0,0,0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0.0,0.0,0,0.0,0,0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_mil_hdbk_f (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -550,6 +552,7 @@ INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0
 INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_mil_hdbk_f" VALUES(1,8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_nswc (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -620,6 +623,7 @@ INSERT INTO "ramstk_nswc" VALUES(1,4,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
 INSERT INTO "ramstk_nswc" VALUES(1,5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_nswc" VALUES(1,6,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 INSERT INTO "ramstk_nswc" VALUES(1,7,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
+INSERT INTO "ramstk_nswc" VALUES(1,8,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0);
 CREATE TABLE ramstk_reliability (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -673,6 +677,7 @@ INSERT INTO "ramstk_reliability" VALUES(1,4,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0,
 INSERT INTO "ramstk_reliability" VALUES(1,5,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0035,0.0,0,0.0,'',0.0,0.0,0.15,2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.0,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
 INSERT INTO "ramstk_reliability" VALUES(1,6,0.0,1.0,1.0,0.0,0.0,0,2.89e-06,0.0,0.0,0,0.0,'',0.0,2.3,0.045,2,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.9995,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
 INSERT INTO "ramstk_reliability" VALUES(1,7,0.0,1.0,1.0,0.0,0.0,0,1.132e-07,0.0,0.0,0,0.0,'',0.0,0.0,0.0,3,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,89560.0,0.0,0.0,0.0,1.0,0,0.0,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
+INSERT INTO "ramstk_reliability" VALUES(1,8,0.0,1.0,1.0,0.0,0.0,0,1.132e-07,0.0,0.0,0,0.0,'',0.0,0.0,0.0,3,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,89560.0,0.0,0.0,0.0,1.0,0,0.0,0,1.0,1.0,0.0,0.0,0.0,0.0,0);
 CREATE TABLE ramstk_similar_item (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,

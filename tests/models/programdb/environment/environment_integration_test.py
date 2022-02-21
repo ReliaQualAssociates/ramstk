@@ -27,7 +27,7 @@ def test_tablemodel(test_program_dao):
     dut.do_select_all(
         attributes={
             "revision_id": 1,
-            "phase_id": 1,
+            "mission_phase_id": 1,
         }
     )
 
@@ -78,7 +78,7 @@ class TestInsertMethods:
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_phase_id)=(20) is not present in table "
+            "returned:\n\tKey (fld_mission_phase_id)=(20) is not present in table "
             '"ramstk_mission_phase".'
         )
         print("\033[35m\nfail_insert_environment topic was broadcast.")
@@ -105,7 +105,7 @@ class TestInsertMethods:
         """should send the fail message when the mission phase ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
 
-        test_attributes["phase_id"] = 20
+        test_attributes["mission_phase_id"] = 20
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
@@ -286,7 +286,7 @@ class TestGetterSetter:
 
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes["phase_id"] == 1
+        assert attributes["mission_phase_id"] == 1
         assert attributes["environment_id"] == 1
         assert attributes["name"] == "Condition Name"
         print("\033[36m\nsucceed_get_environment_attributes topic was broadcast")

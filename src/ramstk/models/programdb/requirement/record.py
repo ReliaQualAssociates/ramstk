@@ -102,13 +102,17 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     parent_id = Column("fld_parent_id", Integer, default=__defaults__["parent_id"])
     priority = Column("fld_priority", Integer, default=__defaults__["priority"])
     requirement_code = Column(
-        "fld_requirement_code", String(256), default=__defaults__["requirement_code"]
+        "fld_requirement_code",
+        String(256),
+        default=__defaults__["requirement_code"],
     )
     specification = Column(
         "fld_specification", String(256), default=__defaults__["specification"]
     )
     requirement_type = Column(
-        "fld_requirement_type", Integer, default=__defaults__["requirement_type"]
+        "fld_requirement_type",
+        Integer,
+        default=__defaults__["requirement_type"],
     )
     validated = Column("fld_validated", Integer, default=__defaults__["validated"])
     validated_date = Column(

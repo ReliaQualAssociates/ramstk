@@ -216,13 +216,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 signal=_value[2],
             )
 
-            if _value[4]:
-                pub.sendMessage(
-                    _value[4],
-                    node_id=self._record_id,
-                    package={_key: _new_text},
-                )
-
         pub.sendMessage("request_set_cursor_active")
 
     def do_make_panel(self, **kwargs: Dict[str, Any]) -> None:
@@ -421,7 +414,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def on_changed_textview(
-        self, buffer: Gtk.TextBuffer, key: str, message: str, textview: RAMSTKTextView
+        self,
+        buffer: Gtk.TextBuffer,
+        key: str,
+        message: str,
+        textview: RAMSTKTextView,
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKTextView() widgets.
 

@@ -18,7 +18,10 @@ class RAMSTKPlot:
     plot: Any = ...
     def __init__(self) -> None: ...
     def do_load_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None: ...
     def do_add_line(
         self,
@@ -37,15 +40,27 @@ class RAMSTKPlot:
         self, title: str, fontsize: int = ..., fontweight: str = ...
     ) -> matplotlib.text.Text: ...
     def _do_make_date_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None: ...
     def _do_make_histogram(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None: ...
     def _do_make_scatter_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None: ...
     def _do_make_step_plot(
-        self, x_values: List[float], y_values: List[float], **kwargs: Dict[str, str]
+        self,
+        x_values: List[float],
+        y_values: List[float],
+        **kwargs: Dict[str, str],
     ) -> None: ...
     def _get_minimax_ordinates(self) -> Tuple[float, float]: ...

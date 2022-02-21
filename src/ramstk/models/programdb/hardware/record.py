@@ -86,11 +86,17 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         nullable=False,
     )
     hardware_id = Column(
-        "fld_hardware_id", Integer, primary_key=True, autoincrement=True, nullable=False
+        "fld_hardware_id",
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False,
     )
 
     alt_part_number = Column(
-        "fld_alt_part_number", String(256), default=__defaults__["alt_part_number"]
+        "fld_alt_part_number",
+        String(256),
+        default=__defaults__["alt_part_number"],
     )
     attachments = Column(
         "fld_attachments", String(512), default=__defaults__["attachments"]
@@ -152,7 +158,9 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     total_cost = Column("fld_total_cost", Float, default=__defaults__["total_cost"])
     total_part_count = Column(
-        "fld_total_part_count", Integer, default=__defaults__["total_part_count"]
+        "fld_total_part_count",
+        Integer,
+        default=__defaults__["total_part_count"],
     )
     total_power_dissipation = Column(
         "fld_total_power_dissipation",
@@ -160,7 +168,9 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["total_power_dissipation"],
     )
     year_of_manufacture = Column(
-        "fld_year_of_manufacture", Integer, default=__defaults__["year_of_manufacture"]
+        "fld_year_of_manufacture",
+        Integer,
+        default=__defaults__["year_of_manufacture"],
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.

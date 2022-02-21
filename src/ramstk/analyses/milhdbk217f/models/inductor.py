@@ -119,8 +119,38 @@ PART_STRESS_PI_Q = {
     2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
 }
 PI_E = {
-    1: [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0, 34.0, 610.0],
-    2: [1.0, 4.0, 12.0, 5.0, 16.0, 5.0, 7.0, 6.0, 8.0, 24.0, 0.5, 13.0, 34.0, 610.0],
+    1: [
+        1.0,
+        6.0,
+        12.0,
+        5.0,
+        16.0,
+        6.0,
+        8.0,
+        7.0,
+        9.0,
+        24.0,
+        0.5,
+        13.0,
+        34.0,
+        610.0,
+    ],
+    2: [
+        1.0,
+        4.0,
+        12.0,
+        5.0,
+        16.0,
+        5.0,
+        7.0,
+        6.0,
+        8.0,
+        24.0,
+        0.5,
+        13.0,
+        34.0,
+        610.0,
+    ],
 }
 REF_TEMPS = {
     1: {1: 329.0, 2: 352.0, 3: 364.0, 4: 400.0, 5: 398.0, 6: 477.0},
@@ -170,13 +200,15 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """
     attributes["piC"] = float(attributes["construction_id"])
     attributes["piQ"] = get_part_stress_quality_factor(
-        attributes["subcategory_id"], attributes["quality_id"], attributes["family_id"]
+        attributes["subcategory_id"],
+        attributes["quality_id"],
+        attributes["family_id"],
     )
 
     _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
     if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
-            attributes["page_number"]
+            int(attributes["page_number"])
         )
     elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
         attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(

@@ -82,7 +82,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field: str = "hardware_id"
-    _select_msg: str = "selected_hardware"
+    _select_msg: str = "succeed_get_design_electric_attributes"
     _tag: str = "design_electric"
     _title: str = _("Inductive Device Design Inputs")
 
@@ -285,20 +285,14 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if attributes["hardware_id"] == self._record_id:
-            self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-            self._quality_id = attributes["quality_id"]
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
 
-            self.cmbQuality.set_sensitive(True)
-            self.cmbQuality.do_update(
-                self._quality_id,
-                signal="changed",
-            )
-
-            pub.sendMessage(
-                f"request_get_{self._tag}_attributes",
-                node_id=self._record_id,
-            )
+        self.cmbQuality.set_sensitive(True)
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set widget sensitivity as needed for the selected inductor.
@@ -370,7 +364,10 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("RF Transformer")],
                 ]
             else:
-                _data = [[_("RF Coils, Fixed or Molded")], [_("RF Coils, Variable")]]
+                _data = [
+                    [_("RF Coils, Fixed or Molded")],
+                    [_("RF Coils, Variable")],
+                ]
         else:
             _data = [
                 [_("Pulse Transformer")],
@@ -399,7 +396,11 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            _data = [[_("Established Reliability")], ["MIL-SPEC"], [_("Lower")]]
+            _data = [
+                [_("Established Reliability")],
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ]
         else:
             try:
                 _data = self._dic_quality[self.subcategory_id]

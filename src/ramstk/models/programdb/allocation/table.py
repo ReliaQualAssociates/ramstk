@@ -65,19 +65,24 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self.do_calculate_agree_allocation, "request_calculate_agree_allocation"
+            self.do_calculate_agree_allocation,
+            "request_calculate_agree_allocation",
         )
         pub.subscribe(
-            self.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
+            self.do_calculate_arinc_allocation,
+            "request_calculate_arinc_allocation",
         )
         pub.subscribe(
-            self.do_calculate_equal_allocation, "request_calculate_equal_allocation"
+            self.do_calculate_equal_allocation,
+            "request_calculate_equal_allocation",
         )
         pub.subscribe(
-            self.do_calculate_foo_allocation, "request_calculate_foo_allocation"
+            self.do_calculate_foo_allocation,
+            "request_calculate_foo_allocation",
         )
         pub.subscribe(
-            self.do_calculate_allocation_goals, "request_calculate_allocation_goals"
+            self.do_calculate_allocation_goals,
+            "request_calculate_allocation_goals",
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden

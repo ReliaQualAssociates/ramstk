@@ -101,10 +101,14 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["availability_mission"],
     )
     avail_log_variance = Column(
-        "fld_avail_log_variance", Float, default=__defaults__["avail_log_variance"]
+        "fld_avail_log_variance",
+        Float,
+        default=__defaults__["avail_log_variance"],
     )
     avail_mis_variance = Column(
-        "fld_avail_mis_variance", Float, default=__defaults__["avail_mis_variance"]
+        "fld_avail_mis_variance",
+        Float,
+        default=__defaults__["avail_mis_variance"],
     )
     failure_distribution_id = Column(
         "fld_failure_distribution_id",
@@ -112,10 +116,14 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["failure_distribution_id"],
     )
     hazard_rate_active = Column(
-        "fld_hazard_rate_active", Float, default=__defaults__["hazard_rate_active"]
+        "fld_hazard_rate_active",
+        Float,
+        default=__defaults__["hazard_rate_active"],
     )
     hazard_rate_dormant = Column(
-        "fld_hazard_rate_dormant", Float, default=__defaults__["hazard_rate_dormant"]
+        "fld_hazard_rate_dormant",
+        Float,
+        default=__defaults__["hazard_rate_dormant"],
     )
     hazard_rate_logistics = Column(
         "fld_hazard_rate_logistics",
@@ -128,7 +136,9 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_method_id"],
     )
     hazard_rate_mission = Column(
-        "fld_hazard_rate_mission", Float, default=__defaults__["hazard_rate_mission"]
+        "fld_hazard_rate_mission",
+        Float,
+        default=__defaults__["hazard_rate_mission"],
     )
     hazard_rate_model = Column(
         "fld_hazard_rate_model",
@@ -136,7 +146,9 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_model"],
     )
     hazard_rate_percent = Column(
-        "fld_hazard_rate_percent", Float, default=__defaults__["hazard_rate_percent"]
+        "fld_hazard_rate_percent",
+        Float,
+        default=__defaults__["hazard_rate_percent"],
     )
     hazard_rate_software = Column(
         "fld_hazard_rate_software",
@@ -149,26 +161,40 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["hazard_rate_specified"],
     )
     hazard_rate_type_id = Column(
-        "fld_hazard_rate_type_id", Integer, default=__defaults__["hazard_rate_type_id"]
+        "fld_hazard_rate_type_id",
+        Integer,
+        default=__defaults__["hazard_rate_type_id"],
     )
     hr_active_variance = Column(
-        "fld_hr_active_variance", Float, default=__defaults__["hr_active_variance"]
+        "fld_hr_active_variance",
+        Float,
+        default=__defaults__["hr_active_variance"],
     )
     hr_dormant_variance = Column(
-        "fld_hr_dormant_variance", Float, default=__defaults__["hr_dormant_variance"]
+        "fld_hr_dormant_variance",
+        Float,
+        default=__defaults__["hr_dormant_variance"],
     )
     hr_logistics_variance = Column(
-        "fld_hr_log_variance", Float, default=__defaults__["hr_logistics_variance"]
+        "fld_hr_log_variance",
+        Float,
+        default=__defaults__["hr_logistics_variance"],
     )
     hr_mission_variance = Column(
-        "fld_hr_mis_variance", Float, default=__defaults__["hr_mission_variance"]
+        "fld_hr_mis_variance",
+        Float,
+        default=__defaults__["hr_mission_variance"],
     )
     hr_specified_variance = Column(
-        "fld_hr_spec_variance", Float, default=__defaults__["hr_specified_variance"]
+        "fld_hr_spec_variance",
+        Float,
+        default=__defaults__["hr_specified_variance"],
     )
     lambda_b = Column("fld_lambda_b", Float, default=__defaults__["lambda_b"])
     location_parameter = Column(
-        "fld_location_parameter", Float, default=__defaults__["location_parameter"]
+        "fld_location_parameter",
+        Float,
+        default=__defaults__["location_parameter"],
     )
     mtbf_logistics = Column(
         "fld_mtbf_logistics", Float, default=__defaults__["mtbf_logistics"]
@@ -180,13 +206,19 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_mtbf_specified", Float, default=__defaults__["mtbf_specified"]
     )
     mtbf_logistics_variance = Column(
-        "fld_mtbf_log_variance", Float, default=__defaults__["mtbf_logistics_variance"]
+        "fld_mtbf_log_variance",
+        Float,
+        default=__defaults__["mtbf_logistics_variance"],
     )
     mtbf_mission_variance = Column(
-        "fld_mtbf_mis_variance", Float, default=__defaults__["mtbf_mission_variance"]
+        "fld_mtbf_mis_variance",
+        Float,
+        default=__defaults__["mtbf_mission_variance"],
     )
     mtbf_specified_variance = Column(
-        "fld_mtbf_spec_variance", Float, default=__defaults__["mtbf_specified_variance"]
+        "fld_mtbf_spec_variance",
+        Float,
+        default=__defaults__["mtbf_specified_variance"],
     )
     mult_adj_factor = Column(
         "fld_mult_adj_factor", Float, default=__defaults__["mult_adj_factor"]
@@ -206,7 +238,9 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         default=__defaults__["reliability_logistics"],
     )
     reliability_mission = Column(
-        "fld_reliability_mission", Float, default=__defaults__["reliability_mission"]
+        "fld_reliability_mission",
+        Float,
+        default=__defaults__["reliability_mission"],
     )
     reliability_log_variance = Column(
         "fld_reliability_log_variance",
@@ -319,7 +353,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.hazard_rate_active = 0.0
 
         if self.hazard_rate_type_id == 1:
-            self.hazard_rate_active = self.do_predict_active_hazard_rate(attributes)
+            self.do_predict_active_hazard_rate(attributes)
         elif self.hazard_rate_type_id == 2:
             self.hazard_rate_active = self.hazard_rate_specified
         elif self.hazard_rate_type_id == 3:
@@ -427,31 +461,35 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             + self.hazard_rate_software
         )
 
-    def do_calculate_mtbf(self) -> None:
+    def do_calculate_mtbf(self, multiplier: float = 1.0) -> None:
         """Calculate the logistics and mission MTBF.
 
         :return: None
         :rtype: None
         """
         try:
-            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
+            self.mtbf_logistics = 1000000.0 / (self.hazard_rate_logistics * multiplier)
         except ZeroDivisionError:
             self.mtbf_logistics = 0.0
 
         try:
-            self.mtbf_mission = 1.0 / self.hazard_rate_mission
+            self.mtbf_mission = 1000000.0 / (self.hazard_rate_mission * multiplier)
         except ZeroDivisionError:
             self.mtbf_mission = 0.0
 
-    def do_calculate_reliability(self, time: float) -> None:
+    def do_calculate_reliability(self, time: float, multiplier: float = 1.0) -> None:
         """Calculate the reliability related metrics.
 
         :param time: the time at which to calculate the reliabilities.
         :return: None
         :rtype: None
         """
-        self.reliability_logistics = exp(-1.0 * self.hazard_rate_logistics * time)
-        self.reliability_mission = exp(-1.0 * self.hazard_rate_mission * time)
+        self.reliability_logistics = exp(
+            -multiplier * self.hazard_rate_logistics * time / 1000000.0
+        )
+        self.reliability_mission = exp(
+            -multiplier * self.hazard_rate_mission * time / 1000000.0
+        )
 
     def do_predict_active_hazard_rate(
         self, attributes: Dict[str, Union[float, int, str]]

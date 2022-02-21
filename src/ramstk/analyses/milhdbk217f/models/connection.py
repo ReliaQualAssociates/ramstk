@@ -284,9 +284,54 @@ PI_E = {
             970.0,
         ],
     },
-    3: [1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0, 36.0, 650.0],
-    4: [1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0, 27.0, 500.0],
-    5: [1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0, 420.0],
+    3: [
+        1.0,
+        3.0,
+        14.0,
+        6.0,
+        18.0,
+        8.0,
+        12.0,
+        11.0,
+        13.0,
+        25.0,
+        0.5,
+        14.0,
+        36.0,
+        650.0,
+    ],
+    4: [
+        1.0,
+        2.0,
+        7.0,
+        5.0,
+        13.0,
+        5.0,
+        8.0,
+        16.0,
+        28.0,
+        19.0,
+        0.5,
+        10.0,
+        27.0,
+        500.0,
+    ],
+    5: [
+        1.0,
+        2.0,
+        7.0,
+        4.0,
+        11.0,
+        4.0,
+        6.0,
+        6.0,
+        8.0,
+        16.0,
+        0.5,
+        9.0,
+        24.0,
+        420.0,
+    ],
 }
 PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
 REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
@@ -396,7 +441,10 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     )
 
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
-        attributes["subcategory_id"], attributes["type_id"], _contact_temp, _factor_key
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        _contact_temp,
+        _factor_key,
     )
 
     attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
@@ -426,7 +474,10 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def calculate_part_stress_lambda_b(
-    subcategory_id: int, type_id: int, contact_temperature: float, factor_key: int
+    subcategory_id: int,
+    type_id: int,
+    contact_temperature: float,
+    factor_key: int,
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
