@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKGroup.py is part of The RAMSTK Project
+#       ramstk.models.commondb.group.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKGroup Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Group Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -14,13 +14,16 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKGroup(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKGroupRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent the table ramstk_group in the RAMSTK Common database.
 
     This table shares a Many-to-One relationship with ramstk_user.
     """
 
-    __defaults__ = {"description": "Group Description", "group_type": ""}
+    __defaults__ = {
+        "description": "Group Description",
+        "group_type": "",
+    }
     __tablename__ = "ramstk_group"
     __table_args__ = {"extend_existing": True}
 

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKHazards.py is part of The RAMSTK Project
+#       ramstk.models.commondb.hazards.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKHazard Table Module."""
 
 # Third Party Imports
@@ -14,7 +14,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKHazards(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKHazardsRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_hazard in the RAMSTK Common database."""
 
     __defaults__ = {
