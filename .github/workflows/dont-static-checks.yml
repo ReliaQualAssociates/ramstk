@@ -1,0 +1,53 @@
+# This is a dummy workflow that will run when the conditions of the
+# do-static-checks workflow aren't met.  This allows PRs to be merged when the
+# conditions aren't met for a protected branch.  See
+# https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks
+name: Perform Static Checks on RAMSTK Code Base
+
+on:
+  push:
+    paths-ignore:
+      - "**.py"
+  pull_request:
+    paths-ignore:
+      - "**.py"
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+
+jobs:
+  bandit:
+    name: Check for Security Vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+          echo "No security check required."
+
+  format-check:
+    name: Check Code Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+          echo "No files to be formatted."
+
+  style-check:
+    name: Check Code Styling
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+          echo "No files to be style checked."
+
+  type-check:
+    name: Check Code Type Hinting
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+          echo "No files to be type checked."
+
+  lint-check:
+    name: Check Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+          echo "No files to be linted."
