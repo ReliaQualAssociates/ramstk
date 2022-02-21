@@ -1,10 +1,10 @@
 # * coding: utf8 *
 #
-#       ramstk.models.commondb.RAMSTKCondition.py is part of The RAMSTK Project
+#       ramstk.models.commondb.condition.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007  2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKCondition Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Condition Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -14,7 +14,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKConditionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_condition in RAMSTK Common database."""
 
     __defaults__ = {
@@ -46,10 +46,8 @@ class RAMSTKCondition(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {condition_id, description, condition_type} pairs
         :rtype: dict
         """
-        _attributes = {
+        return {
             "condition_id": self.condition_id,
             "description": self.description,
             "condition_type": self.condition_type,
         }
-
-        return _attributes
