@@ -21,6 +21,7 @@ from .commondb.category.record import RAMSTKCategoryRecord  # isort:skip
 from .commondb.condition.record import RAMSTKConditionRecord  # isort:skip
 from .commondb.failure_mode.record import RAMSTKFailureModeRecord  # isort:skip
 from .commondb.group.record import RAMSTKGroupRecord  # isort:skip
+from .commondb.hazards.record import RAMSTKHazardsRecord  # isort:skip
 from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip
 from .commondb.subcategory.record import RAMSTKSubCategoryRecord  # isort:skip
 from .commondb.category.table import RAMSTKCategoryTable  # isort:skip
@@ -30,6 +31,7 @@ from .commondb.condition.table import RAMSTKConditionTable
 from .commondb.database import RAMSTKCommonDB
 from .commondb.failure_mode.table import RAMSTKFailureModeTable
 from .commondb.group.table import RAMSTKGroupTable
+from .commondb.hazards.table import RAMSTKHazardsTable
 from .commondb.site_info.table import RAMSTKSiteInfoTable
 from .commondb.subcategory.table import RAMSTKSubCategoryTable
 from .programdb.action.record import RAMSTKActionRecord

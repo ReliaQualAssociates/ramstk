@@ -21,12 +21,12 @@ from ramstk.models import (
     RAMSTKCategoryRecord,
     RAMSTKFailureModeRecord,
     RAMSTKGroupRecord,
+    RAMSTKHazardsRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKHazards,
     RAMSTKLoadHistory,
     RAMSTKManufacturer,
     RAMSTKMeasurement,
@@ -465,7 +465,7 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-        for _record in self.common_dao.session.query(RAMSTKHazards).all():
+        for _record in self.common_dao.session.query(RAMSTKHazardsRecord).all():
             _attributes = _record.get_attributes()
             user_configuration.RAMSTK_HAZARDS[_record.hazard_id] = (
                 _attributes["hazard_category"],
