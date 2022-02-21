@@ -20,12 +20,12 @@ from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.models import (
     RAMSTKCategoryRecord,
     RAMSTKFailureModeRecord,
+    RAMSTKGroupRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKGroup,
     RAMSTKHazards,
     RAMSTKLoadHistory,
     RAMSTKManufacturer,
@@ -327,8 +327,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKGroup)
-            .filter(RAMSTKGroup.group_type == "affinity")
+            self.common_dao.session.query(RAMSTKGroupRecord)
+            .filter(RAMSTKGroupRecord.group_type == "affinity")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -846,8 +846,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKGroup)
-            .filter(RAMSTKGroup.group_type == "workgroup")
+            self.common_dao.session.query(RAMSTKGroupRecord)
+            .filter(RAMSTKGroupRecord.group_type == "workgroup")
             .all()
         ):
             _attributes = _record.get_attributes()
