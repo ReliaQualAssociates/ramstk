@@ -57,6 +57,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build html documentation
         run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends latexmk
           cd docs
           pip install -r requirements.txt
           make html
