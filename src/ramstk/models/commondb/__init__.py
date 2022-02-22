@@ -8,7 +8,6 @@
 """The RAMSTK common database models package."""
 
 # RAMSTK Local Imports
-from .ramstkmethod import RAMSTKMethod
 from .ramstkmodel import RAMSTKModel
 from .ramstkrpn import RAMSTKRPN
 from .ramstkstakeholders import RAMSTKStakeholders
