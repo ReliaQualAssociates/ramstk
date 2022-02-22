@@ -111,21 +111,20 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
                 loc=_location,
                 scale=_scale,
             )
+    elif scipy.__version__ >= "1.7.1":
+        _location, _scale = expon.fit(
+            data,
+            loc=_location,
+            floc=_floc,
+            scale=_scale,
+            method=_method,
+        )
     else:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-                method=_method,
-            )
-        else:
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-            )
+        _location, _scale = expon.fit(
+            data,
+            loc=_location,
+            floc=_floc,
+            scale=_scale,
+        )
 
     return _location, _scale

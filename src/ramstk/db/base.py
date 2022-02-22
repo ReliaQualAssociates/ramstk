@@ -415,9 +415,11 @@ class BaseDatabase:
 
             # Make list of available databases, but only those associated with
             # RAMSTK.
-            for db in _session.execute(_query):
-                if db[0] not in ["postgres", "template0", "template1"]:
-                    _databases.append(db[0])
+            _databases.extend(
+                db[0]
+                for db in _session.execute(_query)
+                if db[0] not in ["postgres", "template0", "template1"]
+            )
 
         return _databases
 
@@ -437,7 +439,7 @@ class BaseDatabase:
         # This ensures the column name is prefixed with fld_ in case the
         # table's attribute name was passed instead.
         if id_column[:4] != "fld_":
-            id_column = "fld_" + id_column
+            id_column = f'fld_{id_column}'
 
         _sql_statement = (
             self.sqlstatements["select"].format(id_column)

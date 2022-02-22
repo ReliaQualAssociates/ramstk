@@ -31,7 +31,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         RAMSTKWidget.__init__(self)
 
-        self.set_markup("<span>" + text + "</span>")
+        self.set_markup(f'<span>{text}</span>')
         self.show_all()
 
     def get_attribute(self, attribute: str) -> Any:
@@ -84,7 +84,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         self.set_yalign(0.5)
         if _bold:
             _text = self.get_property("label")
-            _text = "<b>" + _text + "</b>"
+            _text = f'<b>{_text}</b>'
             self.set_markup(_text)
 
     # pylint: disable=unused-argument
@@ -97,7 +97,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         :return: None
         :rtype: None
         """
-        self.set_markup("<span>" + text + "</span>")
+        self.set_markup(f'<span>{text}</span>')
 
 
 def do_make_label_group(

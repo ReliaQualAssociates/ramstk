@@ -117,21 +117,20 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
                 loc=_location,
                 scale=_scale,
             )
+    elif scipy.__version__ >= "1.7.1":
+        _location, _scale = norm.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+            method=_method,
+        )
     else:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = norm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-                method=_method,
-            )
-        else:
-            _location, _scale = norm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-            )
+        _location, _scale = norm.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+        )
 
     return _location, _scale
