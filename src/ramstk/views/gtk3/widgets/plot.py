@@ -201,8 +201,6 @@ class RAMSTKPlot:
         _x_pos = kwargs.get("x_pos", 0)
         _y_pos = kwargs.get("y_pos", 0)
 
-        _label = None
-
         if _set_x:
             return self.axis.set_xlabel(
                 label,

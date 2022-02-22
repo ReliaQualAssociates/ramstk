@@ -1,0 +1,33 @@
+# This is a dummy workflow that will run when the conditions of the
+# do-test-suite workflow aren't met.  This allows PRs to be merged when the
+# conditions aren't met for a protected branch.  See
+# https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks
+name: Execute RAMSTK Test Suite with Coverage
+
+on:
+  push:
+    paths-ignore:
+      - "**.py"
+  pull_request:
+    paths-ignore:
+      - "**.py"
+    types:
+      - "opened"
+      - "reopened"
+      - "synchronize"
+
+jobs:
+  test_suite:
+    name: Run Test Suite
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Test suite not required."
+
+  upload_coveralls:
+    name: Upload Results to Coveralls
+    needs: test_suite
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "No test suite required; no coverage report generated."

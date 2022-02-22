@@ -84,6 +84,7 @@ jobs:
           repository_url: https://test.pypi.org/legacy/
 
       - name: Test install from Test PyPI
+        if: ${{ env.build_ok == 1 }}
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest libenchant1c2a libenchant-dev python3-numpy python3-scipy xauth xvfb

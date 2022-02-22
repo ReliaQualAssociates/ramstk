@@ -64,12 +64,6 @@ jobs:
           make html
           cd ..
 
-      - name: Build pdf documentation
-        run: |
-          cd docs
-          make latexpdf LATEXMKOPTS="-silent -f"
-          cd ..
-
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v4
@@ -96,3 +90,9 @@ jobs:
           branch: gh-pages
           directory: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build pdf documentation
+        run: |
+          cd docs
+          make latexpdf LATEXMKOPTS="-silent -f"
+          cd ..

@@ -50,9 +50,12 @@ def get_hazard_rate(
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return 0.0 if time <= 0.0 else weibull_min.pdf(
-            time, shape, loc=location, scale=scale
-        ) / weibull_min.cdf(time, shape, loc=location, scale=scale)
+    return (
+        0.0
+        if time <= 0.0
+        else weibull_min.pdf(time, shape, loc=location, scale=scale)
+        / weibull_min.cdf(time, shape, loc=location, scale=scale)
+    )
 
 
 def get_mtbf(shape: float, scale: float, location: float = 0.0) -> float:

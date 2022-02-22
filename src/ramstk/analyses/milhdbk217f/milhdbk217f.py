@@ -282,6 +282,7 @@ def _get_part_count_quality_factor(
         return _pi_q_lists[category_id][quality_id - 1]
 
 
+# pylint: disable=too-many-return-statements
 def _get_part_stress_quality_factor(
     category_id: int, subcategory_id: int, quality_id: int
 ) -> float:

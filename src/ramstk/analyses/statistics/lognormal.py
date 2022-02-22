@@ -46,9 +46,12 @@ def get_hazard_rate(
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return 0.0 if time <= 0.0 else lognorm.pdf(
-            time, shape, loc=location, scale=scale
-        ) / lognorm.cdf(time, shape, loc=location, scale=scale)
+    return (
+        0.0
+        if time <= 0.0
+        else lognorm.pdf(time, shape, loc=location, scale=scale)
+        / lognorm.cdf(time, shape, loc=location, scale=scale)
+    )
 
 
 def get_mtbf(shape: float, location: float = 0.0, scale: float = 1.0) -> float:

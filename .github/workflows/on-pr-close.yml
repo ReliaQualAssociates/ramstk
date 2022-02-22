@@ -1,9 +1,6 @@
 # This workflow runs when a pull request is closed.
 #
 # - Job 1:
-#     - Remove 'status: inprogress' label.
-#     - Add 'status: closed' label.
-# - Job 2:
 #     - Gets list of PR labels.
 #     - Get current version from VERSION.
 #     - Determine next Semantic version.
@@ -21,16 +18,6 @@ on:
       - closed
 
 jobs:
-  label-pr-closed:
-    name: Add Closed Label
-    runs-on: ubuntu-latest
-    steps:
-      - name: Add label
-        uses: andymckay/labeler@master
-        with:
-          add-labels: "status: closed"
-          remove-labels: "status: inprogress"
-
   tag-version:
     name: Push Version Tag
     runs-on: ubuntu-latest
