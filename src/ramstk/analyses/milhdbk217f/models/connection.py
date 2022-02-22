@@ -354,7 +354,7 @@ def calculate_complexity_factor(n_circuit_planes: int) -> float:
     :return: _pi_c; the calculated value of the complexity factor.
     :rtype: float
     """
-    return 0.65 * n_circuit_planes ** 0.63 if n_circuit_planes > 2 else 1.0
+    return 0.65 * n_circuit_planes**0.63 if n_circuit_planes > 2 else 1.0
 
 
 def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
@@ -390,7 +390,7 @@ def calculate_insert_temperature(contact_gauge: int, current_operating: float) -
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
-    return _fo * current_operating ** 1.85
+    return _fo * current_operating**1.85
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -634,9 +634,7 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     _environment_active_id = kwargs.get("environment_active_id", 0)
 
     return (
-        PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
-            _environment_active_id - 1
-        ]
+        PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
         if _subcategory_id in [1, 5]
         else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
     )

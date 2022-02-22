@@ -1192,7 +1192,7 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     _f0 = C2[_package][0]
     _f1 = C2[_package][1]
 
-    return _f0 * (n_active_pins ** _f1)
+    return _f0 * (n_active_pins**_f1)
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -1546,7 +1546,7 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
             id_keys["environment_active_id"] - 1
         ]
         if id_keys["subcategory_id"] == 1
-        else PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][
-            id_keys["technology_id"]
-        ][_index][id_keys["environment_active_id"] - 1]
+        else PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["technology_id"]][
+            _index
+        ][id_keys["environment_active_id"] - 1]
     )
