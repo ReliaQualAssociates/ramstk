@@ -921,10 +921,7 @@ class Import:
         :return: None
         :rtype: None
         """
-        _db_fields = []
-        for _field in self._dic_field_map[module]:
-            _db_fields.append(_field)
-
+        _db_fields = list(self._dic_field_map[module])
         pub.sendMessage(
             "succeed_read_db_fields",
             db_fields=_db_fields,

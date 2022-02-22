@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKLoadHistory.py is part of The RAMSTK
+#       ramstk.models.commondb.load_history.record.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKLoadHistory Table."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Load History Table Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -15,10 +15,12 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKLoadHistoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent the table ramstk_load_history."""
 
-    __defaults__ = {"description": "Load History Description"}
+    __defaults__ = {
+        "description": "Load History Description",
+    }
     __tablename__ = "ramstk_load_history"
     __table_args__ = {"extend_existing": True}
 
@@ -39,9 +41,7 @@ class RAMSTKLoadHistory(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {load_history_id, description} pairs
         :rtype: dict
         """
-        _values = {
+        return {
             "history_id": self.history_id,
             "description": self.description,
         }
-
-        return _values

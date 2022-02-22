@@ -352,8 +352,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for __, _key in enumerate(affinities):
-            _group = affinities[_key]
+        for _key, _group in affinities.items():
             _cellmodel.append([_group[0]])
 
     def do_load_stakeholders(self, stakeholders: Dict[int, str]) -> None:
@@ -371,8 +370,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for __, _key in enumerate(stakeholders):
-            _group = stakeholders[_key]
+        for _key, _group in stakeholders.items():
             _cellmodel.append([_group])
 
     def _do_load_requirements(self, tree: treelib.Tree) -> None:

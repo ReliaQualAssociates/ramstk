@@ -1097,11 +1097,7 @@ def calculate_lambda_cyclic_factors(
         )
         _b_2 = 0.0
     elif construction_id == 2:
-        if 300000 < n_cycles <= 400000:
-            _a_2 = 1.1
-        else:
-            _a_2 = 2.3
-
+        _a_2 = 1.1 if 300000 < n_cycles <= 400000 else 2.3
         _b_1 = ((n_elements / 64000.0) ** 0.25) * (
             exp(
                 (0.1 / 8.63e-5)
@@ -1182,7 +1178,7 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     :result: _c2; the calculated package factor.
     :rtype: float
     """
-    if package_id in [1, 2, 3]:
+    if package_id in {1, 2, 3}:
         _package = 1
     elif package_id == 4:
         _package = 2
@@ -1196,7 +1192,7 @@ def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
     _f0 = C2[_package][0]
     _f1 = C2[_package][1]
 
-    return _f0 * (n_active_pins ** _f1)
+    return _f0 * (n_active_pins**_f1)
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:
@@ -1397,7 +1393,7 @@ def get_die_complexity_factor(
 
     if subcategory_id == 2 and technology_id == 11:
         _technology = 2
-    elif subcategory_id == 2 and technology_id != 11:
+    elif subcategory_id == 2:
         _technology = 1
     else:
         _technology = technology_id
@@ -1423,12 +1419,7 @@ def get_die_base_hazard_rate(type_id: int) -> float:
     :return: _lambda_bd; the base die hazard rate.
     :rtype: float
     """
-    if type_id == 1:
-        _lambda_bd = 0.16
-    else:
-        _lambda_bd = 0.24
-
-    return _lambda_bd
+    return 0.16 if type_id == 1 else 0.24
 
 
 def get_error_correction_factor(type_id: int) -> float:
@@ -1449,12 +1440,7 @@ def get_manufacturing_process_factor(manufacturing_id: int) -> float:
     :return: _pi_mfg; the manufacturing process correction factor.
     :rtype: float
     """
-    if manufacturing_id == 1:
-        _pi_mfg = 0.55
-    else:
-        _pi_mfg = 2.0
-
-    return _pi_mfg
+    return 0.55 if manufacturing_id == 1 else 2.0
 
 
 def get_package_type_correction_factor(package_id: int) -> float:
@@ -1555,13 +1541,12 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
             + 1
         )
 
-    if id_keys["subcategory_id"] == 1:
-        _base_hr = PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][_index][
+    return (
+        PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][_index][
             id_keys["environment_active_id"] - 1
         ]
-    else:
-        _base_hr = PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][
-            id_keys["technology_id"]
-        ][_index][id_keys["environment_active_id"] - 1]
-
-    return _base_hr
+        if id_keys["subcategory_id"] == 1
+        else PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["technology_id"]][
+            _index
+        ][id_keys["environment_active_id"] - 1]
+    )

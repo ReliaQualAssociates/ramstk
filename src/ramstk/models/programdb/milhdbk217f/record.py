@@ -122,7 +122,7 @@ class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   piPT, piQ, piR, piS, piT, piTAPS, piU, piV} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "A1": self.A1,
             "A2": self.A2,
@@ -160,5 +160,3 @@ class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "piU": self.piU,
             "piV": self.piV,
         }
-
-        return _attributes

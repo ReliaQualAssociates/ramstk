@@ -126,7 +126,7 @@ class ImportProject(Gtk.Assistant):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for __, _field in enumerate(import_fields):
+        for _field in import_fields:
             _cellmodel.append([_field])
 
     def _do_quit(self, __widget: Gtk.Widget) -> None:

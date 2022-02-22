@@ -151,6 +151,8 @@ class RAMSTKFMEAView(RAMSTKBaseView):
             _cause = _node.data["cause"]
 
             if _cause.mechanism_id == mechanism_id:
+                _node_id = f"{parent_id}.{_cause.cause_id}"
+
                 self.tree.create_node(
                     tag="cause",
                     identifier=f"{parent_id}.{_cause.cause_id}",
@@ -182,6 +184,8 @@ class RAMSTKFMEAView(RAMSTKBaseView):
             _control = _node.data["control"]
 
             if _control.cause_id == cause_id:
+                _node_id = f"{parent_id}.{_control.control_id}c"
+
                 self.tree.create_node(
                     tag="control",
                     identifier=f"{parent_id}.{_control.control_id}c",
@@ -201,6 +205,8 @@ class RAMSTKFMEAView(RAMSTKBaseView):
             _action = _node.data["action"]
 
             if _action.cause_id == cause_id:
+                _node_id = f"{parent_id}.{_action.action_id}a"
+
                 self.tree.create_node(
                     tag="action",
                     identifier=f"{parent_id}.{_action.action_id}a",

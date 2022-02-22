@@ -98,7 +98,6 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: _planned; the pandas DataFrame() containing the planned
             burndown hours for the entire validation effort.
         """
-        _dic_plan = {}
         _dic_planned = {}  # type: ignore
         _time_ll = 0.0
         _time_mean = 0.0

@@ -37,4 +37,4 @@ labels:
     name: "status: closed"
     color: "#0E8A16"
     description: "Pull Request is complete and integrated or closed for anther reason."
-    ignore: true
+    ignore: false

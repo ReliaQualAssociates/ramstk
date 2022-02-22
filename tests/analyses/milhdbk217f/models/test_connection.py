@@ -177,10 +177,7 @@ def test_get_mate_unmate_factor(n_cycles):
 @pytest.mark.parametrize("subcategory_id", [1, 3, 5])
 def test_calculate_part_stress_lambda_b(subcategory_id):
     """calculate_part_stress_lamba_b() should return a float value for the part stress base hazard rate on success."""
-    if subcategory_id == 1:
-        _factor_key = 2
-    else:
-        _factor_key = 5
+    _factor_key = 2 if subcategory_id == 1 else 5
     _lambda_b = connection.calculate_part_stress_lambda_b(
         subcategory_id, 4, 325, _factor_key
     )

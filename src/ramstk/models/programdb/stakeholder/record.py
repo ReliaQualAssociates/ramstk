@@ -100,7 +100,7 @@ class RAMSTKStakeholderRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   user_float_3, user_float_4, user_float_5} pairs.
         :rtype: tuple
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "stakeholder_id": self.stakeholder_id,
             "customer_rank": self.customer_rank,
@@ -118,5 +118,3 @@ class RAMSTKStakeholderRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "user_float_4": self.user_float_4,
             "user_float_5": self.user_float_5,
         }
-
-        return _attributes

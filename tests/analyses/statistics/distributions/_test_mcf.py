@@ -115,7 +115,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
         _times = reduce(lambda x, y: x + y, _data.values())
-        _times = set([float(f) for f in _times if isinstance(f, int)])
+        _times = {float(f) for f in _times if isinstance(f, int)}
         _times = sorted(list(_times))
 
         _d_matrix = d_matrix(_data, _times)
@@ -148,7 +148,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
         _times = reduce(lambda x, y: x + y, _data.values())
-        _times = set([float(f) for f in _times if isinstance(f, int)])
+        _times = {float(f) for f in _times if isinstance(f, int)}
         _times = sorted(list(_times))
 
         _delta_matrix = delta_matrix(_data, _times)
@@ -166,7 +166,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         _data = {1: [5, 8, "12+"], 2: ["16+"], 3: [1, 8, 16, "20+"]}
         _times = reduce(lambda x, y: x + y, _data.values())
-        _times = set([float(f) for f in _times if isinstance(f, int)])
+        _times = {float(f) for f in _times if isinstance(f, int)}
         _times = sorted(list(_times))
 
         _d_matrix = d_matrix(_data, _times)

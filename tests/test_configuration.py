@@ -7,6 +7,7 @@
 # All rights reserved.
 """Test class for the Configuration module algorithms and models."""
 
+
 # Standard Library Imports
 import gettext
 import glob
@@ -49,9 +50,9 @@ try:
 except IndexError:
     VIRTUAL_ENV = os.environ["VIRTUAL_ENV"]
 except KeyError:
-    if sys.platform == "Linux" or sys.platform == "linux":
+    if sys.platform in ["Linux", "linux"]:
         VIRTUAL_ENV = os.getenv("HOME") + "/.local"
-    elif sys.platform == "Windows" or sys.platform == "windows":
+    elif sys.platform in ["Windows", "windows"]:
         VIRTUAL_ENV = os.getenv("TEMP")
     else:
         print(("The {0:s} system platform is not " "supported.").format(sys.platform))
@@ -326,7 +327,7 @@ class TestCreateConfiguration:
         # RAMSTK files will not be in the VIRTUAL_ENV, sys will not have the
         # real_prefix attribute.  In this case, skip these tests.
         if hasattr(sys, "real_prefix"):
-            if sys.platform == "linux" or sys.platform == "linux2":
+            if sys.platform in ["linux", "linux2"]:
                 assert DUT.RAMSTK_SITE_DIR == VIRTUAL_ENV + "/share/RAMSTK"
             elif sys.platform == "win32":
                 assert DUT.RAMSTK_SITE_DIR == VIRTUAL_ENV + "/RAMSTK"
@@ -378,7 +379,7 @@ class TestCreateConfiguration:
         # won't be testing files installed in the VIRTUAL_ENV.  Since the
         # RAMSTK files will not be in the VIRTUAL_ENV, sys will not have the
         # real_prefix attribute.  In this case, skip these tests.
-        if sys.platform == "linux" or sys.platform == "linux2":
+        if sys.platform in ["linux", "linux2"]:
             assert DUT.RAMSTK_OS == "Linux"
             assert DUT.RAMSTK_HOME_DIR == os.environ["HOME"]
             if hasattr(sys, "real_prefix"):

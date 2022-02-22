@@ -46,12 +46,10 @@ class RAMSTKRPN(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {}rpn_id, name, description, rpn_type, value} key:value pairs
         :rtype: dict
         """
-        _values = {
+        return {
             "rpn_id": self.rpn_id,
             "name": self.name,
             "description": self.description,
             "rpn_type": self.rpn_type,
             "value": self.value,
         }
-
-        return _values

@@ -29,13 +29,7 @@ class MockDAO:
         _order: Any = kwargs.get("order", None)
         _all: bool = kwargs.get("_all", True)
 
-        if _all:
-            _records: List[object] = self.table
-        else:
-            # noinspection PyTypeChecker
-            _records = self.table[0]
-
-        return _records
+        return self.table if _all else self.table[0]
 
     def do_select(self, node_id: int, table: str) -> object:
         """Mock the do_select() method.

@@ -77,14 +77,11 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         self.set_property("justify", _justify)
         if _justify == Gtk.Justification.CENTER:
             self.set_xalign(0.5)
-            self.set_yalign(0.5)
         elif _justify == Gtk.Justification.LEFT:
             self.set_xalign(0.05)
-            self.set_yalign(0.5)
         else:
             self.set_xalign(0.99)
-            self.set_yalign(0.5)
-
+        self.set_yalign(0.5)
         if _bold:
             _text = self.get_property("label")
             _text = "<b>" + _text + "</b>"
@@ -128,10 +125,10 @@ def do_make_label_group(
     _lst_labels = []
     _max_x = 0
 
-    _char_width = max([len(_label_text) for _label_text in text])
+    _char_width = max(len(_label_text) for _label_text in text)
 
     # pylint: disable=unused-variable
-    for __, _label_text in enumerate(text):
+    for _label_text in text:
         _label = RAMSTKLabel(_label_text)
         _label.do_set_properties(
             bold=_bold, height=-1, justify=_justify, width=-1, wrap=_wrap

@@ -22,12 +22,12 @@ from ramstk.models import (
     RAMSTKFailureModeRecord,
     RAMSTKGroupRecord,
     RAMSTKHazardsRecord,
+    RAMSTKLoadHistoryRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKLoadHistory,
     RAMSTKManufacturer,
     RAMSTKMeasurement,
     RAMSTKMethod,
@@ -559,7 +559,7 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-        for _record in self.common_dao.session.query(RAMSTKLoadHistory).all():
+        for _record in self.common_dao.session.query(RAMSTKLoadHistoryRecord).all():
             _attributes = _record.get_attributes()
             user_configuration.RAMSTK_LOAD_HISTORY[_record.history_id] = _attributes[
                 "description"

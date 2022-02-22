@@ -230,18 +230,14 @@ def _get_environment_factor(
         10: {1: crystal.PI_E, 2: efilter.PI_E, 3: fuse.PI_E, 4: lamp.PI_E},
     }
 
-    if category_id == 8 and subcategory_id in [1, 2]:
-        _pi_e = _pi_e_lists[category_id][subcategory_id][quality_id][
+    if category_id == 8 and subcategory_id in {1, 2}:
+        return _pi_e_lists[category_id][subcategory_id][quality_id][
             environment_active_id - 1
         ]
-    elif category_id in [2, 3, 5, 7, 9, 10] or (
-        category_id == 8 and subcategory_id not in [1, 2]
-    ):
-        _pi_e = _pi_e_lists[category_id][subcategory_id][environment_active_id - 1]
+    elif category_id in {2, 3, 5, 7, 9, 10, 8}:
+        return _pi_e_lists[category_id][subcategory_id][environment_active_id - 1]
     else:
-        _pi_e = _pi_e_lists[category_id][environment_active_id - 1]
-
-    return _pi_e
+        return _pi_e_lists[category_id][environment_active_id - 1]
 
 
 def _get_part_count_quality_factor(
@@ -276,18 +272,17 @@ def _get_part_count_quality_factor(
         10: {1: crystal.PART_COUNT_PI_Q, 2: efilter.PI_Q},
     }
 
-    if category_id in [6, 7, 9]:
-        _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 10 and subcategory_id in [1, 2]:
-        _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 10 and subcategory_id in [3, 4]:
-        _pi_q = 1.0
+    if category_id in {6, 7, 9}:
+        return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
+    elif category_id == 10 and subcategory_id in {1, 2}:
+        return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
+    elif category_id == 10 and subcategory_id in {3, 4}:
+        return 1.0
     else:
-        _pi_q = _pi_q_lists[category_id][quality_id - 1]
-
-    return _pi_q
+        return _pi_q_lists[category_id][quality_id - 1]
 
 
+# pylint: disable=too-many-return-statements
 def _get_part_stress_quality_factor(
     category_id: int, subcategory_id: int, quality_id: int
 ) -> float:
@@ -315,20 +310,20 @@ def _get_part_stress_quality_factor(
     }
 
     if category_id == 1:
-        _pi_q = _pi_q_lists[category_id][quality_id - 1]
-    elif (category_id == 8 and subcategory_id in [4, 5]) or (
-        category_id == 7 and subcategory_id == 5
+        return _pi_q_lists[category_id][quality_id - 1]
+    elif (
+        category_id == 8
+        and subcategory_id in {4, 5}
+        or (category_id == 7 and subcategory_id == 5)
     ):
-        _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 7 and subcategory_id != 5:
-        _pi_q = 0.0
-    elif category_id == 8 and subcategory_id not in [4, 5]:
-        _pi_q = 0.0
+        return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
+    elif category_id == 7:
+        return 0.0
+    elif category_id == 8:
+        return 0.0
     elif category_id == 9 and subcategory_id == 1:
-        _pi_q = 0.0
-    elif category_id == 10 and subcategory_id in [3, 4]:
-        _pi_q = 0.0
+        return 0.0
+    elif category_id == 10 and subcategory_id in {3, 4}:
+        return 0.0
     else:
-        _pi_q = _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-
-    return _pi_q
+        return _pi_q_lists[category_id][subcategory_id][quality_id - 1]

@@ -46,11 +46,9 @@ class RAMSTKStatus(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {status_id, name, description, status_type} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "status_id": self.status_id,
             "name": self.name,
             "description": self.description,
             "status_type": self.status_type,
         }
-
-        return _attributes

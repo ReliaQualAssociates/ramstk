@@ -167,7 +167,7 @@ class RAMSTKNSWCRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   Csv, Csw, Csz, Ct, Cv, Cw, Cy} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "hardware_id": self.hardware_id,
             "Cac": self.Cac,
             "Calt": self.Calt,
@@ -227,5 +227,3 @@ class RAMSTKNSWCRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "Cw": self.Cw,
             "Cy": self.Cy,
         }
-
-        return _attributes

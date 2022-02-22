@@ -39,9 +39,7 @@ class RAMSTKStakeholders(RAMSTK_BASE, RAMSTKBaseRecord):
         :return: {stakeholders_id, stakeholder} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "stakeholders_id": self.stakeholders_id,
             "stakeholder": self.stakeholder,
         }
-
-        return _attributes

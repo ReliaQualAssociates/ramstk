@@ -930,7 +930,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
         """
         _entity = node.data["allocation"]
 
-        if not _entity.parent_id == 0:
+        if _entity.parent_id != 0:
             _attributes = [
                 _entity.revision_id,
                 _entity.hardware_id,
@@ -964,11 +964,12 @@ class AllocationTreePanel(RAMSTKTreePanel):
             except (AttributeError, TypeError, ValueError):
                 _message = _(
                     f"An error occurred when loading allocation record "
-                    f"{str(node.identifier)} into the allocation list.  This might "
-                    f"indicate it was missing it's data package, some of the data in "
-                    f"the package was missing, or some of the data was the wrong "
-                    f"type.  Row data was: {_attributes}"
+                    f"{node.identifier} into the allocation list.  This might indicate "
+                    f"it was missing it's data package, some of the data in the "
+                    f"package was missing, or some of the data was the wrong type.  "
+                    f"Row data was: {_attributes}"
                 )
+
                 pub.sendMessage(
                     "do_log_warning_msg",
                     logger_name="WARNING",

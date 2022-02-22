@@ -42,6 +42,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         # Initialize private scalar attributes.
         self._index: int = index
 
+        _list = Gtk.ListStore()
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
@@ -49,12 +50,10 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         # Initialize public scalar attributes.
 
         if not simple:
-            _list = Gtk.ListStore()
             _list.set_column_types(
                 [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING]
             )
         else:
-            _list = Gtk.ListStore()
             _list.set_column_types([GObject.TYPE_STRING])
         self.set_model(_list)
 
@@ -122,12 +121,12 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         if not simple:
             _model.append(["", "", ""])
             # pylint: disable=unused-variable
-            for __, _entry in enumerate(entries):
+            for _entry in entries:
                 _model.append(list(_entry))
         else:
             _model.append([""])
             # pylint: disable=unused-variable
-            for __, _entry in enumerate(entries):
+            for _entry in entries:
                 _model.append([_entry[self._index]])
 
         if _handler_id > 0:
@@ -163,6 +162,4 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         _model = self.get_model()
         _row = self.get_active_iter()
 
-        _value: str = _model.get_value(_row, index)
-
-        return _value
+        return _model.get_value(_row, index)

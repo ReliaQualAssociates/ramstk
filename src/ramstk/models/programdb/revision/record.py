@@ -256,7 +256,7 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   program_cost_se} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "availability_logistics": self.availability_logistics,
             "availability_mission": self.availability_mission,
@@ -285,5 +285,3 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "program_cost": self.program_cost,
             "program_cost_sd": self.program_cost_sd,
         }
-
-        return _attributes

@@ -196,7 +196,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                   severity_class, single_point, type_id} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self.revision_id,
             "hardware_id": self.hardware_id,
             "mode_id": self.mode_id,
@@ -226,5 +226,3 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
             "single_point": self.single_point,
             "type_id": self.type_id,
         }
-
-        return _attributes

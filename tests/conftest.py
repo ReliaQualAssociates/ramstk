@@ -31,10 +31,7 @@ from psycopg2 import sql
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
-from ramstk.configuration import (
-    RAMSTKSiteConfiguration,
-    RAMSTKUserConfiguration,
-)
+from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.db.base import BaseDatabase
 
 _ = gettext.gettext
@@ -424,9 +421,7 @@ def setup_test_db(db_config) -> None:
         )
     )
     cursor.execute(
-        sql.SQL("CREATE DATABASE {}").format(
-            sql.Identifier(db_config["database"])
-        )
+        sql.SQL("CREATE DATABASE {}").format(sql.Identifier(db_config["database"]))
     )
     cursor.close()
     conn.close()
@@ -579,9 +574,7 @@ def test_common_dao():
     """Create a test DAO object for testing against an RAMSTK Common DB."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(
-        random.choices(string.ascii_uppercase + string.digits, k=10)
-    )
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     # This will create a RAMSTK Common database using the
     # test_common_db.sql file in ./data for each group of tests collected in a
@@ -620,9 +613,7 @@ def test_program_dao():
     """Create a test DAO object for testing against a RAMSTK Program DB."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(
-        random.choices(string.ascii_uppercase + string.digits, k=10)
-    )
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     # This will create a RAMSTK Program database using the
     # test_program_db.sql file in tests/__data for each group of tests collected in a
@@ -661,9 +652,7 @@ def test_simple_database():
     """Create a simple test database using postgres."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(
-        random.choices(string.ascii_uppercase + string.digits, k=10)
-    )
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     # This temporary database has two tables (RAMSTKRevision and
     # RAMSTKSiteInfo) and is used primarily to test the connection, insert,
@@ -701,9 +690,7 @@ def test_simple_program_database():
     """Create a simple test database using postgres."""
     # Create a random name for the test database.  This ensures each test class uses
     # a unique, clean database to test against.
-    db_name = "".join(
-        random.choices(string.ascii_uppercase + string.digits, k=10)
-    )
+    db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
 
     # This temporary database has two tables (RAMSTKRevision and
     # RAMSTKSiteInfo) and is used primarily to test the connection, insert,
@@ -736,30 +723,28 @@ def test_simple_program_database():
 def test_license_file():
     """Create a license key file for testing."""
     _cwd = os.getcwd()
-    _license_file = open(_cwd + "/license.key", "w")
-    _license_file.write("0\n")
-    _license_file.write("apowdigfb3rh9214839qu\n")
-    _license_file.write("2019-08-07\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("1\n")
-    _license_file.write("0\n")
-    _license_file.write("0\n")
-    _license_file.write("ReliaQual Test Site")
-    _license_file.close()
-
+    with open(_cwd + "/license.key", "w") as _license_file:
+        _license_file.write("0\n")
+        _license_file.write("apowdigfb3rh9214839qu\n")
+        _license_file.write("2019-08-07\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("1\n")
+        _license_file.write("0\n")
+        _license_file.write("0\n")
+        _license_file.write("ReliaQual Test Site")
     yield _license_file
 
     os.remove(_cwd + "/license.key")
@@ -782,9 +767,7 @@ def test_toml_site_configuration(test_config_dir):
         },
     }
 
-    toml.dump(
-        _dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF, "w")
-    )
+    toml.dump(_dic_site_configuration, open(_site_config.RAMSTK_SITE_CONF, "w"))
 
     yield _site_config
 
@@ -796,9 +779,7 @@ def test_toml_user_configuration(make_home_config_dir):
     _user_config._INSTALL_PREFIX = VIRTUAL_ENV
     _user_config.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
     _user_config.RAMSTK_CONF_DIR = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
-    _user_config.RAMSTK_PROG_CONF = (
-        _user_config.RAMSTK_CONF_DIR + "/RAMSTK.toml"
-    )
+    _user_config.RAMSTK_PROG_CONF = _user_config.RAMSTK_CONF_DIR + "/RAMSTK.toml"
     _user_config.RAMSTK_DATA_DIR = _user_config.RAMSTK_CONF_DIR + "/layouts"
     _user_config.RAMSTK_ICON_DIR = _user_config.RAMSTK_CONF_DIR + "/icons"
     _user_config.RAMSTK_LOG_DIR = _user_config.RAMSTK_CONF_DIR + "/logs"
@@ -952,9 +933,7 @@ def test_toml_user_configuration(make_home_config_dir):
         },
     }
 
-    toml.dump(
-        _dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w")
-    )
+    toml.dump(_dic_user_configuration, open(_user_config.RAMSTK_PROG_CONF, "w"))
     _user_config.get_user_configuration()
 
     yield _user_config
@@ -1045,19 +1024,13 @@ def test_excel_file():
     _book = xlwt.Workbook()
     _sheet = _book.add_sheet("Sheet 1", cell_overwrite_ok=True)
 
-    _col_num = 1
-    for _header in HEADERS["Function"]:
+    for _col_num, _header in enumerate(HEADERS["Function"], start=1):
         _sheet.write(0, _col_num, _header)
-        _col_num += 1
-
-    _row_num = 1
-    for _row in ROW_DATA[:2]:
+    for _row_num, _row in enumerate(ROW_DATA[:2], start=1):
         _col_num = 1
         for _data in enumerate(_row):
             _sheet.write(_row_num, _col_num, _data[1])
             _col_num += 1
-        _row_num += 1
-
     _book.save(_test_file)
 
     yield _test_file

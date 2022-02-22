@@ -347,11 +347,7 @@ class BaseDatabase:
         else:
             _results = _results.order_by(_order)
 
-        if _all:
-            _results = _results.all()
-        else:
-            _results = _results.first()
-
+        _results = _results.all() if _all else _results.first()
         return _results
 
     def do_update(self, record: object = None) -> None:
@@ -440,7 +436,7 @@ class BaseDatabase:
         """
         # This ensures the column name is prefixed with fld_ in case the
         # table's attribute name was passed instead.
-        if id_column[0:4] != "fld_":
+        if id_column[:4] != "fld_":
             id_column = "fld_" + id_column
 
         _sql_statement = (

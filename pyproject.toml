@@ -216,7 +216,8 @@ disable = [
 	'fixme',
 	'anomalous-unicode-escape-in-string',
 	'import-error',
-	'no-member'
+	'no-member',
+	'no-else-return'
 ]
 
 [tool.pylint.reports]

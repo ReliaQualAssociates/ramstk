@@ -60,7 +60,7 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseRecord):
                   user_group_id} pairs.
         :rtype: dict
         """
-        _attributes = {
+        return {
             "user_id": self.user_id,
             "user_lname": self.user_lname,
             "user_fname": self.user_fname,
@@ -68,5 +68,3 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseRecord):
             "user_phone": self.user_phone,
             "user_group_id": self.user_group_id,
         }
-
-        return _attributes

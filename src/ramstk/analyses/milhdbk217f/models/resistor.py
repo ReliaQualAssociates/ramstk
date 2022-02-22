@@ -999,7 +999,7 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
             _pi_r = PI_R[_subcategory_id][_specification_id - 1][_family_id - 1][
                 _index + 1
             ]
-        elif _subcategory_id not in [4, 8]:
+        else:
             _pi_r = PI_R[_subcategory_id][_index + 1]
 
     attributes["piR"] = _pi_r
@@ -1022,9 +1022,9 @@ def get_voltage_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
 
     _index = -1
     _breaks = [0.0]
-    if _subcategory_id in [9, 10, 11, 12]:
+    if _subcategory_id in {9, 10, 11, 12}:
         _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
-    elif _subcategory_id in [13, 14, 15]:
+    elif _subcategory_id in {13, 14, 15}:
         _breaks = [0.8, 0.9]
 
     for _index, _value in enumerate(_breaks):
