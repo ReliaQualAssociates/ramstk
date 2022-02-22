@@ -60,7 +60,7 @@ class ExportProject(RAMSTKFileChooser):
             "hardwares",
             "validations",
         ]:
-            pub.sendMessage("request_get_{0}_tree".format(_module))
+            pub.sendMessage(f"request_get_{_module}_tree")
 
         self._do_select_file()
 

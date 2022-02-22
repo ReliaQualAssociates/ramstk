@@ -46,7 +46,8 @@ ATTRIBUTES = {
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_agree_apportionment():
-    """_calculate_agree_apportionment() should return a tuple of allocated measures on success."""
+    """_calculate_agree_apportionment() should return a tuple of allocated measures on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["mission_time"] = 100.0
     _attributes["weight_factor"] = 1
@@ -62,14 +63,15 @@ def test_calculate_agree_apportionment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_agree_apportionment_zero_sub_elements():
-    """_calculate_agree_apportionment() should raise a ZeroDivisionError when passed n_sub_elements=0."""
+    """_calculate_agree_apportionment() should raise a ZeroDivisionError when passed
+    n_sub_elements=0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the AGREE "
             "method; one or more inputs had a value of 0.0.  "
-            "Subsystem mission time=100.000000, weight "
-            "factor=1.000000, # of subsystems=4, # of "
+            "Subsystem mission time=100.0, weight "
+            "factor=1.0, # of subsystems=4, # of "
             "subelements=0."
         )
 
@@ -86,14 +88,15 @@ def test_calculate_agree_apportionment_zero_sub_elements():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_agree_apportionment_negative_parent_goal():
-    """_calculate_agree_apportionment() should raise a ValueError when passed a parent_goal<0.0."""
+    """_calculate_agree_apportionment() should raise a ValueError when passed a
+    parent_goal<0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the AGREE "
             "method; zero or negative value passed for "
             "parent hardware item's goal.  Parent goal is "
-            "-0.999000."
+            "-0.999."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -109,7 +112,8 @@ def test_calculate_agree_apportionment_negative_parent_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_arinc_apportionment():
-    """_calculate_arinc_apportionment() should return a tuple of allocated measures on success."""
+    """_calculate_arinc_apportionment() should return a tuple of allocated measures on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["mission_time"] = 100.0
     _attributes["weight_factor"] = 0.025730994152
@@ -123,14 +127,15 @@ def test_calculate_arinc_apportionment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_arinc_apportionment_zero_weight_factor():
-    """_calculate_arinc_apportionment() should raise a ZeroDivisionError when passed a weight factor=0.0."""
+    """_calculate_arinc_apportionment() should raise a ZeroDivisionError when passed a
+    weight factor=0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the ARINC "
             "method; one or more inputs had a value of 0.0. "
-            "Weight factor=0.000000 and parent "
-            "goal=0.000048."
+            "Weight factor=0.0 and parent "
+            "goal=4.82e-05."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -144,14 +149,15 @@ def test_calculate_arinc_apportionment_zero_weight_factor():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_arinc_apportionment_zero_parent_goal():
-    """_calculate_arinc_apportionment() should raise a ZeroDivisionError when passed a parent goal=0.0."""
+    """_calculate_arinc_apportionment() should raise a ZeroDivisionError when passed a
+    parent goal=0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the ARINC "
             "method; one or more inputs had a value of 0.0. "
-            "Weight factor=0.025731 and parent "
-            "goal=0.000000."
+            "Weight factor=0.025730994152 and parent "
+            "goal=0.0."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -165,7 +171,8 @@ def test_calculate_arinc_apportionment_zero_parent_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_equal_apportionment():
-    """_calculate_equal_apportionment() should return a tuple of allocated measures on success."""
+    """_calculate_equal_apportionment() should return a tuple of allocated measures on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["mission_time"] = 100.0
     _attributes["weight_factor"] = 1.0 / 3.0
@@ -179,14 +186,15 @@ def test_calculate_equal_apportionment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_equal_zero_weight_factor():
-    """_calculate_equal_apportionment() should raise a ZeroDivisionError if passed weight factor=0."""
+    """_calculate_equal_apportionment() should raise a ZeroDivisionError if passed
+    weight factor=0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the equal "
             "method; one or more inputs had a value of 0.0. "
-            "Mission time=100.000000 and weight "
-            "factor=0.000000."
+            "Mission time=100.0 and weight "
+            "factor=0.0."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -199,14 +207,15 @@ def test_calculate_equal_zero_weight_factor():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_equal_zero_mission_time():
-    """_calculate_equal_apportionment() should raise a ZeroDivisionError if passed mission_time=0.0."""
+    """_calculate_equal_apportionment() should raise a ZeroDivisionError if passed
+    mission_time=0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the equal "
             "method; one or more inputs had a value of 0.0. "
-            "Mission time=0.000000 and weight "
-            "factor=0.333333."
+            "Mission time=0.0 and weight "
+            "factor=0.3333333333333333."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -219,14 +228,15 @@ def test_calculate_equal_zero_mission_time():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_equal_zero_goal():
-    """_calculate_equal_apportionment() should raise a ValueError if passed a parent goal=0.0."""
+    """_calculate_equal_apportionment() should raise a ValueError if passed a parent
+    goal=0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the equal "
             "method; a negative or zero value passed for "
             "parent hardware item's goal.  Parent goal is "
-            "0.000000."
+            "0.0."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -239,14 +249,15 @@ def test_calculate_equal_zero_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_equal_negative_goal():
-    """_calculate_equal_apportionment() should raise a ValueError if passed a parent goal<0.0."""
+    """_calculate_equal_apportionment() should raise a ValueError if passed a parent
+    goal<0.0."""
 
     def on_message(error_message):
         assert error_message == (
             "Failed to apportion reliability using the equal "
             "method; a negative or zero value passed for "
             "parent hardware item's goal.  Parent goal is "
-            "-0.999950."
+            "-0.99995."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -260,7 +271,8 @@ def test_calculate_equal_negative_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_foo_apportionment():
-    """_calulcate_foo_apportionment() should return a tuple of allocated measures on success."""
+    """_calulcate_foo_apportionment() should return a tuple of allocated measures on
+    success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["mission_time"] = 100.0
     _attributes["int_factor"] = 4
@@ -280,7 +292,8 @@ def test_calculate_foo_apportionment():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_foo_zero_cum_weight():
-    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed a cumulative weight=0."""
+    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed a
+    cumulative weight=0."""
 
     def on_message(error_message):
         assert error_message == (
@@ -289,7 +302,7 @@ def test_calculate_foo_zero_cum_weight():
             "inputs had a value of 0.0. Intricacy "
             "factor=4, state of the art factor=6, operating "
             "time factor=9, environment factor=2, "
-            "cumulative weight=0, parent goal=0.000048."
+            "cumulative weight=0, parent goal=4.82e-05."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -307,7 +320,8 @@ def test_calculate_foo_zero_cum_weight():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_foo_zero_factor():
-    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed one or more factors=0."""
+    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed one or
+    more factors=0."""
 
     def on_message(error_message):
         assert error_message == (
@@ -316,7 +330,7 @@ def test_calculate_foo_zero_factor():
             "inputs had a value of 0.0. Intricacy "
             "factor=4, state of the art factor=0, operating "
             "time factor=9, environment factor=2, "
-            "cumulative weight=3528, parent goal=0.000048."
+            "cumulative weight=3528, parent goal=4.82e-05."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -334,7 +348,8 @@ def test_calculate_foo_zero_factor():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_foo_zero_goal():
-    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed a parent goal=0."""
+    """_calculate_foo_apportionment() should raise a ZeroDivisionError if passed a
+    parent goal=0."""
 
     def on_message(error_message):
         assert error_message == (
@@ -343,7 +358,7 @@ def test_calculate_foo_zero_goal():
             "inputs had a value of 0.0. Intricacy "
             "factor=4, state of the art factor=6, operating "
             "time factor=9, environment factor=2, "
-            "cumulative weight=3528, parent goal=0.000000."
+            "cumulative weight=3528, parent goal=0.0."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -360,7 +375,8 @@ def test_calculate_foo_zero_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_foo_string_input():
-    """_calculate_foo_apportionment() should raise a TypeError if passed a string argument."""
+    """_calculate_foo_apportionment() should raise a TypeError if passed a string
+    argument."""
     with pytest.raises(TypeError):
         _attributes = copy.deepcopy(ATTRIBUTES)
         _attributes["mission_time"] = 100.0
@@ -378,7 +394,8 @@ def test_calculate_foo_string_input():
 @pytest.mark.calculation
 @pytest.mark.parametrize("method_id", [1, 2, 3, 4, 5])
 def test_do_allocate_reliability(method_id):
-    """do_allocate_reliability() should return the allocation attributes dict with updated values on success."""
+    """do_allocate_reliability() should return the allocation attributes dict with
+    updated values on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["allocation_method_id"] = method_id
     _attributes["system_hr"] = 0.003418
@@ -444,7 +461,8 @@ def test_do_allocate_reliability(method_id):
 @pytest.mark.calculation
 @pytest.mark.parametrize("goal_measure_id", [1, 2, 3, 4])
 def test_calculate_goals(goal_measure_id):
-    """calculate_goals() should return the allocation attributes dict with updated values on success."""
+    """calculate_goals() should return the allocation attributes dict with updated
+    values on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["goal_measure_id"] = goal_measure_id
     if goal_measure_id == 1:
@@ -477,7 +495,8 @@ def test_calculate_goals(goal_measure_id):
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_goals_negative_reliability():
-    """calulate_goals() should raise a ValueError when passed a negative reliability goal."""
+    """calulate_goals() should raise a ValueError when passed a negative reliability
+    goal."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["goal_measure_id"] = 1
     _attributes["reliability_goal"] = -0.99975
@@ -486,7 +505,7 @@ def test_calculate_goals_negative_reliability():
         assert error_message == (
             "Failed to calculate the MTBF and hazard rate "
             "goals given the reliability goal.  Reliability "
-            "goal=-0.999750."
+            "goal=-0.99975."
         )
 
     pub.subscribe(on_message, "fail_calculate_allocation_goal")
@@ -497,7 +516,8 @@ def test_calculate_goals_negative_reliability():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_goals_zero_reliability_goal():
-    """calulate_goals() should raise a ValueError when passed a reliability goal=0.0."""
+    """calulate_goals() should raise a ValueError when passed a reliability
+    goal=0.0."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["goal_measure_id"] = 1
     _attributes["reliability_goal"] = 0.0
@@ -506,7 +526,7 @@ def test_calculate_goals_zero_reliability_goal():
         assert error_message == (
             "Failed to calculate the MTBF and hazard rate "
             "goals given the reliability goal.  Reliability "
-            "goal=0.000000."
+            "goal=0.0."
         )
 
     pub.subscribe(on_message, "fail_calculate_allocation_goal")
@@ -517,7 +537,8 @@ def test_calculate_goals_zero_reliability_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_goals_zero_hazard_rate_goal():
-    """calulate_goals() should raise a ZeroDivisionError when passed a hazard rate goal=0.0."""
+    """calulate_goals() should raise a ZeroDivisionError when passed a hazard rate
+    goal=0.0."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["goal_measure_id"] = 2
     _attributes["hazard_rate_goal"] = 0.0
@@ -526,7 +547,7 @@ def test_calculate_goals_zero_hazard_rate_goal():
         assert error_message == (
             "Failed to calculate the MTBF and reliability "
             "goals given the hazard rate goal.  Hazard rate "
-            "goal=0.000000."
+            "goal=0.0."
         )
 
     pub.subscribe(on_message, "fail_calculate_allocation_goal")
@@ -537,7 +558,8 @@ def test_calculate_goals_zero_hazard_rate_goal():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_goals_zero_mtbf_goal():
-    """calulate_goals() should raise a ZeroDivisionError when passed a mtbf goal=0.0."""
+    """calulate_goals() should raise a ZeroDivisionError when passed a mtbf
+    goal=0.0."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["goal_measure_id"] = 3
     _attributes["mtbf_goal"] = 0.0
@@ -546,7 +568,7 @@ def test_calculate_goals_zero_mtbf_goal():
         assert error_message == (
             "Failed to calculate the hazard rate and "
             "reliability goals given the MTBF goal.  MTBF "
-            "goal=0.000000."
+            "goal=0.0."
         )
 
     pub.subscribe(on_message, "fail_calculate_allocation_goal")
@@ -558,7 +580,8 @@ def test_calculate_goals_zero_mtbf_goal():
 @pytest.mark.calculation
 @pytest.mark.parametrize("method_id", [1, 2, 3, 4])
 def test_get_allocation_goal(method_id):
-    """get_allocation_goal() should return the proper allocation goal (hazard rate or reliability) on success."""
+    """get_allocation_goal() should return the proper allocation goal (hazard rate or
+    reliability) on success."""
     _attributes = copy.deepcopy(ATTRIBUTES)
     _attributes["allocation_method_id"] = method_id
     _attributes["hazard_rate_goal"] = 0.0058621

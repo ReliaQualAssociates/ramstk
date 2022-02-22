@@ -50,10 +50,10 @@ def calculate_hri(probability: str, severity: str) -> int:
     except KeyError as _error:
         raise OutOfRangeError(
             (
-                "calculate_hri() was passed an unknown hazard "
-                "probability ({0:s}) or severity ({1:s}) "
-                "description."
-            ).format(probability, severity)
+                f"calculate_hri() was passed an unknown hazard "
+                f"probability ({probability}) or severity ({severity}) "
+                f"description."
+            )
         ) from _error
 
 
