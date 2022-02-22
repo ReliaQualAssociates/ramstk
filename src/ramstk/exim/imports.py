@@ -407,10 +407,10 @@ class Import:
         except (AttributeError, DataAccessError):
             _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
             _error_msg: str = (
-                "{1}: There was a problem importing {0} records.  "
-                "This is usually caused by key violations; check the "
-                "ID and/or parent ID fields in the import file."
-            ).format(module, _method_name)
+                f"{_method_name}: There was a problem importing {module} records.  "
+                f"This is usually caused by key violations; check the ID and/or parent "
+                f"ID fields in the import file."
+            )
             pub.sendMessage(
                 "fail_import_module",
                 error_message=_error_msg,

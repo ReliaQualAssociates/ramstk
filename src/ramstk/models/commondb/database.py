@@ -24,12 +24,12 @@ from ramstk.models import (
     RAMSTKHazardsRecord,
     RAMSTKLoadHistoryRecord,
     RAMSTKManufacturerRecord,
+    RAMSTKMeasurementRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKMeasurement,
     RAMSTKMethod,
     RAMSTKModel,
     RAMSTKStakeholders,
@@ -598,8 +598,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKMeasurement)
-            .filter(RAMSTKMeasurement.measurement_type == "damage")
+            self.common_dao.session.query(RAMSTKMeasurementRecord)
+            .filter(RAMSTKMeasurementRecord.measurement_type == "damage")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -622,8 +622,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKMeasurement)
-            .filter(RAMSTKMeasurement.measurement_type == "unit")
+            self.common_dao.session.query(RAMSTKMeasurementRecord)
+            .filter(RAMSTKMeasurementRecord.measurement_type == "unit")
             .all()
         ):
             _attributes = _record.get_attributes()

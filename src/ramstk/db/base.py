@@ -156,19 +156,12 @@ class BaseDatabase:
 
         try:
             if self.cxnargs["dialect"] == "sqlite":
-                self.database = "sqlite:///" + self.cxnargs["dbname"]
+                self.database = f"sqlite:///{self.cxnargs['dbname']}"
             elif self.cxnargs["dialect"] == "postgres":
                 self.database = (
-                    "postgresql+psycopg2://"
-                    + self.cxnargs["user"]
-                    + ":"
-                    + self.cxnargs["password"]
-                    + "@"
-                    + self.cxnargs["host"]
-                    + ":"
-                    + self.cxnargs["port"]
-                    + "/"
-                    + self.cxnargs["dbname"]
+                    f"postgresql+psycopg2://{self.cxnargs['user']}:"
+                    f"{self.cxnargs['password']}@{self.cxnargs['host']}:"
+                    f"{self.cxnargs['port']}/{self.cxnargs['dbname']}"
                 )
             else:
                 _error_msg = (
@@ -187,8 +180,10 @@ class BaseDatabase:
         except TypeError as _error:
             _error_msg = (
                 f"Unknown dialect or non-string value in database "
-                f"connection: {self.cxnargs['dialect']}, {self.cxnargs['dbname']}"
+                f"connection: {self.cxnargs['dialect']}, "
+                f"{self.cxnargs['dbname']}"
             )
+
             pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
             raise DataAccessError(_error_msg) from _error
 
@@ -211,10 +206,8 @@ class BaseDatabase:
             #   1. Attempting to delete a record from a non-existent table.
             self.session.rollback()
             _error_message = (
-                "There was an database error when attempting to delete a "
-                "record.  Error returned from database was:\n\t{0:s}.".format(
-                    str(_error)
-                )
+                f"There was an database error when attempting to delete a "
+                f"record.  Error returned from database was:\n\t{_error}."
             )
             pub.sendMessage("fail_delete_record", error_message=_error_message)
             raise DataAccessError(_error_message) from _error
@@ -227,10 +220,8 @@ class BaseDatabase:
             #   1. Foreign key exists, but foreign table does not.
             self.session.rollback()
             _error_message = (
-                "There was an database error when attempting to delete a "
-                "record.  Error returned from database was:\n\t{0:s}.".format(
-                    str(_error.orig)
-                )
+                f"There was an database error when attempting to delete a "
+                f"record.  Error returned from database was:\n\t{_error.orig}."
             )
             pub.sendMessage("fail_delete_record", error_message=_error_message)
             raise DataAccessError(_error_message) from _error
@@ -268,7 +259,7 @@ class BaseDatabase:
             )
             raise DataAccessError(_error_message) from _error
         except exc.InternalError as _error:
-            print("postgresql error: {}".format(_error.orig.pgcode))
+            print(f"postgresql error: {_error.orig.pgcode}")
             self.session.rollback()
         except (
             exc.DataError,
@@ -293,10 +284,8 @@ class BaseDatabase:
             # errorcodes.py file in the psycopg2 code base.
             self.session.rollback()
             _error_message = (
-                "do_insert: Database error when attempting to add a record.  "
-                "Database returned:\n\t{0:s}".format(
-                    str(_error.orig.pgerror.split(":")[2].strip())
-                )
+                f"do_insert: Database error when attempting to add a record.  "
+                f"Database returned:\n\t{_error.orig.pgerror.split(':')[2].strip()}"
             )
             pub.sendMessage(
                 "fail_insert_record",
@@ -306,8 +295,8 @@ class BaseDatabase:
         except FlushError as _error:
             self.session.rollback()
             _error_message = (
-                "do_insert: Flush error when attempting to add records.  "
-                "Database returned:\n\t{0:s}".format(str(_error))
+                f"do_insert: Flush error when attempting to add records.  "
+                f"Database returned:\n\t{_error}"
             )
             pub.sendMessage(
                 "fail_insert_record",
@@ -370,11 +359,9 @@ class BaseDatabase:
         ) as _error:
             self.session.rollback()
             _error_message = (
-                "There was an database error when attempting to update a "
-                "record.  Faulty SQL statement was:\n\t{0:s}.\nParameters "
-                "were:\n\t{1:s}.".format(
-                    str(_error.statement), str(_error.params)  # type: ignore
-                )
+                f"There was an database error when attempting to update a "
+                f"record.  Faulty SQL statement was:\n\t{_error.statement}.\n"
+                f"Parameters were:\n\t{_error.params}."
             )  # type: ignore
             pub.sendMessage("fail_update_record", error_message=_error_message)
             raise DataAccessError(_error_message) from _error
@@ -392,7 +379,7 @@ class BaseDatabase:
             dialect.
         :rtype: list
         """
-        _databases = []
+        _databases: List[str] = []
 
         if database["dialect"] == "postgres":
             _query = self.sqlstatements["select"].format(
@@ -415,9 +402,11 @@ class BaseDatabase:
 
             # Make list of available databases, but only those associated with
             # RAMSTK.
-            for db in _session.execute(_query):
-                if db[0] not in ["postgres", "template0", "template1"]:
-                    _databases.append(db[0])
+            _databases.extend(
+                db[0]
+                for db in _session.execute(_query)
+                if db[0] not in ["postgres", "template0", "template1"]
+            )
 
         return _databases
 
@@ -437,7 +426,7 @@ class BaseDatabase:
         # This ensures the column name is prefixed with fld_ in case the
         # table's attribute name was passed instead.
         if id_column[:4] != "fld_":
-            id_column = "fld_" + id_column
+            id_column = f"fld_{id_column}"
 
         _sql_statement = (
             self.sqlstatements["select"].format(id_column)

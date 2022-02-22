@@ -1182,7 +1182,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.txtPartCount.do_update(
-            str("{0:d}".format(attributes["total_part_count"])),
+            str(f"{attributes['total_part_count']}"),
             signal="changed",
         )
 
