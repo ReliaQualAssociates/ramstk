@@ -31,7 +31,5 @@ screenshots if this impacts the GUI. -->
   - [ ] At least one test for all newly created functions/methods?
 
 - Chores
-  - [ ] Problem areas outside the scope of this PR have an # ISSUE: comment
-    decorating the code block.  These # ISSUE: comments are automatically
-    converted to issues on successful merge.  Alternatively, you can manually
-    raise an issue for each problem area you identify.
+  - [ ] Issue(s) have been raised for problem areas outside the scope of
+    this PR.  These problem areas have been decorated with an ISSUE: # comment.
