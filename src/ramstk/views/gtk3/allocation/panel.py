@@ -963,7 +963,11 @@ class AllocationTreePanel(RAMSTKTreePanel):
                 pub.sendMessage("request_get_reliability_tree")
             except (AttributeError, TypeError, ValueError):
                 _message = _(
-                    f"An error occurred when loading allocation record {node.identifier} into the allocation list.  This might indicate it was missing it's data package, some of the data in the package was missing, or some of the data was the wrong type.  Row data was: {_attributes}"
+                    f"An error occurred when loading allocation record "
+                    f"{node.identifier} into the allocation list.  This might indicate "
+                    f"it was missing it's data package, some of the data in the "
+                    f"package was missing, or some of the data was the wrong type.  "
+                    f"Row data was: {_attributes}"
                 )
 
                 pub.sendMessage(
