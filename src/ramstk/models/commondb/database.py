@@ -23,12 +23,12 @@ from ramstk.models import (
     RAMSTKGroupRecord,
     RAMSTKHazardsRecord,
     RAMSTKLoadHistoryRecord,
+    RAMSTKManufacturerRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKManufacturer,
     RAMSTKMeasurement,
     RAMSTKMethod,
     RAMSTKModel,
@@ -577,7 +577,7 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-        for _record in self.common_dao.session.query(RAMSTKManufacturer).all():
+        for _record in self.common_dao.session.query(RAMSTKManufacturerRecord).all():
             _attributes = _record.get_attributes()
             user_configuration.RAMSTK_MANUFACTURERS[_record.manufacturer_id] = (
                 _attributes["description"],
