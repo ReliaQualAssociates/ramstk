@@ -24,10 +24,10 @@ from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.models import (
     RAMSTKFunctionRecord,
+    RAMSTKManufacturerRecord,
     RAMSTKRevisionRecord,
     RAMSTKSiteInfoRecord,
 )
-from ramstk.models.commondb import RAMSTKManufacturer
 
 TEMPDIR = tempfile.gettempdir()
 
@@ -464,8 +464,8 @@ class TestSelectMethods:
         DUT.do_connect(config)
 
         _record = (
-            DUT.session.query(RAMSTKManufacturer)
-            .filter(RAMSTKManufacturer.manufacturer_id == 1)
+            DUT.session.query(RAMSTKManufacturerRecord)
+            .filter(RAMSTKManufacturerRecord.manufacturer_id == 1)
             .all()[0]
         )
 

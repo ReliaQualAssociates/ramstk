@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKManufacturer.py is part of The RAMSTK
-#       Project
+#       ramstk.models.commondb.manufacturer.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKManufacturer Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Manufacturer Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -15,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKManufacturerRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_manufacturer in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -39,7 +41,7 @@ class RAMSTKManufacturer(RAMSTK_BASE, RAMSTKBaseRecord):
     location = Column("fld_location", String(512), default=__defaults__["location"])
     cage_code = Column("fld_cage_code", String(512), default=__defaults__["cage_code"])
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve current values of RAMSTKManufacturer data model attributes.
 
         :return: {manufacturer_id, description, location, cage_code} pairs
