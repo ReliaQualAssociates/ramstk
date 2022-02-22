@@ -20,9 +20,19 @@ jobs:
   test_suite:
     name: Run Test Suite
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: [ 3.6, 3.7, 3.8 ]
+
     steps:
+      - name: Set up Python ${{ matrix.python }}
+        id: setpy
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
       - run: |
-          echo "Test suite not required."
+          echo "Test suite not required for ${{ matrix.python }}."
 
   upload_coveralls:
     name: Upload Results to Coveralls
