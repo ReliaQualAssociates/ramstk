@@ -420,7 +420,7 @@ def calculate_capacitance_factor(subcategory_id: int, capacitance: float) -> flo
     }
     _f0 = _dic_factors[subcategory_id][0]
     _f1 = _dic_factors[subcategory_id][1]
-    return _f0 * capacitance ** _f1
+    return _f0 * capacitance**_f1
 
 
 def calculate_part_count(**attributes: Dict[str, Any]) -> float:

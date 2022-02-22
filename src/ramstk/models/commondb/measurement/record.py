@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKMeasurement.py is part of The RAMSTK
+#       ramstk.models.commondb.measurement.record.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKMeasurement Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""Measurement record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -15,7 +18,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKMeasurementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent ramstk_measurement in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -41,7 +44,7 @@ class RAMSTKMeasurement(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_type", String(128), default=__defaults__["measurement_type"]
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve current values of RAMSTKMeasurement data model attributes.
 
         :return: {measurement_id, description} pairs.

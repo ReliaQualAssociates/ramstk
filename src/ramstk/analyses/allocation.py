@@ -48,23 +48,23 @@ def _calculate_agree_apportionment(
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using the "
-                "AGREE method; zero or negative value "
-                "passed for parent hardware item's goal.  "
-                "Parent goal is {0:f}."
-            ).format(parent_goal),
+                f"Failed to apportion reliability using the "
+                f"AGREE method; zero or negative value "
+                f"passed for parent hardware item's goal.  "
+                f"Parent goal is {parent_goal}."
+            ),
         )
     except ZeroDivisionError:
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using "
-                "the AGREE method; one or more inputs "
-                "had a value of 0.0.  Subsystem "
-                "mission time={0:f}, weight "
-                "factor={1:f}, # of subsystems={2:d}, "
-                "# of subelements={3:d}."
-            ).format(_time_i, _weight_factor, _n_sub_systems, _n_sub_elements),
+                f"Failed to apportion reliability using "
+                f"the AGREE method; one or more inputs "
+                f"had a value of 0.0.  Subsystem "
+                f"mission time={_time_i}, weight "
+                f"factor={_weight_factor}, # of subsystems={_n_sub_systems}, "
+                f"# of subelements={_n_sub_elements}."
+            ),
         )
 
     return attributes
@@ -92,12 +92,12 @@ def _calculate_arinc_apportionment(
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using "
-                "the ARINC method; one or more inputs "
-                "had a value of 0.0. Weight "
-                "factor={0:f} and parent "
-                "goal={1:f}."
-            ).format(_weight_factor, parent_goal),
+                f"Failed to apportion reliability using "
+                f"the ARINC method; one or more inputs "
+                f"had a value of 0.0. Weight "
+                f"factor={_weight_factor} and parent "
+                f"goal={parent_goal}."
+            ),
         )
 
     attributes["mtbf_alloc"] = _mtbf_alloc
@@ -133,11 +133,11 @@ def _calculate_equal_apportionment(
             pub.sendMessage(
                 "fail_allocate_reliability",
                 error_message=(
-                    "Failed to apportion reliability using the "
-                    "equal method; a negative or zero value passed for "
-                    "parent hardware item's goal.  Parent goal is "
-                    "{0:f}."
-                ).format(parent_goal),
+                    f"Failed to apportion reliability using the "
+                    f"equal method; a negative or zero value passed for "
+                    f"parent hardware item's goal.  Parent goal is "
+                    f"{parent_goal}."
+                ),
             )
         else:
             raise
@@ -145,21 +145,21 @@ def _calculate_equal_apportionment(
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using the "
-                "equal method; a negative or zero value passed for "
-                "parent hardware item's goal.  Parent goal is "
-                "{0:f}."
-            ).format(parent_goal),
+                f"Failed to apportion reliability using the "
+                f"equal method; a negative or zero value passed for "
+                f"parent hardware item's goal.  Parent goal is "
+                f"{parent_goal}."
+            ),
         )
     except ZeroDivisionError:
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using the "
-                "equal method; one or more inputs had a "
-                "value of 0.0. Mission time={0:f} and "
-                "weight factor={1:f}."
-            ).format(_mission_time, _weight_factor),
+                f"Failed to apportion reliability using the "
+                f"equal method; one or more inputs had a "
+                f"value of 0.0. Mission time={_mission_time} and "
+                f"weight factor={_weight_factor}."
+            ),
         )
 
     return attributes
@@ -203,21 +203,14 @@ def _calculate_foo_apportionment(
         pub.sendMessage(
             "fail_allocate_reliability",
             error_message=(
-                "Failed to apportion reliability using the "
-                "Feasibility of Objectives method; one or "
-                "more inputs had a value of 0.0. "
-                "Intricacy factor={0:d}, state of the art "
-                "factor={1:d}, operating time "
-                "factor={2:d}, environment factor={3:d}, "
-                "cumulative weight={4:d}, parent "
-                "goal={5:f}."
-            ).format(
-                _intricacy,
-                _state_of_art,
-                _operating_time,
-                _environment,
-                cum_weight,
-                parent_goal,
+                f"Failed to apportion reliability using the "
+                f"Feasibility of Objectives method; one or "
+                f"more inputs had a value of 0.0. "
+                f"Intricacy factor={_intricacy}, state of the art "
+                f"factor={_state_of_art}, operating time "
+                f"factor={_operating_time}, environment factor={_environment}, "
+                f"cumulative weight={cum_weight}, parent "
+                f"goal={parent_goal}."
             ),
         )
 
@@ -243,10 +236,10 @@ def _from_hazard_rate_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
         pub.sendMessage(
             "fail_calculate_allocation_goal",
             error_message=(
-                "Failed to calculate the MTBF and "
-                "reliability goals given the hazard rate "
-                "goal.  Hazard rate goal={0:f}."
-            ).format(_hazard_rate_goal),
+                f"Failed to calculate the MTBF and "
+                f"reliability goals given the hazard rate "
+                f"goal.  Hazard rate goal={_hazard_rate_goal}."
+            ),
         )
 
     attributes["mtbf_goal"] = _mtbf_goal
@@ -274,10 +267,10 @@ def _from_mtbf_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
         pub.sendMessage(
             "fail_calculate_allocation_goal",
             error_message=(
-                "Failed to calculate the hazard rate and "
-                "reliability goals given the MTBF goal.  "
-                "MTBF goal={0:f}."
-            ).format(_mtbf_goal),
+                f"Failed to calculate the hazard rate and "
+                f"reliability goals given the MTBF goal.  "
+                f"MTBF goal={_mtbf_goal}."
+            ),
         )
 
     attributes["hazard_rate_goal"] = _hazard_rate_goal
@@ -305,10 +298,10 @@ def _from_reliability_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
         pub.sendMessage(
             "fail_calculate_allocation_goal",
             error_message=(
-                "Failed to calculate the MTBF and "
-                "hazard rate goals given the reliability "
-                "goal.  Reliability goal={0:f}."
-            ).format(_reliability_goal),
+                f"Failed to calculate the MTBF and "
+                f"hazard rate goals given the reliability "
+                f"goal.  Reliability goal={_reliability_goal}."
+            ),
         )
 
     attributes["hazard_rate_goal"] = _hazard_rate_goal

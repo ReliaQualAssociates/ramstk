@@ -91,4 +91,4 @@ def do_calculate_fisher_information(
             for _record in data
         ]
 
-    return 1.0 / noise ** 2 * np.einsum("mk, nk", _D, _D)
+    return 1.0 / noise**2 * np.einsum("mk, nk", _D, _D)
