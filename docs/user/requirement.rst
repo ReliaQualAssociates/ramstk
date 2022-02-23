@@ -184,7 +184,7 @@ The Requirement module Work Book has a General Data, Requirement Analysis,
 and Stakeholder Input page.  The following attributes are displayed in the
 Requirement's General Data page.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Requirement Attributes in the Work Book**
 
    +-----------------------------+----------+----------------------------------+
