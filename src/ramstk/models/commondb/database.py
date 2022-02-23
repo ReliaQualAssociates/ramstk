@@ -26,12 +26,12 @@ from ramstk.models import (
     RAMSTKManufacturerRecord,
     RAMSTKMeasurementRecord,
     RAMSTKMethodRecord,
+    RAMSTKModelRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKModel,
     RAMSTKStakeholders,
     RAMSTKStatus,
     RAMSTKType,
@@ -350,8 +350,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKModel)
-            .filter(RAMSTKModel.model_type == "damage")
+            self.common_dao.session.query(RAMSTKModelRecord)
+            .filter(RAMSTKModelRecord.model_type == "damage")
             .all()
         ):
             _attributes = _record.get_attributes()

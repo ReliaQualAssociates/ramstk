@@ -332,12 +332,7 @@ class RAMSTKBaseTable:
         """
         self.tree = do_clear_tree(self.tree)
 
-        # ISSUE: Remove if-else control from RAMSTKBaseTable do_select_all() method
-        #
-        # This if-else program control block is needed until all the child table
-        # classes and associated tests are converted to use the new API.  Once that
-        # is complete, the if portion of the control block can be removed as well as
-        # the _deprecated class attribute.
+        # See ISSUE: #1000
         if self._deprecated:
             try:
                 self._revision_id = attributes["revision_id"]
@@ -374,10 +369,7 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
-        # ISSUE: Remove deprecated PyPubSub sendMessage
-        #
-        # The "succeed_retrieve_{self._tag}s" message is deprecated in favor of the
-        # "succeed_retrieve_all_{self._tag}" message.
+        # See ISSUE: #1000
         pub.sendMessage(
             f"succeed_retrieve_{self._tag}s",
             tree=self.tree,
