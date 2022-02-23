@@ -14,10 +14,10 @@ from ramstk.models import RAMSTKHazardsRecord as RAMSTKHazardsRecord
 from ramstk.models import RAMSTKLoadHistoryRecord as RAMSTKLoadHistoryRecord
 from ramstk.models import RAMSTKManufacturerRecord as RAMSTKManufacturerRecord
 from ramstk.models import RAMSTKMeasurementRecord as RAMSTKMeasurementRecord
+from ramstk.models import RAMSTKMethodRecord as RAMSTKMethodRecord
 from ramstk.models import RAMSTKSiteInfoRecord as RAMSTKSiteInfoRecord
 from ramstk.models import RAMSTKSubCategoryRecord as RAMSTKSubCategoryRecord
 from ramstk.models.commondb import RAMSTKRPN as RAMSTKRPN
-from ramstk.models.commondb import RAMSTKMethod as RAMSTKMethod
 from ramstk.models.commondb import RAMSTKModel as RAMSTKModel
 from ramstk.models.commondb import RAMSTKStakeholders as RAMSTKStakeholders
 from ramstk.models.commondb import RAMSTKStatus as RAMSTKStatus
