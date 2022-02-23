@@ -293,6 +293,6 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         # characters wide and then create the code.
         _zeds = 4 - len(str(self.requirement_id))
         _pad = "0" * _zeds
-        _code = "{0:s}-{1:s}{2:d}".format(prefix, _pad, self.requirement_id)
+        _code = f"{prefix}-{_pad}{self.requirement_id}"
 
         self.requirement_code = str(none_to_default(_code, ""))

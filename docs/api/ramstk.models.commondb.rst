@@ -212,10 +212,15 @@ ramstk.models.commondb.type module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkuser module
-----------------------------------------
+ramstk.models.commondb.user module
+----------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkuser
+.. automodule:: ramstk.models.commondb.user.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.user.table
    :members:
    :undoc-members:
    :show-inheritance:

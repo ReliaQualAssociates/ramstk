@@ -33,8 +33,8 @@ from ramstk.models import (
     RAMSTKStatusRecord,
     RAMSTKSubCategoryRecord,
     RAMSTKTypeRecord,
+    RAMSTKUserRecord,
 )
-from ramstk.models.commondb import RAMSTKUser
 
 _ = gettext.gettext
 
@@ -122,7 +122,7 @@ class RAMSTKCommonDB:
 
     def do_add_administrator(self) -> None:
         """Add a new administrator to the RAMSTK pool."""
-        _user = RAMSTKUser()
+        _user = RAMSTKUserRecord()
         _user.user_id = 0
         _user.user_group_id = 1
 
@@ -796,7 +796,7 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-        for _record in self.common_dao.session.query(RAMSTKUser).all():
+        for _record in self.common_dao.session.query(RAMSTKUserRecord).all():
             _attributes = _record.get_attributes()
             user_configuration.RAMSTK_USERS[_record.user_id] = (
                 _attributes["user_lname"],

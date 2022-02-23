@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKUser.py is part of The RAMSTK Project
+#       ramstk.models.commondb.user.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKUser Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTKUser Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -14,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKUserRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent the table ramstk_user in the RAMSTK Common database.
 
     This table shares a One-to-Many relationship with ramstk_workgroup.
@@ -53,7 +56,7 @@ class RAMSTKUser(RAMSTK_BASE, RAMSTKBaseRecord):
         "fld_user_group_id", String(256), default=__defaults__["user_group_id"]
     )
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve the current values of the RAMSTKUser data model attributes.
 
         :return: {user_id, user_lname, user_fname, user_email, user_phone,
