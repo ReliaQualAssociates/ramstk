@@ -312,11 +312,7 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
 
 def the_one_ring() -> None:
     """Execute the main function for RAMSTK."""
-    # ISSUE: Implement splash screen.
-    # //
-    # // Add a splash screen to the launch of RAMSTK.
-    # //
-    # // labels: globalbacklog, normal
+    # See ISSUE #354
     # splScreen = SplashScreen()
     # If you don't do this, the splash screen will show, but won't render it's
     # contents

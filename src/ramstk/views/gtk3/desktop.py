@@ -156,16 +156,7 @@ class RAMSTKDesktop(Gtk.Window):
         """
         _dialog = OptionsDialog(parent=self)
 
-        # ISSUE: Make Site DB available without connecting to program DB.
-        #
-        # The site DB should be available without having to connect to a
-        # program DB.  Currently the site DAO is a member of the
-        # ProgramManager's dict of data managers.  The site DAO needs to be
-        # made available out of __main__.py or the ProgramManager needs to
-        # be made accessible to the RAMSTKDesktop so site options can be
-        # accessed.
-        # assignees: weibullguy
-        # label: globalbacklog, normal
+        # See ISSUE #433
         if _dialog.do_run() == Gtk.ResponseType.OK:
             print("Need site admin or higher privileges.")
 

@@ -750,12 +750,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        # ISSUE: Replace Hazards Panel Integer Position List with String Key List
-        #
-        # The list of column positions should be replaced with a list of column keys
-        # and the position should be taken from self.tvwTreeView.position[_key].
-        # This needs to be done for all the methods that load a Gtk.CellRendererCombo().
-        # labels: type: refactor
+        # See ISSUE 1006
         for i in [6, 10, 14, 18]:
             _model = self.tvwTreeView.get_cell_model(i)
             for _key in criticalities:

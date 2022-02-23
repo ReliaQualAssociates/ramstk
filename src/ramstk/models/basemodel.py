@@ -332,7 +332,7 @@ class RAMSTKBaseTable:
         """
         self.tree = do_clear_tree(self.tree)
 
-        # See ISSUE: #1000
+        # See ISSUE #1000
         if self._deprecated:
             try:
                 self._revision_id = attributes["revision_id"]
@@ -369,7 +369,7 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
-        # See ISSUE: #1000
+        # See ISSUE #1000
         pub.sendMessage(
             f"succeed_retrieve_{self._tag}s",
             tree=self.tree,

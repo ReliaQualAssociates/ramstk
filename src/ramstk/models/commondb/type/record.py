@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKType.py is part of The RAMSTK Project
+#       ramstk.models.commondb.type.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKType Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTKType Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -14,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKType(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKTypeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent tramstk_type in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -38,7 +41,7 @@ class RAMSTKType(RAMSTK_BASE, RAMSTKBaseRecord):
     )
     type_type = Column("fld_type", String(256), default=__defaults__["type_type"])
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve the current values of the RAMSTKType data model attributes.
 
         :return: {type_id, description, type_type} pairs.

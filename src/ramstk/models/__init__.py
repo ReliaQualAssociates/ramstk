@@ -29,8 +29,10 @@ from .commondb.method.record import RAMSTKMethodRecord  # isort:skip
 from .commondb.model.record import RAMSTKModelRecord  # isort:skip
 from .commondb.rpn.record import RAMSTKRPNRecord  # isort:skip
 from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip
-from .commondb.stakeholders.record import RAMSTKStakeholdersRecord  # isort: skip
+from .commondb.stakeholders.record import RAMSTKStakeholdersRecord  # isort:skip
+from .commondb.status.record import RAMSTKStatusRecord  # isort:skip
 from .commondb.subcategory.record import RAMSTKSubCategoryRecord  # isort:skip
+from .commondb.type.record import RAMSTKTypeRecord  # isort:skip
 from .commondb.category.table import RAMSTKCategoryTable  # isort:skip
 
 # RAMSTK Local Imports
@@ -47,7 +49,9 @@ from .commondb.model.table import RAMSTKModelTable
 from .commondb.rpn.table import RAMSTKRPNTable
 from .commondb.site_info.table import RAMSTKSiteInfoTable
 from .commondb.stakeholders.table import RAMSTKStakeholdersTable
+from .commondb.status.table import RAMSTKStatusTable
 from .commondb.subcategory.table import RAMSTKSubCategoryTable
+from .commondb.type.table import RAMSTKTypeTable
 from .programdb.action.record import RAMSTKActionRecord
 from .programdb.action.table import RAMSTKActionTable
 from .programdb.allocation.record import RAMSTKAllocationRecord

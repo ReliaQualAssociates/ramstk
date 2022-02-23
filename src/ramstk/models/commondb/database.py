@@ -30,9 +30,11 @@ from ramstk.models import (
     RAMSTKRPNRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKStakeholdersRecord,
+    RAMSTKStatusRecord,
     RAMSTKSubCategoryRecord,
+    RAMSTKTypeRecord,
 )
-from ramstk.models.commondb import RAMSTKStatus, RAMSTKType, RAMSTKUser
+from ramstk.models.commondb import RAMSTKUser
 
 _ = gettext.gettext
 
@@ -299,8 +301,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKStatus)
-            .filter(RAMSTKStatus.status_type == "action")
+            self.common_dao.session.query(RAMSTKStatusRecord)
+            .filter(RAMSTKStatusRecord.status_type == "action")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -508,8 +510,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKStatus)
-            .filter(RAMSTKStatus.status_type == "incident")
+            self.common_dao.session.query(RAMSTKStatusRecord)
+            .filter(RAMSTKStatusRecord.status_type == "incident")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -532,8 +534,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKType)
-            .filter(RAMSTKType.type_type == "incident")
+            self.common_dao.session.query(RAMSTKTypeRecord)
+            .filter(RAMSTKTypeRecord.type_type == "incident")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -642,8 +644,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKType)
-            .filter(RAMSTKType.type_type == "requirement")
+            self.common_dao.session.query(RAMSTKTypeRecord)
+            .filter(RAMSTKTypeRecord.type_type == "requirement")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -818,8 +820,8 @@ class RAMSTKCommonDB:
         """
 
         for _record in (
-            self.common_dao.session.query(RAMSTKType)
-            .filter(RAMSTKType.type_type == "validation")
+            self.common_dao.session.query(RAMSTKTypeRecord)
+            .filter(RAMSTKTypeRecord.type_type == "validation")
             .all()
         ):
             _attributes = _record.get_attributes()

@@ -8,6 +8,4 @@
 """The RAMSTK common database models package."""
 
 # RAMSTK Local Imports
-from .ramstkstatus import RAMSTKStatus
-from .ramstktype import RAMSTKType
 from .ramstkuser import RAMSTKUser
