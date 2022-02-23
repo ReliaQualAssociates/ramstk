@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.RAMSTKRPN.py is part of The RAMSTK Project
+#       ramstk.models.commondb.rpn.record.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKRPN Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTKRPN Record Model."""
+
+# Standard Library Imports
+from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
@@ -14,7 +17,7 @@ from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
 
 
-class RAMSTKRPN(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKRPNRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     """Class to represent table ramstk_rpn in the RAMSTK Common database."""
 
     __defaults__ = {
@@ -40,7 +43,7 @@ class RAMSTKRPN(RAMSTK_BASE, RAMSTKBaseRecord):
     rpn_type = Column("fld_rpn_type", String(256), default=__defaults__["rpn_type"])
     value = Column("fld_value", Integer, default=__defaults__["value"])
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve the current values of the RAMSTKRPN data model attributes.
 
         :return: {}rpn_id, name, description, rpn_type, value} key:value pairs
