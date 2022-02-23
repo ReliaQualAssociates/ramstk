@@ -69,11 +69,10 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Install RAMSTK and test with coverage
+      - name: Install RAMSTK
         id: test
         run: |
           pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
-          python poetry_fix.py
           make depends
           make install
 
