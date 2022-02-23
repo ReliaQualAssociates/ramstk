@@ -30,9 +30,10 @@ from ramstk.models import (
     RAMSTKRPNRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKStakeholdersRecord,
+    RAMSTKStatusRecord,
     RAMSTKSubCategoryRecord,
 )
-from ramstk.models.commondb import RAMSTKStatus, RAMSTKType, RAMSTKUser
+from ramstk.models.commondb import RAMSTKType, RAMSTKUser
 
 _ = gettext.gettext
 
@@ -299,8 +300,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKStatus)
-            .filter(RAMSTKStatus.status_type == "action")
+            self.common_dao.session.query(RAMSTKStatusRecord)
+            .filter(RAMSTKStatusRecord.status_type == "action")
             .all()
         ):
             _attributes = _record.get_attributes()
@@ -508,8 +509,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKStatus)
-            .filter(RAMSTKStatus.status_type == "incident")
+            self.common_dao.session.query(RAMSTKStatusRecord)
+            .filter(RAMSTKStatusRecord.status_type == "incident")
             .all()
         ):
             _attributes = _record.get_attributes()
