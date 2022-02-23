@@ -173,10 +173,15 @@ ramstk.models.commondb.stakeholders module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkstatus module
-------------------------------------------
+ramstk.models.commondb.status module
+------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkstatus
+.. automodule:: ramstk.models.commondb.status.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.status.table
    :members:
    :undoc-members:
    :show-inheritance:

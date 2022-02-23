@@ -19,8 +19,8 @@ from ramstk.models import RAMSTKModelRecord as RAMSTKModelRecord
 from ramstk.models import RAMSTKRPNRecord as RAMSTKRPNRecord
 from ramstk.models import RAMSTKSiteInfoRecord as RAMSTKSiteInfoRecord
 from ramstk.models import RAMSTKStakeholdersRecord as RAMSTKStakeholdersRecord
+from ramstk.models import RAMSTKStatusRecord as RAMSTKStatusRecord
 from ramstk.models import RAMSTKSubCategoryRecord as RAMSTKSubCategoryRecord
-from ramstk.models.commondb import RAMSTKStatus as RAMSTKStatus
 from ramstk.models.commondb import RAMSTKType as RAMSTKType
 from ramstk.models.commondb import RAMSTKUser as RAMSTKUser
 
