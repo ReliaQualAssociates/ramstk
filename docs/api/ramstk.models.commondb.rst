@@ -199,10 +199,15 @@ ramstk.models.commondb.subcategory module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstktype module
-----------------------------------------
+ramstk.models.commondb.type module
+----------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstktype
+.. automodule:: ramstk.models.commondb.type.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.type.table
    :members:
    :undoc-members:
    :show-inheritance:
