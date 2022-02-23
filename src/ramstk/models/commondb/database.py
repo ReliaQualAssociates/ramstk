@@ -27,11 +27,11 @@ from ramstk.models import (
     RAMSTKMeasurementRecord,
     RAMSTKMethodRecord,
     RAMSTKModelRecord,
+    RAMSTKRPNRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
-    RAMSTKRPN,
     RAMSTKStakeholders,
     RAMSTKStatus,
     RAMSTKType,
@@ -670,8 +670,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKRPN)
-            .filter(RAMSTKRPN.rpn_type == "detection")
+            self.common_dao.session.query(RAMSTKRPNRecord)
+            .filter(RAMSTKRPNRecord.rpn_type == "detection")
             .all()
         ):
             user_configuration.RAMSTK_RPN_DETECTION[
@@ -691,8 +691,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKRPN)
-            .filter(RAMSTKRPN.rpn_type == "occurrence")
+            self.common_dao.session.query(RAMSTKRPNRecord)
+            .filter(RAMSTKRPNRecord.rpn_type == "occurrence")
             .all()
         ):
             user_configuration.RAMSTK_RPN_OCCURRENCE[
@@ -712,8 +712,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKRPN)
-            .filter(RAMSTKRPN.rpn_type == "severity")
+            self.common_dao.session.query(RAMSTKRPNRecord)
+            .filter(RAMSTKRPNRecord.rpn_type == "severity")
             .all()
         ):
             user_configuration.RAMSTK_RPN_SEVERITY[
