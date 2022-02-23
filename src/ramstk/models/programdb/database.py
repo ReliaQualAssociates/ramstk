@@ -110,9 +110,10 @@ class RAMSTKProgramDB:
         :rtype: None
         """
         with open(
-            self.user_configuration.RAMSTK_CONF_DIR
-            + f'/{database["dialect"]}_program_db.sql',
+            f"{self.user_configuration.RAMSTK_CONF_DIR}/"
+            f"{database['dialect']}_program_db.sql",
             "r",
+            encoding="utf-8",
         ) as _sql_file:
             self.program_dao = program_db
             do_create_program_db(database, _sql_file)
