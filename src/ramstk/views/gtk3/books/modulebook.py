@@ -163,14 +163,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        # Key errors occur when no RAMSTK Program database has been loaded.  In
-        # that case, select the Revision page to load.
-        # // TODO: Raise error dialog when RAMSTKModuleBook switches page
-        # //
-        # // The KeyError in RAMSTKModuleBook._on_switch_page() should send
-        # // a pubsub message for listeners to respond to.  An error dialog
-        # // should be raised for the user to understand why the Revision
-        # // module was shown instead.
+        # See ISSUE #1005
         try:
             _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
         except KeyError:
