@@ -110,10 +110,9 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             )
         except KeyError:
             _error_msg: str = (
-                "Failed to calculate similar item reliability for hardware ID {0}.  "
-                "Unknown similar item method ID {1} selected.".format(
-                    node_id, _record.similar_item_method_id
-                )
+                f"Failed to calculate similar item reliability for hardware ID "
+                f"{node_id}.  Unknown similar item method ID "
+                f"{_record.similar_item_method_id} selected."
             )
             pub.sendMessage(
                 "do_log_debug",
