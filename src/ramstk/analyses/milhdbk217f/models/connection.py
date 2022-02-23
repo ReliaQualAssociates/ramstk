@@ -390,6 +390,7 @@ def calculate_insert_temperature(contact_gauge: int, current_operating: float) -
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
 
     _fo = _dic_factors[contact_gauge]
+
     return _fo * current_operating**1.85
 
 
