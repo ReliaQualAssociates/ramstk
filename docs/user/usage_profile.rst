@@ -49,7 +49,7 @@ The Usage Profile is displayed in the Work Book when the Revision work stream
 is selected in the Module Book.  The following attributes are displayed for
 each entity in the Usage Profile.  All attributes are editable.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Usage Profile Attributes**
 
    +-------------------+----------------------+--------------------------------+

@@ -29,7 +29,7 @@ attributes displayed for each Revision are determined by the settings in the
 :ref:`sec-ramstk-user-configuration` file.  The following attributes are
 available for display in the Revision tab of the Module Book.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Revision Attributes Available to Module Book**
 
    +----------------------------------+----------+-----------------------------+
@@ -124,7 +124,7 @@ Work Book
 The Revision module Work Book only has a General Data page.  The
 following attributes are displayed in the Revision's General Data page.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Revision Attributes in the Work Book**
 
    +----------------------+----------+------------------------------------+

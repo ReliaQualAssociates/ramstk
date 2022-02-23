@@ -11,9 +11,11 @@ verification plan.
 Module Book
 -----------
 
+.. _verification_module_book:
+
 .. figure:: ./figures/verification_module_book.png
 
-   :numref:`Verification Module Book`
+   :numref:`verification_module_book`
 
 When the Verification tab is selected in the Module Book, a list of all the
 Verification tasks associated with the selected Revision is displayed.  The
@@ -141,9 +143,12 @@ are committed to the open `RAMSTK` Program database.
 
 Work Book
 ---------
+
+.. _verification_work_book:
+
 .. figure:: ./figures/verification_work_book.png
 
-   :numref:`Verification Work Book`
+   :numref:`verification_work_book`
 
 The Verification module Work Book has a General Data and a Program
 Verification Progress page.  The following attributes are displayed in the
@@ -320,9 +325,11 @@ work book, you'll be presented with a blank plot.  Pressing the 'Plot' button
 to the left of the work space will cause `RAMSTK` to calculate the
 verification plan and plot the results.
 
+.. _program_status:
+
 .. figure:: ./figures/program_status.png
 
-   :numref:`Validation Program Status`
+   :numref:`program_status`
 
 The plot shows the planned burn down curve which is the sum of the calculated
 task times for each task that is planned to be in progress by date.  To make

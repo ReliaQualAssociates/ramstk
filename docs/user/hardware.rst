@@ -10,9 +10,12 @@ comprises a system.  The Hardware Module is the workhorse of RAMSTK.
 
 Module Book
 -----------
+
+.. _hardware_module_book:
+
 .. figure:: ./figures/hardware_module_book.png
 
-   :numref:`Hardware Module Book`
+   :numref:`hardware_module_book`
 
 When the Hardware tab is selected in the Module Book, a hierarchical tree of all
 the Hardware associated with the selected Revision is displayed.  This
@@ -169,9 +172,12 @@ committed to the open `RAMSTK` Program database.
 
 Work Book
 ---------
+
+.. _hardware_work_book:
+
 .. figure:: ./figures/hardware_work_book.png
 
-   :numref:`Hardware Work Book`
+   :numref:`hardware_work_book`
 
 The Hardware module Work Book has a General Data, an Assessment Inputs, and
 an Assessment Results page.  These pages allow entry of information related
@@ -266,7 +272,7 @@ Assessment Inputs Page
 
 .. figure:: ./figures/hardware_work_book_assessment_inputs.png
 
-   :numref:`Hardware Assessment Inputs Page`
+   :numref:`hw_assessment_inputs`
 
 The Assessment Inputs page is where all of the information required to assess
 the reliability of hardware items is entered.  `RAMSTK` currently supports
@@ -369,9 +375,12 @@ stress pane.
 
 Assessment Results Page
 ^^^^^^^^^^^^^^^^^^^^^^^
+
+.. _hw_assessment_results:
+
 .. figure:: ./figures/hardware_work_book_assessment_results.png
 
-   :numref:`Hardware Assessment Results Page`
+   :numref:`hw_assessment_results`
 
 The Assessment Results page is where all of the calculated information is
 displayed.
