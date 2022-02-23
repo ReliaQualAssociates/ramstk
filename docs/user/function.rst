@@ -18,7 +18,7 @@ attributes displayed for each Function are determined by the settings in the
 function.toml file (see :ref:`sec-ramstk-user-configuration`).  The following
 attributes are available for display in the Function tab of the Module Book.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Function Attributes Available to Module Book**
 
    +-----------------------------------------+----------+
@@ -129,7 +129,7 @@ The Function module Work Book has a General Data, a Functional Hazards
 Analysis, and a Failure Definitions page.  The following attributes are
 displayed in the Function's General Data page.
 
-.. tabularcolumns:: |r|l|
+.. tabularcolumns:: |r|l|l|
 .. table:: **Function Attributes in the Work Book**
 
    +-----------------------------------------+----------+

@@ -29,14 +29,10 @@ from ramstk.models import (
     RAMSTKModelRecord,
     RAMSTKRPNRecord,
     RAMSTKSiteInfoRecord,
+    RAMSTKStakeholdersRecord,
     RAMSTKSubCategoryRecord,
 )
-from ramstk.models.commondb import (
-    RAMSTKStakeholders,
-    RAMSTKStatus,
-    RAMSTKType,
-    RAMSTKUser,
-)
+from ramstk.models.commondb import RAMSTKStatus, RAMSTKType, RAMSTKUser
 
 _ = gettext.gettext
 
@@ -732,7 +728,7 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-        for _record in self.common_dao.session.query(RAMSTKStakeholders).all():
+        for _record in self.common_dao.session.query(RAMSTKStakeholdersRecord).all():
             _attributes = _record.get_attributes()
             user_configuration.RAMSTK_STAKEHOLDERS[
                 _record.stakeholders_id

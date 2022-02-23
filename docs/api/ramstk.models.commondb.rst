@@ -17,10 +17,15 @@ ramstk.models.commondb.category module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkcondition module
+ramstk.models.commondb.condition module
 ---------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkcondition
+.. automodule:: ramstk.models.commondb.condition.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.condition.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -38,66 +43,106 @@ ramstk.models.commondb.failure_mode module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkgroup module
+ramstk.models.commondb.group module
 -----------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkgroup
+.. automodule:: ramstk.models.commondb.group.record
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkhazards module
+.. automodule:: ramstk.models.commondb.group.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ramstk.models.commondb.hazards module
 -------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkhazards
+.. automodule:: ramstk.models.commondb.hazards.record
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkloadhistory module
+.. automodule:: ramstk.models.commondb.hazards.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ramstk.models.commondb.load_history module
 -----------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkloadhistory
+.. automodule:: ramstk.models.commondb.load_history.record
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkmanufacturer module
+.. automodule:: ramstk.models.commondb.load_history.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ramstk.models.commondb.manufacturer module
 ------------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkmanufacturer
+.. automodule:: ramstk.models.commondb.manufacturer.record
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkmeasurement module
------------------------------------------------
-
-.. automodule:: ramstk.models.commondb.ramstkmeasurement
+.. automodule:: ramstk.models.commondb.manufacturer.table
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkmethod module
-------------------------------------------
-
-.. automodule:: ramstk.models.commondb.ramstkmethod
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-ramstk.models.commondb.ramstkmodel module
+ramstk.models.commondb.measurement module
 -----------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkmodel
+.. automodule:: ramstk.models.commondb.measurement.record
    :members:
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkrpn module
----------------------------------------
+.. automodule:: ramstk.models.commondb.measurement.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: ramstk.models.commondb.ramstkrpn
+ramstk.models.commondb.method module
+-------------------------------------
+
+.. automodule:: ramstk.models.commondb.method.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.method.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ramstk.models.commondb.model module
+-----------------------------------
+
+.. automodule:: ramstk.models.commondb.model.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.model.table
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+ramstk.models.commondb.rpn module
+---------------------------------
+
+.. automodule:: ramstk.models.commondb.rpn.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.rpn.table
    :members:
    :undoc-members:
    :show-inheritance:
@@ -115,10 +160,15 @@ ramstk.models.commondb.site_info module
    :undoc-members:
    :show-inheritance:
 
-ramstk.models.commondb.ramstkstakeholders module
-------------------------------------------------
+ramstk.models.commondb.stakeholders module
+------------------------------------------
 
-.. automodule:: ramstk.models.commondb.ramstkstakeholders
+.. automodule:: ramstk.models.commondb.stakeholders.record
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: ramstk.models.commondb.stakeholders.table
    :members:
    :undoc-members:
    :show-inheritance:
