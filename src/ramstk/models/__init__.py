@@ -25,6 +25,7 @@ from .commondb.hazards.record import RAMSTKHazardsRecord  # isort:skip
 from .commondb.load_history.record import RAMSTKLoadHistoryRecord  # isort:skip
 from .commondb.manufacturer.record import RAMSTKManufacturerRecord  # isort:skip
 from .commondb.measurement.record import RAMSTKMeasurementRecord  # isort:skip
+from .commondb.method.record import RAMSTKMethodRecord  # isort:skip
 from .commondb.site_info.record import RAMSTKSiteInfoRecord  # isort:skip
 from .commondb.subcategory.record import RAMSTKSubCategoryRecord  # isort:skip
 from .commondb.category.table import RAMSTKCategoryTable  # isort:skip
@@ -38,6 +39,7 @@ from .commondb.hazards.table import RAMSTKHazardsTable
 from .commondb.load_history.table import RAMSTKLoadHistoryTable
 from .commondb.manufacturer.table import RAMSTKManufacturerTable
 from .commondb.measurement.table import RAMSTKMeasurementTable
+from .commondb.method.table import RAMSTKMethodTable
 from .commondb.site_info.table import RAMSTKSiteInfoTable
 from .commondb.subcategory.table import RAMSTKSubCategoryTable
 from .programdb.action.record import RAMSTKActionRecord

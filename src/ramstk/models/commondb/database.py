@@ -25,12 +25,12 @@ from ramstk.models import (
     RAMSTKLoadHistoryRecord,
     RAMSTKManufacturerRecord,
     RAMSTKMeasurementRecord,
+    RAMSTKMethodRecord,
     RAMSTKSiteInfoRecord,
     RAMSTKSubCategoryRecord,
 )
 from ramstk.models.commondb import (
     RAMSTKRPN,
-    RAMSTKMethod,
     RAMSTKModel,
     RAMSTKStakeholders,
     RAMSTKStatus,
@@ -372,8 +372,8 @@ class RAMSTKCommonDB:
         :rtype: RAMSTKUserConfiguration
         """
         for _record in (
-            self.common_dao.session.query(RAMSTKMethod)
-            .filter(RAMSTKMethod.method_type == "detection")
+            self.common_dao.session.query(RAMSTKMethodRecord)
+            .filter(RAMSTKMethodRecord.method_type == "detection")
             .all()
         ):
             _attributes = _record.get_attributes()
