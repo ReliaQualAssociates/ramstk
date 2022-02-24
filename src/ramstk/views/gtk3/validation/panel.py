@@ -687,6 +687,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
         :rtype: :class:`Gtk.TreeIter`
         """
         _new_row = None
+        _date_format = "%Y-%m-%d"
 
         # pylint: disable=unused-variable
         _entity = node.data["validation"]
@@ -706,8 +707,8 @@ class ValidationTreePanel(RAMSTKTreePanel):
             _entity.cost_minimum,
             _entity.cost_ul,
             _entity.cost_variance,
-            _entity.date_end,
-            _entity.date_start,
+            _entity.date_end.strftime(_date_format),
+            _entity.date_start.strftime(_date_format),
             _entity.description,
             self._lst_measurement_units[_entity.measurement_unit],
             _entity.name,
