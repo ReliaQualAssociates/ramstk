@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.15.22](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.22) (2022-02-24)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.21...v0.15.22)
+
+Bug Fixes
+
+- fix: validation tasks now load on insert [\#1009](https://github.com/ReliaQualAssociates/ramstk/pull/1009) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- refactor: move ramstk\_user to sub-package [\#1008](https://github.com/ReliaQualAssociates/ramstk/pull/1008) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_type to sub-package [\#1007](https://github.com/ReliaQualAssociates/ramstk/pull/1007) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_status to sub-package [\#1004](https://github.com/ReliaQualAssociates/ramstk/pull/1004) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_stakeholders to sub-package [\#1003](https://github.com/ReliaQualAssociates/ramstk/pull/1003) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_rpn to sub-package [\#1002](https://github.com/ReliaQualAssociates/ramstk/pull/1002) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_model to sub package [\#1001](https://github.com/ReliaQualAssociates/ramstk/pull/1001) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_method to sub-package [\#999](https://github.com/ReliaQualAssociates/ramstk/pull/999) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_measurement to sub-package [\#997](https://github.com/ReliaQualAssociates/ramstk/pull/997) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_manufacturer to sub-package [\#996](https://github.com/ReliaQualAssociates/ramstk/pull/996) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_load\_history to sub-package [\#993](https://github.com/ReliaQualAssociates/ramstk/pull/993) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_hazards to subpackage [\#992](https://github.com/ReliaQualAssociates/ramstk/pull/992) ([weibullguy](https://github.com/weibullguy))
+- refactor: move ramstk\_group to a package [\#991](https://github.com/ReliaQualAssociates/ramstk/pull/991) ([weibullguy](https://github.com/weibullguy))
+- refactor: make ramstk\_condition sub-package [\#990](https://github.com/ReliaQualAssociates/ramstk/pull/990) ([weibullguy](https://github.com/weibullguy))
+- ci: fix typo in workflow file [\#989](https://github.com/ReliaQualAssociates/ramstk/pull/989) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.21](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.21) (2022-02-20)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.20...v0.15.21)
@@ -57,10 +82,6 @@ Bug Fixes
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.14...v0.15.15)
 
-New Features
-
-- docs: Update Documentation for v0.16.0 [\#964](https://github.com/ReliaQualAssociates/ramstk/pull/964) ([weibullguy](https://github.com/weibullguy))
-
 Bug Fixes
 
 - fix: set database login password invisible [\#967](https://github.com/ReliaQualAssociates/ramstk/pull/967) ([weibullguy](https://github.com/weibullguy))
@@ -68,6 +89,7 @@ Bug Fixes
 **Merged pull requests:**
 
 - ci: update ci/cd workflows [\#966](https://github.com/ReliaQualAssociates/ramstk/pull/966) ([weibullguy](https://github.com/weibullguy))
+- docs: Update Documentation for v0.16.0 [\#964](https://github.com/ReliaQualAssociates/ramstk/pull/964) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.14](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.14) (2022-02-12)
 
@@ -144,45 +166,17 @@ Bug Fixes
 
 - fix: verification task list now loads [\#903](https://github.com/ReliaQualAssociates/ramstk/pull/903) ([weibullguy](https://github.com/weibullguy))
 
-**Merged pull requests:**
-
-- refactor: remove unused methods [\#901](https://github.com/ReliaQualAssociates/ramstk/pull/901) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.8](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.8) (2022-01-25)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.7...v0.15.8)
-
-Bug Fixes
-
-- fix: add method to ensure proper level description/remarks is updated [\#899](https://github.com/ReliaQualAssociates/ramstk/pull/899) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: add step to checkout repository [\#896](https://github.com/ReliaQualAssociates/ramstk/pull/896) ([weibullguy](https://github.com/weibullguy))
-- refactor: update do\_set\_attributes\(\) node\_id argument to integer [\#894](https://github.com/ReliaQualAssociates/ramstk/pull/894) ([weibullguy](https://github.com/weibullguy))
-- ci: update previous tag action [\#893](https://github.com/ReliaQualAssociates/ramstk/pull/893) ([weibullguy](https://github.com/weibullguy))
-- refactor: rewrite RAMSTKBaseTable do\_select\_all\(\) [\#890](https://github.com/ReliaQualAssociates/ramstk/pull/890) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.7](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.7) (2022-01-23)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.6...v0.15.7)
 
-Bug Fixes
-
-- fix: not able to delete FMEA or PoF row [\#886](https://github.com/ReliaQualAssociates/ramstk/pull/886) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: update CHANGELOG.md when opening PR [\#888](https://github.com/ReliaQualAssociates/ramstk/pull/888) ([weibullguy](https://github.com/weibullguy))
-- ci: update on-merge workflow to use ref [\#884](https://github.com/ReliaQualAssociates/ramstk/pull/884) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.6](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.6) (2022-01-23)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.5...v0.15.6)
-
-Bug Fixes
-
-- fix: PoF changes can now be saved [\#882](https://github.com/ReliaQualAssociates/ramstk/pull/882) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.5](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.5) (2022-01-22)
 
