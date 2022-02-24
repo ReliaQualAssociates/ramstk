@@ -8,6 +8,8 @@ on:
   push:
     paths-ignore:
       - "**.py"
+    tags-ignore:
+      - "v*"
   pull_request:
     paths-ignore:
       - "**.py"
