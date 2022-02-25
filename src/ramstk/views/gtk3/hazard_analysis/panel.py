@@ -781,6 +781,23 @@ class HazardsTreePanel(RAMSTKTreePanel):
             for _probability in probabilities:
                 _model.append((_probability[0],))
 
+    def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
+        """Refresh the Similar Item functions in the RAMSTKTreeView().
+
+        :param row: the row in the Similar Item RAMSTKTreeView() whose
+            functions need to be updated.  This is required to allow a recursive
+            calling function to load the same function in all rows.
+        :param function: the list of user-defined Similar Item functions.
+        :return: None
+        """
+        _model = self.tvwTreeView.get_model()
+
+        _model.set_value(row, self.tvwTreeView.position["function_1"], function[0])
+        _model.set_value(row, self.tvwTreeView.position["function_2"], function[1])
+        _model.set_value(row, self.tvwTreeView.position["function_3"], function[2])
+        _model.set_value(row, self.tvwTreeView.position["function_4"], function[3])
+        _model.set_value(row, self.tvwTreeView.position["function_5"], function[4])
+
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the HazOps Tree View RAMSTKTreeView().
 

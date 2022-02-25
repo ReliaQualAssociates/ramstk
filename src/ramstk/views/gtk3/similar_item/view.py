@@ -88,14 +88,14 @@ class SimilarItemWorkView(RAMSTKWorkView):
         self._lst_icons.insert(1, "rollup")
         self._lst_icons.insert(2, "calculate")
         self._lst_mnu_labels = [
-            _("Edit Function"),
+            _("Edit User Functions"),
             _("Roll-Up Descriptions"),
             _("Calculate Similar Item"),
             _("Save"),
             _("Save All"),
         ]
         self._lst_tooltips = [
-            _("Edit the similar item analysis functions."),
+            _("Edit the similar item analysis user defined functions."),
             _("Roll up descriptions to next higher level assembly."),
             _("Calculate the similar item analysis."),
             _("Save changes to the selected similar item analysis line item."),
@@ -171,6 +171,32 @@ class SimilarItemWorkView(RAMSTKWorkView):
         _dialog = EditFunction(
             self._pnlPanel.tvwTreeView,
             dlgparent=self.get_parent().get_parent().get_parent().get_parent(),
+            module="Similar Item",
+            labels=[
+                _(
+                    "You can define up to five functions.  "
+                    "You can use the system failure rate, "
+                    "selected assembly failure rate, the "
+                    "change factor, the user float, the "
+                    "user integer values, and results of "
+                    "other functions.\n\n \
+        System hazard rate is hr_sys\n \
+        Assembly hazard rate is hr\n \
+        Change factor is pi[1-8]\n \
+        User float is uf[1-3]\n \
+        User integer is ui[1-3]\n \
+        Function result is res[1-5]\n\n"
+                ),
+                _(
+                    "For example, pi1*pi2+pi3, multiplies "
+                    "the first two change factors and "
+                    "adds the value to the third change "
+                    "factor.\n\n"
+                ),
+            ],
+            edit_message="wvw_editing_similar_item",
+            id_column=1,
+            func_columns=[30, 31, 32, 33, 34],
         )
 
         if _dialog.do_run() == Gtk.ResponseType.OK:

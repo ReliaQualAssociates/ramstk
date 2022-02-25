@@ -16,6 +16,7 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
+from ramstk.views.gtk3.assistants import EditFunction
 from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -50,8 +51,8 @@ class HazardsWorkView(RAMSTKWorkView):
 
     # Define private scalar class attributes.
     _tag = "hazard"
-    _tablabel = _("HazOps")
-    _tabtooltip = _("Displays the HazOps analysis for the selected Function.")
+    _tablabel = _("FHA")
+    _tabtooltip = _("Displays the Hazards analysis for the selected Function.")
 
     # Define public dict class attributes.
 
@@ -72,13 +73,16 @@ class HazardsWorkView(RAMSTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_callbacks.insert(0, super().do_request_insert_sibling)
-        self._lst_callbacks.insert(1, self.do_request_delete)
-        self._lst_callbacks.insert(2, self._do_request_calculate)
-        self._lst_icons.insert(0, "add")
-        self._lst_icons.insert(1, "remove")
-        self._lst_icons.insert(2, "calculate")
+        self._lst_callbacks.insert(0, self._do_request_edit_function)
+        self._lst_callbacks.insert(1, super().do_request_insert_sibling)
+        self._lst_callbacks.insert(2, self.do_request_delete)
+        self._lst_callbacks.insert(3, self._do_request_calculate)
+        self._lst_icons.insert(0, "edit")
+        self._lst_icons.insert(1, "add")
+        self._lst_icons.insert(2, "remove")
+        self._lst_icons.insert(3, "calculate")
         self._lst_mnu_labels = [
+            _("Edit User Functions"),
             _("Add Hazard"),
             _("Delete Selected Hazard"),
             _("Calculate HazOp"),
@@ -86,6 +90,7 @@ class HazardsWorkView(RAMSTKWorkView):
             _("Save All Hazards"),
         ]
         self._lst_tooltips = [
+            _("Edit the hazards analysis user defined functions."),
             _("Add a new hazard to the HazOps analysis."),
             _("Delete the selected hazard from the selected function."),
             _("Calculate the HazOps analysis."),
@@ -117,6 +122,56 @@ class HazardsWorkView(RAMSTKWorkView):
         """
         super().do_set_cursor_busy()
         pub.sendMessage("request_calculate_fha", node_id=self.dic_pkeys["record_id"])
+
+    def _do_request_edit_function(self, __button: Gtk.ToolButton) -> None:
+        """Request to edit the Similar Item analysis user-defined functions.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        :rtype: None
+        """
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()  # noqa
+
+        _dialog = EditFunction(
+            self._pnlPanel.tvwTreeView,
+            dlgparent=self.get_parent().get_parent().get_parent().get_parent(),
+            module="Hazards",
+            labels=[
+                _(
+                    "You can define up to five functions.  "
+                    "You can use the user float, the "
+                    "user integer values, and results of "
+                    "other functions.\n\n \
+        User float is uf[1-3]\n \
+        User integer is ui[1-3]\n \
+        Function result is res[1-5]\n\n"
+                ),
+                _(
+                    "For example, uf1*uf2+ui1, multiplies "
+                    "the first two user float files and "
+                    "adds the value to first user integer "
+                    "field.\n\n"
+                ),
+            ],
+            edit_message="wvw_editing_hazard",
+            id_column=2,
+            func_columns=[22, 23, 24, 25, 26],
+        )
+
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            _functions = _dialog.do_set_functions(self._pnlPanel.tvwTreeView)
+            if _dialog.chkApplyAll.get_active():
+                _row = _model.get_iter_first()
+                while _row is not None:
+                    self._pnlPanel.do_refresh_functions(_row, _functions)
+                    _row = _model.iter_next(_row)
+            else:
+                self._pnlPanel.do_refresh_functions(_row, _functions)
+
+        _dialog.do_destroy()
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record ID when a hazard is selected.
