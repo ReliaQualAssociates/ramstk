@@ -750,6 +750,16 @@ def test_license_file():
     os.remove(_cwd + "/license.key")
 
 
+@pytest.fixture
+def test_log_file():
+    """Create a log file."""
+    _test_file = TMP_DIR + "/test_file.log"
+
+    yield _test_file
+
+    os.remove(_test_file)
+
+
 @pytest.fixture(scope="session")
 def test_toml_site_configuration(test_config_dir):
     """Create a toml site configuration file."""
