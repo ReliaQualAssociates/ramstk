@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from collections import OrderedDict
-from typing import Any, Dict, Type
+from typing import Any, Callable, Dict, Type
 
 # Third Party Imports
 from pubsub import pub
@@ -17,6 +17,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.analyses import similaritem
 from ramstk.models import RAMSTKBaseTable, RAMSTKSimilarItemRecord
+from ramstk.views.gtk3 import _
 
 
 class RAMSTKSimilarItemTable(RAMSTKBaseTable):
@@ -94,7 +95,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _dic_method = {
+        _dic_method: Dict[int, Callable] = {
             1: self._do_calculate_topic_633,
             2: self._do_calculate_user_defined,
         }
@@ -109,19 +110,14 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
                 tree=self.tree,
             )
         except KeyError:
-            _error_msg: str = (
-                f"Failed to calculate similar item reliability for hardware ID "
-                f"{node_id}.  Unknown similar item method ID "
-                f"{_record.similar_item_method_id} selected."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_calculate_similar_item",
-                error_message=_error_msg,
+                message=_(
+                    f"Failed to calculate similar item reliability for hardware ID "
+                    f"{node_id}.  Unknown similar item method ID "
+                    f"{_record.similar_item_method_id} selected."
+                ),
             )
 
     def do_roll_up_change_descriptions(self, node_id: int) -> None:

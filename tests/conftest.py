@@ -21,6 +21,7 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 from distutils import dir_util
+from pathlib import Path
 
 # Third Party Imports
 import psycopg2
@@ -754,6 +755,7 @@ def test_license_file():
 def test_log_file():
     """Create a log file."""
     _test_file = TMP_DIR + "/test_file.log"
+    Path(_test_file).touch()
 
     yield _test_file
 

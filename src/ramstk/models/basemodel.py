@@ -19,6 +19,7 @@ from treelib.exceptions import NodeIDAbsentError
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.utilities import none_to_default
+from ramstk.views.gtk3 import _
 
 
 def do_clear_tree(tree: treelib.Tree) -> treelib.Tree:
@@ -181,18 +182,13 @@ class RAMSTKBaseTable:
                 tree=self.tree,
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
-            _error_msg: str = (
-                f"Attempted to delete non-existent "
-                f"{self._tag.replace('_', ' ').title()} ID {node_id}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                f"fail_delete_{self._tag}",
-                error_message=_error_msg,
+                message=_(
+                    f"Attempted to delete non-existent "
+                    f"{self._tag.replace('_', ' ').title()} ID {node_id}."
+                ),
             )
 
     def do_get_attributes(self, node_id: int, table: str = "") -> None:
@@ -210,19 +206,12 @@ class RAMSTKBaseTable:
                 attributes=self.do_select(node_id).get_attributes(),
             )
         except AttributeError:
-            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = (
-                f"{_method_name}: No attributes found for record ID {node_id} in "
-                f"{self._tag} table."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                f"fail_get_{table}_attributes",
-                error_message=_error_msg,
+                message=_(
+                    f"No attributes found for record ID {node_id} in {self._tag} table."
+                ),
             )
 
     def do_get_tree(self) -> None:
@@ -276,20 +265,12 @@ class RAMSTKBaseTable:
                 logger_name="DEBUG",
                 message=_error_msg,
             )
-            pub.sendMessage(
-                f"fail_insert_{self._tag}",
-                error_message=_error.msg,
-            )
         except NodeIDAbsentError as _error:
             _error_msg = f"{_method_name}: {_error}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=str(_error),
-            )
-            pub.sendMessage(
-                f"fail_insert_{self._tag}",
-                error_message=_error_msg,
             )
 
     def do_select(self, node_id: Any) -> Any:
@@ -309,15 +290,12 @@ class RAMSTKBaseTable:
             treelib.tree.NodeIDAbsentError,
             TypeError,
         ):
-            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                f"{_method_name}: No data package for node ID {node_id} in module "
-                f"{self._tag}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"No data package for node ID {node_id} in module {self._tag}."
+                ),
             )
             _entity = None
 
@@ -393,15 +371,12 @@ class RAMSTKBaseTable:
         try:
             _attributes = self.do_select(node_id).get_attributes()
         except (AttributeError, KeyError):
-            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg: str = (
-                f"{_method_name}: No data package for node ID {node_id} in module "
-                f"{self._tag}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"No data package for node ID {node_id} in module {self._tag}."
+                ),
             )
             _attributes = {}
 
@@ -452,9 +427,6 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
-        _fail_topic = f"fail_update_{self._tag}"
-        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-
         try:
             self.dao.do_update(self.tree.get_node(node_id).data[self._tag])
             pub.sendMessage(
@@ -462,52 +434,35 @@ class RAMSTKBaseTable:
                 tree=self.tree,
             )
         except AttributeError:
-            _error_msg: str = (
-                f"{_method_name}: Attempted to save non-existent "
-                f"{self._tag.replace('_', ' ')} with {self._tag.replace('_', ' ')} "
-                f"ID {node_id}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                _fail_topic,
-                error_message=_error_msg,
+                message=_(
+                    f"Attempted to save non-existent {self._tag.replace('_', ' ')} "
+                    f"with {self._tag.replace('_', ' ')} ID {node_id}."
+                ),
             )
         except KeyError:
-            _error_msg = (
-                f"{_method_name}: No data package found for "
-                f"{self._tag.replace('_', ' ')} ID {node_id}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                _fail_topic,
-                error_message=_error_msg,
+                message=_(
+                    f"No data package found for {self._tag.replace('_', ' ')} ID "
+                    f"{node_id}."
+                ),
             )
         except (DataAccessError, TypeError):
             if node_id != 0:
-                _error_msg = (
-                    f"{_method_name}: The value for one or more attributes for "
+                _error_msg = _(
+                    f"The value for one or more attributes for "
                     f"{self._tag.replace('_', ' ')} ID {node_id} was the wrong type."
                 )
             else:
-                _error_msg = (
-                    f"{_method_name}: Attempting to update the root node {node_id}."
-                )
+                _error_msg = _(f"Attempting to update the root node {node_id}.")
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
                 message=_error_msg,
-            )
-            pub.sendMessage(
-                _fail_topic,
-                error_message=_error_msg,
             )
 
         pub.sendMessage("request_set_cursor_active")
