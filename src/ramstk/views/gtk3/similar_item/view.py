@@ -88,14 +88,14 @@ class SimilarItemWorkView(RAMSTKWorkView):
         self._lst_icons.insert(1, "rollup")
         self._lst_icons.insert(2, "calculate")
         self._lst_mnu_labels = [
-            _("Edit Function"),
+            _("Edit User Functions"),
             _("Roll-Up Descriptions"),
             _("Calculate Similar Item"),
             _("Save"),
             _("Save All"),
         ]
         self._lst_tooltips = [
-            _("Edit the similar item analysis functions."),
+            _("Edit the similar item analysis user defined functions."),
             _("Roll up descriptions to next higher level assembly."),
             _("Calculate the similar item analysis."),
             _("Save changes to the selected similar item analysis line item."),
