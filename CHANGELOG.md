@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.16.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.0) (2022-02-25)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.22...v0.16.0)
+
+New Features
+
+- feat: add assistant to edit hazard analysis user defined functions [\#1011](https://github.com/ReliaQualAssociates/ramstk/pull/1011) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.15.22](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.22) (2022-02-24)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.21...v0.15.22)
@@ -161,10 +169,6 @@ Bug Fixes
 ## [v0.15.9](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.9) (2022-01-26)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.8...v0.15.9)
-
-Bug Fixes
-
-- fix: verification task list now loads [\#903](https://github.com/ReliaQualAssociates/ramstk/pull/903) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.8](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.8) (2022-01-25)
 
