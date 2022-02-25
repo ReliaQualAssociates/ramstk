@@ -8,9 +8,9 @@
 """RAMSTK GTK3 Books Package."""
 
 # RAMSTK Local Imports
+from .edit_function import EditFunction
 from .export import ExportProject
 from .fmea import AddControlAction
 from .imports import ImportProject
 from .pof import AddStressTestMethod
 from .project import CreateProject, OpenProject
-from .similaritem import EditFunction
