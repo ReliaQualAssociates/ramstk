@@ -8,9 +8,10 @@ from pubsub import pub
 from ramstk.analyses import derating, stress
 from ramstk.db import RAMSTK_BASE as RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord as RAMSTKBaseRecord
+from ramstk.views.gtk3 import _
 
 def do_check_overstress(
-    overstress: Dict[str, List[float]], stress_type: str
+    overstress: Dict[str, List[float]], stress_type: str, limits: Dict[str, List[float]]
 ) -> Tuple[int, str]: ...
 
 class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):

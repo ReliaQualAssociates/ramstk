@@ -14,7 +14,6 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKCauseRecord, RAMSTKMechanismRecord
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
@@ -1389,7 +1388,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.tvwTreeView.filt_model.refilter()
 
     def __do_get_rpn_names(
-        self, entity: Union[RAMSTKCauseRecord, RAMSTKMechanismRecord]
+        self,
+        entity: object,
     ) -> Tuple[str, str, str, str]:
         """Retrieve the RPN category for the selected mechanism or cause.
 

@@ -20,88 +20,46 @@ from pubsub import pub
 from ramstk import RAMSTKLogManager
 
 
+@pytest.fixture(scope="function")
+def test_logger(test_log_file):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut).
+    dut = RAMSTKLogManager(test_log_file)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    assert pub.unsubscribe(dut.do_log_debug, "do_log_debug_msg")
+    assert pub.unsubscribe(dut.do_log_info, "do_log_info_msg")
+    assert pub.unsubscribe(dut.do_log_warning, "do_log_warning_msg")
+    assert pub.unsubscribe(dut.do_log_error, "do_log_error_msg")
+    assert pub.unsubscribe(dut.do_log_critical, "do_log_critical_msg")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.mark.usefixtures("test_logger", "test_log_file")
 class TestLogManager:
     """Test class for RAMSTKLogManager methods."""
 
-    def test_create_log_manager(self):
+    @pytest.mark.unit
+    def test_create_log_manager(self, test_logger, test_log_file):
         """__init__() should create an instance of the RAMSTKLogManager."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-
-        assert isinstance(DUT, RAMSTKLogManager)
-        assert isinstance(DUT.loggers["ramstk.logger"], logging.Logger)
-        assert DUT.log_file == _testlog
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_delete_fmea")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_action")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_cause")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_control")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_mechanism")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_mode")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_update_fmea")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_delete_function")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_delete_hazard")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_function")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_hazard")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_update_function")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_hardware")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_validation")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_stakeholder")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_revision")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_environment")
-        assert pub.isSubscribed(
-            DUT._do_log_fail_message, "fail_insert_failure_definition"
-        )
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_mission")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_mission_phase")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_requirement")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_opload")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_opstress")
-        assert pub.isSubscribed(DUT._do_log_fail_message, "fail_insert_test_method")
+        assert isinstance(test_logger, RAMSTKLogManager)
+        assert isinstance(test_logger.loggers, dict)
+        assert test_logger.log_file == test_log_file
+        assert pub.isSubscribed(test_logger.do_log_debug, "do_log_debug_msg")
+        assert pub.isSubscribed(test_logger.do_log_info, "do_log_info_msg")
+        assert pub.isSubscribed(test_logger.do_log_warning, "do_log_warning_msg")
+        assert pub.isSubscribed(test_logger.do_log_error, "do_log_error_msg")
+        assert pub.isSubscribed(test_logger.do_log_critical, "do_log_critical_msg")
 
     @pytest.mark.unit
-    def test_log_fail_messages(self):
-        """_do_log_fail_message() should be called when fail_* messages are broadcast and log the associated error message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("DEBUG", "DEBUG", True)
-
-        pub.sendMessage(
-            "fail_delete_fmea",
-            error_message=("Attempted to delete non-existent " "FMEA element ID ax."),
-        )
-        pub.sendMessage(
-            "fail_update_fmea",
-            error_message=(
-                "Attempted to save non-existent FMEA " "element with FMEA ID ax."
-            ),
-        )
-
-        _test_log = open(_testlog, "r")
-        _lines = _test_log.readlines()
-
-        assert isinstance(DUT.loggers["DEBUG"], logging.Logger)
-        assert _lines[0].split(":", 5)[-1].strip() == (
-            "Attempted to delete non-existent FMEA element ID ax."
-        )
-        assert _lines[1].split(":", 5)[-1].strip() == (
-            "Attempted to save non-existent FMEA element with FMEA ID ax."
-        )
-
-    @pytest.mark.unit
-    def test_do_log_debug(self):
-        """do_log_debug() should be called when the do_log_debug_msg message is broadcast and log the associated debug message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("DEBUG", "DEBUG", True)
+    def test_do_log_debug(self, test_logger, test_log_file):
+        """do_log_debug() should be called when the do_log_debug_msg message is
+        broadcast and log the associated debug message."""
+        test_logger.do_create_logger("DEBUG", "DEBUG", True)
 
         pub.sendMessage(
             "do_log_debug_msg",
@@ -109,23 +67,19 @@ class TestLogManager:
             message="Test DEBUG message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["DEBUG"], logging.Logger)
+        assert isinstance(test_logger.loggers["DEBUG"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test DEBUG message sent and logged."
         )
 
     @pytest.mark.unit
-    def test_do_log_info(self):
-        """do_log_info() should be called when the do_log_info_msg message is broadcast and log the associated debug message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("INFO", "INFO", True)
+    def test_do_log_info(self, test_logger, test_log_file):
+        """do_log_info() should be called when the do_log_info_msg message is broadcast
+        and log the associated debug message."""
+        test_logger.do_create_logger("INFO", "INFO", True)
 
         pub.sendMessage(
             "do_log_info_msg",
@@ -133,23 +87,19 @@ class TestLogManager:
             message="Test INFO message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["INFO"], logging.Logger)
+        assert isinstance(test_logger.loggers["INFO"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test INFO message sent and logged."
         )
 
     @pytest.mark.unit
-    def test_do_log_info_ignore_debug(self):
-        """do_log_info() should not be called when the do_log_debug_msg message is broadcast and the log level is INFO."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("INFO", "INFO", True)
+    def test_do_log_info_ignore_debug(self, test_logger, test_log_file):
+        """do_log_info() should not be called when the do_log_debug_msg message is
+        broadcast and the log level is INFO."""
+        test_logger.do_create_logger("INFO", "INFO", True)
 
         pub.sendMessage(
             "do_log_debug_msg",
@@ -157,21 +107,17 @@ class TestLogManager:
             message="Test DEBUG message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["INFO"], logging.Logger)
+        assert isinstance(test_logger.loggers["INFO"], logging.Logger)
         assert _lines == []
 
     @pytest.mark.unit
-    def test_do_log_info_higher_level_messages(self):
-        """do_log_info() should log WARN, ERROR, and CRITICAL level information when it is an INFO log manager."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("INFO", "INFO")
+    def test_do_log_info_higher_level_messages(self, test_logger, test_log_file):
+        """do_log_info() should log WARN, ERROR, and CRITICAL level information when it
+        is an INFO log manager."""
+        test_logger.do_create_logger("INFO", "INFO")
 
         pub.sendMessage(
             "do_log_warning_msg",
@@ -189,10 +135,10 @@ class TestLogManager:
             message="Test CRITICAL message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["INFO"], logging.Logger)
+        assert isinstance(test_logger.loggers["INFO"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test WARN message sent and logged."
         )
@@ -204,14 +150,10 @@ class TestLogManager:
         )
 
     @pytest.mark.unit
-    def test_do_log_warning(self):
-        """do_log_warning() should be called when the do_log_warning_msg message is broadcast and log the associated debug message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("WARN", "WARN", True)
+    def test_do_log_warning(self, test_logger, test_log_file):
+        """do_log_warning() should be called when the do_log_warning_msg message is
+        broadcast and log the associated debug message."""
+        test_logger.do_create_logger("WARN", "WARN", True)
 
         pub.sendMessage(
             "do_log_warning_msg",
@@ -219,23 +161,18 @@ class TestLogManager:
             message="Test WARN message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["WARN"], logging.Logger)
+        assert isinstance(test_logger.loggers["WARN"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test WARN message sent and logged."
         )
 
     @pytest.mark.unit
-    def test_do_log_warning_ignore_debug_info(self):
+    def test_do_log_warning_ignore_debug_info(self, test_logger, test_log_file):
         """do_log_warning() should not log a debug or info message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("WARN", "WARN", True)
+        test_logger.do_create_logger("WARN", "WARN", True)
 
         pub.sendMessage(
             "do_log_debug_msg",
@@ -248,21 +185,17 @@ class TestLogManager:
             message="Test INFO message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["WARN"], logging.Logger)
+        assert isinstance(test_logger.loggers["WARN"], logging.Logger)
         assert _lines == []
 
     @pytest.mark.unit
-    def test_do_log_error(self):
-        """do_log_error() should be called when the do_log_error_msg message is broadcast and log the associated debug message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("ERROR", "ERROR", True)
+    def test_do_log_error(self, test_logger, test_log_file):
+        """do_log_error() should be called when the do_log_error_msg message is
+        broadcast and log the associated debug message."""
+        test_logger.do_create_logger("ERROR", "ERROR", True)
 
         pub.sendMessage(
             "do_log_error_msg",
@@ -270,23 +203,18 @@ class TestLogManager:
             message="Test ERROR message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["ERROR"], logging.Logger)
+        assert isinstance(test_logger.loggers["ERROR"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test ERROR message sent and logged."
         )
 
     @pytest.mark.unit
-    def test_do_log_error_ignore_debug_info_warning(self):
+    def test_do_log_error_ignore_debug_info_warning(self, test_logger, test_log_file):
         """do_log_warning() should not log a debug, info, or warning message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("ERROR", "ERROR", True)
+        test_logger.do_create_logger("ERROR", "ERROR", True)
 
         pub.sendMessage(
             "do_log_debug_msg",
@@ -304,21 +232,17 @@ class TestLogManager:
             message="Test WARN message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["ERROR"], logging.Logger)
+        assert isinstance(test_logger.loggers["ERROR"], logging.Logger)
         assert _lines == []
 
     @pytest.mark.unit
-    def test_do_log_critical(self):
-        """do_log_critical() should be called when the do_log_critical_msg message is broadcast and log the associated debug message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("CRITICAL", "CRITICAL", True)
+    def test_do_log_critical(self, test_logger, test_log_file):
+        """do_log_critical() should be called when the do_log_critical_msg message is
+        broadcast and log the associated debug message."""
+        test_logger.do_create_logger("CRITICAL", "CRITICAL", True)
 
         pub.sendMessage(
             "do_log_critical_msg",
@@ -326,23 +250,20 @@ class TestLogManager:
             message="Test CRITICAL message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["CRITICAL"], logging.Logger)
+        assert isinstance(test_logger.loggers["CRITICAL"], logging.Logger)
         assert _lines[0].split(":", 5)[-1].strip() == (
             "Test CRITICAL message sent and logged."
         )
 
     @pytest.mark.unit
-    def test_do_log_critical_ignore_debug_info_warning_error(self):
+    def test_do_log_critical_ignore_debug_info_warning_error(
+        self, test_logger, test_log_file
+    ):
         """do_log_warning() should not log a debug, info, warning, or error message."""
-        _testlog = "./test_info.log"
-        if os.path.exists(_testlog):
-            os.remove(_testlog)
-
-        DUT = RAMSTKLogManager(_testlog)
-        DUT.do_create_logger("CRITICAL", "CRITICAL", True)
+        test_logger.do_create_logger("CRITICAL", "CRITICAL", True)
 
         pub.sendMessage(
             "do_log_debug_msg",
@@ -365,8 +286,8 @@ class TestLogManager:
             message="Test ERROR message sent and logged.",
         )
 
-        _test_log = open(_testlog, "r")
+        _test_log = open(test_log_file, "r")
         _lines = _test_log.readlines()
 
-        assert isinstance(DUT.loggers["CRITICAL"], logging.Logger)
+        assert isinstance(test_logger.loggers["CRITICAL"], logging.Logger)
         assert _lines == []

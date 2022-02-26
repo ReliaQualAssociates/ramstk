@@ -354,16 +354,14 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                     package={key: _new_text},
                 )
         except (KeyError, ValueError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while editing {self._tag} data "
-                f"for record ID {self._record_id} in the view.  Key {key} does not "
-                f"exist in attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while editing {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  Key {key} does not exist in "
+                    f"attribute dictionary."
+                ),
             )
 
         combo.handler_unblock(combo.dic_handler_id["changed"])
@@ -481,7 +479,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             the new attribute value as the value.
         :return: None
         """
-        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
         [[_key, _value]] = package.items()
 
         try:
@@ -489,26 +486,24 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _signal = self.dic_attribute_widget_map[_key][2]
             _widget.do_update(_value, _signal)  # type: ignore
         except KeyError:
-            _error_msg = _(
-                f"{_method_name}: An error occurred while updating {self._tag} data "
-                f"for record ID {self._record_id} in the view.  No key {_key} in "
-                f"dic_attribute_widget_map."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while updating {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  No key {_key} in "
+                    f"dic_attribute_widget_map."
+                ),
             )
         except TypeError:
-            _error_msg = _(
-                f"{_method_name}: An error occurred while updating {self._tag} data "
-                f"for record ID {self._record_id} in the view.  Data for key {_key} is "
-                f"the wrong type."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while updating {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  Data for key {_key} is the wrong "
+                    f"type."
+                ),
             )
 
     def on_toggled(
@@ -536,16 +531,14 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 package={key: _new_text},
             )
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while updating {self._tag} data "
-                f"for record ID {self._record_id} in the view.  Key {key} does not "
-                f"exist in attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while updating {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  Key {key} does not exist in "
+                    f"attribute dictionary."
+                ),
             )
 
         return {key: _new_text}
@@ -570,16 +563,14 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             elif str(datatype) == "gchararray":
                 _new_text = str(entry.do_get_text())
         except (KeyError, ValueError):
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while reading {self._tag} data for "
-                f"record ID {self._record_id} in the view.  Key {key} does not exist "
-                f"in attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while reading {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  Key {key} does not exist in "
+                    f"attribute dictionary."
+                ),
             )
 
         return {key: _new_text}
@@ -776,28 +767,24 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 self.tvwTreeView.selection.select_iter(_row)
                 self.show_all()
         except TypeError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while loading {self._tag} data for "
-                f"Record ID {self._record_id} into the view.  One or more values from "
-                f"the database was the wrong type for the column it was trying to load."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while loading {self._tag} data for Record ID "
+                    f"{self._record_id} into the view.  One or more values from the "
+                    f"database was the wrong type for the column it was trying to load."
+                ),
             )
         except ValueError:
-            _method_name = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while loading {self._tag} data "
-                f"for Record ID {self._record_id} into the view.  One or more values "
-                f"from the database was missing."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while loading {self._tag} data for Record ID "
+                    f"{self._record_id} into the view.  One or more values from the "
+                    f"database was missing."
+                ),
             )
 
         pub.sendMessage("request_set_cursor_active")
@@ -922,8 +909,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param package: the key:value for the data being updated.
         :return: None
         """
-        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-
         [[_key, _value]] = package.items()
 
         try:
@@ -932,26 +917,24 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _model, _row = self.tvwTreeView.get_selection().get_selected()
             _model.set_value(_row, _position, _value)
         except KeyError:
-            _error_msg = _(
-                f"{_method_name}: An error occurred while refreshing {self._tag} data "
-                f"for Record ID {self._record_id} in the view.  Key {_key} does not "
-                f"exist in attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while refreshing {self._tag} data for Record "
+                    f"ID {self._record_id} in the view.  Key {_key} does not exist in "
+                    f"attribute dictionary."
+                ),
             )
         except TypeError:
-            _error_msg = _(
-                f"{_method_name}: An error occurred while refreshing {self._tag} data "
-                f"for Record ID {self._record_id} in the view.  Data {_value} for "
-                f"{_key} is the wrong type."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while refreshing {self._tag} data "
+                    f"for Record ID {self._record_id} in the view.  Data {_value} for "
+                    f"{_key} is the wrong type."
+                ),
             )
 
     def do_set_callbacks(self) -> None:
@@ -1086,16 +1069,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 package={key: _new_text},
             )
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while editing {self._tag} data "
-                f"for record ID {self._record_id} in the view.  One or more keys could "
-                f"not be found in the attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while editing {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  One or more keys could not be "
+                    f"found in the attribute dictionary."
+                ),
             )
 
     def on_cell_edit(
@@ -1130,16 +1111,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 package={key: new_text},
             )
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while editing {self._tag} data "
-                f"for record ID {self._record_id} in the view.  One or more keys could "
-                f"not be found in the attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while editing {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  One or more keys could not be "
+                    f"found in the attribute dictionary."
+                ),
             )
 
     # pylint: disable=unused-argument
@@ -1166,16 +1145,14 @@ class RAMSTKTreePanel(RAMSTKPanel):
                     message, node_id=self._record_id, package={key: _new_text}
                 )
         except KeyError:
-            _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-            _error_msg = _(
-                f"{_method_name}: An error occurred while editing {self._tag} data "
-                f"for record ID {self._record_id} in the view.  One or more keys could "
-                f"not be found in the attribute dictionary."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"An error occurred while editing {self._tag} data for record ID "
+                    f"{self._record_id} in the view.  One or more keys could not be "
+                    f"found in the attribute dictionary."
+                ),
             )
 
     # pylint: disable=unused-argument

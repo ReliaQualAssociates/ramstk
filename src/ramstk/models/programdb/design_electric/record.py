@@ -18,6 +18,7 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from ramstk.analyses import derating, stress
 from ramstk.db import RAMSTK_BASE
 from ramstk.models import RAMSTKBaseRecord
+from ramstk.views.gtk3 import _
 
 
 def do_check_overstress(
@@ -403,19 +404,14 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 self.current_rated,
             )
         except ZeroDivisionError:
-            _error_msg: str = (
-                f"Failed to calculate current ratio for hardware ID "
-                f"{self.hardware_id}.  Rated current={self.current_rated}, operating "
-                f"current={self.current_operating}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_calculate_current_stress",
-                error_message=_error_msg,
+                message=_(
+                    f"Failed to calculate current ratio for hardware ID "
+                    f"{self.hardware_id}.  Rated current={self.current_rated}, "
+                    f"operating current={self.current_operating}."
+                ),
             )
 
     def do_calculate_power_ratio(self) -> None:
@@ -430,19 +426,14 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 self.power_rated,
             )
         except ZeroDivisionError:
-            _error_msg: str = (
-                f"Failed to calculate power ratio for hardware ID {self.hardware_id}.  "
-                f"Rated power={self.power_rated}, operating "
-                f"power={self.power_operating}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_calculate_power_stress",
-                error_message=_error_msg,
+                message=_(
+                    f"Failed to calculate power ratio for hardware ID "
+                    f"{self.hardware_id}.  Rated power={self.power_rated}, operating "
+                    f"power={self.power_operating}."
+                ),
             )
 
     def do_calculate_voltage_ratio(self) -> None:
@@ -458,20 +449,15 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
                 _voltage_operating, self.voltage_rated
             )
         except ZeroDivisionError:
-            _error_msg: str = (
-                f"Failed to calculate voltage ratio for hardware ID "
-                f"{self.hardware_id}.  Rated voltage={self.voltage_rated}, "
-                f"operating ac voltage={self.voltage_ac_operating}, operating DC "
-                f"voltage={self.voltage_dc_operating}."
-            )
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
-            )
-            pub.sendMessage(
-                "fail_calculate_voltage_stress",
-                error_message=_error_msg,
+                message=_(
+                    f"Failed to calculate voltage ratio for hardware ID "
+                    f"{self.hardware_id}.  Rated voltage={self.voltage_rated}, "
+                    f"operating ac voltage={self.voltage_ac_operating}, operating DC "
+                    f"voltage={self.voltage_dc_operating}."
+                ),
             )
 
     def do_derating_analysis(self, stress_limits: List[float]) -> None:
