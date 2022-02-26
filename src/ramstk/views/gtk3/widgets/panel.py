@@ -909,8 +909,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param package: the key:value for the data being updated.
         :return: None
         """
-        _method_name: str = inspect.currentframe().f_code.co_name  # type: ignore
-
         [[_key, _value]] = package.items()
 
         try:
