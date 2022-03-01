@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.mode.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_mode_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mode Table Model."""
+"""RAMSTKMode Table Model."""
 
 # Standard Library Imports
 from collections import defaultdict
@@ -18,11 +18,14 @@ from ramstk.analyses.criticality import (
     calculate_mode_criticality,
     calculate_mode_hazard_rate,
 )
-from ramstk.models import RAMSTKBaseTable, RAMSTKModeRecord
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKModeRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKModeTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Mode data manager."""
+    """Contain the attributes and methods of the RAMSTKMode table model."""
 
     # Define private dictionary class attributes.
 

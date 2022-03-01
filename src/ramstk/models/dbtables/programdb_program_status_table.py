@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.program_status.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_program_status_table.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Program Status Table Model."""
+"""RAMSTKProgramStatus Table Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -14,8 +15,9 @@ from typing import Any, Dict, List, Type
 import pandas as pd
 from pubsub import pub
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKProgramStatusRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKProgramStatusRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKProgramStatusTable(RAMSTKBaseTable):
@@ -78,7 +80,7 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
         _new_record.status_id = self.last_id + 1
         _new_record.date_status = date.today()
 
-        self._dic_status[_new_record.date_status] = _new_record.status_id
+        self._dic_status[_new_record.date_status] = self.last_id + 1  # type: ignore
 
         return _new_record
 
@@ -125,13 +127,13 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
                     "time_remaining": time_remaining,
                 }
             )
-            _node_id = self.last_id
+            _node_id = self.last_id  # type: ignore
 
         self.do_set_attributes(
-            node_id=_node_id, package={"cost_remaining": cost_remaining}
+            node_id=_node_id, package={"cost_remaining": cost_remaining}  # type: ignore
         )
         self.do_set_attributes(
-            node_id=_node_id, package={"time_remaining": time_remaining}
+            node_id=_node_id, package={"time_remaining": time_remaining}  # type: ignore
         )
 
-        self.do_update(_node_id)
+        self.do_update(_node_id)  # type: ignore

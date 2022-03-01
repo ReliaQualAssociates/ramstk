@@ -1,11 +1,12 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.similar_item.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_similar_item_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Similar Item Table Model."""
+"""RAMSTKSimilarItem Table Model."""
 
 # Standard Library Imports
 from collections import OrderedDict
@@ -16,8 +17,11 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import similaritem
-from ramstk.models import RAMSTKBaseTable, RAMSTKSimilarItemRecord
 from ramstk.views.gtk3 import _
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKSimilarItemRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKSimilarItemTable(RAMSTKBaseTable):

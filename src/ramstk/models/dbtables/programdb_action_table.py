@@ -1,30 +1,32 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.opstress.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_action_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Operating Stress Package Data Controller."""
+"""RAMSTKAction Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKOpStressRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKActionRecord
+from .basetable import RAMSTKBaseTable
 
 
-class RAMSTKOpStressTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the OpStress data manager."""
+class RAMSTKActionTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the FMEA Action data manager."""
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_opstress_id"
-    _db_tablename = "ramstk_op_stress"
+    _db_id_colname = "fld_action_id"
+    _db_tablename = "ramstk_action"
+    _deprecated = False
     _select_msg = "selected_revision"
-    _tag = "opstress"
+    _tag = "action"
 
     # Define public dictionary class attributes.
 
@@ -33,7 +35,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a OpStress data manager instance."""
+        """Initialize a FMEA Action data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -44,19 +46,19 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
             "hardware_id",
             "mode_id",
             "mechanism_id",
-            "opload_id",
-            "opstress_id",
+            "cause_id",
+            "action_id",
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKOpStressRecord] = RAMSTKOpStressRecord
+        self._record: Type[RAMSTKActionRecord] = RAMSTKActionRecord
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "opstress_id"
+        self.pkey = "action_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -74,7 +76,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
         _new_record.hardware_id = attributes["hardware_id"]
         _new_record.mode_id = attributes["mode_id"]
         _new_record.mechanism_id = attributes["mechanism_id"]
-        _new_record.opload_id = attributes["opload_id"]
-        _new_record.opstress_id = self.last_id + 1
+        _new_record.cause_id = attributes["cause_id"]
+        _new_record.action_id = self.last_id + 1
 
         return _new_record

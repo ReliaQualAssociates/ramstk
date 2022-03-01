@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.hazard.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_hazard_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hazard Package Table Model."""
+"""RAMSTKHazard Table Model."""
 
 # Standard Library Imports
 from collections import OrderedDict
@@ -15,7 +15,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import fha
-from ramstk.models import RAMSTKBaseTable, RAMSTKHazardRecord
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKHazardRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKHazardTable(RAMSTKBaseTable):

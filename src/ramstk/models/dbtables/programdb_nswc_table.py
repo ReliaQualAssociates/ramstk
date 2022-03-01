@@ -1,21 +1,22 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.hardware.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_nswc_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hardware Package Table Model."""
+"""RAMSTKNSWC Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKHardwareRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKNSWCRecord
+from .basetable import RAMSTKBaseTable
 
 
-class RAMSTKHardwareTable(RAMSTKBaseTable):
-    """Contain attributes and methods of the Hardware table model."""
+class RAMSTKNSWCTable(RAMSTKBaseTable):
+    """Contain attributes and methods of the NSWC table model."""
 
     # Define private dictionary class attributes.
 
@@ -23,9 +24,9 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
 
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
-    _db_tablename = "ramstk_hardware"
+    _db_tablename = "ramstk_nswc"
     _select_msg = "selected_revision"
-    _tag = "hardware"
+    _tag = "nswc"
 
     # Define public dictionary class attributes.
 
@@ -34,7 +35,7 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Hardware table model instance."""
+        """Initialize a NSWC table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -49,7 +50,7 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
 
         # Initialize private scalar attributes.
         # This is the record class associated with the table being modelled.
-        self._record: Type[RAMSTKHardwareRecord] = RAMSTKHardwareRecord
+        self._record: Type[RAMSTKNSWCRecord] = RAMSTKNSWCRecord
 
         # Initialize public dictionary attributes.
 
@@ -69,14 +70,8 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
-            "parent_id"
-        ]
-
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.hardware_id = self.last_id + 1
-        _new_record.parent_id = attributes["parent_id"]
-        _new_record.part = attributes["part"]
 
         return _new_record

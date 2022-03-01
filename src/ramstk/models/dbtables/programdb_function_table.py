@@ -1,31 +1,31 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.design_mechanic.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_function_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Design Mechanic Package Table Model."""
+"""RAMSTKFunction Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKDesignMechanicRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKFunctionRecord
+from .basetable import RAMSTKBaseTable
 
 
-class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
-    """Contain attributes and methods of the Design Mechanic table model."""
+class RAMSTKFunctionTable(RAMSTKBaseTable):
+    """Contain the attributes and methods of the Function table model."""
 
     # Define private dictionary class attributes.
 
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _db_id_colname = "fld_hardware_id"
-    _db_tablename = "ramstk_design_mechanic"
+    _db_id_colname = "fld_function_id"
+    _db_tablename = "ramstk_function"
     _select_msg = "selected_revision"
-    _tag = "design_mechanic"
+    _tag = "function"
 
     # Define public dictionary class attributes.
 
@@ -34,7 +34,7 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Design Mechanic table model instance."""
+        """Initialize a Function data manager instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -42,20 +42,20 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         # Initialize private list attributes.
         self._lst_id_columns = [
             "revision_id",
-            "hardware_id",
+            "function_id",
             "parent_id",
             "record_id",
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKDesignMechanicRecord] = RAMSTKDesignMechanicRecord
+        self._record: Type[RAMSTKFunctionRecord] = RAMSTKFunctionRecord
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.pkey = "hardware_id"
+        self.pkey = "function_id"
 
         # Subscribe to PyPubSub messages.
 
@@ -68,8 +68,13 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
+            "parent_id"
+        ]
+
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
-        _new_record.hardware_id = self.last_id + 1
+        _new_record.function_id = self.last_id + 1
+        _new_record.parent_id = attributes["parent_id"]
 
         return _new_record

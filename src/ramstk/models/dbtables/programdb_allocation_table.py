@@ -1,11 +1,12 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.allocation.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_allocation_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Allocation Package Table Model."""
+"""RAMSTKAllocation Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Tuple, Type
@@ -15,7 +16,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import allocation
-from ramstk.models import RAMSTKAllocationRecord, RAMSTKBaseTable
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKAllocationRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKAllocationTable(RAMSTKBaseTable):

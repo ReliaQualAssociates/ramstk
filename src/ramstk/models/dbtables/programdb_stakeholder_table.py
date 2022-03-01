@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.stakeholder.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_stakeholder_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Stakeholder Table Model."""
+"""RAMSTKStakeholder Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
@@ -14,7 +15,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import improvementfactor
-from ramstk.models import RAMSTKBaseTable, RAMSTKStakeholderRecord
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKStakeholderRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKStakeholderTable(RAMSTKBaseTable):

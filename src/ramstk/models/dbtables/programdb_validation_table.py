@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.validation.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_validation_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Validation Table Model."""
+"""RAMSTKValidation Table Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -14,8 +15,9 @@ from typing import Any, Dict, Type
 import pandas as pd
 from pubsub import pub
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKValidationRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKValidationRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKValidationTable(RAMSTKBaseTable):

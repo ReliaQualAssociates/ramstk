@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.requirement.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_requirement_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Requirement Table Model."""
+"""RAMSTKRequirement Table Model."""
 
 # Standard Library Imports
 import inspect
@@ -13,8 +14,9 @@ from typing import Any, Dict, Type
 # Third Party Imports
 from pubsub import pub
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKRequirementRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKRequirementRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKRequirementTable(RAMSTKBaseTable):

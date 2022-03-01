@@ -1,21 +1,23 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.milhdbk217f.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_design_mechanic_table.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""MIL-HDBK-217F Package Table Model."""
+"""RAMSTKDesignMechanic Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKMilHdbk217FRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKDesignMechanicRecord
+from .basetable import RAMSTKBaseTable
 
 
-class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
-    """Contain attributes and methods of the MIL-HDBK-217F table model."""
+class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
+    """Contain attributes and methods of the Design Mechanic table model."""
 
     # Define private dictionary class attributes.
 
@@ -23,9 +25,9 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
 
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
-    _db_tablename = "ramstk_mil_hdbk_f"
+    _db_tablename = "ramstk_design_mechanic"
     _select_msg = "selected_revision"
-    _tag = "milhdbk217f"
+    _tag = "design_mechanic"
 
     # Define public dictionary class attributes.
 
@@ -34,7 +36,7 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a MIL-HDBK-217F table model instance."""
+        """Initialize a Design Mechanic table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -48,8 +50,7 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        # This is the record class associated with the table being modelled.
-        self._record: Type[RAMSTKMilHdbk217FRecord] = RAMSTKMilHdbk217FRecord
+        self._record: Type[RAMSTKDesignMechanicRecord] = RAMSTKDesignMechanicRecord
 
         # Initialize public dictionary attributes.
 

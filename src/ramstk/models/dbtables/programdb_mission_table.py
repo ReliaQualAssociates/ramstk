@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.mission.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_mission_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mission Table Model."""
+"""RAMSTKMission Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKMissionRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKMissionRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKMissionTable(RAMSTKBaseTable):

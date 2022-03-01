@@ -1,17 +1,19 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.program_info.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_program_info_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Preferences Package Data Model."""
+"""RAMSTKProgramInfo Table Model."""
 
 # Standard Library Imports
 from typing import Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKProgramInfoRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKProgramInfoRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKProgramInfoTable(RAMSTKBaseTable):

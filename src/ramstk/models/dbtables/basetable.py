@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Metaclasses for the database Table models."""
+"""Metaclass for the database Table models."""
 
 # Standard Library Imports
 import inspect
@@ -36,6 +36,12 @@ def do_clear_tree(tree: treelib.Tree) -> treelib.Tree:
 
 class RAMSTKBaseTable:
     """Metaclass for all RAMSTK Table Models.
+
+    :cvar _db_id_colname: the name of the primary key column in the database.
+    :cvar _db_tablename: the name of the database table.
+    :cvar _root: the root node in the Treelib.tree; nominally 0.
+    :cvar _select_msg: the message to listen for to call the do_select_all() method.
+    :cvar _tag: the
 
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
         module being modeled.
@@ -165,12 +171,10 @@ class RAMSTKBaseTable:
                 ),
             )
 
-    def do_get_attributes(self, node_id: int, table: str = "") -> None:
+    def do_get_attributes(self, node_id: int) -> None:
         """Retrieve the RAMSTK data table attributes for node ID.
 
-        :param node_id: the node ID in the treelib Tree to get the
-            attributes for.
-        :param table: the RAMSTK data table to retrieve the attributes from.
+        :param node_id: the node ID in the treelib Tree to get the attributes for.
         :return: None
         :rtype: None
         """
@@ -371,8 +375,7 @@ class RAMSTKBaseTable:
     def do_set_attributes_all(self, attributes: Dict[str, Any]) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
-        :param attributes: the aggregate attributes dict for the allocation
-            item.
+        :param attributes: the aggregate attribute dict for the allocation item.
         :return: None
         :rtype: None
         """

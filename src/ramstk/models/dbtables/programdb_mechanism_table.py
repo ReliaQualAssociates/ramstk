@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.mechanism.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_mechanism_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Failure Mechanism Table Model."""
+"""RAMSTKMechanism Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
@@ -14,7 +15,10 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses import criticality
-from ramstk.models import RAMSTKBaseTable, RAMSTKMechanismRecord
+
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKMechanismRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKMechanismTable(RAMSTKBaseTable):

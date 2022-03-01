@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.control.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_control_table.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Control Table Record."""
+"""RAMSTKControl Table Model."""
 
 # Standard Library Imports
 from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKControlRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKControlRecord
+from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKControlTable(RAMSTKBaseTable):

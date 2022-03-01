@@ -1,21 +1,23 @@
 # pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.reliability.table.py is part of The RAMSTK Project
+#       ramstk.models.dbtables.programdb_milhdbk217f_table.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Reliability Package Table Model."""
+"""RAMSTKMILHDBK217F Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type, Union
+from typing import Any, Dict, Type
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseTable, RAMSTKReliabilityRecord
+# RAMSTK Local Imports
+from ..dbrecords import RAMSTKMilHdbk217FRecord
+from .basetable import RAMSTKBaseTable
 
 
-class RAMSTKReliabilityTable(RAMSTKBaseTable):
-    """Contain attributes and methods of the Reliability table model."""
+class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
+    """Contain attributes and methods of the MIL-HDBK-217F table model."""
 
     # Define private dictionary class attributes.
 
@@ -23,9 +25,9 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
 
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
-    _db_tablename = "ramstk_reliability"
+    _db_tablename = "ramstk_mil_hdbk_f"
     _select_msg = "selected_revision"
-    _tag = "reliability"
+    _tag = "milhdbk217f"
 
     # Define public dictionary class attributes.
 
@@ -34,7 +36,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     # Define public scalar class attributes.
 
     def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Reliability table model instance."""
+        """Initialize a MIL-HDBK-217F table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -48,7 +50,8 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[RAMSTKReliabilityRecord] = RAMSTKReliabilityRecord
+        # This is the record class associated with the table being modelled.
+        self._record: Type[RAMSTKMilHdbk217FRecord] = RAMSTKMilHdbk217FRecord
 
         # Initialize public dictionary attributes.
 
@@ -60,7 +63,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Union[float, int, str]]
+        self, attributes: Dict[str, Any]
     ) -> object:
         """Gets a new record instance with attributes set.
 
