@@ -18,7 +18,8 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.models import RAMSTKCommonDB, RAMSTKSiteInfoRecord
+from ramstk.models.db import RAMSTKCommonDB
+from ramstk.models.dbrecords import RAMSTKSiteInfoRecord
 
 
 @pytest.fixture(scope="class")

@@ -6,7 +6,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKLoadHistoryRecord
+from ramstk.models.dbrecords import RAMSTKLoadHistoryRecord
 
 
 @pytest.fixture

@@ -22,5 +22,6 @@ from .commondb_rpn_table import RAMSTKRPNTable
 from .commondb_site_info_table import RAMSTKSiteInfoTable
 from .commondb_stakeholders_table import RAMSTKStakeholdersTable
 from .commondb_status_table import RAMSTKStatusTable
+from .commondb_subcategory_table import RAMSTKSubCategoryTable
 from .commondb_type_table import RAMSTKTypeTable
 from .commondb_user_table import RAMSTKUserTable

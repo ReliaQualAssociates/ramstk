@@ -22,12 +22,8 @@ from sqlalchemy.orm.exc import UnmappedInstanceError
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import (
-    RAMSTKFunctionRecord,
-    RAMSTKManufacturerRecord,
-    RAMSTKRevisionRecord,
-    RAMSTKSiteInfoRecord,
-)
+from ramstk.models import RAMSTKFunctionRecord, RAMSTKRevisionRecord
+from ramstk.models.dbrecords import RAMSTKManufacturerRecord, RAMSTKSiteInfoRecord
 
 TEMPDIR = tempfile.gettempdir()
 
