@@ -1,11 +1,12 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.program_status.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_program_status_record.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Program Status Record Model."""
+"""RAMSTKProgramStatus Record Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -15,7 +16,9 @@ from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):

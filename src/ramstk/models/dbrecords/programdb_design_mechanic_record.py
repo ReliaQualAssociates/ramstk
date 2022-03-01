@@ -1,18 +1,21 @@
 # pylint: disable=duplicate-code, too-many-instance-attributes
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.design_mechanic.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_design_mechanic_record.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKDesignMechanic Table Module."""
+"""RAMSTKDesignMechanic Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):

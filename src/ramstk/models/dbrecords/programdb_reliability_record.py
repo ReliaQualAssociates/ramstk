@@ -1,7 +1,8 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.reliability.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_reliability_record.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -19,7 +20,9 @@ from ramstk.analyses import dormancy
 from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.analyses.statistics import exponential, lognormal, normal, weibull
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
@@ -403,7 +406,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         self.hazard_rate_active = (
             (self.hazard_rate_active + self.add_adj_factor)
             * self.mult_adj_factor
-            * (attributes["duty_cycle"] / 100.0)
+            * (attributes["duty_cycle"] / 100.0)  # type: ignore
             * attributes["quantity"]
             / multiplier
         )
@@ -494,7 +497,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
     def do_predict_active_hazard_rate(
         self, attributes: Dict[str, Union[float, int, str]]
     ) -> float:
-        """Request that the hazard rate prediction be performed.
+        """Perform the hazard rate prediction.
 
         :param attributes: the aggregate attribute dict for the Hardware ID
             associated with the record.
@@ -502,7 +505,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
         :rtype: None
         """
         return (
-            milhdbk217f.do_predict_active_hazard_rate(**attributes)
+            milhdbk217f.do_predict_active_hazard_rate(**attributes)  # type: ignore
             if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]
             else 0.0
         )

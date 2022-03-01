@@ -1,11 +1,12 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.mission_phase.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_mission_phase_record.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Mission Phase Record Model."""
+"""RAMSTKMissionPhase Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
@@ -13,7 +14,9 @@ from sqlalchemy.orm import relationship
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):

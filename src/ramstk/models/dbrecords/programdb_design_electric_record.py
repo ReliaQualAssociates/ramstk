@@ -1,11 +1,12 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.design_electric.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_design_electric_record.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKDesignElectric Table Module."""
+"""RAMSTKDesignElectric Record Model."""
 
 # Standard Library Imports
 from typing import Dict, List, Tuple, Union
@@ -17,8 +18,10 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
 from ramstk.views.gtk3 import _
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 def do_check_overstress(

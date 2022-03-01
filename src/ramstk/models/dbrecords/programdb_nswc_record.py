@@ -1,18 +1,20 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.nswc.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_nswc_record.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKNSWC Table Module."""
+"""RAMSTKNSWC Record Model."""
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKNSWCRecord(RAMSTK_BASE, RAMSTKBaseRecord):

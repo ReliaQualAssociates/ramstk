@@ -1,11 +1,11 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.hazard.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_hazard_record.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hazard Package Record Model."""
+"""RAMSTKHazard Record Model."""
 
 # Standard Library Imports
 from typing import Any, Dict
@@ -15,7 +15,9 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):

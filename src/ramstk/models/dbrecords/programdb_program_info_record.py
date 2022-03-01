@@ -1,12 +1,12 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.RAMSTKProgramImfo.py is part of The RAMSTK
+#       ramstk.models.dbrecords.programdb_program_info_record.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""RAMSTKProgramInfo Table Module."""
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""RAMSTKProgramInfo Record Model."""
 
 # Standard Library Imports
 from datetime import date
@@ -16,7 +16,9 @@ from sqlalchemy import Column, Date, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):

@@ -1,11 +1,12 @@
 # pylint: disable=duplicate-code
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.failure_definition.record.py is part of The RAMSTK Project
+#       ramstk.models.dbrecords.programdb_failure_definition_record.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Failure Definition Record Model."""
+"""RAMSTKFailureDefinition Record Model."""
 
 # Standard Library Imports
 from typing import Dict, Union
@@ -15,7 +16,9 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.db import RAMSTK_BASE
-from ramstk.models import RAMSTKBaseRecord
+
+# RAMSTK Local Imports
+from .baserecord import RAMSTKBaseRecord
 
 
 class RAMSTKFailureDefinitionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
