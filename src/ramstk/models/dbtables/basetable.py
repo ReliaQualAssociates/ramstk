@@ -4,11 +4,11 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Metaclass for the database Table models."""
+"""Metaclass for the database table models."""
 
 # Standard Library Imports
-import inspect
-from typing import Any, Callable, Dict, List, Type
+from datetime import date
+from typing import Any, Callable, Dict, List, Type, Union
 
 # Third Party Imports
 import treelib
@@ -41,11 +41,20 @@ class RAMSTKBaseTable:
     :cvar _db_tablename: the name of the database table.
     :cvar _root: the root node in the Treelib.tree; nominally 0.
     :cvar _select_msg: the message to listen for to call the do_select_all() method.
-    :cvar _tag: the
+    :cvar _tag: the name of the RAMSTK work flow module.  This is the same for all
+        classes associated with the work flow module.
 
+    :ivar _lst_id_columns: the list of column names in the database table that
+        contain an ID value.  These are generally primary and/or foreign key columns.
+    :ivar _parent_id: the ID of the parent object in a hierarchical structure such as a
+        hardware BoM.
+    :ivar _record: the database record model object associated with the table model.
+    :ivar _revision_id: the ID of the revision that is currently selected.
+    :ivar dao: the instanace of the RAMSTK Program database model.
+    :ivar last_id: the last ID number used in the database table.
+    :ivar pkey: the name of the primary key column for the database table.
     :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
         module being modeled.
-    :type tree: :class:`treelib.Tree`
     """
 
     # Define private dictionary class attributes.
@@ -68,11 +77,10 @@ class RAMSTKBaseTable:
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize an RAMSTK data model instance."""
+
         # Initialize private dictionary attributes.
-        self._fkey: Dict[str, int] = {}
-        self._pkey: Dict[str, List[str]] = {}
 
         # Initialize private list attributes.
         self._lst_id_columns: List[str] = []
@@ -91,7 +99,9 @@ class RAMSTKBaseTable:
         self.last_id: int = 0
         self.pkey: str = ""
         self.tree: treelib.Tree = treelib.Tree()
-        self.do_get_new_record: Callable[[Dict[str, Any]], object]
+        self.do_get_new_record: Callable[
+            [Dict[str, Union[date, float, int, str]]], object
+        ]
 
         # Add the root to the Tree().  This is necessary to allow multiple
         # entries at the top level as there can only be one root in a treelib
@@ -204,7 +214,7 @@ class RAMSTKBaseTable:
         )
 
     def do_insert(
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> None:  # sourcery skip: extract-method
         """Add a new record to the RAMSTK program database and records tree.
 
@@ -212,8 +222,6 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
-        _method_name = inspect.currentframe().f_code.co_name  # type: ignore
-
         try:
             _record = self.do_get_new_record(attributes)
             for _id in self._lst_id_columns:
@@ -237,14 +245,12 @@ class RAMSTKBaseTable:
                 tree=self.tree,
             )
         except DataAccessError as _error:
-            _error_msg = f"{_method_name}: {_error.msg}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=str(_error.msg),
             )
         except NodeIDAbsentError as _error:
-            _error_msg = f"{_method_name}: {_error}"
             pub.sendMessage(
                 "do_log_debug",
                 logger_name="DEBUG",
@@ -279,7 +285,7 @@ class RAMSTKBaseTable:
 
         return _entity
 
-    def do_select_all(self, attributes: Dict[str, Any]) -> None:
+    def do_select_all(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Retrieve all the records from the RAMSTK Program database.
 
         :param attributes: the attribute dict for the selected record.
@@ -291,10 +297,10 @@ class RAMSTKBaseTable:
         # See ISSUE #1000
         if self._deprecated:
             try:
-                self._revision_id = attributes["revision_id"]
+                self._revision_id = attributes["revision_id"]  # type: ignore
             except KeyError:
                 try:
-                    self._revision_id = attributes["site_id"]
+                    self._revision_id = attributes["site_id"]  # type: ignore
                 except KeyError:
                     self._revision_id = 0
 
@@ -303,7 +309,9 @@ class RAMSTKBaseTable:
         else:
             _keys = [_key for _key in self._lst_id_columns if _key in attributes]
             _values = [
-                attributes[_key] for _key in self._lst_id_columns if _key in attributes
+                attributes[_key]  # type: ignore
+                for _key in self._lst_id_columns
+                if _key in attributes
             ]
 
         for _record in self.dao.do_select_all(
@@ -335,7 +343,9 @@ class RAMSTKBaseTable:
             tree=self.tree,
         )
 
-    def do_set_attributes(self, node_id: int, package: Dict[str, Any]) -> None:
+    def do_set_attributes(
+        self, node_id: int, package: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Set the attributes of the record associated with node ID.
 
         :param node_id: the ID of the record in the RAMSTK Program database
@@ -372,7 +382,9 @@ class RAMSTKBaseTable:
         # noinspection PyUnresolvedReferences
         self.do_get_tree()  # type: ignore
 
-    def do_set_attributes_all(self, attributes: Dict[str, Any]) -> None:
+    def do_set_attributes_all(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
         """Set all the attributes of the record associated with the Module ID.
 
         :param attributes: the aggregate attribute dict for the allocation item.
@@ -381,7 +393,7 @@ class RAMSTKBaseTable:
         """
         for _key in attributes:
             self.do_set_attributes(
-                node_id=attributes[self.pkey],
+                node_id=attributes[self.pkey],  # type: ignore
                 package={_key: attributes[_key]},
             )
 

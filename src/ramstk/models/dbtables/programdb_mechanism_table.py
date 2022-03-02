@@ -8,7 +8,8 @@
 """RAMSTKMechanism Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -22,7 +23,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKMechanismTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Mechanism data manager."""
+    """Contain the attributes and methods of the Mechanism table model."""
 
     # Define private dictionary class attributes.
 
@@ -31,6 +32,7 @@ class RAMSTKMechanismTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mechanism_id"
     _db_tablename = "ramstk_mechanism"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "mechanism"
 
@@ -40,8 +42,8 @@ class RAMSTKMechanismTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a Mechanism data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKMechanism table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -68,8 +70,8 @@ class RAMSTKMechanismTable(RAMSTKBaseTable):
         pub.subscribe(self.do_calculate_rpn, "request_calculate_mechanism_rpn")
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKMechanismRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

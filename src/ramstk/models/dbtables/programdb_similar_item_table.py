@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_similar_item_table.py is part of The RAMSTK
@@ -10,7 +9,8 @@
 
 # Standard Library Imports
 from collections import OrderedDict
-from typing import Any, Callable, Dict, Type
+from datetime import date
+from typing import Callable, Dict, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -25,7 +25,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKSimilarItemTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Similar Item data manager."""
+    """Contain the attributes and methods of the Similar Item table model."""
 
     # Define private dictionary class attributes.
 
@@ -34,6 +34,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_similar_item"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "similar_item"
 
@@ -43,8 +44,8 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a Hardware data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKSimilarItem table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -74,16 +75,17 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             "request_roll_up_change_descriptions",
         )
 
-    def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+    # pylint: disable=method-hidden
+    def do_get_new_record(
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKSimilarItemRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes["parent_id"]
+        self._parent_id = attributes["parent_id"]  # type: ignore
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
@@ -288,7 +290,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         """
         _attributes = self.tree.get_node(node_id).data[self._tag].get_attributes()
 
-        _sia: Dict[str, Any] = OrderedDict(
+        _sia: Dict[str, Union[float, int, str, None]] = OrderedDict(
             {
                 _key: None
                 for _key in [

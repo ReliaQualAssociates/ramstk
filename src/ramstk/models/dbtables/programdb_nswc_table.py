@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_nswc_table.py is part of The RAMSTK Project
@@ -8,7 +7,8 @@
 """RAMSTKNSWC Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKNSWCRecord
@@ -25,6 +25,7 @@ class RAMSTKNSWCTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_nswc"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "nswc"
 
@@ -34,8 +35,8 @@ class RAMSTKNSWCTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a NSWC table model instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKNSWC table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +63,8 @@ class RAMSTKNSWCTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKNSWCRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

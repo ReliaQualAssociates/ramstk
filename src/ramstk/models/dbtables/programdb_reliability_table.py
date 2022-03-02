@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_reliability_table.py is part of The RAMSTK
@@ -9,7 +8,8 @@
 """RAMSTKReliability Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type, Union
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKReliabilityRecord
@@ -26,6 +26,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_reliability"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "reliability"
 
@@ -35,8 +36,8 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Reliability table model instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKReliability table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +63,8 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Union[float, int, str]]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKReliabilityRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

@@ -8,7 +8,8 @@
 """RAMSTKMissionPhase Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKMissionPhaseRecord
@@ -25,6 +26,7 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mission_phase_id"
     _db_tablename = "ramstk_mission_phase"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "mission_phase"
 
@@ -34,8 +36,8 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a RAMSTKMissionPhase data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKMissionPhase table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +64,8 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKMissionPhaseRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

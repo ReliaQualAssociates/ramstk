@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_milhdbk217f_table.py is part of The RAMSTK
@@ -9,7 +8,8 @@
 """RAMSTKMILHDBK217F Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKMilHdbk217FRecord
@@ -26,6 +26,7 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_mil_hdbk_f"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "milhdbk217f"
 
@@ -35,8 +36,8 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a MIL-HDBK-217F table model instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKMILHDBK217F table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -50,7 +51,6 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        # This is the record class associated with the table being modelled.
         self._record: Type[RAMSTKMilHdbk217FRecord] = RAMSTKMilHdbk217FRecord
 
         # Initialize public dictionary attributes.
@@ -63,8 +63,8 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKMilHdbk217FRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

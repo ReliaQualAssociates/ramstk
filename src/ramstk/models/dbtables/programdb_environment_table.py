@@ -8,7 +8,8 @@
 """RAMSTKEnvironment Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKEnvironmentRecord
@@ -16,7 +17,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKEnvironmentTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Environment data manager."""
+    """Contain the attributes and methods of the Environment table model."""
 
     # Define private dictionary class attributes.
 
@@ -25,6 +26,7 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_environment_id"
     _db_tablename = "ramstk_environment"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "environment"
 
@@ -34,8 +36,8 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize an Environment data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize an RAMSTKEnvironment table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -63,8 +65,8 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKEnvironmentRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

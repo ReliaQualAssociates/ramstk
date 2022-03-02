@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_design_mechanic_table.py is part of The
@@ -9,7 +8,8 @@
 """RAMSTKDesignMechanic Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKDesignMechanicRecord
@@ -26,6 +26,7 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_design_mechanic"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "design_mechanic"
 
@@ -35,8 +36,8 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Design Mechanic table model instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKDesignMechanic table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +63,8 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKDesignMechanicRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

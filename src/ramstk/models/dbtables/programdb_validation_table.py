@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Union
 
 # Third Party Imports
 import pandas as pd
@@ -21,7 +21,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKValidationTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Validation data manager."""
+    """Contain the attributes and methods of the Validation table model."""
 
     # Define private dictionary class attributes.
 
@@ -40,8 +40,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Validation data manager instance."""
+    def __init__(self, **kwargs: Dict[Any, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKValidation table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -73,9 +73,10 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
             "request_calculate_all_validation_tasks",
         )
 
-    def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+    # pylint: disable=method-hidden
+    def do_get_new_record(
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKValidationRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

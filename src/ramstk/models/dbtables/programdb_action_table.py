@@ -7,7 +7,8 @@
 """RAMSTKAction Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKActionRecord
@@ -15,7 +16,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKActionTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the FMEA Action data manager."""
+    """Contain the attributes and methods of the Action table model."""
 
     # Define private dictionary class attributes.
 
@@ -34,8 +35,8 @@ class RAMSTKActionTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a FMEA Action data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKAction table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -63,8 +64,8 @@ class RAMSTKActionTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKActionRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

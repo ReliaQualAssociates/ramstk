@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_allocation_table.py is part of The RAMSTK
@@ -9,7 +8,8 @@
 """RAMSTKAllocation Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Tuple, Type
+from datetime import date
+from typing import Any, Dict, Tuple, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -23,7 +23,12 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKAllocationTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Allocation data manager."""
+    """Contain the attributes and methods of the Allocation table model.
+
+    :cvar _system_hazard_rate: the hazard rate of the system under analysis.
+
+    :ivar _node_hazard_rate: the hazard rate of the selected node.
+    """
 
     # Define private dictionary class attributes.
 
@@ -32,6 +37,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_allocation"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "allocation"
 
@@ -43,8 +49,8 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a Allocation data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKAllocation table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -90,8 +96,8 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKAllocationRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
@@ -99,7 +105,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         :rtype: None
         """
         # pylint: disable=attribute-defined-outside-init
-        self._parent_id = attributes["parent_id"]
+        self._parent_id = attributes["parent_id"]  # type: ignore
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]

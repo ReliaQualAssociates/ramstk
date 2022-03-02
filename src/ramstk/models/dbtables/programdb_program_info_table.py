@@ -1,4 +1,3 @@
-# pylint: disable=cyclic-import
 # -*- coding: utf-8 -*-
 #
 #       ramstk.models.dbtables.programdb_program_info_table.py is part of The RAMSTK
@@ -9,7 +8,7 @@
 """RAMSTKProgramInfo Table Model."""
 
 # Standard Library Imports
-from typing import Type
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKProgramInfoRecord
@@ -17,11 +16,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKProgramInfoTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Options data manager.
-
-    This class manages the user-configurable Preferences and Options data from
-    the Site and Program databases.
-    """
+    """Contain the attributes and methods of the Program Info table model."""
 
     # Define private dict class attributes.
 
@@ -30,6 +25,7 @@ class RAMSTKProgramInfoTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_revision_id"
     _db_tablename = "ramstk_program_info"
+    _deprecated = False
     _select_msg = "request_program_preferences"
     _tag = "preference"
 
@@ -39,8 +35,8 @@ class RAMSTKProgramInfoTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs) -> None:
-        """Initialize a Options data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKProgramInfo table model instance."""
         RAMSTKBaseTable.__init__(self, **kwargs)
 
         # Initialize private dictionary attributes.

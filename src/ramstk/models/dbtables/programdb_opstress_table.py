@@ -7,7 +7,8 @@
 """RAMSTKOpStress Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKOpStressRecord
@@ -15,7 +16,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKOpStressTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the OpStress data manager."""
+    """Contain the attributes and methods of the OpStress table model."""
 
     # Define private dictionary class attributes.
 
@@ -24,6 +25,7 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_opstress_id"
     _db_tablename = "ramstk_op_stress"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "opstress"
 
@@ -33,8 +35,8 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a OpStress data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RaMSTKOpStress table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +64,8 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKOpStressRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

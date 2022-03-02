@@ -7,7 +7,8 @@
 """RAMSTKOpLoad Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKOpLoadRecord
@@ -15,10 +16,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKOpLoadTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the OpLoad data manager.
-
-    This class manages the OpLoad data from the RAMSTKOpLoad data model.
-    """
+    """Contain the attributes and methods of the OpLoad table model."""
 
     # Define private dictionary class attributes.
 
@@ -27,6 +25,7 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_opload_id"
     _db_tablename = "ramstk_op_load"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "opload"
 
@@ -36,8 +35,8 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a OpLoad data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKOpLoad table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -64,8 +63,8 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKOpLoadRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

@@ -7,7 +7,8 @@
 """RAMSTKRevision Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKRevisionRecord
@@ -24,6 +25,7 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_revision_id"
     _db_tablename = "ramstk_revision"
+    _deprecated = False
     _select_msg = "request_retrieve_revisions"
     _tag = "revision"
 
@@ -33,8 +35,8 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Revision table model instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKRevision table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -56,9 +58,10 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
 
-    def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]  # pylint: disable=unused-argument
-    ) -> object:
+    # pylint: disable=unused-argument, disable=method-hidden
+    def do_get_new_record(
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKRevisionRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

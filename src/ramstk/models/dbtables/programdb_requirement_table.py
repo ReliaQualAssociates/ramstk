@@ -9,7 +9,8 @@
 
 # Standard Library Imports
 import inspect
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -20,7 +21,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKRequirementTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Requirement data manager."""
+    """Contain the attributes and methods of the Requirement table model."""
 
     # Define private dictionary class attributes.
 
@@ -29,6 +30,7 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_requirement_id"
     _db_tablename = "ramstk_requirement"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "requirement"
 
@@ -38,8 +40,8 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Requirement data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKRequirement table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -100,17 +102,16 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
                 )
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKRequirementRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
-        self._parent_id = attributes[  # pylint: disable=attribute-defined-outside-init
-            "parent_id"
-        ]
+        # pylint: disable=attribute-defined-outside-init
+        self._parent_id = attributes["parent_id"]  # type: ignore
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]

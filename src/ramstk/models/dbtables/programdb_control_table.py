@@ -7,7 +7,8 @@
 """RAMSTKControl Table Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKControlRecord
@@ -15,7 +16,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKControlTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the FMEA Control data manager."""
+    """Contain the attributes and methods of the Control table model."""
 
     # Define private dictionary class attributes.
 
@@ -24,6 +25,7 @@ class RAMSTKControlTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_control_id"
     _db_tablename = "ramstk_control"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "control"
 
@@ -33,8 +35,8 @@ class RAMSTKControlTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a FMEA Control data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKControl table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -62,8 +64,8 @@ class RAMSTKControlTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKControlRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.

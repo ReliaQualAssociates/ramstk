@@ -8,7 +8,8 @@
 
 # Standard Library Imports
 from collections import OrderedDict
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -22,7 +23,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKHazardTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the Hazard data manager."""
+    """Contain the attributes and methods of the Hazard table model."""
 
     # Define private dictionary class attributes.
 
@@ -31,6 +32,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hazard_id"
     _db_tablename = "ramstk_hazard_analysis"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "hazard"
 
@@ -40,8 +42,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
-        """Initialize a Hazard data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKHazard table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -69,7 +71,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
         pub.subscribe(self.do_calculate_fha, "request_calculate_fha")
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
+        self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKHazardRecord:
         """Gets a new record instance with attributes set.
 

@@ -8,7 +8,8 @@
 
 # Standard Library Imports
 from collections import defaultdict
-from typing import Any, Dict, Type
+from datetime import date
+from typing import Dict, Type, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -25,7 +26,7 @@ from .basetable import RAMSTKBaseTable
 
 
 class RAMSTKModeTable(RAMSTKBaseTable):
-    """Contain the attributes and methods of the RAMSTKMode table model."""
+    """Contain the attributes and methods of the Mode table model."""
 
     # Define private dictionary class attributes.
 
@@ -34,6 +35,7 @@ class RAMSTKModeTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mode_id"
     _db_tablename = "ramstk_mode"
+    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "mode"
 
@@ -43,8 +45,8 @@ class RAMSTKModeTable(RAMSTKBaseTable):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[str, Any]) -> None:
-        """Initialize a Mode data manager instance."""
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
+        """Initialize a RAMSTKMode table model instance."""
         super().__init__(**kwargs)
 
         # Initialize private dictionary attributes.
@@ -70,8 +72,8 @@ class RAMSTKModeTable(RAMSTKBaseTable):
         pub.subscribe(self.do_calculate_criticality, "request_calculate_criticality")
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Any]
-    ) -> object:
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> RAMSTKModeRecord:
         """Gets a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
