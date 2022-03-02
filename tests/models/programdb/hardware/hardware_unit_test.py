@@ -19,9 +19,9 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
-from ramstk.models import RAMSTKHardwareBoMView
 from ramstk.models.dbrecords import RAMSTKHardwareRecord
 from ramstk.models.dbtables import RAMSTKHardwareTable
+from ramstk.models.dbviews import RAMSTKHardwareBoMView
 
 
 @pytest.fixture(scope="function")

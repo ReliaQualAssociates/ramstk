@@ -14,7 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKPoFView
 from ramstk.models.dbrecords import (
     RAMSTKMechanismRecord,
     RAMSTKOpLoadRecord,
@@ -27,6 +26,7 @@ from ramstk.models.dbtables import (
     RAMSTKOpStressTable,
     RAMSTKTestMethodTable,
 )
+from ramstk.models.dbviews import RAMSTKPoFView
 
 
 @pytest.fixture(scope="class")

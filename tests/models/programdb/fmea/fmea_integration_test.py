@@ -14,7 +14,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKFMEAView
 from ramstk.models.dbrecords import (
     RAMSTKActionRecord,
     RAMSTKCauseRecord,
@@ -29,6 +28,7 @@ from ramstk.models.dbtables import (
     RAMSTKMechanismTable,
     RAMSTKModeTable,
 )
+from ramstk.models.dbviews import RAMSTKFMEAView
 
 TEST_IDS = {
     "mode": "6",

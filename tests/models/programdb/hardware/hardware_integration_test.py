@@ -15,7 +15,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKHardwareBoMView
 from ramstk.models.dbrecords import (
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
@@ -25,6 +24,7 @@ from ramstk.models.dbrecords import (
     RAMSTKReliabilityRecord,
 )
 from ramstk.models.dbtables import RAMSTKHardwareTable
+from ramstk.models.dbviews import RAMSTKHardwareBoMView
 
 
 @pytest.fixture(scope="class")

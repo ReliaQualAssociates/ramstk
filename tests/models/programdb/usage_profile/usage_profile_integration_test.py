@@ -15,7 +15,6 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKUsageProfileView
 from ramstk.models.dbrecords import (
     RAMSTKEnvironmentRecord,
     RAMSTKMissionPhaseRecord,
@@ -26,6 +25,7 @@ from ramstk.models.dbtables import (
     RAMSTKMissionPhaseTable,
     RAMSTKMissionTable,
 )
+from ramstk.models.dbviews import RAMSTKUsageProfileView
 
 
 @pytest.fixture(scope="class")
