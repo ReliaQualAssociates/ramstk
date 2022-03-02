@@ -9,3 +9,4 @@
 
 # RAMSTK Local Imports
 from .common_database import RAMSTKCommonDB
+from .program_database import RAMSTKProgramDB

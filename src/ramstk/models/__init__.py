@@ -6,6 +6,3 @@
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK database models package."""
-
-# RAMSTK Local Imports
-from .programdb.database import RAMSTKProgramDB

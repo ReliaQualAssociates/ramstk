@@ -38,6 +38,7 @@ class RAMSTKProgramDB:
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTK program manager."""
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
