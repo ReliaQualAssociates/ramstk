@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKSimilarItemRecord, RAMSTKSimilarItemTable
+from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
+from ramstk.models.dbtables import RAMSTKSimilarItemTable
 
 
 @pytest.fixture(scope="class")
@@ -435,9 +436,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_similar_item_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_similar_item_attributes", node_id=2, table="similar_item"
-        )
+        pub.sendMessage("request_get_similar_item_attributes", node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_similar_item_attributes"

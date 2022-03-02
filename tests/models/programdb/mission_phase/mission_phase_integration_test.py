@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMissionPhaseRecord, RAMSTKMissionPhaseTable
+from ramstk.models.dbrecords import RAMSTKMissionPhaseRecord
+from ramstk.models.dbtables import RAMSTKMissionPhaseTable
 
 _test_name = "Big test mission phase"
 
@@ -318,9 +319,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_mission_phase_attributes", node_id=1, table="mission_phase"
-        )
+        pub.sendMessage("request_get_mission_phase_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"

@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKStakeholderRecord, RAMSTKStakeholderTable
+from ramstk.models.dbrecords import RAMSTKStakeholderRecord
+from ramstk.models.dbtables import RAMSTKStakeholderTable
 
 
 @pytest.fixture(scope="class")
@@ -321,9 +322,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_stakeholder_attributes", node_id=1, table="stakeholder"
-        )
+        pub.sendMessage("request_get_stakeholder_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"

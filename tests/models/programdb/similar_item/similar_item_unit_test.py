@@ -18,7 +18,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKSimilarItemRecord, RAMSTKSimilarItemTable
+from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
+from ramstk.models.dbtables import RAMSTKSimilarItemTable
 
 test_change_description = "Test change description for factor #1."
 

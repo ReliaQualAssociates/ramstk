@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignElectricRecord, RAMSTKDesignElectricTable
+from ramstk.models.dbrecords import RAMSTKDesignElectricRecord
+from ramstk.models.dbtables import RAMSTKDesignElectricTable
 
 
 @pytest.fixture(scope="class")
@@ -423,10 +424,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_design_electric_attributes"
         )
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="design_electric",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_design_electric_attributes"

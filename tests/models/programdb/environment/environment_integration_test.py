@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKEnvironmentRecord, RAMSTKEnvironmentTable
+from ramstk.models.dbrecords import RAMSTKEnvironmentRecord
+from ramstk.models.dbtables import RAMSTKEnvironmentTable
 
 
 @pytest.fixture(scope="class")
@@ -310,9 +311,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_environment_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_environment_attributes", node_id=1, table="environment"
-        )
+        pub.sendMessage("request_get_environment_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_environment_attributes"

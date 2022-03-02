@@ -3,7 +3,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMilHdbk217FRecord
+from ramstk.models.dbrecords import RAMSTKMilHdbk217FRecord
 
 
 @pytest.fixture()

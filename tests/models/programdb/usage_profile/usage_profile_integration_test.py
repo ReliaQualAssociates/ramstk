@@ -15,14 +15,16 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import (
+from ramstk.models import RAMSTKUsageProfileView
+from ramstk.models.dbrecords import (
     RAMSTKEnvironmentRecord,
-    RAMSTKEnvironmentTable,
     RAMSTKMissionPhaseRecord,
-    RAMSTKMissionPhaseTable,
     RAMSTKMissionRecord,
+)
+from ramstk.models.dbtables import (
+    RAMSTKEnvironmentTable,
+    RAMSTKMissionPhaseTable,
     RAMSTKMissionTable,
-    RAMSTKUsageProfileView,
 )
 
 

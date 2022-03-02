@@ -14,15 +14,17 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import (
+from ramstk.models import RAMSTKPoFView
+from ramstk.models.dbrecords import (
     RAMSTKMechanismRecord,
-    RAMSTKMechanismTable,
     RAMSTKOpLoadRecord,
-    RAMSTKOpLoadTable,
     RAMSTKOpStressRecord,
-    RAMSTKOpStressTable,
-    RAMSTKPoFView,
     RAMSTKTestMethodRecord,
+)
+from ramstk.models.dbtables import (
+    RAMSTKMechanismTable,
+    RAMSTKOpLoadTable,
+    RAMSTKOpStressTable,
     RAMSTKTestMethodTable,
 )
 

@@ -17,7 +17,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKHazardRecord, RAMSTKHazardTable
+from ramstk.models.dbrecords import RAMSTKHazardRecord
+from ramstk.models.dbtables import RAMSTKHazardTable
 
 TEST_PROBS = {
     "A": "Level A - Frequent",

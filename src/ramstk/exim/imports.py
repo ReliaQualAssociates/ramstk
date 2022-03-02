@@ -27,7 +27,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import (
+from ramstk.models.dbrecords import (
     RAMSTKAllocationRecord,
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,

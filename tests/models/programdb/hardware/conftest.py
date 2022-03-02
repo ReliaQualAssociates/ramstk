@@ -4,10 +4,10 @@ from mocks import MockDAO
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.models import (
+from ramstk.models.dbrecords import RAMSTKHardwareRecord
+from ramstk.models.dbtables import (
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
-    RAMSTKHardwareRecord,
     RAMSTKMILHDBK217FTable,
     RAMSTKNSWCTable,
     RAMSTKReliabilityTable,

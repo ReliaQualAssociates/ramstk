@@ -14,7 +14,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKFunctionRecord, RAMSTKFunctionTable
+from ramstk.models.dbrecords import RAMSTKFunctionRecord
+from ramstk.models.dbtables import RAMSTKFunctionTable
 
 
 @pytest.fixture(scope="class")
@@ -350,7 +351,7 @@ class TestGetterSetter:
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_function_attributes")
 
-        test_tablemodel.do_get_attributes(node_id=1, table="function")
+        test_tablemodel.do_get_attributes(node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_function_attributes"

@@ -18,7 +18,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKRequirementRecord, RAMSTKRequirementTable
+from ramstk.models.dbrecords import RAMSTKRequirementRecord
+from ramstk.models.dbtables import RAMSTKRequirementTable
 
 
 @pytest.fixture(scope="class")
@@ -372,9 +373,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_requirement_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_requirement_attributes", node_id=1, table="requirement"
-        )
+        pub.sendMessage("request_get_requirement_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_requirement_attributes"

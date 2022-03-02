@@ -15,16 +15,16 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import (
+from ramstk.models import RAMSTKHardwareBoMView
+from ramstk.models.dbrecords import (
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
-    RAMSTKHardwareBoMView,
     RAMSTKHardwareRecord,
-    RAMSTKHardwareTable,
     RAMSTKMilHdbk217FRecord,
     RAMSTKNSWCRecord,
     RAMSTKReliabilityRecord,
 )
+from ramstk.models.dbtables import RAMSTKHardwareTable
 
 
 @pytest.fixture(scope="class")
@@ -700,10 +700,7 @@ class TestGetterSetter:
         """should return the attributes dict."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hardware_attributes")
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="hardware",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_hardware_attributes"

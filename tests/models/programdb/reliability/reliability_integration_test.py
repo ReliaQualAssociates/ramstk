@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKReliabilityRecord, RAMSTKReliabilityTable
+from ramstk.models.dbrecords import RAMSTKReliabilityRecord
+from ramstk.models.dbtables import RAMSTKReliabilityTable
 
 
 @pytest.fixture(scope="class")
@@ -364,10 +365,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_reliability_attributes"
         )
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="reliability",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_reliability_attributes"

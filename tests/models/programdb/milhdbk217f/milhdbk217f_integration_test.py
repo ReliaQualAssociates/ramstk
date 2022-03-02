@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMilHdbk217FRecord, RAMSTKMILHDBK217FTable
+from ramstk.models.dbrecords import RAMSTKMilHdbk217FRecord
+from ramstk.models.dbtables import RAMSTKMILHDBK217FTable
 
 
 @pytest.fixture(scope="class")
@@ -359,10 +360,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_milhdbk217f_attributes"
         )
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="milhdbk217f",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_milhdbk217f_attributes"

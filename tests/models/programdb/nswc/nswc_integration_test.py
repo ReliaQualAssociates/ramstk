@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKNSWCRecord, RAMSTKNSWCTable
+from ramstk.models.dbrecords import RAMSTKNSWCRecord
+from ramstk.models.dbtables import RAMSTKNSWCTable
 
 
 @pytest.fixture(scope="class")
@@ -360,10 +361,7 @@ class TestGetterSetter:
         """should return the attributes dict."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_nswc_attributes")
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="nswc",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_nswc_attributes")
 

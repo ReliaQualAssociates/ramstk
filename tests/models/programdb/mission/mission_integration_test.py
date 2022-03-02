@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMissionRecord, RAMSTKMissionTable
+from ramstk.models.dbrecords import RAMSTKMissionRecord
+from ramstk.models.dbtables import RAMSTKMissionTable
 
 
 @pytest.fixture(scope="class")
@@ -298,7 +299,7 @@ class TestGetterSetter:
         """_do_get_attributes() should return treelib Tree() on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mission_attributes")
 
-        test_tablemodel.do_get_attributes(1, "mission")
+        test_tablemodel.do_get_attributes(node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_mission_attributes"

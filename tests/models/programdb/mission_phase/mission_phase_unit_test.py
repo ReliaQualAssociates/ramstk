@@ -18,7 +18,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMissionPhaseRecord, RAMSTKMissionPhaseTable
+from ramstk.models.dbrecords import RAMSTKMissionPhaseRecord
+from ramstk.models.dbtables import RAMSTKMissionPhaseTable
 
 
 @pytest.fixture(scope="function")

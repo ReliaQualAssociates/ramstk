@@ -3,7 +3,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKHazardRecord
+from ramstk.models.dbrecords import RAMSTKHazardRecord
 
 TEST_PROBS = {
     "A": "Level A - Frequent",
