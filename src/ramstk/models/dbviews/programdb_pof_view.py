@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.pof.view.py is part of The RAMSTK Project
+#       ramstk.models.dbviews.programdb_pof_view.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Physics of Failure Package View Model."""
+"""Physics of Failure (PoF) View Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseView
+# RAMSTK Local Imports
+from .baseview import RAMSTKBaseView
 
 
 class RAMSTKPoFView(RAMSTKBaseView):
-    """Contain the attributes and methods of the Physics of Failure (PoF) view.
+    """Contain the attributes and methods of the Physics of Failure (PoF) view model.
 
     This class manages the usage profile data from the RAMSTKMechanism,
     RAMSTKOpLoad, RAMSTKOpStress, and RAMSKTTestMethod table models.
@@ -29,7 +29,6 @@ class RAMSTKPoFView(RAMSTKBaseView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _root = 0
     _tag = "pof"
 
     # Define public dictionary class attributes.
@@ -38,7 +37,7 @@ class RAMSTKPoFView(RAMSTKBaseView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a PoF view model instance."""
         super().__init__(**kwargs)
 

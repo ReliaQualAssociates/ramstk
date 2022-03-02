@@ -78,7 +78,7 @@ class RAMSTKBaseTable:
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
     def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
-        """Initialize an RAMSTK data model instance."""
+        """Initialize an RAMSTK table model instance."""
 
         # Initialize private dictionary attributes.
 

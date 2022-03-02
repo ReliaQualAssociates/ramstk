@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.hardware.view.py is part of The RAMSTK Project
+#       ramstk.models.dbviews.programdb_hardware_view.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Hardware Package View Model."""
+"""Hardware BoM View Model."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
 from sqlalchemy.orm.exc import ObjectDeletedError
 from treelib import Tree
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseView
+# RAMSTK Local Imports
+from .baseview import RAMSTKBaseView
 
 
 class RAMSTKHardwareBoMView(RAMSTKBaseView):
-    """Contain the attributes and methods of the Hardware BoM view.
+    """Contain the attributes and methods of the Hardware BoM view model.
 
     This class manages the hardware BoM data from the RAMSTKHardware,
     RAMSTKDesignElectric, RAMSTKDesignMechanic, RAMSTKMilHdbkF, RAMSTKNSWC, and
@@ -39,7 +39,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a Hardware BoM view model instance."""
         super().__init__(**kwargs)
 
@@ -52,7 +52,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             "nswc": self._do_load_nswc,
             "reliability": self._do_load_reliability,
         }
-        self._dic_stress_limits: Dict[int, List[float]] = kwargs.get(
+        self._dic_stress_limits: Dict[int, List[float]] = kwargs.get(  # type: ignore
             "stress_limits",
             {
                 1: [
@@ -157,7 +157,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         ]
 
         # Initialize private scalar attributes.
-        self._hr_multiplier = kwargs.get("hr_multiplier", 1.0)
+        self._hr_multiplier: float = kwargs.get("hr_multiplier", 1.0)  # type: ignore
 
         # Initialize public dictionary attributes.
 
@@ -196,7 +196,7 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         """
         _record = self.tree.get_node(node_id)
 
-        # There are no children for this node or it is using one of the specified
+        # There are no children for this node, or it is using one of the specified
         # hazard rate methods.  The specified methods will ignore the hazard rates of
         # any children.
         if _record.is_leaf() or _record.data["reliability"].hazard_rate_type_id != 1:

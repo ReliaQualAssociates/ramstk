@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.usage_profile.view.py is part of The RAMSTK Project
+#       ramstk.models.dbviews.programdb.usage_profile_view.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Usage Profile Package View Model."""
+"""Usage Profile View Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseView
+# RAMSTK Local Imports
+from .baseview import RAMSTKBaseView
 
 
 class RAMSTKUsageProfileView(RAMSTKBaseView):
-    """Contain the attributes and methods of the Usage Profile view.
+    """Contain the attributes and methods of the Usage Profile view model.
 
     This class manages the usage profile data from the RAMSTKMissionRecord,
     RAMSTKMissionPhase, and RAMSKTEnvironment table models.
@@ -29,7 +30,6 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _root = 0
     _tag = "usage_profile"
 
     # Define public dictionary class attributes.
@@ -38,7 +38,7 @@ class RAMSTKUsageProfileView(RAMSTKBaseView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a usage profile view model instance."""
         super().__init__(**kwargs)
 

@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.fmea.view.py is part of The RAMSTK Project
+#       ramstk.models.dbviews.programdb_fmea_view.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Failure Mode and Effects Analysis (FMEA) Package View Model."""
+"""Failure Mode and Effects Analysis (FMEA) View Model."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
 
-# RAMSTK Package Imports
-from ramstk.models import RAMSTKBaseView
+# RAMSTK Local Imports
+from .baseview import RAMSTKBaseView
 
 
 class RAMSTKFMEAView(RAMSTKBaseView):
-    """Contain the attributes and methods of the FMEA view.
+    """Contain the attributes and methods of the FMEA view model.
 
     This class manages the usage profile data from the RAMSTKMode,
     RAMSTKMechanism, RAMSTKCause, RAMSTKControl, and RAMSKTAction table models.
@@ -38,7 +38,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
 
     # Define public scalar class attributes.
 
-    def __init__(self, **kwargs: Dict[Any, Any]) -> None:
+    def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a FMEA view model instance."""
         super().__init__(**kwargs)
 
@@ -110,7 +110,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
             )
 
             if self._dic_trees["mechanism"].depth() > 0:
-                self._dic_load_functions["mechanism"](  # type: ignore
+                self._dic_load_functions["mechanism"](
                     _mode.mode_id,
                 )
 
@@ -134,7 +134,7 @@ class RAMSTKFMEAView(RAMSTKBaseView):
                 )
 
                 if self._dic_trees["cause"].depth() > 0:
-                    self._dic_load_functions["cause"](  # type: ignore
+                    self._dic_load_functions["cause"](
                         _mechanism.mechanism_id,
                         _node_id,
                     )
@@ -159,13 +159,13 @@ class RAMSTKFMEAView(RAMSTKBaseView):
                 )
 
                 if self._dic_trees["control"].depth() > 0:
-                    self._dic_load_functions["control"](  # type: ignore
+                    self._dic_load_functions["control"](
                         _cause.cause_id,
                         f"{parent_id}.{_cause.cause_id}",
                     )
 
                 if self._dic_trees["action"].depth() > 0:
-                    self._dic_load_functions["action"](  # type: ignore
+                    self._dic_load_functions["action"](
                         _cause.cause_id,
                         f"{parent_id}.{_cause.cause_id}",
                     )
