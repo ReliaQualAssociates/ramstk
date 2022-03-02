@@ -141,6 +141,8 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
         new mission."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -158,6 +160,8 @@ class TestDeleteMethods:
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_tablemodel):
         """_do_delete() should remove the passed mission phase ID."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_delete(1)
 
@@ -186,8 +190,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -200,8 +202,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["phase_start"] == 0.0
 
@@ -213,7 +213,5 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

@@ -125,7 +125,7 @@ class TestSelectMethods:
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_hardware")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_hardware")
 
@@ -144,15 +144,11 @@ class TestSelectMethods:
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
 
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
             test_viewmodel.tree.get_node(1).data["hardware"],
@@ -345,6 +341,7 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert isinstance(
@@ -362,6 +359,7 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 9
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(10) is None
@@ -760,15 +758,11 @@ class TestAnalysisMethods:
     ):
         """should calculate the total power dissipation of a part."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.part = 1
@@ -796,15 +790,11 @@ class TestAnalysisMethods:
     ):
         """should calculate the total power dissipation of an assembly."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(2)
         _hardware.part = 0
@@ -838,15 +828,11 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of a part using MIL-HDBK-217F."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.category_id = 3
@@ -883,15 +869,11 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of an assembly with specified hazard rate.."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.quantity = 1
@@ -920,15 +902,11 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of an assembly with specified MTBF."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(3)
         _hardware.quantity = 1
@@ -958,15 +936,12 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of an assembly by sum of children."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
+
         test_design_electric._dic_stress_limits = (
             test_toml_user_configuration.RAMSTK_STRESS_LIMITS
         )
@@ -1045,36 +1020,11 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of an assembly with specified hazard rate."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_design_mechanic.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_milhdbk217f.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_nswc.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_reliability.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(5)
         _hardware.quantity = 1
@@ -1103,36 +1053,11 @@ class TestAnalysisMethods:
     ):
         """predict the active hazard of an assembly with specified MTBF."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_design_mechanic.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_milhdbk217f.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_nswc.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
-        test_reliability.do_select_all(
-            attributes={
-                "revision_id": 1,
-                "hardware_id": 1,
-            }
-        )
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
 
         _hardware = test_tablemodel.do_select(2)
         _hardware.quantity = 3
@@ -1162,15 +1087,12 @@ class TestAnalysisMethods:
     ):
         """calculate all hardware metrics for a part."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
-        test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
-        )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
+
         test_design_electric._dic_stress_limits = (
             test_toml_user_configuration.RAMSTK_STRESS_LIMITS
         )

@@ -24,13 +24,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKModeTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(
-        attributes={
-            "revision_id": 1,
-            "hardware_id": 1,
-            "mode_id": 1,
-        }
-    )
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -63,7 +57,7 @@ class TestSelectMethods:
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
 

@@ -95,6 +95,8 @@ class TestInsertMethods:
 
         assert test_tablemodel.tree.get_node(3) is None
 
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         assert test_tablemodel.last_id == 3
@@ -107,6 +109,8 @@ class TestInsertMethods:
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
 
         test_attributes["revision_id"] = 40
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")

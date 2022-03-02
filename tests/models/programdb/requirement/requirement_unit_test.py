@@ -191,6 +191,7 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
         new top-level requirement."""
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -209,9 +210,9 @@ class TestInsertMethods:
     def test_do_insert_child(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
         new child requirement."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
+        test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert isinstance(test_tablemodel.tree, Tree)
@@ -234,6 +235,7 @@ class TestDeleteMethods:
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_tablemodel):
         """_do_delete() should send the success message with the treelib Tree."""
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_delete(test_tablemodel.last_id)
 
@@ -302,7 +304,6 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -314,7 +315,6 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["priority"] == 0
 
@@ -325,6 +325,5 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

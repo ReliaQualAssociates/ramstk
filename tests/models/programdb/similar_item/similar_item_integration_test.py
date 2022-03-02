@@ -64,7 +64,7 @@ class TestSelectMethods:
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 

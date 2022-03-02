@@ -90,8 +90,6 @@ def test_attributes():
         "total_mode_count": 0,
         "total_part_count": 0,
         "type_id": 0,
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 

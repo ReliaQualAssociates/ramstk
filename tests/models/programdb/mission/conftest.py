@@ -39,8 +39,6 @@ def test_attributes():
         "description": "New mission",
         "mission_time": 24.0,
         "time_units": "hours",
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 

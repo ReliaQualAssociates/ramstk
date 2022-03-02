@@ -58,7 +58,7 @@ def test_phase(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMissionPhaseTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -82,7 +82,7 @@ def test_environment(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKEnvironmentTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "mission_phase_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -148,10 +148,8 @@ class TestSelectMethods:
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
-            attributes={"revision_id": 1, "mission_phase_id": 1}
-        )
+        test_phase.do_select_all(attributes={"revision_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
             test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
@@ -195,10 +193,8 @@ class TestSelectMethods:
     ):
         """should clear existing nodes from the records tree and then re-populate."""
         test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
-            attributes={"revision_id": 1, "mission_phase_id": 1}
-        )
+        test_phase.do_select_all(attributes={"revision_id": 1})
+        test_environment.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
             test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord

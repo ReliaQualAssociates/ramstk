@@ -175,8 +175,6 @@ def test_attributes():
         "total_part_count": 0,
         "total_power_dissipation": 0.0,
         "year_of_manufacture": 2019,
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 
@@ -197,7 +195,7 @@ def test_design_electric(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignElectricTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -222,7 +220,7 @@ def test_design_mechanic(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignMechanicTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -247,7 +245,7 @@ def test_milhdbk217f(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMILHDBK217FTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -272,7 +270,7 @@ def test_nswc(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKNSWCTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -297,7 +295,7 @@ def test_reliability(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKReliabilityTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 

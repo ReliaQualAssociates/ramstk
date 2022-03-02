@@ -25,7 +25,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKNSWCTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -69,8 +69,8 @@ class TestInsertMethods:
 
     def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(8).data["nswc"], RAMSTKNSWCRecord)
-        assert tree.get_node(8).data["nswc"].hardware_id == 8
+        assert isinstance(tree.get_node(9).data["nswc"], RAMSTKNSWCRecord)
+        assert tree.get_node(9).data["nswc"].hardware_id == 9
         print("\033[36m\nsucceed_insert_nswc topic was broadcast.")
 
     def on_fail_insert_no_hardware(self, error_message):
@@ -87,15 +87,15 @@ class TestInsertMethods:
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_nswc")
 
-        assert test_tablemodel.tree.get_node(8) is None
+        assert test_tablemodel.tree.get_node(9) is None
 
-        test_attributes["hardware_id"] = 8
+        test_attributes["hardware_id"] = 9
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 8
+        test_attributes["record_id"] = 9
         pub.sendMessage("request_insert_nswc", attributes=test_attributes)
 
         assert isinstance(
-            test_tablemodel.tree.get_node(8).data["nswc"],
+            test_tablemodel.tree.get_node(9).data["nswc"],
             RAMSTKNSWCRecord,
         )
 

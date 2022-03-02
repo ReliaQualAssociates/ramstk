@@ -129,6 +129,8 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
         new mission."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -172,8 +174,6 @@ class TestGetterSetter:
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -185,8 +185,6 @@ class TestGetterSetter:
 
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["mission_time"] == 0.0
 
@@ -197,7 +195,5 @@ class TestGetterSetter:
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

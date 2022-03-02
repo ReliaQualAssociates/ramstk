@@ -79,8 +79,6 @@ def test_attributes():
         "ramp_rate": 0.0,
         "low_dwell_time": 0.0,
         "high_dwell_time": 0.0,
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 

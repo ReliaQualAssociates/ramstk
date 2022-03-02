@@ -142,6 +142,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add the new record to the record tree and update the last_id."""
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -194,8 +196,6 @@ class TestGetterSetter:
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -209,8 +209,6 @@ class TestGetterSetter:
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["minimum"] == 0.0
 
@@ -223,7 +221,5 @@ class TestGetterSetter:
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

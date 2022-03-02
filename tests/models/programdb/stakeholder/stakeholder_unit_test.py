@@ -154,6 +154,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_get_new_record(self, test_attributes, test_tablemodel):
         """should return a new record instance with ID fields populated."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         _new_record = test_tablemodel.do_get_new_record(test_attributes)
 
@@ -164,6 +166,8 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -186,6 +190,8 @@ class TestDeleteMethods:
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_tablemodel):
         """should remove the record from the record tree and update last_id."""
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         _last_id = test_tablemodel.last_id
         test_tablemodel.do_delete(test_tablemodel.last_id)
@@ -225,8 +231,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
@@ -239,8 +243,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["overall_weight"] == 0.0
 
@@ -252,8 +254,6 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
-        test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 

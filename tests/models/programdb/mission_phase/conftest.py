@@ -55,8 +55,6 @@ def test_attributes():
         "name": "",
         "phase_start": 0.0,
         "phase_end": 0.0,
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 

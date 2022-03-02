@@ -350,6 +350,7 @@ class TestInsertMethods:
         """should add a new record to the records tree and update last_id."""
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
+        test_attributes["record_id"] = 1
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 4
@@ -444,7 +445,6 @@ class TestGetterSetterMethods:
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.alt_part_number == ""
         assert test_recordmodel.attachments == ""
@@ -490,7 +490,6 @@ class TestGetterSetterMethods:
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         assert test_recordmodel.set_attributes(test_attributes) is None
         assert test_recordmodel.get_attributes()["nsn"] == ""
 
@@ -502,7 +501,6 @@ class TestGetterSetterMethods:
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("parent_id")
-        test_attributes.pop("record_id")
         with pytest.raises(AttributeError):
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 

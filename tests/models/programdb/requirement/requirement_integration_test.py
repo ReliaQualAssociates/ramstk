@@ -110,6 +110,7 @@ class TestInsertMethods:
         new top-level requirement."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
 
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
@@ -121,6 +122,7 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
 
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
@@ -132,6 +134,7 @@ class TestInsertMethods:
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_requirement")
 
         test_attributes["parent_id"] = 32
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_requirement")
@@ -144,6 +147,7 @@ class TestInsertMethods:
 
         test_attributes["revision_id"] = 10
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_requirement", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_requirement")
