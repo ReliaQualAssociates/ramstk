@@ -87,7 +87,7 @@ def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
 
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
     """Create a session to be used with an instance of the BaseDatabase."""
-    engine: Any = create_engine(database)
+    engine: Engine = create_engine(database)
     # deepcode ignore missing~close~connect: engines are disposed
     engine.connect()
 
