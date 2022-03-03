@@ -17,7 +17,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKOpLoadRecord, RAMSTKOpLoadTable
+from ramstk.models.dbrecords import RAMSTKOpLoadRecord
+from ramstk.models.dbtables import RAMSTKOpLoadTable
 
 
 @pytest.fixture(scope="function")

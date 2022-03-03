@@ -19,7 +19,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKValidationRecord, RAMSTKValidationTable
+from ramstk.models.dbrecords import RAMSTKValidationRecord
+from ramstk.models.dbtables import RAMSTKValidationTable
 
 
 @pytest.fixture(scope="class")
@@ -312,9 +313,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_validation_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_validation_attributes", node_id=1, table="validation"
-        )
+        pub.sendMessage("request_get_validation_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_validation_attributes"

@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKHazardRecord, RAMSTKHazardTable
+from ramstk.models.dbrecords import RAMSTKHazardRecord
+from ramstk.models.dbtables import RAMSTKHazardTable
 
 
 @pytest.fixture(scope="class")
@@ -318,10 +319,7 @@ class TestGetterSetter:
         """should return the attributes dict."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_hazard_attributes")
 
-        test_tablemodel.do_get_attributes(
-            node_id=1,
-            table="hazard",
-        )
+        test_tablemodel.do_get_attributes(node_id=1)
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_hazard_attributes")
 

@@ -33,7 +33,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.db.base import BaseDatabase
+from ramstk.models.db import BaseDatabase
 
 _ = gettext.gettext
 

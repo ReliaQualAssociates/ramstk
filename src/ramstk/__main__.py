@@ -19,23 +19,20 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.db import BaseDatabase
 from ramstk.exceptions import DataAccessError
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
-from ramstk.models import (
+from ramstk.models.db import BaseDatabase, RAMSTKCommonDB, RAMSTKProgramDB
+from ramstk.models.dbtables import (
     RAMSTKActionTable,
     RAMSTKAllocationTable,
     RAMSTKCauseTable,
-    RAMSTKCommonDB,
     RAMSTKControlTable,
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
     RAMSTKEnvironmentTable,
     RAMSTKFailureDefinitionTable,
-    RAMSTKFMEAView,
     RAMSTKFunctionTable,
-    RAMSTKHardwareBoMView,
     RAMSTKHardwareTable,
     RAMSTKHazardTable,
     RAMSTKMechanismTable,
@@ -46,8 +43,6 @@ from ramstk.models import (
     RAMSTKNSWCTable,
     RAMSTKOpLoadTable,
     RAMSTKOpStressTable,
-    RAMSTKPoFView,
-    RAMSTKProgramDB,
     RAMSTKProgramInfoTable,
     RAMSTKProgramStatusTable,
     RAMSTKReliabilityTable,
@@ -57,8 +52,13 @@ from ramstk.models import (
     RAMSTKSiteInfoTable,
     RAMSTKStakeholderTable,
     RAMSTKTestMethodTable,
-    RAMSTKUsageProfileView,
     RAMSTKValidationTable,
+)
+from ramstk.models.dbviews import (
+    RAMSTKFMEAView,
+    RAMSTKHardwareBoMView,
+    RAMSTKPoFView,
+    RAMSTKUsageProfileView,
 )
 from ramstk.utilities import file_exists
 from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
@@ -189,8 +189,8 @@ def do_initialize_databases(
     # noinspection PyTypeChecker
     _site_db.common_dao = site_db
     _site_db.dic_tables["options"] = RAMSTKSiteInfoTable()
-    _site_db.dic_tables["options"].dao = site_db
-    _site_db.dic_tables["options"].do_select_all({"site_id": 1})
+    _site_db.dic_tables["options"].dao = site_db  # type: ignore
+    _site_db.dic_tables["options"].do_select_all({"site_id": 1})  # type: ignore
 
     return _program_db, _site_db
 

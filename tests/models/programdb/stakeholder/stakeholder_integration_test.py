@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKStakeholderRecord, RAMSTKStakeholderTable
+from ramstk.models.dbrecords import RAMSTKStakeholderRecord
+from ramstk.models.dbtables import RAMSTKStakeholderTable
 
 
 @pytest.fixture(scope="class")
@@ -94,6 +95,8 @@ class TestInsertMethods:
 
         assert test_tablemodel.tree.get_node(3) is None
 
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         assert test_tablemodel.last_id == 3
@@ -106,6 +109,8 @@ class TestInsertMethods:
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
 
         test_attributes["revision_id"] = 40
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_stakeholder")
@@ -321,9 +326,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_stakeholder_attributes", node_id=1, table="stakeholder"
-        )
+        pub.sendMessage("request_get_stakeholder_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"

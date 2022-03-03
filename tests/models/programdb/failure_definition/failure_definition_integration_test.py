@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKFailureDefinitionRecord, RAMSTKFailureDefinitionTable
+from ramstk.models.dbrecords import RAMSTKFailureDefinitionRecord
+from ramstk.models.dbtables import RAMSTKFailureDefinitionTable
 
 
 @pytest.fixture(scope="class")
@@ -336,7 +337,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_definition_attributes"
         )
 
-        test_tablemodel.do_get_attributes(1, "definition")
+        test_tablemodel.do_get_attributes(node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_definition_attributes"

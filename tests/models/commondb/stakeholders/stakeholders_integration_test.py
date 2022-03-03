@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKStakeholdersRecord, RAMSTKStakeholdersTable
+from ramstk.models.dbrecords import RAMSTKStakeholdersRecord
+from ramstk.models.dbtables import RAMSTKStakeholdersTable
 
 
 @pytest.fixture(scope="class")

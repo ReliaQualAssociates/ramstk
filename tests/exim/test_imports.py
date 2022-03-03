@@ -20,8 +20,8 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
 from ramstk.exim import Import, _do_replace_nan, _get_input_value
+from ramstk.models.db import BaseDatabase
 
 
 @pytest.mark.usefixtures("test_csv_file_function", "test_program_dao")
@@ -108,7 +108,8 @@ class TestImport:
             "PRESS-001",
             "Maintain system pressure.",
             0,
-            "This is a function that is about system pressure.  This remarks box also needs to be larger.",
+            "This is a function that is about system pressure.  This remarks box also "
+            "needs to be larger.",
             1,
             0,
         ]
@@ -119,7 +120,8 @@ class TestImport:
             "FLOW-001",
             "Maintain system flow.",
             0,
-            "These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.",
+            "These are remarks associated with the function FLOW-001.  The remarks "
+            "box needs to be bigger.",
             0,
             0,
         ]
@@ -150,7 +152,8 @@ class TestImport:
             "PRESS-001",
             "Maintain system pressure.",
             0,
-            "This is a function that is about system pressure.  This remarks box also needs to be larger.",
+            "This is a function that is about system pressure.  This remarks box also "
+            "needs to be larger.",
             1,
             0,
         ]
@@ -161,7 +164,8 @@ class TestImport:
             "FLOW-001",
             "Maintain system flow.",
             0,
-            "These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.",
+            "These are remarks associated with the function FLOW-001.  The remarks "
+            "box needs to be bigger.",
             0,
             0,
         ]
@@ -192,7 +196,8 @@ class TestImport:
             "PRESS-001",
             "Maintain system pressure.",
             0,
-            "This is a function that is about system pressure.  This remarks box also needs to be larger.",
+            "This is a function that is about system pressure.  This remarks box also "
+            "needs to be larger.",
             1,
             0,
         ]
@@ -203,7 +208,8 @@ class TestImport:
             "FLOW-001",
             "Maintain system flow.",
             0,
-            "These are remarks associated with the function FLOW-001.  The remarks box needs to be bigger.",
+            "These are remarks associated with the function FLOW-001.  The remarks "
+            "box needs to be bigger.",
             0,
             0,
         ]
@@ -219,7 +225,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_read_db_fields(self):
-        """_do_read_db_fields() should return a list of database fields for the work stream module name passed."""
+        """_do_read_db_fields() should return a list of database fields for the work
+        stream module name passed."""
         pub.subscribe(self.on_succeed_read_db_fields, "succeed_read_db_fields")
 
         DUT = Import()
@@ -230,7 +237,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_function(self, test_csv_file_function):
-        """do_map_field() should return None and create a dictionary with RAMSTKFunction field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKFunction field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_function)
@@ -254,7 +262,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_requirement(self, test_csv_file_requirement):
-        """do_map_field() should return None and create a dictionary with RAMSTKRequirement field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKRequirement field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_requirement)
@@ -283,7 +292,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_hardware(self, test_csv_file_hardware):
-        """do_map_field() should return None and create a dictionary with RAMSTKHardware field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKHardware field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_hardware)
@@ -327,7 +337,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_design_electric(self, test_csv_file_hardware):
-        """do_map_field() should return None and create a dictionary with RAMSTKDesignElectric field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKDesignElectric field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_hardware)
@@ -404,7 +415,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_reliability(self, test_csv_file_hardware):
-        """do_map_field() should return None and create a dictionary with RAMSTKReliability field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKReliability field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_hardware)
@@ -442,7 +454,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_map_field_validation(self, test_csv_file_validation):
-        """do_map_field() should return None and create a dictionary with RAMSTKValidation field mappings."""
+        """do_map_field() should return None and create a dictionary with
+        RAMSTKValidation field mappings."""
         DUT = Import()
 
         DUT._do_read_file("csv", test_csv_file_validation)
@@ -536,7 +549,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test__get_input_value_nan(self, test_csv_file_hardware):
-        """_get_input_value() should return the default value when the input file contains a NaN."""
+        """_get_input_value() should return the default value when the input file
+        contains a NaN."""
         DUT = Import()
         DUT._do_read_file("csv", test_csv_file_hardware)
 
@@ -570,7 +584,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test__get_input_value_key_error(self, test_csv_file_hardware):
-        """_get_input_value() should return the default value when the key passed does not exist."""
+        """_get_input_value() should return the default value when the key passed does
+        not exist."""
         DUT = Import()
         DUT._do_read_file("csv", test_csv_file_hardware)
 
@@ -586,7 +601,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_insert_function(self, test_program_dao, test_csv_file_function):
-        """do_insert() should return a zero error code on success and create a new RAMSTKFunction object with it's attributes set from the external file data."""
+        """do_insert() should return a zero error code on success and create a new
+        RAMSTKFunction object with it's attributes set from the external file data."""
         pub.subscribe(self.on_succeed_import_function, "succeed_import_module")
 
         DUT = Import()
@@ -603,7 +619,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_fail_insert_function(self, test_csv_file_function):
-        """do_insert() should return a zero error code on success and create a new RAMSTKFunction object with it's attributes set from the external file data."""
+        """do_insert() should return a zero error code on success and create a new
+        RAMSTKFunction object with it's attributes set from the external file data."""
         pub.subscribe(self.on_fail_import_function, "fail_import_module")
 
         DUT = Import()
@@ -619,7 +636,9 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_insert_requirement(self, test_program_dao, test_csv_file_requirement):
-        """do_insert() should return a zero error code on success and create a new RAMSTKRequirement object with it's attributes set from the external file data."""
+        """do_insert() should return a zero error code on success and create a new
+        RAMSTKRequirement object with it's attributes set from the external file
+        data."""
         pub.subscribe(self.on_succeed_import_requirement, "succeed_import_module")
 
         DUT = Import()
@@ -636,7 +655,9 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_insert_hardware(self, test_program_dao, test_csv_file_hardware):
-        """do_insert() should return a zero error code on success and create a new RAMSTKHardware, RAMSTKDesignElectric, and RAMSTKReliability object with it's attributes set from the external file data."""
+        """do_insert() should return a zero error code on success and create a new
+        RAMSTKHardware, RAMSTKDesignElectric, and RAMSTKReliability object with it's
+        attributes set from the external file data."""
         pub.subscribe(self.on_succeed_import_hardware, "succeed_import_module")
 
         DUT = Import()
@@ -671,7 +692,8 @@ class TestImport:
 
     @pytest.mark.skip
     def test_do_insert_validation(self, test_program_dao, test_csv_file_validation):
-        """do_insert() should return None on success and create a new RAMSTKValidation object with it's attributes set from the external file data."""
+        """do_insert() should return None on success and create a new RAMSTKValidation
+        object with it's attributes set from the external file data."""
         pub.subscribe(self.on_succeed_import_validation, "succeed_import_module")
 
         DUT = Import()
@@ -688,7 +710,8 @@ class TestImport:
 
     @pytest.mark.unit
     def test_do_insert_unsupported(self, test_program_dao, test_csv_file_validation):
-        """do_insert() should return None when passed a module name that doesn't exist."""
+        """do_insert() should return None when passed a module name that doesn't
+        exist."""
         DUT = Import()
         pub.sendMessage("succeed_connect_program_database", dao=test_program_dao)
 

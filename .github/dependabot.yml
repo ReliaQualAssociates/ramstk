@@ -11,3 +11,5 @@ updates:
     - "dependencies"
     - "status: inprogress"
     - "priority: low"
+  commit-message:
+    prefix: "build"

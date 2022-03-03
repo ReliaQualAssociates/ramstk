@@ -14,7 +14,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKCauseRecord, RAMSTKCauseTable
+from ramstk.models.dbrecords import RAMSTKCauseRecord
+from ramstk.models.dbtables import RAMSTKCauseTable
 
 
 @pytest.fixture(scope="class")
@@ -302,7 +303,7 @@ class TestGetterSetter:
         """should return a dict of attribute key:value pairs."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-        test_tablemodel.do_get_attributes(node_id=3, table="cause")
+        test_tablemodel.do_get_attributes(node_id=3)
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 

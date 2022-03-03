@@ -19,7 +19,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKProgramStatusRecord, RAMSTKProgramStatusTable
+from ramstk.models.dbrecords import RAMSTKProgramStatusRecord
+from ramstk.models.dbtables import RAMSTKProgramStatusTable
 
 
 @pytest.fixture(scope="class")
@@ -311,25 +312,26 @@ class TestGetterSetter:
         assert attributes["cost_remaining"] == 0.0
         assert attributes["date_status"] == date.today() - timedelta(days=30)
         assert attributes["time_remaining"] == 0.0
-        print("\033[36m\nsucceed_get_program_status_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_program_status_attributes topic was broadcast.")
 
-    def on_succeed_get_data_manager_tree(self, tree):
+    def on_succeed_get_program_status_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(1).data["program_status"], RAMSTKProgramStatusRecord
         )
-        print("\033[36m\nsucceed_get_program_status_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_program_status_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["program_status"].cost_remaining == 0.0
-        print("\033[36m\nsucceed_get_program_status_tree topic was broadcast")
+        assert tree.get_node(4).data["program_status"].cost_remaining == 3284.68
+        assert tree.get_node(4).data["program_status"].time_remaining == 186
+        print("\033[36m\n\tsucceed_get_program_status_tree topic was broadcast")
 
     def on_succeed_get_actual_status(self, status):
         assert isinstance(status, pd.DataFrame)
         assert status.loc[pd.to_datetime(date.today()), "cost"] == 14608.45
         assert status.loc[pd.to_datetime(date.today()), "time"] == 469.0
-        print("\033[36m\nsucceed_get_actual_status topic was broadcast")
+        print("\033[36m\n\tsucceed_get_actual_status topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_tablemodel):
@@ -338,9 +340,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_program_status_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_program_status_attributes", node_id=1, table="program_status"
-        )
+        pub.sendMessage("request_get_program_status_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_program_status_attributes"
@@ -350,13 +350,13 @@ class TestGetterSetter:
     def test_on_get_data_manager_tree(self, test_tablemodel):
         """should return the records tree."""
         pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_program_status_tree"
+            self.on_succeed_get_program_status_tree, "succeed_get_program_status_tree"
         )
 
         pub.sendMessage("request_get_program_status_tree")
 
         pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_program_status_tree"
+            self.on_succeed_get_program_status_tree, "succeed_get_program_status_tree"
         )
 
     @pytest.mark.integration
@@ -364,10 +364,11 @@ class TestGetterSetter:
         """should set the value of the attribute requested."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_program_status_tree")
 
+        test_tablemodel._revision_id = 1
         pub.sendMessage(
-            "request_set_opstress_attributes",
-            node_id=1,
-            package={"description": "Big test operating load."},
+            "succeed_calculate_program_remaining",
+            cost_remaining=3284.68,
+            time_remaining=186,
         )
 
         pub.unsubscribe(
@@ -377,15 +378,14 @@ class TestGetterSetter:
     @pytest.mark.integration
     def test_do_get_actual_status(self, test_attributes, test_tablemodel):
         """should update and return program status."""
-        pub.subscribe(self.on_succeed_get_actual_status, "succeed_get_actual_status")
-
         test_tablemodel._do_set_attributes(
             cost_remaining=14608.45, time_remaining=469.00
         )
 
-        _node_id = test_tablemodel._dic_status[date.today()]
-
+        pub.subscribe(self.on_succeed_get_actual_status, "succeed_get_actual_status")
         pub.sendMessage("request_get_actual_status")
+
+        _node_id = test_tablemodel._dic_status[date.today()]
 
         assert (
             test_tablemodel.tree.get_node(_node_id)

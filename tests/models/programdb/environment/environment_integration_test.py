@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKEnvironmentRecord, RAMSTKEnvironmentTable
+from ramstk.models.dbrecords import RAMSTKEnvironmentRecord
+from ramstk.models.dbtables import RAMSTKEnvironmentTable
 
 
 @pytest.fixture(scope="class")
@@ -96,6 +97,8 @@ class TestInsertMethods:
         """should send the success message after adding a new environment."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_environment")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_environment")
@@ -105,6 +108,8 @@ class TestInsertMethods:
         """should send the fail message when the mission phase ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 1
         test_attributes["mission_phase_id"] = 20
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
@@ -115,6 +120,8 @@ class TestInsertMethods:
         """should send the fail message when the revision ID does not exist."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
 
+        test_attributes["parent_id"] = 0
+        test_attributes["record_id"] = 1
         test_attributes["revision_id"] = 4
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
@@ -310,9 +317,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_environment_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_environment_attributes", node_id=1, table="environment"
-        )
+        pub.sendMessage("request_get_environment_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_environment_attributes"

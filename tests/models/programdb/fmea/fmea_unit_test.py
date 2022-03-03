@@ -17,8 +17,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
-from ramstk.models import RAMSTKFMEAView
+from ramstk.models.db import BaseDatabase
+from ramstk.models.dbviews import RAMSTKFMEAView
 
 
 @pytest.fixture(scope="function")

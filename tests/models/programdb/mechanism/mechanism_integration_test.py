@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMechanismRecord, RAMSTKMechanismTable
+from ramstk.models.dbrecords import RAMSTKMechanismRecord
+from ramstk.models.dbtables import RAMSTKMechanismTable
 
 
 @pytest.fixture(scope="class")
@@ -24,7 +25,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMechanismTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all({"revision_id": 1, "hardware_id": 1, "mode_id": 6})
+    dut.do_select_all({"revision_id": 1})
 
     yield dut
 
@@ -305,7 +306,7 @@ class TestGetterSetter:
         """do_get_attributes() should return a dict of mode attributes on success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 
-        test_tablemodel.do_get_attributes(node_id=3, table="mechanism")
+        test_tablemodel.do_get_attributes(node_id=3)
 
         pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_mode_attributes")
 

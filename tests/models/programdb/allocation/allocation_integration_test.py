@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKAllocationRecord, RAMSTKAllocationTable
+from ramstk.models.dbrecords import RAMSTKAllocationRecord
+from ramstk.models.dbtables import RAMSTKAllocationTable
 
 
 @pytest.fixture(scope="class")
@@ -24,7 +25,7 @@ def test_datamanager(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKAllocationTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -63,7 +64,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\nsucceed_retrieve_allocation topic was broadcast.")
+        print("\033[36m\n\t\tsucceed_retrieve_allocation topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
@@ -85,11 +86,11 @@ class TestInsertMethods:
         assert tree.get_node(6).data["allocation"].revision_id == 1
         assert tree.get_node(6).data["allocation"].hardware_id == 6
         assert tree.get_node(6).data["allocation"].parent_id == 2
-        print("\033[36m\nsucceed_insert_allocation topic was broadcast.")
+        print("\033[36m\n\t\tsucceed_insert_allocation topic was broadcast.")
 
     def on_fail_insert_no_parent(self, error_message):
         assert error_message == ("do_insert: Parent node '9' is not in the tree")
-        print("\033[35m\nfail_insert_allocation topic was broadcast on no parent.")
+        print("\033[35m\n\t\tfail_insert_allocation topic was broadcast on no parent.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
@@ -98,7 +99,9 @@ class TestInsertMethods:
             "(fld_revision_id)=(40) is not present in table "
             '"ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_allocation topic was broadcast on no revision.")
+        print(
+            "\033[35m\n\t\tfail_insert_allocation topic was broadcast on no revision."
+        )
 
     def on_fail_insert_no_hardware(self, error_message):
         assert error_message == (
@@ -107,7 +110,9 @@ class TestInsertMethods:
             "(fld_hardware_id)=(9) is not present in table "
             '"ramstk_hardware".'
         )
-        print("\033[35m\nfail_insert_allocation topic was broadcast on no hardware.")
+        print(
+            "\033[35m\n\t\tfail_insert_allocation topic was broadcast on no hardware."
+        )
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes, test_datamanager):
@@ -402,10 +407,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_allocation_attributes"
         )
 
-        test_datamanager.do_get_attributes(
-            node_id=2,
-            table="allocation",
-        )
+        test_datamanager.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_allocation_attributes"

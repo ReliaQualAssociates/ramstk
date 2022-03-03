@@ -3,7 +3,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKFunctionRecord
+from ramstk.models.dbrecords import RAMSTKFunctionRecord
 
 
 @pytest.fixture
@@ -90,8 +90,6 @@ def test_attributes():
         "total_mode_count": 0,
         "total_part_count": 0,
         "type_id": 0,
-        "parent_id": 1,
-        "record_id": 1,
     }
 
 

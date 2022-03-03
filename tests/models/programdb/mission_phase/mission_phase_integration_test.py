@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKMissionPhaseRecord, RAMSTKMissionPhaseTable
+from ramstk.models.dbrecords import RAMSTKMissionPhaseRecord
+from ramstk.models.dbtables import RAMSTKMissionPhaseTable
 
 _test_name = "Big test mission phase"
 
@@ -26,7 +27,7 @@ def test_datamanager(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMissionPhaseTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -61,7 +62,7 @@ class TestSelectMethods:
         called on a populated Mission Phase data manager."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+        pub.sendMessage("selected_revision", attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mission_phases")
 
@@ -92,6 +93,8 @@ class TestInsertMethods:
         mission."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
 
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_mission_phase", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
@@ -102,6 +105,8 @@ class TestInsertMethods:
         new mission phase."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission_phase")
 
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         test_attributes["mission_id"] = 10
         pub.sendMessage("request_insert_mission_phase", attributes=test_attributes)
 
@@ -318,9 +323,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"
         )
 
-        pub.sendMessage(
-            "request_get_mission_phase_attributes", node_id=1, table="mission_phase"
-        )
+        pub.sendMessage("request_get_mission_phase_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"

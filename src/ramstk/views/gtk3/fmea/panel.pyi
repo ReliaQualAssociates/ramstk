@@ -5,8 +5,8 @@ from typing import Any, Callable, Dict, List, Tuple, Union
 import treelib
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKCauseRecord as RAMSTKCauseRecord
-from ramstk.models import RAMSTKMechanismRecord as RAMSTKMechanismRecord
+from ramstk.models.dbrecords import RAMSTKCauseRecord as RAMSTKCauseRecord
+from ramstk.models.dbrecords import RAMSTKMechanismRecord as RAMSTKMechanismRecord
 from ramstk.views.gtk3 import GdkPixbuf as GdkPixbuf
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _

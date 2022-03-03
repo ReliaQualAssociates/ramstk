@@ -20,9 +20,9 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import UnmappedInstanceError
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import (
+from ramstk.models.db import BaseDatabase
+from ramstk.models.dbrecords import (
     RAMSTKFunctionRecord,
     RAMSTKManufacturerRecord,
     RAMSTKRevisionRecord,
