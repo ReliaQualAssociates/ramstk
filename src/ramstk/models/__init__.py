@@ -6,3 +6,8 @@
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK database models package."""
+
+# Third Party Imports
+from sqlalchemy.ext.declarative import declarative_base
+
+RAMSTK_BASE = declarative_base()

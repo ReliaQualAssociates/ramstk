@@ -11,14 +11,12 @@
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_mode in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_function. This table

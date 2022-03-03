@@ -13,14 +13,12 @@ from datetime import date, timedelta
 # Third Party Imports
 from sqlalchemy import Column, Date, Integer, String
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_site_info in the RAMSTK Common database."""
 
     __defaults__ = {

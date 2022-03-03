@@ -17,10 +17,10 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
-from ramstk.models.db import RAMSTK_BASE
 from ramstk.views.gtk3 import _
 
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
@@ -67,7 +67,7 @@ def do_check_overstress(
 
 
 # pylint: disable=R0902
-class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Represent ramstk_design_electric table in the RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

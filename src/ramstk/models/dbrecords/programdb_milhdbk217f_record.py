@@ -11,14 +11,12 @@
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_mil_hdbk_f table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

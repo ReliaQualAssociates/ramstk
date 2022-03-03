@@ -1,6 +1,6 @@
 # Standard Library Imports
 from datetime import date
-from typing import Dict, Type, Union
+from typing import Dict, List, Type, Union
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKDesignMechanicRecord as RAMSTKDesignMechanicRecord

@@ -14,14 +14,12 @@ from typing import Dict, Union
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKSubCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKSubCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_subcategory in the RAMSTK Common database."""
 
     __defaults__ = {"description": "Subcategory Description"}

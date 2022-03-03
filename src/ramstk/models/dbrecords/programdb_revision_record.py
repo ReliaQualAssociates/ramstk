@@ -12,14 +12,12 @@
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_revision table in the RAMSTK Program database.
 
     This table shares a:

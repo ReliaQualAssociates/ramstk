@@ -16,7 +16,9 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.models.dbrecords import (
+
+# RAMSTK Local Imports
+from ..dbrecords import (
     RAMSTKCategoryRecord,
     RAMSTKFailureModeRecord,
     RAMSTKGroupRecord,
@@ -34,8 +36,6 @@ from ramstk.models.dbrecords import (
     RAMSTKTypeRecord,
     RAMSTKUserRecord,
 )
-
-# RAMSTK Local Imports
 from .basedatabase import BaseDatabase, do_create_program_db
 
 _ = gettext.gettext

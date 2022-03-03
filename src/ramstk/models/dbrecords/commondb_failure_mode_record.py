@@ -11,14 +11,12 @@
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKFailureModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKFailureModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_failuremode in the RAMSTK Common database."""
 
     __defaults__ = {

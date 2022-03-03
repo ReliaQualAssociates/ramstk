@@ -12,14 +12,12 @@ from typing import Dict, Union
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_status in the RAMSTK Common database."""
 
     __defaults__ = {

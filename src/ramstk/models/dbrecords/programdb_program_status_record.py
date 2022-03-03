@@ -14,14 +14,12 @@ from datetime import date
 # Third Party Imports
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class represent table ramstk_program_status in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

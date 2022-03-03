@@ -19,13 +19,13 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from ramstk.analyses import dormancy
 from ramstk.analyses.milhdbk217f import milhdbk217f
 from ramstk.analyses.statistics import exponential, lognormal, normal, weibull
-from ramstk.models.db import RAMSTK_BASE
 
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_reliability table in RAMSTK Program database.
 
     This table shares a One-to-One relationship with ramstk_hardware.

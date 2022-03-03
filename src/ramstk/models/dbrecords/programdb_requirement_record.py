@@ -15,14 +15,14 @@ from datetime import date
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
 from ramstk.utilities import none_to_default
 
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_requirement table in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

@@ -9,14 +9,12 @@
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKGroupRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKGroupRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent the table ramstk_group in the RAMSTK Common database.
 
     This table shares a Many-to-One relationship with ramstk_user.

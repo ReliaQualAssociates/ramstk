@@ -12,14 +12,12 @@
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_test_method in RAMSTK Program database.
 
     This table shared a Many-to-One relationship with ramstk_op_stress.

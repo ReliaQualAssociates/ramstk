@@ -9,14 +9,12 @@
 # Third Party Imports
 from sqlalchemy import Column, Integer, String
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKHazardsRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKHazardsRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_hazard in the RAMSTK Common database."""
 
     __defaults__ = {

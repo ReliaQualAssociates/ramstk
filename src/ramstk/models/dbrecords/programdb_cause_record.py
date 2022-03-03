@@ -11,14 +11,12 @@
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_cause in the RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_mechanism. This

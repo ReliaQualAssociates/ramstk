@@ -17,13 +17,13 @@ from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.analyses.statistics import do_calculate_beta_bounds
-from ramstk.models.db import RAMSTK_BASE
 
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_validation in RAMSTK Program database.
 
     This table shares a Many-to-One relationship with ramstk_revision.

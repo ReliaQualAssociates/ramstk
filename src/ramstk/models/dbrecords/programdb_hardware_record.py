@@ -16,14 +16,12 @@ from typing import Dict, Union
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_hardware table in the RAMSTK Program database.
 
     This table shares a:

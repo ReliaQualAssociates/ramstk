@@ -14,14 +14,12 @@ from typing import Dict, Union
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
-# RAMSTK Package Imports
-from ramstk.models.db import RAMSTK_BASE
-
 # RAMSTK Local Imports
+from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
 
 
-class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):
+class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_category in the RAMSTK Common database.
 
     Types of category are:
