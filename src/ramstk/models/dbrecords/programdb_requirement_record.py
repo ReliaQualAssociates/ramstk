@@ -15,7 +15,7 @@ from datetime import date
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
-from ramstk.db import RAMSTK_BASE
+from ramstk.models.db import RAMSTK_BASE
 from ramstk.utilities import none_to_default
 
 # RAMSTK Local Imports

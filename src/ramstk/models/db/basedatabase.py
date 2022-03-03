@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.db.base.py is part of The RAMSTK Project
+#       ramstk.models.db.basedatabase.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Base Database Module."""
 
 # Standard Library Imports
@@ -99,7 +99,7 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 
 # noinspection PyUnresolvedReferences
 class BaseDatabase:
-    """The BaseDatabase class."""
+    """The Base Database model."""
 
     # Define public class dict attributes.
     cxnargs: Dict[str, str] = {
@@ -122,7 +122,7 @@ class BaseDatabase:
     }
 
     def __init__(self) -> None:
-        """Initialize an instance of the BaseDatabase."""
+        """Initialize an instance of the Base database model."""
 
         # Initialize private dictionary instance attributes.
 

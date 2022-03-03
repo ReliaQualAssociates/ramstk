@@ -16,8 +16,8 @@ from pubsub import pub
 from treelib.exceptions import NodeIDAbsentError
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
+from ramstk.models.db import BaseDatabase
 from ramstk.views.gtk3 import _
 
 

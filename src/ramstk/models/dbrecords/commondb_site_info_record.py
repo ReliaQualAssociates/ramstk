@@ -14,7 +14,7 @@ from datetime import date, timedelta
 from sqlalchemy import Column, Date, Integer, String
 
 # RAMSTK Package Imports
-from ramstk.db import RAMSTK_BASE
+from ramstk.models.db import RAMSTK_BASE
 
 # RAMSTK Local Imports
 from .baserecord import RAMSTKBaseRecord

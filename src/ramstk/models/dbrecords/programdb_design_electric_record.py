@@ -17,7 +17,7 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
 from ramstk.analyses import derating, stress
-from ramstk.db import RAMSTK_BASE
+from ramstk.models.db import RAMSTK_BASE
 from ramstk.views.gtk3 import _
 
 # RAMSTK Local Imports

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.commondb.database.py is part of the RAMSTK Project
+#       ramstk.models.db.common_database.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK program Database model."""
+"""The RAMSTK common database model."""
 
 # Standard Library Imports
 import gettext
@@ -16,7 +16,6 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.models.dbrecords import (
     RAMSTKCategoryRecord,
     RAMSTKFailureModeRecord,
@@ -36,29 +35,28 @@ from ramstk.models.dbrecords import (
     RAMSTKUserRecord,
 )
 
+# RAMSTK Local Imports
+from .basedatabase import BaseDatabase, do_create_program_db
+
 _ = gettext.gettext
 
 
 class RAMSTKCommonDB:
-    """The RAMSTK common database manager class.
+    """The RAMSTK common database manager model.
 
-    The RAMSTK common database manager is responsible for managing all the analysis,
-    data, and matrix managers associated with the RAMSTK common database that
-    is currently open.  The attributes of a RAMSTK common database manager are:
+    The attributes of a RAMSTK common database manager are:
 
-    :ivar dict dic_managers: a dict containing the instances of all the
-        analysis, data, and matrix managers associated with the currently
-        active run of RAMSTK.  The first key is the workstream module name
-        which has a dict as a value.  The key of this second dict is the type
-        of manager (analysis, data, matrix) and the value will be the instance
-        of the applicable manager.
-    :ivar program_dao: the BaseDatabase() object that will connect to the
-        RAMSTK program database.
-    :type program_dao: :class:`ramstk.db.base.BaseDatabase`
+    :ivar dic_tables: a dict containing the instances of all the database table
+        models this program database model is managing.
+    :ivar site_configuration: the RAMSTKSiteConfiguration instance associated with
+        this common database model.
+    :ivar common_dao: the BaseDatabase() object that will connect to the
+        RAMSTK common database.
     """
 
     def __init__(self) -> None:
-        """Initialize an instance of the RAMSTK program manager."""
+        """Initialize an instance of the RAMSTK common database model."""
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.

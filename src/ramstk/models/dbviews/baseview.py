@@ -14,7 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
+from ramstk.models.db import BaseDatabase
 
 
 class RAMSTKBaseView:

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.models.programdb.database.py is part of the RAMSTK Project
+#       ramstk.models.db.program_database.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK program Database model."""
+"""The RAMSTK program database model."""
 
 # Standard Library Imports
 from typing import Dict
@@ -14,30 +14,29 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.db import BaseDatabase, do_create_program_db
 from ramstk.exceptions import DataAccessError
+
+# RAMSTK Local Imports
+from .basedatabase import BaseDatabase, do_create_program_db
 
 
 class RAMSTKProgramDB:
-    """The RAMSTK program manager class.
+    """The RAMSTK program database model class.
 
-    The RAMSTK program manager is responsible for managing all the analysis,
-    data, and matrix managers associated with the RAMSTK program database that
-    is currently open.  The attributes of a RAMSTK program manager are:
+    The attributes of a RAMSTK program database model are:
 
-    :ivar dict dic_managers: a dict containing the instances of all the
-        analysis, data, and matrix managers associated with the currently
-        active run of RAMSTK.  The first key is the workstream module name
-        which has a dict as a value.  The key of this second dict is the type
-        of manager (analysis, data, matrix) and the value will be the instance
-        of the applicable manager.
+    :ivar dic_tables: a dict containing the instances of all the database table
+        models this program database model is managing.
+    :ivar dic_views: a dict containing the instances of all the database view
+        models this program database model is managing.
+    :ivar user_configuration: the RAMSTKUserConfiguration instance associated with
+        this progam database model.
     :ivar program_dao: the BaseDatabase() object that will connect to the
         RAMSTK program database.
-    :type program_dao: :class:`ramstk.db.base.BaseDatabase`
     """
 
     def __init__(self) -> None:
-        """Initialize an instance of the RAMSTK program manager."""
+        """Initialize an instance of the RAMSTK program database model."""
 
         # Initialize private dictionary attributes.
 

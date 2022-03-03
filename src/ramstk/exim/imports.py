@@ -25,8 +25,8 @@ from dateutil import parser
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
+from ramstk.models.db import BaseDatabase
 from ramstk.models.dbrecords import (
     RAMSTKAllocationRecord,
     RAMSTKDesignElectricRecord,
