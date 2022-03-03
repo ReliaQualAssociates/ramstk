@@ -13,7 +13,7 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
+from ramstk.models.db import BaseDatabase
 from ramstk.views.gtk3 import GdkPixbuf, GObject, Gtk, Pango, _
 from ramstk.views.gtk3.widgets.button import RAMSTKButton, RAMSTKCheckButton
 from ramstk.views.gtk3.widgets.combo import RAMSTKComboBox

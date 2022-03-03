@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignMechanicRecord, RAMSTKDesignMechanicTable
+from ramstk.models.dbrecords import RAMSTKDesignMechanicRecord
+from ramstk.models.dbtables import RAMSTKDesignMechanicTable
 
 
 @pytest.fixture(scope="class")
@@ -24,7 +25,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignMechanicTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -428,10 +429,7 @@ class TestGetterSetter:
             self.on_succeed_get_attributes, "succeed_get_design_mechanic_attributes"
         )
 
-        test_tablemodel.do_get_attributes(
-            node_id=2,
-            table="design_mechanic",
-        )
+        test_tablemodel.do_get_attributes(node_id=2)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_design_mechanic_attributes"

@@ -21,7 +21,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKValidationRecord, RAMSTKValidationTable
+from ramstk.models.dbrecords import RAMSTKValidationRecord
+from ramstk.models.dbtables import RAMSTKValidationTable
 
 
 @pytest.fixture(scope="function")

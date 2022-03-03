@@ -15,7 +15,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKRevisionRecord, RAMSTKRevisionTable
+from ramstk.models.dbrecords import RAMSTKRevisionRecord
+from ramstk.models.dbtables import RAMSTKRevisionTable
 
 
 @pytest.fixture(scope="class")
@@ -289,7 +290,7 @@ class TestGetterSetter:
         """should return the attributes dict."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_revision_attributes")
 
-        pub.sendMessage("request_get_revision_attributes", node_id=1, table="revision")
+        pub.sendMessage("request_get_revision_attributes", node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_revision_attributes"

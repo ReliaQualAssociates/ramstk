@@ -20,7 +20,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKLoadHistoryRecord, RAMSTKLoadHistoryTable
+from ramstk.models.dbrecords import RAMSTKLoadHistoryRecord
+from ramstk.models.dbtables import RAMSTKLoadHistoryTable
 
 
 @pytest.fixture(scope="function")

@@ -1,6 +1,7 @@
 ignore:
   - data/*
   - tests/*
+  - test_*
 
 refactor:
   skip:

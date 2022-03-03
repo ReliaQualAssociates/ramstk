@@ -14,7 +14,8 @@ from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKFunctionRecord, RAMSTKFunctionTable
+from ramstk.models.dbrecords import RAMSTKFunctionRecord
+from ramstk.models.dbtables import RAMSTKFunctionTable
 
 
 @pytest.fixture(scope="class")
@@ -97,6 +98,7 @@ class TestInsertMethods:
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_function")
 
+        test_attributes["record_id"] = 1
         assert test_tablemodel.tree.get_node(4) is None
 
         pub.sendMessage("request_insert_function", attributes=test_attributes)
@@ -110,6 +112,8 @@ class TestInsertMethods:
         """should add a record under parent to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_child, "succeed_insert_function")
 
+        test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         assert test_tablemodel.tree.get_node(5) is None
 
         pub.sendMessage("request_insert_function", attributes=test_attributes)
@@ -127,6 +131,7 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(7) is None
 
         test_attributes["parent_id"] = 40
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_function", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_function")
@@ -140,6 +145,7 @@ class TestInsertMethods:
 
         test_attributes["revision_id"] = 40
         test_attributes["parent_id"] = 1
+        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_function", attributes=test_attributes)
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_function")
@@ -350,7 +356,7 @@ class TestGetterSetter:
         success."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_function_attributes")
 
-        test_tablemodel.do_get_attributes(node_id=1, table="function")
+        test_tablemodel.do_get_attributes(node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_function_attributes"

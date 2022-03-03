@@ -6,7 +6,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKProgramInfoRecord
+from ramstk.models.dbrecords import RAMSTKProgramInfoRecord
 
 
 @pytest.fixture(scope="function")

@@ -15,7 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.exim import Export
-from ramstk.models import (
+from ramstk.models.dbtables import (
     RAMSTKFunctionTable,
     RAMSTKHardwareTable,
     RAMSTKRequirementTable,

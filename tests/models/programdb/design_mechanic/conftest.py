@@ -3,7 +3,7 @@ import pytest
 from mocks import MockDAO
 
 # RAMSTK Package Imports
-from ramstk.models import RAMSTKDesignMechanicRecord
+from ramstk.models.dbrecords import RAMSTKDesignMechanicRecord
 
 
 @pytest.fixture()

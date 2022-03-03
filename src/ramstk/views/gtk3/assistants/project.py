@@ -11,7 +11,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.db.base import BaseDatabase
+from ramstk.models.db import BaseDatabase
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets.dialog import (
     RAMSTKDatabaseSelect,

@@ -12,8 +12,7 @@ import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
-from ramstk.models import RAMSTKProgramDB
+from ramstk.models.db import BaseDatabase, RAMSTKProgramDB
 
 
 @pytest.fixture(scope="class")

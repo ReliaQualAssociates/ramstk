@@ -25,9 +25,9 @@ from dateutil import parser
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
 from ramstk.exceptions import DataAccessError
-from ramstk.models import (
+from ramstk.models.db import BaseDatabase
+from ramstk.models.dbrecords import (
     RAMSTKAllocationRecord,
     RAMSTKDesignElectricRecord,
     RAMSTKDesignMechanicRecord,
@@ -374,9 +374,6 @@ class Import:
             if module == "Function":
                 _entity = self._do_insert_function(_row)
                 _entities.append(_entity)
-            elif module == "Requirement":
-                _entity = self._do_insert_requirement(_row)
-                _entities.append(_entity)
             elif module == "Hardware":
                 _entity = self._do_insert_hardware(_row)
                 _entities.append(_entity)
@@ -393,6 +390,9 @@ class Import:
                 _entity = self._do_insert_nswc(_row)
                 _entities.append(_entity)
                 _entity = self._do_insert_reliability(_row)
+                _entities.append(_entity)
+            elif module == "Requirement":
+                _entity = self._do_insert_requirement(_row)
                 _entities.append(_entity)
             elif module == "Validation":
                 _entity = self._do_insert_validation(_row)
