@@ -26,7 +26,6 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_design_mechanic"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "design_mechanic"
 

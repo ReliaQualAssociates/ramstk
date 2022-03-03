@@ -35,7 +35,6 @@ class RAMSTKModeTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mode_id"
     _db_tablename = "ramstk_mode"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "mode"
 

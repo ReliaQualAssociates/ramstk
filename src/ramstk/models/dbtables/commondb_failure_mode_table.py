@@ -25,7 +25,6 @@ class RAMSTKFailureModeTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_failuremode_id"
     _db_tablename = "ramstk_failure_mode"
-    _deprecated = False
     _select_msg = "request_get_failure_mode"
     _tag = "failure_mode"
 

@@ -24,7 +24,6 @@ class RAMSTKMethodTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_method_id"
     _db_tablename = "ramstk_method"
-    _deprecated = False
     _select_msg = "request_get_method"
     _tag = "method"
 

@@ -25,7 +25,6 @@ class RAMSTKOpStressTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_opstress_id"
     _db_tablename = "ramstk_op_stress"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "opstress"
 

@@ -34,7 +34,6 @@ class RAMSTKProgramStatusTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_status_id"
     _db_tablename = "ramstk_program_status"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "program_status"
 
