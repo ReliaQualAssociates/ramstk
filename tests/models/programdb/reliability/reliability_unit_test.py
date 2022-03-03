@@ -132,7 +132,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_reliability"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_reliabilitys"
+            test_tablemodel.do_update_all, "request_update_all_reliability"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_reliability_tree"

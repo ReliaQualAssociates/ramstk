@@ -60,16 +60,16 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["validation"], RAMSTKValidationRecord)
-        print("\033[36m\nsucceed_retrieve_validations topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_all_validation topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_validation")
 
         test_tablemodel.do_select_all(attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_validations")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_validation")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -225,19 +225,19 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_validation")
 
         _validation = test_tablemodel.do_select(1)
         _validation.description = "Big test validation #1"
         _validation = test_tablemodel.do_select(2)
         _validation.description = "Big test validation #2"
 
-        pub.sendMessage("request_update_all_validations")
+        pub.sendMessage("request_update_all_validation")
 
         assert test_tablemodel.do_select(1).description == "Big test validation #1"
         assert test_tablemodel.do_select(2).description == "Big test validation #2"
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_validation")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

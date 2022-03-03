@@ -32,9 +32,9 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_environment")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission_phase")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_environments")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_missions")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mission_phases")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_environment")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission_phase")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_environment")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission_phase")
@@ -77,12 +77,14 @@ class TestCreateControllers:
             test_viewmodel.do_set_tree, "succeed_insert_mission_phase"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_environments"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_environment"
         )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_missions")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_mission"
+        )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree,
-            "succeed_retrieve_mission_phases",
+            "succeed_retrieve_all_mission_phase",
         )
         assert pub.isSubscribed(
             test_viewmodel.do_set_tree, "succeed_delete_environment"

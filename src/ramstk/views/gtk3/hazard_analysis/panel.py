@@ -25,7 +25,7 @@ class HazardsTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_hazards"
+    _select_msg = "succeed_retrieve_all_hazard"
     _tag = "hazard"
     _title: str = _("Hazards Analysis")
 

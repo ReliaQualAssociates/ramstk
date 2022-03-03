@@ -145,7 +145,7 @@ class TestCreateModels:
         )
         assert pub.isSubscribed(test_tablemodel.do_set_attributes, "wvw_editing_nswc")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_nswcs"
+            test_tablemodel.do_update_all, "request_update_all_nswc"
         )
         assert pub.isSubscribed(test_tablemodel.do_get_tree, "request_get_nswc_tree")
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")

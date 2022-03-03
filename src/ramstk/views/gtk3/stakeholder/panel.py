@@ -26,7 +26,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_stakeholders"
+    _select_msg = "succeed_retrieve_all_stakeholder"
     _tag = "stakeholder"
     _title = _("Stakeholder Input List")
 
@@ -334,7 +334,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_stakeholder")
-        pub.subscribe(self._do_load_requirements, "succeed_retrieve_requirements")
+        pub.subscribe(self._do_load_requirements, "succeed_retrieve_all_requirement")
 
     def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:
         """Load the affinity group list.

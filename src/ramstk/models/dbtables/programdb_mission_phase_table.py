@@ -26,7 +26,6 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_mission_phase_id"
     _db_tablename = "ramstk_mission_phase"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "mission_phase"
 

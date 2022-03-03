@@ -260,19 +260,19 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should update all the functions in the database."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_requirement")
 
         _requirement = test_tablemodel.do_select(1)
         _requirement.description = "Big test requirement #1"
         _requirement = test_tablemodel.do_select(2)
         _requirement.description = "Big test requirement #2"
 
-        pub.sendMessage("request_update_all_requirements")
+        pub.sendMessage("request_update_all_requirement")
 
         assert test_tablemodel.do_select(1).description == "Big test requirement #1"
         assert test_tablemodel.do_select(2).description == "Big test requirement #2"
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_requirement")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

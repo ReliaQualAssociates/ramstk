@@ -50,18 +50,18 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["mechanism"], RAMSTKMechanismRecord)
-        print("\033[36m\nsucceed_retrieve_mechanism topic was broadcast.")
+        assert isinstance(tree.get_node(3).data["mechanism"], RAMSTKMechanismRecord)
+        print("\033[36m\nsucceed_retrieve_all_mechanism topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should return a Tree() object populated with
         RAMSTKMechanismRecord instances on success."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_mechanism")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_mechanism")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_mechanism")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -205,7 +205,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mechanism")
 
         test_tablemodel.tree.get_node(3).data[
             "mechanism"
@@ -215,7 +215,7 @@ class TestUpdateMethods:
             "mechanism"
         ].description = "Big test failure mechanism"
         test_tablemodel.tree.get_node(4).data["mechanism"].rpn_detection = 7
-        pub.sendMessage("request_update_all_mechanisms")
+        pub.sendMessage("request_update_all_mechanism")
 
         assert (
             test_tablemodel.tree.get_node(3).data["mechanism"].description
@@ -228,7 +228,7 @@ class TestUpdateMethods:
         )
         assert test_tablemodel.tree.get_node(4).data["mechanism"].rpn_detection == 7
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mechanism")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

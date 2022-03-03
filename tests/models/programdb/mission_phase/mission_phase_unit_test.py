@@ -84,7 +84,7 @@ class TestCreateModels:
             test_tablemodel.do_update, "request_update_mission_phase"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_mission_phases"
+            test_tablemodel.do_update_all, "request_update_all_mission_phase"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_delete, "request_delete_mission_phase"

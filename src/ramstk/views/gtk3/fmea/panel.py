@@ -33,7 +33,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
 
     # Define private scalar class attributes.
     _record_field = "mode_id"
-    _select_msg = "succeed_retrieve_mode"
+    _select_msg = "succeed_retrieve_all_mode"
     _tag = "fmeca"
     _title = _("FMEA Risk Analysis Method")
 

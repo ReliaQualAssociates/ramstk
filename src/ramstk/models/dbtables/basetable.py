@@ -64,7 +64,6 @@ class RAMSTKBaseTable:
     # Define private scalar class attributes.
     _db_id_colname: str = ""
     _db_tablename: str = ""
-    _deprecated: bool = True
     _root: int = 0
     _select_msg: str = "selected_revision"
     _tag: str = ""
@@ -126,7 +125,7 @@ class RAMSTKBaseTable:
         )
         pub.subscribe(self.do_set_tree, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_update, f"request_update_{self._tag}")
-        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}s")
+        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}")
         pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
@@ -294,25 +293,12 @@ class RAMSTKBaseTable:
         """
         self.tree = do_clear_tree(self.tree)
 
-        # See ISSUE #1000
-        if self._deprecated:
-            try:
-                self._revision_id = attributes["revision_id"]  # type: ignore
-            except KeyError:
-                try:
-                    self._revision_id = attributes["site_id"]  # type: ignore
-                except KeyError:
-                    self._revision_id = 0
-
-            _keys = [self._lst_id_columns[0]]
-            _values = [self._revision_id]
-        else:
-            _keys = [_key for _key in self._lst_id_columns if _key in attributes]
-            _values = [
-                attributes[_key]  # type: ignore
-                for _key in self._lst_id_columns
-                if _key in attributes
-            ]
+        _keys = [_key for _key in self._lst_id_columns if _key in attributes]
+        _values = [
+            attributes[_key]  # type: ignore
+            for _key in self._lst_id_columns
+            if _key in attributes
+        ]
 
         for _record in self.dao.do_select_all(
             self._record,
@@ -333,11 +319,6 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
-        # See ISSUE #1000
-        pub.sendMessage(
-            f"succeed_retrieve_{self._tag}s",
-            tree=self.tree,
-        )
         pub.sendMessage(
             f"succeed_retrieve_all_{self._tag}",
             tree=self.tree,
@@ -468,4 +449,4 @@ class RAMSTKBaseTable:
             self.do_update(_node.identifier)  # type: ignore
 
         pub.sendMessage("request_set_cursor_active")
-        pub.sendMessage("succeed_update_all")
+        pub.sendMessage(f"succeed_update_all_{self._tag}")

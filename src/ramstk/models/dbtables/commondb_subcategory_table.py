@@ -25,7 +25,6 @@ class RAMSTKSubCategoryTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_subcategory_id"
     _db_tablename = "ramstk_subcategory"
-    _deprecated = False
     _select_msg = "request_get_subcategory"
     _tag = "subcategory"
 

@@ -24,7 +24,6 @@ class RAMSTKLoadHistoryTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_history_id"
     _db_tablename = "ramstk_load_history"
-    _deprecated = False
     _select_msg = "request_get_load_history"
     _tag = "load_history"
 

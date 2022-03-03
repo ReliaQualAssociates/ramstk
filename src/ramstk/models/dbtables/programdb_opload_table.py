@@ -25,7 +25,6 @@ class RAMSTKOpLoadTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_opload_id"
     _db_tablename = "ramstk_op_load"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "opload"
 

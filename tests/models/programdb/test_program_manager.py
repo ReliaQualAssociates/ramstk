@@ -92,16 +92,16 @@ class TestProgramManager:
         print("\033[35m\nfail_disconnect_program_database topic was broadcast")
 
     def on_request_update_revision(self):
-        print("\033[36m\nrequest_update_all_revisions topic was broadcast")
+        print("\033[36m\nrequest_update_all_revision topic was broadcast")
 
     def on_request_update_function(self):
-        print("\033[36mrequest_update_all_functions topic was broadcast")
+        print("\033[36mrequest_update_all_function topic was broadcast")
 
     def on_request_update_requirement(self):
-        print("\033[36mrequest_update_all_requirements topic was broadcast")
+        print("\033[36mrequest_update_all_requirement topic was broadcast")
 
     def on_request_update_stakeholder(self):
-        print("\033[36mrequest_update_all_stakeholders topic was broadcast")
+        print("\033[36mrequest_update_all_stakeholder topic was broadcast")
 
     def on_request_update_hardware(self):
         print("\033[36mrequest_update_all_hardware topic was broadcast")
@@ -290,13 +290,13 @@ class TestProgramManager:
     def test_save_program(self, test_datamanager, test_program_dao):
         """do_save_program() should cause all workstream modules to execute their
         save_all() method."""
-        pub.subscribe(self.on_request_update_revision, "request_update_all_revisions")
-        pub.subscribe(self.on_request_update_function, "request_update_all_functions")
+        pub.subscribe(self.on_request_update_revision, "request_update_all_revision")
+        pub.subscribe(self.on_request_update_function, "request_update_all_function")
         pub.subscribe(
-            self.on_request_update_requirement, "request_update_all_requirements"
+            self.on_request_update_requirement, "request_update_all_requirement"
         )
         pub.subscribe(
-            self.on_request_update_stakeholder, "request_update_all_stakeholders"
+            self.on_request_update_stakeholder, "request_update_all_stakeholder"
         )
         pub.subscribe(self.on_request_update_hardware, "request_update_all_hardware")
         pub.subscribe(
@@ -314,13 +314,13 @@ class TestProgramManager:
         test_datamanager.do_open_program(BaseDatabase(), test_program_db)
         test_datamanager.do_save_program()
 
-        pub.unsubscribe(self.on_request_update_revision, "request_update_all_revisions")
-        pub.unsubscribe(self.on_request_update_function, "request_update_all_functions")
+        pub.unsubscribe(self.on_request_update_revision, "request_update_all_revision")
+        pub.unsubscribe(self.on_request_update_function, "request_update_all_function")
         pub.unsubscribe(
-            self.on_request_update_requirement, "request_update_all_requirements"
+            self.on_request_update_requirement, "request_update_all_requirement"
         )
         pub.unsubscribe(
-            self.on_request_update_stakeholder, "request_update_all_stakeholders"
+            self.on_request_update_stakeholder, "request_update_all_stakeholder"
         )
         pub.unsubscribe(self.on_request_update_hardware, "request_update_all_hardware")
         pub.unsubscribe(

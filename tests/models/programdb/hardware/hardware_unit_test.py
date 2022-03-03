@@ -63,12 +63,12 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_reliability")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_milhdbk217fs")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_nswcs")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_reliabilitys")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_reliability")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_hardware")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_electric")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_mechanic")
@@ -117,7 +117,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_hardware"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_hardwares"
+            test_tablemodel.do_update_all, "request_update_all_hardware"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_hardware_tree"
@@ -255,20 +255,20 @@ class TestCreateModels:
             test_viewmodel.do_set_tree, "succeed_insert_reliability"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_hardwares"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_hardware"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_design_electrics"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_design_electric"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_design_mechanics"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_design_mechanic"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_milhdbk217fs"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_milhdbk217f"
         )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_nswcs")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_all_nswc")
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_reliabilitys"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_reliability"
         )
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_hardware")
         assert pub.isSubscribed(

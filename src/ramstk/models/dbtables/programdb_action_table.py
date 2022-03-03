@@ -25,7 +25,6 @@ class RAMSTKActionTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_action_id"
     _db_tablename = "ramstk_action"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "action"
 

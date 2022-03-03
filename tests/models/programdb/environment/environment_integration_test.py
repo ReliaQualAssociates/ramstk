@@ -231,16 +231,16 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should send the success message after updating all environment records."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_environment")
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = "Even bigger test environment"
 
-        pub.sendMessage("request_update_all_environments")
+        pub.sendMessage("request_update_all_environment")
 
         assert test_tablemodel.do_select(1).name == "Even bigger test environment"
 
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_environment")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

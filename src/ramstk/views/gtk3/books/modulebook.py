@@ -68,7 +68,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_open, "succeed_retrieve_revisions")
+        pub.subscribe(self._on_open, "succeed_retrieve_all_revision")
         pub.subscribe(self._on_close, "succeed_closed_program")
 
     def __make_ui(self) -> None:
@@ -123,7 +123,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :param tree: the work stream module's treelib Tree() containing all
             the data for the work stream module.  Unused in this method,
             but is required as an argument since it is the data package for
-            the 'succeed_retrieve_revisions' message.
+            the 'succeed_retrieve_all_revision' message.
         :type tree: :class:`treelib.Tree`
         :return: None
         :rtype: None

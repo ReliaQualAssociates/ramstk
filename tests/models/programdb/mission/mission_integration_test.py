@@ -52,17 +52,17 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["mission"], RAMSTKMissionRecord)
         assert isinstance(tree.get_node(2).data["mission"], RAMSTKMissionRecord)
         assert isinstance(tree.get_node(3).data["mission"], RAMSTKMissionRecord)
-        print("\033[36m\n\tsucceed_retrieve_missions topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_all_mission topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should clear out an existing tree and build a new one when
         called on a populated Mission data manager."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_mission")
 
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_missions")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_mission")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -208,7 +208,7 @@ class TestUpdateMethods:
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed_update_all message on
         success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mission")
 
         _mission1 = test_tablemodel.do_select(1)
         _mission2 = test_tablemodel.do_select(2)
@@ -223,7 +223,7 @@ class TestUpdateMethods:
         assert _mission1.name == "Big test mission"
         assert _mission2.name == "Big test mission 2"
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mission")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

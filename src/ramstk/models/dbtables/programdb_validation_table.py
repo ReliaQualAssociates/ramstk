@@ -30,7 +30,6 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_validation_id"
     _db_tablename = "ramstk_validation"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "validation"
 

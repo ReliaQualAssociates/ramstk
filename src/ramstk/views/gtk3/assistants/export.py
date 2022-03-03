@@ -55,10 +55,10 @@ class ExportProject(RAMSTKFileChooser):
         self.set_current_folder(self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_DIR)
 
         for _module in [
-            "functions",
-            "requirements",
-            "hardwares",
-            "validations",
+            "function",
+            "requirement",
+            "hardware",
+            "validation",
         ]:
             pub.sendMessage(f"request_get_{_module}_tree")
 

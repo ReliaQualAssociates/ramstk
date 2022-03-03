@@ -32,7 +32,6 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hazard_id"
     _db_tablename = "ramstk_hazard_analysis"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "hazard"
 

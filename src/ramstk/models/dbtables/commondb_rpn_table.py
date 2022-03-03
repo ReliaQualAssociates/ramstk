@@ -24,7 +24,6 @@ class RAMSTKRPNTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_rpn_id"
     _db_tablename = "ramstk_rpn"
-    _deprecated = False
     _select_msg = "request_get_rpn"
     _tag = "rpn"
 

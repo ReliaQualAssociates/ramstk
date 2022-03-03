@@ -24,7 +24,6 @@ class RAMSTKStatusTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_status_id"
     _db_tablename = "ramstk_status"
-    _deprecated = False
     _select_msg = "request_get_status"
     _tag = "status"
 

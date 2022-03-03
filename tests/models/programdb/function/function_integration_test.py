@@ -49,16 +49,16 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["function"], RAMSTKFunctionRecord)
-        print("\033[36m\nsucceed_retrieve_functions topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_all_function topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear and then populate the record tree."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_function")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_functions")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_function")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -261,14 +261,14 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should update all the functions in the database."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_function")
 
         _function = test_tablemodel.do_select(1)
         _function.name = "Big test function #1"
         _function = test_tablemodel.do_select(2)
         _function.name = "Big test function #2"
 
-        pub.sendMessage("request_update_all_functions")
+        pub.sendMessage("request_update_all_function")
 
         assert (
             test_tablemodel.tree.get_node(1).data["function"].name
@@ -279,7 +279,7 @@ class TestUpdateMethods:
             "function #2"
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_function")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

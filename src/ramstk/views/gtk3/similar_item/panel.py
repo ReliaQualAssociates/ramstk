@@ -148,7 +148,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     ]
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_similar_items"
+    _select_msg = "succeed_retrieve_all_similar_item"
     _tag = "similar_item"
     _title = _("Similar Item Analysis")
 

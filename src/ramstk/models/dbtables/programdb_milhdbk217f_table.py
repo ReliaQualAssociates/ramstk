@@ -26,7 +26,6 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_mil_hdbk_f"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "milhdbk217f"
 

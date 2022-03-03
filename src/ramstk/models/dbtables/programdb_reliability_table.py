@@ -26,7 +26,6 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_hardware_id"
     _db_tablename = "ramstk_reliability"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "reliability"
 

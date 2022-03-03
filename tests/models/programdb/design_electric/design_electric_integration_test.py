@@ -25,7 +25,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignElectricTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -255,7 +255,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_design_electric")
 
         _design_electric = test_tablemodel.do_select(1)
         _design_electric.n_active_pins = 5
@@ -281,7 +281,9 @@ class TestUpdateMethods:
             == 71
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(
+            self.on_succeed_update_all, "succeed_update_all_design_electric"
+        )
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

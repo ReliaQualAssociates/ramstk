@@ -24,7 +24,6 @@ class RAMSTKMeasurementTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_measurement_id"
     _db_tablename = "ramstk_measurement"
-    _deprecated = False
     _select_msg = "request_get_measurement"
     _tag = "measurement"
 

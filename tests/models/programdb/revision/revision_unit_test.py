@@ -103,7 +103,7 @@ class TestCreateModels:
         )
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_revision")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_revisions"
+            test_tablemodel.do_update_all, "request_update_all_revision"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_attributes, "request_get_revision_attributes"

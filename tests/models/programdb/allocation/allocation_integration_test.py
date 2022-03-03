@@ -64,16 +64,16 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\n\t\tsucceed_retrieve_allocation topic was broadcast.")
+        print("\033[36m\n\t\tsucceed_retrieve_all_allocation topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_allocation")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_allocation")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_allocation")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_datamanager")
@@ -293,7 +293,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_allocation")
 
         _allocation = test_datamanager.do_select(1)
         _allocation.percent_weight_factor = 0.9832
@@ -315,7 +315,7 @@ class TestUpdateMethods:
         )
         assert test_datamanager.tree.get_node(2).data["allocation"].mtbf_goal == 18500
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_allocation")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):

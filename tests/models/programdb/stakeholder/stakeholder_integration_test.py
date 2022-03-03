@@ -232,7 +232,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_stakeholder")
 
         test_tablemodel.tree.get_node(1).data[
             "stakeholder"
@@ -245,7 +245,7 @@ class TestUpdateMethods:
             == "Test Stakeholder 2"
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_stakeholder")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

@@ -26,7 +26,6 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_environment_id"
     _db_tablename = "ramstk_environment"
-    _deprecated = False
     _select_msg = "selected_revision"
     _tag = "environment"
 

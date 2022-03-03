@@ -27,7 +27,7 @@ class RevisionTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_revisions"
+    _select_msg = "succeed_retrieve_all_revision"
     _tag = "revision"
     _title = _("List of Revisions")
 

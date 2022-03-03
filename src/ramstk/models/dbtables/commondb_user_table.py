@@ -24,7 +24,6 @@ class RAMSTKUserTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_user_id"
     _db_tablename = "ramstk_user"
-    _deprecated = False
     _select_msg = "request_get_user"
     _tag = "user"
 

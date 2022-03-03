@@ -50,16 +50,16 @@ class TestSelectMethods:
         # There should be a root node with no data package and a node with
         # the one RAMSTKSiteInfoRecord record.
         assert len(tree.all_nodes()) == 2
-        print("\033[36m\nsucceed_retrieve_siteinfo topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_all_siteinfo topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_tablemodel):
         """do_select_all() should clear nodes from an existing Options tree."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_siteinfo")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_option")
 
         test_tablemodel.do_select_all({"site_id": 1})
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_siteinfo")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_option")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -100,13 +100,13 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_siteinfo")
+        pub.subscribe(self.on_succeed_update, "succeed_update_option")
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = 0
         test_tablemodel.tree.get_node(1).data["option"].vandv_enabled = 0
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_siteinfo")
+        pub.unsubscribe(self.on_succeed_update, "succeed_update_option")
 
         assert test_tablemodel.tree.get_node(1).data["option"].hardware_enabled == 0
         assert test_tablemodel.tree.get_node(1).data["option"].vandv_enabled == 0
@@ -121,57 +121,57 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_option")
 
-        pub.sendMessage("request_update_all_options")
+        pub.sendMessage("request_update_all_option")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_option")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_option")
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hi ya"
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_siteinfo")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_option")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """do_update() should return a zero error code on success."""
         pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_siteinfo"
+            self.on_fail_update_root_node_wrong_data_type, "fail_update_option"
         )
 
         test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hey bud"
         test_tablemodel.do_update(0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_siteinfo"
+            self.on_fail_update_root_node_wrong_data_type, "fail_update_option"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a Options ID
         that doesn't exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
+        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_option")
 
         test_tablemodel.do_select_all({"site_id": 1})
         test_tablemodel.do_update("skullduggery")
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_siteinfo")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_option")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a Options ID
         that doesn't exist."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
+        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_option")
 
         test_tablemodel.tree.get_node(1).data.pop("option")
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_siteinfo")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_option")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -213,30 +213,28 @@ class TestGetterSetter:
     def test_do_get_attributes(self, test_tablemodel):
         """do_get_attributes() should return a dict of site information attributes on
         success."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes")
+        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_option_attributes")
 
         pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
 
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_siteinfo_attributes"
-        )
+        pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_option_attributes")
 
     @pytest.mark.integration
     def test_on_get_data_manager_tree(self, test_tablemodel):
         """on_get_tree() should return the Options treelib Tree."""
-        pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_options_tree")
+        pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_option_tree")
 
-        pub.sendMessage("request_get_options_tree")
+        pub.sendMessage("request_get_option_tree")
 
         pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_options_tree"
+            self.on_succeed_get_data_manager_tree, "succeed_get_option_tree"
         )
 
     @pytest.mark.integration
     def test_do_set_attributes(self, test_tablemodel):
         """do_set_attributes() should return None when successfully setting site
         information attributes."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_options_tree")
+        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_option_tree")
 
         pub.sendMessage(
             "request_set_option_attributes",
@@ -249,4 +247,4 @@ class TestGetterSetter:
             package={"requirement_enabled": 1},
         )
 
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_options_tree")
+        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_option_tree")

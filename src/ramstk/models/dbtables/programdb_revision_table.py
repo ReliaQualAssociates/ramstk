@@ -25,7 +25,6 @@ class RAMSTKRevisionTable(RAMSTKBaseTable):
     # Define private scalar class attributes.
     _db_id_colname = "fld_revision_id"
     _db_tablename = "ramstk_revision"
-    _deprecated = False
     _select_msg = "request_retrieve_revisions"
     _tag = "revision"
 

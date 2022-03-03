@@ -2,6 +2,7 @@ ignore:
   - data/*
   - tests/*
   - test_*
+  - '*_test.py'
 
 refactor:
   skip:

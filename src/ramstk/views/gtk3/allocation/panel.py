@@ -255,7 +255,7 @@ class AllocationTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_allocations"
+    _select_msg = "succeed_retrieve_all_allocation"
     _tag = "allocation"
     _title = _("Allocation Analysis")
 

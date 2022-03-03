@@ -39,7 +39,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
 
     # Define private scalar class attributes.
     _record_field = "hardware_id"
-    _select_msg = "succeed_retrieve_hardwares"
+    _select_msg = "succeed_retrieve_all_hardware"
     _tag = "hardware"
     _title = _("Hardware BoM")
 

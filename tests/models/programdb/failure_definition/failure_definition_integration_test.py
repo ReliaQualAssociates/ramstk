@@ -237,14 +237,14 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all definition() should return None on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_definition")
 
         _definition = test_tablemodel.do_select(1)
         _definition.definition = "Big test definition #1"
         _definition = test_tablemodel.do_select(2)
         _definition.definition = "Big test definition #2"
 
-        pub.sendMessage("request_update_all_definitions")
+        pub.sendMessage("request_update_all_definition")
 
         _definition = test_tablemodel.do_select(1)
         assert _definition.definition == "Big test definition #1"
@@ -252,7 +252,7 @@ class TestUpdateMethods:
         _definition = test_tablemodel.do_select(2)
         assert _definition.definition == "Big test definition #2"
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_definition")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
