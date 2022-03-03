@@ -51,16 +51,16 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
-        print("\033[36m\nsucceed_retrieve_nswc topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_all_nswc topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_nswc")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_nswc")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_nswc")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_nswc")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -217,7 +217,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_nswc")
 
         _nswc = test_tablemodel.do_select(1)
         _nswc.Cac = 5
@@ -233,7 +233,7 @@ class TestUpdateMethods:
         assert test_tablemodel.tree.get_node(2).data["nswc"].Cac == 12
         assert test_tablemodel.tree.get_node(2).data["nswc"].Calt == 71
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_nswc")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

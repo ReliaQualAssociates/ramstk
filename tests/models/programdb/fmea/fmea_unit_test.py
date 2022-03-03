@@ -35,11 +35,11 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_cause")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_control")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_action")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_modes")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_causes")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_controls")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_actions")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mode")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_cause")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_control")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_action")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_mode")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_mechanism")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_cause")
@@ -68,13 +68,19 @@ class TestCreateControllers:
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_cause")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_control")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_action")
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_modes")
+        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_all_mode")
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_mechanisms"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_mechanism"
         )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_causes")
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_controls")
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_actions")
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_cause"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_control"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_action"
+        )
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_mode")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_mechanism")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_cause")

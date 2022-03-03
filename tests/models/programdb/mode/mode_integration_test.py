@@ -55,11 +55,11 @@ class TestSelectMethods:
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_mode")
 
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_modes")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_mode")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -233,11 +233,11 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mode")
 
-        pub.sendMessage("request_update_all_modes")
+        pub.sendMessage("request_update_all_mode")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mode")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

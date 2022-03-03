@@ -226,14 +226,14 @@ class TestUpdateMethods:
     def test_do_update_all(self, test_datamanager):
         """do_update_usage_profile() should broadcast the succeed message on
         success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mission_phase")
 
         _mission_phase1 = test_datamanager.do_select(1)
         _mission_phase1.name = _test_name
 
-        pub.sendMessage("request_update_all_mission_phases")
+        pub.sendMessage("request_update_all_mission_phase")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mission_phase")
 
     @pytest.mark.skip
     def test_do_update_wrong_data_type(self, test_datamanager):

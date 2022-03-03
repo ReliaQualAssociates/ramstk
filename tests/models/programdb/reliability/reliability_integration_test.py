@@ -234,7 +234,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_reliability")
 
         _reliability = test_tablemodel.do_select(1)
         _reliability.category_id = 5
@@ -250,7 +250,7 @@ class TestUpdateMethods:
         assert test_tablemodel.tree.get_node(2).data["reliability"].category_id == 12
         assert test_tablemodel.tree.get_node(2).data["reliability"].subcategory_id == 71
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_reliability")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

@@ -234,7 +234,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_milhdbk217f")
 
         _milhdbk217f = test_tablemodel.do_select(1)
         _milhdbk217f.PiA = 5.0
@@ -250,7 +250,7 @@ class TestUpdateMethods:
         assert test_tablemodel.tree.get_node(2).data["milhdbk217f"].PiA == 1.2
         assert test_tablemodel.tree.get_node(2).data["milhdbk217f"].lambdaBD == 0.0035
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_milhdbk217f")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

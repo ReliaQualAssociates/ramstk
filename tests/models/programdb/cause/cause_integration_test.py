@@ -54,12 +54,12 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(3).data["cause"], RAMSTKCauseRecord)
-        print("\033[36m\nsucceed_retrieve_cause topic was broadcast.")
+        print("\033[36m\nsucceed_retrieve_all_cause topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_tablemodel):
         """should return a Tree() object populated with RAMSTKCauseRecord instances."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_cause")
 
         pub.sendMessage(
             "selected_revision",
@@ -68,7 +68,7 @@ class TestSelectMethods:
             },
         )
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_cause")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_cause")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -206,7 +206,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in database and records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_cause")
 
         test_tablemodel.tree.get_node(3).data[
             "cause"
@@ -216,7 +216,7 @@ class TestUpdateMethods:
             "cause"
         ].description = "Big test failure cause"
         test_tablemodel.tree.get_node(4).data["cause"].rpn_detection = 7
-        pub.sendMessage("request_update_all_causes")
+        pub.sendMessage("request_update_all_cause")
 
         assert (
             test_tablemodel.tree.get_node(3).data["cause"].description
@@ -229,7 +229,7 @@ class TestUpdateMethods:
         )
         assert test_tablemodel.tree.get_node(4).data["cause"].rpn_detection == 7
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_cause")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

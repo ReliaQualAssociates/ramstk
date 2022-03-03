@@ -24,14 +24,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKOpLoadTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(
-        attributes={
-            "revision_id": 1,
-            "hardware_id": 1,
-            "mode_id": 6,
-            "mechanism_id": 4,
-        }
-    )
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -55,18 +48,18 @@ class TestSelectMethods:
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["opload"], RAMSTKOpLoadRecord)
-        print("\033[36m\nsucceed_retrieve_opload topic was broadcast.")
+        assert isinstance(tree.get_node(3).data["opload"], RAMSTKOpLoadRecord)
+        print("\033[36m\nsucceed_retrieve_all_opload topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """do_select_all() should return a Tree() object populated with
         RAMSTKOpLoadRecord instances on success."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_opload")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_opload")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_opload")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -227,11 +220,11 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_opload")
 
-        pub.sendMessage("request_update_all_oploads")
+        pub.sendMessage("request_update_all_opload")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_opload")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

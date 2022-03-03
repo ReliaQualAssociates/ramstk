@@ -31,10 +31,10 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_opload")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_opstress")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_test_method")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_mechanisms")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_oploads")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_opstresss")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_test_methods")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mechanism")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_opload")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_opstress")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_test_method")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_mechanism")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_opload")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_opstress")
@@ -64,14 +64,16 @@ class TestCreateControllers:
             test_viewmodel.do_set_tree, "succeed_insert_test_method"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_mechanisms"
-        )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_retrieve_oploads")
-        assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_opstresss"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_mechanism"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_test_methods"
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_opload"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_opstress"
+        )
+        assert pub.isSubscribed(
+            test_viewmodel.do_set_tree, "succeed_retrieve_all_test_method"
         )
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_mechanism")
         assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_opload")

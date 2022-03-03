@@ -114,11 +114,11 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_user")
 
         pub.sendMessage("request_update_all_user")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_user")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

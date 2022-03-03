@@ -139,54 +139,54 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_datamanager):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_preference")
 
-        pub.sendMessage("request_update_all_preferences")
+        pub.sendMessage("request_update_all_preference")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_preference")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_datamanager):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preference")
 
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
         pub.sendMessage("request_update_preference", node_id=1)
 
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preference")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_datamanager):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_preference")
 
         test_datamanager.tree.get_node(1).data["preference"].hardware_active = {0: 1}
 
         pub.sendMessage("request_update_preference", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_preferences")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_preference")
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a Options ID
         that doesn't exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
+        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_preference")
 
         pub.sendMessage("request_update_preference", node_id="skullduggery")
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_preferences")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_preference")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_datamanager):
         """do_update() should return a non-zero error code when passed a Options ID
         that doesn't exist."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
+        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_preference")
 
         test_datamanager.tree.get_node(1).data.pop("preference")
 
         pub.sendMessage("request_update_preference", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_preferences")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_preference")
 
 
 @pytest.mark.usefixtures("test_datamanager")

@@ -86,7 +86,7 @@ class TestCreateModels:
         assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
         assert pub.isSubscribed(test_tablemodel.do_update, "request_update_environment")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_environments"
+            test_tablemodel.do_update_all, "request_update_all_environment"
         )
         assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_environment")
         assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_environment")

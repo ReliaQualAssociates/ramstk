@@ -133,21 +133,21 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_hazard")
 
-        pub.sendMessage("request_update_all_hazards")
+        pub.sendMessage("request_update_all_hazard")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_hazard")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
         """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_hazards")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
         test_tablemodel.tree.get_node(1).data["hazards"].hazard_subcategory = None
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hazards")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_hazard")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_tablemodel):

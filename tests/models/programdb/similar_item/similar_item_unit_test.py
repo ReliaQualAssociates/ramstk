@@ -148,7 +148,7 @@ class TestCreateModels:
             test_tablemodel.do_set_tree, "succeed_calculate_similar_item"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_similar_items"
+            test_tablemodel.do_update_all, "request_update_all_similar_item"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_similar_item_tree"

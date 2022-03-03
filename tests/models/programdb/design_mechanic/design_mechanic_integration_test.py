@@ -262,7 +262,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_design_mechanic")
 
         _design_mechanic = test_tablemodel.do_select(1)
         _design_mechanic.altitude_operating = 5
@@ -288,7 +288,9 @@ class TestUpdateMethods:
             test_tablemodel.tree.get_node(2).data["design_mechanic"].rpm_operating == 71
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(
+            self.on_succeed_update_all, "succeed_update_all_design_mechanic"
+        )
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

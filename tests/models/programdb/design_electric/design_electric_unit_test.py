@@ -143,7 +143,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_design_electric"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_design_electrics"
+            test_tablemodel.do_update_all, "request_update_all_design_electric"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_design_electric_tree"

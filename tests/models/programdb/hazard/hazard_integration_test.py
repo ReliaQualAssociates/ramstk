@@ -235,20 +235,20 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_hazard")
 
         test_tablemodel.tree.get_node(1).data[
             "hazard"
         ].potential_hazard = "Big test hazard"
 
-        pub.sendMessage("request_update_all_hazards")
+        pub.sendMessage("request_update_all_hazard")
 
         assert (
             test_tablemodel.tree.get_node(1).data["hazard"].potential_hazard
             == "Big test hazard"
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_hazard")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

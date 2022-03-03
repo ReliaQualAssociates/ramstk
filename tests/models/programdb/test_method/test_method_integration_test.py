@@ -25,15 +25,7 @@ def test_tablemodel(test_program_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKTestMethodTable()
     dut.do_connect(test_program_dao)
-    dut.do_select_all(
-        attributes={
-            "revision_id": 1,
-            "hardware_id": 1,
-            "mode_id": 6,
-            "mechanism_id": 3,
-            "opload_id": 3,
-        }
-    )
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
@@ -220,11 +212,11 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """do_update_all() should broadcast the succeed message on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_test_method")
 
-        pub.sendMessage("request_update_all_test_methods")
+        pub.sendMessage("request_update_all_test_method")
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_test_method")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

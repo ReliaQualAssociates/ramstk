@@ -120,7 +120,7 @@ class TestCreateModels:
             test_tablemodel.do_set_attributes, "wvw_editing_allocation"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_allocations"
+            test_tablemodel.do_update_all, "request_update_all_allocation"
         )
         assert pub.isSubscribed(
             test_tablemodel.do_get_tree, "request_get_allocation_tree"

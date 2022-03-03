@@ -271,7 +271,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_similar_item")
 
         _similar_item = test_tablemodel.do_select(1)
         _similar_item.change_description_1 = (
@@ -284,7 +284,7 @@ class TestUpdateMethods:
         )
         _similar_item.temperature_to = 18500
 
-        pub.sendMessage("request_update_all_similar_items")
+        pub.sendMessage("request_update_all_similar_item")
 
         assert test_tablemodel.tree.get_node(1).data[
             "similar_item"
@@ -305,7 +305,7 @@ class TestUpdateMethods:
             == 18500
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_similar_item")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

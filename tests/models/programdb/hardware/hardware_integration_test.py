@@ -67,12 +67,12 @@ def test_viewmodel():
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_milhdbk217f")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_nswc")
     pub.unsubscribe(dut.do_set_tree, "succeed_insert_reliability")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_hardwares")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_electrics")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_design_mechanics")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_milhdbk217fs")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_nswcs")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_reliabilitys")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_milhdbk217f")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_nswc")
+    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_reliability")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_hardware")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_electric")
     pub.unsubscribe(dut.do_set_tree, "succeed_delete_design_mechanic")
@@ -563,7 +563,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_hardware")
 
         _hardware = test_tablemodel.do_select(1)
         _hardware.total_power_dissipation = 5
@@ -591,7 +591,7 @@ class TestUpdateMethods:
             == "71"
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_hardware")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):

@@ -217,7 +217,7 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_all(self, test_tablemodel):
         """should update all records in database and records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_action")
 
         test_tablemodel.tree.get_node(3).data[
             "action"
@@ -227,7 +227,7 @@ class TestUpdateMethods:
             "action"
         ].description = "Big test failure action"
         test_tablemodel.tree.get_node(4).data["action"].rpn_detection = 7
-        pub.sendMessage("request_update_all_actions")
+        pub.sendMessage("request_update_all_action")
 
         assert (
             test_tablemodel.tree.get_node(3).data["action"].description
@@ -240,7 +240,7 @@ class TestUpdateMethods:
         )
         assert test_tablemodel.tree.get_node(4).data["action"].rpn_detection == 7
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all")
+        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_action")
 
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
