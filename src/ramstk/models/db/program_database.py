@@ -168,9 +168,9 @@ class RAMSTKProgramDB:
         :return: None
         :rtype: None
         """
-        pub.sendMessage("request_update_all_revisions")
-        pub.sendMessage("request_update_all_functions")
-        pub.sendMessage("request_update_all_requirements")
-        pub.sendMessage("request_update_all_stakeholders")
+        pub.sendMessage("request_update_all_revision")
+        pub.sendMessage("request_update_all_function")
+        pub.sendMessage("request_update_all_requirement")
+        pub.sendMessage("request_update_all_stakeholder")
         pub.sendMessage("request_update_all_hardware")
         pub.sendMessage("request_update_all_validation")

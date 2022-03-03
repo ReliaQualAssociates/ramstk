@@ -125,7 +125,7 @@ class RAMSTKBaseTable:
         )
         pub.subscribe(self.do_set_tree, f"succeed_calculate_{self._tag}")
         pub.subscribe(self.do_update, f"request_update_{self._tag}")
-        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}s")
+        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}")
         pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
@@ -319,11 +319,6 @@ class RAMSTKBaseTable:
             )
         self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
-        # See ISSUE #1000
-        pub.sendMessage(
-            f"succeed_retrieve_{self._tag}s",
-            tree=self.tree,
-        )
         pub.sendMessage(
             f"succeed_retrieve_all_{self._tag}",
             tree=self.tree,
@@ -454,4 +449,4 @@ class RAMSTKBaseTable:
             self.do_update(_node.identifier)  # type: ignore
 
         pub.sendMessage("request_set_cursor_active")
-        pub.sendMessage("succeed_update_all")
+        pub.sendMessage(f"succeed_update_all_{self._tag}")

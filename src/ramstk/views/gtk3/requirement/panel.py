@@ -36,7 +36,7 @@ class RequirementTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_requirements"
+    _select_msg = "succeed_retrieve_all_requirement"
     _tag = "requirement"
     _title = _("Requirement Tree")
 

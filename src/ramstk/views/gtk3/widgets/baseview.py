@@ -176,7 +176,7 @@ class RAMSTKBaseView(Gtk.HBox):
         pub.subscribe(self.do_set_cursor_active, "request_set_cursor_active")
         pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
         pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active, "succeed_update_all")
+        pub.subscribe(self.do_set_cursor_active, f"succeed_update_all_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
         pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
@@ -457,7 +457,7 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_all_{self._tag}s")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """Set the cursor for the Module, List, and Work Book Gdk.Window().

@@ -28,7 +28,7 @@ class FunctionTreePanel(RAMSTKTreePanel):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _select_msg = "succeed_retrieve_functions"
+    _select_msg = "succeed_retrieve_all_function"
     _tag = "function"
     _title = _("Function Tree")
 
