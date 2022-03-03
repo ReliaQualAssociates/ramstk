@@ -17,8 +17,7 @@ from mock import patch
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.db.base import BaseDatabase
-from ramstk.models.db import RAMSTKCommonDB
+from ramstk.models.db import BaseDatabase, RAMSTKCommonDB
 from ramstk.models.dbrecords import RAMSTKSiteInfoRecord
 
 
