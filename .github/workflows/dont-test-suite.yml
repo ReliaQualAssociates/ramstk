@@ -2,7 +2,7 @@
 # do-test-suite workflow aren't met.  This allows PRs to be merged when the
 # conditions aren't met for a protected branch.  See
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks
-name: Execute RAMSTK Test Suite with Coverage
+name: Dummy RAMSTK Test Suite with Coverage
 
 on:
   push:
@@ -20,7 +20,7 @@ on:
 
 jobs:
   test_suite:
-    name: Run Test Suite
+    name: Run Dummy Test Suite
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -37,7 +37,7 @@ jobs:
           echo "Test suite not required for ${{ matrix.python }}."
 
   upload_coveralls:
-    name: Upload Results to Coveralls
+    name: Upload Dummy Results to Coveralls
     needs: test_suite
     runs-on: ubuntu-latest
     steps:
