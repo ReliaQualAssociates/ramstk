@@ -61,6 +61,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
+        self._category_id: int = 0
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map: Dict[str, List[Any]] = {
@@ -695,7 +696,10 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _name = _model.get_value(_row, self.tvwTreeView.position["name"])
             _title = _(f"Analyzing Hardware item {_comprefdes}: {_name}")
 
-            pub.sendMessage("request_set_title", title=_title)
+            pub.sendMessage(
+                "request_set_title",
+                title=_title,
+            )
 
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Hardware package Module View RAMSTKTreeView().
@@ -716,6 +720,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _attributes["category_id"] = self.lst_categories.index(
                 _attributes["category_id"]
             )
+            self._category_id = _attributes["category_id"]
+
             _attributes["cost_type_id"] = ["", "Assessed", "Specified"].index(
                 _attributes["cost_type_id"]
             )
@@ -775,8 +781,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 package[_key] = self._lst_cost_types[_value]
             elif _key == "category_id":
                 package[_key] = self.lst_categories[_value]
-            # elif _key == "subcategory_id":
-            #    package[_key] = self.dic_subcategories[][_value]
+            elif _key == "subcategory_id":
+                package[_key] = self.dic_subcategories[self._category_id][_value]
 
             super().do_refresh_tree(node_id, package)
 
@@ -803,6 +809,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _icon = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self.dic_icons["part"], 22, 22
             )
+
+        self._category_id = _entity.category_id
 
         _attributes = [
             _entity.revision_id,
@@ -837,8 +845,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
             _entity.year_of_manufacture,
             self._lst_cost_types[_entity.cost_type_id],
             _entity.attachments,
-            self.lst_categories[_entity.category_id],
-            self.dic_subcategories[_entity.category_id][_entity.subcategory_id],
+            self.lst_categories[self._category_id],
+            self.dic_subcategories[self._category_id][_entity.subcategory_id],
             _icon,
         ]
 
@@ -1122,8 +1130,14 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         super().do_make_panel()
         super().do_set_callbacks()
 
-        self.cmbCategory.connect("changed", self._request_load_subcategories)
-        self.cmbSubcategory.connect("changed", self._request_load_component)
+        self.cmbCategory.connect(
+            "changed",
+            self._request_load_subcategories,
+        )
+        self.cmbSubcategory.connect(
+            "changed",
+            self._request_load_component,
+        )
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
@@ -1181,13 +1195,16 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         """
         pub.sendMessage(
-            "request_set_hardware_attributes",
+            "wvw_editing_hardware",
             node_id=self._record_id,
             package={
                 "subcategory_id": combo.get_active(),
             },
         )
-        pub.sendMessage("changed_subcategory", subcategory_id=combo.get_active())
+        pub.sendMessage(
+            "changed_subcategory",
+            subcategory_id=combo.get_active(),
+        )
 
     def _request_load_subcategories(self, combo: RAMSTKComboBox) -> None:
         """Request to have the subcategory RAMSTKComboBox() loaded.
