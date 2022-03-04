@@ -1,5 +1,20 @@
 # Changelog
 
+## [v0.16.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.1) (2022-03-04)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.0...v0.16.1)
+
+Bug Fixes
+
+- fix: widget sensitivity not changing on subcategory change [\#1020](https://github.com/ReliaQualAssociates/ramstk/pull/1020) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- refactor: remove if-else control block in do\_select\_all\(\) method [\#1019](https://github.com/ReliaQualAssociates/ramstk/pull/1019) ([weibullguy](https://github.com/weibullguy))
+- refactor: organize models by type [\#1016](https://github.com/ReliaQualAssociates/ramstk/pull/1016) ([weibullguy](https://github.com/weibullguy))
+- chore\(deps\): bump xlsxwriter from 3.0.2 to 3.0.3 [\#1014](https://github.com/ReliaQualAssociates/ramstk/pull/1014) ([dependabot[bot]](https://github.com/apps/dependabot))
+- refactor: remove pubsub "fail\_XX\_YY" messages [\#1013](https://github.com/ReliaQualAssociates/ramstk/pull/1013) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.16.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.0) (2022-02-25)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.22...v0.16.0)
@@ -160,11 +175,6 @@ Bug Fixes
 Bug Fixes
 
 - fix: fail to insert verification task [\#915](https://github.com/ReliaQualAssociates/ramstk/pull/915) ([weibullguy](https://github.com/weibullguy))
-- fix: add try block to convert datetime to string [\#912](https://github.com/ReliaQualAssociates/ramstk/pull/912) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: update on-pr-open action to use git for finding version [\#913](https://github.com/ReliaQualAssociates/ramstk/pull/913) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.9](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.9) (2022-01-26)
 
