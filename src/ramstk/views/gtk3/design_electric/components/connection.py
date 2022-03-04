@@ -452,6 +452,8 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         _model = self.cmbInsert.get_model()
         _model.clear()
 
+        self._do_set_sensitive()
+
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
 
@@ -498,7 +500,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected connection.
 
         :return: None
@@ -518,17 +522,13 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 1:
             self.cmbType.set_sensitive(True)
-            self.cmbType.do_update(
-                attributes["type_id"],
-                signal="changed",
-            )
         else:
-            self.__do_set_circular_sensitive(attributes)
-            self.__do_set_ic_socket_sensitive(attributes)
-            self.__do_set_pwa_edge_sensitive(attributes)
-            self.__do_set_pth_sensitive(attributes)
+            self.__do_set_circular_sensitive()
+            self.__do_set_ic_socket_sensitive()
+            self.__do_set_pwa_edge_sensitive()
+            self.__do_set_pth_sensitive()
 
-    def __do_set_circular_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_circular_sensitive(self) -> None:
         """Set the widgets for circular connectors sensitive or not.
 
         :return: None
@@ -536,46 +536,14 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self.subcategory_id == 1:
             self.cmbType.set_sensitive(True)
-            # We don't block the callback signal otherwise the specification
-            # RAMSTKComboBox() will not be loaded and set.
-            self.cmbType.set_active(attributes["type_id"])
-
             self.cmbSpecification.set_sensitive(True)
-            # We don't block the callback signal otherwise the insert
-            # RAMSTKComboBox() will not be loaded and set.
-            self.cmbSpecification.set_active(attributes["specification_id"])
-
             self.cmbInsert.set_sensitive(True)
-            self.cmbInsert.do_update(
-                attributes["insert_id"],
-                signal="changed",
-            )
-
             self.txtActivePins.set_sensitive(True)
-            self.txtActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
-
             self.txtAmpsContact.set_sensitive(True)
-            self.txtAmpsContact.do_update(
-                str(self.fmt.format(attributes["current_operating"])),
-                signal="changed",
-            )
-
             self.txtContactGauge.set_sensitive(True)
-            self.txtContactGauge.do_update(
-                str(attributes["contact_gauge"]),
-                signal="changed",
-            )
-
             self.txtMating.set_sensitive(True)
-            self.txtMating.do_update(
-                str(attributes["n_cycles"]),
-                signal="changed",
-            )
 
-    def __do_set_ic_socket_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_ic_socket_sensitive(self) -> None:
         """Set the widgets for IC socket connectors sensitive or not.
 
         :return: None
@@ -584,12 +552,8 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         if self.subcategory_id == 3:
             self.cmbQuality.set_sensitive(False)
             self.txtActivePins.set_sensitive(True)
-            self.txtActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
 
-    def __do_set_pwa_edge_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_pwa_edge_sensitive(self) -> None:
         """Set the widgets for PCB/PWA edge connectors sensitive or not.
 
         :return: None
@@ -597,30 +561,11 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self.subcategory_id == 2:
             self.txtAmpsContact.set_sensitive(True)
-            self.txtAmpsContact.do_update(
-                str(self.fmt.format(attributes["current_operating"])),
-                signal="changed",
-            )
-
             self.txtContactGauge.set_sensitive(True)
-            self.txtContactGauge.do_update(
-                str(attributes["contact_gauge"]),
-                signal="changed",
-            )
-
             self.txtMating.set_sensitive(True)
-            self.txtMating.do_update(
-                str(attributes["n_cycles"]),
-                signal="changed",
-            )
-
             self.txtActivePins.set_sensitive(True)
-            self.txtActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
 
-    def __do_set_pth_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_pth_sensitive(self) -> None:
         """Set the widgets for PTH connections sensitive or not.
 
         :return: None
@@ -628,17 +573,5 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self.subcategory_id == 4:
             self.txtNWave.set_sensitive(True)
-            self.txtNWave.do_update(
-                str(attributes["n_wave_soldered"]),
-                signal="changed",
-            )
             self.txtNHand.set_sensitive(True)
-            self.txtNHand.do_update(
-                str(attributes["n_hand_soldered"]),
-                signal="changed",
-            )
             self.txtNPlanes.set_sensitive(True)
-            self.txtNPlanes.do_update(
-                str(attributes["n_circuit_planes"]),
-                signal="changed",
-            )

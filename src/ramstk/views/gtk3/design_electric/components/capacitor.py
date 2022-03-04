@@ -659,6 +659,8 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
         self.cmbConstruction.do_load_combo(_construction, signal="changed")
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -674,6 +676,8 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._quality_id,
             signal="changed",
         )
+
+        self._do_set_sensitive()
 
     def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
         """Load the style RAMSTKComboBox() when the specification changes.
@@ -694,19 +698,19 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             _styles = []
         self.cmbStyle.do_load_combo(entries=_styles, signal="changed")
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.
 
         :return: None
         :rtype: None
         """
         if self._hazard_rate_method_id == 1:
-            self.__do_set_parts_count_sensitive(attributes)
+            self.__do_set_parts_count_sensitive()
         else:
-            self.__do_set_part_stress_sensitive(attributes)
+            self.__do_set_part_stress_sensitive()
 
     # pylint: disable=unused-argument
-    def __do_set_parts_count_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_parts_count_sensitive(self) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Parts Count.
 
         :return: None
@@ -722,51 +726,24 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.txtCapacitance.set_sensitive(False)
             self.txtESR.set_sensitive(False)
 
-    def __do_set_part_stress_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_part_stress_sensitive(self) -> None:
         """Set widget sensitivity as needed for MIL-HDBK-217F, Part Stress.
 
         :return: None
         :rtype: None
         """
         self.cmbSpecification.set_sensitive(True)
-        self.cmbSpecification.do_update(
-            attributes["specification_id"],
-            signal="changed",
-        )
         self.cmbStyle.set_sensitive(True)
-        self.cmbStyle.do_update(
-            attributes["type_id"],
-            signal="changed",
-        )
         self.txtCapacitance.set_sensitive(True)
-        self.txtCapacitance.do_update(
-            attributes["capacitance"],
-            signal="changed",
-        )
+        self.txtESR.set_sensitive(False)
+        self.cmbConstruction.set_sensitive(False)
+        self.cmbConfiguration.set_sensitive(False)
 
         if self.subcategory_id == 12:
             self.txtESR.set_sensitive(True)
-            self.txtESR.do_update(
-                attributes["resistance"],
-                signal="changed",
-            )
-        else:
-            self.txtESR.set_sensitive(False)
 
         if self.subcategory_id == 13:
             self.cmbConstruction.set_sensitive(True)
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
-        else:
-            self.cmbConstruction.set_sensitive(False)
 
         if self.subcategory_id == 19:
             self.cmbConfiguration.set_sensitive(True)
-            self.cmbConfiguration.do_update(
-                attributes["configuration_id"],
-                signal="changed",
-            )
-        else:
-            self.cmbConfiguration.set_sensitive(False)

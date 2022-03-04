@@ -484,6 +484,8 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -500,7 +502,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected IC.
 
         :return: None
@@ -524,43 +528,27 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self.txtYearsInProduction.set_sensitive(False)
 
         _dic_method = {
-            1: self.__do_load_linear,
-            2: self.__do_load_logic,
-            3: self.__do_load_pal_pla,
-            4: self.__do_load_microprocessor_microcontroller,
-            5: self.__do_load_rom,
-            6: self.__do_load_eeprom,
-            7: self.__do_load_dram,
-            8: self.__do_load_sram,
-            9: self.__do_load_gaas,
-            10: self.__do_load_vhsic_vlsi,
+            1: self.__do_set_linear_sensitive,
+            2: self.__do_set_logic_sensitive,
+            3: self.__do_set_pal_pla_sensitive,
+            4: self.__do_set_microprocessor_microcontroller_sensitive,
+            5: self.__do_set_rom_sensitive,
+            6: self.__do_set_eeprom_sensitive,
+            7: self.__do_set_dram_sensitive,
+            8: self.__do_set_sram_sensitive,
+            9: self.__do_set_gaas_sensitive,
+            10: self.__do_set_vhsic_vlsi_sensitive,
         }
         try:
             # noinspection PyArgumentList
-            _dic_method[self.subcategory_id](attributes)
+            _dic_method[self.subcategory_id]()
         except KeyError:
             pass
 
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.set_sensitive(True)
-            self.cmbPackage.do_update(
-                attributes["package_id"],
-                signal="changed",
-            )
             self.txtNElements.set_sensitive(True)
-            self.txtNElements.do_update(
-                str(attributes["n_elements"]),
-                signal="changed",
-            )
             self.txtThetaJC.set_sensitive(True)
-            self.txtThetaJC.do_update(
-                str(attributes["theta_jc"]),
-                signal="changed",
-            )
-            self.txtNActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
 
     def _do_load_application_combo(self, attributes: Dict[str, Any]) -> None:
         """Load the IC application RAMSTKComboBox().
@@ -582,227 +570,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 [[_("All digital devices")]],
                 signal="changed",
             )
-
-    def __do_load_dram(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display DRAM information.
-
-        :param attributes: the attributes dictionary for the selected
-            integrated circuit.
-        :return: None
-        """
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.do_update(
-                attributes["technology_id"],
-                signal="changed",
-            )
-        self.__do_set_dram_sensitive()
-
-    def __do_load_eeprom(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display EEPROM information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
-            self.cmbTechnology.do_update(
-                attributes["technology_id"],
-                signal="changed",
-            )
-            self.cmbECC.do_update(
-                attributes["family_id"],
-                signal="changed",
-            )
-            self.txtNCycles.do_update(
-                str(attributes["n_cycles"]),
-                signal="changed",
-            )
-            self.txtOperatingLife.do_update(
-                str(self.fmt.format(attributes["operating_life"])),
-                signal="changed",
-            )
-        self.__do_set_eeprom_sensitive()
-
-    def __do_load_gaas(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display GaAs IC information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbApplication.do_update(
-                attributes["application_id"],
-                signal="changed",
-            )
-            self.cmbType.do_update(
-                attributes["type_id"],
-                signal="changed",
-            )
-            self.txtYearsInProduction.do_update(
-                str(attributes["years_in_production"]),
-                signal="changed",
-            )
-        self.__do_set_gaas_sensitive()
-
-    def __do_load_linear(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display linear (analog) information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
-            self.txtYearsInProduction.do_update(
-                str(attributes["years_in_production"]),
-                signal="changed",
-            )
-
-        self.__do_set_linear_sensitive()
-
-    def __do_load_logic(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display digital IC information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
-            self.txtYearsInProduction.do_update(
-                str(attributes["years_in_production"]),
-                signal="changed",
-            )
-
-        self.__do_set_logic_sensitive()
-
-    def __do_load_microprocessor_microcontroller(
-        self, attributes: Dict[str, Any]
-    ) -> None:
-        """Load the widgets that display microprocessor information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
-            self.txtYearsInProduction.do_update(
-                str(attributes["years_in_production"]),
-                signal="changed",
-            )
-
-        self.__do_set_microprocessor_microcontroller_sensitive()
-
-    def __do_load_pal_pla(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display DRAM information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.txtNActivePins.do_update(
-                str(attributes["n_active_pins"]),
-                signal="changed",
-            )
-            self.txtYearsInProduction.do_update(
-                str(attributes["years_in_production"]),
-                signal="changed",
-            )
-
-        self.__do_set_pal_pla_sensitive()
-
-    def __do_load_rom(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display ROM information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        self.__do_set_rom_sensitive()
-
-    def __do_load_sram(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display SRAM information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbTechnology.do_update(
-            attributes["technology_id"],
-            signal="changed",
-        )
-        self.__do_set_sram_sensitive()
-
-    def __do_load_vhsic_vlsi(self, attributes: Dict[str, Any]) -> None:
-        """Load the widgets that display VHSIC/VLSI information.
-
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
-        :return: None
-        :rtype: None
-        """
-        self.cmbManufacturing.do_update(
-            attributes["manufacturing_id"],
-            signal="changed",
-        )
-        self.cmbType.do_update(attributes["type_id"])
-        self.txtArea.do_update(
-            str(self.fmt.format(attributes["area"])),
-            signal="changed",
-        )
-        self.txtFeatureSize.do_update(
-            str(self.fmt.format(attributes["feature_size"])),
-            signal="changed",
-        )
-        self.txtVoltageESD.do_update(
-            str(self.fmt.format(attributes["voltage_esd"])),
-            signal="changed",
-        )
-        self.__do_set_vhsic_vlsi_sensitive()
 
     def __do_set_dram_sensitive(self) -> None:
         """Set the widgets that display DRAM information sensitive.
@@ -865,7 +632,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbTechnology.set_sensitive(True)
         if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
             self.txtNElements.set_sensitive(True)
-
         elif self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.txtNActivePins.set_sensitive(True)
             self.txtYearsInProduction.set_sensitive(True)

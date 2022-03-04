@@ -352,6 +352,8 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
         self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -368,18 +370,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected relay.
 
         :return: None
         :rtype: None
         """
         self.cmbType.set_sensitive(True)
-        self.cmbType.do_update(
-            attributes["type_id"],
-            signal="changed",
-        )
-
         self.cmbLoadType.set_sensitive(False)
         self.cmbContactForm.set_sensitive(False)
         self.cmbContactRating.set_sensitive(False)
@@ -389,42 +388,14 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 2 and self.subcategory_id == 1:
             self.cmbLoadType.set_sensitive(True)
-            self.cmbLoadType.do_update(
-                attributes["technology_id"],
-                signal="changed",
-            )
-
             self.cmbContactForm.set_sensitive(True)
-            self.cmbContactForm.do_update(
-                attributes["contact_form_id"],
-                signal="changed",
-            )
-
             self.cmbContactRating.set_sensitive(True)
-            self.cmbContactRating.do_update(
-                attributes["contact_rating_id"],
-                signal="changed",
-            )
-
             self.cmbApplication.set_sensitive(True)
-            self.__do_load_application_combo()
-            self.cmbApplication.do_update(
-                attributes["application_id"],
-                signal="changed",
-            )
-
             self.cmbConstruction.set_sensitive(True)
-            self.__do_load_construction_combo()
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
-
             self.txtCycles.set_sensitive(True)
-            self.txtCycles.do_update(
-                str(attributes["n_cycles"]),
-                signal="changed",
-            )
+
+            self.__do_load_application_combo()
+            self.__do_load_construction_combo()
 
     def _on_combo_changed(self, __combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.

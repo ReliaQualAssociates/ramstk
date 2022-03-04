@@ -251,6 +251,8 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             [[_("Fixed")], [_("Variable")]], signal="changed"
         )
 
+        self._do_set_sensitive()
+
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.
 
@@ -294,7 +296,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected inductor.
 
         :return: None
@@ -309,45 +313,17 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 1:
             self.cmbFamily.set_sensitive(True)
-            self.cmbFamily.do_update(
-                attributes["family_id"],
-                signal="changed",
-            )
         else:
             self.cmbSpecification.set_sensitive(True)
-            self.cmbSpecification.do_update(
-                attributes["specification_id"],
-                signal="changed",
-            )
             self.cmbInsulation.set_sensitive(True)
-            self.cmbInsulation.do_update(
-                attributes["insulation_id"],
-                signal="changed",
-            )
             self.txtArea.set_sensitive(True)
-            self.txtArea.do_update(
-                attributes["area"],
-                signal="changed",
-            )
             self.txtWeight.set_sensitive(True)
-            self.txtWeight.do_update(
-                attributes["weight"],
-                signal="changed",
-            )
 
             if self.subcategory_id == 1:
                 self.cmbFamily.set_sensitive(True)
-                self.cmbFamily.do_update(
-                    attributes["family_id"],
-                    signal="changed",
-                )
 
             if self.subcategory_id == 2:
                 self.cmbConstruction.set_sensitive(True)
-                self.cmbConstruction.do_update(
-                    attributes["construction_id"],
-                    signal="changed",
-                )
 
     def __do_load_family_combobox(self) -> None:
         """Load the family RAMSTKComboBox().

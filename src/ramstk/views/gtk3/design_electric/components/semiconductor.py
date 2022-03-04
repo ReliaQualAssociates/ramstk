@@ -412,6 +412,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_matching()
         self.__do_load_type()
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -428,33 +430,33 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected semiconductor.
 
         :return: None
         :rtype: None
         """
+        self.cmbApplication.set_sensitive(False)
+        self.cmbConstruction.set_sensitive(False)
+        self.cmbMatching.set_sensitive(False)
+        self.cmbType.set_sensitive(False)
         self.cmbPackage.set_sensitive(False)
+        self.txtFrequencyOperating.set_sensitive(False)
+        self.txtNElements.set_sensitive(False)
         self.txtThetaJC.set_sensitive(False)
 
-        self.__do_set_application_sensitive(attributes)
-        self.__do_set_construction_sensitive(attributes)
-        self.__do_set_elements_sensitive(attributes)
-        self.__do_set_matching_sensitive(attributes)
-        self.__do_set_op_freq_sensitive(attributes)
-        self.__do_set_type_sensitive(attributes)
+        self.__do_set_application_sensitive()
+        self.__do_set_construction_sensitive()
+        self.__do_set_elements_sensitive()
+        self.__do_set_matching_sensitive()
+        self.__do_set_op_freq_sensitive()
+        self.__do_set_type_sensitive()
 
         if self._hazard_rate_method_id == 2:
             self.cmbPackage.set_sensitive(True)
-            self.cmbPackage.do_update(
-                attributes["package_id"],
-                signal="changed",
-            )
             self.txtThetaJC.set_sensitive(True)
-            self.txtThetaJC.do_update(
-                str(self.fmt.format(attributes["theta_jc"] or 0.0)),
-                signal="changed",
-            )
 
     def __do_load_application(self) -> None:
         """Load the application RAMSTKComboBox() with selections.
@@ -541,7 +543,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
-    def __do_set_application_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_application_sensitive(self) -> None:
         """Set the application RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -556,14 +558,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             13,
         ]:
             self.cmbApplication.set_sensitive(True)
-            self.cmbApplication.do_update(
-                attributes["application_id"],
-                signal="changed",
-            )
-        else:
-            self.cmbApplication.set_sensitive(False)
 
-    def __do_set_construction_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_construction_sensitive(self) -> None:
         """Set the construction RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -571,14 +567,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self._hazard_rate_method_id == 2 and self.subcategory_id in [1, 12]:
             self.cmbConstruction.set_sensitive(True)
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
-        else:
-            self.cmbConstruction.set_sensitive(False)
 
-    def __do_set_elements_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_elements_sensitive(self) -> None:
         """Set the number of elements RAMSTKEntry() sensitive or not.
 
         :return: None
@@ -586,14 +576,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.txtNElements.set_sensitive(True)
-            self.txtNElements.do_update(
-                str(attributes["n_elements"]),
-                signal="changed",
-            )
-        else:
-            self.txtNElements.set_sensitive(False)
 
-    def __do_set_matching_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_matching_sensitive(self) -> None:
         """Set the matching RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -601,14 +585,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.cmbMatching.set_sensitive(True)
-            self.cmbMatching.do_update(
-                attributes["matching_id"],
-                signal="changed",
-            )
-        else:
-            self.cmbMatching.set_sensitive(False)
 
-    def __do_set_op_freq_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_op_freq_sensitive(self) -> None:
         """Set the operating frequency RAMSTKEntry() sensitive or not.
 
         :return: None
@@ -616,14 +594,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
             self.txtFrequencyOperating.set_sensitive(True)
-            self.txtFrequencyOperating.do_update(
-                str(self.fmt.format(attributes["frequency_operating"])),
-                signal="changed",
-            )
-        else:
-            self.txtFrequencyOperating.set_sensitive(False)
 
-    def __do_set_type_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_type_sensitive(self) -> None:
         """Set the type RAMSTKComboBox() sensitive or not.
 
         :return: None
@@ -655,7 +627,3 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             ]
         ):
             self.cmbType.set_sensitive(True)
-            self.cmbType.do_update(
-                attributes["type_id"],
-                signal="changed",
-            )
