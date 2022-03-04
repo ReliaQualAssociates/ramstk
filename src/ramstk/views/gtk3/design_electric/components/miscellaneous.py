@@ -206,6 +206,8 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                 signal="changed",
             )
 
+        self._do_set_sensitive()
+
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the hardware attributes are retrieved.
 
@@ -232,7 +234,9 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity for the selected Miscellaneous item.
 
         :return: None
@@ -249,11 +253,11 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             4: self.__do_set_lamp_sensitive,
         }
         try:
-            _dic_method[self.subcategory_id](attributes)
+            _dic_method[self.subcategory_id]()
         except KeyError:
             pass
 
-    def __do_set_crystal_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_crystal_sensitive(self) -> None:
         """Set the widget sensitivity as needed for a Crystal.
 
         :return: None
@@ -261,38 +265,22 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if self._hazard_rate_method_id == 2:
             self.txtFrequency.set_sensitive(True)
-            self.txtFrequency.do_update(
-                attributes["frequency_operating"],
-                signal="changed",
-            )
 
-    def __do_set_filter_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_filter_sensitive(self) -> None:
         """Set the widget sensitivity as needed for an electronic filter.
 
         :return: None
         :rtype: None
         """
         self.cmbType.set_sensitive(True)
-        self.cmbType.do_update(
-            attributes["type_id"],
-            signal="changed",
-        )
 
-    def __do_set_lamp_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_lamp_sensitive(self) -> None:
         """Set the widget sensitivity as needed for a Lamp.
 
         :return: None
         :rtype: None
         """
         self.cmbApplication.set_sensitive(True)
-        self.cmbApplication.do_update(
-            attributes["application_id"],
-            signal="changed",
-        )
 
         if self._hazard_rate_method_id == 2:
             self.txtUtilization.set_sensitive(True)
-            self.txtUtilization.do_update(
-                self._duty_cycle,
-                signal="changed",
-            )

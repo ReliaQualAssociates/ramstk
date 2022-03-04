@@ -177,6 +177,8 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -193,7 +195,9 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected meter.
 
         :return: None
@@ -201,14 +205,6 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.cmbApplication.set_sensitive(False)
         self.cmbType.set_sensitive(True)
-        self.cmbType.do_update(
-            attributes["type_id"],
-            signal="changed",
-        )
 
         if self._hazard_rate_method_id == 2 and self.subcategory_id == 2:
             self.cmbApplication.set_sensitive(True)
-            self.cmbApplication.do_update(
-                attributes["application_id"],
-                signal="changed",
-            )

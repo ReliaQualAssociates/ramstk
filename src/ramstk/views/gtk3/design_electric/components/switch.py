@@ -250,6 +250,8 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbContactForm.do_load_combo(_data, signal="changed")
 
+        self._do_set_sensitive()
+
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
@@ -266,7 +268,9 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
+        self._do_set_sensitive()
+
+    def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected switch.
 
         :return: None
@@ -280,23 +284,15 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 1 and self.subcategory_id == 5:
             self.cmbConstruction.set_sensitive(True)
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
         elif self._hazard_rate_method_id == 2:
             self.cmbApplication.set_sensitive(True)
-            self.cmbApplication.do_update(
-                attributes["application_id"],
-                signal="changed",
-            )
 
-            self.__do_set_construction_sensitive(attributes)
-            self.__do_set_contact_form_sensitive(attributes)
-            self.__do_set_cycles_sensitive(attributes)
-            self.__do_set_elements_sensitive(attributes)
+            self.__do_set_construction_sensitive()
+            self.__do_set_contact_form_sensitive()
+            self.__do_set_cycles_sensitive()
+            self.__do_set_elements_sensitive()
 
-    def __do_set_construction_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_construction_sensitive(self) -> None:
         """Set the construction RAMSTKCombo() sensitive.
 
         :return: None
@@ -309,12 +305,8 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             5,
         ]:
             self.cmbConstruction.set_sensitive(True)
-            self.cmbConstruction.do_update(
-                attributes["construction_id"],
-                signal="changed",
-            )
 
-    def __do_set_contact_form_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_contact_form_sensitive(self) -> None:
         """Set the contact form RAMSTKCombo() sensitive.
 
         :return: None
@@ -325,12 +317,8 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             5,
         ]:
             self.cmbContactForm.set_sensitive(True)
-            self.cmbContactForm.do_update(
-                attributes["contact_form_id"],
-                signal="changed",
-            )
 
-    def __do_set_cycles_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_cycles_sensitive(self) -> None:
         """Set the number of cycles RAMSTKEntry() sensitive.
 
         :return: None
@@ -343,12 +331,8 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             4,
         ]:
             self.txtNCycles.set_sensitive(True)
-            self.txtNCycles.do_update(
-                str(attributes["n_cycles"]),
-                signal="changed",
-            )
 
-    def __do_set_elements_sensitive(self, attributes: Dict[str, Any]) -> None:
+    def __do_set_elements_sensitive(self) -> None:
         """Set the number of active elements RAMSTKEntry() sensitive.
 
         :return: None
@@ -360,7 +344,3 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             4,
         ]:
             self.txtNElements.set_sensitive(True)
-            self.txtNElements.do_update(
-                str(attributes["n_elements"]),
-                signal="changed",
-            )
