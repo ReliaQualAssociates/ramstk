@@ -164,18 +164,16 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         )
         pub.subscribe(
             self.do_load_panel,
-            self._select_msg,
+            f"selected_{self._tag}",
         )
-        pub.subscribe(self.on_edit, f"mvw_editing_{self._tag}")
-
-        # Generally used with panels that accept inputs and are, thus, editable.
-        try:
-            pub.subscribe(
-                self._do_set_sensitive,
-                f"succeed_get_{self._tag}_attributes",
-            )
-        except AttributeError:
-            pass
+        pub.subscribe(
+            self.do_load_panel,
+            f"succeed_get_{self._tag}_attributes",
+        )
+        pub.subscribe(
+            self.on_edit,
+            f"mvw_editing_{self._tag}",
+        )
 
         # Generally used with panels that display results and are, thus, uneditable.
         try:
