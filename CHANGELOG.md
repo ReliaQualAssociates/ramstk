@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.16.2](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.2) (2022-03-05)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.1...v0.16.2)
+
+Bug Fixes
+
+- fix: raise dialog to inform user of issues encountered while running application [\#1023](https://github.com/ReliaQualAssociates/ramstk/pull/1023) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- refactor: use keys instead of numbers for loading Hazard Analysis CellRendererCombos [\#1022](https://github.com/ReliaQualAssociates/ramstk/pull/1022) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.16.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.1) (2022-03-04)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.0...v0.16.1)
@@ -162,7 +174,6 @@ Bug Fixes
 Bug Fixes
 
 - fix: DVP&R plan actual status not loading [\#921](https://github.com/ReliaQualAssociates/ramstk/pull/921) ([weibullguy](https://github.com/weibullguy))
-- fix: verification task calculation not completing [\#918](https://github.com/ReliaQualAssociates/ramstk/pull/918) ([weibullguy](https://github.com/weibullguy))
 
 **Merged pull requests:**
 
@@ -171,10 +182,6 @@ Bug Fixes
 ## [v0.15.10](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.10) (2022-01-27)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.9...v0.15.10)
-
-Bug Fixes
-
-- fix: fail to insert verification task [\#915](https://github.com/ReliaQualAssociates/ramstk/pull/915) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.9](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.9) (2022-01-26)
 
