@@ -3,12 +3,12 @@
 #       ramstk.views.gtk3.desktop.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""The RAMSTK GTK3 basebook."""
+# Copyright since 2007 Doyle "weibulguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK GTK3 desktop."""
 
 # Standard Library Imports
 import locale
-from typing import List, TypeVar
+from typing import Dict, List, TypeVar
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -27,6 +27,7 @@ from ramstk.views.gtk3.assistants import (
 from ramstk.views.gtk3.books import RAMSTKModuleBook, RAMSTKWorkBook
 from ramstk.views.gtk3.options import OptionsDialog
 from ramstk.views.gtk3.preferences import PreferencesDialog
+from ramstk.views.gtk3.widgets import RAMSTKMessageDialog
 
 Tconfiguration = TypeVar(
     "Tconfiguration", RAMSTKUserConfiguration, RAMSTKSiteConfiguration
@@ -143,9 +144,62 @@ class RAMSTKDesktop(Gtk.Window):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_request_open, "request_open_program ")
-        pub.subscribe(self._on_select, "request_set_title")
-        pub.subscribe(self._do_set_status, "request_set_status")
+        pub.subscribe(
+            self._on_request_open,
+            "request_open_program",
+        )
+        pub.subscribe(
+            self._on_select,
+            "request_set_title",
+        )
+        pub.subscribe(
+            self._do_set_status,
+            "request_set_status",
+        )
+        pub.subscribe(
+            self._do_raise_message_dialog,
+            "do_log_critical_msg",
+        )
+        pub.subscribe(
+            self._do_raise_message_dialog,
+            "do_log_debug_msg",
+        )
+        pub.subscribe(
+            self._do_raise_message_dialog,
+            "do_log_error_msg",
+        )
+        pub.subscribe(
+            self._do_raise_message_dialog,
+            "do_log_warning_msg",
+        )
+
+    def _do_raise_message_dialog(self, logger_name: str, message: str) -> None:
+        """Raise a message dialog to alert the user to an issue.
+
+        :param logger_name: the name of the logger the message is indtended for.
+            The message will only be presented to the user if it's the same or higher
+            than the user selected log level.
+        :param message: the info, debug, error, etc. message.
+        :return: None
+        :rtype: None
+        """
+        self.statusbar.push(2, message)
+        if logger_name == self.RAMSTK_USER_CONFIGURATION.RAMSTK_LOGLEVEL:
+            _dialog = RAMSTKMessageDialog(parent=self)
+            _dialog.do_set_message(message)
+            _dialog.do_set_message_type(logger_name.lower())
+            if _dialog.do_run() == Gtk.ResponseType.OK:
+                _dialog.do_destroy()
+
+    @staticmethod
+    def _do_request_close_project(__widget: Gtk.Widget) -> None:
+        """Request to close the open RAMSTK Program.
+
+        :param Gtk.Widget __widget: the Gtk.Widget() that called this method.
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage("request_close_project")
 
     def _do_request_options_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
         """Request the EditOptions assistant be launched.
@@ -187,6 +241,125 @@ class RAMSTKDesktop(Gtk.Window):
         _assistant.add(_preferences)
 
         _assistant.show_all()
+
+    # noinspection PyDeepBugsSwappedArgs
+    def _do_request_save_project(self, widget: Gtk.Widget, end: bool = False) -> None:
+        """Request to save the open RAMSTK Program.
+
+        :param Gtk.Widget widget: the Gtk.Widget() that called this method.
+        :keyword bool end: indicates whether or not to quit RAMSTK after saving
+            the project.
+        :return: None
+        :rtype: None
+        """
+        _message = _("Saving Program Database {0:s}").format(
+            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
+        )
+        self.statusbar.push(2, _message)
+
+        pub.sendMessage("request_save_project")
+
+        if end:
+            destroy(widget)
+
+    def _do_set_status(self, status: str) -> None:
+        """Set the status message.
+
+        :param status: the status message to display.
+        :return: None
+        :rtype: None
+        """
+        self.statusbar.push(1, status)
+
+    def _do_set_status_icon(self, connected: bool = False) -> None:
+        """Set the status icon in the system tay to indicate connection status.
+
+        :param bool connected: whether or not RAMSTK is connected to a program
+            database.
+        :return: None
+        :rtype: None
+        """
+        _pixbuf: GdkPixbuf.Pixbuf = GdkPixbuf.Pixbuf()
+
+        if connected:
+            _icon: str = (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + "/32x32/db-connected.png"
+            )
+            _tooltip: str = _(
+                f"RAMSTK is connected to program database "
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}."
+            )
+        else:
+            _icon = (
+                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
+                + "/32x32/db-disconnected.png"
+            )
+            _tooltip = _("RAMSTK is not currently connected to a project database.")
+
+        self.icoStatus.set_from_pixbuf(_pixbuf.new_from_file_at_size(_icon, 22, 22))
+        self.icoStatus.set_tooltip_markup(_tooltip)
+
+    def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None:
+        """Handle mouse clicks on the RAMSTKBook.
+
+        :param __book: the RAMSTKBook that was 'clicked'.
+        :param event: the Gdk.Event() that called this method (the
+                      important attribute is which mouse button was clicked).
+
+                      * 1 = left
+                      * 2 = scrollwheel
+                      * 3 = right
+                      * 4 = forward
+                      * 5 = backward
+                      * 8 =
+                      * 9 =
+
+        :type event: :class:`Gdk.Event`
+        :return: None
+        :rtype: None
+        """
+        if event.button == 1:
+            self.present()
+
+    # pylint: disable=unused-argument
+    # noinspection PyUnusedLocal
+    def _on_request_open(self, program_db: object, database: Dict[str, str]) -> None:
+        """Set the status bar and update the progress bar.
+
+        :param program_db: the BaseDatabase used for the ProgramDB.  Unused in this
+            method, but required as it is part of the message payload.
+        :param database: the dict containing the database connection information.
+        :return: None
+        :rtype: None
+        """
+        _message = _(
+            f"Opening Program Database {database['database']} on server "
+            f"{database['host']}"
+        )
+        # noinspection PyDeepBugsSwappedArgs
+        self.statusbar.push(1, _message)
+
+        _message = _(f"Analyzing {database['database']} on server {database['host']}")
+        # noinspection PyDeepBugsSwappedArgs
+        self.statusbar.push(1, _message)
+        self.set_title(_message)
+
+    def _on_select(self, title: str) -> None:
+        """Respond to load the Work View Gtk.Notebook() widgets.
+
+        This method handles the results of the an individual module's
+        _on_select() method.  It sets the title of the RAMSTK Work Book and
+        raises an error dialog if needed.
+
+        :return: None
+        :rtype: None
+        """
+        try:
+            self.set_title(title)
+        except AttributeError as _error:
+            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
+            self.do_raise_dialog(severity="warning", user_msg=_error)
 
     def __make_menu(self) -> None:
         """Make the menu for the Module Book.
@@ -447,129 +620,3 @@ class RAMSTKDesktop(Gtk.Window):
         _height = 15 * self._height / 16
         self.resize(_width, _height)
         self.move(50, 5)
-
-    @staticmethod
-    def _do_request_close_project(__widget: Gtk.Widget) -> None:
-        """Request to close the open RAMSTK Program.
-
-        :param Gtk.Widget __widget: the Gtk.Widget() that called this method.
-        :return: None
-        :rtype: None
-        """
-        pub.sendMessage("request_close_project")
-
-    # noinspection PyDeepBugsSwappedArgs
-    def _do_request_save_project(self, widget: Gtk.Widget, end: bool = False) -> None:
-        """Request to save the open RAMSTK Program.
-
-        :param Gtk.Widget widget: the Gtk.Widget() that called this method.
-        :keyword bool end: indicates whether or not to quit RAMSTK after saving
-            the project.
-        :return: None
-        :rtype: None
-        """
-        _message = _("Saving Program Database {0:s}").format(
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO["database"]
-        )
-        self.statusbar.push(2, _message)
-
-        pub.sendMessage("request_save_project")
-
-        if end:
-            destroy(widget)
-
-    def _do_set_status(self, status: str) -> None:
-        """Set the status message.
-
-        :param status: the status message to display.
-        :return: None
-        :rtype: None
-        """
-        self.statusbar.push(1, status)
-
-    def _do_set_status_icon(self, connected: bool = False) -> None:
-        """Set the status icon in the system tay to indicate connection status.
-
-        :param bool connected: whether or not RAMSTK is connected to a program
-            database.
-        :return: None
-        :rtype: None
-        """
-        _pixbuf: GdkPixbuf.Pixbuf = GdkPixbuf.Pixbuf()
-
-        if connected:
-            _icon: str = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + "/32x32/db-connected.png"
-            )
-            _tooltip: str = _(
-                f"RAMSTK is connected to program database "
-                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}."
-            )
-        else:
-            _icon = (
-                self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                + "/32x32/db-disconnected.png"
-            )
-            _tooltip = _("RAMSTK is not currently connected to a project database.")
-
-        self.icoStatus.set_from_pixbuf(_pixbuf.new_from_file_at_size(_icon, 22, 22))
-        self.icoStatus.set_tooltip_markup(_tooltip)
-
-    def _on_button_press(self, __book: object, event: Gdk.EventButton) -> None:
-        """Handle mouse clicks on the RAMSTKBook.
-
-        :param __book: the RAMSTKBook that was 'clicked'.
-        :param event: the Gdk.Event() that called this method (the
-                      important attribute is which mouse button was clicked).
-
-                      * 1 = left
-                      * 2 = scrollwheel
-                      * 3 = right
-                      * 4 = forward
-                      * 5 = backward
-                      * 8 =
-                      * 9 =
-
-        :type event: :class:`Gdk.Event`
-        :return: None
-        :rtype: None
-        """
-        if event.button == 1:
-            self.present()
-
-    def _on_request_open(self) -> None:
-        """Set the status bar and update the progress bar.
-
-        :return: None
-        :rtype: None
-        """
-        _message = _(
-            f"Opening Program Database "
-            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
-        )
-
-        # noinspection PyDeepBugsSwappedArgs
-        self.statusbar.push(1, _message)
-        self.set_title(
-            _(
-                f"RAMSTK - Analyzing "
-                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['database']}"
-            )
-        )
-
-    def _on_select(self, title: str) -> None:
-        """Respond to load the Work View Gtk.Notebook() widgets.
-
-        This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RAMSTK Work Book and
-        raises an error dialog if needed.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            self.set_title(title)
-        except AttributeError as _error:
-            self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
-            self.do_raise_dialog(severity="warning", user_msg=_error)
