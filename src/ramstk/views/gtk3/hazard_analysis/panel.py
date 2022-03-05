@@ -7,7 +7,7 @@
 """GTK3 Hazard Analysis Panels."""
 
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List
 
 # Third Party Imports
 from pubsub import pub
@@ -711,6 +711,9 @@ class HazardsTreePanel(RAMSTKTreePanel):
         }
 
         # Initialize public list instance attributes.
+        self.lst_hazards: List[str] = [""]
+        self.lst_severity: List[str] = [""]
+        self.lst_probability: List[str] = [""]
 
         # Initialize public scalar instance attributes.
 
@@ -742,44 +745,38 @@ class HazardsTreePanel(RAMSTKTreePanel):
         """
         return model[row][1] == self._parent_id
 
-    def do_load_severity(self, criticalities: Dict[int, Tuple[str, str, int]]) -> None:
-        """Load the Gtk.CellRendererCombo() containing severities.
+    def do_load_comboboxes(self) -> None:
+        """Load the Gtk.CellRendererCombo()s.
 
-        :param criticalities: the dict containing the hazard severity
-            categories and values.
         :return: None
         :rtype: None
         """
-        # See ISSUE 1006
-        for i in [6, 10, 14, 18]:
-            _model = self.tvwTreeView.get_cell_model(i)
-            for _key in criticalities:
-                _model.append((criticalities[_key][1],))
+        self.tvwTreeView.do_load_combo_cell(
+            self.tvwTreeView.position["potential_hazard"],
+            self.lst_hazards,
+        )
 
-    def do_load_hazards(self, hazards: Dict[Any, Any]) -> None:
-        """Load the Gtk.CellRendererCombos() containing hazards.
+        for _key in [
+            "assembly_probability",
+            "assembly_probability_f",
+            "system_probability",
+            "system_probability_f",
+        ]:
+            self.tvwTreeView.do_load_combo_cell(
+                self.tvwTreeView.position[_key],
+                self.lst_probability,
+            )
 
-        :param hazards: the dict containing the hazards and hazard types
-            to be considered.
-        :return: None
-        :rtype: None
-        """
-        _model = self.tvwTreeView.get_cell_model(3)
-        for _key in hazards:
-            _hazard = f"{hazards[_key][0]}, {hazards[_key][1]}"
-            _model.append((_hazard,))
-
-    def do_load_probability(self, probabilities: List[str]) -> None:
-        """Load the Gtk.CellRendererCombos() containing probabilities.
-
-        :param probabilities: the list of hazard probabilities.
-        :return: None
-        :rtype: None
-        """
-        for i in [7, 11, 15, 19]:
-            _model = self.tvwTreeView.get_cell_model(i)
-            for _probability in probabilities:
-                _model.append((_probability[0],))
+        for _key in [
+            "assembly_severity",
+            "assembly_severity_f",
+            "system_severity",
+            "system_severity_f",
+        ]:
+            self.tvwTreeView.do_load_combo_cell(
+                self.tvwTreeView.position[_key],
+                self.lst_severity,
+            )
 
     def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
         """Refresh the Similar Item functions in the RAMSTKTreeView().
