@@ -222,7 +222,7 @@ class OpenProject:
         )
         _dialog = RAMSTKMessageDialog(parent=self._parent)
         _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type("information")
+        _dialog.do_set_message_type("info")
 
         if _dialog.run() == Gtk.ResponseType.OK:
             _dialog.destroy()

@@ -223,7 +223,7 @@ class HardwareModuleView(RAMSTKModuleView):
             )
             _dialog = super().do_raise_dialog(parent=_parent)
             _dialog.do_set_message(message=_message)
-            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_set_message_type(message_type="info")
             _dialog.do_run()
             _dialog.do_destroy()
             return
@@ -273,7 +273,7 @@ class HardwareModuleView(RAMSTKModuleView):
             )
             _dialog = super().do_raise_dialog(parent=_parent)
             _dialog.do_set_message(message=_message)
-            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_set_message_type(message_type="info")
             _dialog.do_run()
             _dialog.do_destroy()
             return
@@ -325,7 +325,7 @@ class HardwareModuleView(RAMSTKModuleView):
             )
             _dialog = super().do_raise_dialog(parent=_parent)
             _dialog.do_set_message(message=_message)
-            _dialog.do_set_message_type(message_type="information")
+            _dialog.do_set_message_type(message_type="info")
             _dialog.do_run()
             _dialog.do_destroy()
             return
