@@ -172,7 +172,7 @@ class RAMSTKBaseTable:
             )
         except (AttributeError, DataAccessError, NodeIDAbsentError):
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Attempted to delete non-existent "
@@ -194,7 +194,7 @@ class RAMSTKBaseTable:
             )
         except AttributeError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"No attributes found for record ID {node_id} in {self._tag} table."
@@ -245,13 +245,13 @@ class RAMSTKBaseTable:
             )
         except DataAccessError as _error:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=str(_error.msg),
             )
         except NodeIDAbsentError as _error:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=str(_error),
             )
@@ -274,7 +274,7 @@ class RAMSTKBaseTable:
             TypeError,
         ):
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"No data package for node ID {node_id} in module {self._tag}."
@@ -341,7 +341,7 @@ class RAMSTKBaseTable:
             _attributes = self.do_select(node_id).get_attributes()
         except (AttributeError, KeyError):
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"No data package for node ID {node_id} in module {self._tag}."
@@ -405,7 +405,7 @@ class RAMSTKBaseTable:
             )
         except AttributeError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Attempted to save non-existent {self._tag.replace('_', ' ')} "
@@ -414,7 +414,7 @@ class RAMSTKBaseTable:
             )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"No data package found for {self._tag.replace('_', ' ')} ID "
@@ -430,7 +430,7 @@ class RAMSTKBaseTable:
             else:
                 _error_msg = _(f"Attempting to update the root node {node_id}.")
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_error_msg,
             )

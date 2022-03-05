@@ -116,7 +116,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Failed to calculate similar item reliability for hardware ID "
