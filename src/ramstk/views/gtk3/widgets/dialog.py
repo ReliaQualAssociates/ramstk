@@ -469,8 +469,9 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         _dic_message_type = {
             "error": Gtk.MessageType.ERROR,
             "warning": Gtk.MessageType.WARNING,
-            "information": Gtk.MessageType.INFO,
+            "info": Gtk.MessageType.INFO,
             "question": Gtk.MessageType.QUESTION,
+            "debug": Gtk.MessageType.OTHER,
         }
 
         _prompt = self.get_property("text")
@@ -489,7 +490,7 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
         self.set_markup(_prompt)
         self.set_property("message-type", _dic_message_type[message_type])
 
-        if message_type in {"error", "warning", "information"}:
+        if message_type in {"error", "warning", "info", "debug"}:
             self.add_buttons("_OK", Gtk.ResponseType.OK)
         elif message_type == "question":
             self.add_buttons(

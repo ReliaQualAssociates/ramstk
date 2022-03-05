@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any
+from typing import Dict
 
 # Third Party Imports
 from treelib import Tree as Tree
@@ -13,8 +13,8 @@ from ramstk.views.gtk3.revision import RevisionModuleView as RevisionModuleView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook as RAMSTKBaseBook
 
 class RAMSTKModuleBook(RAMSTKBaseBook):
-    _dic_module_views: Any
-    icoStatus: Any
+    _dic_module_views: Dict[str, object]
+    icoStatus: Gtk.StatusIcon
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...

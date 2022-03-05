@@ -408,7 +408,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
             )
         except ZeroDivisionError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Failed to calculate current ratio for hardware ID "
@@ -430,7 +430,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
             )
         except ZeroDivisionError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Failed to calculate power ratio for hardware ID "
@@ -453,7 +453,7 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
             )
         except ZeroDivisionError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"Failed to calculate voltage ratio for hardware ID "

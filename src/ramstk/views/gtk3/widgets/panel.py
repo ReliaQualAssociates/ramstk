@@ -353,7 +353,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 )
         except (KeyError, ValueError):
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while editing {self._tag} data for record ID "
@@ -485,7 +485,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _widget.do_update(_value, _signal)  # type: ignore
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while updating {self._tag} data for record ID "
@@ -495,7 +495,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             )
         except TypeError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while updating {self._tag} data for record ID "
@@ -530,7 +530,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while updating {self._tag} data for record ID "
@@ -562,7 +562,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
                 _new_text = str(entry.do_get_text())
         except (KeyError, ValueError):
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while reading {self._tag} data for record ID "
@@ -766,7 +766,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 self.show_all()
         except TypeError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while loading {self._tag} data for Record ID "
@@ -776,7 +776,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             )
         except ValueError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while loading {self._tag} data for Record ID "
@@ -916,7 +916,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             _model.set_value(_row, _position, _value)
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while refreshing {self._tag} data for Record "
@@ -926,7 +926,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             )
         except TypeError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while refreshing {self._tag} data "
@@ -1068,7 +1068,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while editing {self._tag} data for record ID "
@@ -1110,7 +1110,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
             )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while editing {self._tag} data for record ID "
@@ -1144,7 +1144,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 )
         except KeyError:
             pub.sendMessage(
-                "do_log_debug",
+                "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while editing {self._tag} data for record ID "

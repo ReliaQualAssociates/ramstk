@@ -6,6 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Module Book Module."""
 
+# Standard Library Imports
+from typing import Dict
+
 # Third Party Imports
 from pubsub import pub
 from treelib import Tree
@@ -13,7 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
-from ramstk.views.gtk3 import Gtk
+from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.function import FunctionModuleView
 from ramstk.views.gtk3.hardware import HardwareModuleView
 from ramstk.views.gtk3.requirement import RequirementModuleView
@@ -44,7 +47,7 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         RAMSTKBaseBook.__init__(self, configuration)
 
         # Initialize private dictionary attributes.
-        self._dic_module_views = {
+        self._dic_module_views: Dict[str, object] = {
             "revision": RevisionModuleView(configuration, logger),
             "function": FunctionModuleView(configuration, logger),
             "requirement": RequirementModuleView(configuration, logger),
@@ -68,35 +71,13 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_open, "succeed_retrieve_all_revision")
-        pub.subscribe(self._on_close, "succeed_closed_program")
-
-    def __make_ui(self) -> None:
-        """Build the user interface.
-
-        :return: None
-        :rtype: None
-        """
-        self.insert_page(
-            self._dic_module_views["revision"],
-            tab_label=self._dic_module_views["revision"].hbx_tab_label,
-            position=0,
+        pub.subscribe(
+            self._on_open,
+            "succeed_retrieve_all_revision",
         )
-
-        self.show_all()
-        self.set_current_page(0)
-
-    def __set_callbacks(self) -> None:
-        """Set callback methods for the RAMSTKModuleBook and widgets.
-
-        :return: None
-        :rtype: None
-        """
-        self.dic_handler_id["select-page"] = self.connect(
-            "select-page", self._on_switch_page
-        )
-        self.dic_handler_id["switch-page"] = self.connect(
-            "switch-page", self._on_switch_page
+        pub.subscribe(
+            self._on_close,
+            "succeed_closed_program",
         )
 
     def _on_close(self) -> None:
@@ -108,11 +89,11 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         # Remove all the non-Revision pages.
         _n_pages = self.get_n_pages()
         # pylint: disable=unused-variable
-        for _page in range(_n_pages - 1):
+        for __ in range(_n_pages - 1):
             self.remove_page(-1)
 
         # Clear the Revision page treeview.
-        _model = self._dic_module_views["revision"].treeview.get_model()
+        _model = self._dic_module_views["revision"].treeview.get_model()  # type: ignore
         _model.clear()
 
     # pylint: disable=unused-argument
@@ -133,7 +114,9 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
             try:
                 _module = self._dic_module_views[_mkey]
                 self.insert_page(
-                    _module, tab_label=_module.hbx_tab_label, position=_key
+                    _module,
+                    tab_label=_module.hbx_tab_label,  # type: ignore
+                    position=_key,
                 )
             except KeyError:
                 pass
@@ -163,10 +146,47 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         :return: None
         :rtype: None
         """
-        # See ISSUE #1005
         try:
             _module = self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER[page_num]
         except KeyError:
             _module = "revision"
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=_(
+                    f"Page number {page_num} is not active in this Program.  "
+                    f"Active page numbers and their associated work flow "
+                    f"module are {self.RAMSTK_USER_CONFIGURATION.RAMSTK_PAGE_NUMBER}.  "
+                    f"Selecting the Revision work flow module by default."
+                ),
+            )
 
         pub.sendMessage("mvwSwitchedPage", module=_module)
+
+    def __make_ui(self) -> None:
+        """Build the user interface.
+
+        :return: None
+        :rtype: None
+        """
+        self.insert_page(
+            self._dic_module_views["revision"],
+            tab_label=self._dic_module_views["revision"].hbx_tab_label,  # type: ignore
+            position=0,
+        )
+
+        self.show_all()
+        self.set_current_page(0)
+
+    def __set_callbacks(self) -> None:
+        """Set callback methods for the RAMSTKModuleBook and widgets.
+
+        :return: None
+        :rtype: None
+        """
+        self.dic_handler_id["select-page"] = self.connect(
+            "select-page", self._on_switch_page
+        )
+        self.dic_handler_id["switch-page"] = self.connect(
+            "switch-page", self._on_switch_page
+        )

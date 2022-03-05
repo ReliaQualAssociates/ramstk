@@ -89,10 +89,11 @@ class TestRAMSTKMessageDialog:
         assert DUT.get_property("text") == (
             "<b>Test Prompt  Check the error log for additional information "
             "(if any).  Please e-mail <span foreground='blue' "
-            "underline='single'><a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG REPORT: "
-            "<ADD SHORT PROBLEM DESCRIPTION>&amp;body=RAMSTK "
+            "underline='single'><a href='mailto:bugs@reliaqual.com?subject=RAMSTK BUG "
+            "REPORT: <ADD SHORT PROBLEM DESCRIPTION>&amp;body=RAMSTK "
             "MODULE:%0d%0a%0d%0aRAMSTK VERSION:%20%0d%0a%0d%0aYOUR "
-            "HARDWARE:%20%0d%0a%0d%0aYOUR OS:%20%0d%0a%0d%0aDETAILED PROBLEM DESCRIPTION:%20%0d%0a'>bugs@reliaqual.com</a></span> "
+            "HARDWARE:%20%0d%0a%0d%0aYOUR OS:%20%0d%0a%0d%0aDETAILED PROBLEM "
+            "DESCRIPTION:%20%0d%0a'>bugs@reliaqual.com</a></span> "
             "with a detailed description of the problem, the workflow you are "
             "using and the error log attached if the problem persists.</b>"
         )
@@ -116,7 +117,7 @@ class TestRAMSTKMessageDialog:
         """__init__() should create an info type RAMSTKMessageDialog."""
         DUT = RAMSTKMessageDialog()
         DUT.do_set_message("Test Info Prompt")
-        DUT.do_set_message_type("information")
+        DUT.do_set_message_type("info")
 
         assert isinstance(DUT, RAMSTKMessageDialog)
         assert DUT.get_destroy_with_parent()
