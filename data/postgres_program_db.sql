@@ -1321,6 +1321,83 @@ END;
 $function$
 ;
 
+CREATE OR REPLACE FUNCTION public.insertdesignelectricrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 1 THEN
+        INSERT INTO ramstk_design_electric(fld_revision_id,fld_hardware_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.insertdesignmechanicrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 1 THEN
+        INSERT INTO ramstk_design_mechanic(fld_revision_id,fld_hardware_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.insertmilhdbk217frecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 1 THEN
+        INSERT INTO ramstk_mil_hdbk_f(fld_revision_id,fld_hardware_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.insertnswcrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF NEW.fld_part = 1 THEN
+        INSERT INTO ramstk_nswc(fld_revision_id,fld_hardware_id)
+        VALUES(NEW.fld_revision_id, NEW.fld_hardware_id);
+    END IF;
+
+    RETURN NEW;
+
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.insertreliabilityrecord()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    INSERT INTO ramstk_reliability(fld_revision_id,fld_hardware_id)
+    VALUES(NEW.fld_revision_id, NEW.fld_hardware_id);
+    RETURN NEW;
+
+END;
+$function$
+;
+
 -- Create triggers
 create trigger insertallocationrecord after
 insert
@@ -1331,3 +1408,28 @@ create trigger insertsimilaritemrecord after
 insert
     on
     public.ramstk_hardware for each row execute procedure insertsimilaritemrecord();
+
+create trigger insertdesignelectricrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertdesignelectricrecord();
+
+create trigger insertdesignmechanicrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertdesignmechanicrecord();
+
+create trigger insertmilhdbk217frecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertmilhdbk217frecord();
+
+create trigger insertnswcrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertnswcrecord();
+
+create trigger insertreliabilityrecord after
+insert
+    on
+    public.ramstk_hardware for each row execute procedure insertreliabilityrecord();
