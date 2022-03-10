@@ -16,11 +16,35 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
-from ramstk.models.dbtables import RAMSTKSimilarItemTable
+from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKSimilarItemTable
 
 
 @pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
+def test_hardware_table(test_program_dao):
+    """Create test hardware table."""
+    dut = RAMSTKHardwareTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
+    pub.unsubscribe(dut.do_update, "request_update_hardware")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_table_model(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKSimilarItemTable()
@@ -43,12 +67,13 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(
         dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
     )
+    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
@@ -60,28 +85,18 @@ class TestSelectMethods:
         print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
+    def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
-        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_table_model.do_select_all(attributes={"revision_id": 1})
 
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the insert() method."""
-
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(8).data["similar_item"], RAMSTKSimilarItemRecord
-        )
-        assert tree.get_node(8).data["similar_item"].revision_id == 1
-        assert tree.get_node(8).data["similar_item"].hardware_id == 8
-        assert tree.get_node(8).data["similar_item"].parent_id == 2
-        print("\033[36m\nsucceed_insert_similar_item topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
@@ -100,58 +115,85 @@ class TestInsertMethods:
         print("\033[35m\nfail_insert_similar_item topic was broadcast on no hardware.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
+    def test_do_insert_sibling_assembly(
+        self, test_attributes, test_table_model, test_hardware_table
+    ):
         """should add a record to the record tree and update last_id."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
+        assert test_table_model.tree.get_node(9) is None
 
-        assert test_tablemodel.tree.get_node(8) is None
-
-        test_attributes["hardware_id"] = 8
-        test_attributes["parent_id"] = 2
-        test_attributes["record_id"] = 8
-        pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
-
-        assert isinstance(
-            test_tablemodel.tree.get_node(8).data["similar_item"],
-            RAMSTKSimilarItemRecord,
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 9,
+                "parent_id": 2,
+                "record_id": 9,
+                "part": 0,
+            },
         )
 
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_similar_item")
+        assert isinstance(
+            test_table_model.tree.get_node(9).data["similar_item"],
+            RAMSTKSimilarItemRecord,
+        )
+        assert test_table_model.tree.get_node(9).data["similar_item"].revision_id == 1
+        assert test_table_model.tree.get_node(9).data["similar_item"].hardware_id == 9
+        assert test_table_model.tree.get_node(9).data["similar_item"].parent_id == 2
 
     @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
+    def test_do_insert_part(
+        self, test_attributes, test_table_model, test_hardware_table
+    ):
+        """should not add a record to the record tree and update last_id."""
+        assert test_table_model.tree.get_node(10) is None
+
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 10,
+                "parent_id": 2,
+                "record_id": 10,
+                "part": 1,
+            },
+        )
+
+        assert test_table_model.tree.get_node(10) is None
+
+    @pytest.mark.integration
+    def test_do_insert_no_revision(self, test_attributes, test_table_model):
         """should not add a record when passed a non-existent revision ID."""
         pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
-        assert test_tablemodel.tree.get_node(9) is None
+        assert test_table_model.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 40
-        test_attributes["hardware_id"] = 9
+        test_attributes["hardware_id"] = 10
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 8
+        test_attributes["record_id"] = 10
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
-        assert test_tablemodel.tree.get_node(9) is None
+        assert test_table_model.tree.get_node(10) is None
 
         pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
 
     @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_attributes, test_tablemodel):
+    def test_do_insert_no_hardware(self, test_attributes, test_table_model):
         """should not add a record when passed a non-existent hardware ID."""
         pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
 
-        assert test_tablemodel.tree.get_node(15) is None
+        assert test_table_model.tree.get_node(15) is None
 
         test_attributes["hardware_id"] = 15
         test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
-        assert test_tablemodel.tree.get_node(15) is None
+        assert test_table_model.tree.get_node(15) is None
 
         pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
@@ -175,14 +217,14 @@ class TestDeleteMethods:
         )
 
     @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
+    def test_do_delete(self, test_table_model):
         """should remove record from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_similar_item")
 
-        _last_id = test_tablemodel.last_id
+        _last_id = test_table_model.last_id
         pub.sendMessage("request_delete_similar_item", node_id=_last_id)
 
-        assert test_tablemodel.tree.get_node(_last_id) is None
+        assert test_table_model.tree.get_node(_last_id) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_similar_item")
 
@@ -196,17 +238,17 @@ class TestDeleteMethods:
         pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_similar_item")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_tablemodel):
+    def test_do_delete_not_in_tree(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
 
-        test_tablemodel.tree.get_node(2).data.pop("similar_item")
+        test_table_model.tree.get_node(2).data.pop("similar_item")
         pub.sendMessage("request_delete_similar_item", node_id=2)
 
         pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -253,32 +295,32 @@ class TestUpdateMethods:
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
+    def test_do_update(self, test_table_model):
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_similar_item")
 
-        _similar_item = test_tablemodel.do_select(1)
+        _similar_item = test_table_model.do_select(1)
         _similar_item.change_description_1 = "This is a description of the change."
         pub.sendMessage("request_update_similar_item", node_id=2)
 
         assert (
-            test_tablemodel.do_select(1).change_description_1
+            test_table_model.do_select(1).change_description_1
             == "This is a description of the change."
         )
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_similar_item")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
+    def test_do_update_all(self, test_table_model):
         """should update all records in the records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_similar_item")
 
-        _similar_item = test_tablemodel.do_select(1)
+        _similar_item = test_table_model.do_select(1)
         _similar_item.change_description_1 = (
             "This is change description 1 from test_do_update_all"
         )
         _similar_item.quality_from_id = 12000
-        _similar_item = test_tablemodel.do_select(2)
+        _similar_item = test_table_model.do_select(2)
         _similar_item.change_description_2 = (
             "This is change description 2 from test_do_update_all"
         )
@@ -286,46 +328,46 @@ class TestUpdateMethods:
 
         pub.sendMessage("request_update_all_similar_item")
 
-        assert test_tablemodel.tree.get_node(1).data[
+        assert test_table_model.tree.get_node(1).data[
             "similar_item"
         ].change_description_1 == (
             "This is change description 1 from test_do_update_all"
         )
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].quality_from_id
+            test_table_model.tree.get_node(1).data["similar_item"].quality_from_id
             == 12000
         )
-        assert test_tablemodel.tree.get_node(2).data[
+        assert test_table_model.tree.get_node(2).data[
             "similar_item"
         ].change_description_2 == (
             "This is change description 2 from test_do_update_all"
         )
         assert (
-            test_tablemodel.tree.get_node(2).data["similar_item"].temperature_to
+            test_table_model.tree.get_node(2).data["similar_item"].temperature_to
             == 18500
         )
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_similar_item")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
+    def test_do_update_wrong_data_type(self, test_table_model):
         """should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
-        _similar_item = test_tablemodel.do_select(1)
+        _similar_item = test_table_model.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
         pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
+    def test_do_update_root_node_wrong_data_type(self, test_table_model):
         """should send the fail message when attempting to update the root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
         )
 
-        _similar_item = test_tablemodel.do_select(1)
+        _similar_item = test_table_model.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
         pub.sendMessage("request_update_similar_item", node_id=0)
@@ -343,17 +385,17 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
+    def test_do_update_no_data_package(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 
-        test_tablemodel.tree.get_node(1).data.pop("similar_item")
+        test_table_model.tree.get_node(1).data.pop("similar_item")
         pub.sendMessage("request_update_similar_item", node_id=1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -469,7 +511,7 @@ class TestGetterSetter:
         pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_similar_item_tree")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestAnalysisMethods:
     """Class for similar item analysis methods test suite."""
 
@@ -509,34 +551,39 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_similar_item_topic_633(self, test_tablemodel):
+    def test_do_calculate_similar_item_topic_633(self, test_table_model):
         """should calculate the Topic 6.3.3 similar item."""
         pub.subscribe(
             self.on_succeed_calculate_topic_633, "succeed_calculate_similar_item"
         )
 
-        test_tablemodel._node_hazard_rate = 0.000628
+        test_table_model._node_hazard_rate = 0.000628
 
-        test_tablemodel.tree.get_node(1).data["similar_item"].similar_item_method_id = 1
-        test_tablemodel.tree.get_node(1).data["similar_item"].environment_from_id = 2
-        test_tablemodel.tree.get_node(1).data["similar_item"].environment_to_id = 3
-        test_tablemodel.tree.get_node(1).data["similar_item"].quality_from_id = 1
-        test_tablemodel.tree.get_node(1).data["similar_item"].quality_to_id = 2
-        test_tablemodel.tree.get_node(1).data["similar_item"].temperature_from = 55.0
-        test_tablemodel.tree.get_node(1).data["similar_item"].temperature_to = 65.0
+        test_table_model.tree.get_node(1).data[
+            "similar_item"
+        ].similar_item_method_id = 1
+        test_table_model.tree.get_node(1).data["similar_item"].environment_from_id = 2
+        test_table_model.tree.get_node(1).data["similar_item"].environment_to_id = 3
+        test_table_model.tree.get_node(1).data["similar_item"].quality_from_id = 1
+        test_table_model.tree.get_node(1).data["similar_item"].quality_to_id = 2
+        test_table_model.tree.get_node(1).data["similar_item"].temperature_from = 55.0
+        test_table_model.tree.get_node(1).data["similar_item"].temperature_to = 65.0
 
         pub.sendMessage("request_calculate_similar_item", node_id=1)
 
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_1 == 0.8
+            test_table_model.tree.get_node(1).data["similar_item"].change_factor_1
+            == 0.8
         )
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_2 == 1.4
+            test_table_model.tree.get_node(1).data["similar_item"].change_factor_2
+            == 1.4
         )
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_3 == 1.0
+            test_table_model.tree.get_node(1).data["similar_item"].change_factor_3
+            == 1.0
         )
-        assert test_tablemodel.tree.get_node(1).data[
+        assert test_table_model.tree.get_node(1).data[
             "similar_item"
         ].result_1 == pytest.approx(0.0005607143)
 
@@ -545,36 +592,39 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_similar_item_user_defined(self, test_tablemodel):
+    def test_do_calculate_similar_item_user_defined(self, test_table_model):
         """should calculate user-defined similar item."""
         pub.subscribe(
             self.on_succeed_calculate_user_defined, "succeed_calculate_similar_item"
         )
 
-        test_tablemodel._node_hazard_rate = 0.00617
+        test_table_model._node_hazard_rate = 0.00617
 
-        test_tablemodel.tree.get_node(1).data["similar_item"].similar_item_method_id = 2
-        test_tablemodel.tree.get_node(1).data[
+        test_table_model.tree.get_node(1).data[
+            "similar_item"
+        ].similar_item_method_id = 2
+        test_table_model.tree.get_node(1).data[
             "similar_item"
         ].change_description_1 = "Test change description for factor #1."
-        test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_1 = 0.85
-        test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_2 = 1.2
-        test_tablemodel.tree.get_node(1).data["similar_item"].function_1 = "pi1*pi2*hr"
-        test_tablemodel.tree.get_node(1).data["similar_item"].function_2 = "0"
-        test_tablemodel.tree.get_node(1).data["similar_item"].function_3 = "0"
-        test_tablemodel.tree.get_node(1).data["similar_item"].function_4 = "0"
-        test_tablemodel.tree.get_node(1).data["similar_item"].function_5 = "0"
+        test_table_model.tree.get_node(1).data["similar_item"].change_factor_1 = 0.85
+        test_table_model.tree.get_node(1).data["similar_item"].change_factor_2 = 1.2
+        test_table_model.tree.get_node(1).data["similar_item"].function_1 = "pi1*pi2*hr"
+        test_table_model.tree.get_node(1).data["similar_item"].function_2 = "0"
+        test_table_model.tree.get_node(1).data["similar_item"].function_3 = "0"
+        test_table_model.tree.get_node(1).data["similar_item"].function_4 = "0"
+        test_table_model.tree.get_node(1).data["similar_item"].function_5 = "0"
 
         pub.sendMessage("request_calculate_similar_item", node_id=1)
 
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_1
+            test_table_model.tree.get_node(1).data["similar_item"].change_factor_1
             == 0.85
         )
         assert (
-            test_tablemodel.tree.get_node(1).data["similar_item"].change_factor_2 == 1.2
+            test_table_model.tree.get_node(1).data["similar_item"].change_factor_2
+            == 1.2
         )
-        assert test_tablemodel.tree.get_node(1).data[
+        assert test_table_model.tree.get_node(1).data[
             "similar_item"
         ].result_1 == pytest.approx(0.0062934)
 
@@ -583,13 +633,13 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_unknown_method(self, test_tablemodel):
+    def test_do_calculate_unknown_method(self, test_table_model):
         """should send the fail message with unknown similar item method specified."""
         pub.subscribe(
             self.on_fail_calculate_unknown_method, "fail_calculate_similar_item"
         )
 
-        test_tablemodel.tree.get_node(1).data[
+        test_table_model.tree.get_node(1).data[
             "similar_item"
         ].similar_item_method_id = 22
 

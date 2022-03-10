@@ -13,6 +13,7 @@ from datetime import date
 from typing import Callable, Dict, Type, Union
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -68,10 +69,17 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_calculate_similar_item, "request_calculate_similar_item")
+        pub.subscribe(
+            self.do_calculate_similar_item,
+            "request_calculate_similar_item",
+        )
         pub.subscribe(
             self.do_roll_up_change_descriptions,
             "request_roll_up_change_descriptions",
+        )
+        pub.subscribe(
+            self._on_insert_hardware,
+            "succeed_insert_hardware",
         )
 
     # pylint: disable=method-hidden
@@ -401,3 +409,32 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         self.do_set_attributes_all(
             attributes=_attributes,
         )
+
+    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
+        """Add new node to the Similar Item tree for the newly added Hardware.
+
+        Similar Item records are added by triggers in the database when a new Hardware
+        item is added.  This method simply adds a new node to the Similar Item tree
+        with a blank record.
+
+        :param tree: the Hardware tree with the new node.
+        :return: None
+        :rtype: None
+        """
+        for _node in tree.all_nodes()[1:]:
+            if (
+                not self.tree.contains(_node.identifier)
+                and not _node.data["hardware"].part
+            ):
+                _attributes = {
+                    "revision_id": _node.data["hardware"].revision_id,
+                    "hardware_id": _node.data["hardware"].hardware_id,
+                    "parent_id": _node.data["hardware"].parent_id,
+                }
+                _record = self.do_get_new_record(_attributes)
+                self.tree.create_node(
+                    tag=self._tag,
+                    identifier=_node.data["hardware"].hardware_id,
+                    parent=_node.data["hardware"].parent_id,
+                    data={self._tag: _record},
+                )

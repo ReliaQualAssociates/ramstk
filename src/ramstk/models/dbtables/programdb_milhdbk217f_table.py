@@ -11,6 +11,10 @@
 from datetime import date
 from typing import Dict, Type, Union
 
+# Third Party Imports
+import treelib
+from pubsub import pub
+
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKMilHdbk217FRecord
 from .basetable import RAMSTKBaseTable
@@ -60,6 +64,10 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         self.pkey = "hardware_id"
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(
+            self._on_insert_hardware,
+            "succeed_insert_hardware",
+        )
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Union[date, float, int, str]]
@@ -72,6 +80,36 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         """
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
-        _new_record.hardware_id = self.last_id + 1
+        _new_record.hardware_id = attributes["hardware_id"]
 
         return _new_record
+
+    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
+        """Add new node to the MIL-HDBK-217F tree for the newly added Hardware.
+
+        MIL-HDBK-217F records are added by triggers in the database when a new
+        Hardware item is added.  This method simply adds a new node to the MIL-HDBK-217F
+        tree with a blank record.
+
+        :param tree: the Hardware tree with the new node.
+        :return: None
+        :rtype: None
+        """
+        for _node in tree.all_nodes()[1:]:
+            if not self.tree.contains(_node.identifier) and _node.data["hardware"].part:
+                _attributes = {
+                    "revision_id": _node.data["hardware"].revision_id,
+                    "hardware_id": _node.data["hardware"].hardware_id,
+                }
+                _record = self.do_get_new_record(_attributes)
+                self.tree.create_node(
+                    tag=self._tag,
+                    identifier=_node.data["hardware"].hardware_id,
+                    parent=0,
+                    data={self._tag: _record},
+                )
+
+                pub.sendMessage(
+                    f"succeed_insert_{self._tag}",
+                    tree=self.tree,
+                )

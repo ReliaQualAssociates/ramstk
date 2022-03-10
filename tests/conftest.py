@@ -428,6 +428,23 @@ def setup_test_db(db_config) -> None:
     conn.close()
 
 
+def create_test_db(db_config, sql_file) -> None:
+    conn = psycopg2.connect(
+        host=db_config["host"],
+        port=db_config["port"],
+        dbname=db_config["database"],
+        user=db_config["user"],
+        password=db_config["password"],
+    )
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+    conn.set_session(autocommit=True)
+
+    cursor = conn.cursor()
+    cursor.execute(open(sql_file, "r").read())
+    cursor.close()
+    conn.close()
+
+
 def populate_test_db(db_config, sql_file) -> None:
     conn = psycopg2.connect(
         host=db_config["host"],
@@ -632,9 +649,13 @@ def test_program_dao():
     # Set up the test database.
     setup_test_db(db_config=test_config)
 
-    # Populate the test database.
-    testql_file = "./tests/__data/test_program_db.sql"
-    populate_test_db(db_config=test_config, sql_file=testql_file)
+    # Create the test database tables.
+    create_test_db(db_config=test_config, sql_file="./data/postgres_program_db.sql")
+
+    # Populate the test database tables.
+    populate_test_db(
+        db_config=test_config, sql_file="./tests/__data/test_program_db.sql"
+    )
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
     dao = BaseDatabase()
