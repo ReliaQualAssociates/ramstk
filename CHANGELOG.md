@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.16.3](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.3) (2022-03-10)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.2...v0.16.3)
+
+Bug Fixes
+
+- feature: use database triggers to add records on Hardware insert [\#1026](https://github.com/ReliaQualAssociates/ramstk/pull/1026) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.16.2](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.2) (2022-03-05)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.1...v0.16.2)
@@ -170,14 +178,6 @@ Bug Fixes
 ## [v0.15.11](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.11) (2022-01-28)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.10...v0.15.11)
-
-Bug Fixes
-
-- fix: DVP&R plan actual status not loading [\#921](https://github.com/ReliaQualAssociates/ramstk/pull/921) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: add GPG key for auto actions [\#919](https://github.com/ReliaQualAssociates/ramstk/pull/919) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.10](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.10) (2022-01-27)
 
