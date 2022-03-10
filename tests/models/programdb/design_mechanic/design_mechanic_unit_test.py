@@ -213,7 +213,7 @@ class TestInsertMethods:
 
         assert isinstance(_new_record, RAMSTKDesignMechanicRecord)
         assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 4
+        assert _new_record.hardware_id == 1
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):

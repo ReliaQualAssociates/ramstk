@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.nswc.nswc_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.models.nswc.nswc_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -208,7 +207,7 @@ class TestInsertMethods:
 
         assert isinstance(_new_record, RAMSTKNSWCRecord)
         assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 4
+        assert _new_record.hardware_id == 1
 
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):

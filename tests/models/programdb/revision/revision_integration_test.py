@@ -271,7 +271,7 @@ class TestGetterSetter:
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
         assert attributes["revision_id"] == 1
-        assert attributes["name"] == "Test Revision"
+        assert attributes["name"] == "Revision -"
         assert attributes["program_time"] == 0.0
         print("\033[36m\nsucceed_get_revision_attributes topic was broadcast")
 

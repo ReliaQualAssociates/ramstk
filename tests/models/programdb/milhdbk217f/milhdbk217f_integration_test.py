@@ -16,11 +16,35 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMilHdbk217FRecord
-from ramstk.models.dbtables import RAMSTKMILHDBK217FTable
+from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKMILHDBK217FTable
 
 
 @pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
+def test_hardware_table(test_program_dao):
+    """Create test hardware table."""
+    dut = RAMSTKHardwareTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
+    pub.unsubscribe(dut.do_update, "request_update_hardware")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_table_model(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMILHDBK217FTable()
@@ -39,22 +63,23 @@ def test_tablemodel(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_milhdbk217f")
     pub.unsubscribe(dut.do_insert, "request_insert_milhdbk217f")
+    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbkFRecord)
-        print("\033[36m\nsucceed_retrieve_milhdbk217f topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_milhdbk217f topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
+    def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
         """should clear nodes from an existing records tree and re-populate."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_milhdbk217f")
 
@@ -63,117 +88,143 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_milhdbk217f")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(9).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
-        assert tree.get_node(9).data["milhdbk217f"].hardware_id == 9
-        print("\033[36m\nsucceed_insert_milhdbk217f topic was broadcast.")
-
-    def on_fail_insert_no_hardware(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_hardware(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_hardware_id)=(9) is not present in table "
+            "returned:\n\tKey (fld_hardware_id)=(11) is not present in table "
             '"ramstk_hardware".'
         )
-        print("\033[35m\nfail_insert_milhdbk217f topic was broadcast on no hardware.")
+        print("\033[35m\n\tfail_insert_milhdbk217f topic was broadcast on no hardware.")
 
-    @pytest.mark.skip
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a record to the record tree and update last_id."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_milhdbk217f")
+    def test_do_insert_sibling_assembly(
+        self, test_attributes, test_table_model, test_hardware_table
+    ):
+        """should not add a record to the record tree and update last_id."""
+        assert test_table_model.tree.get_node(9) is None
 
-        assert test_tablemodel.tree.get_node(9) is None
-
-        test_attributes["hardware_id"] = 9
-        test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 9
-        pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
-
-        assert isinstance(
-            test_tablemodel.tree.get_node(9).data["milhdbk217f"],
-            RAMSTKMilHdbk217FRecord,
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 9,
+                "parent_id": 2,
+                "record_id": 9,
+                "part": 0,
+            },
         )
 
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_milhdbk217f")
+        assert test_table_model.tree.get_node(9) is None
 
     @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_attributes, test_tablemodel):
+    def test_do_insert_part(
+        self, test_attributes, test_table_model, test_hardware_table
+    ):
+        """should add a record to the record tree and update last_id."""
+        assert test_table_model.tree.get_node(10) is None
+
+        pub.sendMessage(
+            "request_insert_hardware",
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 10,
+                "parent_id": 2,
+                "record_id": 10,
+                "part": 1,
+            },
+        )
+
+        assert isinstance(
+            test_table_model.tree.get_node(10).data["milhdbk217f"],
+            RAMSTKMilHdbk217FRecord,
+        )
+        assert test_table_model.tree.get_node(10).data["milhdbk217f"].revision_id == 1
+        assert test_table_model.tree.get_node(10).data["milhdbk217f"].hardware_id == 10
+
+    @pytest.mark.integration
+    def test_do_insert_no_hardware(self, test_attributes, test_table_model):
         """should not add a record when passed a non-existent hardware ID."""
-        pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_milhdbk217f")
+        pub.subscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
-        assert test_tablemodel.tree.get_node(10) is None
+        assert test_table_model.tree.get_node(11) is None
 
-        test_attributes["hardware_id"] = 10
+        test_attributes["hardware_id"] = 11
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 10
+        test_attributes["record_id"] = 11
         pub.sendMessage("request_insert_milhdbk217f", attributes=test_attributes)
 
-        assert test_tablemodel.tree.get_node(10) is None
+        assert test_table_model.tree.get_node(11) is None
 
-        pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_milhdbk217f")
+        pub.unsubscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_milhdbk217f topic was broadcast.")
+        print("\033[36m\n\tsucceed_delete_milhdbk217f topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Milhdbk217F ID 300.")
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempted to delete non-existent Milhdbk217F ID 300.")
         print(
-            "\033[35m\nfail_delete_milhdbk217f topic was broadcast on non-existent "
+            "\033[35m\n\tfail_delete_milhdbk217f topic was broadcast on non-existent "
             "ID."
         )
 
-    def on_fail_delete_no_data_package(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Milhdbk217F ID 2.")
+    def on_fail_delete_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        # Two debug messages will be sent by two different methods under this scenario.
+        try:
+            assert message == ("No data package for node ID 1 in module milhdbk217f.")
+        except AssertionError:
+            assert message == ("Attempted to delete non-existent Milhdbk217F ID 1.")
         print(
-            "\033[35m\nfail_delete_milhdbk217f topic was broadcast on no data "
+            "\033[35m\n\tfail_delete_milhdbk217f topic was broadcast on no data "
             "package."
         )
 
     @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
+    def test_do_delete(self, test_table_model):
         """should remove record from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_milhdbk217f")
 
-        _last_id = test_tablemodel.last_id
+        _last_id = test_table_model.last_id
         pub.sendMessage("request_delete_milhdbk217f", node_id=_last_id)
 
-        assert test_tablemodel.last_id == 7
-        assert test_tablemodel.tree.get_node(_last_id) is None
+        assert test_table_model.last_id == 1
+        assert test_table_model.tree.get_node(_last_id) is None
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_milhdbk217f")
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
         """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_milhdbk217f")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_milhdbk217f", node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_milhdbk217f")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_tablemodel):
+    def test_do_delete_no_data_package(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_milhdbk217f")
+        pub.subscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
 
-        test_tablemodel.tree.get_node(2).data.pop("milhdbk217f")
-        pub.sendMessage("request_delete_milhdbk217f", node_id=2)
+        test_table_model.tree.get_node(1).data.pop("milhdbk217f")
+        pub.sendMessage("request_delete_milhdbk217f", node_id=1)
 
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_milhdbk217f")
+        pub.unsubscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
@@ -181,50 +232,51 @@ class TestUpdateMethods:
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["milhdbk217f"].PiA == 5.0
         assert tree.get_node(2).data["milhdbk217f"].lambdaBD == 0.0045
-        print("\033[36m\nsucceed_update_milhdbk217f topic was broadcast.")
+        print("\033[36m\n\tsucceed_update_milhdbk217f topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast for MIL-HDBK-217F.")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast for MIL-HDBK-217F.")
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for milhdbk217f "
-            "ID 1 was the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "The value for one or more attributes for milhdbk217f ID 1 was the wrong "
+            "type."
         )
         print(
-            "\033[35m\nfail_update_milhdbk217f topic was broadcast on wrong data "
+            "\033[35m\n\tfail_update_milhdbk217f topic was broadcast on wrong data "
             "type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_milhdbk217f topic was broadcast on root node.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempting to update the root node 0.")
+        print("\033[35m\n\tfail_update_milhdbk217f topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent milhdbk217f with "
-            "milhdbk217f ID 100."
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "Attempted to save non-existent milhdbk217f with milhdbk217f ID 100."
         )
         print(
-            "\033[35m\nfail_update_milhdbk217f topic was broadcast on "
+            "\033[35m\n\tfail_update_milhdbk217f topic was broadcast on "
             "non-existent ID."
         )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for milhdbk217f ID 1."
-        )
+    def on_fail_update_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("No data package found for milhdbk217f ID 1.")
         print(
-            "\033[35m\nfail_update_milhdbk217f topic was broadcast on no data "
+            "\033[35m\n\tfail_update_milhdbk217f topic was broadcast on no data "
             "package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
+    def test_do_update(self, test_table_model):
         """should update the attribute value for record ID."""
         pub.subscribe(self.on_succeed_update, "succeed_update_milhdbk217f")
 
-        _milhdbk217f = test_tablemodel.do_select(2)
+        _milhdbk217f = test_table_model.do_select(1)
         _milhdbk217f.PiA = 5
         _milhdbk217f.lambdaBD = 0.0045
         pub.sendMessage("request_update_milhdbk217f", node_id=2)
@@ -232,79 +284,77 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update, "succeed_update_milhdbk217f")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
+    def test_do_update_all(self, test_table_model):
         """should update all records in the records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_milhdbk217f")
 
-        _milhdbk217f = test_tablemodel.do_select(1)
+        _milhdbk217f = test_table_model.do_select(1)
         _milhdbk217f.PiA = 5.0
         _milhdbk217f.lambdaBD = 0.0045
-        _milhdbk217f = test_tablemodel.do_select(2)
+        _milhdbk217f = test_table_model.do_select(8)
         _milhdbk217f.PiA = 1.2
         _milhdbk217f.lambdaBD = 0.0035
 
         pub.sendMessage("request_update_all_milhdbk217f")
 
-        assert test_tablemodel.tree.get_node(1).data["milhdbk217f"].PiA == 5.0
-        assert test_tablemodel.tree.get_node(1).data["milhdbk217f"].lambdaBD == 0.0045
-        assert test_tablemodel.tree.get_node(2).data["milhdbk217f"].PiA == 1.2
-        assert test_tablemodel.tree.get_node(2).data["milhdbk217f"].lambdaBD == 0.0035
+        assert test_table_model.tree.get_node(1).data["milhdbk217f"].PiA == 5.0
+        assert test_table_model.tree.get_node(1).data["milhdbk217f"].lambdaBD == 0.0045
+        assert test_table_model.tree.get_node(8).data["milhdbk217f"].PiA == 1.2
+        assert test_table_model.tree.get_node(8).data["milhdbk217f"].lambdaBD == 0.0035
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_milhdbk217f")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
+    def test_do_update_wrong_data_type(self, test_table_model):
         """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_milhdbk217f")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
-        _milhdbk217f = test_tablemodel.do_select(1)
+        _milhdbk217f = test_table_model.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
         pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_milhdbk217f")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
+    def test_do_update_root_node_wrong_data_type(self, test_table_model):
         """should send the fail message when attempting to update the root node."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_milhdbk217f"
-        )
+        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
-        _milhdbk217f = test_tablemodel.do_select(1)
+        _milhdbk217f = test_table_model.do_select(1)
         _milhdbk217f.lambdaBD = {1: 2}
         pub.sendMessage("request_update_milhdbk217f", node_id=0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_milhdbk217f"
+            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_update_milhdbk217f", node_id=100)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_milhdbk217f")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
+    def test_do_update_no_data_package(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
-        test_tablemodel.tree.get_node(1).data.pop("milhdbk217f")
+        test_table_model.tree.get_node(1).data.pop("milhdbk217f")
         pub.sendMessage("request_update_milhdbk217f", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_milhdbk217f")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel", "test_toml_user_configuration")
+@pytest.mark.usefixtures("test_table_model", "test_toml_user_configuration")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     def on_succeed_get_attributes(self, attributes):
         assert isinstance(attributes, dict)
-        assert attributes["hardware_id"] == 2
+        assert attributes["hardware_id"] == 1
         assert attributes["A1"] == 0.0
         assert attributes["A2"] == 0.0
         assert attributes["B1"] == 0.0
@@ -341,26 +391,26 @@ class TestGetterSetter:
         assert attributes["piU"] == 0.0
         assert attributes["piV"] == 0.0
 
-        print("\033[36m\nsucceed_get_milhdbk217f_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_milhdbk217f_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
-        print("\033[36m\nsucceed_get_milhdbk217f_tree topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_milhdbk217f_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["milhdbk217f"].lambdaBD == 0.00655
-        print("\033[36m\nsucceed_get_milhdbk217f_tree topic was broadcast")
+        assert tree.get_node(1).data["milhdbk217f"].lambdaBD == 0.00655
+        print("\033[36m\n\tsucceed_get_milhdbk217f_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """should return the attributes dict."""
+    def test_do_get_attributes(self, test_table_model):
+        """should return the attribute dict."""
         pub.subscribe(
             self.on_succeed_get_attributes, "succeed_get_milhdbk217f_attributes"
         )
 
-        test_tablemodel.do_get_attributes(node_id=2)
+        test_table_model.do_get_attributes(node_id=1)
 
         pub.unsubscribe(
             self.on_succeed_get_attributes, "succeed_get_milhdbk217f_attributes"
@@ -386,7 +436,7 @@ class TestGetterSetter:
 
         pub.sendMessage(
             "request_set_milhdbk217f_attributes",
-            node_id=2,
+            node_id=1,
             package={"lambdaBD": 0.00655},
         )
 

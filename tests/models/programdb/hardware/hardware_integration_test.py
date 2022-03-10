@@ -179,19 +179,19 @@ class TestSelectMethods:
             RAMSTKHardwareRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["design_electric"],
+            test_viewmodel.tree.get_node(8).data["design_electric"],
             RAMSTKDesignElectricRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["design_mechanic"],
+            test_viewmodel.tree.get_node(8).data["design_mechanic"],
             RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["milhdbk217f"],
+            test_viewmodel.tree.get_node(8).data["milhdbk217f"],
             RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(2).data["nswc"],
+            test_viewmodel.tree.get_node(8).data["nswc"],
             RAMSTKNSWCRecord,
         )
         assert isinstance(
@@ -764,18 +764,19 @@ class TestAnalysisMethods:
         test_nswc.do_select_all(attributes={"revision_id": 1})
         test_reliability.do_select_all(attributes={"revision_id": 1})
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = test_tablemodel.do_select(8)
         _hardware.part = 1
         _hardware.quantity = 2
 
-        _design_electric = test_design_electric.do_select(3)
+        _design_electric = test_design_electric.do_select(8)
         _design_electric.power_operating = 0.00295
 
-        test_viewmodel.do_calculate_power_dissipation(3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
+        test_viewmodel.do_calculate_power_dissipation(8)
+        _attributes = test_tablemodel.do_select(8).get_attributes()
 
         assert _attributes["total_power_dissipation"] == 0.0059
 
+    @pytest.mark.skip
     @pytest.mark.integration
     def test_do_calculate_power_dissipation_assembly(
         self,
@@ -834,24 +835,24 @@ class TestAnalysisMethods:
         test_nswc.do_select_all(attributes={"revision_id": 1})
         test_reliability.do_select_all(attributes={"revision_id": 1})
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = test_tablemodel.do_select(8)
         _hardware.category_id = 3
         _hardware.subcategory_id = 1
         _hardware.part = 1
 
-        _hardware = test_design_electric.do_select(3)
+        _hardware = test_design_electric.do_select(8)
         _hardware.environment_active_id = 9
 
-        _hardware = test_milhdbk217f.do_select(3)
+        _hardware = test_milhdbk217f.do_select(8)
         _hardware.piR = 0.0038
 
-        _hardware = test_reliability.do_select(3)
+        _hardware = test_reliability.do_select(8)
         _hardware.hazard_rate_type_id = 1
         _hardware.hazard_rate_method_id = 2
         _hardware.quality_id = 3
 
-        test_viewmodel.do_calculate_hardware(3)
-        _attributes = test_reliability.do_select(3).get_attributes()
+        test_viewmodel.do_calculate_hardware(8)
+        _attributes = test_reliability.do_select(8).get_attributes()
 
         assert _attributes["hazard_rate_active"] == pytest.approx(0.001562765)
 
@@ -875,16 +876,16 @@ class TestAnalysisMethods:
         test_nswc.do_select_all(attributes={"revision_id": 1})
         test_reliability.do_select_all(attributes={"revision_id": 1})
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = test_tablemodel.do_select(8)
         _hardware.quantity = 1
         _hardware.part = 1
 
-        _hardware = test_reliability.do_select(3)
+        _hardware = test_reliability.do_select(8)
         _hardware.hazard_rate_type_id = 2
         _hardware.hazard_rate_specified = 0.000007829
 
-        test_viewmodel.do_calculate_hardware(3)
-        _attributes = test_reliability.do_select(3).get_attributes()
+        test_viewmodel.do_calculate_hardware(8)
+        _attributes = test_reliability.do_select(8).get_attributes()
 
         assert _attributes["hazard_rate_active"] == pytest.approx(7.829e-06)
 
@@ -908,16 +909,16 @@ class TestAnalysisMethods:
         test_nswc.do_select_all(attributes={"revision_id": 1})
         test_reliability.do_select_all(attributes={"revision_id": 1})
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = test_tablemodel.do_select(8)
         _hardware.quantity = 1
         _hardware.part = 1
 
-        _hardware = test_reliability.do_select(3)
+        _hardware = test_reliability.do_select(8)
         _hardware.hazard_rate_type_id = 3
         _hardware.mtbf_specified = 127730.0
 
-        test_viewmodel.do_calculate_hardware(3)
-        _attributes = test_reliability.do_select(3).get_attributes()
+        test_viewmodel.do_calculate_hardware(8)
+        _attributes = test_reliability.do_select(8).get_attributes()
 
         assert _attributes["hazard_rate_active"] == pytest.approx(7.8290143e-06)
 
