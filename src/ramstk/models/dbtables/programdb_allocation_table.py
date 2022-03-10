@@ -12,6 +12,7 @@ from datetime import date
 from typing import Any, Dict, Tuple, Type, Union
 
 # Third Party Imports
+import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -92,6 +93,10 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         pub.subscribe(
             self.do_calculate_allocation_goals,
             "request_calculate_allocation_goals",
+        )
+        pub.subscribe(
+            self._on_insert_hardware,
+            "succeed_insert_hardware",
         )
 
     def do_get_new_record(  # pylint: disable=method-hidden
@@ -348,3 +353,32 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             )
 
         return _cum_weight
+
+    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
+        """Add new node to the Allocation tree for the newly added Hardware.
+
+        Allocation records are added by triggers in the database when a new Hardware
+        item is added.  This method simply adds a new node to the Allocation tree
+        with a blank record.
+
+        :param tree: the Hardware tree with the new node.
+        :return: None
+        :rtype: None
+        """
+        for _node in tree.all_nodes()[1:]:
+            if (
+                not self.tree.contains(_node.identifier)
+                and not _node.data["hardware"].part
+            ):
+                _attributes = {
+                    "revision_id": _node.data["hardware"].revision_id,
+                    "hardware_id": _node.data["hardware"].hardware_id,
+                    "parent_id": _node.data["hardware"].parent_id,
+                }
+                _record = self.do_get_new_record(_attributes)
+                self.tree.create_node(
+                    tag=self._tag,
+                    identifier=_node.data["hardware"].hardware_id,
+                    parent=_node.data["hardware"].parent_id,
+                    data={self._tag: _record},
+                )

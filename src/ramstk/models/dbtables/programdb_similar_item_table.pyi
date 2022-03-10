@@ -2,6 +2,9 @@
 from datetime import date
 from typing import Dict, List, Type, Union
 
+# Third Party Imports
+import treelib
+
 # RAMSTK Package Imports
 from ramstk.analyses import similaritem as similaritem
 from ramstk.views.gtk3 import _ as _
@@ -28,3 +31,4 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
     def do_roll_up_change_descriptions(self, node_id: int) -> None: ...
     def _do_calculate_topic_633(self, node_id: int) -> None: ...
     def _do_calculate_user_defined(self, node_id: int) -> None: ...
+    def _on_insert_hardware(self, tree: treelib.Tree) -> None: ...

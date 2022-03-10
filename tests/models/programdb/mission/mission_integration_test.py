@@ -285,7 +285,7 @@ class TestGetterSetter:
         assert isinstance(attributes, dict)
         assert attributes["revision_id"] == 1
         assert attributes["mission_id"] == 1
-        assert attributes["description"] == "Test Mission 1"
+        assert attributes["description"] == "Default Mission"
         print("\033[36m\n\tsucceed_get_mission_attributes topic was broadcast")
 
     def on_succeed_get_data_manager_tree(self, tree):

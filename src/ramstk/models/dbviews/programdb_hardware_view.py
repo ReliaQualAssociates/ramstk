@@ -202,10 +202,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         if _record.is_leaf() or _record.data["reliability"].hazard_rate_type_id != 1:
             _attributes = {
                 **_record.data["hardware"].get_attributes(),
-                **_record.data["design_mechanic"].get_attributes(),
-                **_record.data["design_electric"].get_attributes(),
-                **_record.data["milhdbk217f"].get_attributes(),
-                **_record.data["nswc"].get_attributes(),
                 **_record.data["reliability"].get_attributes(),
             }
 
@@ -388,9 +384,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
                 )
 
             _total_power_dissipation *= _record.data["hardware"].quantity
-            _record.data["design_electric"].set_attributes(
-                {"power_operating": _total_power_dissipation}
-            )
 
         _record.data["hardware"].set_attributes(
             {"total_power_dissipation": _total_power_dissipation}

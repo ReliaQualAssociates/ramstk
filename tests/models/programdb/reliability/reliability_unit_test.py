@@ -23,7 +23,7 @@ from ramstk.models.dbtables import RAMSTKReliabilityTable
 
 
 @pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
+def test_table_model(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKReliabilityTable()
@@ -46,7 +46,7 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_recordmodel", "test_table_model")
 class TestCreateModels:
     """Class for testing model initialization."""
 
@@ -100,77 +100,83 @@ class TestCreateModels:
         assert test_recordmodel.lambda_b == 0.0
 
     @pytest.mark.unit
-    def test_table_model_create(self, test_tablemodel):
+    def test_table_model_create(self, test_table_model):
         """should return a table manager instance."""
-        assert isinstance(test_tablemodel, RAMSTKReliabilityTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_hardware_id"
-        assert test_tablemodel._db_tablename == "ramstk_reliability"
-        assert test_tablemodel._select_msg == "selected_revision"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._tag == "reliability"
-        assert test_tablemodel._lst_id_columns == [
+        assert isinstance(test_table_model, RAMSTKReliabilityTable)
+        assert isinstance(test_table_model.tree, Tree)
+        assert isinstance(test_table_model.dao, MockDAO)
+        assert test_table_model._db_id_colname == "fld_hardware_id"
+        assert test_table_model._db_tablename == "ramstk_reliability"
+        assert test_table_model._select_msg == "selected_revision"
+        assert test_table_model._root == 0
+        assert test_table_model._tag == "reliability"
+        assert test_table_model._lst_id_columns == [
             "revision_id",
             "hardware_id",
             "parent_id",
             "record_id",
         ]
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._record == RAMSTKReliabilityRecord
-        assert test_tablemodel.last_id == 0
-        assert test_tablemodel.pkey == "hardware_id"
+        assert test_table_model._revision_id == 0
+        assert test_table_model._record == RAMSTKReliabilityRecord
+        assert test_table_model.last_id == 0
+        assert test_table_model.pkey == "hardware_id"
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes,
+            test_table_model.do_get_attributes,
             "request_get_reliability_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes,
+            test_table_model.do_set_attributes,
             "request_set_reliability_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "wvw_editing_reliability"
+            test_table_model.do_set_attributes, "wvw_editing_reliability"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_reliability"
+            test_table_model.do_update_all, "request_update_all_reliability"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_get_tree, "request_get_reliability_tree"
+            test_table_model.do_get_tree, "request_get_reliability_tree"
         )
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_reliability")
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_reliability")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_reliability")
+        assert pub.isSubscribed(test_table_model.do_select_all, "selected_revision")
+        assert pub.isSubscribed(
+            test_table_model.do_update, "request_update_reliability"
+        )
+        assert pub.isSubscribed(
+            test_table_model.do_delete, "request_delete_reliability"
+        )
+        assert pub.isSubscribed(
+            test_table_model.do_insert, "request_insert_reliability"
+        )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestSelectMethods:
     """Class for testing select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
+    def test_do_select_all(self, test_attributes, test_table_model):
         """should return a record tree populated with DB records."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
         assert isinstance(
-            test_tablemodel.tree.get_node(1).data["reliability"],
+            test_table_model.tree.get_node(1).data["reliability"],
             RAMSTKReliabilityRecord,
         )
         assert isinstance(
-            test_tablemodel.tree.get_node(2).data["reliability"],
+            test_table_model.tree.get_node(2).data["reliability"],
             RAMSTKReliabilityRecord,
         )
         assert isinstance(
-            test_tablemodel.tree.get_node(3).data["reliability"],
+            test_table_model.tree.get_node(3).data["reliability"],
             RAMSTKReliabilityRecord,
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
+    def test_do_select(self, test_attributes, test_table_model):
         """should return the record for the passed record ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
 
         assert isinstance(_reliability, RAMSTKReliabilityRecord)
         assert _reliability.revision_id == 1
@@ -178,58 +184,58 @@ class TestSelectMethods:
         assert _reliability.hazard_rate_active == 0.0
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
+    def test_do_select_non_existent_id(self, test_attributes, test_table_model):
         """should return None when a non-existent record ID is requested."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        assert test_tablemodel.do_select(100) is None
+        assert test_table_model.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
     @pytest.mark.unit
-    def test_do_get_new_record(self, test_attributes, test_tablemodel):
+    def test_do_get_new_record(self, test_attributes, test_table_model):
         """should return a new record instance with ID fields populated."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _new_record = test_tablemodel.do_get_new_record(test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
+        _new_record = test_table_model.do_get_new_record(test_attributes)
 
         assert isinstance(_new_record, RAMSTKReliabilityRecord)
         assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 4
+        assert _new_record.hardware_id == 1
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
+    def test_do_insert_sibling(self, test_attributes, test_table_model):
         """should add a new record to the records tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
         test_attributes["parent_id"] = 1
         test_attributes["record_id"] = 4
-        test_tablemodel.do_insert(attributes=test_attributes)
+        test_table_model.do_insert(attributes=test_attributes)
 
-        assert test_tablemodel.last_id == 4
+        assert test_table_model.last_id == 4
         assert isinstance(
-            test_tablemodel.tree.get_node(4).data["reliability"],
+            test_table_model.tree.get_node(4).data["reliability"],
             RAMSTKReliabilityRecord,
         )
-        assert test_tablemodel.tree.get_node(4).data["reliability"].revision_id == 1
-        assert test_tablemodel.tree.get_node(4).data["reliability"].hardware_id == 4
+        assert test_table_model.tree.get_node(4).data["reliability"].revision_id == 1
+        assert test_table_model.tree.get_node(4).data["reliability"].hardware_id == 4
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestDeleteMethods:
     """Class for testing the delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
+    def test_do_delete(self, test_attributes, test_table_model):
         """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _last_id = test_tablemodel.last_id
-        test_tablemodel.do_delete(node_id=_last_id)
+        test_table_model.do_select_all(attributes=test_attributes)
+        _last_id = test_table_model.last_id
+        test_table_model.do_delete(node_id=_last_id)
 
-        assert test_tablemodel.last_id == 2
-        assert test_tablemodel.tree.get_node(_last_id) is None
+        assert test_table_model.last_id == 2
+        assert test_table_model.tree.get_node(_last_id) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_recordmodel")
@@ -314,18 +320,18 @@ class TestGetterSetter:
             test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_predicted(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_method_id = 2
         _reliability.hazard_rate_type_id = 1
@@ -363,12 +369,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_predicted_per_hour(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_method_id = 2
         _reliability.hazard_rate_type_id = 1
@@ -406,12 +412,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_predicted_assembly(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_method_id = 2
         _reliability.hazard_rate_type_id = 1
@@ -429,12 +435,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_specified_ht(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 2
         _reliability.hazard_rate_specified = 0.0032
@@ -449,12 +455,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_specified_mtbf(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate when MTBF is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 3
         _reliability.mtbf_specified = 12632.0
@@ -469,12 +475,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_exponential(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate for the EXP."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 4
         _reliability.failure_distribution_id = 1
@@ -499,12 +505,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_lognormal(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate for the LOGN at time."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 4
         _reliability.failure_distribution_id = 3
@@ -529,12 +535,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_normal(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate for the NORM at time."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 4
         _reliability.failure_distribution_id = 5
@@ -552,12 +558,12 @@ class TestAnalysisMethods:
 
     @pytest.mark.unit
     def test_do_calculate_hazard_rate_active_weibull(
-        self, test_attributes, test_tablemodel
+        self, test_attributes, test_table_model
     ):
         """should calculate the active hazard rate for the WEI at time."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 4
         _reliability.failure_distribution_id = 6
@@ -580,11 +586,11 @@ class TestAnalysisMethods:
         assert _reliability.hazard_rate_active == pytest.approx(0.02874279)
 
     @pytest.mark.unit
-    def test_do_calculate_hazard_rate_no_type(self, test_attributes, test_tablemodel):
+    def test_do_calculate_hazard_rate_no_type(self, test_attributes, test_table_model):
         """should return zero for the active hazard rate when unknown type ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 5
         _reliability.hazard_rate_specified = 0.0032
@@ -598,11 +604,13 @@ class TestAnalysisMethods:
         assert _reliability.hazard_rate_active == 0.0
 
     @pytest.mark.unit
-    def test_do_calculate_hazard_rate_logistics(self, test_attributes, test_tablemodel):
+    def test_do_calculate_hazard_rate_logistics(
+        self, test_attributes, test_table_model
+    ):
         """should calculate the logistics hazard rate."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_active = 0.0032
         _reliability.hazard_rate_dormant = 0.000128
@@ -613,11 +621,11 @@ class TestAnalysisMethods:
         assert _reliability.hazard_rate_logistics == pytest.approx(0.003378)
 
     @pytest.mark.unit
-    def test_do_calculate_hazard_rate_mission(self, test_attributes, test_tablemodel):
+    def test_do_calculate_hazard_rate_mission(self, test_attributes, test_table_model):
         """should calculate the mission hazard rate."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_active = 0.0032
         _reliability.hazard_rate_dormant = 0.000128
@@ -628,11 +636,11 @@ class TestAnalysisMethods:
         assert _reliability.hazard_rate_mission == pytest.approx(0.0018676)
 
     @pytest.mark.unit
-    def test_do_calculate_mtbf(self, test_attributes, test_tablemodel):
+    def test_do_calculate_mtbf(self, test_attributes, test_table_model):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 1
         _reliability.hazard_rate_logistics = 3.378
@@ -644,11 +652,11 @@ class TestAnalysisMethods:
         assert _reliability.mtbf_mission == pytest.approx(535446.56243)
 
     @pytest.mark.unit
-    def test_do_calculate_mtbf_per_hour(self, test_attributes, test_tablemodel):
+    def test_do_calculate_mtbf_per_hour(self, test_attributes, test_table_model):
         """should calculate the active hazard rate when hazard rate is specified."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 1
         _reliability.hazard_rate_logistics = 0.000003378
@@ -660,11 +668,11 @@ class TestAnalysisMethods:
         assert _reliability.mtbf_mission == pytest.approx(535446.56243)
 
     @pytest.mark.unit
-    def test_do_calculate_mtbf_zero_logistics(self, test_attributes, test_tablemodel):
+    def test_do_calculate_mtbf_zero_logistics(self, test_attributes, test_table_model):
         """should return 0.0 when the logistics hazard rate = 0.0."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 1
         _reliability.hazard_rate_logistics = 0.0
@@ -676,11 +684,11 @@ class TestAnalysisMethods:
         assert _reliability.mtbf_mission == pytest.approx(535446.56243)
 
     @pytest.mark.unit
-    def test_do_calculate_mtbf_zero_mission(self, test_attributes, test_tablemodel):
+    def test_do_calculate_mtbf_zero_mission(self, test_attributes, test_table_model):
         """should return 0.0 when the logistics hazard rate = 0.0."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_type_id = 1
         _reliability.hazard_rate_logistics = 3.378
@@ -692,11 +700,11 @@ class TestAnalysisMethods:
         assert _reliability.mtbf_mission == 0.0
 
     @pytest.mark.unit
-    def test_do_calculate_reliability(self, test_attributes, test_tablemodel):
+    def test_do_calculate_reliability(self, test_attributes, test_table_model):
         """should calculate the active hazard rate for the EXP."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_logistics = 3.378
         _reliability.hazard_rate_mission = 1.8676
@@ -706,11 +714,11 @@ class TestAnalysisMethods:
         assert _reliability.reliability_mission == pytest.approx(0.9999981)
 
     @pytest.mark.unit
-    def test_do_calculate_reliability_per_hour(self, test_attributes, test_tablemodel):
+    def test_do_calculate_reliability_per_hour(self, test_attributes, test_table_model):
         """should calculate the active hazard rate for the EXP."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        test_table_model.do_select_all(attributes=test_attributes)
 
-        _reliability = test_tablemodel.do_select(1)
+        _reliability = test_table_model.do_select(1)
         _reliability.hardware_id = 1
         _reliability.hazard_rate_logistics = 0.000003378
         _reliability.hazard_rate_mission = 0.0000018676

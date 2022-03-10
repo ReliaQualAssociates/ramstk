@@ -2,6 +2,9 @@
 from datetime import date
 from typing import Dict, List, Tuple, Type, Union
 
+# Third Party Imports
+import treelib
+
 # RAMSTK Package Imports
 from ramstk.analyses import allocation as allocation
 
@@ -33,3 +36,4 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
     def do_calculate_foo_allocation(self, node_id: int) -> None: ...
     def _do_calculate_agree_total_elements(self, node_id: int) -> Tuple[int, int]: ...
     def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int: ...
+    def _on_insert_hardware(self, tree: treelib.Tree) -> None: ...

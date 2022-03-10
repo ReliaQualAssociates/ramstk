@@ -8,7 +8,6 @@
 """GTK3 Hardware Views."""
 
 # Standard Library Imports
-from copy import copy
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -204,17 +203,9 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _attributes = {
-            "revision_id": self.dic_pkeys["revision_id"],
-            "hardware_id": self.dic_pkeys["hardware_id"],
-            "parent_id": self.dic_pkeys["hardware_id"],
-            "part": 0,
-            "record_id": self.dic_pkeys["record_id"],
-        }
-
         if self._pnlPanel.part == 1:
             _message = _(
-                "You cannot add a sibling item to a part.  First set the "
+                "You cannot add a child item to a part.  First set the "
                 "component category to nothing to convert this part to an "
                 "assembly and then try again."
             )
@@ -231,22 +222,14 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
-            attributes=copy(_attributes),
+            attributes={
+                "revision_id": self.dic_pkeys["revision_id"],
+                "hardware_id": self.dic_pkeys["hardware_id"],
+                "parent_id": self.dic_pkeys["hardware_id"],
+                "part": 0,
+                "record_id": self.dic_pkeys["record_id"],
+            },
         )
-
-        # See Issue #985.
-        _attributes.pop("part")
-        for _table in [
-            "design_electric",
-            "design_mechanic",
-            "milhdbk217f",
-            "nswc",
-            "reliability",
-        ]:
-            pub.sendMessage(
-                f"request_insert_{_table}",
-                attributes=copy(_attributes),
-            )
 
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None:
         """Send request to insert a piece part to the selected Hardware item.
@@ -254,14 +237,6 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _attributes = {
-            "revision_id": self.dic_pkeys["revision_id"],
-            "hardware_id": self.dic_pkeys["hardware_id"],
-            "parent_id": self.dic_pkeys["hardware_id"],
-            "part": 1,
-            "record_id": self.dic_pkeys["record_id"],
-        }
-
         if self._pnlPanel.part == 1:
             _message = _(
                 "You cannot add a part to another part.  First set the "
@@ -281,22 +256,14 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
-            attributes=copy(_attributes),
+            attributes={
+                "revision_id": self.dic_pkeys["revision_id"],
+                "hardware_id": self.dic_pkeys["hardware_id"],
+                "parent_id": self.dic_pkeys["hardware_id"],
+                "part": 1,
+                "record_id": self.dic_pkeys["record_id"],
+            },
         )
-
-        # See Issue #985.
-        _attributes.pop("part")
-        for _table in [
-            "design_electric",
-            "design_mechanic",
-            "milhdbk217f",
-            "nswc",
-            "reliability",
-        ]:
-            pub.sendMessage(
-                f"request_insert_{_table}",
-                attributes=copy(_attributes),
-            )
 
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any:
         """Send request to insert a new sibling Hardware item.
@@ -304,14 +271,6 @@ class HardwareModuleView(RAMSTKModuleView):
         :param __button: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _attributes = {
-            "revision_id": self.dic_pkeys["revision_id"],
-            "hardware_id": self.dic_pkeys["hardware_id"],
-            "parent_id": self.dic_pkeys["parent_id"],
-            "part": 0,
-            "record_id": self.dic_pkeys["record_id"],
-        }
-
         if self.dic_pkeys["parent_id"] == 0:
             _message = _(
                 "You cannot have two top-level items for a single revision.  "
@@ -333,22 +292,14 @@ class HardwareModuleView(RAMSTKModuleView):
         super().do_set_cursor_busy()
         pub.sendMessage(
             "request_insert_hardware",
-            attributes=copy(_attributes),
+            attributes={
+                "revision_id": self.dic_pkeys["revision_id"],
+                "hardware_id": self.dic_pkeys["hardware_id"],
+                "parent_id": self.dic_pkeys["parent_id"],
+                "part": 0,
+                "record_id": self.dic_pkeys["record_id"],
+            },
         )
-
-        # See Issue #985.
-        _attributes.pop("part")
-        for _table in [
-            "design_electric",
-            "design_mechanic",
-            "milhdbk217f",
-            "nswc",
-            "reliability",
-        ]:
-            pub.sendMessage(
-                f"request_insert_{_table}",
-                attributes=copy(_attributes),
-            )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's record ID and, if any, parent ID.
