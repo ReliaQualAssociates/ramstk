@@ -18,7 +18,7 @@ def mock_program_dao(monkeypatch):
     _action_1.mechanism_id = 3
     _action_1.cause_id = 3
     _action_1.action_id = 1
-    _action_1.action_recommended = "Test FMEA Action #1 for Cause ID #3."
+    _action_1.description = "Test FMEA Action #1 for Cause ID #3."
     _action_1.action_category = "Detection"
     _action_1.action_owner = ""
     _action_1.action_due_date = date.today() + timedelta(days=30)
@@ -36,7 +36,7 @@ def mock_program_dao(monkeypatch):
     _action_2.mechanism_id = 3
     _action_2.cause_id = 3
     _action_2.action_id = 2
-    _action_2.action_recommended = "Test FMEA Action #2 for Cause ID #3."
+    _action_2.description = "Test FMEA Action #2 for Cause ID #3."
     _action_2.action_category = "Detection"
     _action_2.action_owner = ""
     _action_2.action_due_date = date.today() + timedelta(days=23)
@@ -65,7 +65,7 @@ def test_attributes():
         "mechanism_id": 3,
         "cause_id": 3,
         "action_id": 1,
-        "action_recommended": "Test FMEA Action #1 for Cause ID #3.",
+        "description": "Test FMEA Action #1 for Cause ID #3.",
         "action_category": "",
         "action_owner": "weibullguy",
         "action_due_date": date.today(),

@@ -26,7 +26,7 @@ from ramstk.models.dbtables import RAMSTKActionTable
 
 
 @pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
+def test_table_model(mock_program_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKActionTable()
@@ -47,7 +47,7 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_recordmodel", "test_table_model")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
@@ -58,10 +58,7 @@ class TestCreateModels:
 
         # Verify class attributes are properly initialized.
         assert test_recordmodel.__tablename__ == "ramstk_action"
-        assert (
-            test_recordmodel.action_recommended
-            == "Test FMEA Action #1 for Cause ID #3."
-        )
+        assert test_recordmodel.description == "Test FMEA Action #1 for Cause ID #3."
         assert test_recordmodel.action_category == "Detection"
         assert test_recordmodel.action_owner == ""
         assert test_recordmodel.action_due_date == date.today() + timedelta(days=30)
@@ -73,104 +70,106 @@ class TestCreateModels:
         assert test_recordmodel.action_close_date == date.today() + timedelta(days=30)
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_data_manager_create(self, test_table_model):
         """__init__() should return a PoF data manager."""
-        assert isinstance(test_tablemodel, RAMSTKActionTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_action_id"
-        assert test_tablemodel._db_tablename == "ramstk_action"
-        assert test_tablemodel._tag == "action"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._parent_id == 0
-        assert test_tablemodel.last_id == 0
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
+        assert isinstance(test_table_model, RAMSTKActionTable)
+        assert isinstance(test_table_model.tree, Tree)
+        assert isinstance(test_table_model.dao, MockDAO)
+        assert test_table_model._db_id_colname == "fld_action_id"
+        assert test_table_model._db_tablename == "ramstk_action"
+        assert test_table_model._tag == "action"
+        assert test_table_model._root == 0
+        assert test_table_model._revision_id == 0
+        assert test_table_model._parent_id == 0
+        assert test_table_model.last_id == 0
+        assert pub.isSubscribed(test_table_model.do_select_all, "selected_revision")
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_action_attributes"
+            test_table_model.do_get_attributes, "request_get_action_attributes"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "request_set_action_attributes"
+            test_table_model.do_set_attributes, "request_set_action_attributes"
         )
-        assert pub.isSubscribed(test_tablemodel.do_set_attributes, "wvw_editing_action")
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_action")
-        assert pub.isSubscribed(test_tablemodel.do_get_tree, "request_get_action_tree")
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_action")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_action")
+        assert pub.isSubscribed(
+            test_table_model.do_set_attributes, "wvw_editing_action"
+        )
+        assert pub.isSubscribed(test_table_model.do_update, "request_update_action")
+        assert pub.isSubscribed(test_table_model.do_get_tree, "request_get_action_tree")
+        assert pub.isSubscribed(test_table_model.do_delete, "request_delete_action")
+        assert pub.isSubscribed(test_table_model.do_insert, "request_insert_action")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_tablemodel):
+    def test_do_select_all(self, test_table_model):
         """should return a Tree() object populated with RAMSTKActionRecord
         instances."""
-        test_tablemodel.do_select_all(
+        test_table_model.do_select_all(
             {
                 "revision_id": 1,
             }
         )
 
         assert isinstance(
-            test_tablemodel.tree.get_node(1).data["action"], RAMSTKActionRecord
+            test_table_model.tree.get_node(1).data["action"], RAMSTKActionRecord
         )
         assert isinstance(
-            test_tablemodel.tree.get_node(2).data["action"], RAMSTKActionRecord
+            test_table_model.tree.get_node(2).data["action"], RAMSTKActionRecord
         )
 
     @pytest.mark.unit
-    def test_do_select(self, test_tablemodel):
+    def test_do_select(self, test_table_model):
         """should return an instance of the RAMSTKActionRecord on success."""
-        test_tablemodel.do_select_all(
+        test_table_model.do_select_all(
             {
                 "revision_id": 1,
             }
         )
 
-        _action = test_tablemodel.do_select(1)
+        _action = test_table_model.do_select(1)
 
         assert isinstance(_action, RAMSTKActionRecord)
-        assert _action.action_recommended == "Test FMEA Action #1 for Cause ID #3."
+        assert _action.description == "Test FMEA Action #1 for Cause ID #3."
         assert _action.action_category == "Detection"
 
     @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_tablemodel):
+    def test_do_select_non_existent_id(self, test_table_model):
         """should return None when a non-existent action ID is requested."""
-        test_tablemodel.do_select_all(
+        test_table_model.do_select_all(
             {
                 "revision_id": 1,
             }
         )
 
-        assert test_tablemodel.do_select(100) is None
+        assert test_table_model.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
+    def test_do_insert_sibling(self, test_attributes, test_table_model):
         """should add a record to the record tree and update last_id."""
-        test_tablemodel.do_select_all(test_attributes)
-        test_tablemodel.do_insert(test_attributes)
+        test_table_model.do_select_all(test_attributes)
+        test_table_model.do_insert(test_attributes)
 
-        assert test_tablemodel.last_id == 3
+        assert test_table_model.last_id == 3
         assert isinstance(
-            test_tablemodel.tree.get_node(3).data["action"], RAMSTKActionRecord
+            test_table_model.tree.get_node(3).data["action"], RAMSTKActionRecord
         )
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_tablemodel):
+    def test_do_delete(self, test_table_model):
         """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(
+        test_table_model.do_select_all(
             {
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -179,10 +178,10 @@ class TestDeleteMethods:
                 "cause_id": 3,
             }
         )
-        test_tablemodel.do_delete(2)
+        test_table_model.do_delete(2)
 
-        assert test_tablemodel.last_id == 1
-        assert test_tablemodel.tree.get_node(2) is None
+        assert test_table_model.last_id == 1
+        assert test_table_model.tree.get_node(2) is None
 
 
 @pytest.mark.usefixtures("test_attributes", "test_recordmodel")
@@ -195,9 +194,7 @@ class TestGetterSetter:
         _attributes = test_recordmodel.get_attributes()
 
         assert isinstance(_attributes, dict)
-        assert (
-            _attributes["action_recommended"] == "Test FMEA Action #1 for Cause ID #3."
-        )
+        assert _attributes["description"] == "Test FMEA Action #1 for Cause ID #3."
         assert _attributes["action_taken"] == ""
 
     @pytest.mark.unit
