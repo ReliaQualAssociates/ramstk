@@ -28,6 +28,33 @@ def test_attributes_capacitor():
 
 
 @pytest.fixture
+def test_attributes_connection():
+    yield {
+        "category_id": 8,
+        "subcategory_id": 1,
+        "environment_active_id": 2,
+        "type_id": 2,
+        "specification_id": 1,
+        "n_circuit_planes": 3,
+        "contact_gauge": 20,
+        "current_operating": 0.005,
+        "n_active_pins": 15,
+        "n_cycles": 0.1,
+        "temperature_active": 40.0,
+        "insert_id": 2,
+        "n_wave_soldered": 45,
+        "n_hand_soldered": 4,
+        "lambda_b": 0.0,
+        "piQ": 1.0,
+        "piE": 1.0,
+        "piC": 0.0,
+        "piK": 0.0,
+        "piP": 0.0,
+        "hazard_rate_active": 0.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
