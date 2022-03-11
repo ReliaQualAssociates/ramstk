@@ -89,6 +89,29 @@ def test_attributes_fuse():
 
 
 @pytest.fixture
+def test_attributes_inductor():
+    yield {
+        "category_id": 5,
+        "subcategory_id": 1,
+        "environment_active_id": 3,
+        "insulation_id": 3,
+        "family_id": 1,
+        "construction_id": 1,
+        "specification_id": 1,
+        "quality_id": 1,
+        "page_number": 3,
+        "area": 12.5,
+        "weight": 0.612,
+        "power_operating": 0.875,
+        "voltage_dc_operating": 3.3,
+        "current_operating": 0.00108778877888,
+        "temperature_active": 43.2,
+        "piE": 5.0,
+        "lambda_b": 0.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,

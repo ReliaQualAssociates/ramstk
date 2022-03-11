@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.milhdbk217f.models.test_inductor.py is part of The
+#       tests.analyses.milhdbk217f.models.inductor_unit_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the inductor module."""
 
 # Third Party Imports
@@ -15,37 +15,16 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import inductor
 
-ATTRIBUTES = {
-    "category_id": 5,
-    "subcategory_id": 1,
-    "environment_active_id": 3,
-    "insulation_id": 3,
-    "family_id": 1,
-    "construction_id": 1,
-    "specification_id": 1,
-    "quality_id": 1,
-    "page_number": 3,
-    "area": 12.5,
-    "weight": 0.612,
-    "power_operating": 0.875,
-    "voltage_dc_operating": 3.3,
-    "current_operating": 0.00108778877888,
-    "temperature_active": 43.2,
-    "piE": 5.0,
-    "lambda_b": 0.0,
-}
-
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("family_id", [1, 2, 3, 4])
 @pytest.mark.parametrize(
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 def test_get_part_count_lambda_b_xfmr(family_id, environment_active_id):
-    """get_part_count_lambda_b() should return a float value for the base
-    hazard rate on success."""
+    """get_part_count_lambda_b() should return a float value for the base hazard rate
+    on success."""
     _lambda_b = inductor.get_part_count_lambda_b(
         id_keys={
             "subcategory_id": 1,
@@ -127,7 +106,6 @@ def test_get_part_count_lambda_b_xfmr(family_id, environment_active_id):
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("family_id", [1, 2])
 @pytest.mark.parametrize(
     "environment_active_id",
@@ -137,8 +115,8 @@ def test_get_part_count_lambda_b_inductor(
     family_id,
     environment_active_id,
 ):
-    """get_part_count_lambda_b() should return a float value for the base
-    hazard rate on success."""
+    """get_part_count_lambda_b() should return a float value for the base hazard rate
+    on success."""
     _lambda_b = inductor.get_part_count_lambda_b(
         id_keys={
             "subcategory_id": 2,
@@ -188,7 +166,6 @@ def test_get_part_count_lambda_b_inductor(
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
@@ -203,10 +180,9 @@ def test_get_part_count_lambda_b_no_subcategory():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_family():
-    """get_part_count_lambda_b() should raise a KeyError when passed an unknown
-    family ID."""
+    """get_part_count_lambda_b() should raise a KeyError when passed an unknown family
+    ID."""
     with pytest.raises(KeyError):
         _lambda_b = inductor.get_part_count_lambda_b(
             id_keys={
@@ -218,10 +194,9 @@ def test_get_part_count_lambda_b_no_family():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
-    """get_part_count_lambda_b() should raise an IndexError when passed an
-    unknown active environment ID."""
+    """get_part_count_lambda_b() should raise an IndexError when passed an unknown
+    active environment ID."""
     with pytest.raises(IndexError):
         _lambda_b = inductor.get_part_count_lambda_b(
             id_keys={
@@ -233,7 +208,7 @@ def test_get_part_count_lambda_b_no_environment():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
+@pytest.mark.usefixture("test_attributes_inductor")
 @pytest.mark.parametrize("family_id", [1, 2])
 @pytest.mark.parametrize(
     "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
@@ -241,13 +216,14 @@ def test_get_part_count_lambda_b_no_environment():
 def test_calculate_part_count_inductor(
     family_id,
     environment_active_id,
+    test_attributes_inductor,
 ):
-    """calculate_part_count() should return a float value for the base hazard
-    rate on success."""
-    ATTRIBUTES["subcategory_id"] = 2
-    ATTRIBUTES["family_id"] = family_id
-    ATTRIBUTES["environment_active_id"] = environment_active_id
-    _lambda_b = inductor.calculate_part_count(**ATTRIBUTES)
+    """calculate_part_count() should return a float value for the base hazard rate on
+    success."""
+    test_attributes_inductor["subcategory_id"] = 2
+    test_attributes_inductor["family_id"] = family_id
+    test_attributes_inductor["environment_active_id"] = environment_active_id
+    _lambda_b = inductor.calculate_part_count(**test_attributes_inductor)
 
     assert isinstance(_lambda_b, float)
     assert (
@@ -290,7 +266,7 @@ def test_calculate_part_count_inductor(
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
+@pytest.mark.usefixture("test_attributes_inductor")
 @pytest.mark.parametrize("family_id", [1, 2, 3, 4])
 @pytest.mark.parametrize(
     "environment_active_id",
@@ -299,13 +275,14 @@ def test_calculate_part_count_inductor(
 def test_calculate_part_count_xfmr(
     family_id,
     environment_active_id,
+    test_attributes_inductor,
 ):
-    """calculate_part_count() should return a float value for the base hazard
-    rate on success."""
-    ATTRIBUTES["subcategory_id"] = 1
-    ATTRIBUTES["family_id"] = family_id
-    ATTRIBUTES["environment_active_id"] = environment_active_id
-    _lambda_b = inductor.calculate_part_count(**ATTRIBUTES)
+    """calculate_part_count() should return a float value for the base hazard rate on
+    success."""
+    test_attributes_inductor["subcategory_id"] = 1
+    test_attributes_inductor["family_id"] = family_id
+    test_attributes_inductor["environment_active_id"] = environment_active_id
+    _lambda_b = inductor.calculate_part_count(**test_attributes_inductor)
 
     assert isinstance(_lambda_b, float)
     assert (
@@ -380,7 +357,6 @@ def test_calculate_part_count_xfmr(
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize(
     "page_number",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
@@ -391,38 +367,56 @@ def test_get_temperature_rise_spec_sheet(page_number):
     _temperature_rise = inductor.get_temperature_rise_spec_sheet(page_number)
 
     assert isinstance(_temperature_rise, float)
-    assert _temperature_rise == {
-        1: 15.0,
-        2: 15.0,
-        3: 15.0,
-        4: 35.0,
-        5: 15.0,
-        6: 35.0,
-        7: 15.0,
-        8: 35.0,
-        9: 15.0,
-        10: 15.0,
-        11: 35.0,
-        12: 35.0,
-        13: 15.0,
-        14: 15.0,
-    }[page_number]
+    assert (
+        _temperature_rise
+        == {
+            1: 15.0,
+            2: 15.0,
+            3: 15.0,
+            4: 35.0,
+            5: 15.0,
+            6: 35.0,
+            7: 15.0,
+            8: 35.0,
+            9: 15.0,
+            10: 15.0,
+            11: 35.0,
+            12: 35.0,
+            13: 15.0,
+            14: 15.0,
+        }[page_number]
+    )
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
+@pytest.mark.usefixtures("test_attributes_inductor")
+def test_get_temperature_rise_spec_id(test_attributes_inductor):
+    """get_temperature_rise_spec_sheet() should return a float value for the
+    temperature_rise on success."""
+    test_attributes_inductor["subcategory_id"] = 2
+    test_attributes_inductor["specification_id"] = 2
+    test_attributes_inductor["page_number"] = 14
+
+    test_attributes_inductor = inductor.calculate_part_stress(
+        **test_attributes_inductor
+    )
+
+    assert isinstance(test_attributes_inductor["temperature_rise"], float)
+    assert test_attributes_inductor["temperature_rise"] == 15.0
+
+
+@pytest.mark.unit
 def test_get_temperature_rise_no_spec_sheet():
-    """get_temperature_rise_spec_sheet() should raise a KeyError when passed an
-    unkown page number."""
+    """get_temperature_rise_spec_sheet() should raise a KeyError when passed an unkown
+    page number."""
     with pytest.raises(KeyError):
         _temperature_rise = inductor.get_temperature_rise_spec_sheet(22)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_input_power_weight():
-    """calculate_temperature_rise_input_power_weight() should return a float
-    value on success."""
+    """calculate_temperature_rise_input_power_weight() should return a float value on
+    success."""
     _temperature_rise = inductor.calculate_temperature_rise_input_power_weight(
         0.387, 0.015
     )
@@ -432,10 +426,9 @@ def test_calculate_temperature_rise_input_power_weight():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_input_power_weight_zero_weight():
-    """calculate_temperature_rise_input_power_weight() should raise a
-    ZeroDivisionError when passed a weight=0.0."""
+    """calculate_temperature_rise_input_power_weight() should raise a ZeroDivisionError
+    when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
         _temperature_rise = inductor.calculate_temperature_rise_input_power_weight(
             0.387, 0.0
@@ -443,10 +436,9 @@ def test_calculate_temperature_rise_input_power_weight_zero_weight():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_surface():
-    """calculate_temperature_rise_power_loss_surface() should return a float
-    value on success."""
+    """calculate_temperature_rise_power_loss_surface() should return a float value on
+    success."""
     _temperature_rise = inductor.calculate_temperature_rise_power_loss_surface(
         0.387, 12.5
     )
@@ -456,10 +448,9 @@ def test_calculate_temperature_rise_power_loss_surface():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_surface_zero_area():
-    """calculate_temperature_rise_power_loss_surface() should raise a
-    ZeroDivisionError when passed an area=0.0."""
+    """calculate_temperature_rise_power_loss_surface() should raise a ZeroDivisionError
+    when passed an area=0.0."""
     with pytest.raises(ZeroDivisionError):
         _temperature_rise = inductor.calculate_temperature_rise_power_loss_surface(
             0.387, 0.0
@@ -467,10 +458,9 @@ def test_calculate_temperature_rise_power_loss_surface_zero_area():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_weight():
-    """calculate_temperature_rise_power_loss_radiating_surface() should return
-    a float value on success."""
+    """calculate_temperature_rise_power_loss_radiating_surface() should return a float
+    value on success."""
     _temperature_rise = inductor.calculate_temperature_rise_power_loss_weight(
         0.387, 2.5
     )
@@ -480,10 +470,9 @@ def test_calculate_temperature_rise_power_loss_weight():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_temperature_rise_power_loss_weight_zero_weight():
-    """calculate_temperature_rise_power_loss_weight() should raise a
-    ZeroDivisionError when passed a weight=0.0."""
+    """calculate_temperature_rise_power_loss_weight() should raise a ZeroDivisionError
+    when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
         _temperature_rise = inductor.calculate_temperature_rise_power_loss_weight(
             0.387, 0.0
@@ -491,10 +480,8 @@ def test_calculate_temperature_rise_power_loss_weight_zero_weight():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_hot_spot_temperature():
-    """calculate_hot_spot_temperature() should return a float value on
-    success."""
+    """calculate_hot_spot_temperature() should return a float value on success."""
     _temperature_hot_spot = inductor.calculate_hot_spot_temperature(43.2, 38.7)
 
     assert isinstance(_temperature_hot_spot, float)
@@ -502,10 +489,8 @@ def test_calculate_hot_spot_temperature():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_part_stress_lambda_b():
-    """calculate_part_stress_lambda_b() should return a float value on
-    success."""
+    """calculate_part_stress_lambda_b() should return a float value on success."""
     _lambda_b = inductor.calculate_part_stress_lambda_b(1, 4, 85.77)
 
     assert isinstance(_lambda_b, float)
@@ -513,25 +498,22 @@ def test_calculate_part_stress_lambda_b():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_subcategory():
-    """calculate_part_stress_lambda_b() should raise an KeyError when passed an
-    unknown subcategory ID."""
+    """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown
+    subcategory ID."""
     with pytest.raises(KeyError):
         _lambda_b = inductor.calculate_part_stress_lambda_b(101, 4, 85.77)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_part_stress_lambda_b_no_insulation():
-    """calculate_part_stress_lambda_b() should raise an KeyError when passed an
-    unknown insulation ID."""
+    """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown
+    insulation ID."""
     with pytest.raises(KeyError):
         _lambda_b = inductor.calculate_part_stress_lambda_b(1, 41, 85.77)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_get_part_stress_quality_factor(subcategory_id):
     """get_part_stress_quality_factor() should return a float value for piQ on
@@ -543,13 +525,13 @@ def test_get_part_stress_quality_factor(subcategory_id):
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_inductor():
+@pytest.mark.usefixture("test_attributes_inductor")
+def test_calculate_part_stress_inductor(test_attributes_inductor):
     """calculate_part_stress() should return a dictionary of updated values on
     success."""
-    ATTRIBUTES["subcategory_id"] = 2
-    ATTRIBUTES["construction_id"] = 2
-    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes_inductor["subcategory_id"] = 2
+    test_attributes_inductor["construction_id"] = 2
+    _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(0.00046712295)
@@ -558,75 +540,75 @@ def test_calculate_part_stress_inductor():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_xfmr_with_surface_area():
+@pytest.mark.usefixture("test_attributes_inductor")
+def test_calculate_part_stress_xfmr_with_surface_area(test_attributes_inductor):
     """calculate_part_stress() should return a dictionary of updated values on
     success."""
-    ATTRIBUTES["subcategory_id"] = 1
-    ATTRIBUTES["construction_id"] = 1
-    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes_inductor["subcategory_id"] = 1
+    test_attributes_inductor["construction_id"] = 1
+    _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(0.0026358035)
     assert _attributes["piC"] == 1.0
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.15814821)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.01976853)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_xfmr_with_weight():
+@pytest.mark.usefixture("test_attributes_inductor")
+def test_calculate_part_stress_xfmr_with_weight(test_attributes_inductor):
     """calculate_part_stress() should return a dictionary of updated values on
     success."""
-    ATTRIBUTES["subcategory_id"] = 1
-    ATTRIBUTES["construction_id"] = 1
-    ATTRIBUTES["power_operating"] = 0.387
-    ATTRIBUTES["voltage_dc_operating"] = 0.0
-    ATTRIBUTES["area"] = 0.0
-    ATTRIBUTES["weight"] = 2.5
-    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes_inductor["subcategory_id"] = 1
+    test_attributes_inductor["construction_id"] = 1
+    test_attributes_inductor["power_operating"] = 0.387
+    test_attributes_inductor["voltage_dc_operating"] = 0.0
+    test_attributes_inductor["area"] = 0.0
+    test_attributes_inductor["weight"] = 2.5
+    _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
     assert _attributes["temperature_rise"] == pytest.approx(2.39421196)
     assert _attributes["lambda_b"] == pytest.approx(0.0024684654)
     assert _attributes["piC"] == 1.0
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.14810792)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.01851349)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_xfmr_with_input_power():
+@pytest.mark.usefixture("test_attributes_inductor")
+def test_calculate_part_stress_xfmr_with_input_power(test_attributes_inductor):
     """calculate_part_stress() should return a dictionary of updated values on
     success."""
-    ATTRIBUTES["subcategory_id"] = 1
-    ATTRIBUTES["construction_id"] = 1
-    ATTRIBUTES["power_operating"] = 0.0
-    ATTRIBUTES["voltage_dc_operating"] = 3.3
-    ATTRIBUTES["area"] = 0.0
-    ATTRIBUTES["weight"] = 2.5
-    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes_inductor["subcategory_id"] = 1
+    test_attributes_inductor["construction_id"] = 1
+    test_attributes_inductor["power_operating"] = 0.0
+    test_attributes_inductor["voltage_dc_operating"] = 3.3
+    test_attributes_inductor["area"] = 0.0
+    test_attributes_inductor["weight"] = 2.5
+    _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
     assert _attributes["temperature_rise"] == pytest.approx(0.0040553804)
     assert _attributes["lambda_b"] == pytest.approx(0.0024148713)
     assert _attributes["piC"] == 1.0
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.14489228)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.01811153)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_stress_xfmr_no_temperature_rise():
+@pytest.mark.usefixture("test_attributes_inductor")
+def test_calculate_part_stress_xfmr_no_temperature_rise(test_attributes_inductor):
     """calculate_part_stress() should return a dictionary of updated values on
     success."""
-    ATTRIBUTES["subcategory_id"] = 1
-    ATTRIBUTES["construction_id"] = 1
-    ATTRIBUTES["power_operating"] = 0.0
-    ATTRIBUTES["voltage_dc_operating"] = 0.0
-    ATTRIBUTES["area"] = 0.0
-    ATTRIBUTES["weight"] = 0.0
-    _attributes = inductor.calculate_part_stress(**ATTRIBUTES)
+    test_attributes_inductor["subcategory_id"] = 1
+    test_attributes_inductor["construction_id"] = 1
+    test_attributes_inductor["power_operating"] = 0.0
+    test_attributes_inductor["voltage_dc_operating"] = 0.0
+    test_attributes_inductor["area"] = 0.0
+    test_attributes_inductor["weight"] = 0.0
+    _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
     assert _attributes["temperature_rise"] == 0.0
     assert _attributes["lambda_b"] == pytest.approx(0.0024147842)
     assert _attributes["piC"] == 1.0
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.14488705)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.01811088)
