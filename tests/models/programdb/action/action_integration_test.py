@@ -19,7 +19,7 @@ from ramstk.models.dbtables import RAMSTKActionTable
 
 
 @pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
+def test_table_model(test_program_dao):
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKActionTable()
@@ -46,7 +46,7 @@ def test_tablemodel(test_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestSelectMethods:
     """Class for testing data manager select_all() and select() methods."""
 
@@ -54,10 +54,10 @@ class TestSelectMethods:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(3).data["action"], RAMSTKActionRecord)
         assert isinstance(tree.get_node(4).data["action"], RAMSTKActionRecord)
-        print("\033[36m\nsucceed_retrieve_action topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_action topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_tablemodel):
+    def test_do_select_all_populated_tree(self, test_table_model):
         """should return a Tree() object populated with RAMSTKActionRecord
         instances."""
         pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_action")
@@ -72,223 +72,223 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_action")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
+@pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the data manager insert() method."""
 
     def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(5).data["action"], RAMSTKActionRecord)
-        print("\033[36m\nsucceed_insert_action topic was broadcast.")
+        print("\033[36m\n\tsucceed_insert_action topic was broadcast.")
 
-    def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_parent(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_cause_id)=(100) is not present in table "
             '"ramstk_cause".'
         )
-        print("\033[35m\nfail_insert_action topic was broadcast.")
+        print("\033[35m\n\tfail_insert_action topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
+    def test_do_insert_sibling(self, test_attributes, test_table_model):
         """should add a record to the record tree and update last_id."""
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_action")
 
         pub.sendMessage("request_insert_action", attributes=test_attributes)
 
-        assert test_tablemodel.last_id == 5
+        assert test_table_model.last_id == 5
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_action")
 
     @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_tablemodel):
+    def test_do_insert_no_parent(self, test_attributes, test_table_model):
         """should send the fail message if the parent ID does not exist."""
-        pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_action")
+        pub.subscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
 
         test_attributes["cause_id"] = 100
         pub.sendMessage("request_insert_action", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_action")
+        pub.unsubscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestDeleteMethods:
     """Class for testing the data manager delete() method."""
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_action topic was broadcast")
+        print("\033[36m\n\tsucceed_delete_action topic was broadcast")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Action ID 300.")
-        print("\033[35m\nfail_delete_action topic was broadcast")
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempted to delete non-existent Action ID 300.")
+        print("\033[35m\n\tfail_delete_action topic was broadcast")
 
-    def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Action ID 4.")
-        print("\033[35m\nfail_delete_action topic was broadcast")
+    def on_fail_delete_not_in_tree(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempted to delete non-existent Action ID 4.")
+        print("\033[35m\n\tfail_delete_action topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
+    def test_do_delete(self, test_table_model):
         """should remove the deleted record from records tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, "succeed_delete_action")
 
         pub.sendMessage("request_delete_action", node_id=3)
 
-        assert test_tablemodel.last_id == 4
+        assert test_table_model.last_id == 4
 
         pub.unsubscribe(self.on_succeed_delete, "succeed_delete_action")
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
         """should send the fail message when node ID doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_action")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_action", node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_action")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_tablemodel):
+    def test_do_delete_not_in_tree(self, test_table_model):
         """should send the fail message when node doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_action")
+        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
-        test_tablemodel.tree.remove_node(4)
+        test_table_model.tree.remove_node(4)
         pub.sendMessage("request_delete_action", node_id=4)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_action")
+        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestUpdateMethods:
     """Class for testing update() and update_all() methods."""
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(3).data["action"].action_recommended == ("Get a clue.")
+        assert tree.get_node(3).data["action"].description == ("Get a clue.")
         assert tree.get_node(3).data["action"].action_closed == 1
-        print("\033[36m\nsucceed_update_action topic was broadcast")
+        print("\033[36m\n\tsucceed_update_action topic was broadcast")
 
     def on_succeed_update_all(self):
         print(
-            "\033[36m\nsucceed_update_all topic was broadcast when updating all "
+            "\033[36m\n\tsucceed_update_all topic was broadcast when updating all "
             "Actions"
         )
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for action ID 3 was "
-            "the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "The value for one or more attributes for action ID 3 was the wrong type."
         )
-        print("\033[35m\nfail_update_action topic was broadcast on wrong data type.")
+        print("\033[35m\n\tfail_update_action topic was broadcast on wrong data type.")
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_action topic was broadcast on root node.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempting to update the root node 0.")
+        print("\033[35m\n\tfail_update_action topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent action with action ID 100."
-        )
-        print("\033[35m\nfail_update_action topic was broadcast on non-existent ID.")
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempted to save non-existent action with action ID 100.")
+        print("\033[35m\n\tfail_update_action topic was broadcast on non-existent ID.")
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for action ID 3.")
-        print("\033[35m\nfail_update_action topic was broadcast on no data package.")
+    def on_fail_update_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("No data package found for action ID 3.")
+        print("\033[35m\n\tfail_update_action topic was broadcast on no data package.")
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
+    def test_do_update(self, test_table_model):
         """should update record in database and records tree."""
         pub.subscribe(self.on_succeed_update, "succeed_update_action")
 
-        test_tablemodel.tree.get_node(3).data[
-            "action"
-        ].action_recommended = "Get a clue."
-        test_tablemodel.tree.get_node(3).data["action"].action_closed = 1
+        test_table_model.tree.get_node(3).data["action"].description = "Get a clue."
+        test_table_model.tree.get_node(3).data["action"].action_closed = 1
         pub.sendMessage("request_update_action", node_id=3)
 
         assert (
-            test_tablemodel.tree.get_node(3).data["action"].action_recommended
+            test_table_model.tree.get_node(3).data["action"].description
             == "Get a clue."
         )
-        assert test_tablemodel.tree.get_node(3).data["action"].action_closed == 1
+        assert test_table_model.tree.get_node(3).data["action"].action_closed == 1
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_action")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
+    def test_do_update_all(self, test_table_model):
         """should update all records in database and records tree."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_action")
 
-        test_tablemodel.tree.get_node(3).data[
+        test_table_model.tree.get_node(3).data[
             "action"
         ].description = "Test failure action"
-        test_tablemodel.tree.get_node(3).data["action"].rpn_detection = 2
-        test_tablemodel.tree.get_node(4).data[
+        test_table_model.tree.get_node(3).data["action"].rpn_detection = 2
+        test_table_model.tree.get_node(4).data[
             "action"
         ].description = "Big test failure action"
-        test_tablemodel.tree.get_node(4).data["action"].rpn_detection = 7
+        test_table_model.tree.get_node(4).data["action"].rpn_detection = 7
         pub.sendMessage("request_update_all_action")
 
         assert (
-            test_tablemodel.tree.get_node(3).data["action"].description
+            test_table_model.tree.get_node(3).data["action"].description
             == "Test failure action"
         )
-        assert test_tablemodel.tree.get_node(3).data["action"].rpn_detection == 2
+        assert test_table_model.tree.get_node(3).data["action"].rpn_detection == 2
         assert (
-            test_tablemodel.tree.get_node(4).data["action"].description
+            test_table_model.tree.get_node(4).data["action"].description
             == "Big test failure action"
         )
-        assert test_tablemodel.tree.get_node(4).data["action"].rpn_detection == 7
+        assert test_table_model.tree.get_node(4).data["action"].rpn_detection == 7
 
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_action")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
+    def test_do_update_wrong_data_type(self, test_table_model):
         """should send fail message if attribute has wrong data type."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_action")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
-        _action = test_tablemodel.do_select(3)
+        _action = test_table_model.do_select(3)
         _action.action_approved = {1: 2}
         pub.sendMessage("request_update_action", node_id=3)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_action")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
+    def test_do_update_root_node_wrong_data_type(self, test_table_model):
         """should send fail message when attempting to update root node."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_action"
-        )
+        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
-        _action = test_tablemodel.do_select(4)
+        _action = test_table_model.do_select(4)
         _action.action_closed = {1: 2}
         pub.sendMessage("request_update_action", node_id=0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_action"
+            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """should send fail message when node ID does not exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_action")
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_update_action", node_id=100)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_action")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
+    def test_do_update_no_data_package(self, test_table_model):
         """should send fail message when node ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_action")
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
-        test_tablemodel.tree.get_node(3).data.pop("action")
+        test_table_model.tree.get_node(3).data.pop("action")
         pub.sendMessage("request_update_action", node_id=3)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_action")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
+@pytest.mark.usefixtures("test_table_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
@@ -296,16 +296,16 @@ class TestGetterSetter:
         assert isinstance(attributes, dict)
         assert attributes["action_id"] == 3
         assert (
-            attributes["action_recommended"]
+            attributes["description"]
             == "Test FMEA Recommended Action #1 for Cause ID 3"
         )
-        print("\033[36m\nsucceed_get_action_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_action_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(3).data["action"], RAMSTKActionRecord)
         assert isinstance(tree.get_node(4).data["action"], RAMSTKActionRecord)
-        print("\033[36m\nsucceed_get_action_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_action_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
@@ -313,17 +313,17 @@ class TestGetterSetter:
             tree.get_node(4).data["action"].action_owner
             == "John Jacob Jingleheimer Schmidt"
         )
-        print("\033[36m\nsucceed_get_action_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_action_tree topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
+    def test_do_get_attributes(self, test_table_model):
         """should return a dict of attribute key:value pairs."""
         pub.subscribe(self.on_succeed_get_attributes, "succeed_get_action_attributes")
 
-        test_tablemodel.do_get_attributes(node_id=3)
+        test_table_model.do_get_attributes(node_id=3)
 
         assert (
-            test_tablemodel.tree.get_node(3).data["action"].action_recommended
+            test_table_model.tree.get_node(3).data["action"].description
             == "Test FMEA Recommended Action #1 for Cause ID 3"
         )
 
@@ -341,7 +341,7 @@ class TestGetterSetter:
         )
 
     @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
+    def test_do_set_attributes(self, test_table_model):
         """should set the value of the requested attribute."""
         pub.subscribe(self.on_succeed_set_attributes, "succeed_get_action_tree")
 
@@ -352,7 +352,7 @@ class TestGetterSetter:
         )
 
         assert (
-            test_tablemodel.do_select(4).action_owner
+            test_table_model.do_select(4).action_owner
             == "John Jacob Jingleheimer Schmidt"
         )
 
