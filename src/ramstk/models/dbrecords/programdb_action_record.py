@@ -27,7 +27,7 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """
 
     __defaults__ = {
-        "action_recommended": "",
+        "description": "",
         "action_category": "",
         "action_owner": "",
         "action_due_date": date.today() + timedelta(days=30),
@@ -80,10 +80,10 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         nullable=False,
     )
 
-    action_recommended = Column(
-        "fld_action_recommended",
+    description = Column(
+        "fld_description",
         String,
-        default=__defaults__["action_recommended"],
+        default=__defaults__["description"],
     )
     action_category = Column(
         "fld_action_category",
@@ -131,7 +131,7 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of the RAMSTKAction data model attributes.
 
-        :return: {cause_id, action_id, action_recommended,
+        :return: {cause_id, action_id, description,
                   action_category, action_owner, action_due_date,
                   action_status, action_taken, action_approved,
                   action_approved_date, action_closed,
@@ -141,7 +141,7 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         return {
             "cause_id": self.cause_id,
             "action_id": self.action_id,
-            "action_recommended": self.action_recommended,
+            "description": self.description,
             "action_category": self.action_category,
             "action_owner": self.action_owner,
             "action_due_date": self.action_due_date,

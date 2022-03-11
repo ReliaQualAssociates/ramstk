@@ -1428,7 +1428,7 @@ class FMEATreePanel(RAMSTKTreePanel):
             _entity.cause_id,
             0,
             _entity.action_id,
-            _entity.action_recommended,
+            _entity.description,
             "",
             "",
             "",
