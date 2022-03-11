@@ -67,6 +67,18 @@ def test_attributes_crystal():
 
 
 @pytest.fixture
+def test_attributes_filter():
+    yield {
+        "category_id": 10,
+        "subcategory_id": 2,
+        "environment_active_id": 1,
+        "type_id": 1,
+        "piQ": 1.0,
+        "piE": 4.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
