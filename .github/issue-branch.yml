@@ -12,7 +12,7 @@ branches:
   - label: 'type: docs'
     prefix: docs/
   - label: 'type: feature'
-    prefix: feature/
+    prefix: feat/
   - label: 'type: fix'
     prefix: fix/
   - label: 'type: refactor'
