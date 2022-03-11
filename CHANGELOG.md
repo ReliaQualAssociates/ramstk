@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.17.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.17.0) (2022-03-11)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.3...v0.17.0)
+
+New Features
+
+- feat: rename fld\_action\_recommended to fld\_description [\#1028](https://github.com/ReliaQualAssociates/ramstk/pull/1028) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.16.3](https://github.com/ReliaQualAssociates/ramstk/tree/v0.16.3) (2022-03-10)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.2...v0.16.3)
