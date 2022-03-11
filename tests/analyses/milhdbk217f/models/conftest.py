@@ -79,6 +79,16 @@ def test_attributes_filter():
 
 
 @pytest.fixture
+def test_attributes_fuse():
+    yield {
+        "category_id": 10,
+        "subcategory_id": 3,
+        "environment_active_id": 1,
+        "piE": 1.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
