@@ -81,7 +81,7 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     description = Column(
-        "fld_action_recommended",
+        "fld_description",
         String,
         default=__defaults__["description"],
     )
