@@ -112,6 +112,32 @@ def test_attributes_inductor():
 
 
 @pytest.fixture
+def test_attributes_integrated_circuit():
+    yield {
+        "category_id": 1,
+        "subcategory_id": 1,
+        "application_id": 2,
+        "area": 0.5,
+        "environment_active_id": 3,
+        "family_id": 2,
+        "feature_size": 0.8,
+        "manufacturing_id": 1,
+        "n_elements": 100,
+        "n_active_pins": 32,
+        "package_id": 1,
+        "power_operating": 0.038,
+        "technology_id": 1,
+        "temperature_case": 48.3,
+        "theta_jc": 125,
+        "type_id": 1,
+        "voltage_esd": 2000,
+        "years_in_production": 3,
+        "piE": 1.0,
+        "piQ": 2.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
