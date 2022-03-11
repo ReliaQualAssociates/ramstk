@@ -3,6 +3,31 @@ import pytest
 
 
 @pytest.fixture
+def test_attributes_capacitor():
+    yield {
+        "hardware_id": 12,
+        "subcategory_id": 1,
+        "temperature_rated_max": 105.0,
+        "temperature_active": 45.0,
+        "voltage_ratio": 0.54,
+        "capacitance": 0.0000033,
+        "construction_id": 1,
+        "configuration_id": 1,
+        "resistance": 0.05,
+        "voltage_dc_operating": 3.3,
+        "voltage_ac_operating": 0.04,
+        "lambda_b": 0.0,
+        "piQ": 1.0,
+        "piE": 1.0,
+        "piC": 0.0,
+        "piCF": 0.0,
+        "piCV": 0.0,
+        "piSR": 0.0,
+        "hazard_rate_active": 0.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
