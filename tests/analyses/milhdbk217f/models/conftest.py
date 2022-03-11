@@ -55,6 +55,18 @@ def test_attributes_connection():
 
 
 @pytest.fixture
+def test_attributes_crystal():
+    yield {
+        "category_id": 10,
+        "subcategory_id": 1,
+        "environment_active_id": 1,
+        "frequency_operating": 10.0,
+        "piE": 1.0,
+        "piQ": 1.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
