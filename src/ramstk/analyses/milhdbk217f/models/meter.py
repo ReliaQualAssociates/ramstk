@@ -267,6 +267,7 @@ def get_temperature_stress_factor(
     :raise: TypeError if passed a string for either temperature.
     :raise: ZeroDivisionError if passed a rated maximum temperature = 0.0.
     """
+    _pi_t = 0.0
     _temperature_ratio = temperature_active / temperature_rated_max
 
     if 0.0 < _temperature_ratio <= 0.5:

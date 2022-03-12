@@ -49,7 +49,7 @@ def test_tablemodel(mock_program_dao):
 class TestCreateModels:
     """Class for testing model initialization."""
 
-    @pytest.mark.integration
+    @pytest.mark.unit
     def test_record_model_create(self, test_recordmodel):
         """should return a record model instance."""
         assert isinstance(test_recordmodel, RAMSTKNSWCRecord)

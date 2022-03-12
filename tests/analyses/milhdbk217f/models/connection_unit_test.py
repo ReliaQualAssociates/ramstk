@@ -2,11 +2,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.milhdbk217f.models.test_connection.py is part of The
+#       tests.analyses.milhdbk217f.models.connection_unit_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the connection module."""
 
 # Third Party Imports
@@ -15,33 +15,8 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import connection
 
-ATTRIBUTES = {
-    "category_id": 8,
-    "subcategory_id": 1,
-    "environment_active_id": 2,
-    "type_id": 2,
-    "specification_id": 1,
-    "n_circuit_planes": 3,
-    "contact_gauge": 20,
-    "current_operating": 0.005,
-    "n_active_pins": 15,
-    "n_cycles": 0.1,
-    "temperature_active": 40.0,
-    "insert_id": 2,
-    "n_wave_soldered": 45,
-    "n_hand_soldered": 4,
-    "lambda_b": 0.0,
-    "piQ": 1.0,
-    "piE": 1.0,
-    "piC": 0.0,
-    "piK": 0.0,
-    "piP": 0.0,
-    "hazard_rate_active": 0.0,
-}
-
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize(
     "subcategory_id",
     [1, 2, 3, 4, 5],
@@ -52,7 +27,8 @@ ATTRIBUTES = {
 )
 @pytest.mark.parametrize("type_id", [1, 2])
 def test_get_part_count_lambda_b(subcategory_id, environment_active_id, type_id):
-    """get_part_count_lambda_b() should return a float value for the base hazard rates on success."""
+    """get_part_count_lambda_b() should return a float value for the base hazard rates
+    on success."""
     _lambda_b = connection.get_part_count_lambda_b(
         subcategory_id=subcategory_id,
         environment_active_id=environment_active_id,
@@ -64,77 +40,77 @@ def test_get_part_count_lambda_b(subcategory_id, environment_active_id, type_id)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_subcategory():
-    """get_part_count_lambda_b() should raise a KeyError when passed an unknown subcategory ID."""
+    """get_part_count_lambda_b() should raise a KeyError when passed an unknown
+    subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=88, environment_active_id=12, type_id=2
         )
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
-    """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown active environment ID."""
+    """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown
+    active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=3, environment_active_id=22, type_id=-1
         )
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_type():
-    """get_part_count_lambda_b() should raise a KeyError when passed an unknown type ID."""
+    """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
+    ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=1, environment_active_id=2, type_id=22
         )
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_count():
+@pytest.mark.usefixtures("test_attributes_connection")
+def test_calculate_part_count(test_attributes_connection):
     """calculate_part_count() should return a list of base hazard rates on success."""
-    _lst_lambda_b = connection.calculate_part_count(**ATTRIBUTES)
+    _lst_lambda_b = connection.calculate_part_count(**test_attributes_connection)
 
     assert isinstance(_lst_lambda_b, float)
     assert _lst_lambda_b == 0.015
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("contact_gauge", [12, 16, 20, 22, 26])
 def test_calculate_insert_temperature(contact_gauge):
-    """calculate_insert_temperature() should return a float value for the temperature rise on success."""
+    """calculate_insert_temperature() should return a float value for the temperature
+    rise on success."""
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
     _temperature_rise = connection.calculate_insert_temperature(contact_gauge, 0.05)
 
     assert isinstance(_temperature_rise, float)
-    assert _temperature_rise == _dic_factors[contact_gauge] * 0.05 ** 1.85
+    assert _temperature_rise == _dic_factors[contact_gauge] * 0.05**1.85
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_insert_temperature_no_gauge():
-    """calculate_insert_temperature() should raise a KeyError when passed an unknown contact gauge."""
+    """calculate_insert_temperature() should raise a KeyError when passed an unknown
+    contact gauge."""
     with pytest.raises(KeyError):
-        _temperature_rise = connection.calculate_insert_temperature(0, 0.05)
+        connection.calculate_insert_temperature(0, 0.05)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_insert_temperature_string_current():
-    """calculate_insert_temperature() should raise a TypeError when passed a string for the operating current."""
+    """calculate_insert_temperature() should raise a TypeError when passed a string for
+    the operating current."""
     with pytest.raises(TypeError):
-        _temperature_rise = connection.calculate_insert_temperature(12, "0.05")
+        connection.calculate_insert_temperature(12, "0.05")
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_active_pins_factor():
-    """calculate_active_pins_factor() should return a float value for piP on success."""
+    """calculate_active_pins_factor() should return a float value for piP on
+    success."""
     _pi_p = connection.calculate_active_pins_factor(15)
 
     assert isinstance(_pi_p, float)
@@ -142,10 +118,10 @@ def test_calculate_active_pins_factor():
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("n_circuit_planes", [1, 2])
 def test_calculate_complexity_factor_less_than_three_planes(n_circuit_planes):
-    """calculate_complexity_factor() should return 1.0 for piC when there are less than three planes in the PCB/PWA."""
+    """calculate_complexity_factor() should return 1.0 for piC when there are less than
+    three planes in the PCB/PWA."""
     _pi_c = connection.calculate_complexity_factor(n_circuit_planes)
 
     assert isinstance(_pi_c, float)
@@ -153,7 +129,6 @@ def test_calculate_complexity_factor_less_than_three_planes(n_circuit_planes):
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("n_cycles", [0.01, 0.1, 1, 10, 100])
 def test_get_mate_unmate_factor(n_cycles):
     """get_mate_unmate_factor() should return a float value for piK on success."""
@@ -173,10 +148,10 @@ def test_get_mate_unmate_factor(n_cycles):
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 3, 5])
 def test_calculate_part_stress_lambda_b(subcategory_id):
-    """calculate_part_stress_lamba_b() should return a float value for the part stress base hazard rate on success."""
+    """calculate_part_stress_lamba_b() should return a float value for the part stress
+    base hazard rate on success."""
     _factor_key = 2 if subcategory_id == 1 else 5
     _lambda_b = connection.calculate_part_stress_lambda_b(
         subcategory_id, 4, 325, _factor_key
@@ -192,28 +167,29 @@ def test_calculate_part_stress_lambda_b(subcategory_id):
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_part_stress_lambda_no_type():
-    """calculate_part_stress_lamba_b() should raise an IndexError when passed an unknown type ID."""
+    """calculate_part_stress_lamba_b() should raise an IndexError when passed an
+    unknown type ID."""
     with pytest.raises(IndexError):
-        _lambda_b = connection.calculate_part_stress_lambda_b(4, 26, 325, 5)
+        connection.calculate_part_stress_lambda_b(4, 26, 325, 5)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_calculate_part_stress_lambda_zero_contact_temperature():
-    """calculate_part_stress_lamba_b() should raise a ZeroDivisionError when passed a contact temperature=0.0."""
+    """calculate_part_stress_lamba_b() should raise a ZeroDivisionError when passed a
+    contact temperature=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _lambda_b = connection.calculate_part_stress_lambda_b(1, 4, 0.0, 2)
+        connection.calculate_part_stress_lambda_b(1, 4, 0.0, 2)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
+@pytest.mark.usefixtures("test_attributes_connection")
 @pytest.mark.parametrize("subcategory_id", [1, 3, 4, 5])
-def test_calculate_part_stress(subcategory_id):
-    """calculate_part_stress() should return a dict of updated attributes on success."""
-    ATTRIBUTES["subcategory_id"] = subcategory_id
-    _attributes = connection.calculate_part_stress(**ATTRIBUTES)
+def test_calculate_part_stress(subcategory_id, test_attributes_connection):
+    """calculate_part_stress() should return a dict of updated attributes on
+    success."""
+    test_attributes_connection["subcategory_id"] = subcategory_id
+    _attributes = connection.calculate_part_stress(**test_attributes_connection)
 
     assert isinstance(_attributes, dict)
     if subcategory_id == 1:
