@@ -15,19 +15,8 @@ import pytest
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import lamp
 
-ATTRIBUTES = {
-    "category_id": 10,
-    "subcategory_id": 4,
-    "environment_active_id": 3,
-    "application_id": 1,
-    "duty_cycle": 75.0,
-    "voltage_rated": 12.0,
-    "piE": 1.0,
-}
-
 
 @pytest.mark.unit
-@pytest.mark.calculation
 @pytest.mark.parametrize("application_id", [1, 2])
 @pytest.mark.parametrize(
     "environment_active_id",
@@ -37,7 +26,8 @@ def test_get_part_count_lambda_b(
     application_id,
     environment_active_id,
 ):
-    """get_part_count_lambda_b() should return a float value for the base hazard rate on success."""
+    """get_part_count_lambda_b() should return a float value for the base hazard rate
+    on success."""
     _lambda_b = lamp.get_part_count_lambda_b(application_id, environment_active_id)
 
     assert isinstance(_lambda_b, float)
@@ -81,40 +71,46 @@ def test_get_part_count_lambda_b(
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_application():
-    """get_part_count_lambda_b() should raise a KeyError when passed an unknown application ID."""
+    """get_part_count_lambda_b() should raise a KeyError when passed an unknown
+    application ID."""
     with pytest.raises(KeyError):
         _lambda_b = lamp.get_part_count_lambda_b(5, 2)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
 def test_get_part_count_lambda_b_no_environment():
-    """get_part_count_lambda_b() should raise an IndexError when passed an unknown active environment ID."""
+    """get_part_count_lambda_b() should raise an IndexError when passed an unknown
+    active environment ID."""
     with pytest.raises(IndexError):
         _lambda_b = lamp.get_part_count_lambda_b(1, 21)
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_calculate_part_count():
-    """calculate_part_count() should return a float for the base hazard rate on success."""
-    _lst_lambda_b = lamp.calculate_part_count(**ATTRIBUTES)
+@pytest.mark.usefixtures("test_attributes_lamp")
+def test_calculate_part_count(test_attributes_lamp):
+    """calculate_part_count() should return a float for the base hazard rate on
+    success."""
+    _lst_lambda_b = lamp.calculate_part_count(**test_attributes_lamp)
 
     assert isinstance(_lst_lambda_b, float)
     assert _lst_lambda_b == 12.0
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
+@pytest.mark.usefixtures("test_attributes_lamp")
 @pytest.mark.parametrize("duty_cycle", [5.0, 50.0, 95.0])
 @pytest.mark.parametrize("application_id", [1, 2])
-def test_calculate_part_stress(duty_cycle, application_id):
-    """calculate_part_stress() should return the attributes dict updated with the calculated values."""
-    ATTRIBUTES["duty_cycle"] = duty_cycle
-    ATTRIBUTES["application_id"] = application_id
-    _attributes = lamp.calculate_part_stress(**ATTRIBUTES)
+def test_calculate_part_stress(
+    duty_cycle,
+    application_id,
+    test_attributes_lamp,
+):
+    """calculate_part_stress() should return the attributes dict updated with the
+    calculated values."""
+    test_attributes_lamp["duty_cycle"] = duty_cycle
+    test_attributes_lamp["application_id"] = application_id
+    _attributes = lamp.calculate_part_stress(**test_attributes_lamp)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(1.82547348)

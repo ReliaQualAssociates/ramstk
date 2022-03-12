@@ -138,6 +138,19 @@ def test_attributes_integrated_circuit():
 
 
 @pytest.fixture
+def test_attributes_lamp():
+    yield {
+        "category_id": 10,
+        "subcategory_id": 4,
+        "environment_active_id": 3,
+        "application_id": 1,
+        "duty_cycle": 75.0,
+        "voltage_rated": 12.0,
+        "piE": 1.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
