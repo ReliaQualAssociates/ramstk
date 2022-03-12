@@ -151,6 +151,22 @@ def test_attributes_lamp():
 
 
 @pytest.fixture
+def test_attributes_meter():
+    yield {
+        "category_id": 9,
+        "subcategory_id": 1,
+        "environment_active_id": 4,
+        "type_id": 2,
+        "application_id": 2,
+        "temperature_active": 32.0,
+        "temperature_rated_max": 85.0,
+        "power_operating": 4.2,
+        "piQ": 1.0,
+        "piE": 7.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
