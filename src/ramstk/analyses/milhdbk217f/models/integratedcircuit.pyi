@@ -1,42 +1,35 @@
 # Standard Library Imports
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Tuple, Union
 
-ACTIVATION_ENERGY: Any
-C1: Any
-C2: Any
-PART_COUNT_LAMBDA_B: Any
-PI_A: Any
-PI_E: Any
-PI_PT: Any
-PI_Q: Any
+ACTIVATION_ENERGY: Dict[int, Any]
+C1: Dict[int, List[List[float]]]
+C2: Dict[int, List[float]]
+PART_COUNT_LAMBDA_B: Dict[int, Any]
+PI_A: Dict[int, List[float]]
+PI_E: List[float]
+PI_PT: Dict[int, float]
+PI_Q: List[float]
 
 def calculate_die_complexity_factor(area: float, feature_size: float) -> float: ...
 def calculate_junction_temperature(
     temperature_case: float, power_operating: float, theta_jc: float
 ) -> float: ...
 def calculate_lambda_cyclic_factors(
-    n_cycles: int,
-    construction_id: int,
-    n_elements: int,
-    temperature_junction: float,
+    n_cycles: int, construction_id: int, n_elements: int, temperature_junction: float
 ) -> Tuple[float, float, float, float]: ...
 def calculate_temperature_factor(
-    subcategory_id: int,
-    family_id: int,
-    type_id: int,
-    temperature_junction: float,
+    subcategory_id: int, family_id: int, type_id: int, temperature_junction: float
 ) -> float: ...
 def calculate_eos_hazard_rate(voltage_esd: float) -> float: ...
 def calculate_package_base_hazard_rate(n_active_pins: int) -> float: ...
 def calculate_package_factor(package_id: int, n_active_pins: int) -> float: ...
-def calculate_part_count(**attributes: Dict[str, Any]) -> float: ...
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]: ...
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]: ...
 def get_application_factor(type_id: int, application_id: int) -> float: ...
 def get_die_complexity_factor(
-    subcategory_id: int,
-    technology_id: int,
-    application_id: int,
-    n_elements: int,
+    subcategory_id: int, technology_id: int, application_id: int, n_elements: int
 ) -> float: ...
 def get_die_base_hazard_rate(type_id: int) -> float: ...
 def get_error_correction_factor(type_id: int) -> float: ...
