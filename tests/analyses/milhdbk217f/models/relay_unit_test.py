@@ -60,7 +60,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = relay.get_part_count_lambda_b(
+        relay.get_part_count_lambda_b(
             subcategory_id=1.3, type_id=1, environment_active_id=2
         )
 
@@ -70,7 +70,7 @@ def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = relay.get_part_count_lambda_b(
+        relay.get_part_count_lambda_b(
             subcategory_id=1, type_id=11, environment_active_id=2
         )
 
@@ -80,7 +80,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = relay.get_part_count_lambda_b(
+        relay.get_part_count_lambda_b(
             subcategory_id=1, type_id=1, environment_active_id=21
         )
 
@@ -154,7 +154,7 @@ def test_get_environment_factor_no_subcategory():
     """get_environment_factor() should raise a KeyError if passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_e = relay.get_environment_factor(12, 1, 1)
+        relay.get_environment_factor(12, 1, 1)
 
 
 @pytest.mark.unit
@@ -162,7 +162,7 @@ def test_get_environment_factor_no_environment():
     """get_environment_factor() should raise an IndexError if passed an unknown active
     environment ID."""
     with pytest.raises(IndexError):
-        _pi_e = relay.get_environment_factor(1, 1, 21)
+        relay.get_environment_factor(1, 1, 21)
 
 
 @pytest.mark.unit
@@ -181,7 +181,7 @@ def test_get_application_construction_factor_no_contact_rating():
     """get_application_construction_factor() should raise a KeyError if passed an
     unknown contact rating ID."""
     with pytest.raises(KeyError):
-        _pi_f = relay.get_application_construction_factor(1, 15, 1, 1)
+        relay.get_application_construction_factor(1, 15, 1, 1)
 
 
 @pytest.mark.unit
@@ -189,7 +189,7 @@ def test_get_application_construction_factor_no_construction():
     """get_application_construction_factor() should raise a KeyError if passed an
     unknown construction ID."""
     with pytest.raises(KeyError):
-        _pi_f = relay.get_application_construction_factor(1, 1, 15, 1)
+        relay.get_application_construction_factor(1, 1, 15, 1)
 
 
 @pytest.mark.unit
@@ -197,7 +197,7 @@ def test_get_application_construction_factor_no_application():
     """get_application_construction_factor() should raise a KeyError if passed an
     unknown application ID."""
     with pytest.raises(KeyError):
-        _pi_f = relay.get_application_construction_factor(1, 1, 1, 15)
+        relay.get_application_construction_factor(1, 1, 1, 15)
 
 
 @pytest.mark.unit
@@ -215,8 +215,6 @@ def test_calculate_part_stress_lambda_b(subcategory_id, type_id):
         assert _lambda_b == pytest.approx(0.0061869201)
     elif subcategory_id == 2:
         assert _lambda_b == [0.4, 0.5, 0.5][type_id - 1]
-    elif subcategory_id == 2:
-        assert _lambda_b == 0.0
 
 
 @pytest.mark.unit

@@ -258,7 +258,7 @@ def test_calculate_foo_zero_cum_weight(
     test_attributes_allocation["op_time_factor"] = 9
     test_attributes_allocation["env_factor"] = 2
 
-    _attributes = allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         0.0000482,
         0,
         test_attributes_allocation,
@@ -291,7 +291,7 @@ def test_calculate_foo_zero_factor(
     test_attributes_allocation["op_time_factor"] = 9
     test_attributes_allocation["env_factor"] = 2
 
-    _attributes = allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         0.0000482,
         3528,
         test_attributes_allocation,
@@ -324,7 +324,7 @@ def test_calculate_foo_zero_goal(
     test_attributes_allocation["op_time_factor"] = 9
     test_attributes_allocation["env_factor"] = 2
 
-    _attributes = allocation._calculate_foo_apportionment(
+    allocation._calculate_foo_apportionment(
         0.0,
         3528,
         test_attributes_allocation,

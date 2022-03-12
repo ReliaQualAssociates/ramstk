@@ -53,7 +53,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unkown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = crystal.get_part_count_lambda_b(200)
+        crystal.get_part_count_lambda_b(200)
 
 
 @pytest.mark.unit

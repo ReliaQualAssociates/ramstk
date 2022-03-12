@@ -39,7 +39,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = meter.get_part_count_lambda_b(
+        meter.get_part_count_lambda_b(
             subcategory_id=47, type_id=1, environment_active_id=4
         )
 
@@ -49,7 +49,7 @@ def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = meter.get_part_count_lambda_b(
+        meter.get_part_count_lambda_b(
             subcategory_id=1, type_id=12, environment_active_id=4
         )
 
@@ -59,7 +59,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     subcategory ID."""
     with pytest.raises(IndexError):
-        _lambda_b = meter.get_part_count_lambda_b(
+        meter.get_part_count_lambda_b(
             subcategory_id=1, type_id=1, environment_active_id=24
         )
 
@@ -95,7 +95,7 @@ def test_get_part_stress_lambda_b_no_type():
     """get_part_stress_lambda_b() should raise an IndexError when passed an unknown
     type ID."""
     with pytest.raises(IndexError):
-        _lambda_b = meter.get_part_stress_lambda_b(1, 4)
+        meter.get_part_stress_lambda_b(1, 4)
 
 
 @pytest.mark.unit
@@ -123,7 +123,7 @@ def test_get_temperature_stress_factor_zero_max_rated():
     """get_temperature_stress_factor() should raise a ZeroDivisionError when passed a
     maximum rated temperature of 0.0."""
     with pytest.raises(ZeroDivisionError):
-        _pi_t = meter.get_temperature_stress_factor(35.0, 0.0)
+        meter.get_temperature_stress_factor(35.0, 0.0)
 
 
 @pytest.mark.unit
@@ -131,10 +131,10 @@ def test_get_temperature_stress_factor_wrong_type():
     """get_temperature_stress_factor() should raise a TypeError when passed a string
     for either temperature."""
     with pytest.raises(TypeError):
-        _pi_t = meter.get_temperature_stress_factor("35.0", 75.0)
+        meter.get_temperature_stress_factor("35.0", 75.0)
 
     with pytest.raises(TypeError):
-        _pi_t = meter.get_temperature_stress_factor(35.0, "75.0")
+        meter.get_temperature_stress_factor(35.0, "75.0")
 
 
 @pytest.mark.unit

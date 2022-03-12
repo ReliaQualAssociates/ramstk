@@ -75,7 +75,7 @@ def test_get_part_count_lambda_b_no_application():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     application ID."""
     with pytest.raises(KeyError):
-        _lambda_b = lamp.get_part_count_lambda_b(5, 2)
+        lamp.get_part_count_lambda_b(5, 2)
 
 
 @pytest.mark.unit
@@ -83,7 +83,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = lamp.get_part_count_lambda_b(1, 21)
+        lamp.get_part_count_lambda_b(1, 21)
 
 
 @pytest.mark.unit

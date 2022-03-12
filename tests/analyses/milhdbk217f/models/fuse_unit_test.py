@@ -56,7 +56,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = fuse.get_part_count_lambda_b(1200)
+        fuse.get_part_count_lambda_b(1200)
 
 
 @pytest.mark.unit

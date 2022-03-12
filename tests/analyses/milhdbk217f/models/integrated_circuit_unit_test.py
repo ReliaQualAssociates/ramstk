@@ -278,7 +278,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment."""
     with pytest.raises(ValueError):
-        _lambda_b = integratedcircuit.get_part_count_lambda_b(
+        integratedcircuit.get_part_count_lambda_b(
             300,
             id_keys={
                 "subcategory_id": 3,
@@ -293,7 +293,7 @@ def test_get_part_count_lambda_b_no_technology():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     technology_id."""
     with pytest.raises(KeyError):
-        _lambda_b = integratedcircuit.get_part_count_lambda_b(
+        integratedcircuit.get_part_count_lambda_b(
             300,
             id_keys={
                 "subcategory_id": 3,
@@ -346,7 +346,7 @@ def test_get_die_complexity_factor_no_subcategory():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _c1 = integratedcircuit.get_die_complexity_factor(14, 1, 1, 100)
+        integratedcircuit.get_die_complexity_factor(14, 1, 1, 100)
 
 
 @pytest.mark.unit
@@ -354,7 +354,7 @@ def test_get_die_complexity_factor_no_technology():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _c1 = integratedcircuit.get_die_complexity_factor(3, 5, 1, 100)
+        integratedcircuit.get_die_complexity_factor(3, 5, 1, 100)
 
 
 @pytest.mark.unit
@@ -362,7 +362,7 @@ def test_get_die_complexity_factor_no_application():
     """get_die_complexity_factor() should raise a KeyError when passed an unknown
     application ID."""
     with pytest.raises(KeyError):
-        _c1 = integratedcircuit.get_die_complexity_factor(9, 1, 10, 100)
+        integratedcircuit.get_die_complexity_factor(9, 1, 10, 100)
 
 
 @pytest.mark.unit
@@ -428,7 +428,7 @@ def test_calculate_temperature_factor_no_subcategory():
     """calculate_temperature_factor() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _pi_t = integratedcircuit.calculate_temperature_factor(14, 1, 1, 52.95)
+        integratedcircuit.calculate_temperature_factor(14, 1, 1, 52.95)
 
 
 @pytest.mark.unit
@@ -436,7 +436,7 @@ def test_calculate_temperature_factor_no_family():
     """calculate_temperature_factor() should raise an IndexError when passed an unknown
     family ID."""
     with pytest.raises(IndexError):
-        _pi_t = integratedcircuit.calculate_temperature_factor(2, 21, 1, 52.95)
+        integratedcircuit.calculate_temperature_factor(2, 21, 1, 52.95)
 
 
 @pytest.mark.unit
@@ -444,7 +444,7 @@ def test_calculate_temperature_factor_no_type():
     """calculate_temperature_factor() should raise an IndexError when passed an unknown
     type ID."""
     with pytest.raises(IndexError):
-        _pi_t = integratedcircuit.calculate_temperature_factor(9, 1, 21, 52.95)
+        integratedcircuit.calculate_temperature_factor(9, 1, 21, 52.95)
 
 
 @pytest.mark.unit
@@ -461,7 +461,7 @@ def test_get_application_factor_no_type():
     """get_application_factor() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _pi_a = integratedcircuit.get_application_factor(13, 2)
+        integratedcircuit.get_application_factor(13, 2)
 
 
 @pytest.mark.unit
@@ -469,7 +469,7 @@ def test_get_application_factor_no_application():
     """get_application_factor() should raise an IndexError when passed an unknown
     application ID."""
     with pytest.raises(IndexError):
-        _pi_a = integratedcircuit.get_application_factor(1, 22)
+        integratedcircuit.get_application_factor(1, 22)
 
 
 @pytest.mark.unit
@@ -493,7 +493,7 @@ def test_get_error_correction_factor_no_type():
     """get_error_correction_factor() should raise a KeyError when passed an unknown
     type ID."""
     with pytest.raises(KeyError):
-        _pi_a = integratedcircuit.get_error_correction_factor(13)
+        integratedcircuit.get_error_correction_factor(13)
 
 
 @pytest.mark.unit
@@ -575,7 +575,7 @@ def test_calculate_die_complexity_factor_zero_feature():
     """calculate_die_complexity_factor() should raise a ZeroDivisionError when passed a
     feature size=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _pi_cd = integratedcircuit.calculate_die_complexity_factor(0.4, 0.0)
+        integratedcircuit.calculate_die_complexity_factor(0.4, 0.0)
 
 
 @pytest.mark.unit
@@ -594,7 +594,7 @@ def test_get_package_type_correction_factor_no_package():
     """get_package_type_correction_factor() should raise a KeyError when passed an
     unknown package ID."""
     with pytest.raises(KeyError):
-        _pi_pt = integratedcircuit.get_package_type_correction_factor(12)
+        integratedcircuit.get_package_type_correction_factor(12)
 
 
 @pytest.mark.unit

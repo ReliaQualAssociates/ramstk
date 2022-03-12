@@ -44,7 +44,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=88, environment_active_id=12, type_id=2
         )
 
@@ -54,7 +54,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=3, environment_active_id=22, type_id=-1
         )
 
@@ -64,7 +64,7 @@ def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = connection.get_part_count_lambda_b(
+        connection.get_part_count_lambda_b(
             subcategory_id=1, environment_active_id=2, type_id=22
         )
 
@@ -96,7 +96,7 @@ def test_calculate_insert_temperature_no_gauge():
     """calculate_insert_temperature() should raise a KeyError when passed an unknown
     contact gauge."""
     with pytest.raises(KeyError):
-        _temperature_rise = connection.calculate_insert_temperature(0, 0.05)
+        connection.calculate_insert_temperature(0, 0.05)
 
 
 @pytest.mark.unit
@@ -104,7 +104,7 @@ def test_calculate_insert_temperature_string_current():
     """calculate_insert_temperature() should raise a TypeError when passed a string for
     the operating current."""
     with pytest.raises(TypeError):
-        _temperature_rise = connection.calculate_insert_temperature(12, "0.05")
+        connection.calculate_insert_temperature(12, "0.05")
 
 
 @pytest.mark.unit
@@ -171,7 +171,7 @@ def test_calculate_part_stress_lambda_no_type():
     """calculate_part_stress_lamba_b() should raise an IndexError when passed an
     unknown type ID."""
     with pytest.raises(IndexError):
-        _lambda_b = connection.calculate_part_stress_lambda_b(4, 26, 325, 5)
+        connection.calculate_part_stress_lambda_b(4, 26, 325, 5)
 
 
 @pytest.mark.unit
@@ -179,7 +179,7 @@ def test_calculate_part_stress_lambda_zero_contact_temperature():
     """calculate_part_stress_lamba_b() should raise a ZeroDivisionError when passed a
     contact temperature=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _lambda_b = connection.calculate_part_stress_lambda_b(1, 4, 0.0, 2)
+        connection.calculate_part_stress_lambda_b(1, 4, 0.0, 2)
 
 
 @pytest.mark.unit

@@ -170,7 +170,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.get_part_count_lambda_b(
+        inductor.get_part_count_lambda_b(
             id_keys={
                 "subcategory_id": 20,
                 "family_id": 1,
@@ -184,7 +184,7 @@ def test_get_part_count_lambda_b_no_family():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown family
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.get_part_count_lambda_b(
+        inductor.get_part_count_lambda_b(
             id_keys={
                 "subcategory_id": 2,
                 "family_id": 12,
@@ -198,7 +198,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = inductor.get_part_count_lambda_b(
+        inductor.get_part_count_lambda_b(
             id_keys={
                 "subcategory_id": 2,
                 "family_id": 1,
@@ -410,7 +410,7 @@ def test_get_temperature_rise_no_spec_sheet():
     """get_temperature_rise_spec_sheet() should raise a KeyError when passed an unkown
     page number."""
     with pytest.raises(KeyError):
-        _temperature_rise = inductor.get_temperature_rise_spec_sheet(22)
+        inductor.get_temperature_rise_spec_sheet(22)
 
 
 @pytest.mark.unit
@@ -430,9 +430,7 @@ def test_calculate_temperature_rise_input_power_weight_zero_weight():
     """calculate_temperature_rise_input_power_weight() should raise a ZeroDivisionError
     when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = inductor.calculate_temperature_rise_input_power_weight(
-            0.387, 0.0
-        )
+        inductor.calculate_temperature_rise_input_power_weight(0.387, 0.0)
 
 
 @pytest.mark.unit
@@ -452,9 +450,7 @@ def test_calculate_temperature_rise_power_loss_surface_zero_area():
     """calculate_temperature_rise_power_loss_surface() should raise a ZeroDivisionError
     when passed an area=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = inductor.calculate_temperature_rise_power_loss_surface(
-            0.387, 0.0
-        )
+        inductor.calculate_temperature_rise_power_loss_surface(0.387, 0.0)
 
 
 @pytest.mark.unit
@@ -474,9 +470,7 @@ def test_calculate_temperature_rise_power_loss_weight_zero_weight():
     """calculate_temperature_rise_power_loss_weight() should raise a ZeroDivisionError
     when passed a weight=0.0."""
     with pytest.raises(ZeroDivisionError):
-        _temperature_rise = inductor.calculate_temperature_rise_power_loss_weight(
-            0.387, 0.0
-        )
+        inductor.calculate_temperature_rise_power_loss_weight(0.387, 0.0)
 
 
 @pytest.mark.unit
@@ -502,7 +496,7 @@ def test_calculate_part_stress_lambda_b_no_subcategory():
     """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.calculate_part_stress_lambda_b(101, 4, 85.77)
+        inductor.calculate_part_stress_lambda_b(101, 4, 85.77)
 
 
 @pytest.mark.unit
@@ -510,7 +504,7 @@ def test_calculate_part_stress_lambda_b_no_insulation():
     """calculate_part_stress_lambda_b() should raise an KeyError when passed an unknown
     insulation ID."""
     with pytest.raises(KeyError):
-        _lambda_b = inductor.calculate_part_stress_lambda_b(1, 41, 85.77)
+        inductor.calculate_part_stress_lambda_b(1, 41, 85.77)
 
 
 @pytest.mark.unit

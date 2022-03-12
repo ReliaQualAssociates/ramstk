@@ -43,7 +43,7 @@ def test_get_part_count_lambda_b_no_subcategory(
     subcategory ID."""
     test_attributes_switch["subcategory_id"] = 27
     with pytest.raises(KeyError):
-        _lambda_b = switch.get_part_count_lambda_b(test_attributes_switch)
+        switch.get_part_count_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit
@@ -57,7 +57,7 @@ def test_get_part_count_lambda_b_no_construction(
     test_attributes_switch["environment_active_id"] = 3
     test_attributes_switch["construction_id"] = -1
     with pytest.raises(KeyError):
-        _lambda_b = switch.get_part_count_lambda_b(test_attributes_switch)
+        switch.get_part_count_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit
@@ -71,7 +71,7 @@ def test_get_part_count_lambda_b_no_environment(
     test_attributes_switch["environment_active_id"] = 33
     test_attributes_switch["construction_id"] = 1
     with pytest.raises(IndexError):
-        _lambda_b = switch.get_part_count_lambda_b(test_attributes_switch)
+        switch.get_part_count_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit
@@ -137,7 +137,7 @@ def test_calculate_part_stress_lambda_b_no_quality(
     test_attributes_switch["application_id"] = 1
     test_attributes_switch["n_elements"] = 8
     with pytest.raises(IndexError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(test_attributes_switch)
+        switch.calculate_part_stress_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit
@@ -153,7 +153,7 @@ def test_calculate_part_stress_lambda_b_no_application(
     test_attributes_switch["application_id"] = 21
     test_attributes_switch["n_elements"] = 8
     with pytest.raises(IndexError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(test_attributes_switch)
+        switch.calculate_part_stress_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit
@@ -169,7 +169,7 @@ def test_calculate_part_stress_lambda_b_no_construction(
     test_attributes_switch["application_id"] = 1
     test_attributes_switch["n_elements"] = 8
     with pytest.raises(KeyError):
-        _lambda_b = switch.calculate_part_stress_lambda_b(test_attributes_switch)
+        switch.calculate_part_stress_lambda_b(test_attributes_switch)
 
 
 @pytest.mark.unit

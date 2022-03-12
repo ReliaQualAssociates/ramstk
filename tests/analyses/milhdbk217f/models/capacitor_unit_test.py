@@ -46,7 +46,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     with pytest.raises(KeyError):
-        _lambda_b = capacitor.get_part_count_lambda_b(22, 2)
+        capacitor.get_part_count_lambda_b(22, 2)
 
 
 @pytest.mark.unit
@@ -54,7 +54,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = capacitor.get_part_count_lambda_b(3, 22)
+        capacitor.get_part_count_lambda_b(3, 22)
 
 
 @pytest.mark.unit
@@ -62,7 +62,7 @@ def test_get_part_count_lambda_b_no_specification():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = capacitor.get_part_count_lambda_b(1, 2, specification_id=22)
+        capacitor.get_part_count_lambda_b(1, 2, specification_id=22)
 
 
 @pytest.mark.unit
@@ -102,7 +102,7 @@ def test_calculate_part_stress_lambda_b_unknown_subcategory_id():
     """calculate_part_stress_lambda_b() should raise a KeyError when an unknown
     subcategory ID is passed."""
     with pytest.raises(KeyError):
-        _base_hr = capacitor.calculate_part_stress_lambda_b(
+        capacitor.calculate_part_stress_lambda_b(
             22,
             105.0,
             45.0,
@@ -165,7 +165,7 @@ def test_calculate_capacitance_factor_unknown_subcategory_id():
     """calculate_capacitance_factor() should raise a KeyError when an unknown
     subcategory ID is passed."""
     with pytest.raises(KeyError):
-        _pi_cv = capacitor.calculate_capacitance_factor(200, 0.0000033)
+        capacitor.calculate_capacitance_factor(200, 0.0000033)
 
 
 @pytest.mark.unit
@@ -196,7 +196,7 @@ def test_calculate_series_resistance_factor_zero_voltage():
     """calculate_series_resistance_factor() should raise a ZeroDivisionError passed
     zreo voltage."""
     with pytest.raises(ZeroDivisionError):
-        (_pi_sr,) = capacitor.calculate_series_resistance_factor(
+        capacitor.calculate_series_resistance_factor(
             1.0,
             0.0,
             0.0,
@@ -208,7 +208,7 @@ def test_calculate_series_resistance_factor_string_input():
     """calculate_series_resistance_factor() should raise a TypeError if passed a string
     input."""
     with pytest.raises(TypeError):
-        (_pi_sr,) = capacitor.calculate_series_resistance_factor(
+        capacitor.calculate_series_resistance_factor(
             1.0,
             "10.0",
             0.1,
@@ -231,7 +231,7 @@ def test_get_configuration_factor_unknown_configuration():
     """get_configuration_factor() should raise a KeyError when passed an unknown
     configuration ID."""
     with pytest.raises(KeyError):
-        _pi_cf = capacitor.get_configuration_factor(12)
+        capacitor.get_configuration_factor(12)
 
 
 @pytest.mark.unit
@@ -250,7 +250,7 @@ def test_get_construction_factor_unknown_construction():
     """get_construction_factor() should raise a KeyError when passed an unknown
     construction ID."""
     with pytest.raises(KeyError):
-        _pi_c = capacitor.get_construction_factor(12)
+        capacitor.get_construction_factor(12)
 
 
 @pytest.mark.unit
@@ -291,4 +291,4 @@ def test_calculate_part_stress_missing_attribute_key(test_attributes_capacitor):
     error message on success."""
     test_attributes_capacitor.pop("voltage_ratio")
     with pytest.raises(KeyError):
-        _attributes = capacitor.calculate_part_stress(**test_attributes_capacitor)
+        capacitor.calculate_part_stress(**test_attributes_capacitor)

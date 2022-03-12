@@ -149,7 +149,7 @@ def test_get_part_count_lambda_b_no_environment():
     """get_part_count_lambda_b() should raise an IndexError when passed an unknown
     active environment ID."""
     with pytest.raises(IndexError):
-        _lambda_b = efilter.get_part_count_lambda_b(1, 28)
+        efilter.get_part_count_lambda_b(1, 28)
 
 
 @pytest.mark.unit
@@ -157,7 +157,7 @@ def test_get_part_count_lambda_b_no_type():
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     with pytest.raises(KeyError):
-        _lambda_b = efilter.get_part_count_lambda_b(14, 8)
+        efilter.get_part_count_lambda_b(14, 8)
 
 
 @pytest.mark.unit
@@ -233,4 +233,4 @@ def test_calculate_part_stress_missing_type(test_attributes_filter):
     """calculate_part_stress() should raise a KeyError if passed an unknown type ID."""
     test_attributes_filter["type_id"] = 6
     with pytest.raises(KeyError):
-        _attributes = efilter.calculate_part_stress(**test_attributes_filter)
+        efilter.calculate_part_stress(**test_attributes_filter)
