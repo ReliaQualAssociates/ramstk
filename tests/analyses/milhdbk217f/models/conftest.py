@@ -187,6 +187,26 @@ def test_attributes_relay():
 
 
 @pytest.fixture
+def test_attributes_resistor():
+    yield {
+        "category_id": 3,
+        "subcategory_id": 1,
+        "environment_active_id": 3,
+        "specification_id": 1,
+        "family_id": 2,
+        "construction_id": 1,
+        "type_id": 2,
+        "resistance": 22000,
+        "n_elements": 3,
+        "power_ratio": 0.45,
+        "voltage_ratio": 0.86,
+        "temperature_active": 37.6,
+        "piQ": 2.0,
+        "piE": 1.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
