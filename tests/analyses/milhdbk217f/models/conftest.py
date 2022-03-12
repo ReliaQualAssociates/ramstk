@@ -231,3 +231,21 @@ def test_attributes_semiconductor():
         "power_ratio": 0.28,
         "piE": 1.0,
     }
+
+
+@pytest.fixture
+def test_attributes_switch():
+    yield {
+        "category_id": 7,
+        "subcategory_id": 1,
+        "environment_active_id": 3,
+        "construction_id": 1,
+        "quality_id": 1,
+        "application_id": 1,
+        "contact_form_id": 2,
+        "n_elements": 8,
+        "current_ratio": 0.45,
+        "n_cycles": 2.3,
+        "piE": 2.0,
+        "piQ": 1.3,
+    }
