@@ -167,6 +167,26 @@ def test_attributes_meter():
 
 
 @pytest.fixture
+def test_attributes_relay():
+    yield {
+        "category_id": 6,
+        "subcategory_id": 1,
+        "environment_active_id": 3,
+        "quality_id": 1,
+        "type_id": 3,
+        "technology_id": 2,
+        "current_ratio": 0.38,
+        "contact_rating_id": 2,
+        "construction_id": 1,
+        "application_id": 1,
+        "contact_form_id": 1,
+        "temperature_active": 38.2,
+        "n_cycles": 58,
+        "piQ": 1.0,
+    }
+
+
+@pytest.fixture
 def test_attributes_semiconductor():
     yield {
         "category_id": 2,
