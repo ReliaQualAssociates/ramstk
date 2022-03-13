@@ -86,7 +86,7 @@ def calculate_part_stress(
         attributes["piU"] = 1.0
 
     # Determine the application factor (piA).
-    attributes["piA"] = 3.3 if (attributes["application_id"]) - (1) else 1.0
+    attributes["piA"] = 3.3 if attributes["application_id"] - 1 else 1.0
 
     attributes["hazard_rate_active"] = (
         attributes["lambda_b"]

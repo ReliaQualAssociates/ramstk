@@ -174,7 +174,7 @@ def calculate_part_stress(
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes["subcategory_id"] == 2:
-        attributes["piA"] = 1.7 if (attributes["type_id"]) - (1) else 1.0
+        attributes["piA"] = 1.7 if attributes["type_id"] - 1 else 1.0
         attributes["piF"] = PI_F[attributes["application_id"] - 1]
 
     attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
@@ -264,7 +264,6 @@ def get_temperature_stress_factor(
 ) -> float:
     """Retrieve the temperature stress factor (piT).
 
-    :param subcategory_id: the subcategory identifier.
     :param temperature_active: the operating ambient temperature in C.
     :param temperature_rated_max: the maxmimum rated operating
         temperature in C.

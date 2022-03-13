@@ -11,8 +11,8 @@ PI_C: Dict[int, List[float]]
 PI_E: Dict[int, List[float]]
 
 def calculate_load_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
-) -> Dict[str, Union[float, int, str]]: ...
+    application_id: int, current_ratio: float
+) -> float: ...
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float: ...
 def calculate_part_stress_lambda_b(
     subcategory_id: int,

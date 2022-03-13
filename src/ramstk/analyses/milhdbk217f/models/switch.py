@@ -330,6 +330,10 @@ def calculate_part_stress_lambda_b(
     stress method.
 
     :param subcategory_id: the subcategory ID of the switch being calculated.
+    :param quality_id: the quality ID of the switch being calculated.
+    :param construction_id: the construction ID of the switch being calculated.
+    :param application_id: the application ID of the switch being calculated.
+    :param n_elements: the number of contacts for the switch being calculated.
     :return _lambda_b: the calculated base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown quality ID or application ID.
@@ -342,25 +346,25 @@ def calculate_part_stress_lambda_b(
     }
 
     if subcategory_id == 1:
-        _lambda_b = PART_STRESS_LAMBDA_B_TOGGLE[construction_id][quality_id - 1]
-    elif subcategory_id in [2, 3]:
-        _lambda_bE = _dic_factors[subcategory_id][quality_id - 1][0]
-        _lambda_bC = _dic_factors[subcategory_id][quality_id - 1][1]
+        return PART_STRESS_LAMBDA_B_TOGGLE[construction_id][quality_id - 1]
+    elif subcategory_id in {2, 3}:
+        _lambda_be = _dic_factors[subcategory_id][quality_id - 1][0]
+        _lambda_bc = _dic_factors[subcategory_id][quality_id - 1][1]
         _lambda_b0 = _dic_factors[subcategory_id][quality_id - 1][2]
-        if construction_id == 1:
-            _lambda_b = _lambda_bE + n_elements * _lambda_bC
-        else:
-            _lambda_b = _lambda_bE + n_elements * _lambda_b0
+        return (
+            _lambda_be + n_elements * _lambda_bc
+            if construction_id == 1
+            else _lambda_be + n_elements * _lambda_b0
+        )
+
     elif subcategory_id == 4:
         _lambda_b1 = _dic_factors[subcategory_id][quality_id - 1][0]
         _lambda_b2 = _dic_factors[subcategory_id][quality_id - 1][1]
-        _lambda_b = _lambda_b1 + n_elements * _lambda_b2
+        return _lambda_b1 + n_elements * _lambda_b2
     elif subcategory_id == 5:
-        _lambda_b = PART_STRESS_LAMBDA_B_BREAKER[application_id - 1]
+        return PART_STRESS_LAMBDA_B_BREAKER[application_id - 1]
     else:
-        _lambda_b = 0.0
-
-    return _lambda_b
+        return 0.0
 
 
 def get_part_count_lambda_b(

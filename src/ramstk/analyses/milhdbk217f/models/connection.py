@@ -528,7 +528,6 @@ def calculate_part_stress_lambda_b(
 def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     """Retrieve the reference temperature key for the connection.
 
-    :param subcategory_id: the subcategory identifier.
     :param type_id: the connection type identifier.
     :param specification_id: the connection governing specification
         identifier.
@@ -539,7 +538,7 @@ def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     """
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  To get the reference temperature
-    # dictionary key, we quesry the key dictionary in which the first key is
+    # dictionary key, we query the key dictionary in which the first key is
     # the connector type ID, second key is the specification ID.  The insert
     # material ID is the index in the list returned.
     _dic_keys = {

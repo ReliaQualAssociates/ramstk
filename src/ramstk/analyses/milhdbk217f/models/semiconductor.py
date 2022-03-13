@@ -1274,7 +1274,7 @@ def get_part_count_lambda_b(
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    if subcategory_id in [1, 2, 3, 8, 11, 13]:
+    if subcategory_id in {1, 2, 3, 8, 11, 13}:
         return PART_COUNT_LAMBDA_B_DICT[subcategory_id][type_id][
             environment_active_id - 1
         ]

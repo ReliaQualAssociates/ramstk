@@ -1543,7 +1543,7 @@ def get_part_count_lambda_b(
         9: {1: [10, 100], 2: [1000, 10000]},
     }
 
-    if subcategory_id in [3, 9]:
+    if subcategory_id in {3, 9}:
         _index = _dic_breakpoints[subcategory_id][technology_id].index(n_elements) + 1
     else:
         _lst_index = _dic_breakpoints[subcategory_id]

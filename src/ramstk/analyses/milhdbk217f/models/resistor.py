@@ -846,11 +846,11 @@ def calculate_part_stress_lambda_b(
         _f5 = _dic_factors[subcategory_id][5]
 
     if subcategory_id == 4:
-        _lambda_b = 0.00006
+        return 0.00006
     elif subcategory_id == 8:
-        _lambda_b = _dic_factors[subcategory_id][type_id - 1]
+        return _dic_factors[subcategory_id][type_id - 1]
     else:
-        _lambda_b = (
+        return (
             _f0
             * exp(
                 _f1 * ((temperature_active + 273.0) / _ref_temp),
@@ -862,8 +862,6 @@ def calculate_part_stress_lambda_b(
             )
         )
 
-    return _lambda_b
-
 
 def calculate_temperature_factor(
     temperature_active: float,
@@ -873,10 +871,10 @@ def calculate_temperature_factor(
 
     :param temperature_active: the ambient operating temperature of the
         resistor in C.
-    :param power_ratio: the ratio of the power dissipated by the resistor
-        and it's rated power; both in W.
+    :param power_ratio: the ratio of operating to rated power of the resistor being
+        calculated.
     :return: (temperature_case, _pi_c); the calculated surface temperature of
-        the rsistor and it's resistance factor.
+        the resistor and it's resistance factor.
     :rtype: tuple
     """
     _temperature_case: float = temperature_active + 55.0 * power_ratio

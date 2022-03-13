@@ -345,7 +345,7 @@ def calculate_load_stress_factor(
 
     :param technology_id: the relay technology identifier.
     :param current_ratio: the operating current ratio of the relay.
-    :return: _pi_l; the calculate value of piL.
+    :return: _pi_l; the calculated value of piL.
     :rtype: float
     """
     if technology_id == 1:
