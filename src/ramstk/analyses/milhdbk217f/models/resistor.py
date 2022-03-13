@@ -1,15 +1,15 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Resistor.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.resistor.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Resistor Reliability Calculations Module."""
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict, List
+from typing import Dict, List, Tuple, Union
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -688,20 +688,26 @@ REF_TEMPS: Dict[int, float] = {
 REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes)
+    return get_part_count_lambda_b(
+        attributes["subcategory_id"],
+        attributes["environment_active_id"],
+        attributes["specification_id"],
+    )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a resistor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -711,65 +717,95 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    attributes = calculate_part_stress_lambda_b(attributes)
-    attributes = get_resistance_factor(attributes)
-    attributes = calculate_temperature_factor(attributes)
-
-    _subcategory_id: Any = attributes["subcategory_id"]
-    _construction_id: Any = attributes["construction_id"]
-    _lambda_b: Any = attributes["lambda_b"]
-    _n_elements: Any = attributes["n_elements"]
-    _pi_q: Any = attributes["piQ"]
-    _pi_e: Any = attributes["piE"]
-    _pi_t: Any = attributes["piT"]
-    _pi_r: Any = attributes["piR"]
+    attributes["lambda_b"] = calculate_part_stress_lambda_b(
+        attributes["subcategory_id"],
+        attributes["specification_id"],
+        attributes["type_id"],
+        attributes["temperature_active"],
+        attributes["power_ratio"],
+    )
+    attributes["piR"] = get_resistance_factor(
+        attributes["subcategory_id"],
+        attributes["specification_id"],
+        attributes["family_id"],
+        attributes["resistance"],
+    )
+    attributes["temperature_case"], attributes["piT"] = calculate_temperature_factor(
+        attributes["temperature_active"],
+        attributes["power_ratio"],
+    )
 
     # Calculate the voltage factor and taps factor (piTAPS).
-    if _subcategory_id in [9, 10, 11, 12, 13, 14, 15]:
-        attributes = get_voltage_factor(attributes)
-        _pi_v = attributes["piV"]
-        _pi_taps: Any = (_n_elements**1.5 / 25.0) + 0.792
-        attributes["piTAPS"] = _pi_taps
+    if attributes["subcategory_id"] in [9, 10, 11, 12, 13, 14, 15]:
+        attributes["piV"] = get_voltage_factor(
+            attributes["subcategory_id"],
+            attributes["voltage_ratio"],
+        )
+        attributes["piTAPS"] = (attributes["n_elements"] ** 1.5 / 25.0) + 0.792
 
     # Determine the consruction class factor (piC).
-    if _subcategory_id in [10, 12]:
-        _pi_c: Any = PI_C[_subcategory_id][_construction_id - 1]
-        attributes["piC"] = _pi_c
+    if attributes["subcategory_id"] in [10, 12]:
+        attributes["piC"] = PI_C[attributes["subcategory_id"]][
+            attributes["construction_id"] - 1
+        ]
 
-    _hazard_rate_active: Any = _lambda_b * _pi_q * _pi_e
-    if _subcategory_id == 4:
-        _hazard_rate_active = _hazard_rate_active * _pi_t * _n_elements
-    elif _subcategory_id in [9, 11, 13, 14, 15]:
-        _hazard_rate_active = _hazard_rate_active * _pi_taps * _pi_r * _pi_v
-    elif _subcategory_id in [10, 12]:
-        _hazard_rate_active = _hazard_rate_active * _pi_taps * _pi_c * _pi_r * _pi_v
-    elif _subcategory_id != 8:
-        _hazard_rate_active = _hazard_rate_active * _pi_r
-
-    attributes["hazard_rate_active"] = _hazard_rate_active
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
+    )
+    if attributes["subcategory_id"] == 4:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"]
+            * attributes["piT"]
+            * attributes["n_elements"]
+        )
+    elif attributes["subcategory_id"] in [9, 11, 13, 14, 15]:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"]
+            * attributes["piTAPS"]
+            * attributes["piR"]
+            * attributes["piV"]
+        )
+    elif attributes["subcategory_id"] in [10, 12]:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"]
+            * attributes["piTAPS"]
+            * attributes["piC"]
+            * attributes["piR"]
+            * attributes["piV"]
+        )
+    elif attributes["subcategory_id"] != 8:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piR"]
+        )
 
     return attributes
 
 
 # pylint: disable=too-many-locals
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+    subcategory_id: int,
+    specification_id: int,
+    type_id: int,
+    temperature_active: float,
+    power_ratio: float,
+) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     stress method.
 
-    :param attributes: the attributes of the switch being calculated.
-    :return attributes: the updated attributes of the switch being calculated.
-    :rtype: dict
+    :param subcategory_id: the subcategory ID for the resistor being calculated.
+    :param specification_id: the specification ID for the resistor being calculated.
+    :param type_id: the type ID for the resistor being calculated.
+    :param temperature_active: the active (surface) temperature for the resistor being
+        calculated.
+    :param power_ratio: the opearting to rated power ratio for the resistor being
+        calculated.
+    :return _lambda_b: the calculated base hazard rate.
+    :rtype: float
     :raise: IndexError if passed an unknown quality ID or application ID.
     :raise: KeyError is passed an unknown construction ID.
     """
-    _subcategory_id: Any = attributes["subcategory_id"]
-    _specification_id: Any = attributes["specification_id"]
-    _type_id: Any = attributes["type_id"]
-    _temperature_active: Any = attributes["temperature_active"]
-    _power_ratio: Any = attributes["power_ratio"]
-
     _dic_factors: Dict[int, List[float]] = {
         1: [4.5e-9, 12.0, 1.0, 0.6, 1.0, 1.0],
         3: [7.33e-3, 0.202, 2.6, 1.45, 0.89, 1.3],
@@ -792,46 +828,47 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]
         4: [5.0e-5, 3.5, 1.0, 1.0, 1.0, 1.0],
     }
 
-    if _subcategory_id == 2:
-        _ref_temp = REF_TEMPS_FILM[_specification_id]
-        _f0 = _dic_factors_film[_specification_id][0]
-        _f1 = _dic_factors_film[_specification_id][1]
-        _f2 = _dic_factors_film[_specification_id][2]
-        _f3 = _dic_factors_film[_specification_id][3]
-        _f4 = _dic_factors_film[_specification_id][4]
-        _f5 = _dic_factors_film[_specification_id][5]
-    elif _subcategory_id not in [4, 8]:
-        _ref_temp = REF_TEMPS[_subcategory_id]
-        _f0 = _dic_factors[_subcategory_id][0]
-        _f1 = _dic_factors[_subcategory_id][1]
-        _f2 = _dic_factors[_subcategory_id][2]
-        _f3 = _dic_factors[_subcategory_id][3]
-        _f4 = _dic_factors[_subcategory_id][4]
-        _f5 = _dic_factors[_subcategory_id][5]
+    if subcategory_id == 2:
+        _ref_temp = REF_TEMPS_FILM[specification_id]
+        _f0 = _dic_factors_film[specification_id][0]
+        _f1 = _dic_factors_film[specification_id][1]
+        _f2 = _dic_factors_film[specification_id][2]
+        _f3 = _dic_factors_film[specification_id][3]
+        _f4 = _dic_factors_film[specification_id][4]
+        _f5 = _dic_factors_film[specification_id][5]
+    elif subcategory_id not in [4, 8]:
+        _ref_temp = REF_TEMPS[subcategory_id]
+        _f0 = _dic_factors[subcategory_id][0]
+        _f1 = _dic_factors[subcategory_id][1]
+        _f2 = _dic_factors[subcategory_id][2]
+        _f3 = _dic_factors[subcategory_id][3]
+        _f4 = _dic_factors[subcategory_id][4]
+        _f5 = _dic_factors[subcategory_id][5]
 
-    if _subcategory_id == 4:
+    if subcategory_id == 4:
         _lambda_b = 0.00006
-    elif _subcategory_id == 8:
-        _lambda_b = _dic_factors[_subcategory_id][_type_id - 1]
+    elif subcategory_id == 8:
+        _lambda_b = _dic_factors[subcategory_id][type_id - 1]
     else:
         _lambda_b = (
             _f0
             * exp(
-                _f1 * ((_temperature_active + 273.0) / _ref_temp),
+                _f1 * ((temperature_active + 273.0) / _ref_temp),
             )
             ** _f2
             * exp(
-                ((_power_ratio / _f3) * ((_temperature_active + 273.0) / 273.0) ** _f4)
+                ((power_ratio / _f3) * ((temperature_active + 273.0) / 273.0) ** _f4)
                 ** _f5
             )
         )
 
-    attributes["lambda_b"] = _lambda_b
-
-    return attributes
+    return _lambda_b
 
 
-def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_temperature_factor(
+    temperature_active: float,
+    power_ratio: float,
+) -> Tuple[float, float]:
     """Calculate the temperature factor (piT).
 
     :param temperature_active: the ambient operating temperature of the
@@ -842,19 +879,17 @@ def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         the rsistor and it's resistance factor.
     :rtype: tuple
     """
-    _temperature_active: float = float(attributes["temperature_active"])
-    _power_ratio: float = float(attributes["power_ratio"])
-
-    _temperature_case: float = _temperature_active + 55.0 * _power_ratio
+    _temperature_case: float = temperature_active + 55.0 * power_ratio
     _pi_t: float = exp(-4056.0 * ((1.0 / (_temperature_case + 273.0)) - 1.0 / 298.0))
 
-    attributes["temperature_case"] = _temperature_case
-    attributes["piT"] = _pi_t
-
-    return attributes
+    return _temperature_case, _pi_t
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    environment_active_id: int,
+    specification_id: int,
+) -> Dict[str, Union[float, int, str]]:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -923,23 +958,20 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or specification ID:
     """
-    _subcategory_id: Any = attributes["subcategory_id"]
-    _environment_active_id: Any = attributes["environment_active_id"]
-    _specification_id: Any = attributes["specification_id"]
-
-    if _subcategory_id in [2, 6]:
-        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
-            _environment_active_id - 1
+    if subcategory_id in {2, 6}:
+        return PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
+            environment_active_id - 1
         ]
     else:
-        _base_hr: Any = PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-
-    attributes["lambda_b"] = _base_hr
-
-    return _base_hr
+        return PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
 
 
-def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_resistance_factor(
+    subcategory_id: int,
+    specification_id: int,
+    family_id: int,
+    resistance: float,
+) -> float:
     """Retrieve the resistance factor (piR).
 
     :param subcategory_id: the subcategory identifier.
@@ -952,11 +984,6 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :raise: IndexError if passed an unknown specification ID or family ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _subcategory_id: Any = attributes["subcategory_id"]
-    _specification_id: Any = attributes["specification_id"]
-    _family_id: Any = attributes["family_id"]
-    _resistance: Any = attributes["resistance"]
-
     _dic_breakpoints = {
         1: [1.0e5, 1.0e6, 1.0e7],
         2: [1.0e5, 1.0e6, 1.0e7],
@@ -977,15 +1004,15 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     }
     _pi_r = 0.0
 
-    if _subcategory_id not in [4, 8]:
+    if subcategory_id not in [4, 8]:
         _index = -1
-        if _subcategory_id == 6:
-            _breaks = _dic_breakpoints[_subcategory_id][_specification_id - 1]
+        if subcategory_id == 6:
+            _breaks = _dic_breakpoints[subcategory_id][specification_id - 1]
         else:
-            _breaks = _dic_breakpoints[_subcategory_id]
+            _breaks = _dic_breakpoints[subcategory_id]
 
         for _index, _value in enumerate(_breaks):
-            _diff = _value - _resistance
+            _diff = _value - resistance
             if (len(_breaks) == 1 and _diff < 0) or _diff >= 0:
                 break
 
@@ -995,19 +1022,20 @@ def get_resistance_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         # For subcategory ID 6 and 7, the specification ID selects the correct
         # set of lists, then the style ID selects the proper list of piR values
         # and then the resistance range breakpoint is used to select
-        if _subcategory_id in [6, 7]:
-            _pi_r = PI_R[_subcategory_id][_specification_id - 1][_family_id - 1][
+        if subcategory_id in [6, 7]:
+            _pi_r = PI_R[subcategory_id][specification_id - 1][family_id - 1][
                 _index + 1
             ]
         else:
-            _pi_r = PI_R[_subcategory_id][_index + 1]
+            _pi_r = PI_R[subcategory_id][_index + 1]
 
-    attributes["piR"] = _pi_r
-
-    return attributes
+    return _pi_r
 
 
-def get_voltage_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_voltage_factor(
+    subcategory_id: int,
+    voltage_ratio: float,
+) -> float:
     """Retrieve the voltage factor (piV).
 
     :param subcategory_id: the subcategory identifier.
@@ -1017,18 +1045,15 @@ def get_voltage_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _subcategory_id: int = int(attributes["subcategory_id"])
-    _voltage_ratio: float = float(attributes["voltage_ratio"])
-
     _index = -1
     _breaks = [0.0]
-    if _subcategory_id in {9, 10, 11, 12}:
+    if subcategory_id in {9, 10, 11, 12}:
         _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
-    elif _subcategory_id in {13, 14, 15}:
+    elif subcategory_id in {13, 14, 15}:
         _breaks = [0.8, 0.9]
 
     for _index, _value in enumerate(_breaks):
-        _diff = _value - _voltage_ratio
+        _diff = _value - voltage_ratio
         if (
             (len(_breaks) == 1 and _diff < 0.0)
             or (_index == 0 and _diff >= 0.0)
@@ -1036,6 +1061,4 @@ def get_voltage_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
         ):
             break
 
-    attributes["piV"] = PI_V[_subcategory_id][_index]
-
-    return attributes
+    return PI_V[subcategory_id][_index]

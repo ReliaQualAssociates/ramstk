@@ -1,13 +1,14 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Lamp.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.lamp.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Lamp MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -46,10 +47,10 @@ PART_COUNT_LAMBDA_B = {
 PI_E = [1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0]
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -57,12 +58,14 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        attributes["application_id"],  # type: ignore
-        attributes["environment_active_id"],  # type: ignore
-    )  # type: ignore
+        attributes["application_id"],
+        attributes["environment_active_id"],
+    )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a lamp.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -72,23 +75,21 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
              dictionary with updated values.
     :rtype: dict
     """
-    attributes["lambda_b"] = 0.074 * attributes["voltage_rated"] ** 1.29  # type: ignore
+    attributes["lambda_b"] = 0.074 * attributes["voltage_rated"] ** 1.29
 
     # Determine the utilization factor (piU).
-    if attributes["duty_cycle"] < 10.0:  # type: ignore
-        attributes["piU"] = 0.1  # type: ignore
-    elif 10.0 <= attributes["duty_cycle"] < 90.0:  # type: ignore
-        attributes["piU"] = 0.72  # type: ignore
+    if attributes["duty_cycle"] < 10.0:
+        attributes["piU"] = 0.1
+    elif 10.0 <= attributes["duty_cycle"] < 90.0:
+        attributes["piU"] = 0.72
     else:
-        attributes["piU"] = 1.0  # type: ignore
+        attributes["piU"] = 1.0
 
     # Determine the application factor (piA).
-    attributes["piA"] = (
-        3.3 if (attributes["application_id"]) - (1) else 1.0  # type: ignore
-    )
+    attributes["piA"] = 3.3 if (attributes["application_id"]) - (1) else 1.0
 
     attributes["hazard_rate_active"] = (
-        attributes["lambda_b"]  # type: ignore
+        attributes["lambda_b"]
         * attributes["piU"]
         * attributes["piA"]
         * attributes["piE"]
@@ -97,7 +98,10 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_part_count_lambda_b(application_id: int, environment_active_id: int) -> float:
+def get_part_count_lambda_b(
+    application_id: int,
+    environment_active_id: int,
+) -> float:
     """Retrieve the part count hazard rate for a lamp.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts

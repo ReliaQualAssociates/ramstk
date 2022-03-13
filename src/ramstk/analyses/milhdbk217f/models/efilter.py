@@ -1,13 +1,14 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Filter.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.filter.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Filter MIL-HDBK-217F Constants and Calculations Module."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: [
@@ -79,10 +80,10 @@ PI_E = [
 PI_Q = [1.0, 2.9]
 
 
-def calculate_part_count(**attributes: Dict[str, int]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the filter being calculated.
@@ -90,11 +91,13 @@ def calculate_part_count(**attributes: Dict[str, int]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        attributes["type_id"], attributes["environment_active_id"]  # type: ignore
-    )  # type: ignore
+        attributes["type_id"], attributes["environment_active_id"]
+    )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a filter.
 
     :param attributes: the attributes for the filter being calculated.
@@ -103,18 +106,19 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     :rtype: dict
     :raise: KeyError if an unknown type ID is passed.
     """
-    attributes["lambda_b"] = PART_STRESS_LAMBDA_B[  # type: ignore
-        attributes["type_id"]  # type: ignore
-    ]  # type: ignore
+    attributes["lambda_b"] = PART_STRESS_LAMBDA_B[attributes["type_id"]]
 
     attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]  # type: ignore
+        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
     )
 
     return attributes
 
 
-def get_part_count_lambda_b(type_id: int, environment_active_id: int) -> float:
+def get_part_count_lambda_b(
+    type_id: int,
+    environment_active_id: int,
+) -> float:
     """Retrievee the part count base hazard rate for a filter.
 
     :param type_id: the filter type identifer.

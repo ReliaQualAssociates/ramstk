@@ -93,9 +93,9 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
 def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
-    :param attributes: the attributes dict for the component being
+    :param attributes: the attribute dict for the component being
         calculated.
-    :return: attributes; the attributes dict with updated values.
+    :return: attributes; the attribute dict with updated values.
     :rtype: dict
     :raise: IndexError if there is no entry for the active environment ID.
     :raise: KeyError if there is no entry for category ID or subcategory ID.
@@ -118,9 +118,7 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         },
     }
 
-    if attributes["category_id"] == 2:
-        attributes = _part_count[attributes["category_id"]](**attributes)
-    elif attributes["category_id"] == 10:
+    if attributes["category_id"] == 10:
         attributes["lambda_b"] = _part_count[attributes["category_id"]][
             attributes["subcategory_id"]
         ](**attributes)
@@ -134,7 +132,11 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
             attributes["quality_id"],
         )
     else:
-        attributes = semiconductor.get_part_count_quality_factor(attributes)
+        attributes["piQ"] = semiconductor.get_part_count_quality_factor(
+            attributes["subcategory_id"],
+            attributes["quality_id"],
+            attributes["type_id"],
+        )
 
     attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piQ"]
 

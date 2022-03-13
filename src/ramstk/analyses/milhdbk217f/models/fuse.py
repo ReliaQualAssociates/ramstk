@@ -1,13 +1,14 @@
+# type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Fuse.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.fuse.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Fuse MIL-HDBK-217F Constants and Calculations Module."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = [
     0.01,
@@ -43,20 +44,22 @@ PI_E = [
 ]
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the fuse being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    return get_part_count_lambda_b(attributes["environment_active_id"])  # type: ignore
+    return get_part_count_lambda_b(attributes["environment_active_id"])
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a fuse.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -66,7 +69,7 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         with updated values.
     :rtype: dict
     """
-    attributes["hazard_rate_active"] = 0.010 * attributes["piE"]  # type: ignore
+    attributes["hazard_rate_active"] = 0.010 * attributes["piE"]
 
     return attributes
 

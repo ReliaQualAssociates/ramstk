@@ -1,14 +1,14 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Meter.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.meter.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -136,10 +136,10 @@ PI_E = {
 PI_F = [1.0, 1.0, 2.8]
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -147,13 +147,15 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        subcategory_id=attributes["subcategory_id"],
-        type_id=attributes["type_id"],
-        environment_active_id=attributes["environment_active_id"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        attributes["environment_active_id"],
     )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a meter.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -191,7 +193,11 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    type_id: int,
+    environment_active_id: int,
+) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -225,14 +231,13 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    _subcategory_id = kwargs.get("subcategory_id", 0)
-    _type_id = kwargs.get("type_id", 0)
-    _environment_active_id = kwargs.get("environment_active_id", 0)
-
-    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
+    return PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id - 1]
 
 
-def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
+def get_part_stress_lambda_b(
+    subcategory_id: int,
+    type_id: int,
+) -> float:
     """Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -254,7 +259,8 @@ def get_part_stress_lambda_b(subcategory_id: int, type_id: int) -> float:
 
 
 def get_temperature_stress_factor(
-    temperature_active: float, temperature_rated_max: float
+    temperature_active: float,
+    temperature_rated_max: float,
 ) -> float:
     """Retrieve the temperature stress factor (piT).
 

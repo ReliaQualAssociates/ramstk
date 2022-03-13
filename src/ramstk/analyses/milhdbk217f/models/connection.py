@@ -1,15 +1,15 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Connection.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdk217f.models.connection.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Connection MIL-HDBK-217F Constants and Calculations Module."""
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -337,67 +337,10 @@ PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
 REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
 
 
-def calculate_active_pins_factor(n_active_pins: int) -> float:
-    """Calculate the active pins factor (piP).
-
-    :param n_active_pins: the number of active pins in the connector.
-    :return: _pi_p; the calculated value of piP.
-    :rtype: float
-    """
-    return exp(((n_active_pins - 1) / 10.0) ** 0.51064)
-
-
-def calculate_complexity_factor(n_circuit_planes: int) -> float:
-    """Calculate the complexity factor (piC).
-
-    :param n_circuit_planes: the number of planes in the PCB/PWA.
-    :return: _pi_c; the calculated value of the complexity factor.
-    :rtype: float
-    """
-    return 0.65 * n_circuit_planes**0.63 if n_circuit_planes > 2 else 1.0
-
-
-def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
-    """Calculate the insert temperature.
-
-    Operating current can be passed as float or integer:
-    >>> calculate_insert_temperature(1, 16, 0.05)
-    0.0010736063482992093
-    >>> calculate_insert_temperature(1, 16, 5)
-    5.380777957087587
-
-    A KeyError is raised if the contact gauge are unknown:
-    >>> calculate_insert_temperature(1, 6, 0.05)
-    Traceback (most recent call last):
-        ...
-    KeyError: 6
-
-    A TypeError is raised if the operating current is passed as a string:
-    >>> calculate_insert_temperature(1, 16, '0.05')
-    Traceback (most recent call last):
-        ...
-    TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'float'
-
-    :param contact_gauge: the standard gauge of the connection contact.
-    :param current_operating: the nominal current carried by each
-        connection contact.
-    :return: _temperature_rise; the calculated temperature of the connection's
-        insert.
-    :rtype: float
-    :raise: KeyError when an unknown contact gauge is passed.
-    :raise: TypeError when the operating current is passed as a string.
-    """
-    _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
-
-    _fo = _dic_factors[contact_gauge]
-
-    return _fo * current_operating**1.85
-
-
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, int]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -405,13 +348,15 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        subcategory_id=attributes["subcategory_id"],
-        environment_active_id=attributes["environment_active_id"],
-        type_id=attributes["type_id"],
+        attributes["subcategory_id"],
+        attributes["environment_active_id"],
+        attributes["type_id"],
     )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a connection.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -472,6 +417,63 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
         )
 
     return attributes
+
+
+def calculate_active_pins_factor(n_active_pins: int) -> float:
+    """Calculate the active pins factor (piP).
+
+    :param n_active_pins: the number of active pins in the connector.
+    :return: _pi_p; the calculated value of piP.
+    :rtype: float
+    """
+    return exp(((n_active_pins - 1) / 10.0) ** 0.51064)
+
+
+def calculate_complexity_factor(n_circuit_planes: int) -> float:
+    """Calculate the complexity factor (piC).
+
+    :param n_circuit_planes: the number of planes in the PCB/PWA.
+    :return: _pi_c; the calculated value of the complexity factor.
+    :rtype: float
+    """
+    return 0.65 * n_circuit_planes**0.63 if n_circuit_planes > 2 else 1.0
+
+
+def calculate_insert_temperature(contact_gauge: int, current_operating: float) -> float:
+    """Calculate the insert temperature.
+
+    Operating current can be passed as float or integer:
+    >>> calculate_insert_temperature(1, 16, 0.05)
+    0.0010736063482992093
+    >>> calculate_insert_temperature(1, 16, 5)
+    5.380777957087587
+
+    A KeyError is raised if the contact gauge are unknown:
+    >>> calculate_insert_temperature(1, 6, 0.05)
+    Traceback (most recent call last):
+        ...
+    KeyError: 6
+
+    A TypeError is raised if the operating current is passed as a string:
+    >>> calculate_insert_temperature(1, 16, '0.05')
+    Traceback (most recent call last):
+        ...
+    TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'float'
+
+    :param contact_gauge: the standard gauge of the connection contact.
+    :param current_operating: the nominal current carried by each
+        connection contact.
+    :return: _temperature_rise; the calculated temperature of the connection's
+        insert.
+    :rtype: float
+    :raise: KeyError when an unknown contact gauge is passed.
+    :raise: TypeError when the operating current is passed as a string.
+    """
+    _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
+
+    _fo = _dic_factors[contact_gauge]
+
+    return _fo * current_operating**1.85
 
 
 def calculate_part_stress_lambda_b(
@@ -592,7 +594,11 @@ def get_mate_unmate_factor(n_cycles: float) -> float:
         return PI_K[4]
 
 
-def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    environment_active_id: int,
+    type_id: int,
+) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function retrieves the MIL-HDBK-217F parts count base hazard rate.
@@ -622,20 +628,17 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     |        5       | Non-PTH                       |       17.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param id_keys: the ID's used as keys when selecting
-        the base hazard rate.  The keys are subcategory_id,
-        environment_active_id, and type_id.
+    :param subcategory_id: the subcategory ID for the connection being calculated.
+    :param environment_active_id: the active operating environment ID for the connection
+        being calculated.
+    :param type_id: the type ID for the connection being calculated.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    _subcategory_id = kwargs.get("subcategory_id", 0)
-    _type_id = kwargs.get("type_id", 0)
-    _environment_active_id = kwargs.get("environment_active_id", 0)
-
     return (
-        PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
-        if _subcategory_id in [1, 5]
-        else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+        PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id - 1]
+        if subcategory_id in {1, 5}
+        else PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
     )
