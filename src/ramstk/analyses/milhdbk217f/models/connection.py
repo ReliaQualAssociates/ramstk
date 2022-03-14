@@ -641,3 +641,73 @@ def get_part_count_lambda_b(
         if subcategory_id in {1, 5}
         else PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
     )
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the connection being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["temperature_rise"] < 0.0:
+        attributes["temperature_rise"] = _set_default_temperature_rise(
+            attributes["subcategory_id"],
+            attributes["type_id"],
+        )
+    if attributes["n_cycles"] < 0.0:
+        attributes["n_cycles"] = 3.0
+
+    if attributes["n_active_pins"] <= 0.0:
+        attributes["n_active_pins"] = _set_default_active_pins(
+            attributes["subcategory_id"],
+            attributes["type_id"],
+        )
+
+    return attributes
+
+
+def _set_default_active_pins(
+    subcategory_id: int,
+    type_id: int,
+) -> int:
+    """Set the default number of active pins value.
+
+    :param subcategory_id: the subcategory ID of the connection with missing defaults.
+    :return: _n_active_pins
+    :rtype: int
+    """
+    if subcategory_id == 1 and type_id in {1, 2, 3}:
+        return 40
+    elif subcategory_id == 1 and type_id in {4, 5}:
+        return type_id - 2
+    elif subcategory_id == 2:
+        return 40
+    elif subcategory_id == 3:
+        return 24
+    elif subcategory_id == 4:
+        return 1000
+    else:
+        return 0
+
+
+def _set_default_temperature_rise(
+    subcategory_id: int,
+    type_id: int,
+) -> float:
+    """Set the default temperature rise value.
+
+    :param subcategory_id: the subcategory ID of the connection with missing defaults.
+    :return: _temperature_rise
+    :rtype: float
+    """
+    if subcategory_id == 1 and type_id in {1, 2, 3}:
+        return 10.0
+    elif subcategory_id == 1 and type_id in {4, 5}:
+        return 5.0
+    elif subcategory_id == 2:
+        return 10.0
+    else:
+        return 0.0
