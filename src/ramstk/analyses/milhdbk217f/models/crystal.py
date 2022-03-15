@@ -91,3 +91,18 @@ def get_part_count_lambda_b(environment_active_id: int) -> float:
     :raise: IndexError if passed an unknown active environment ID.
     """
     return PART_COUNT_LAMBDA_B[environment_active_id - 1]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the crystal being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["frequency_operating"] <= 0.0:
+        attributes["frequency_operating"] = 50.0
+
+    return attributes
