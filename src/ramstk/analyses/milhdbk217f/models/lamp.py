@@ -71,8 +71,9 @@ def calculate_part_stress(
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :return: attributes; the keyword argument (hardware attribute)
-             dictionary with updated values.
+    :param attributes: the attribute dict for the lamp being calculated.
+    :return: attributes; the keyword argument (hardware attribute)dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["lambda_b"] = 0.074 * attributes["voltage_rated"] ** 1.29
@@ -115,3 +116,21 @@ def get_part_count_lambda_b(
     :raise: KeyError if passed an unknown application ID.
     """
     return PART_COUNT_LAMBDA_B[application_id][environment_active_id - 1]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the lamp being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["rated_voltage"] <= 0.0:
+        attributes["rated_voltage"] = 28.0
+
+    if attributes["duty_cycle"] <= 0.0:
+        attributes["duty_cycle"] = 50.0
+
+    return attributes
