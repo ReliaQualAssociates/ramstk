@@ -161,7 +161,7 @@ REF_TEMPS = {
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -178,7 +178,7 @@ def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> flo
 def calculate_part_stress(
     **attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a inductor.
+    """Calculate the part stress hazard rate for an inductive device.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -239,7 +239,7 @@ def calculate_hot_spot_temperature(
 ) -> float:
     """Calculate the coil or transformer hot spot temperature.
 
-    :return: _temperature_hot_spot; the calculate hot spot temperature.
+    :return: _temperature_hot_spot; the calculated hot spot temperature.
     :rtype: float
     """
     return temperature_active + 1.1 * temperature_rise
@@ -300,7 +300,7 @@ def calculate_temperature_rise_input_power_weight(
     :param weight: the weight of the xfmr in lbf.
     :retur: _temperature_rise; the calculated temperature rise in C.
     :rtype: float
-    :raise: ZeroDivisionError if passed an weight=0.0.
+    :raise: ZeroDivisionError if passed a weight=0.0.
     """
     return 2.1 * (power_input / weight**0.6766)
 
@@ -330,7 +330,7 @@ def calculate_temperature_rise_power_loss_weight(
     :param weight: the weight of the device in lbf.
     :return: _temperature_rise; the calculated temperature rise in C.
     :rtype: float
-    :raise: ZeroDivisionError if passed an weight=0.0.
+    :raise: ZeroDivisionError if passed a weight=0.0.
     """
     return 11.5 * (power_operating / weight**0.6766)
 
@@ -428,3 +428,55 @@ def get_temperature_rise_spec_sheet(page_number: int) -> float:
         13: 15.0,
         14: 15.0,
     }[page_number]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the inductove device being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["rated_temperature_max"] <= 0.0:
+        attributes["rated_temperature_max"] = _set_default_max_rated_temperature(
+            attributes["subcategory_id"]
+        )
+
+    if attributes["temperature_rise"] <= 0.0:
+        attributes["temperature_rise"] = _set_default_temperature_rise(
+            attributes["subcategory_id"],
+            attributes["family_id"],
+        )
+
+    return attributes
+
+
+def _set_default_max_rated_temperature(subcategory_id: int) -> float:
+    """Set the default maximum rated temperature.
+
+    :param subcategory_id: the subcategory ID of the inductive device with missing
+        defaults.
+    :return: _rated_temperature_max
+    :rtype: float
+    """
+    return 130.0 if subcategory_id == 1 else 125.0
+
+
+def _set_default_temperature_rise(
+    subcategory_id: int,
+    family_id: int,
+) -> float:
+    """Set the default temperature rise.
+
+    :param subcategory_id: the subcategory ID of the inductive device with missing
+        defaults.
+    :param family_id: the family ID of the inductive device with missing defaults.
+    :return: _temperature_rise
+    :rtype: float
+    """
+    if subcategory_id == 1 and family_id == 3:
+        return 30.0
+    else:
+        return 10.0
