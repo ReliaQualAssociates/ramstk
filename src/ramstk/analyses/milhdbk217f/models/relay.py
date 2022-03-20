@@ -474,3 +474,161 @@ def get_part_count_lambda_b(
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
     return PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id - 1]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    The subcategory ID and the type ID must be set for default values to be applied.
+
+    :param attributes: the attribute dict for the relay being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["quality_id"] <= 0:
+        attributes["quality_id"] = _set_default_quality(attributes["subcategory_id"])
+
+    if attributes["current_ratio"] <= 0.0:
+        attributes["current_ratio"] = 0.5
+
+    attributes["technology_id"] = _set_default_load_type(
+        attributes["technology_id"], attributes["type_id"]
+    )
+
+    attributes["contact_form_id"] = _set_default_contact_form(
+        attributes["contact_form_id"], attributes["type_id"]
+    )
+
+    attributes["contact_rating_id"] = _set_default_contact_rating(
+        attributes["contact_rating_id"], attributes["type_id"]
+    )
+
+    attributes["application_id"] = _set_default_application(
+        attributes["application_id"], attributes["type_id"]
+    )
+
+    attributes["construction_id"] = _set_default_construction(
+        attributes["construction_id"], attributes["type_id"]
+    )
+
+    attributes["duty_cycle"] = _set_default_duty_cycle(
+        attributes["duty_cycle"], attributes["type_id"]
+    )
+
+    attributes["temperature_rated_max"] = _set_default_rated_temperature(
+        attributes["temperature_rated_max"], attributes["type_id"]
+    )
+
+    return attributes
+
+
+def _set_default_quality(subcategory_id: int) -> int:
+    """Set the default quality for mechanical relays.
+
+    :param subcategory_id: the subcategory ID of the relay with missing defaults.
+    :return: _quality_id
+    :rtype: float
+    """
+    return 5 if subcategory_id == 4 else 1
+
+
+def _set_default_load_type(technology_id: int, type_id: int) -> int:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param technology_id: the current technology ID (represents the load type).
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_form_id
+    :rtype: int
+    """
+    if technology_id > 0:
+        return technology_id
+    else:
+        return 1 if type_id in {1, 3, 4, 6} else 2
+
+
+def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
+    """Set the default contact form for mechanical relays.
+
+    :param contact_form_id: the current contact form ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_form_id
+    :rtype: int
+    """
+    if contact_form_id > 0:
+        return contact_form_id
+    else:
+        return 1 if type_id in {4, 5} else 6
+
+
+def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
+    """Set the default contact rating for mechanical relays.
+
+    :param contact_form_id: the current contact rating ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_rating_id
+    :rtype: int
+    """
+    if contact_rating_id > 0:
+        return contact_rating_id
+    else:
+        return {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
+
+
+def _set_default_application(application_id: int, type_id: int) -> int:
+    """Set the default application for mechanical relays.
+
+    :param application_id: the current application ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _application_id
+    :rtype: int
+    """
+    if application_id > 0:
+        return application_id
+    else:
+        return {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
+
+
+def _set_default_construction(construction_id: int, type_id: int) -> int:
+    """Set the default construction for mechanical relays.
+
+    :param construction_id: the current construction ID.
+    :param application_id: the current application ID of the relay with missing
+        defaults.
+    :param contact_rating_id: the contact rating ID of the relay with missing defaults.
+    :return: _contact_rating_id
+    :rtype: int
+    """
+    if construction_id > 0:
+        return construction_id
+    else:
+        return {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
+
+
+def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param duty_cycle: the current duty cycle.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _duty_cycle
+    :rtype: float
+    """
+    if duty_cycle > 0.0:
+        return duty_cycle
+    else:
+        return 20.0 if type_id == 4 else 10.0
+
+
+def _set_default_rated_temperature(rated_temperature_max: float, type_id: int) -> float:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param rated_temperature_max: the current maximum rated temperature.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _rated_temperature_max
+    :rtype: float
+    """
+    if rated_temperature_max > 0.0:
+        return rated_temperature_max
+    else:
+        return 85.0 if type_id == 4 else 125.0
