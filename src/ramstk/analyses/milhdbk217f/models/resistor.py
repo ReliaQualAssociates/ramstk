@@ -906,7 +906,7 @@ def get_part_count_lambda_b(
     Current subcategory IDs are:
 
     +----------------+-------------------------------+-----------------+
-    | Subcategory    |            Resistor           | MIL-HDBK-217F   |
+    |  Subcategory   |            Resistor           | MIL-HDBK-217F   |
     |       ID       |              Style            |    Section      |
     +================+===============================+=================+
     |        1       | Fixed, Composition (RC, RCR)  |        9.1      |
@@ -982,28 +982,28 @@ def get_resistance_factor(
     :raise: IndexError if passed an unknown specification ID or family ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    _dic_breakpoints = {
-        1: [1.0e5, 1.0e6, 1.0e7],
-        2: [1.0e5, 1.0e6, 1.0e7],
-        3: [100.0, 1.0e5, 1.0e6],
-        5: [1.0e4, 1.0e5, 1.0e6],
-        6: [
-            [500.0, 1.0e3, 5.0e3, 7.5e3, 1.0e4, 1.5e4, 2.0e4],
-            [100.0, 1.0e3, 1.0e4, 1.0e5, 1.5e5, 2.0e5],
-        ],
-        7: [500.0, 1.0e3, 5.0e3, 1.0e4, 2.0e4],
-        9: [2.0e3, 5.0e3],
-        10: [1.0e4, 2.0e4, 5.0e4, 1.0e5, 2.0e5],
-        11: [2.0e3, 5.0e3],
-        12: [2.0e3, 5.0e3],
-        13: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
-        14: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
-        15: [1.0e4, 5.0e4, 2.0e5, 1.0e6],
-    }
     _pi_r = 0.0
 
     if subcategory_id not in [4, 8]:
         _index = -1
+        _dic_breakpoints = {
+            1: [1.0e5, 1.0e6, 1.0e7],
+            2: [1.0e5, 1.0e6, 1.0e7],
+            3: [100.0, 1.0e5, 1.0e6],
+            5: [1.0e4, 1.0e5, 1.0e6],
+            6: [
+                [500.0, 1.0e3, 5.0e3, 7.5e3, 1.0e4, 1.5e4, 2.0e4],
+                [100.0, 1.0e3, 1.0e4, 1.0e5, 1.5e5, 2.0e5],
+            ],
+            7: [500.0, 1.0e3, 5.0e3, 1.0e4, 2.0e4],
+            9: [2.0e3, 5.0e3],
+            10: [1.0e4, 2.0e4, 5.0e4, 1.0e5, 2.0e5],
+            11: [2.0e3, 5.0e3],
+            12: [2.0e3, 5.0e3],
+            13: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
+            14: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
+            15: [1.0e4, 5.0e4, 2.0e5, 1.0e6],
+        }
         if subcategory_id == 6:
             _breaks = _dic_breakpoints[subcategory_id][specification_id - 1]
         else:
@@ -1020,7 +1020,7 @@ def get_resistance_factor(
         # For subcategory ID 6 and 7, the specification ID selects the correct
         # set of lists, then the style ID selects the proper list of piR values
         # and then the resistance range breakpoint is used to select
-        if subcategory_id in [6, 7]:
+        if subcategory_id in {6, 7}:
             _pi_r = PI_R[subcategory_id][specification_id - 1][family_id - 1][
                 _index + 1
             ]
@@ -1060,3 +1060,90 @@ def get_voltage_factor(
             break
 
     return PI_V[subcategory_id][_index]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the resustor being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["power_ratio"] <= 0.0:
+        attributes["power_ratio"] = 0.5
+
+    attributes["resistance"] = _set_default_resistance(
+        attributes["resistance"],
+        attributes["subcategory_id"],
+    )
+
+    attributes["n_elements"] = _set_default_elements(
+        attributes["n_elements"], attributes["subcategory_id"]
+    )
+
+    if attributes["subcategory_id"] == 4 and attributes["temperature_case"] <= 0.0:
+        attributes["temperature_case"] = attributes["temperature_active"] + 28.0
+
+    return attributes
+
+
+def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
+    """Set the default resistance for resistors.
+
+    :param resistance: the current resistance.
+    :param subcategory_id: the subcategory ID of the resistor with missing defaults.
+    :return: _resistance
+    :rtype: float
+    """
+    if resistance > 0.0:
+        return resistance
+    else:
+        return {
+            1: 1000000.0,
+            2: 1000000.0,
+            3: 100.0,
+            4: 1000.0,
+            5: 100000.0,
+            6: 5000.0,
+            7: 5000.0,
+            8: 1000.0,
+            9: 5000.0,
+            10: 50000.0,
+            11: 5000.0,
+            12: 5000.0,
+            13: 200000.0,
+            14: 200000.0,
+            15: 200000.0,
+        }[subcategory_id]
+
+
+def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
+    """Set the default number of elements for resistors.
+
+    :param resistance: the current number of elements.
+    :param subcategory_id: the subcategory ID of the resistor with missing defaults.
+    :return: _n_elements
+    :rtype: int
+    """
+    if n_elements > 0:
+        return n_elements
+    else:
+        return {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 10,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 3,
+            10: 3,
+            11: 3,
+            12: 3,
+            13: 3,
+            14: 3,
+            15: 3,
+        }[subcategory_id]
