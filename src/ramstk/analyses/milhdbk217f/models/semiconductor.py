@@ -1663,3 +1663,159 @@ def _get_section_6_13_application_factor(
         attributes["piA"] = sqrt(attributes["duty_cycle"] / 100.0)
 
     return attributes
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the semiconductor being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["subcategory_id"] in {4, 9} and attributes["type_id"] <= 0:
+        attributes["type_id"] = 1
+
+    if attributes["subcategory_id"] == 1 and attributes["construction_id"] <= 0:
+        attributes["construction_id"] = 1
+
+    attributes["application_id"] = _set_default_application_id(
+        attributes["application_id"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    attributes["power_rated"] = _set_default_rated_power(
+        attributes["power_rated"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    attributes["voltage_ratio"] = _set_default_voltage_ratio(
+        attributes["voltage_ratio"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    return attributes
+
+
+def _set_default_application_id(
+    application_id: int,
+    subcategory_id: int,
+    type_id: int,
+) -> int:
+    """Set the default application ID for semiconductors.
+
+    :param application_id: the current application ID.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _application_id
+    :rtype: int
+    """
+    if application_id > 0:
+        return application_id
+
+    try:
+        return {
+            2: {
+                6: 2,
+            },
+            3: {
+                1: 2,
+                2: 1,
+            },
+            4: {
+                1: 2,
+            },
+            7: {
+                1: 2,
+            },
+            8: {
+                1: 1,
+                2: 2,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 0
+
+
+def _set_default_rated_power(
+    power_rated: float, subcategory_id: int, type_id: int
+) -> float:
+    """Set the default rated power for semiconductors.
+
+    :param power_rated: the current rated power.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _power_rated
+    :rtype: float
+    """
+    if power_rated > 0.0:
+        return power_rated
+
+    try:
+        return {
+            2: {
+                4: 1000.0,
+            },
+            3: {
+                1: 0.5,
+                2: 100.0,
+            },
+            6: {
+                1: 0.5,
+            },
+            7: {
+                1: 100.0,
+            },
+            8: {
+                2: 1.0,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 0.0
+
+
+def _set_default_voltage_ratio(
+    voltage_ratio: float, subcategory_id: int, type_id: int
+) -> float:
+    """Set the default voltage ratio for semiconductors.
+
+    :param voltage_ratio: the current voltage ratio.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _voltage_ratio
+    :rtype: float
+    """
+    if voltage_ratio > 0.0:
+        return voltage_ratio
+
+    try:
+        return {
+            1: {
+                1: 0.7,
+                2: 0.7,
+                3: 0.7,
+                4: 0.7,
+                5: 0.7,
+            },
+            3: {
+                1: 0.5,
+                2: 0.8,
+            },
+            6: {
+                1: 0.7,
+                2: 0.45,
+            },
+            13: {
+                1: 0.5,
+                2: 0.5,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 1.0
