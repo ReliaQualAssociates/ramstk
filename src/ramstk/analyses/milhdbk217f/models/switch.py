@@ -418,3 +418,127 @@ def get_part_count_lambda_b(
         if subcategory_id == 5
         else PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
     )
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the switch being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["application_id"] <= 0:
+        attributes["application_id"] = 1
+
+    if attributes["quality_id"] <= 0:
+        attributes["quality_id"] = 1
+
+    if attributes["current_ratio"] < 0.0:
+        attributes["current_ratio"] = 0.5
+
+    attributes["construction_id"] = _set_default_construction_id(
+        attributes["construction_id"],
+        attributes["subcategory_id"],
+    )
+
+    attributes["contact_form_id"] = _set_default_contact_form_id(
+        attributes["contact_form_id"],
+        attributes["subcategory_id"],
+    )
+
+    attributes["n_cycles"] = _set_default_cycle_rate(
+        attributes["n_cycles"],
+        attributes["subcategory_id"],
+    )
+
+    attributes["n_elements"] = _set_default_active_contacts(
+        attributes["n_elements"],
+        attributes["subcategory_id"],
+    )
+
+    return attributes
+
+
+def _set_default_construction_id(construction_id: int, subcategory_id: int) -> int:
+    """Set the default construction ID for switches.
+
+    :param construction_id: the current construction ID.
+    :param subcategory_id: the subcategory ID of the switch with missing defaults.
+    :return: _construction_id
+    :rtype: int
+    """
+    if construction_id > 0:
+        return construction_id
+
+    try:
+        return {
+            1: 1,
+            2: 1,
+        }[subcategory_id]
+    except KeyError:
+        return 0
+
+
+def _set_default_contact_form_id(contact_form_id: int, subcategory_id: int) -> int:
+    """Set the default contact foem ID for switches.
+
+    :param contact_form_id: the current contact form ID.
+    :param subcategory_id: the subcategory ID of the switch with missing defaults.
+    :return: _contact_form_id
+    :rtype: int
+    """
+    if contact_form_id > 0:
+        return contact_form_id
+
+    try:
+        return {
+            1: 2,
+            5: 3,
+        }[subcategory_id]
+    except KeyError:
+        return 0
+
+
+def _set_default_cycle_rate(cycle_rate: float, subcategory_id: int) -> float:
+    """Set the default cycling rate for switches.
+
+    :param cycle_rate: the current cycling rate.
+    :param subcategory_id: the subcategory ID of the switch with missing defaults.
+    :return: _n_cycles
+    :rtype: float
+    """
+    if cycle_rate > 0.0:
+        return cycle_rate
+
+    try:
+        return {
+            1: 1.0,
+            2: 1.0,
+            3: 30.0,
+            4: 1.0,
+        }[subcategory_id]
+    except KeyError:
+        return 0.0
+
+
+def _set_default_active_contacts(active_contacts: int, subcategory_id: int) -> int:
+    """Set the default active number of contacts for switches.
+
+    :param active_contacts: the current active number of contacts.
+    :param subcategory_id: the subcategory ID of the switch with missing defaults.
+    :return: _n_cycles
+    :rtype: float
+    """
+    if active_contacts > 0:
+        return active_contacts
+
+    try:
+        return {
+            2: 1,
+            3: 24,
+            4: 6,
+        }[subcategory_id]
+    except KeyError:
+        return 0
