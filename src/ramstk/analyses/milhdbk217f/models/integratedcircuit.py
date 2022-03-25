@@ -1562,3 +1562,66 @@ def get_part_count_lambda_b(
             environment_active_id - 1
         ]
     )
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the integrated circuit being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["years_in_production"] <= 0.0:
+        attributes["years_in_production"] = 2.0
+
+    if attributes["package_id"] <= 0:
+        attributes["package_id"] = 1
+
+    attributes["temperature_junction"] = _set_default_junction_temperature(
+        attributes["temperature_junction"],
+        attributes["temperature_case"],
+        attributes["environment_active_id"],
+    )
+
+    return attributes
+
+
+def _set_default_junction_temperature(
+    temperature_junction: float,
+    temperature_case: float,
+    environment_active_id: int,
+) -> float:
+    """Set the default junction temperature for integrated circuits.
+
+    :param temperature_junction: the current junction temperature.
+    :param temperature_case: the current case temperature of the integrated circuit
+        with missing defaults.
+    :param environment_active_id: the active operating environment ID of the
+        integrated circuit with missing defaults.
+    :return: _temperature_junction
+    :rtype: float
+    """
+    if temperature_junction > 0.0:
+        return temperature_junction
+
+    try:
+        return {
+            1: 50.0,
+            2: 60.0,
+            3: 65.0,
+            4: 60.0,
+            5: 65.0,
+            6: 75.0,
+            7: 75.0,
+            8: 90.0,
+            9: 90.0,
+            10: 75.0,
+            11: 50.0,
+            12: 65.0,
+            13: 75.0,
+            14: 60.0,
+        }[environment_active_id]
+    except KeyError:
+        return temperature_case
