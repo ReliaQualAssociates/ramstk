@@ -83,3 +83,18 @@ def get_part_count_lambda_b(environment_active_id: int) -> float:
     :raise: IndexError when passed an unkown active environment ID.
     """
     return PART_COUNT_LAMBDA_B[environment_active_id - 1]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the electronic filter being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["lambda_b"] <= 0.0:
+        attributes["lambda_b"] = 0.01
+
+    return attributes
