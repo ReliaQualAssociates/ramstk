@@ -285,3 +285,18 @@ def get_temperature_stress_factor(
         _pi_t = 1.0
 
     return _pi_t
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    MIL-HDBK-217F has no defaults for metere.  This function is needed as a
+    placeholder only.
+
+    :param attributes: the attribute dict for the meter being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    return attributes
