@@ -1,7 +1,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.milhdbk217f.models.filter.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.efilter.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -130,3 +130,18 @@ def get_part_count_lambda_b(
     :raise: KeyError if an unknown type ID is passed.
     """
     return PART_COUNT_LAMBDA_B[type_id][environment_active_id - 1]
+
+
+def set_default_values(
+    attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the electronic filter being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["quality_id"] <= 0:
+        attributes["quality_id"] = 1
+
+    return attributes
