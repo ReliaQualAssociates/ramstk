@@ -689,8 +689,7 @@ def _set_default_active_pins(
         return 24
     elif subcategory_id == 4:
         return 1000
-    else:
-        return 0
+    return 0
 
 
 def _set_default_temperature_rise(
@@ -709,5 +708,4 @@ def _set_default_temperature_rise(
         return 5.0
     elif subcategory_id == 2:
         return 10.0
-    else:
-        return 0.0
+    return 0.0

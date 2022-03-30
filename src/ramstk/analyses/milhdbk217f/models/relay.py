@@ -544,8 +544,7 @@ def _set_default_load_type(technology_id: int, type_id: int) -> int:
     """
     if technology_id > 0:
         return technology_id
-    else:
-        return 1 if type_id in {1, 3, 4, 6} else 2
+    return 1 if type_id in {1, 3, 4, 6} else 2
 
 
 def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
@@ -558,8 +557,7 @@ def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
     """
     if contact_form_id > 0:
         return contact_form_id
-    else:
-        return 1 if type_id in {4, 5} else 6
+    return 1 if type_id in {4, 5} else 6
 
 
 def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
@@ -572,8 +570,7 @@ def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
     """
     if contact_rating_id > 0:
         return contact_rating_id
-    else:
-        return {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
+    return {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
 
 
 def _set_default_application(application_id: int, type_id: int) -> int:
@@ -586,8 +583,7 @@ def _set_default_application(application_id: int, type_id: int) -> int:
     """
     if application_id > 0:
         return application_id
-    else:
-        return {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
+    return {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
 
 
 def _set_default_construction(construction_id: int, type_id: int) -> int:
@@ -602,8 +598,7 @@ def _set_default_construction(construction_id: int, type_id: int) -> int:
     """
     if construction_id > 0:
         return construction_id
-    else:
-        return {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
+    return {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
 
 
 def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
@@ -616,8 +611,7 @@ def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
     """
     if duty_cycle > 0.0:
         return duty_cycle
-    else:
-        return 20.0 if type_id == 4 else 10.0
+    return 20.0 if type_id == 4 else 10.0
 
 
 def _set_default_rated_temperature(rated_temperature_max: float, type_id: int) -> float:
@@ -630,5 +624,4 @@ def _set_default_rated_temperature(rated_temperature_max: float, type_id: int) -
     """
     if rated_temperature_max > 0.0:
         return rated_temperature_max
-    else:
-        return 85.0 if type_id == 4 else 125.0
+    return 85.0 if type_id == 4 else 125.0

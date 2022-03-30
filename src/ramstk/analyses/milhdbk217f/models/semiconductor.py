@@ -1278,8 +1278,7 @@ def get_part_count_lambda_b(
         return PART_COUNT_LAMBDA_B_DICT[subcategory_id][type_id][
             environment_active_id - 1
         ]
-    else:
-        return PART_COUNT_LAMBDA_B_LIST[subcategory_id][environment_active_id - 1]
+    return PART_COUNT_LAMBDA_B_LIST[subcategory_id][environment_active_id - 1]
 
 
 def get_part_count_quality_factor(
@@ -1301,8 +1300,7 @@ def get_part_count_quality_factor(
         return PART_COUNT_PI_Q_HF_DIODE[1][quality_id - 1]
     elif subcategory_id == 2:
         return PART_COUNT_PI_Q_HF_DIODE[0][quality_id - 1]
-    else:
-        return PART_COUNT_PI_Q[subcategory_id][quality_id - 1]
+    return PART_COUNT_PI_Q[subcategory_id][quality_id - 1]
 
 
 def get_part_stress_quality_factor(
@@ -1322,8 +1320,7 @@ def get_part_stress_quality_factor(
     """
     if subcategory_id == 2:
         return PART_STRESS_PI_Q_HF_DIODE[type_id][quality_id - 1]
-    else:
-        return PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
+    return PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
 
 
 def _get_section_6_1_electrical_stress_factor(

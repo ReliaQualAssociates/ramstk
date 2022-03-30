@@ -783,8 +783,7 @@ def _set_default_picv(subcategory_id: int) -> float:
         return 1.3
     elif subcategory_id > 15:
         return 0.0
-    else:
-        return 1.0
+    return 1.0
 
 
 def _set_default_rated_temperature(
@@ -795,5 +794,4 @@ def _set_default_rated_temperature(
         return [125.0, 85.0][style_id - 1]
     elif subcategory_id in {15, 16, 18, 19}:
         return 85.0
-    else:
-        return 125.0
+    return 125.0

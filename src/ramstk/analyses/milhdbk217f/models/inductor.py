@@ -476,7 +476,4 @@ def _set_default_temperature_rise(
     :return: _temperature_rise
     :rtype: float
     """
-    if subcategory_id == 1 and family_id == 3:
-        return 30.0
-    else:
-        return 10.0
+    return 30.0 if subcategory_id == 1 and family_id == 3 else 10.0

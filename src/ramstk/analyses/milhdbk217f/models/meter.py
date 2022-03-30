@@ -254,8 +254,7 @@ def get_part_stress_lambda_b(
         return PART_STRESS_LAMBDA_B[1][type_id - 1]
     elif subcategory_id == 2:
         return PART_STRESS_LAMBDA_B[2]
-    else:
-        return 0.0
+    return 0.0
 
 
 def get_temperature_stress_factor(

@@ -849,18 +849,16 @@ def calculate_part_stress_lambda_b(
         return 0.00006
     elif subcategory_id == 8:
         return _dic_factors[subcategory_id][type_id - 1]
-    else:
-        return (
-            _f0
-            * exp(
-                _f1 * ((temperature_active + 273.0) / _ref_temp),
-            )
-            ** _f2
-            * exp(
-                ((power_ratio / _f3) * ((temperature_active + 273.0) / 273.0) ** _f4)
-                ** _f5
-            )
+    return (
+        _f0
+        * exp(
+            _f1 * ((temperature_active + 273.0) / _ref_temp),
         )
+        ** _f2
+        * exp(
+            ((power_ratio / _f3) * ((temperature_active + 273.0) / 273.0) ** _f4) ** _f5
+        )
+    )
 
 
 def calculate_temperature_factor(
@@ -960,8 +958,7 @@ def get_part_count_lambda_b(
         return PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
             environment_active_id - 1
         ]
-    else:
-        return PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
+    return PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
 
 
 def get_resistance_factor(
@@ -1099,24 +1096,23 @@ def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
     """
     if resistance > 0.0:
         return resistance
-    else:
-        return {
-            1: 1000000.0,
-            2: 1000000.0,
-            3: 100.0,
-            4: 1000.0,
-            5: 100000.0,
-            6: 5000.0,
-            7: 5000.0,
-            8: 1000.0,
-            9: 5000.0,
-            10: 50000.0,
-            11: 5000.0,
-            12: 5000.0,
-            13: 200000.0,
-            14: 200000.0,
-            15: 200000.0,
-        }[subcategory_id]
+    return {
+        1: 1000000.0,
+        2: 1000000.0,
+        3: 100.0,
+        4: 1000.0,
+        5: 100000.0,
+        6: 5000.0,
+        7: 5000.0,
+        8: 1000.0,
+        9: 5000.0,
+        10: 50000.0,
+        11: 5000.0,
+        12: 5000.0,
+        13: 200000.0,
+        14: 200000.0,
+        15: 200000.0,
+    }[subcategory_id]
 
 
 def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
@@ -1129,21 +1125,20 @@ def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
     """
     if n_elements > 0:
         return n_elements
-    else:
-        return {
-            1: 0,
-            2: 0,
-            3: 0,
-            4: 10,
-            5: 0,
-            6: 0,
-            7: 0,
-            8: 0,
-            9: 3,
-            10: 3,
-            11: 3,
-            12: 3,
-            13: 3,
-            14: 3,
-            15: 3,
-        }[subcategory_id]
+    return {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 10,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 3,
+        10: 3,
+        11: 3,
+        12: 3,
+        13: 3,
+        14: 3,
+        15: 3,
+    }[subcategory_id]
