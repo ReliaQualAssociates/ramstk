@@ -26,11 +26,9 @@ def test_get_part_count_lambda_b_xfmr(family_id, environment_active_id):
     """get_part_count_lambda_b() should return a float value for the base hazard rate
     on success."""
     _lambda_b = inductor.get_part_count_lambda_b(
-        id_keys={
-            "subcategory_id": 1,
-            "family_id": family_id,
-            "environment_active_id": environment_active_id,
-        }
+        1,
+        environment_active_id,
+        family_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -118,11 +116,9 @@ def test_get_part_count_lambda_b_inductor(
     """get_part_count_lambda_b() should return a float value for the base hazard rate
     on success."""
     _lambda_b = inductor.get_part_count_lambda_b(
-        id_keys={
-            "subcategory_id": 2,
-            "family_id": family_id,
-            "environment_active_id": environment_active_id,
-        }
+        2,
+        environment_active_id,
+        family_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -171,11 +167,9 @@ def test_get_part_count_lambda_b_no_subcategory():
     subcategory ID."""
     with pytest.raises(KeyError):
         inductor.get_part_count_lambda_b(
-            id_keys={
-                "subcategory_id": 20,
-                "family_id": 1,
-                "environment_active_id": 3,
-            }
+            20,
+            3,
+            1,
         )
 
 
@@ -185,11 +179,9 @@ def test_get_part_count_lambda_b_no_family():
     ID."""
     with pytest.raises(KeyError):
         inductor.get_part_count_lambda_b(
-            id_keys={
-                "subcategory_id": 2,
-                "family_id": 12,
-                "environment_active_id": 3,
-            }
+            2,
+            3,
+            12,
         )
 
 
@@ -199,11 +191,9 @@ def test_get_part_count_lambda_b_no_environment():
     active environment ID."""
     with pytest.raises(IndexError):
         inductor.get_part_count_lambda_b(
-            id_keys={
-                "subcategory_id": 2,
-                "family_id": 1,
-                "environment_active_id": 31,
-            }
+            2,
+            31,
+            1,
         )
 
 
@@ -606,3 +596,46 @@ def test_calculate_part_stress_xfmr_no_temperature_rise(test_attributes_inductor
     assert _attributes["lambda_b"] == pytest.approx(0.0024147842)
     assert _attributes["piC"] == 1.0
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01811088)
+
+
+@pytest.mark.unit
+def test_set_default_max_rated_temperature():
+    """should return the default capacitance for the selected subcategory ID."""
+    assert inductor._set_default_max_rated_temperature(1) == 130.0
+    assert inductor._set_default_max_rated_temperature(2) == 125.0
+
+
+@pytest.mark.unit
+def test_set_default_temperature_rise():
+    """should return the default capacitance for the selected subcategory ID."""
+    assert inductor._set_default_temperature_rise(1, 1) == 10.0
+    assert inductor._set_default_temperature_rise(1, 3) == 30.0
+    assert inductor._set_default_temperature_rise(2, 1) == 10.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_inductor")
+def test_set_default_values(test_attributes_inductor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_inductor["rated_temperature_max"] = 0.0
+    test_attributes_inductor["temperature_rise"] = 0.0
+    test_attributes_inductor["subcategory_id"] = 1
+    _attributes = inductor.set_default_values(**test_attributes_inductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_temperature_max"] == 130.0
+    assert _attributes["temperature_rise"] == 10.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_inductor")
+def test_set_default_values_none_needed(test_attributes_inductor):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_inductor["rated_temperature_max"] = 135.0
+    test_attributes_inductor["temperature_rise"] = 5.0
+    test_attributes_inductor["subcategory_id"] = 1
+    _attributes = inductor.set_default_values(**test_attributes_inductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_temperature_max"] == 135.0
+    assert _attributes["temperature_rise"] == 5.0

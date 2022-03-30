@@ -42,18 +42,20 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     :ivar txtCycles: enter and display the number of relay cycles per hour.
     """
 
-    _balanced_armature: str = _("Balanced Armature")
-    _dry_reed: str = _("Dry Reed")
-    _magnetic_latching: str = _("Magnetic Latching")
-    _mechanical_latching: str = _("Mechanical Latching")
-    _mercury_wetted: str = _("Mercury Wetted")
-    _meter_movement: str = _("Meter Movement")
-    _solenoid: str = _("Solenoid")
-
     # Define private dict class attributes.
     _dic_quality: Dict[int, List[List[str]]] = {
-        1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
-        2: [["MIL-SPEC"], [_("Lower")]],
+        1: [
+            ["S"],
+            ["R"],
+            ["P"],
+            ["M"],
+            ["MIL-C-15305"],
+            [_("Lower")],
+        ],
+        2: [
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ],
     }
     # Key is subcategory ID.  Index is type ID.
     _dic_pc_types: Dict[int, List[List[str]]] = {
@@ -63,14 +65,12 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("Latching")],
             [_("Reed")],
             [_("Thermal, Bi-Metal")],
-            [_meter_movement],
+            [_("Meter Movement")],
         ],
-        2: [[_("Solid State")], [_("Hybrid and Solid State Time Delay")]],
-    }
-    # Key is subcategory ID, index is type ID.
-    _dic_types: Dict[int, List[List[str]]] = {
-        1: [[_("85C Rated")], [_("125C Rated")]],
-        2: [[_("Solid State")], [_("Solid State Time Delay")], [_("Hybrid")]],
+        2: [
+            [_("Solid State")],
+            [_("Hybrid and Solid State Time Delay")],
+        ],
     }
     # Key is contact rating ID.  Index is application ID.
     _dic_application: Dict[int, List[List[str]]] = {
@@ -83,9 +83,12 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("High Speed")],
             [_("Thermal Time Delay")],
             [_("Electronic Time Delay, Non-Thermal")],
-            [_magnetic_latching],
+            [_("Magnetic Latching")],
         ],
-        3: [[_("High Voltage")], [_("Medium Power")]],
+        3: [
+            [_("High Voltage")],
+            [_("Medium Power")],
+        ],
         4: [[_("Contactors, High Current")]],
     }
     # First key is contact rating ID, second key is application ID.  Index is
@@ -94,49 +97,65 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         1: {
             1: [
                 [_("Armature (Long)")],
-                [_dry_reed],
-                [_mercury_wetted],
-                [_magnetic_latching],
-                [_balanced_armature],
-                [_solenoid],
+                [_("Dry Reed")],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
             ]
         },
         2: {
-            1: [[_("Armature (Long)")], [_balanced_armature], [_solenoid]],
+            1: [
+                [_("Armature (Long)")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
+            ],
             2: [
                 [_("Armature (Long and Short)")],
-                [_mercury_wetted],
-                [_magnetic_latching],
-                [_meter_movement],
-                [_balanced_armature],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Meter Movement")],
+                [_("Balanced Armature")],
             ],
-            3: [[_("Armature (Short)")], [_meter_movement]],
-            4: [[_dry_reed], [_mercury_wetted]],
-            5: [[_("Armature (Balanced and Short)")], [_dry_reed]],
+            3: [
+                [_("Armature (Short)")],
+                [_("Meter Movement")],
+            ],
+            4: [
+                [_("Dry Reed")],
+                [_("Mercury Wetted")],
+            ],
+            5: [
+                [_("Armature (Balanced and Short)")],
+                [_("Dry Reed")],
+            ],
             6: [[_("Bimetal")]],
             8: [
-                [_dry_reed],
-                [_mercury_wetted],
-                [_balanced_armature],
+                [_("Dry Reed")],
+                [_("Mercury Wetted")],
+                [_("Balanced Armature")],
             ],
         },
         3: {
-            1: [[_("Vacuum (Glass)")], [_("Vacuum (Ceramic)")]],
+            1: [
+                [_("Vacuum (Glass)")],
+                [_("Vacuum (Ceramic)")],
+            ],
             2: [
                 [_("Armature (Long and Short)")],
-                [_mercury_wetted],
-                [_magnetic_latching],
-                [_mechanical_latching],
-                [_balanced_armature],
-                [_solenoid],
+                [_("Mercury Wetted")],
+                [_("Magnetic Latching")],
+                [_("Mechanical Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
             ],
         },
         4: {
             1: [
                 [_("Armature (Short)")],
-                [_mechanical_latching],
-                [_balanced_armature],
-                [_solenoid],
+                [_("Magnetic Latching")],
+                [_("Balanced Armature")],
+                [_("Solenoid")],
             ]
         },
     }
@@ -413,7 +432,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             +-------+------------------+-------+------------------+
             | Index | Widget           | Index | Widget           |
             +=======+==================+=======+==================+
-            |   4   | cmbContactRating |   5   | cmbApplication   |
+            |   4   | cmbCApplication  |   5   | cmbConstruction  |
             +-------+------------------+-------+------------------+
 
         :return: None
@@ -477,7 +496,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         try:
-            _data = self._dic_types[self.subcategory_id]
+            _data = self._dic_pc_types[self.subcategory_id]
         except KeyError:
             _data = []
         self.cmbType.do_load_combo(_data, signal="changed")

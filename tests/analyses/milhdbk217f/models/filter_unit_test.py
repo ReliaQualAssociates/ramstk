@@ -234,3 +234,25 @@ def test_calculate_part_stress_missing_type(test_attributes_filter):
     test_attributes_filter["type_id"] = 6
     with pytest.raises(KeyError):
         efilter.calculate_part_stress(**test_attributes_filter)
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_filter")
+def test_set_default_values(test_attributes_filter):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_filter["quality_id"] = 0
+    _attributes = efilter.set_default_values(**test_attributes_filter)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["quality_id"] == 1
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_filter")
+def test_set_default_values_none_needed(test_attributes_filter):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_filter["quality_id"] = 2
+    _attributes = efilter.set_default_values(**test_attributes_filter)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["quality_id"] == 2

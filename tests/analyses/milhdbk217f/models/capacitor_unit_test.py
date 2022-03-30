@@ -292,3 +292,120 @@ def test_calculate_part_stress_missing_attribute_key(test_attributes_capacitor):
     test_attributes_capacitor.pop("voltage_ratio")
     with pytest.raises(KeyError):
         capacitor.calculate_part_stress(**test_attributes_capacitor)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+)
+def test_set_default_capacitance(subcategory_id):
+    """should return the default capacitance for the selected subcategory ID."""
+    _capacitance = capacitor._set_default_capacitance(subcategory_id, 2)
+
+    assert (
+        _capacitance
+        == {
+            1: 0.15e-6,
+            2: 0.061e-6,
+            3: 0.033e-6,
+            4: 0.14e-6,
+            5: 0.33e-6,
+            6: 0.14e-6,
+            7: 300e-12,
+            8: 160e-12,
+            9: 30e-12,
+            10: 3300e-12,
+            11: 81e-12,
+            12: 1e-6,
+            13: 20e-6,
+            14: 1700e-6,
+            15: 1600e-6,
+            16: 0.0,
+            17: 0.0,
+            18: 0.0,
+            19: 0.0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("subcategory_id", [1, 14, 15, 16])
+def test_set_default_picv(subcategory_id):
+    """should return the default piCV for the selected subcategory ID."""
+    _pi_cv = capacitor._set_default_picv(subcategory_id)
+
+    assert _pi_cv == {1: 1.0, 14: 1.3, 15: 1.3, 16: 0.0}[subcategory_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
+)
+def test_set_default_rated_temperature(subcategory_id):
+    """should return the default capacitance for the selected subcategory ID."""
+    _temp_rated = capacitor._set_default_rated_temperature(subcategory_id, 2)
+
+    assert (
+        _temp_rated
+        == {
+            1: 85.0,
+            2: 125.0,
+            3: 125.0,
+            4: 125.0,
+            5: 125.0,
+            6: 125.0,
+            7: 125.0,
+            8: 125.0,
+            9: 125.0,
+            10: 125.0,
+            11: 125.0,
+            12: 125.0,
+            13: 125.0,
+            14: 125.0,
+            15: 85.0,
+            16: 85.0,
+            17: 125.0,
+            18: 85.0,
+            19: 85.0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_capacitor")
+def test_set_default_values(test_attributes_capacitor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_capacitor["capacitance"] = 0.0
+    test_attributes_capacitor["piCV"] = -1.0
+    test_attributes_capacitor["style_id"] = 1
+    test_attributes_capacitor["subcategory_id"] = 3
+    test_attributes_capacitor["temperature_rated_max"] = 0.0
+    test_attributes_capacitor["voltage_ratio"] = -2.5
+    _attributes = capacitor.set_default_values(**test_attributes_capacitor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["capacitance"] == 0.027e-6
+    assert _attributes["piCV"] == 1.0
+    assert _attributes["temperature_rated_max"] == 125.0
+    assert _attributes["voltage_ratio"] == 0.5
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_capacitor")
+def test_set_default_values_none_needed(test_attributes_capacitor):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_capacitor["capacitance"] = 0.047e-6
+    test_attributes_capacitor["piCV"] = 1.3
+    test_attributes_capacitor["style_id"] = 1
+    test_attributes_capacitor["subcategory_id"] = 3
+    test_attributes_capacitor["temperature_rated_max"] = 85.0
+    test_attributes_capacitor["voltage_ratio"] = 0.35
+    _attributes = capacitor.set_default_values(**test_attributes_capacitor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["capacitance"] == 0.047e-6
+    assert _attributes["piCV"] == 1.3
+    assert _attributes["temperature_rated_max"] == 85.0
+    assert _attributes["voltage_ratio"] == 0.35

@@ -130,3 +130,25 @@ def test_calculate_mil_hdbk_217f_part_stress_missing_frequency(test_attributes_c
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == 0.0
     assert _attributes["hazard_rate_active"] == 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
+def test_set_default_values(test_attributes_crystal):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_crystal["frequency_operating"] = 0.0
+    _attributes = crystal.set_default_values(**test_attributes_crystal)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["frequency_operating"] == 50.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
+def test_set_default_values_none_needed(test_attributes_crystal):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_crystal["frequency_operating"] = 10.6
+    _attributes = crystal.set_default_values(**test_attributes_crystal)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["frequency_operating"] == 10.6
