@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.17.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.17.1) (2022-03-30)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.17.0...v0.17.1)
+
+Bug Fixes
+
+- feat: add functions to set default MIL-HDBK-217F values [\#1038](https://github.com/ReliaQualAssociates/ramstk/pull/1038) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- test: move ATTRIBUTES from test files to conftest as a fixture [\#1031](https://github.com/ReliaQualAssociates/ramstk/pull/1031) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.17.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.17.0) (2022-03-11)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.16.3...v0.17.0)
@@ -171,17 +183,10 @@ Bug Fixes
 - refactor: retire listviews and listbook [\#932](https://github.com/ReliaQualAssociates/ramstk/pull/932) ([weibullguy](https://github.com/weibullguy))
 - refactor: move failure definitions to Function work view [\#931](https://github.com/ReliaQualAssociates/ramstk/pull/931) ([weibullguy](https://github.com/weibullguy))
 - refactor: associate failure definitions with functions [\#930](https://github.com/ReliaQualAssociates/ramstk/pull/930) ([weibullguy](https://github.com/weibullguy))
-- ci: lower case -s to sign tags [\#929](https://github.com/ReliaQualAssociates/ramstk/pull/929) ([weibullguy](https://github.com/weibullguy))
-- refactor: move Stakeholder inputs to Requirements work view [\#928](https://github.com/ReliaQualAssociates/ramstk/pull/928) ([weibullguy](https://github.com/weibullguy))
-- refactor: move usage profile to work view [\#927](https://github.com/ReliaQualAssociates/ramstk/pull/927) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.12](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.12) (2022-01-28)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.11...v0.15.12)
-
-Bug Fixes
-
-- fix: verification plan calculate all updates wrong records [\#924](https://github.com/ReliaQualAssociates/ramstk/pull/924) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.11](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.11) (2022-01-28)
 
