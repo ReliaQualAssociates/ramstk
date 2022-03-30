@@ -181,6 +181,7 @@ def test_attributes_relay():
         "application_id": 1,
         "contact_form_id": 1,
         "temperature_active": 38.2,
+        "temperature_rated_max": 0.0,
         "n_cycles": 58,
         "piQ": 1.0,
     }

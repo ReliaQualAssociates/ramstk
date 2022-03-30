@@ -596,3 +596,46 @@ def test_calculate_part_stress_xfmr_no_temperature_rise(test_attributes_inductor
     assert _attributes["lambda_b"] == pytest.approx(0.0024147842)
     assert _attributes["piC"] == 1.0
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01811088)
+
+
+@pytest.mark.unit
+def test_set_default_max_rated_temperature():
+    """should return the default capacitance for the selected subcategory ID."""
+    assert inductor._set_default_max_rated_temperature(1) == 130.0
+    assert inductor._set_default_max_rated_temperature(2) == 125.0
+
+
+@pytest.mark.unit
+def test_set_default_temperature_rise():
+    """should return the default capacitance for the selected subcategory ID."""
+    assert inductor._set_default_temperature_rise(1, 1) == 10.0
+    assert inductor._set_default_temperature_rise(1, 3) == 30.0
+    assert inductor._set_default_temperature_rise(2, 1) == 10.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_inductor")
+def test_set_default_values(test_attributes_inductor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_inductor["rated_temperature_max"] = 0.0
+    test_attributes_inductor["temperature_rise"] = 0.0
+    test_attributes_inductor["subcategory_id"] = 1
+    _attributes = inductor.set_default_values(**test_attributes_inductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_temperature_max"] == 130.0
+    assert _attributes["temperature_rise"] == 10.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_inductor")
+def test_set_default_values_none_needed(test_attributes_inductor):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_inductor["rated_temperature_max"] = 135.0
+    test_attributes_inductor["temperature_rise"] = 5.0
+    test_attributes_inductor["subcategory_id"] = 1
+    _attributes = inductor.set_default_values(**test_attributes_inductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_temperature_max"] == 135.0
+    assert _attributes["temperature_rise"] == 5.0

@@ -184,3 +184,14 @@ def test_calculate_part_stress_no_subcategory(test_attributes_meter):
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == 0.0
     assert _attributes["hazard_rate_active"] == 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_meter")
+def test_set_default_values(test_attributes_meter):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_meter["quality_id"] = 1
+    _attributes = meter.set_default_values(**test_attributes_meter)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["quality_id"] == 1

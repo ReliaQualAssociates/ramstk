@@ -244,3 +244,103 @@ def test_calculate_part_stress(
     if subcategory_id == 10:
         assert _attributes["piTAPS"] == 0.9998460969082653
         assert _attributes["piC"] == 2.0
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+)
+def test_set_default_resistance(subcategory_id):
+    """should return the default resistance for the selected subcategory ID."""
+    _resistance = resistor._set_default_resistance(0.0, subcategory_id)
+
+    assert (
+        _resistance
+        == {
+            1: 1000000.0,
+            2: 1000000.0,
+            3: 100.0,
+            4: 1000.0,
+            5: 100000.0,
+            6: 5000.0,
+            7: 5000.0,
+            8: 1000.0,
+            9: 5000.0,
+            10: 50000.0,
+            11: 5000.0,
+            12: 5000.0,
+            13: 200000.0,
+            14: 200000.0,
+            15: 200000.0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+)
+def test_set_default_elements(subcategory_id):
+    """should return the default elements for the selected subcategory ID."""
+    _n_elements = resistor._set_default_elements(0.0, subcategory_id)
+
+    assert (
+        _n_elements
+        == {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 10,
+            5: 0,
+            6: 0,
+            7: 0,
+            8: 0,
+            9: 3,
+            10: 3,
+            11: 3,
+            12: 3,
+            13: 3,
+            14: 3,
+            15: 3,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_resistor")
+def test_set_default_values(test_attributes_resistor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_resistor["n_elements"] = -1
+    test_attributes_resistor["power_ratio"] = -1.0
+    test_attributes_resistor["resistance"] = 0.0
+    test_attributes_resistor["subcategory_id"] = 4
+    test_attributes_resistor["temperature_active"] = 35.0
+    test_attributes_resistor["temperature_case"] = -10.0
+    _attributes = resistor.set_default_values(**test_attributes_resistor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["resistance"] == 1000.0
+    assert _attributes["power_ratio"] == 0.5
+    assert _attributes["temperature_case"] == 63.0
+    assert _attributes["n_elements"] == 10
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_resistor")
+def test_set_default_values_none_needed(test_attributes_resistor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_resistor["n_elements"] = 4
+    test_attributes_resistor["power_ratio"] = 0.2
+    test_attributes_resistor["resistance"] = 4700.0
+    test_attributes_resistor["subcategory_id"] = 10
+    test_attributes_resistor["temperature_active"] = 35.0
+    test_attributes_resistor["temperature_case"] = 72.0
+    _attributes = resistor.set_default_values(**test_attributes_resistor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["resistance"] == 4700.0
+    assert _attributes["power_ratio"] == 0.2
+    assert _attributes["temperature_case"] == 72.0
+    assert _attributes["n_elements"] == 4

@@ -248,3 +248,135 @@ def test_calculate_part_stress_base(
 
     assert isinstance(_attributes, dict)
     assert _attributes["hazard_rate_active"] == 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5],
+)
+def test_set_default_construction_id(subcategory_id):
+    """should return the default construction ID for the selected subcategory ID."""
+    _construction_id = switch._set_default_construction_id(0, subcategory_id)
+
+    assert (
+        _construction_id
+        == {
+            1: 1,
+            2: 1,
+            3: 0,
+            4: 0,
+            5: 0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5],
+)
+def test_set_default_contact_form_id(subcategory_id):
+    """should return the default contact form ID for the selected subcategory ID."""
+    _contact_form_id = switch._set_default_contact_form_id(0, subcategory_id)
+
+    assert (
+        _contact_form_id
+        == {
+            1: 2,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 3,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5],
+)
+def test_set_default_cycle_rate(subcategory_id):
+    """should return the default cycling rate for the selected subcategory ID."""
+    _n_cycles = switch._set_default_cycle_rate(0.0, subcategory_id)
+
+    assert (
+        _n_cycles
+        == {
+            1: 1.0,
+            2: 1.0,
+            3: 30.0,
+            4: 1.0,
+            5: 0.0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 2, 3, 4, 5],
+)
+def test_set_default_active_contacts(subcategory_id):
+    """should return the default active contacts for the selected subcategory ID."""
+    _n_elements = switch._set_default_active_contacts(0.0, subcategory_id)
+
+    assert (
+        _n_elements
+        == {
+            1: 0,
+            2: 1,
+            3: 24,
+            4: 6,
+            5: 0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_switch")
+def test_set_default_values(test_attributes_switch):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_switch["application_id"] = -1
+    test_attributes_switch["construction_id"] = 0
+    test_attributes_switch["contact_form_id"] = -2
+    test_attributes_switch["current_ratio"] = -0.4
+    test_attributes_switch["n_cycles"] = 0.0
+    test_attributes_switch["n_elements"] = 0
+    test_attributes_switch["quality_id"] = 0
+    test_attributes_switch["subcategory_id"] = 2
+    _attributes = switch.set_default_values(**test_attributes_switch)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 1
+    assert _attributes["construction_id"] == 1
+    assert _attributes["contact_form_id"] == 0
+    assert _attributes["current_ratio"] == 0.5
+    assert _attributes["n_cycles"] == 1.0
+    assert _attributes["n_elements"] == 1
+    assert _attributes["quality_id"] == 1
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_switch")
+def test_set_default_values_none_needed(test_attributes_switch):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_switch["application_id"] = 3
+    test_attributes_switch["construction_id"] = 1
+    test_attributes_switch["contact_form_id"] = 2
+    test_attributes_switch["current_ratio"] = 0.4
+    test_attributes_switch["n_cycles"] = 0.3
+    test_attributes_switch["n_elements"] = 12
+    test_attributes_switch["quality_id"] = 2
+    test_attributes_switch["subcategory_id"] = 2
+    _attributes = switch.set_default_values(**test_attributes_switch)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 3
+    assert _attributes["construction_id"] == 1
+    assert _attributes["contact_form_id"] == 2
+    assert _attributes["current_ratio"] == 0.4
+    assert _attributes["n_cycles"] == 0.3
+    assert _attributes["n_elements"] == 12
+    assert _attributes["quality_id"] == 2

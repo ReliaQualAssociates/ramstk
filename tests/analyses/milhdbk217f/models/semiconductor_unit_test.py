@@ -605,3 +605,115 @@ def test_calculate_part_stress_no_matching(test_attributes_semiconductor):
     test_attributes_semiconductor["matching_id"] = 6
     with pytest.raises(IndexError):
         semiconductor.calculate_part_stress(**test_attributes_semiconductor)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [2, 3, 4, 7, 8],
+)
+def test_set_default_application_id(subcategory_id):
+    """should return the default application ID for the selected subcategory ID."""
+    _application_id = semiconductor._set_default_application_id(0, subcategory_id, 1)
+
+    assert (
+        _application_id
+        == {
+            2: 0,
+            3: 2,
+            4: 2,
+            7: 2,
+            8: 1,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [2, 3, 6, 7, 8],
+)
+def test_set_default_rated_power(subcategory_id):
+    """should return the default rated power for the selected subcategory ID."""
+    _power_rated = semiconductor._set_default_rated_power(0.0, subcategory_id, 1)
+
+    assert (
+        _power_rated
+        == {
+            2: 0.0,
+            3: 0.5,
+            6: 0.5,
+            7: 100.0,
+            8: 0.0,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id",
+    [1, 3, 6, 13],
+)
+def test_set_default_voltage_ratio(subcategory_id):
+    """should return the default voltage ratio for the selected subcategory ID."""
+    _voltage_ratio = semiconductor._set_default_voltage_ratio(0.0, subcategory_id, 1)
+
+    assert (
+        _voltage_ratio
+        == {
+            1: 0.7,
+            3: 0.5,
+            6: 0.7,
+            13: 0.5,
+        }[subcategory_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_semiconductor")
+def test_set_default_values(test_attributes_semiconductor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_semiconductor["application_id"] = 0
+    test_attributes_semiconductor["construction_id"] = 0
+    test_attributes_semiconductor["power_rated"] = 0.0
+    test_attributes_semiconductor["subcategory_id"] = 4
+    test_attributes_semiconductor["type_id"] = 0
+    test_attributes_semiconductor["voltage_ratio"] = -2.5
+    _attributes = semiconductor.set_default_values(**test_attributes_semiconductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 2
+    assert _attributes["type_id"] == 1
+    assert _attributes["power_rated"] == 0.0
+    assert _attributes["voltage_ratio"] == 1.0
+
+    test_attributes_semiconductor["subcategory_id"] = 1
+    _attributes = semiconductor.set_default_values(**test_attributes_semiconductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["construction_id"] == 1
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_semiconductor")
+def test_set_default_values_none_needed(test_attributes_semiconductor):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_semiconductor["application_id"] = 2
+    test_attributes_semiconductor["construction_id"] = 4
+    test_attributes_semiconductor["power_rated"] = 0.5
+    test_attributes_semiconductor["subcategory_id"] = 4
+    test_attributes_semiconductor["type_id"] = 2
+    test_attributes_semiconductor["voltage_ratio"] = 0.45
+    _attributes = semiconductor.set_default_values(**test_attributes_semiconductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 2
+    assert _attributes["type_id"] == 2
+    assert _attributes["power_rated"] == 0.5
+    assert _attributes["voltage_ratio"] == 0.45
+
+    test_attributes_semiconductor["subcategory_id"] = 1
+    _attributes = semiconductor.set_default_values(**test_attributes_semiconductor)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["construction_id"] == 4

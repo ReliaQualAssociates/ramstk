@@ -118,3 +118,29 @@ def test_calculate_part_stress(
     assert _attributes["piA"] == {1: 1.0, 2: 3.3}[application_id]
     if duty_cycle == 5.0 and application_id == 1:
         assert _attributes["hazard_rate_active"] == pytest.approx(0.18254735)
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_lamp")
+def test_set_default_values(test_attributes_lamp):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_lamp["rated_voltage"] = 0.0
+    test_attributes_lamp["duty_cycle"] = -1.0
+    _attributes = lamp.set_default_values(**test_attributes_lamp)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_voltage"] == 28.0
+    assert _attributes["duty_cycle"] == 50.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_lamp")
+def test_set_default_values_none_needed(test_attributes_lamp):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_lamp["rated_voltage"] = 12.0
+    test_attributes_lamp["duty_cycle"] = 10.5
+    _attributes = lamp.set_default_values(**test_attributes_lamp)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["rated_voltage"] == 12.0
+    assert _attributes["duty_cycle"] == 10.5

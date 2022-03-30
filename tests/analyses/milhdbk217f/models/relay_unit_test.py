@@ -61,7 +61,7 @@ def test_get_part_count_lambda_b_no_subcategory():
     subcategory ID."""
     with pytest.raises(KeyError):
         relay.get_part_count_lambda_b(
-            subcategory_id=1.3, type_id=1, environment_active_id=2
+            subcategory_id=13, type_id=1, environment_active_id=2
         )
 
 
@@ -231,3 +231,133 @@ def test_calculate_part_stress(
     _attributes = relay.calculate_part_stress(**test_attributes_relay)
 
     assert isinstance(_attributes, dict)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("subcategory_id", [1, 4])
+def test_set_default_quality(subcategory_id):
+    """should return the default quality for the selected subcategory ID."""
+    _quality = relay._set_default_quality(subcategory_id)
+
+    assert _quality == {1: 1, 4: 5}[subcategory_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 2])
+def test_set_default_load_type(type_id):
+    """should return the default load type for the selected type ID."""
+    _load_type = relay._set_default_load_type(-1, type_id)
+
+    assert _load_type == {1: 1, 2: 2}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 4])
+def test_set_default_contact_form(type_id):
+    """should return the default contact form for the selected type ID."""
+    _contact_form = relay._set_default_contact_form(-1, type_id)
+
+    assert _contact_form == {1: 6, 4: 1}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5, 6])
+def test_set_default_contact_rating(type_id):
+    """should return the default contact rating for the selected type ID."""
+    _contact_rating = relay._set_default_contact_rating(-2, type_id)
+
+    assert _contact_rating == {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5, 6])
+def test_set_default_application(type_id):
+    """should return the default application for the selected type ID."""
+    _application = relay._set_default_application(0, type_id)
+
+    assert _application == {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5, 6])
+def test_set_default_construction(type_id):
+    """should return the default construction for the selected type ID."""
+    _construction = relay._set_default_construction(0, type_id)
+
+    assert _construction == {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 4])
+def test_set_default_duty_cycle(type_id):
+    """should return the default duty cycle for the selected type ID."""
+    _duty_cycle = relay._set_default_duty_cycle(0.0, type_id)
+
+    assert _duty_cycle == {1: 10.0, 4: 20.0}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("type_id", [1, 4])
+def test_set_default_rated_temperature(type_id):
+    """should return the default rated temperature for the selected type ID."""
+    _rated_temperature = relay._set_default_rated_temperature(0.0, type_id)
+
+    assert _rated_temperature == {1: 125.0, 4: 85.0}[type_id]
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_relay")
+def test_set_default_values(test_attributes_relay):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_relay["application_id"] = 0
+    test_attributes_relay["construction_id"] = 0
+    test_attributes_relay["contact_form_id"] = 0
+    test_attributes_relay["contact_rating_id"] = 0
+    test_attributes_relay["current_ratio"] = 0.0
+    test_attributes_relay["duty_cycle"] = -2.5
+    test_attributes_relay["quality_id"] = 0
+    test_attributes_relay["subcategory_id"] = 1
+    test_attributes_relay["technology_id"] = -1
+    test_attributes_relay["temperature_rated_max"] = 0.0
+    test_attributes_relay["type_id"] = 1
+    _attributes = relay.set_default_values(**test_attributes_relay)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 1
+    assert _attributes["construction_id"] == 2
+    assert _attributes["contact_form_id"] == 6
+    assert _attributes["contact_rating_id"] == 2
+    assert _attributes["current_ratio"] == 0.5
+    assert _attributes["duty_cycle"] == 10.0
+    assert _attributes["quality_id"] == 1
+    assert _attributes["technology_id"] == 1
+    assert _attributes["temperature_rated_max"] == 125.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_relay")
+def test_set_default_values_none_needed(test_attributes_relay):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_relay["application_id"] = 2
+    test_attributes_relay["construction_id"] = 4
+    test_attributes_relay["contact_form_id"] = 2
+    test_attributes_relay["contact_rating_id"] = 1
+    test_attributes_relay["current_ratio"] = 0.3
+    test_attributes_relay["duty_cycle"] = 45.0
+    test_attributes_relay["quality_id"] = 2
+    test_attributes_relay["subcategory_id"] = 1
+    test_attributes_relay["technology_id"] = 2
+    test_attributes_relay["temperature_rated_max"] = 105.0
+    test_attributes_relay["type_id"] = 1
+    _attributes = relay.set_default_values(**test_attributes_relay)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["application_id"] == 2
+    assert _attributes["construction_id"] == 4
+    assert _attributes["contact_form_id"] == 2
+    assert _attributes["contact_rating_id"] == 1
+    assert _attributes["current_ratio"] == 0.3
+    assert _attributes["duty_cycle"] == 45.0
+    assert _attributes["quality_id"] == 2
+    assert _attributes["technology_id"] == 2
+    assert _attributes["temperature_rated_max"] == 105.0
