@@ -97,3 +97,17 @@ def _get_section_6_10_electrical_stress_factor(
 def _get_section_6_13_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]: ...
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]: ...
+def _set_default_application_id(
+    application_id: int,
+    subcategory_id: int,
+    type_id: int,
+) -> int: ...
+def _set_default_rated_power(
+    power_rated: float, subcategory_id: int, type_id: int
+) -> float: ...
+def _set_default_voltage_ratio(
+    voltage_ratio: float, subcategory_id: int, type_id: int
+) -> float: ...
