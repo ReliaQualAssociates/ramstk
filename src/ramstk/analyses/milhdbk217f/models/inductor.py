@@ -1,15 +1,15 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.prediction.Inductor.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdk217f.models.inductor.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Inductor MIL-HDBK-217F Constants and Calculations Module."""
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict, List
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -158,21 +158,10 @@ REF_TEMPS = {
 }
 
 
-def calculate_hot_spot_temperature(
-    temperature_active: float, temperature_rise: float
-) -> float:
-    """Calculate the coil or transformer hot spot temperature.
-
-    :return: _temperature_hot_spot; the calculate hot spot temperature.
-    :rtype: float
-    """
-    return temperature_active + 1.1 * temperature_rise
-
-
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -180,16 +169,16 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        id_keys={
-            "subcategory_id": attributes["subcategory_id"],
-            "family_id": attributes["family_id"],
-            "environment_active_id": attributes["environment_active_id"],
-        }
+        attributes["subcategory_id"],
+        attributes["environment_active_id"],
+        attributes["family_id"],
     )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """Calculate the part stress hazard rate for a inductor.
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
+    """Calculate the part stress hazard rate for an inductive device.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
@@ -244,16 +233,34 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+def calculate_hot_spot_temperature(
+    temperature_active: float,
+    temperature_rise: float,
+) -> float:
+    """Calculate the coil or transformer hot spot temperature.
+
+    :return: _temperature_hot_spot; the calculated hot spot temperature.
+    :rtype: float
+    """
+    return temperature_active + 1.1 * temperature_rise
+
+
 def calculate_part_stress_lambda_b(
-    subcategory_id: int, insulation_id: int, temperature_hot_spot: float
+    subcategory_id: int,
+    insulation_id: int,
+    temperature_hot_spot: float,
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     stress method.
 
-    :param attributes: the attributes for the connection being calculated.
-    :return: _lambda_b; the calculate parts stress lambda_b.
+    :param subcategory_id: the subcategory ID for the inductive device being calculated.
+    :param insulation_id: the insulation class ID for the inductive device being
+        calculated.
+    :param temperature_hot_spot: the hot spot temperature for the inductive device
+        being calculated.
+    :return: _lambda_b; the calculated parts stress lambda_b.
     :rtype: float
     :raise: KeyError when passed an unknown subcategory ID or insulation ID.
     """
@@ -281,7 +288,8 @@ def calculate_part_stress_lambda_b(
 
 
 def calculate_temperature_rise_input_power_weight(
-    power_input: float, weight: float
+    power_input: float,
+    weight: float,
 ) -> float:
     """Calculate the temperature rise based on input power and xfmr weight.
 
@@ -292,13 +300,14 @@ def calculate_temperature_rise_input_power_weight(
     :param weight: the weight of the xfmr in lbf.
     :retur: _temperature_rise; the calculated temperature rise in C.
     :rtype: float
-    :raise: ZeroDivisionError if passed an weight=0.0.
+    :raise: ZeroDivisionError if passed a weight=0.0.
     """
     return 2.1 * (power_input / weight**0.6766)
 
 
 def calculate_temperature_rise_power_loss_surface(
-    power_operating: float, area: float
+    power_operating: float,
+    area: float,
 ) -> float:
     """Calculate the temperature rise based on the power loss and surface area.
 
@@ -312,7 +321,8 @@ def calculate_temperature_rise_power_loss_surface(
 
 
 def calculate_temperature_rise_power_loss_weight(
-    power_operating: float, weight: float
+    power_operating: float,
+    weight: float,
 ) -> float:
     """Calculate the temperature rise based on the power loss and xfmr weight.
 
@@ -320,12 +330,16 @@ def calculate_temperature_rise_power_loss_weight(
     :param weight: the weight of the device in lbf.
     :return: _temperature_rise; the calculated temperature rise in C.
     :rtype: float
-    :raise: ZeroDivisionError if passed an weight=0.0.
+    :raise: ZeroDivisionError if passed a weight=0.0.
     """
     return 11.5 * (power_operating / weight**0.6766)
 
 
-def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    environment_active_id: int,
+    family_id: int,
+) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -355,21 +369,22 @@ def get_part_count_lambda_b(id_keys: Dict[str, int]) -> List[float]:
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param id_keys: the ID's used as keys when selecting
-        the base hazard rate.  The keys are subcategory_id,
-        environment_active_id, and family_id.
-    :return: _base_hr; the list of part count base hazard rate.
-    :rtype: list
+    :param subcategory_id: the subcategory ID for the inductive device being calculated.
+    :param environment_active_id: the active operating environment ID for the inductive
+        device being calculated.
+    :param family_id: the family ID for the inductive device being calculated.
+    :return: _base_hr; the part count base hazard rate.
+    :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or family ID.
     :raise: IndexError if passed an unknown active environment ID.
     """
-    return PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["family_id"]][
-        id_keys["environment_active_id"] - 1
-    ]
+    return PART_COUNT_LAMBDA_B[subcategory_id][family_id][environment_active_id - 1]
 
 
 def get_part_stress_quality_factor(
-    subcategory_id: int, quality_id: int, family_id: int
+    subcategory_id: int,
+    quality_id: int,
+    family_id: int,
 ) -> float:
     """Select the MIL-HDBK-217F quality factor for the inductor device.
 
@@ -413,3 +428,52 @@ def get_temperature_rise_spec_sheet(page_number: int) -> float:
         13: 15.0,
         14: 15.0,
     }[page_number]
+
+
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the inductove device being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["rated_temperature_max"] <= 0.0:
+        attributes["rated_temperature_max"] = _set_default_max_rated_temperature(
+            attributes["subcategory_id"]
+        )
+
+    if attributes["temperature_rise"] <= 0.0:
+        attributes["temperature_rise"] = _set_default_temperature_rise(
+            attributes["subcategory_id"],
+            attributes["family_id"],
+        )
+
+    return attributes
+
+
+def _set_default_max_rated_temperature(subcategory_id: int) -> float:
+    """Set the default maximum rated temperature.
+
+    :param subcategory_id: the subcategory ID of the inductive device with missing
+        defaults.
+    :return: _rated_temperature_max
+    :rtype: float
+    """
+    return 130.0 if subcategory_id == 1 else 125.0
+
+
+def _set_default_temperature_rise(
+    subcategory_id: int,
+    family_id: int,
+) -> float:
+    """Set the default temperature rise.
+
+    :param subcategory_id: the subcategory ID of the inductive device with missing
+        defaults.
+    :param family_id: the family ID of the inductive device with missing defaults.
+    :return: _temperature_rise
+    :rtype: float
+    """
+    return 30.0 if subcategory_id == 1 and family_id == 3 else 10.0

@@ -208,3 +208,75 @@ def test_calculate_part_stress(subcategory_id, test_attributes_connection):
     elif subcategory_id == 5:
         assert _attributes["lambda_b"] == 0.00014
         assert _attributes["hazard_rate_active"] == 0.00014
+
+
+@pytest.mark.unit
+def test_set_default_active_pins():
+    """should return default number of active pins for the selected subcategory ID."""
+    _n_active_pins = connection._set_default_active_pins(1, 1)
+    assert _n_active_pins == 40
+
+    _n_active_pins = connection._set_default_active_pins(1, 4)
+    assert _n_active_pins == 2
+
+    _n_active_pins = connection._set_default_active_pins(2, 1)
+    assert _n_active_pins == 40
+
+    _n_active_pins = connection._set_default_active_pins(3, 1)
+    assert _n_active_pins == 24
+
+    _n_active_pins = connection._set_default_active_pins(4, 1)
+    assert _n_active_pins == 1000
+
+    _n_active_pins = connection._set_default_active_pins(5, 1)
+    assert _n_active_pins == 0
+
+
+@pytest.mark.unit
+def test_set_default_temperature_rise():
+    """should return the default temperature rise for the selected subcategory ID."""
+    _temperature_rise = connection._set_default_temperature_rise(1, 1)
+    assert _temperature_rise == 10.0
+
+    _temperature_rise = connection._set_default_temperature_rise(1, 5)
+    assert _temperature_rise == 5.0
+
+    _temperature_rise = connection._set_default_temperature_rise(2, 1)
+    assert _temperature_rise == 10.0
+
+    _temperature_rise = connection._set_default_temperature_rise(5, 1)
+    assert _temperature_rise == 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
+def test_set_default_values(test_attributes_connection):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_connection["temperature_rise"] = -50.0
+    test_attributes_connection["n_cycles"] = -5.0
+    test_attributes_connection["n_active_pins"] = 0
+    test_attributes_connection["subcategory_id"] = 1
+    test_attributes_connection["type_id"] = 1
+    _attributes = connection.set_default_values(**test_attributes_connection)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["temperature_rise"] == 10.0
+    assert _attributes["n_cycles"] == 3.0
+    assert _attributes["n_active_pins"] == 40
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
+def test_set_default_values_none_needed(test_attributes_connection):
+    """should not set default values for each parameter > 0.0."""
+    test_attributes_connection["temperature_rise"] = 10.6
+    test_attributes_connection["n_cycles"] = 0.5
+    test_attributes_connection["n_active_pins"] = 36
+    test_attributes_connection["subcategory_id"] = 1
+    test_attributes_connection["type_id"] = 1
+    _attributes = connection.set_default_values(**test_attributes_connection)
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["temperature_rise"] == 10.6
+    assert _attributes["n_cycles"] == 0.5
+    assert _attributes["n_active_pins"] == 36

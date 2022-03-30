@@ -854,7 +854,7 @@ class TestAnalysisMethods:
         test_viewmodel.do_calculate_hardware(8)
         _attributes = test_reliability.do_select(8).get_attributes()
 
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.001562765)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.005820122)
 
     @pytest.mark.integration
     def test_do_predict_hazard_rate_active_part_specified_hazard_rate(

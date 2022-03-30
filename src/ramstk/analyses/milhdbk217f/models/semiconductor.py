@@ -1,16 +1,17 @@
+# type: ignore
 # pylint: disable=invalid-name
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.milhdbk217f.models.Semiconductor.py is part of the
-#       RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.semiconductor.py is part of the RAMSTK
+#       Project
 #
 # All rights reserved.
-# Copyright 2007 - 2020 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
 from math import exp, log, sqrt
-from typing import Any, Dict, List
+from typing import Dict, List, Union
 
 PART_COUNT_LAMBDA_B_DICT = {
     1: {
@@ -859,7 +860,124 @@ PI_E = {
 PI_M = [1.0, 2.0, 4.0]
 
 
-def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_count(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
+    """Calculate the parts count hazard rate for a semiconductor.
+
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+        with updated values.
+    :rtype: dict
+    """
+    return get_part_count_lambda_b(
+        attributes["subcategory_id"],
+        attributes["environment_active_id"],
+        attributes["type_id"],
+    )
+
+
+# pylint: disable=too-many-locals
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
+    """Calculate the part stress active hazard rate for a semiconductor.
+
+    This function calculates the MIL-HDBK-217F hazard rate using the part
+    stress method.
+
+    :return: attributes; the keyword argument (hardware attribute)
+        dictionary with updated values.
+    :rtype: dict
+    :raise: IndexError if passed an unknown construction ID or matching ID.
+    """
+    attributes["piQ"] = get_part_stress_quality_factor(
+        attributes["subcategory_id"],
+        attributes["quality_id"],
+        attributes["type_id"],
+    )
+    attributes["lambda_b"] = calculate_part_stress_lambda_b(
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        attributes["application_id"],
+        attributes["frequency_operating"],
+        attributes["power_operating"],
+        attributes["n_elements"],
+    )
+    attributes["temperature_junction"] = calculate_junction_temperature(
+        attributes["environment_active_id"],
+        attributes["package_id"],
+        attributes["temperature_case"],
+        attributes["theta_jc"],
+        attributes["power_operating"],
+    )
+    attributes["piT"] = calculate_temperature_factor(
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        attributes["voltage_ratio"],
+        attributes["temperature_junction"],
+    )
+    attributes = calculate_application_factor(attributes)
+    attributes = calculate_power_rating_factor(attributes)
+    attributes = calculate_electrical_stress_factor(attributes)
+
+    # Retrieve the construction factor (piC).
+    attributes["piC"] = PI_C[attributes["construction_id"] - 1]
+
+    # Retrieve the matching network factor (piM).
+    attributes["piM"] = PI_M[attributes["matching_id"] - 1]
+
+    # Calculate forward current factor (piI) and power degradation factor (piP)
+    attributes["piI"] = attributes["current_operating"] ** 0.68
+    attributes["piP"] = 1.0 / (2.0 * (1.0 - attributes["power_ratio"]))
+
+    attributes["hazard_rate_active"] = (
+        attributes["lambda_b"]
+        * attributes["piT"]
+        * attributes["piQ"]
+        * attributes["piE"]
+    )
+
+    if attributes["subcategory_id"] == 1:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piS"] * attributes["piC"]
+        )
+    elif attributes["subcategory_id"] == 2:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piA"] * attributes["piR"]
+        )
+    elif attributes["subcategory_id"] == 3:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"]
+            * attributes["piA"]
+            * attributes["piR"]
+            * attributes["piS"]
+        )
+    elif attributes["subcategory_id"] == 4:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piA"]
+        )
+    elif attributes["subcategory_id"] in [6, 10]:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piR"] * attributes["piS"]
+        )
+    elif attributes["subcategory_id"] in [7, 8]:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piA"] * attributes["piM"]
+        )
+    elif attributes["subcategory_id"] == 13:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"]
+            * attributes["piI"]
+            * attributes["piA"]
+            * attributes["piP"]
+        )
+
+    return attributes
+
+
+def calculate_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the application factor (piA) for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being calculated.
@@ -885,7 +1003,9 @@ def calculate_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_electrical_stress_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_electrical_stress_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the electrical stress factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -909,7 +1029,13 @@ def calculate_electrical_stress_factor(attributes: Dict[str, Any]) -> Dict[str, 
     return attributes
 
 
-def calculate_junction_temperature(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_junction_temperature(
+    environment_active_id: int,
+    package_id: int,
+    temperature_case: float,
+    theta_jc: float,
+    power_operating: float,
+) -> float:
     """Calculate the junction temperature of the semiconductor device.
 
     .. note:: This function will also estimate the case temperature if it is
@@ -918,134 +1044,48 @@ def calculate_junction_temperature(attributes: Dict[str, Any]) -> Dict[str, Any]
     .. note:: This function will also estimate the junction-case thermal
         resistance (thetaJC) if it is passed in at less than or equal to zero.
 
-    :param attributes: the attributes of the semiconductor being
+    :param environment_active_id: the active operating environment ID of the
+        semiconductor being calculated.
+    :param package_id: the package ID of the semiconductor being calculated.
+    :param temperature_case: the case (surface) temperature of the semiconductor
+        being calculated.
+    :param theta_jc: the junction-case thermal resistance of the semiconductor being
         calculated.
-    :return attributes: the updated attributes of the semiconductor being
-        calculated.
-    :rtype: dict
+    :param power_operating: the operating power of the semiconductor being calculated.
+    :return _temperature_junction: the calcaulated junction temperature.
+    :rtype: float
     :raise: IndexError if passed an unknown active environment ID when the case
         temperature is passed at <=0.0 or an unknown package ID when the
         junction-case thermal resistance is passed at <=0.0.
     """
-    if attributes["temperature_case"] <= 0.0:
-        attributes["temperature_case"] = CASE_TEMPERATURE[
-            attributes["environment_active_id"] - 1
-        ]
+    if temperature_case <= 0.0:
+        temperature_case = CASE_TEMPERATURE[environment_active_id - 1]
 
-    if attributes["theta_jc"] <= 0.0:
-        attributes["theta_jc"] = THETA_JC[attributes["package_id"] - 1]
+    if theta_jc <= 0.0:
+        theta_jc = THETA_JC[package_id - 1]
 
-    attributes["temperature_junction"] = (
-        attributes["temperature_case"]
-        + attributes["theta_jc"] * attributes["power_operating"]
-    )
-
-    return attributes
+    return temperature_case + theta_jc * power_operating
 
 
-def calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """Calculate the parts count hazard rate for a semiconductor.
-
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values.
-    :rtype: dict
-    """
-    return get_part_count_lambda_b(attributes)
-
-
-# pylint: disable=too-many-locals
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
-    """Calculate the part stress active hazard rate for a semiconductor.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
-
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
-    :rtype: dict
-    :raise: IndexError if passed an unknown construction ID or matching ID.
-    """
-    attributes = get_part_stress_quality_factor(attributes)
-    attributes = calculate_part_stress_lambda_b(attributes)
-    attributes = calculate_junction_temperature(attributes)
-    attributes = calculate_temperature_factor(attributes)
-    attributes = calculate_application_factor(attributes)
-    attributes = calculate_power_rating_factor(attributes)
-    attributes = calculate_electrical_stress_factor(attributes)
-
-    # Retrieve the construction factor (piC).
-    attributes["piC"] = PI_C[attributes["construction_id"] - 1]  # type: ignore
-
-    # Retrieve the matching network factor (piM).
-    attributes["piM"] = PI_M[attributes["matching_id"] - 1]  # type: ignore
-
-    # Calculate forward current factor (piI) and power degradation factor (piP)
-    attributes["piI"] = attributes["current_operating"] ** 0.68  # type: ignore
-    attributes["piP"] = 1.0 / (  # type: ignore
-        2.0 * (1.0 - attributes["power_ratio"])
-    )  # type: ignore
-
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"]  # type: ignore
-        * attributes["piT"]
-        * attributes["piQ"]
-        * attributes["piE"]
-    )
-
-    if attributes["subcategory_id"] == 1:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piS"]
-            * attributes["piC"]
-        )
-    elif attributes["subcategory_id"] == 2:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piA"]
-            * attributes["piR"]
-        )
-    elif attributes["subcategory_id"] == 3:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piA"]
-            * attributes["piR"]
-            * attributes["piS"]
-        )
-    elif attributes["subcategory_id"] == 4:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piA"]  # type: ignore
-        )
-    elif attributes["subcategory_id"] in [6, 10]:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piR"]
-            * attributes["piS"]
-        )
-    elif attributes["subcategory_id"] in [7, 8]:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piA"]
-            * attributes["piM"]
-        )
-    elif attributes["subcategory_id"] == 13:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]  # type: ignore
-            * attributes["piI"]
-            * attributes["piA"]
-            * attributes["piP"]
-        )
-
-    return attributes
-
-
-def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress_lambda_b(
+    subcategory_id: int,
+    type_id: int,
+    application_id: int,
+    frequency_operating: float,
+    power_operating: float,
+    n_elements: int,
+) -> float:
     """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
+    :param subcategory_id: the subcategory ID of the semiconductor to be calculated.
+    :param type_id: the type ID of the semiconductor to be calculated.
+    :param application_id: the application ID of the semiconductor to be calculated.
+    :param frequency_operating: the operating frequencty of the semiconductor to be
         calculated.
-    :return attributes: the updated attributes of the semiconductor being
-        calculated.
-    :rtype: dict
+    :param power_operating: the operating power of the semiconductor to be calculated.
+    :param n_elements: the number of elements in the semiconductor to be calculated.
+    :return _lambda_b: the calculated base hazard rate.
+    :rtype: float
     :raise: IndexError if passed an unknown type ID.
     :raise: KeyError if passed an unkown subcategory ID.
     """
@@ -1077,38 +1117,31 @@ def calculate_part_stress_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]
         13: [3.23, 5.65],
     }
 
-    if attributes["subcategory_id"] in [3, 5, 6, 10]:
-        attributes["lambda_b"] = _dic_lambdab_scalar[attributes["subcategory_id"]]
-    elif attributes["subcategory_id"] == 7:
-        attributes["lambda_b"] = 0.032 * exp(
-            0.354 * attributes["frequency_operating"]
-            + 0.00558 * attributes["power_operating"]
-        )
-    elif attributes["subcategory_id"] == 8:
-        if (
-            1.0 < attributes["frequency_operating"] <= 10.0
-            and attributes["power_operating"] < 0.1
-        ):
-            attributes["lambda_b"] = 0.052
+    if subcategory_id in {3, 5, 6, 10}:
+        _lambda_b = _dic_lambdab_scalar[subcategory_id]
+    elif subcategory_id == 7:
+        _lambda_b = 0.032 * exp(0.354 * frequency_operating + 0.00558 * power_operating)
+    elif subcategory_id == 8:
+        if 1.0 < frequency_operating <= 10.0 and power_operating < 0.1:
+            _lambda_b = 0.052
         else:
-            attributes["lambda_b"] = 0.0093 * exp(
-                0.429 * attributes["frequency_operating"]
-                + 0.486 * attributes["power_operating"]
+            _lambda_b = 0.0093 * exp(
+                0.429 * frequency_operating + 0.486 * power_operating
             )
-    elif attributes["subcategory_id"] == 12:
-        if attributes["application_id"] in [1, 3]:
-            attributes["lambda_b"] = 0.00043 * attributes["n_elements"] + 0.000043
+    elif subcategory_id == 12:
+        if application_id in {1, 3}:
+            _lambda_b = 0.00043 * n_elements + 0.000043
         else:
-            attributes["lambda_b"] = 0.00043 * attributes["n_elements"]
+            _lambda_b = 0.00043 * n_elements
     else:
-        attributes["lambda_b"] = _dic_lambdab_list[attributes["subcategory_id"]][
-            attributes["type_id"] - 1
-        ]
+        _lambda_b = _dic_lambdab_list[subcategory_id][type_id - 1]
 
-    return attributes
+    return _lambda_b
 
 
-def calculate_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_power_rating_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the power rating factor for the semiconductor device.
 
     :param attributes: the attributes of the semiconductor being
@@ -1133,52 +1166,54 @@ def calculate_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def calculate_temperature_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_temperature_factor(
+    subcategory_id: int,
+    type_id: int,
+    voltage_ratio: float,
+    temperature_junction: float,
+) -> float:
     """Calculate the temperature factor for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
+    :param subcategory_id: the subcategory ID of the semiconductor being calculated.
+    :param type_id: the type ID of the semiconductor being calculated.
+    :param voltage_ratio: the ratio of operating to rated voltage of the
+        semiconductor being calculated.
+    :param temperature_junction: the junction temperature of the semiconductor being
         calculated.
-    :return attributes: the updated attributes of the semiconductor being
-        calculated.
-    :rtype: dict
+    :return _pi_t: the calculated temperature factor.
+    :rtype: float
     :raise: IndexError if passed an unknown type ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    if attributes["subcategory_id"] in [1, 2]:
-        _factors = PI_T_LIST[attributes["subcategory_id"]][attributes["type_id"] - 1]
-    elif attributes["subcategory_id"] == 7:
-        _factors = PI_T_DICT[attributes["type_id"]]
+    if subcategory_id in {1, 2}:
+        _factors = PI_T_LIST[subcategory_id][type_id - 1]
+    elif subcategory_id == 7:
+        _factors = PI_T_DICT[type_id]
     else:
-        _factors = PI_T_SCALAR[attributes["subcategory_id"]]
+        _factors = PI_T_SCALAR[subcategory_id]
 
-    if attributes["subcategory_id"] == 7:
-        _f0 = _factors[0]
-        _f1 = _factors[1]
-        _f2 = _factors[2]
-        if attributes["voltage_ratio"] <= 0.4:
-            attributes["piT"] = _f1 * exp(
-                -_f0
-                * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
-            )
-        else:
-            attributes["piT"] = (
-                _f2
-                * (attributes["voltage_ratio"] - 0.35)
-                * exp(
-                    -_f0
-                    * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
-                )
-            )
-    else:
-        attributes["piT"] = exp(
-            -_factors
-            * (1.0 / (attributes["temperature_junction"] + 273.0) - 1.0 / 298.0)
+    if subcategory_id != 7:
+        return exp(-_factors * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0))
+
+    _f0 = _factors[0]
+    _f1 = _factors[1]
+    _f2 = _factors[2]
+    return (
+        _f1 * exp(-_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0))
+        if voltage_ratio <= 0.4
+        else (
+            _f2
+            * (voltage_ratio - 0.35)
+            * exp(-_f0 * (1.0 / (temperature_junction + 273.0) - 1.0 / 298.0))
         )
+    )
 
-    return attributes
 
-
-def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    environment_active_id: int,
+    type_id: int,
+) -> float:
     """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
 
     This function retrieves the MIL-HDBK-217F hazard rate from the dictionary
@@ -1230,79 +1265,67 @@ def get_part_count_lambda_b(attributes: Dict[str, Any]) -> Dict[str, Any]:
     |       13       | Optoelectronic, Laser Diode   |       6.13      |
     +----------------+-------------------------------+-----------------+
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
-    :return: _base_hr; the parts count base hazard rate.
+    :param subcategory_id: the subcategory ID of the semiconductor being calculated.
+    :param environment_active_id: the active operating environmnet ID of the
+        semiconductor being calculated.
+    :param type_id: the type ID of the semiconductor being calculated.
+    :return: _lambda_b; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    if attributes["subcategory_id"] in [1, 2, 3, 8, 11, 13]:
-        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_DICT[attributes["subcategory_id"]][
-            attributes["type_id"]
-        ][attributes["environment_active_id"] - 1]
-    else:
-        attributes["lambda_b"] = PART_COUNT_LAMBDA_B_LIST[attributes["subcategory_id"]][
-            attributes["environment_active_id"] - 1
+    if subcategory_id in {1, 2, 3, 8, 11, 13}:
+        return PART_COUNT_LAMBDA_B_DICT[subcategory_id][type_id][
+            environment_active_id - 1
         ]
+    return PART_COUNT_LAMBDA_B_LIST[subcategory_id][environment_active_id - 1]
 
-    return attributes
 
-
-def get_part_count_quality_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_count_quality_factor(
+    subcategory_id: int,
+    quality_id: int,
+    type_id: int,
+) -> float:
     """Retrieve the parts count quality factor for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
-    :return attributes: the updated attributes of the semiconductor being
-        calculated.
-    :rtype: dict
+    :param subcategory_id: the subcategory ID of the semiconductor being calculated.
+    :param quality_id: the quality level ID of the semiconductor being calculated.
+    :param type_id: the type ID of the semiconductor being calculated.
+    :return _pi_q: the quality factor for the semiconductor being calculated.
+    :rtype: float
     :raise: IndexError if passed an unknown quality ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    if attributes["subcategory_id"] == 2:
-        if attributes["type_id"] == 5:
-            attributes["piQ"] = PART_COUNT_PI_Q_HF_DIODE[1][
-                attributes["quality_id"] - 1
-            ]
-        else:
-            attributes["piQ"] = PART_COUNT_PI_Q_HF_DIODE[0][
-                attributes["quality_id"] - 1
-            ]
-    else:
-        attributes["piQ"] = PART_COUNT_PI_Q[attributes["subcategory_id"]][
-            attributes["quality_id"] - 1
-        ]
-
-    return attributes
+    if subcategory_id == 2 and type_id == 5:
+        return PART_COUNT_PI_Q_HF_DIODE[1][quality_id - 1]
+    elif subcategory_id == 2:
+        return PART_COUNT_PI_Q_HF_DIODE[0][quality_id - 1]
+    return PART_COUNT_PI_Q[subcategory_id][quality_id - 1]
 
 
-def get_part_stress_quality_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def get_part_stress_quality_factor(
+    subcategory_id: int,
+    quality_id: int,
+    type_id: int,
+) -> float:
     """Select the part stress quality factor for the semiconductor device.
 
-    :param attributes: the attributes of the semiconductor being
-        calculated.
-    :return attributes: the updated attributes of the semiconductor being
-        calculated.
-    :rtype: dict
+    :param subcategory_id: the subcategory ID of the semiconductor being calculated.
+    :param quality_id: the quality level ID of the semiconductor being calculated.
+    :param type_id: the type ID of the semiconductor being calculated.
+    :return _pi_q: the quality factor for the semiconductor being calculated.
+    :rtype: float
     :raise: IndexError if passed an unknown quality ID.
     :raise: KeyError if passed an unknown subcategory ID.
     """
-    if attributes["subcategory_id"] == 2:
-        attributes["piQ"] = PART_STRESS_PI_Q_HF_DIODE[attributes["type_id"]][
-            attributes["quality_id"] - 1
-        ]
-    else:
-        attributes["piQ"] = PART_STRESS_PI_Q[attributes["subcategory_id"]][
-            attributes["quality_id"] - 1
-        ]
-
-    return attributes
+    if subcategory_id == 2:
+        return PART_STRESS_PI_Q_HF_DIODE[type_id][quality_id - 1]
+    return PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
 
 
 def _get_section_6_1_electrical_stress_factor(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for LF diodes.
 
     This function is for MIL-HDBK-217F, Section 6.2 devices.  The
@@ -1326,7 +1349,9 @@ def _get_section_6_1_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_2_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_2_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for HF diodes.
 
     This function is for MIL-HDBK-217F, Section 6.2 devices.  The
@@ -1352,7 +1377,9 @@ def _get_section_6_2_application_factor(attributes: Dict[str, Any]) -> Dict[str,
     return attributes
 
 
-def _get_section_6_2_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_2_power_rating_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for HF diodes.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The
@@ -1373,7 +1400,9 @@ def _get_section_6_2_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_3_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_3_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for LF, LP BJT.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The
@@ -1403,8 +1432,8 @@ def _get_section_6_3_application_factor(attributes: Dict[str, Any]) -> Dict[str,
 
 
 def _get_section_6_3_electrical_stress_factor(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for LF, LP BJT.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The
@@ -1430,7 +1459,9 @@ def _get_section_6_3_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_3_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_3_power_rating_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for LF, LP BJT.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The rated power
@@ -1459,7 +1490,9 @@ def _get_section_6_3_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_4_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_4_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for LF Si FET.
 
     This function is for MIL-HDBK-217F, Section 6.4 devices.  The
@@ -1486,8 +1519,8 @@ def _get_section_6_4_application_factor(attributes: Dict[str, Any]) -> Dict[str,
 
 
 def _get_section_6_6_electrical_stress_factor(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for HF, LN BJT.
 
     This function is for MIL-HDBK-217F, Section 6.6 devices.  The
@@ -1506,7 +1539,9 @@ def _get_section_6_6_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_6_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_6_power_rating_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for HF, LN BJT.
 
     This function is for MIL-HDBK-217F, Section 6.6 devices.  The rated power
@@ -1528,7 +1563,9 @@ def _get_section_6_6_power_rating_factor(attributes: Dict[str, Any]) -> Dict[str
     return attributes
 
 
-def _get_section_6_7_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_7_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for HF and HP BJT devices.
 
     This function is for MIL-HDBK-217F, Section 6.7 devices.  The
@@ -1551,7 +1588,9 @@ def _get_section_6_7_application_factor(attributes: Dict[str, Any]) -> Dict[str,
     return attributes
 
 
-def _get_section_6_8_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_8_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for GaAs FET.
 
     This function is for MIL-HDBK-217F, Section 6.8 devices.  The
@@ -1574,8 +1613,8 @@ def _get_section_6_8_application_factor(attributes: Dict[str, Any]) -> Dict[str,
 
 
 def _get_section_6_10_electrical_stress_factor(
-    attributes: Dict[str, Any]
-) -> Dict[str, Any]:
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for thyristors and SCR.
 
     This function is for MIL-HDBK-217F, Section 6.10 devices.  The
@@ -1598,7 +1637,9 @@ def _get_section_6_10_electrical_stress_factor(
     return attributes
 
 
-def _get_section_6_13_application_factor(attributes: Dict[str, Any]) -> Dict[str, Any]:
+def _get_section_6_13_application_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for laser diodes.
 
     This function is for MIL-HDBK-217F, Section 6.13 devices.  The
@@ -1619,3 +1660,159 @@ def _get_section_6_13_application_factor(attributes: Dict[str, Any]) -> Dict[str
         attributes["piA"] = sqrt(attributes["duty_cycle"] / 100.0)
 
     return attributes
+
+
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the semiconductor being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["subcategory_id"] in {4, 9} and attributes["type_id"] <= 0:
+        attributes["type_id"] = 1
+
+    if attributes["subcategory_id"] == 1 and attributes["construction_id"] <= 0:
+        attributes["construction_id"] = 1
+
+    attributes["application_id"] = _set_default_application_id(
+        attributes["application_id"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    attributes["power_rated"] = _set_default_rated_power(
+        attributes["power_rated"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    attributes["voltage_ratio"] = _set_default_voltage_ratio(
+        attributes["voltage_ratio"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+    )
+
+    return attributes
+
+
+def _set_default_application_id(
+    application_id: int,
+    subcategory_id: int,
+    type_id: int,
+) -> int:
+    """Set the default application ID for semiconductors.
+
+    :param application_id: the current application ID.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _application_id
+    :rtype: int
+    """
+    if application_id > 0:
+        return application_id
+
+    try:
+        return {
+            2: {
+                6: 2,
+            },
+            3: {
+                1: 2,
+                2: 1,
+            },
+            4: {
+                1: 2,
+            },
+            7: {
+                1: 2,
+            },
+            8: {
+                1: 1,
+                2: 2,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 0
+
+
+def _set_default_rated_power(
+    power_rated: float, subcategory_id: int, type_id: int
+) -> float:
+    """Set the default rated power for semiconductors.
+
+    :param power_rated: the current rated power.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _power_rated
+    :rtype: float
+    """
+    if power_rated > 0.0:
+        return power_rated
+
+    try:
+        return {
+            2: {
+                4: 1000.0,
+            },
+            3: {
+                1: 0.5,
+                2: 100.0,
+            },
+            6: {
+                1: 0.5,
+            },
+            7: {
+                1: 100.0,
+            },
+            8: {
+                2: 1.0,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 0.0
+
+
+def _set_default_voltage_ratio(
+    voltage_ratio: float, subcategory_id: int, type_id: int
+) -> float:
+    """Set the default voltage ratio for semiconductors.
+
+    :param voltage_ratio: the current voltage ratio.
+    :param subcategory_id: the subcategory ID of the semiconductor with missing
+        defaults.
+    :param type_id: the type ID of the semiconductor with missing defaults.
+    :return: _voltage_ratio
+    :rtype: float
+    """
+    if voltage_ratio > 0.0:
+        return voltage_ratio
+
+    try:
+        return {
+            1: {
+                1: 0.7,
+                2: 0.7,
+                3: 0.7,
+                4: 0.7,
+                5: 0.7,
+            },
+            3: {
+                1: 0.5,
+                2: 0.8,
+            },
+            6: {
+                1: 0.7,
+                2: 0.45,
+            },
+            13: {
+                1: 0.5,
+                2: 0.5,
+            },
+        }[subcategory_id][type_id]
+    except KeyError:
+        return 1.0

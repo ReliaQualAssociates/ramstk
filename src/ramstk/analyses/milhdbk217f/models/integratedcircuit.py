@@ -1,16 +1,16 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.,ilhdbk217f.models.IntegratedCircuit.py is part of the
+#       ramstk.analyses.milhdbk217f.models.integratedcircuit.py is part of the
 #       RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit MIL-HDBK-217F Constants and Calculations Module."""
 
 # Standard Library Imports
 from math import exp, log
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple, Union
 
 ACTIVATION_ENERGY = {
     1: 0.65,
@@ -1042,163 +1042,10 @@ PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
 PI_Q = [0.25, 1.0, 2.0]
 
 
-def calculate_die_complexity_factor(area: float, feature_size: float) -> float:
-    """Calculate the die complexity correction factor (piCD).
-
-    :param area: the area of the die in sq. cm.
-    :param feature_size: the size of the die features in microns.
-    :return: _pi_cd; the die complexity factor.
-    :rtype: float
-    :raise: ZeroDivisionError if feature_size is zero.
-    """
-    return ((area / 0.21) * (2.0 / feature_size) ** 2.0 * 0.64) + 0.36
-
-
-def calculate_junction_temperature(
-    temperature_case: float, power_operating: float, theta_jc: float
-) -> float:
-    """Calculate the junction temperature (Tj).
-
-    :param temperature_case: the temperature of the IC case in C.
-    :param power_operating: the operating power if the IC in W.
-    :param theta_jc: the junction-case thermal resistance in C / W.
-    :return: _t_j; the calculate junction temperature in C.
-    :rtype: float
-    """
-    return temperature_case + power_operating * theta_jc
-
-
-def calculate_lambda_cyclic_factors(
-    n_cycles: int,
-    construction_id: int,
-    n_elements: int,
-    temperature_junction: float,
-) -> Tuple[float, float, float, float]:
-    """Calculate the write cycle hazard rate A and B factors for EEPROMs.
-
-    :param n_cycles: the expected number of lifetime write cycles.
-    :param construction_id: the construction type identifier.
-    :param n_elements: the number of elements (bits) in the memory device.
-    :param temperature_junction: the junction temperature in C.
-    :return: (_a_1, _a_2, _b_1, _b_2); the calculated factors.
-    :rtype: tuple
-    """
-    # Calculate the A1 factor for lambda_CYC.
-    _a_1 = 6.817e-6 * n_cycles
-
-    # Find the A2, B1, and B2 factors for lambda_CYC.
-    _a_2 = 0.0
-    if construction_id == 1:
-        _b_1 = ((n_elements / 16000.0) ** 0.5) * (
-            exp(
-                (-0.15 / 8.63e-5)
-                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 333.0))
-            )
-        )
-        _b_2 = 0.0
-    elif construction_id == 2:
-        _a_2 = 1.1 if 300000 < n_cycles <= 400000 else 2.3
-        _b_1 = ((n_elements / 64000.0) ** 0.25) * (
-            exp(
-                (0.1 / 8.63e-5)
-                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 303.0))
-            )
-        )
-        _b_2 = ((n_elements / 64000.0) ** 0.25) * (
-            exp(
-                (-0.12 / 8.63e-5)
-                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 303.0))
-            )
-        )
-    else:
-        _b_1 = 0.0
-        _b_2 = 0.0
-
-    return _a_1, _a_2, _b_1, _b_2
-
-
-def calculate_temperature_factor(
-    subcategory_id: int,
-    family_id: int,
-    type_id: int,
-    temperature_junction: float,
-) -> float:
-    """Calculate the temperature factor (piT).
-
-    :param subcategory_id: the subcategory identifier.
-    :param family_id: the IC family identifier.
-    :param type_id: the IC type identifier.
-    :param temperature_junction: the junction temperature in C.
-    :return: _pi_t; the calculated temperature factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID.
-    :raise: IndexError if passed an unknown family ID or type ID.
-    """
-    if subcategory_id == 2:
-        _ref_temp = 296.0
-        _ea = ACTIVATION_ENERGY[subcategory_id][family_id - 1]
-    elif subcategory_id == 9:
-        _ref_temp = 423.0
-        _ea = ACTIVATION_ENERGY[subcategory_id][type_id - 1]
-    else:
-        _ref_temp = 296.0
-        _ea = ACTIVATION_ENERGY[subcategory_id]
-
-    return 0.1 * exp(
-        (-_ea / 8.617e-5) * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
-    )
-
-
-def calculate_eos_hazard_rate(voltage_esd: float) -> float:
-    """Calculate the electrical overstress hazard rate (lambdaEOS).
-
-    :param voltage_esd: the ESD withstand voltage.
-    :return: _lambda_eos; the electrical overstress hazard rate.
-    :rtype: float
-    """
-    return (-log(1.0 - 0.00057 * exp(-0.0002 * voltage_esd))) / 0.00876
-
-
-def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
-    """Calculate the package base hazard rate (lambdaBP).
-
-    :param n_active_pins: the number of active (current carrying) pins.
-    :return: _lambda_bd; the calculated package base hazard rate.
-    :rtype: float
-    """
-    return 0.0022 + (1.72e-5 * n_active_pins)
-
-
-def calculate_package_factor(package_id: int, n_active_pins: int) -> float:
-    """Calculate the package factor (C2).
-
-    :param package_id: the package type identifier.
-    :param n_active_pins: the number of active (current carying) pins in
-        the application.
-    :result: _c2; the calculated package factor.
-    :rtype: float
-    """
-    if package_id in {1, 2, 3}:
-        _package = 1
-    elif package_id == 4:
-        _package = 2
-    elif package_id == 5:
-        _package = 3
-    elif package_id == 6:
-        _package = 4
-    else:
-        _package = 5
-
-    _f0 = C2[_package][0]
-    _f1 = C2[_package][1]
-
-    return _f0 * (n_active_pins**_f1)
-
-
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the integrated circuit being
@@ -1208,15 +1055,15 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     """
     return get_part_count_lambda_b(
         attributes["n_elements"],
-        id_keys={
-            "subcategory_id": attributes["subcategory_id"],
-            "environment_active_id": attributes["environment_active_id"],
-            "technology_id": attributes["technology_id"],
-        },
+        attributes["subcategory_id"],
+        attributes["environment_active_id"],
+        attributes["technology_id"],
     )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a integrated circuit.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -1343,7 +1190,171 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
-def get_application_factor(type_id: int, application_id: int) -> float:
+def calculate_die_complexity_factor(
+    area: float,
+    feature_size: float,
+) -> float:
+    """Calculate the die complexity correction factor (piCD).
+
+    :param area: the area of the die in sq. cm.
+    :param feature_size: the size of the die features in microns.
+    :return: _pi_cd; the die complexity factor.
+    :rtype: float
+    :raise: ZeroDivisionError if feature_size is zero.
+    """
+    return ((area / 0.21) * (2.0 / feature_size) ** 2.0 * 0.64) + 0.36
+
+
+def calculate_junction_temperature(
+    temperature_case: float,
+    power_operating: float,
+    theta_jc: float,
+) -> float:
+    """Calculate the junction temperature (Tj).
+
+    :param temperature_case: the temperature of the IC case in C.
+    :param power_operating: the operating power if the IC in W.
+    :param theta_jc: the junction-case thermal resistance in C / W.
+    :return: _t_j; the calculate junction temperature in C.
+    :rtype: float
+    """
+    return temperature_case + power_operating * theta_jc
+
+
+def calculate_lambda_cyclic_factors(
+    n_cycles: int,
+    construction_id: int,
+    n_elements: int,
+    temperature_junction: float,
+) -> Tuple[float, float, float, float]:
+    """Calculate the write cycle hazard rate A and B factors for EEPROMs.
+
+    :param n_cycles: the expected number of lifetime write cycles.
+    :param construction_id: the construction type identifier.
+    :param n_elements: the number of elements (bits) in the memory device.
+    :param temperature_junction: the junction temperature in C.
+    :return: (_a_1, _a_2, _b_1, _b_2); the calculated factors.
+    :rtype: tuple
+    """
+    # Calculate the A1 factor for lambda_CYC.
+    _a_1 = 6.817e-6 * n_cycles
+
+    # Find the A2, B1, and B2 factors for lambda_CYC.
+    _a_2 = 0.0
+    if construction_id == 1:
+        _b_1 = ((n_elements / 16000.0) ** 0.5) * (
+            exp(
+                (-0.15 / 8.63e-5)
+                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 333.0))
+            )
+        )
+        _b_2 = 0.0
+    elif construction_id == 2:
+        _a_2 = 1.1 if 300000 < n_cycles <= 400000 else 2.3
+        _b_1 = ((n_elements / 64000.0) ** 0.25) * (
+            exp(
+                (0.1 / 8.63e-5)
+                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 303.0))
+            )
+        )
+        _b_2 = ((n_elements / 64000.0) ** 0.25) * (
+            exp(
+                (-0.12 / 8.63e-5)
+                * ((1.0 / (temperature_junction + 273.0)) - (1.0 / 303.0))
+            )
+        )
+    else:
+        _b_1 = 0.0
+        _b_2 = 0.0
+
+    return _a_1, _a_2, _b_1, _b_2
+
+
+def calculate_temperature_factor(
+    subcategory_id: int,
+    family_id: int,
+    type_id: int,
+    temperature_junction: float,
+) -> float:
+    """Calculate the temperature factor (piT).
+
+    :param subcategory_id: the subcategory identifier.
+    :param family_id: the IC family identifier.
+    :param type_id: the IC type identifier.
+    :param temperature_junction: the junction temperature in C.
+    :return: _pi_t; the calculated temperature factor.
+    :rtype: float
+    :raise: KeyError if passed an unknown subcategory ID.
+    :raise: IndexError if passed an unknown family ID or type ID.
+    """
+    if subcategory_id == 2:
+        _ref_temp = 296.0
+        _ea = ACTIVATION_ENERGY[subcategory_id][family_id - 1]
+    elif subcategory_id == 9:
+        _ref_temp = 423.0
+        _ea = ACTIVATION_ENERGY[subcategory_id][type_id - 1]
+    else:
+        _ref_temp = 296.0
+        _ea = ACTIVATION_ENERGY[subcategory_id]
+
+    return 0.1 * exp(
+        (-_ea / 8.617e-5) * ((1.0 / (temperature_junction + 273)) - (1.0 / _ref_temp))
+    )
+
+
+def calculate_eos_hazard_rate(voltage_esd: float) -> float:
+    """Calculate the electrical overstress hazard rate (lambdaEOS).
+
+    :param voltage_esd: the ESD withstand voltage.
+    :return: _lambda_eos; the electrical overstress hazard rate.
+    :rtype: float
+    """
+    return (-log(1.0 - 0.00057 * exp(-0.0002 * voltage_esd))) / 0.00876
+
+
+def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
+    """Calculate the package base hazard rate (lambdaBP).
+
+    :param n_active_pins: the number of active (current carrying) pins.
+    :return: _lambda_bd; the calculated package base hazard rate.
+    :rtype: float
+    """
+    return 0.0022 + (1.72e-5 * n_active_pins)
+
+
+def calculate_package_factor(
+    package_id: int,
+    n_active_pins: int,
+) -> float:
+    """Calculate the package factor (C2).
+
+    :param package_id: the package type identifier.
+    :param n_active_pins: the number of active (current carying) pins in
+        the application.
+    :result: _c2; the calculated package factor.
+    :rtype: float
+    """
+    if package_id in {1, 2, 3}:
+        _package = 1
+    elif package_id == 4:
+        _package = 2
+    elif package_id == 5:
+        _package = 3
+    elif package_id == 6:
+        _package = 4
+    else:
+        _package = 5
+
+    _f0 = C2[_package][0]
+    _f1 = C2[_package][1]
+
+    return _f0 * (n_active_pins**_f1)
+
+
+def get_application_factor(
+    type_id: int,
+    application_id: int,
+) -> float:
     """Retrieve the application factor (piA).
 
     :param type_id: the IC type identifier.
@@ -1454,7 +1465,12 @@ def get_package_type_correction_factor(package_id: int) -> float:
     return PI_PT[package_id]
 
 
-def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
+def get_part_count_lambda_b(
+    n_elements: int,
+    subcategory_id: int,
+    environment_active_id: int,
+    technology_id: int,
+) -> float:
     """Calculate parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -1499,9 +1515,12 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
 
     :param n_elements: the number of elements (transistors/gates) in the
         device.
-    :param id_keys: the ID's used as keys when selecting
-        the base hazard rate.  The keys are subcategory_id,
-        environment_active_id, and technology_id.
+    :param subcategory_id: the subcategory ID for the integrated circuit to be
+        calculated.
+    :param environment_active_id: the active operating environment ID for the
+        integrated circuit to be calculated.
+    :param technology_id: the technology ID for the integrated circuit to be
+        calculated.
     :return: _base_hr; the parts count base hazard rate.
     :rtype: float
     :raise: IndexError if passed an unknown active environment ID.
@@ -1524,15 +1543,10 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
         9: {1: [10, 100], 2: [1000, 10000]},
     }
 
-    if id_keys["subcategory_id"] in [3, 9]:
-        _index = (
-            _dic_breakpoints[id_keys["subcategory_id"]][id_keys["technology_id"]].index(
-                n_elements
-            )
-            + 1
-        )
+    if subcategory_id in {3, 9}:
+        _index = _dic_breakpoints[subcategory_id][technology_id].index(n_elements) + 1
     else:
-        _lst_index = _dic_breakpoints[id_keys["subcategory_id"]]
+        _lst_index = _dic_breakpoints[subcategory_id]
         _index = (
             min(
                 range(len(_lst_index)),
@@ -1542,11 +1556,72 @@ def get_part_count_lambda_b(n_elements: int, id_keys: Dict[str, int]) -> float:
         )
 
     return (
-        PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][_index][
-            id_keys["environment_active_id"] - 1
+        PART_COUNT_LAMBDA_B[subcategory_id][_index][environment_active_id - 1]
+        if subcategory_id == 1
+        else PART_COUNT_LAMBDA_B[subcategory_id][technology_id][_index][
+            environment_active_id - 1
         ]
-        if id_keys["subcategory_id"] == 1
-        else PART_COUNT_LAMBDA_B[id_keys["subcategory_id"]][id_keys["technology_id"]][
-            _index
-        ][id_keys["environment_active_id"] - 1]
     )
+
+
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    :param attributes: the attribute dict for the integrated circuit being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["years_in_production"] <= 0.0:
+        attributes["years_in_production"] = 2.0
+
+    if attributes["package_id"] <= 0:
+        attributes["package_id"] = 1
+
+    attributes["temperature_junction"] = _set_default_junction_temperature(
+        attributes["temperature_junction"],
+        attributes["temperature_case"],
+        attributes["environment_active_id"],
+    )
+
+    return attributes
+
+
+def _set_default_junction_temperature(
+    temperature_junction: float,
+    temperature_case: float,
+    environment_active_id: int,
+) -> float:
+    """Set the default junction temperature for integrated circuits.
+
+    :param temperature_junction: the current junction temperature.
+    :param temperature_case: the current case temperature of the integrated circuit
+        with missing defaults.
+    :param environment_active_id: the active operating environment ID of the
+        integrated circuit with missing defaults.
+    :return: _temperature_junction
+    :rtype: float
+    """
+    if temperature_junction > 0.0:
+        return temperature_junction
+
+    try:
+        return {
+            1: 50.0,
+            2: 60.0,
+            3: 65.0,
+            4: 60.0,
+            5: 65.0,
+            6: 75.0,
+            7: 75.0,
+            8: 90.0,
+            9: 90.0,
+            10: 75.0,
+            11: 50.0,
+            12: 65.0,
+            13: 75.0,
+            14: 60.0,
+        }[environment_active_id]
+    except KeyError:
+        return temperature_case

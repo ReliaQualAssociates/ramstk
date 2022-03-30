@@ -61,4 +61,5 @@ def test_attributes():
         "lambda_b": 0.0,
         "piE": 2.0,
         "piQ": 0.0,
+        "piCV": 0.0,
     }
