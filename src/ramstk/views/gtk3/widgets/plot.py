@@ -213,17 +213,16 @@ class RAMSTKPlot:
                     "y": _y_pos,
                 },
             )
-        else:
-            return self.axis.set_ylabel(
-                label,
-                {
-                    "fontsize": _fontsize,
-                    "fontweight": _fontweight,
-                    "verticalalignment": "center",
-                    "horizontalalignment": "center",
-                    "rotation": "vertical",
-                },
-            )
+        return self.axis.set_ylabel(
+            label,
+            {
+                "fontsize": _fontsize,
+                "fontweight": _fontweight,
+                "verticalalignment": "center",
+                "horizontalalignment": "center",
+                "rotation": "vertical",
+            },
+        )
 
     # pylint: disable=too-many-arguments
     def do_make_legend(self, text: List[str], **kwargs: Any) -> None:
