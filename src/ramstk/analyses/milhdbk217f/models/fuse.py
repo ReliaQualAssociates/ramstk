@@ -86,7 +86,7 @@ def get_part_count_lambda_b(environment_active_id: int) -> float:
 
 
 def set_default_values(
-    attributes: Dict[str, Union[float, int, str]],
+    **attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 

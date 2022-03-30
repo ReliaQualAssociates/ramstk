@@ -1063,7 +1063,7 @@ def get_voltage_factor(
 
 
 def set_default_values(
-    attributes: Dict[str, Union[float, int, str]]
+    **attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 

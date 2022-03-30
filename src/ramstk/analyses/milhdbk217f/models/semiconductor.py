@@ -1666,7 +1666,7 @@ def _get_section_6_13_application_factor(
 
 
 def set_default_values(
-    attributes: Dict[str, Union[float, int, str]],
+    **attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 
