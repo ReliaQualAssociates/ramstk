@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.exim.test_exports.py is part of The RAMSTK Project
+#       tests.exim.exports_integration_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -27,7 +27,7 @@ from ramstk.models.dbtables import (
 class TestExport:
     """Test class for export methods."""
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_load_output_function(self, test_program_dao):
         """do_load_output() should return a Pandas DataFrame when loading Functions for
         export."""
@@ -42,7 +42,7 @@ class TestExport:
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data["function"], dict)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_load_output_requirement(self, test_program_dao):
         """do_load_output() should return None when loading Requirements for export."""
         _requirement = RAMSTKRequirementTable()
@@ -56,7 +56,7 @@ class TestExport:
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data["requirement"], dict)
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_load_output_hardware(self, test_program_dao):
         """do_load_output() should return None when loading Hardware for export."""
         _hardware = RAMSTKHardwareTable()
@@ -70,7 +70,7 @@ class TestExport:
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data["hardware"], dict)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_load_output_validation(self, test_program_dao):
         """do_load_output() should return None when loading Validations for export."""
         _validation = RAMSTKValidationTable()
@@ -84,7 +84,7 @@ class TestExport:
         assert isinstance(DUT._dic_output_data, dict)
         assert isinstance(DUT._dic_output_data["validation"], dict)
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_csv(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a CSV file."""
         _function = RAMSTKFunctionTable()
@@ -98,7 +98,7 @@ class TestExport:
         _test_csv = test_export_dir + "test_export_function.csv"
         assert DUT._do_export("csv", _test_csv) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_xls(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
         _requirement = RAMSTKRequirementTable()
@@ -112,7 +112,7 @@ class TestExport:
         _test_excel = test_export_dir + "test_export_requirement.xls"
         assert DUT._do_export("excel", _test_excel) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_xlsx(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
         _requirement = RAMSTKRequirementTable()
@@ -126,7 +126,7 @@ class TestExport:
         _test_excel = test_export_dir + "test_export_requirement.xlsx"
         assert DUT._do_export("excel", _test_excel) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_xlsm(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to an Excel file."""
         _requirement = RAMSTKRequirementTable()
@@ -140,7 +140,7 @@ class TestExport:
         _test_excel = test_export_dir + "test_export_requirement.xlsm"
         assert DUT._do_export("excel", _test_excel) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_excel_unknown_extension(
         self, test_program_dao, test_export_dir
     ):
@@ -157,7 +157,7 @@ class TestExport:
         _test_excel = test_export_dir + "test_export_requirement.xlbb"
         assert DUT._do_export("excel", _test_excel) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_to_text(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
         _function = RAMSTKFunctionTable()
@@ -171,7 +171,7 @@ class TestExport:
         _test_text = test_export_dir + "test_export_function.txt"
         assert DUT._do_export("text", _test_text) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_unknown_type(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
         _function = RAMSTKFunctionTable()
@@ -185,7 +185,7 @@ class TestExport:
         _test_text = test_export_dir + "test_export_function.txt"
         assert DUT._do_export("pdf", _test_text) is None
 
-    @pytest.mark.unit
+    @pytest.mark.integration
     def test_do_export_multi_sheet(self, test_program_dao, test_export_dir):
         """do_export() should return None when exporting to a text file."""
         _function = RAMSTKFunctionTable()
