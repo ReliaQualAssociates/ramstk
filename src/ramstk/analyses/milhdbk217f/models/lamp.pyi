@@ -11,3 +11,6 @@ def calculate_part_stress(
 def get_part_count_lambda_b(
     application_id: int, environment_active_id: int
 ) -> float: ...
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]: ...

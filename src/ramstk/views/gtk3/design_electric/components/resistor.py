@@ -113,7 +113,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 ["RW 15"],
                 ["RW 16"],
                 ["RW 20"],
-                ["RW 21 "],
+                ["RW 21"],
                 ["RW 22"],
                 ["RW 23"],
                 ["RW 24"],

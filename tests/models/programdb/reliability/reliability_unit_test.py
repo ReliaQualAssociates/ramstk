@@ -362,6 +362,7 @@ class TestAnalysisMethods:
         test_attributes["duty_cycle"] = 100.0
         test_attributes["part"] = 1
         test_attributes["quantity"] = 1
+        test_attributes["temperature_junction"] = 25.0
 
         _reliability.do_calculate_hazard_rate_active(1.0, test_attributes)
 
@@ -405,6 +406,7 @@ class TestAnalysisMethods:
         test_attributes["duty_cycle"] = 100.0
         test_attributes["part"] = 1
         test_attributes["quantity"] = 1
+        test_attributes["temperature_junction"] = 25.0
 
         _reliability.do_calculate_hazard_rate_active(1000000.0, test_attributes)
 

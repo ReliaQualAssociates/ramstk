@@ -1,16 +1,15 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.milhdbk217f.models.Relay.py is part of the RAMSTK
-#       Project
+#       ramstk.analyses.milhdbk217f.models.relay.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Relay MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
 from math import exp
-from typing import Any, Dict
+from typing import Dict, Union
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -243,48 +242,10 @@ PI_F = {
 }
 
 
-def calculate_cycling_factor(quality_id: int, n_cycles: float) -> float:
-    """Calculate the cycling factor (piCYC) for the relay.
-
-    :param quality_id: the quality level identifier.
-    :param n_cycles: the number of relay cycles per hour in application.
-    :return: _pi_cyc; the calculate cycling factor.
-    :rtype: float
-    """
-    if quality_id in {1, 2, 3, 4, 5, 6} and n_cycles < 1.0:
-        return 0.1
-    elif quality_id == 7 and n_cycles > 1000.0:
-        return (n_cycles / 100.0) ** 2.0
-    elif quality_id == 7 and 10.0 < n_cycles < 1000.0:
-        return n_cycles / 10.0
-    else:
-        return 0.0
-
-
-def calculate_load_stress_factor(technology_id: int, current_ratio: float) -> float:
-    """Calculate the load stress factor (piL).
-
-    Only subcategory 1 relays use this in their calculation.
-
-    :param technology_id: the relay technology identifier.
-    :param current_ratio: the operating current ratio of the relay.
-    :return: _pi_l; the calculate value of piL.
-    :rtype: float
-    """
-    if technology_id == 1:
-        return (current_ratio / 0.8) ** 2.0
-    elif technology_id == 2:
-        return (current_ratio / 0.4) ** 2.0
-    elif technology_id == 3:
-        return (current_ratio / 0.2) ** 2.0
-    else:
-        return 0.0
-
-
-def calculate_part_count(**attributes: Dict[str, Any]) -> float:
+def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attributes dict from a generic parts
+    This wrapper allows us to pass an attribute dict from a generic parts
     count function.
 
     :param attributes: the attributes for the connection being calculated.
@@ -292,13 +253,15 @@ def calculate_part_count(**attributes: Dict[str, Any]) -> float:
     :rtype: float
     """
     return get_part_count_lambda_b(
-        subcategory_id=attributes["subcategory_id"],
-        type_id=attributes["type_id"],
-        environment_active_id=attributes["environment_active_id"],
+        attributes["subcategory_id"],
+        attributes["type_id"],
+        attributes["environment_active_id"],
     )
 
 
-def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
+def calculate_part_stress(
+    **attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a relay.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
@@ -351,8 +314,54 @@ def calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+def calculate_cycling_factor(
+    quality_id: int,
+    n_cycles: float,
+) -> float:
+    """Calculate the cycling factor (piCYC) for the relay.
+
+    :param quality_id: the quality level identifier.
+    :param n_cycles: the number of relay cycles per hour in application.
+    :return: _pi_cyc; the calculated cycling factor.
+    :rtype: float
+    """
+    if quality_id in {1, 2, 3, 4, 5, 6} and n_cycles < 1.0:
+        return 0.1
+    elif quality_id == 7 and n_cycles > 1000.0:
+        return (n_cycles / 100.0) ** 2.0
+    elif quality_id == 7 and 10.0 < n_cycles < 1000.0:
+        return n_cycles / 10.0
+    else:
+        return 0.0
+
+
+def calculate_load_stress_factor(
+    technology_id: int,
+    current_ratio: float,
+) -> float:
+    """Calculate the load stress factor (piL).
+
+    Only subcategory 1 relays use this in their calculation.
+
+    :param technology_id: the relay technology identifier.
+    :param current_ratio: the operating current ratio of the relay.
+    :return: _pi_l; the calculated value of piL.
+    :rtype: float
+    """
+    if technology_id == 1:
+        return (current_ratio / 0.8) ** 2.0
+    elif technology_id == 2:
+        return (current_ratio / 0.4) ** 2.0
+    elif technology_id == 3:
+        return (current_ratio / 0.2) ** 2.0
+    else:
+        return 0.0
+
+
 def calculate_part_stress_lambda_b(
-    subcategory_id: int, type_id: int, temperature_active: float
+    subcategory_id: int,
+    type_id: int,
+    temperature_active: float,
 ) -> float:
     """Calculate the base hazard rate for the relay.
 
@@ -403,7 +412,9 @@ def get_application_construction_factor(
 
 
 def get_environment_factor(
-    subcategory_id: int, quality_id: int, environment_active_id: int
+    subcategory_id: int,
+    quality_id: int,
+    environment_active_id: int,
 ) -> float:
     """Retrieve the environment factor (pi_E).
 
@@ -423,7 +434,11 @@ def get_environment_factor(
     )
 
 
-def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
+def get_part_count_lambda_b(
+    subcategory_id: int,
+    type_id: int,
+    environment_active_id: int,
+) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -458,8 +473,155 @@ def get_part_count_lambda_b(**kwargs: Dict[str, int]) -> float:
     :raise: IndexError if passed an unknown active environment ID.
     :raise: KeyError if passed an unknown subcategory ID or type ID.
     """
-    _subcategory_id = kwargs.get("subcategory_id", 0)
-    _type_id = kwargs.get("type_id", 0)
-    _environment_active_id = kwargs.get("environment_active_id", 0)
+    return PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id - 1]
 
-    return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][_environment_active_id - 1]
+
+def set_default_values(
+    **attributes: Dict[str, Union[float, int, str]],
+) -> Dict[str, Union[float, int, str]]:
+    """Set the default value of various parameters.
+
+    The subcategory ID and the type ID must be set for default values to be applied.
+
+    :param attributes: the attribute dict for the relay being calculated.
+    :return: attributes; the updated attribute dict.
+    :rtype: dict
+    """
+    if attributes["quality_id"] <= 0:
+        attributes["quality_id"] = _set_default_quality(attributes["subcategory_id"])
+
+    if attributes["current_ratio"] <= 0.0:
+        attributes["current_ratio"] = 0.5
+
+    attributes["technology_id"] = _set_default_load_type(
+        attributes["technology_id"], attributes["type_id"]
+    )
+
+    attributes["contact_form_id"] = _set_default_contact_form(
+        attributes["contact_form_id"], attributes["type_id"]
+    )
+
+    attributes["contact_rating_id"] = _set_default_contact_rating(
+        attributes["contact_rating_id"], attributes["type_id"]
+    )
+
+    attributes["application_id"] = _set_default_application(
+        attributes["application_id"], attributes["type_id"]
+    )
+
+    attributes["construction_id"] = _set_default_construction(
+        attributes["construction_id"], attributes["type_id"]
+    )
+
+    attributes["duty_cycle"] = _set_default_duty_cycle(
+        attributes["duty_cycle"], attributes["type_id"]
+    )
+
+    attributes["temperature_rated_max"] = _set_default_rated_temperature(
+        attributes["temperature_rated_max"], attributes["type_id"]
+    )
+
+    return attributes
+
+
+def _set_default_quality(subcategory_id: int) -> int:
+    """Set the default quality for mechanical relays.
+
+    :param subcategory_id: the subcategory ID of the relay with missing defaults.
+    :return: _quality_id
+    :rtype: float
+    """
+    return 5 if subcategory_id == 4 else 1
+
+
+def _set_default_load_type(technology_id: int, type_id: int) -> int:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param technology_id: the current technology ID (represents the load type).
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_form_id
+    :rtype: int
+    """
+    if technology_id > 0:
+        return technology_id
+    return 1 if type_id in {1, 3, 4, 6} else 2
+
+
+def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
+    """Set the default contact form for mechanical relays.
+
+    :param contact_form_id: the current contact form ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_form_id
+    :rtype: int
+    """
+    if contact_form_id > 0:
+        return contact_form_id
+    return 1 if type_id in {4, 5} else 6
+
+
+def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
+    """Set the default contact rating for mechanical relays.
+
+    :param contact_form_id: the current contact rating ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _contact_rating_id
+    :rtype: int
+    """
+    if contact_rating_id > 0:
+        return contact_rating_id
+    return {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
+
+
+def _set_default_application(application_id: int, type_id: int) -> int:
+    """Set the default application for mechanical relays.
+
+    :param application_id: the current application ID.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _application_id
+    :rtype: int
+    """
+    if application_id > 0:
+        return application_id
+    return {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
+
+
+def _set_default_construction(construction_id: int, type_id: int) -> int:
+    """Set the default construction for mechanical relays.
+
+    :param construction_id: the current construction ID.
+    :param application_id: the current application ID of the relay with missing
+        defaults.
+    :param contact_rating_id: the contact rating ID of the relay with missing defaults.
+    :return: _contact_rating_id
+    :rtype: int
+    """
+    if construction_id > 0:
+        return construction_id
+    return {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
+
+
+def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param duty_cycle: the current duty cycle.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _duty_cycle
+    :rtype: float
+    """
+    if duty_cycle > 0.0:
+        return duty_cycle
+    return 20.0 if type_id == 4 else 10.0
+
+
+def _set_default_rated_temperature(rated_temperature_max: float, type_id: int) -> float:
+    """Set the default max rated temperature for mechanical relays.
+
+    :param rated_temperature_max: the current maximum rated temperature.
+    :param type_id: the type ID of the relay with missing defaults.
+    :return: _rated_temperature_max
+    :rtype: float
+    """
+    if rated_temperature_max > 0.0:
+        return rated_temperature_max
+    return 85.0 if type_id == 4 else 125.0

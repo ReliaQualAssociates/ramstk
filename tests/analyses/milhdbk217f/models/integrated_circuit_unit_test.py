@@ -27,11 +27,9 @@ def test_get_part_count_lambda_b_linear(environment_active_id, n_elements):
     hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         n_elements,
-        id_keys={
-            "subcategory_id": 1,
-            "environment_active_id": environment_active_id,
-            "technology_id": -1,
-        },
+        1,
+        environment_active_id,
+        -1,
     )
 
     assert isinstance(_lambda_b, float)
@@ -131,11 +129,9 @@ def test_get_part_count_lambda_b_logic(
     hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         n_elements,
-        id_keys={
-            "subcategory_id": 2,
-            "environment_active_id": environment_active_id,
-            "technology_id": technology_id,
-        },
+        2,
+        environment_active_id,
+        technology_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -159,11 +155,9 @@ def test_get_part_count_lambda_b_pal_pla(
 
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         _n_elements,
-        id_keys={
-            "subcategory_id": 3,
-            "environment_active_id": environment_active_id,
-            "technology_id": technology_id,
-        },
+        3,
+        environment_active_id,
+        technology_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -183,11 +177,9 @@ def test_get_part_count_lambda_b_mup_muc(
     hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         n_elements,
-        id_keys={
-            "subcategory_id": 4,
-            "environment_active_id": environment_active_id,
-            "technology_id": technology_id,
-        },
+        4,
+        environment_active_id,
+        technology_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -211,11 +203,9 @@ def test_get_part_count_lambda_b_rom_sram(
     hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         n_elements,
-        id_keys={
-            "subcategory_id": subcategory_id,
-            "environment_active_id": environment_active_id,
-            "technology_id": technology_id,
-        },
+        subcategory_id,
+        environment_active_id,
+        technology_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -238,11 +228,9 @@ def test_get_part_count_lambda_b_prom_dram(
     hazard rate on success."""
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         n_elements,
-        id_keys={
-            "subcategory_id": subcategory_id,
-            "environment_active_id": environment_active_id,
-            "technology_id": 2,
-        },
+        subcategory_id,
+        environment_active_id,
+        2,
     )
 
     assert isinstance(_lambda_b, float)
@@ -263,11 +251,9 @@ def test_get_part_count_lambda_b_gaas(
     _n_elements = {1: [10, 100], 2: [1000, 10000]}[technology_id][n_elements_id]
     _lambda_b = integratedcircuit.get_part_count_lambda_b(
         _n_elements,
-        id_keys={
-            "subcategory_id": 9,
-            "environment_active_id": environment_active_id,
-            "technology_id": technology_id,
-        },
+        9,
+        environment_active_id,
+        technology_id,
     )
 
     assert isinstance(_lambda_b, float)
@@ -280,11 +266,9 @@ def test_get_part_count_lambda_b_no_environment():
     with pytest.raises(ValueError):
         integratedcircuit.get_part_count_lambda_b(
             300,
-            id_keys={
-                "subcategory_id": 3,
-                "environment_active_id": 22,
-                "technology_id": 2,
-            },
+            3,
+            22,
+            2,
         )
 
 
@@ -295,11 +279,9 @@ def test_get_part_count_lambda_b_no_technology():
     with pytest.raises(KeyError):
         integratedcircuit.get_part_count_lambda_b(
             300,
-            id_keys={
-                "subcategory_id": 3,
-                "environment_active_id": 2,
-                "technology_id": 4,
-            },
+            3,
+            2,
+            4,
         )
 
 
@@ -682,8 +664,76 @@ def test_calculate_part_stress_vlsi(test_attributes_integrated_circuit):
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_integrated_circuit")
 def test_calculate_part_stress_no_subcategory(test_attributes_integrated_circuit):
-    """calculate_part_stress() should return a the attributes dict updated with
-    calculated values."""
+    """should raise a KeyError when the subcategory ID is unknown."""
     test_attributes_integrated_circuit["subcategory_id"] = 11
     with pytest.raises(KeyError):
         integratedcircuit.calculate_part_stress(**test_attributes_integrated_circuit)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "environment_id",
+    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+)
+def test_set_default_junction_temperature(environment_id):
+    """should return the default junction temperature for the active environment ID."""
+    _temp_junction = integratedcircuit._set_default_junction_temperature(
+        0.0, 25.0, environment_id
+    )
+
+    assert (
+        _temp_junction
+        == {
+            1: 50.0,
+            2: 60.0,
+            3: 65.0,
+            4: 60.0,
+            5: 65.0,
+            6: 75.0,
+            7: 75.0,
+            8: 90.0,
+            9: 90.0,
+            10: 75.0,
+            11: 50.0,
+            12: 65.0,
+            13: 75.0,
+            14: 60.0,
+            15: 25.0,
+        }[environment_id]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_integrated_circuit")
+def test_set_default_values(test_attributes_integrated_circuit):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_integrated_circuit["package_id"] = 0
+    test_attributes_integrated_circuit["environment_active_id"] = 3
+    test_attributes_integrated_circuit["temperature_junction"] = 0.0
+    test_attributes_integrated_circuit["years_in_production"] = -5
+    _attributes = integratedcircuit.set_default_values(
+        **test_attributes_integrated_circuit
+    )
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["package_id"] == 1
+    assert _attributes["temperature_junction"] == 65.0
+    assert _attributes["years_in_production"] == 2
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_integrated_circuit")
+def test_set_default_values_none_needed(test_attributes_integrated_circuit):
+    """should set default values for each parameter <= 0.0."""
+    test_attributes_integrated_circuit["package_id"] = 2
+    test_attributes_integrated_circuit["environment_active_id"] = 3
+    test_attributes_integrated_circuit["temperature_junction"] = 38.65
+    test_attributes_integrated_circuit["years_in_production"] = 5
+    _attributes = integratedcircuit.set_default_values(
+        **test_attributes_integrated_circuit
+    )
+
+    assert isinstance(_attributes, dict)
+    assert _attributes["package_id"] == 2
+    assert _attributes["temperature_junction"] == 38.65
+    assert _attributes["years_in_production"] == 5

@@ -50,8 +50,9 @@ def test_do_calculate_active_hazard_rate_negative_input(test_attributes):
     negative input for various components."""
     test_attributes["category_id"] = 2
     test_attributes["subcategory_id"] = 2
+    test_attributes["n_elements"] = None
+    test_attributes["power_operating"] = None
     test_attributes["type_id"] = 4
-    test_attributes["power_rated"] = -0.05
     test_attributes["hazard_rate_method_id"] = 2
 
     def on_message(error_message):
@@ -60,7 +61,7 @@ def test_do_calculate_active_hazard_rate_negative_input(test_attributes):
             "hardware ID 12; one or more inputs has a "
             "negative or missing value. Hardware item "
             "category ID=2, subcategory ID=2, rated "
-            "power=-0.05, number of elements=8."
+            "power=0.75, number of elements=None."
         )
         print(
             "\033[35m\n\tfail_predict_reliability topic was broadcast on negative "
