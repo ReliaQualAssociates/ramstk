@@ -57,7 +57,7 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
         pub.sendMessage("succeed_predict_reliability", attributes=attributes)
         pub.sendMessage("request_set_all_milhdbk217f_attributes", attributes=attributes)
         pub.sendMessage("request_set_all_reliability_attributes", attributes=attributes)
-    except ValueError:
+    except (TypeError, ValueError):
         pub.sendMessage(
             "fail_predict_reliability",
             error_message=(
