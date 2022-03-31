@@ -33,11 +33,10 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.6.2,<4.0"
+python = "^3.7,<4.0"
 lifelines = "^0.26.3"
 matplotlib = "^3.3.4"
 numpy = [
-	{ version = "^1.19", python = "^3.6,<3.7" },
 	{ version  = "^1.21", python = "^3.7" }]
 openpyxl = "^3.0.6"
 pandas = "1.1.5"
@@ -46,7 +45,6 @@ pycairo = "^1.20.0"
 pygobject = "^3.38"
 pypubsub = "^4.0.3"
 scipy = [
-	{ version = "^1.5", python = "^3.6,<3.7" },
 	{ version = "^1.6.0", python = "^3.7" }
 ]
 sortedcontainers = "^2.3.0"
@@ -91,7 +89,6 @@ sphinxcontrib-issuetracker = "^0.11"
 sphinxcontrib-spelling = "^7.1.0"
 twine = "^3.3.0"
 pillow = [
-	{ version = "8.4.0", python = "<3.7" },
 	{ version = "^9.0.0" , python = "^3.7" }
 ]
 
@@ -104,7 +101,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 88
-target-version = ['py36', 'py37', 'py38']
+target-version = ['py37', 'py38']
 include = '\.pyi?$'
 exclude = '''
 /(
