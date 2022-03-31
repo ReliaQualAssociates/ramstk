@@ -56,7 +56,7 @@ PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 
-PYVERS		= 3.6 3.7 3.8
+PYVERS		= 3.7 3.8
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
