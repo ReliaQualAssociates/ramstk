@@ -174,7 +174,7 @@ def get_install_prefix() -> str:
         # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
         # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
         lambda x: x in ["lib64", "lib"],  # nosec
-        lambda x: x == f"python{sys.version[:3]}",
+        lambda x: x == f"python{sys.version_info[0]}.{sys.version_info[1]}",
         lambda x: x in ["site-packages", "dist-packages"],
         lambda x: x == _name,  # 'project'
         lambda x: x == _this,  # 'prefix.py'
