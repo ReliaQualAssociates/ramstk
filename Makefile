@@ -56,7 +56,7 @@ PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 
-PYVERS		= 3.7 3.8
+PYVERS		= 3.7 3.8 3.9 3.10
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
@@ -141,7 +141,7 @@ requirements:
 	$(POETRY) lock
 
 depends:
-	pip install -U wheel
+	pip install -U pip wheel
 	$(POETRY) install --no-root
 
 upgrade:
