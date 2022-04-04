@@ -67,7 +67,7 @@ coveralls = "^3.0.0"
 coverage = {extras = ["toml"], version = "^6.2"}
 docformatter = "^1.4"
 isort = "^5.7.0"
-mccabe = "^0.6.1"
+mccabe = "^0.7.0"
 mock = "^4.0.3"
 mypy = "^0.931"
 pep8 = "^1.7.1"
