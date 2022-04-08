@@ -1,4 +1,3 @@
-# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.derating.models.semiconductor.py is part of the RAMSTK Project

@@ -1,4 +1,3 @@
-# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.derating.models.integratedcircuit.py is part of the RAMSTK

@@ -10,7 +10,7 @@
 from typing import Dict, List, Tuple
 
 # RAMSTK Local Imports
-from .models import capacitor, connection, integratedcircuit, semiconductor
+from .models import capacitor, connection, inductor, integratedcircuit, semiconductor
 
 
 def check_overstress(op_stress, limits):
@@ -126,7 +126,17 @@ def do_check_overstress(
         return connection.do_derating_analysis(
             _environment,
             stress_limits,
-            current_ratio=kwargs.get("current_ratio", 10.0),
+            current_ratio=kwargs.get("current_ratio", 0.0),
+            temperature_hot_spot=kwargs.get("temperature_hot_spot", 30.0),
+            temperature_rated_max=kwargs.get("temperature_rated_max", 70.0),
+            voltage_ratio=kwargs.get("voltage_ratio", 0.0),
+        )
+    elif category == "inductor":
+        return inductor.do_derating_analysis(
+            _environment,
+            subcategory_id,
+            stress_limits,
+            family_id=kwargs.get("family_id", 0),
         )
     elif category == "integrated_circuit":
         return integratedcircuit.do_derating_analysis(

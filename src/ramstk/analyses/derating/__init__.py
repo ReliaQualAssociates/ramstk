@@ -3,4 +3,4 @@
 
 # RAMSTK Local Imports
 from . import derating
-from .models import capacitor, connection, integratedcircuit, semiconductor
+from .models import capacitor, connection, inductor, integratedcircuit, semiconductor

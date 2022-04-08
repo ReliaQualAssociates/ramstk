@@ -1,4 +1,3 @@
-# type: ignore
 # -*- coding: utf-8 -*-
 #
 #       ramstk.analyses.derating.models.capacitor.py is part of the RAMSTK Project
@@ -88,7 +87,8 @@ def _do_check_temperature_limit(
 ) -> Tuple[int, str]:
     """Check if the case temperature exceeds the limit.
 
-    :param junction_temperature:
+    :param case_temperature:
+    :param max_rated_temperature:
     :param temperature_limit:
     :return: _overstress, _reason
     :rtype: tuple
