@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.derating.py is part of the RAMSTK Project
+#       ramstk.analyses.derating.derating.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Component Derating Calculations Module."""
+
+# Standard Library Imports
+from typing import Dict, List, Tuple
+
+# RAMSTK Local Imports
+from .models import integratedcircuit, semiconductor
 
 
 def check_overstress(op_stress, limits):
@@ -71,3 +77,59 @@ def check_overstress(op_stress, limits):
             _overstress[key][1] = True
 
     return _overstress
+
+
+# pylint: disable=inconsistent-return-statements
+def do_check_overstress(
+    category: str,
+    environment_id: int,
+    subcategory_id,
+    stress_limits: Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]],
+    **kwargs,
+) -> Tuple[int, str]:
+    """Perform a derating analysis.
+
+    :param category:
+    :param environment_id:
+    :param subcategory_id:
+    :param stress_limits:
+    :return: _overstress, _reason
+    :rtype: tuple
+    """
+    _environment = {
+        1: 0,
+        2: 1,
+        3: 2,
+        4: 0,
+        5: 2,
+        6: 1,
+        7: 1,
+        8: 2,
+        9: 2,
+        10: 1,
+        11: 0,
+        12: 1,
+        13: 2,
+    }[environment_id]
+
+    if category == "integrated_circuit":
+        return integratedcircuit.do_derating_analysis(
+            _environment,
+            subcategory_id,
+            stress_limits,
+            current_ratio=kwargs.get("current_ratio", 0.0),
+            package_id=kwargs.get("package_id", 0),
+            technology_id=kwargs.get("technology_id", 0),
+            temperature_junction=kwargs.get("temperature_junction", 70.0),
+        )
+    elif category == "semiconductor":
+        return semiconductor.do_derating_analysis(
+            _environment,
+            subcategory_id,
+            stress_limits,
+            current_ratio=kwargs.get("current_ratio", 0.0),
+            power_ratio=kwargs.get("power_ratio", 0.0),
+            quality_id=kwargs.get("quality_id", 1),
+            temperature_junction=kwargs.get("temperature_junction", 70.0),
+            voltage_ratio=kwargs.get("voltage_ratio", 0.0),
+        )

@@ -1,10 +1,10 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.milhdbk217f.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.milhdbk217f.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2017 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """milhdbk217f Calculations Class."""
 
 # Standard Library Imports
