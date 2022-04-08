@@ -154,7 +154,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         9: [["MIL-C-11272"], ["MIL-C-23269"]],
         10: [["MIL-C-11015"], ["MIL-C-39014"]],
         11: [["MIL-C-20"], ["MIL-C-55681"]],
-        12: [["MIL-C-39003"]],
+        12: [["MIL-C-39003"], ["MIL-C-55365"]],
         13: [["MIL-C-3965"], ["MIL-C-39006"]],
         14: [["MIL-C-39018"]],
         15: [["MIL-C-62"]],

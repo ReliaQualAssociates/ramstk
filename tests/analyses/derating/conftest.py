@@ -407,80 +407,76 @@ def test_stress_limits():
             },
         },
         "capacitor": {
-            "fixed": {
-                "paper": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.55, 0.55, 0.55],
-                },
-                "plastic": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.55, 0.55, 0.55],
-                },
-                "metallized": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.55, 0.55, 0.55],
-                },
-                "mica": {"temperature": [25.0, 25.0, 25.0], "voltage": [0.7, 0.7, 0.7]},
-                "mica_button": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.55, 0.55, 0.55],
-                },
-                "glass": {
-                    "temperature": [15.0, 15.0, 15.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "ceramic": {
-                    "temperature": [15.0, 15.0, 15.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "temp_comp_ceramic": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "ceramic_chip": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "tantalum_chip": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "tantalum_solid": {
-                    "reverse_voltage": [0.02, 0.02, 0.02],
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "tantalum_wet": {
-                    "reverse_voltage": [0.02, 0.02, 0.02],
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "aluminum": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.7, 0.7, 0.7],
-                },
-                "aluminum_dry": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.7, 0.7, 0.7],
-                },
+            "paper": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.55, 0.55, 0.55],
             },
-            "variable": {
-                "ceramic": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "piston": {
-                    "temperature": [15.0, 15.0, 15.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "trimmer": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
-                "vacuum": {
-                    "temperature": [10.0, 10.0, 10.0],
-                    "voltage": [0.6, 0.6, 0.6],
-                },
+            "plastic": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.55, 0.55, 0.55],
+            },
+            "metallized": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.55, 0.55, 0.55],
+            },
+            "mica": {"temperature": [25.0, 25.0, 25.0], "voltage": [0.7, 0.7, 0.7]},
+            "mica_button": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.55, 0.55, 0.55],
+            },
+            "glass": {
+                "temperature": [15.0, 15.0, 15.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "ceramic_fixed": {
+                "temperature": [15.0, 15.0, 15.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "temp_comp_ceramic": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "ceramic_chip": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "tantalum_chip": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "tantalum_solid": {
+                "reverse_voltage": [0.02, 0.02, 0.02],
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "tantalum_wet": {
+                "reverse_voltage": [0.02, 0.02, 0.02],
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "aluminum": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.7, 0.7, 0.7],
+            },
+            "aluminum_dry": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.7, 0.7, 0.7],
+            },
+            "ceramic_variable": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "piston": {
+                "temperature": [15.0, 15.0, 15.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "trimmer": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
+            },
+            "vacuum": {
+                "temperature": [10.0, 10.0, 10.0],
+                "voltage": [0.6, 0.6, 0.6],
             },
         },
         "inductor": {

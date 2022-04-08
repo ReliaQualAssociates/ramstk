@@ -10,7 +10,7 @@
 from typing import Dict, List, Tuple
 
 # RAMSTK Local Imports
-from .models import integratedcircuit, semiconductor
+from .models import capacitor, integratedcircuit, semiconductor
 
 
 def check_overstress(op_stress, limits):
@@ -112,7 +112,17 @@ def do_check_overstress(
         13: 2,
     }[environment_id]
 
-    if category == "integrated_circuit":
+    if category == "capacitor":
+        return capacitor.do_derating_analysis(
+            _environment,
+            subcategory_id,
+            stress_limits,
+            specification_id=kwargs.get("specification_id", 0),
+            temperature_case=kwargs.get("temperature_case", 30.0),
+            temperature_rated_max=kwargs.get("temperature_rated_max", 70.0),
+            voltage_ratio=kwargs.get("voltage_ratio", 0.0),
+        )
+    elif category == "integrated_circuit":
         return integratedcircuit.do_derating_analysis(
             _environment,
             subcategory_id,
