@@ -231,36 +231,36 @@ def test_stress_limits():
                         "temperature": [70.0, 35.0, 0.0],
                     },
                 },
-            },
-            "regulator": {
-                "jantx": {
-                    "power": [1.0, 1.0, 0.9],
-                    "temperature": [150.0, 125.0, 125.0],
+                "regulator": {
+                    "jantx": {
+                        "power": [1.0, 1.0, 0.9],
+                        "temperature": [150.0, 125.0, 125.0],
+                    },
+                    "military": {
+                        "power": [0.9, 0.8, 0.5],
+                        "temperature": [100.0, 85.0, 70.0],
+                    },
+                    "commercial": {
+                        "power": [0.5, 0.5, 0.0],
+                        "temperature": [70.0, 35.0, 0.0],
+                    },
                 },
-                "military": {
-                    "power": [0.9, 0.8, 0.5],
-                    "temperature": [100.0, 85.0, 70.0],
-                },
-                "commercial": {
-                    "power": [0.5, 0.5, 0.0],
-                    "temperature": [70.0, 35.0, 0.0],
-                },
-            },
-            "suppressor": {
-                "jantx": {
-                    "current": [1.0, 1.0, 0.9],
-                    "power": [1.0, 1.0, 0.9],
-                    "temperature": [150.0, 125.0, 125.0],
-                },
-                "military": {
-                    "current": [0.8, 0.8, 0.5],
-                    "power": [0.8, 0.8, 0.5],
-                    "temperature": [100.0, 85.0, 70.0],
-                },
-                "commercial": {
-                    "current": [0.75, 0.5, 0.0],
-                    "power": [0.75, 0.5, 0.0],
-                    "temperature": [70.0, 35.0, 0.0],
+                "suppressor": {
+                    "jantx": {
+                        "current": [1.0, 1.0, 0.9],
+                        "power": [1.0, 1.0, 0.9],
+                        "temperature": [150.0, 125.0, 125.0],
+                    },
+                    "military": {
+                        "current": [0.8, 0.8, 0.5],
+                        "power": [0.8, 0.8, 0.5],
+                        "temperature": [100.0, 85.0, 70.0],
+                    },
+                    "commercial": {
+                        "current": [0.75, 0.5, 0.0],
+                        "power": [0.75, 0.5, 0.0],
+                        "temperature": [70.0, 35.0, 0.0],
+                    },
                 },
             },
             "thyristor": {
