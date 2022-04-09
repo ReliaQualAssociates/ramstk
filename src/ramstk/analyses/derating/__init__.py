@@ -9,5 +9,6 @@ from .models import (
     inductor,
     integratedcircuit,
     lamp,
+    relay,
     semiconductor,
 )

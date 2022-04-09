@@ -16,6 +16,7 @@ from .models import (
     inductor,
     integratedcircuit,
     lamp,
+    relay,
     semiconductor,
 )
 
@@ -67,9 +68,9 @@ def check_overstress(op_stress, limits):
     :param limits: a dict containing the stress limits.  Key is the name
         of the environment (mild, harsh, protected, etc.) and the value is a
         list of [lower limit, upper limit].
-    :return: _overstress; dict of indicators whether or not an overstress
-        condition exists.  Key is the environment type (mild, harsh, protected,
-        etc.) and the value is a list of booleans for each limit.
+    :return: _overstress; dict of indicators whether an overstressed condition exists.
+        Key is the environment type (mild, harsh, protected, etc.) and the value is a
+        list of booleans for each limit.
     :rtype: dict
     :raise: IndexError if a limit value has too few items in the list.
     :raise: TypeError if a limit value is not a list of numericals.
@@ -120,7 +121,7 @@ def do_check_overstress(
     }[environment_id]
 
     if category == "capacitor":
-        return capacitor.do_derating_analysis(
+        _overstress, _reason = capacitor.do_derating_analysis(
             _environment,
             subcategory_id,
             stress_limits,
@@ -130,7 +131,7 @@ def do_check_overstress(
             voltage_ratio=kwargs.get("voltage_ratio", 0.0),
         )
     elif category == "connection":
-        return connection.do_derating_analysis(
+        _overstress, _reason = connection.do_derating_analysis(
             _environment,
             stress_limits,
             current_ratio=kwargs.get("current_ratio", 0.0),
@@ -139,14 +140,14 @@ def do_check_overstress(
             voltage_ratio=kwargs.get("voltage_ratio", 0.0),
         )
     elif category == "inductor":
-        return inductor.do_derating_analysis(
+        _overstress, _reason = inductor.do_derating_analysis(
             _environment,
             subcategory_id,
             stress_limits,
             family_id=kwargs.get("family_id", 0),
         )
     elif category == "integrated_circuit":
-        return integratedcircuit.do_derating_analysis(
+        _overstress, _reason = integratedcircuit.do_derating_analysis(
             _environment,
             subcategory_id,
             stress_limits,
@@ -156,14 +157,23 @@ def do_check_overstress(
             temperature_junction=kwargs.get("temperature_junction", 70.0),
         )
     elif category == "miscellaneous":
-        return lamp.do_derating_analysis(
+        _overstress, _reason = lamp.do_derating_analysis(
             _environment,
             subcategory_id,
             stress_limits,
             current_ratio=kwargs.get("current_ratio", 0.0),
         )
+    elif category == "relay":
+        _overstress, _reason = relay.do_derating_analysis(
+            _environment,
+            stress_limits,
+            current_ratio=kwargs.get("current_ratio", 0.0),
+            temperature_active=kwargs.get("temperature_active", 30.0),
+            temperature_rated_max=kwargs.get("temperature_rated_max", 85.0),
+            type_id=kwargs.get("type_id", 0),
+        )
     elif category == "semiconductor":
-        return semiconductor.do_derating_analysis(
+        _overstress, _reason = semiconductor.do_derating_analysis(
             _environment,
             subcategory_id,
             stress_limits,
@@ -173,3 +183,5 @@ def do_check_overstress(
             temperature_junction=kwargs.get("temperature_junction", 70.0),
             voltage_ratio=kwargs.get("voltage_ratio", 0.0),
         )
+
+    return _overstress, _reason
