@@ -10,5 +10,6 @@ from .models import (
     integratedcircuit,
     lamp,
     relay,
+    resistor,
     semiconductor,
 )

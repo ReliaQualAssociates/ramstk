@@ -321,89 +321,82 @@ def test_stress_limits():
             },
         },
         "resistor": {
-            "fixed": {
-                "film": {
-                    "chip": {
-                        "low_power": {
-                            "power": [0.7, 0.7, 0.7],
-                            "temperature": [0.7, 0.7, 0.7],
-                        },
-                        "high_power": {
-                            "power": [0.55, 0.55, 0.55],
-                            "temperature": [0.55, 0.55, 0.55],
-                        },
-                    },
-                    "general": {
-                        "low_power": {
-                            "power": [0.65, 0.65, 0.65],
-                            "temperature": [0.65, 0.65, 0.65],
-                            "voltage": [0.7, 0.7, 0.7],
-                        },
-                        "high_power": {
-                            "power": [0.55, 0.55, 0.55],
-                            "temperature": [0.55, 0.55, 0.55],
-                            "voltage": [0.7, 0.7, 0.7],
-                        },
-                    },
-                    "power": {
-                        "power": [0.55, 0.55, 0.55],
-                        "temperature": [0.55, 0.55, 0.55],
-                    },
-                    "network": {
-                        "power": [0.55, 0.55, 0.55],
-                        "temperature": [0.55, 0.55, 0.55],
-                        "voltage": [0.7, 0.7, 0.7],
-                    },
+            "fixed_chip": {
+                "low_power": {
+                    "power": [0.7, 0.7, 0.7],
+                    "temperature": [0.7, 0.7, 0.7],
                 },
-                "wirewound": {
-                    "accurate": {
-                        "low_power": {
-                            "power": [0.7, 0.7, 0.7],
-                            "temperature": [1.0, 1.0, 1.0],
-                            "voltage": [0.7, 0.7, 0.7],
-                        },
-                        "high_power": {
-                            "power": [0.5, 0.5, 0.5],
-                            "temperature": [1.0, 1.0, 1.0],
-                            "voltage": [0.7, 0.7, 0.7],
-                        },
-                    },
-                    "power": {
-                        "power": [0.6, 0.6, 0.6],
-                        "temperature": [0.6, 0.6, 0.6],
-                        "voltage": [0.7, 0.7, 0.7],
-                    },
-                    "chassis": {
-                        "power": [0.5, 0.5, 0.5],
-                        "temperature": [0.5, 0.5, 0.5],
-                        "voltage": [0.7, 0.7, 0.7],
-                    },
-                },
-            },
-            "variable": {
-                "wirewound": {
-                    "general": {
-                        "power": [0.55, 0.55, 0.55],
-                        "temperature": [0.55, 0.55, 0.55],
-                    },
-                    "precision": {
-                        "power": [0.55, 0.55, 0.55],
-                        "temperature": [0.55, 0.55, 0.55],
-                    },
-                    "power": {
-                        "power": [0.55, 0.55, 0.55],
-                        "temperature": [110.0, 110.0, 110.0],
-                    },
-                },
-                "composition": {
-                    "power": [0.5, 0.5, 0.5],
-                    "temperature": [0.5, 0.5, 0.5],
-                },
-                "film": {"power": [0.5, 0.5, 0.5], "temperature": [0.5, 0.5, 0.5]},
-                "precision": {
+                "high_power": {
                     "power": [0.55, 0.55, 0.55],
                     "temperature": [0.55, 0.55, 0.55],
                 },
+            },
+            "fixed_film": {
+                "low_power": {
+                    "power": [0.65, 0.65, 0.65],
+                    "temperature": [0.65, 0.65, 0.65],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "high_power": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+            },
+            "fixed_film_power": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [0.55, 0.55, 0.55],
+            },
+            "fixed_film_network": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [0.55, 0.55, 0.55],
+                "voltage": [0.7, 0.7, 0.7],
+            },
+            "fixed_wirewound": {
+                "low_power": {
+                    "power": [0.7, 0.7, 0.7],
+                    "temperature": [1.0, 1.0, 1.0],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "high_power": {
+                    "power": [0.5, 0.5, 0.5],
+                    "temperature": [1.0, 1.0, 1.0],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+            },
+            "fixed_wirewound_power": {
+                "power": [0.6, 0.6, 0.6],
+                "temperature": [0.6, 0.6, 0.6],
+                "voltage": [0.7, 0.7, 0.7],
+            },
+            "fixed_wirewound_chassis": {
+                "power": [0.5, 0.5, 0.5],
+                "temperature": [0.5, 0.5, 0.5],
+                "voltage": [0.7, 0.7, 0.7],
+            },
+            "variable_wirewound": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [0.55, 0.55, 0.55],
+            },
+            "variable_wirewound_precision": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [0.55, 0.55, 0.55],
+            },
+            "variable_wirewound_power": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [110.0, 110.0, 110.0],
+            },
+            "variable_composition": {
+                "power": [0.5, 0.5, 0.5],
+                "temperature": [0.5, 0.5, 0.5],
+            },
+            "variable_film": {
+                "power": [0.5, 0.5, 0.5],
+                "temperature": [0.5, 0.5, 0.5],
+            },
+            "variable_non_wirewound": {
+                "power": [0.55, 0.55, 0.55],
+                "temperature": [0.55, 0.55, 0.55],
             },
         },
         "capacitor": {
