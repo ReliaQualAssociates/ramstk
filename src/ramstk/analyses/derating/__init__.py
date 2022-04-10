@@ -12,4 +12,5 @@ from .models import (
     relay,
     resistor,
     semiconductor,
+    switch,
 )

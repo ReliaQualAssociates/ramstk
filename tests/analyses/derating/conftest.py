@@ -506,8 +506,8 @@ def test_stress_limits():
             },
         },
         "switch": {
-            "capacitive_load": {
-                "current": [0.7, 0.6, 0.5],
+            "lamp_load": {
+                "current": [0.2, 0.1, 0.1],
                 "power": [0.7, 0.6, 0.5],
                 "surge_current": [0.8, 0.8, 0.8],
             },
@@ -516,7 +516,7 @@ def test_stress_limits():
                 "power": [0.7, 0.6, 0.5],
                 "surge_current": [0.8, 0.8, 0.8],
             },
-            "resistitive_load": {
+            "resistive_load": {
                 "current": [0.7, 0.6, 0.5],
                 "power": [0.7, 0.6, 0.5],
                 "surge_current": [0.8, 0.8, 0.8],

@@ -19,6 +19,7 @@ from .models import (
     relay,
     resistor,
     semiconductor,
+    switch,
 )
 
 
@@ -132,6 +133,14 @@ def do_check_overstress(
             quality_id=kwargs.get("quality_id", 1),
             temperature_junction=kwargs.get("temperature_junction", 70.0),
             voltage_ratio=kwargs.get("voltage_ratio", 0.0),
+        )
+    elif category == "switch":
+        _overstress, _reason = switch.do_derating_analysis(
+            _environment,
+            stress_limits,
+            application_id=kwargs.get("application_id", 0),
+            current_ratio=kwargs.get("current_ratio", 0.0),
+            power_ratio=kwargs.get("power_ratio", 0.0),
         )
 
     return _overstress, _reason
