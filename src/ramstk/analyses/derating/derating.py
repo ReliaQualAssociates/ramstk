@@ -23,11 +23,10 @@ from .models import (
 )
 
 
-# pylint: disable=inconsistent-return-statements
 def do_check_overstress(
     category: str,
     environment_id: int,
-    subcategory_id,
+    subcategory_id: int,
     stress_limits: Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]],
     **kwargs,
 ) -> Tuple[int, str]:
@@ -39,6 +38,10 @@ def do_check_overstress(
     :param stress_limits:
     :return: _overstress, _reason
     :rtype: tuple
+    :raise: KeyError if an unknown environment ID is passed.
+    :raise: KeyError if an unknown subcategory ID, quality ID, or type ID are passed.
+    :raise: TypeError if a non-numeric value is passed for the current ratio,
+        power ratio, junction temperature, or voltage ratio.
     """
     _overstress: int = 0
     _reason: str = ""

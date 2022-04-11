@@ -97,7 +97,7 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
     with pytest.raises(IndexError):
         capacitor.do_derating_analysis(
             5,
-            11,
+            10,
             test_stress_limits["capacitor"],
             specification_id=2,
             temperature_case=46.3,
@@ -142,7 +142,7 @@ def test_do_derating_analysis_non_numeric_temperature(
     case_temperature,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """should raise am TypeError when passed a non-numeric case temperature."""
     with pytest.raises(TypeError):
         capacitor.do_derating_analysis(
             1,

@@ -2,160 +2,168 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.test_derating.py is part of The RAMSTK Project
+#       tests.analyses.derating.derating_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the stress derating module."""
 
 # Third Party Imports
 import pytest
 
 # RAMSTK Package Imports
-from ramstk.analyses import derating
+from ramstk.analyses.derating import derating
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress():
-    """check_overstress() should return a dict of environ:condition pairs on
-    success."""
-    _overstress = derating.check_overstress(
-        0.625,
-        {
-            "mild": [0.0, 0.9],
-            "harsh": [0.0, 0.75],
-        },
+def test_check_overstress(test_stress_limits):
+    """should determine the component is not execeeding any limit."""
+    _overstress, _reason = derating.do_check_overstress(
+        "capacitor",
+        3,
+        10,
+        test_stress_limits["capacitor"],
+        specification_id=1,
+        temperature_case=38.4,
+        temperature_rated_max=85.0,
+        voltage_ratio=0.2,
     )
 
-    assert _overstress["mild"] == [False, False]
-    assert _overstress["harsh"] == [False, False]
+    assert _overstress == 0
+    assert _reason == ""
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_under_limit():
-    """check_overstress() should return a dict of environ:condition pairs on success
-    with the below lower limit set to True."""
-    _overstress = derating.check_overstress(
-        -0.625,
-        {
-            "mild": [0.0, 0.9],
-            "harsh": [0.0, 0.75],
-        },
+def test_check_overstress_over_limit_protected(test_stress_limits):
+    """should determine a component is exceeding a limit in a protected environment."""
+    _overstress, _reason = derating.do_check_overstress(
+        "capacitor",
+        1,
+        10,
+        test_stress_limits["capacitor"],
+        specification_id=1,
+        temperature_case=78.4,
+        temperature_rated_max=85.0,
+        voltage_ratio=0.7,
     )
 
-    assert _overstress["mild"] == [True, False]
-    assert _overstress["harsh"] == [True, False]
-
-
-@pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_over_limit_harsh():
-    """check_overstress() should return a dict of environ:condition pairs on success
-    with the above upper limit set to True for a harsh environment."""
-    _overstress = derating.check_overstress(
-        0.825,
-        {
-            "mild": [0.0, 0.9],
-            "harsh": [0.0, 0.75],
-        },
+    assert _overstress == 1
+    assert (
+        _reason == "Case temperature of 78.4C exceeds the derated maximum "
+        "temperature of 15.0C less than maximum rated temperature of 85.0C.\nVoltage "
+        "ratio of 0.7 exceeds the allowable limit of 0.6.\n"
     )
 
-    assert _overstress["mild"] == [False, False]
-    assert _overstress["harsh"] == [False, True]
-
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_over_limit_harsh_mild():
-    """check_overstress() should return a dict of environ:condition pairs on success
-    with the above upper limit set to True for both mild and harsh environments."""
-    _overstress = derating.check_overstress(
-        0.925,
-        {
-            "mild": [0.0, 0.9],
-            "harsh": [0.0, 0.75],
-        },
+def test_check_overstress_over_limit_normal(test_stress_limits):
+    """should determine a component is exceeding a limit in a normal environment."""
+    _overstress, _reason = derating.do_check_overstress(
+        "capacitor",
+        2,
+        10,
+        test_stress_limits["capacitor"],
+        specification_id=1,
+        temperature_case=78.4,
+        temperature_rated_max=85.0,
+        voltage_ratio=0.7,
     )
 
-    assert _overstress["mild"] == [False, True]
-    assert _overstress["harsh"] == [False, True]
+    assert _overstress == 1
+    assert (
+        _reason == "Case temperature of 78.4C exceeds the derated maximum "
+        "temperature of 15.0C less than maximum rated temperature of 85.0C.\nVoltage "
+        "ratio of 0.7 exceeds the allowable limit of 0.6.\n"
+    )
 
 
 @pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_limits_not_lists():
-    """check_overstress() should raise a TypeError if the limits passed are not a
-    list."""
+def test_check_overstress_over_limit_harsh(test_stress_limits):
+    """should determine a component is exceeding a limit in a harsh environment."""
+    _overstress, _reason = derating.do_check_overstress(
+        "capacitor",
+        3,
+        10,
+        test_stress_limits["capacitor"],
+        specification_id=1,
+        temperature_case=78.4,
+        temperature_rated_max=85.0,
+        voltage_ratio=0.7,
+    )
+
+    assert _overstress == 1
+    assert (
+        _reason == "Case temperature of 78.4C exceeds the derated maximum "
+        "temperature of 15.0C less than maximum rated temperature of 85.0C.\nVoltage "
+        "ratio of 0.7 exceeds the allowable limit of 0.6.\n"
+    )
+
+
+@pytest.mark.unit
+def test_check_overstress_unknown_environment(test_stress_limits):
+    """should raise an KeyError when passed an unknown environment."""
+    with pytest.raises(KeyError):
+        derating.do_check_overstress(
+            "capacitor",
+            15,
+            10,
+            test_stress_limits["capacitor"],
+            specification_id=2,
+            temperature_case=46.3,
+            temperature_rated_max=70.0,
+            voltage_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+def test_check_overstress_unknown_subcategory(test_stress_limits):
+    """should raise an KeyError when passed an unknown subcategory."""
+    with pytest.raises(KeyError):
+        derating.do_check_overstress(
+            "capacitor",
+            5,
+            20,
+            test_stress_limits["capacitor"],
+            specification_id=2,
+            temperature_case=46.3,
+            temperature_rated_max=70.0,
+            voltage_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+def test_check_overstress_unknown_category(test_stress_limits):
+    """should return (0, "") when passed an unknown component category."""
+    _overstress, _reason = derating.do_check_overstress(
+        "meter",
+        5,
+        10,
+        test_stress_limits["capacitor"],
+        specification_id=2,
+        temperature_case=46.3,
+        temperature_rated_max=70.0,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("case_temperature", ["128.3", None])
+def test_check_overstress_non_numeric_input(
+    case_temperature,
+    test_stress_limits,
+):
+    """should raise am TypeError when passed a non-numeric value."""
     with pytest.raises(TypeError):
-        _overstress = derating.check_overstress(
-            0.625,
-            {
-                "mild": 0.9,
-                "harsh": 0.75,
-            },
+        derating.do_check_overstress(
+            "capacitor",
+            1,
+            1,
+            test_stress_limits["capacitor"],
+            specification_id=2,
+            temperature_case=case_temperature,
+            temperature_rated_max=70.0,
+            voltage_ratio=0.2,
         )
-
-
-@pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_only_one_limit():
-    """check_overstress() should raise an IndexError if only one limit is passed in the
-    list."""
-    with pytest.raises(IndexError):
-        _overstress = derating.check_overstress(
-            0.625,
-            {
-                "mild": [
-                    0.9,
-                ],
-                "harsh": [
-                    0.75,
-                ],
-            },
-        )
-
-
-@pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_string_input():
-    """check_overstress() should raise an TypeError if a limit or stress is passed as
-    string."""
-    with pytest.raises(TypeError):
-        _overstress = derating.check_overstress(
-            0.625,
-            {
-                "mild": [0.0, "0.9"],
-                "harsh": [0.0, 0.75],
-            },
-        )
-
-    with pytest.raises(TypeError):
-        _overstress = derating.check_overstress(
-            "0.625",
-            {
-                "mild": [0.0, 0.9],
-                "harsh": [0.0, 0.75],
-            },
-        )
-
-
-@pytest.mark.unit
-@pytest.mark.calculation
-def test_check_overstress_more_than_two_environs():
-    """check_overstress() should work with any number of environments passed."""
-    _overstress = derating.check_overstress(
-        0.625,
-        {
-            "mild": [0.0, 0.9],
-            "harsh": [0.0, 0.75],
-            "protected": [0.5, 0.8],
-            "daddy_doyle": [0.25, 0.75],
-        },
-    )
-
-    assert _overstress["mild"] == [False, False]
-    assert _overstress["harsh"] == [False, False]
-    assert _overstress["protected"] == [False, False]
-    assert _overstress["daddy_doyle"] == [False, False]
