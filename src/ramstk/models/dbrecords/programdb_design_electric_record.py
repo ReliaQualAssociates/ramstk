@@ -9,61 +9,20 @@
 """RAMSTKDesignElectric Record Model."""
 
 # Standard Library Imports
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
 
 # RAMSTK Package Imports
-from ramstk.analyses import derating, stress
+from ramstk.analyses import stress
+from ramstk.analyses.derating import derating
 from ramstk.views.gtk3 import _
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
-
-
-def do_check_overstress(
-    overstress: Dict[str, List[float]], stress_type: str, limits: Dict[str, List[float]]
-) -> Tuple[int, str]:
-    """Check the over stress condition and build a reason message.
-
-    :param overstress: the dict containing the results of the
-        over stress analysis.
-    :param stress_type: the over stress type being checked.
-    :return: (_overstress, _reason); whether a component is overstressed and the reason.
-    :rtype: tuple
-    """
-    _overstress = 0
-    _reason = ""
-
-    if overstress["harsh"][0]:
-        _overstress = 1
-        _reason = _reason + (
-            f"Operating {stress_type} ratio is less than the harsh environment limit "
-            f"of {limits['harsh'][0]}.\n"
-        )
-    if overstress["harsh"][1]:
-        _overstress = 1
-        _reason = _reason + (
-            f"Operating {stress_type} ratio is greater than the harsh environment "
-            f"limit of {limits['harsh'][1]}.\n"
-        )
-    if overstress["mild"][0]:
-        _overstress = 1
-        _reason = _reason + (
-            f"Operating {stress_type} ratio is less than the mild environment limit of "
-            f"{limits['mild'][0]}.\n"
-        )
-    if overstress["mild"][1]:
-        _overstress = 1
-        _reason = _reason + (
-            f"Operating {stress_type} ratio is greater than the mild environment limit "
-            f"of {limits['mild'][1]}.\n"
-        )
-
-    return _overstress, _reason
 
 
 # pylint: disable=R0902
@@ -463,52 +422,62 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
                 ),
             )
 
-    def do_derating_analysis(self, stress_limits: List[float]) -> None:
+    def do_derating_analysis(
+        self,
+        category_id: int,
+        subcategory_id: int,
+        quality_id: int,
+        stress_limits: Dict[
+            str, Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]]
+        ],
+    ) -> None:
         """Perform a derating analysis.
 
+        :param category_id: the category ID of the component to derate.
+        :param subcategory_id: the subcategory ID of the component to derate.
+        :param quality_id: the quality ID of the component to derate.
         :param stress_limits: the list of stress limits for the selected record.
         :return: None
         :rtype: None
         """
-        _overstress = 0
-        _reason = ""
+        self.overstress = 0
+        self.reason = ""
 
-        _current_limits = {
-            "harsh": [0.0, stress_limits[0]],
-            "mild": [0.0, stress_limits[1]],
-        }
-        _power_limits = {
-            "harsh": [0.0, stress_limits[2]],
-            "mild": [0.0, stress_limits[3]],
-        }
-        _voltage_limits = {
-            "harsh": [0.0, stress_limits[4]],
-            "mild": [0.0, stress_limits[5]],
-        }
+        _category = {
+            1: "integrated_circuit",
+            2: "semiconductor",
+            3: "resistor",
+            4: "capacitor",
+            5: "inductor",
+            6: "relay",
+            7: "switch",
+            8: "connection",
+            10: "miscellaneous",
+        }[category_id]
 
-        _ostress, _rsn = do_check_overstress(
-            derating.check_overstress(self.current_ratio, _current_limits),
-            "current",
-            _current_limits,
+        self.overstress, self.reason = derating.do_check_overstress(
+            _category,
+            self.environment_active_id,
+            subcategory_id,
+            stress_limits[_category],
+            application_id=self.application_id,
+            current_ratio=self.current_ratio,
+            family_id=self.family_id,
+            package_id=self.package_id,
+            power_rated=self.power_rated,
+            power_ratio=self.power_ratio,
+            quality_id=quality_id,
+            specification_id=self.specification_id,
+            technology_id=self.technology_id,
+            temperature_active=self.temperature_active,
+            temperature_case=self.temperature_case,
+            temperature_hot_spot=self.temperature_hot_spot,
+            temperature_junction=self.temperature_junction,
+            temperature_knee=self.temperature_knee,
+            temperature_rated_max=self.temperature_rated_max,
+            type_id=self.type_id,
+            voltage_ratio=self.voltage_ratio,
         )
-        _overstress = _overstress or _ostress
-        _reason += _rsn
-
-        _ostress, _rsn = do_check_overstress(
-            derating.check_overstress(self.power_ratio, _power_limits),
-            "power",
-            _power_limits,
-        )
-        _overstress = _overstress or _ostress
-        _reason += _rsn
-
-        _ostress, _rsn = do_check_overstress(
-            derating.check_overstress(self.voltage_ratio, _voltage_limits),
-            "voltage",
-            _voltage_limits,
-        )
-        self.overstress = _overstress or _ostress
-        self.reason = _reason + _rsn
 
     def do_stress_analysis(self, category_id: int) -> None:
         """Perform a stress analysis.
