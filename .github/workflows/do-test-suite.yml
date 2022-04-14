@@ -15,7 +15,8 @@ name: Execute RAMSTK Test Suite with Coverage
 on:
   push:
     branches:
-      - master
+      - 'master'
+      - '!release/**'
     paths:
       - "**.py"
       - "!docs/**"

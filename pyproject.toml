@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ramstk"
-version = "0.17.1"
+version = "0.18.0"
 description = "A tool to manage RAMS data and analyses."
 authors = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
 maintainers = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
@@ -76,7 +76,7 @@ pre-commit-hooks = "^4.0.1"
 pycodestyle = "^2.7.0"
 pydocstyle = "^6.1.1"
 pylint = "^2.6.0"
-pyroma = "^3.2"
+pyroma = "^4.0"
 pytest = "<7.0.0"
 pytest-cov = "^3.0.0"
 pytest-icdiff = "^0.5"

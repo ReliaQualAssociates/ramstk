@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.18.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.18.0) (2022-04-14)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.17.1...v0.18.0)
+
+New Features
+
+- feat: add derating criteria for fuse, relay, resistor, and switch [\#1051](https://github.com/ReliaQualAssociates/ramstk/pull/1051) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- build: add support for Python 3.9 and 3.10 [\#1043](https://github.com/ReliaQualAssociates/ramstk/pull/1043) ([weibullguy](https://github.com/weibullguy))
+- build: drop support for Python 3.6 [\#1041](https://github.com/ReliaQualAssociates/ramstk/pull/1041) ([weibullguy](https://github.com/weibullguy))
+- refactor: refactor the plot widget class [\#1040](https://github.com/ReliaQualAssociates/ramstk/pull/1040) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.17.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.17.1) (2022-03-30)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.17.0...v0.17.1)
@@ -158,31 +172,9 @@ Bug Fixes
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.13...v0.15.14)
 
-Bug Fixes
-
-- fix: CellRendererCombo not updated when edited in work view [\#945](https://github.com/ReliaQualAssociates/ramstk/pull/945) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: fix workflow file errors [\#944](https://github.com/ReliaQualAssociates/ramstk/pull/944) ([weibullguy](https://github.com/weibullguy))
-- ci: update workflows to follow more conventional ci/cd pipeline [\#942](https://github.com/ReliaQualAssociates/ramstk/pull/942) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.13](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.13) (2022-02-03)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.12...v0.15.13)
-
-Bug Fixes
-
-- fix: properly handle CellRenderCombo returning integers [\#940](https://github.com/ReliaQualAssociates/ramstk/pull/940) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- refactor: move RAMSTKFailureMode to its own package [\#939](https://github.com/ReliaQualAssociates/ramstk/pull/939) ([weibullguy](https://github.com/weibullguy))
-- refactor: move RAMSTKSubCategory to its own package [\#937](https://github.com/ReliaQualAssociates/ramstk/pull/937) ([weibullguy](https://github.com/weibullguy))
-- refactor: move RAMSTKCategory to its own package [\#933](https://github.com/ReliaQualAssociates/ramstk/pull/933) ([weibullguy](https://github.com/weibullguy))
-- refactor: retire listviews and listbook [\#932](https://github.com/ReliaQualAssociates/ramstk/pull/932) ([weibullguy](https://github.com/weibullguy))
-- refactor: move failure definitions to Function work view [\#931](https://github.com/ReliaQualAssociates/ramstk/pull/931) ([weibullguy](https://github.com/weibullguy))
-- refactor: associate failure definitions with functions [\#930](https://github.com/ReliaQualAssociates/ramstk/pull/930) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.12](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.12) (2022-01-28)
 
