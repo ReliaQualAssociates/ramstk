@@ -269,10 +269,10 @@ def _get_environment_factor(
         return _pi_e_lists[category_id][subcategory_id][quality_id][
             environment_active_id - 1
         ]
-    elif category_id in {2, 3, 5, 7, 9, 10, 8}:
+    if category_id in {2, 3, 5, 7, 9, 10, 8}:
         return _pi_e_lists[category_id][subcategory_id][environment_active_id - 1]
-    else:
-        return _pi_e_lists[category_id][environment_active_id - 1]
+
+    return _pi_e_lists[category_id][environment_active_id - 1]
 
 
 def _get_part_count_quality_factor(
@@ -309,12 +309,14 @@ def _get_part_count_quality_factor(
 
     if category_id in {6, 7, 9}:
         return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 10 and subcategory_id in {1, 2}:
+
+    if category_id == 10 and subcategory_id in {1, 2}:
         return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 10 and subcategory_id in {3, 4}:
+
+    if category_id == 10 and subcategory_id in {3, 4}:
         return 1.0
-    else:
-        return _pi_q_lists[category_id][quality_id - 1]
+
+    return _pi_q_lists[category_id][quality_id - 1]
 
 
 # pylint: disable=too-many-return-statements
@@ -346,19 +348,24 @@ def _get_part_stress_quality_factor(
 
     if category_id == 1:
         return _pi_q_lists[category_id][quality_id - 1]
-    elif (
+
+    if (
         category_id == 8
         and subcategory_id in {4, 5}
         or (category_id == 7 and subcategory_id == 5)
     ):
         return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
-    elif category_id == 7:
+
+    if category_id == 7:
         return 0.0
-    elif category_id == 8:
+
+    if category_id == 8:
         return 0.0
-    elif category_id == 9 and subcategory_id == 1:
+
+    if category_id == 9 and subcategory_id == 1:
         return 0.0
-    elif category_id == 10 and subcategory_id in {3, 4}:
+
+    if category_id == 10 and subcategory_id in {3, 4}:
         return 0.0
-    else:
-        return _pi_q_lists[category_id][subcategory_id][quality_id - 1]
+
+    return _pi_q_lists[category_id][subcategory_id][quality_id - 1]

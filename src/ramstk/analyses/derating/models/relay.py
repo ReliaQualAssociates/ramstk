@@ -65,12 +65,12 @@ def _do_check_current_limit(
     """
     if current_ratio <= current_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Current ratio of {current_ratio} exceeds the allowable limit of "
-            f"{current_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Current ratio of {current_ratio} exceeds the allowable limit of "
+        f"{current_limit}.\n",
+    )
 
 
 def _do_check_temperature_limit(
@@ -88,10 +88,10 @@ def _do_check_temperature_limit(
     """
     if active_temperature <= (max_rated_temperature - temperature_limit):
         return 0, ""
-    else:
-        return (
-            1,
-            f"Ambient temperature of {active_temperature}C exceeds the derated maximum "
-            f"temperature of {temperature_limit}C less than maximum rated temperature "
-            f"of {max_rated_temperature}C.\n",
-        )
+
+    return (
+        1,
+        f"Ambient temperature of {active_temperature}C exceeds the derated maximum "
+        f"temperature of {temperature_limit}C less than maximum rated temperature "
+        f"of {max_rated_temperature}C.\n",
+    )

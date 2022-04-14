@@ -95,13 +95,13 @@ def _do_check_temperature_limit(
     """
     if case_temperature <= (max_rated_temperature - temperature_limit):
         return 0, ""
-    else:
-        return (
-            1,
-            f"Case temperature of {case_temperature}C exceeds the derated maximum "
-            f"temperature of {temperature_limit}C less than maximum rated temperature "
-            f"of {max_rated_temperature}C.\n",
-        )
+
+    return (
+        1,
+        f"Case temperature of {case_temperature}C exceeds the derated maximum "
+        f"temperature of {temperature_limit}C less than maximum rated temperature "
+        f"of {max_rated_temperature}C.\n",
+    )
 
 
 def _do_check_voltage_limit(
@@ -117,9 +117,9 @@ def _do_check_voltage_limit(
     """
     if voltage_ratio <= voltage_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
-            f"{voltage_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
+        f"{voltage_limit}.\n",
+    )

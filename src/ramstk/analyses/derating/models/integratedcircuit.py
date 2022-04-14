@@ -88,12 +88,12 @@ def _do_check_current_limit(
     """
     if current_ratio <= current_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Current ratio of {current_ratio} exceeds the allowable limit of "
-            f"{current_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Current ratio of {current_ratio} exceeds the allowable limit of "
+        f"{current_limit}.\n",
+    )
 
 
 def _do_check_temperature_limit(
@@ -109,9 +109,9 @@ def _do_check_temperature_limit(
     """
     if junction_temperature <= temperature_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Junction temperature of {junction_temperature}C exceeds the allowable "
-            f"limit of {temperature_limit}C.\n",
-        )
+
+    return (
+        1,
+        f"Junction temperature of {junction_temperature}C exceeds the allowable "
+        f"limit of {temperature_limit}C.\n",
+    )

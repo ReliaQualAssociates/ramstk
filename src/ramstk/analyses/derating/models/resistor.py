@@ -108,12 +108,12 @@ def _do_check_power_limit(
     """
     if power_ratio <= power_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Power ratio of {power_ratio} exceeds the allowable limit of "
-            f"{power_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Power ratio of {power_ratio} exceeds the allowable limit of "
+        f"{power_limit}.\n",
+    )
 
 
 def _do_check_temperature_limit(
@@ -136,12 +136,12 @@ def _do_check_temperature_limit(
 
     if case_temperature <= _max_temperature:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Case temperature of {case_temperature}C exceeds the derated maximum "
-            f"temperature of {_max_temperature}C.\n",
-        )
+
+    return (
+        1,
+        f"Case temperature of {case_temperature}C exceeds the derated maximum "
+        f"temperature of {_max_temperature}C.\n",
+    )
 
 
 def _do_check_voltage_limit(
@@ -157,12 +157,12 @@ def _do_check_voltage_limit(
     """
     if voltage_ratio <= voltage_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
-            f"{voltage_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
+        f"{voltage_limit}.\n",
+    )
 
 
 def _do_get_power_limit(
@@ -186,8 +186,8 @@ def _do_get_power_limit(
             if rated_power >= 0.5
             else stress_limits[subcategory]["low_power"]["power"][environment_id]
         )
-    else:
-        return stress_limits[subcategory]["power"][environment_id]
+
+    return stress_limits[subcategory]["power"][environment_id]
 
 
 def _do_get_temperature_limit(
@@ -211,8 +211,8 @@ def _do_get_temperature_limit(
             if rated_power >= 0.5
             else stress_limits[subcategory]["low_power"]["temperature"][environment_id]
         )
-    else:
-        return stress_limits[subcategory]["temperature"][environment_id]
+
+    return stress_limits[subcategory]["temperature"][environment_id]
 
 
 def _do_get_voltage_limit(
@@ -236,5 +236,5 @@ def _do_get_voltage_limit(
             if rated_power >= 0.5
             else stress_limits[subcategory]["low_power"]["voltage"][environment_id]
         )
-    else:
-        return stress_limits[subcategory]["voltage"][environment_id]
+
+    return stress_limits[subcategory]["voltage"][environment_id]

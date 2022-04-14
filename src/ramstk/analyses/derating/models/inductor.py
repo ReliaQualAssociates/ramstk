@@ -81,12 +81,12 @@ def _do_check_current_limit(
     """
     if current_ratio <= current_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Current ratio of {current_ratio} exceeds the allowable limit of "
-            f"{current_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Current ratio of {current_ratio} exceeds the allowable limit of "
+        f"{current_limit}.\n",
+    )
 
 
 def _do_check_temperature_limit(
@@ -104,13 +104,13 @@ def _do_check_temperature_limit(
     """
     if hot_spot_temperature <= (max_rated_temperature - temperature_limit):
         return 0, ""
-    else:
-        return (
-            1,
-            f"Hot spot temperature of {hot_spot_temperature}C exceeds the derated "
-            f"maximum hot spot temperature of {temperature_limit}C less than maximum "
-            f"rated hot spot temperature of {max_rated_temperature}C.\n",
-        )
+
+    return (
+        1,
+        f"Hot spot temperature of {hot_spot_temperature}C exceeds the derated "
+        f"maximum hot spot temperature of {temperature_limit}C less than maximum "
+        f"rated hot spot temperature of {max_rated_temperature}C.\n",
+    )
 
 
 def _do_check_voltage_limit(
@@ -126,9 +126,9 @@ def _do_check_voltage_limit(
     """
     if voltage_ratio <= voltage_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
-            f"{voltage_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
+        f"{voltage_limit}.\n",
+    )

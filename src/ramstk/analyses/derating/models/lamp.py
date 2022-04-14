@@ -53,9 +53,9 @@ def _do_check_current_limit(
     """
     if current_ratio <= current_limit:
         return 0, ""
-    else:
-        return (
-            1,
-            f"Current ratio of {current_ratio} exceeds the allowable limit of "
-            f"{current_limit}.\n",
-        )
+
+    return (
+        1,
+        f"Current ratio of {current_ratio} exceeds the allowable limit of "
+        f"{current_limit}.\n",
+    )
