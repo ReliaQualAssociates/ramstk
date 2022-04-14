@@ -52,18 +52,18 @@ except KeyError:
         sys.exit(1)
 
 SRC_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-CONF_DIR = VIRTUAL_ENV + "/share/RAMSTK"
-DATA_DIR = CONF_DIR + "/layouts"
-ICON_DIR = CONF_DIR + "/icons"
-TMP_DIR = VIRTUAL_ENV + "/tmp"
-LOG_DIR = TMP_DIR + "/logs"
-TEST_PROGRAM_DB_PATH = TMP_DIR + "/TestProgramDB.ramstk"
-TEST_COMMON_DB_PATH = TEMPDIR + "/TestCommonDB.ramstk"
-TEST_COMMON_DB_URI = "sqlite:///" + TEST_COMMON_DB_PATH
+CONF_DIR = f"{VIRTUAL_ENV}/share/RAMSTK"
+DATA_DIR = f"{CONF_DIR}/layouts"
+ICON_DIR = f"{CONF_DIR}/icons"
+TMP_DIR = f"{VIRTUAL_ENV}/tmp"
+LOG_DIR = f"{TMP_DIR}/logs"
+TEST_PROGRAM_DB_PATH = f"{TMP_DIR}/TestProgramDB.ramstk"
+TEST_COMMON_DB_PATH = f"{TEMPDIR}/TestCommonDB.ramstk"
+TEST_COMMON_DB_URI = f"sqlite:///{TEST_COMMON_DB_PATH}"
 
-DEBUG_LOG = LOG_DIR + "/RAMSTK_debug.log"
-USER_LOG = LOG_DIR + "/RAMSTK_user.log"
-IMPORT_LOG = LOG_DIR + "/RAMSTK_import.log"
+DEBUG_LOG = f"{LOG_DIR}/RAMSTK_debug.log"
+USER_LOG = f"{LOG_DIR}/RAMSTK_user.log"
+IMPORT_LOG = f"{LOG_DIR}/RAMSTK_import.log"
 
 HEADERS = {
     "Function": [
@@ -396,8 +396,8 @@ def setup_test_directory(test_dir) -> None:
 
 
 def populate_test_directory(test_dir) -> None:
-    dir_util.copy_tree(os.getcwd() + "/data/icons/", test_dir + "/icons/")
-    dir_util.copy_tree(os.getcwd() + "/data/layouts/", test_dir + "/layouts/")
+    dir_util.copy_tree(f"{os.getcwd()}/data/icons/", f"{test_dir}/icons/")
+    dir_util.copy_tree(f"{os.getcwd()}/data/layouts/", f"{test_dir}/layouts/")
 
 
 def teardown_test_directory(test_dir) -> None:
@@ -504,7 +504,7 @@ def test_config_dir():
     allow testing certain functions/methods that look for a user configuration
     directory otherwise defaulting to the site-wide configuration directory.
     """
-    _config_dir = VIRTUAL_ENV + "/share/RAMSTK"
+    _config_dir = f"{VIRTUAL_ENV}/share/RAMSTK"
 
     # Set up the test configuration directories.
     setup_test_directory(test_dir=_config_dir)
@@ -520,7 +520,7 @@ def test_import_dir():
     """Create a directory for export testing."""
     # This simply creates the base name of the file and directory to create it
     # in.  A test would need to add the appropriate file extension.
-    _import_dir = TMP_DIR + "/test_imports"
+    _import_dir = f"{TMP_DIR}/test_imports"
 
     # Set up the test import directory.
     setup_test_directory(test_dir=_import_dir)
@@ -536,7 +536,7 @@ def test_export_dir():
     """Create a directory for export testing."""
     # This simply creates the base name of the file and directory to create it
     # in.  A test would need to add the appropriate file extension.
-    _export_dir = TMP_DIR + "/test_exports/"
+    _export_dir = f"{TMP_DIR}/test_exports/"
 
     # Set up the test export directory.
     setup_test_directory(test_dir=_export_dir)
@@ -550,24 +550,24 @@ def test_export_dir():
 @pytest.fixture(scope="session")
 def make_home_config_dir():
     """Create a configuration directory to mimic a user's configuration directory."""
-    _config_dir = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
+    _config_dir = f"{VIRTUAL_ENV}/tmp/.config/RAMSTK"
 
     # Set up the test home configuration directory.
     setup_test_directory(_config_dir)
-    setup_test_directory(_config_dir + "/layouts")
-    setup_test_directory(_config_dir + "/icons")
-    setup_test_directory(_config_dir + "/log")
+    setup_test_directory(f"{_config_dir}/layouts")
+    setup_test_directory(f"{_config_dir}/icons")
+    setup_test_directory(f"{_config_dir}/log")
 
     # Set up the test analyses directory.
-    _analyses_dir = "{0}/tmp/analyses/ramstk".format(VIRTUAL_ENV)
+    _analyses_dir = f"{VIRTUAL_ENV}/tmp/analyses/ramstk"
     setup_test_directory(_analyses_dir)
 
     shutil.copyfile(
-        "./data/sqlite_program_db.sql", _config_dir + "/sqlite_program_db.sql"
+        "./data/sqlite_program_db.sql", f"{_config_dir}/sqlite_program_db.sql"
     )
     shutil.copyfile(
         "./data/postgres_program_db.sql",
-        _config_dir + "/postgres_program_db.sql",
+        f"{_config_dir}/postgres_program_db.sql",
     )
 
     yield _config_dir
@@ -604,7 +604,7 @@ def test_common_dao():
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "test_common_db_{}".format(db_name),
+        "database": f"test_common_db_{db_name}",
     }
 
     # Set up the test database.
@@ -643,7 +643,7 @@ def test_program_dao():
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "test_program_db_{}".format(db_name),
+        "database": f"test_program_db_{db_name}",
     }
 
     # Set up the test database.
@@ -685,7 +685,7 @@ def test_simple_database():
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "test_simple_db_{}".format(db_name),
+        "database": f"test_simple_db_{db_name}",
     }
 
     # Set up the test database.
@@ -723,7 +723,7 @@ def test_simple_program_database():
         "password": "postgres",
         "host": "localhost",
         "port": "5432",
-        "database": "test_simple_program_db_{}".format(db_name),
+        "database": f"test_simple_program_db_{db_name}",
     }
 
     # Set up the test database.
@@ -745,7 +745,7 @@ def test_simple_program_database():
 def test_license_file():
     """Create a license key file for testing."""
     _cwd = os.getcwd()
-    with open(_cwd + "/license.key", "w") as _license_file:
+    with open(f"{_cwd}/license.key", "w") as _license_file:
         _license_file.write("0\n")
         _license_file.write("apowdigfb3rh9214839qu\n")
         _license_file.write("2019-08-07\n")
@@ -769,13 +769,13 @@ def test_license_file():
         _license_file.write("ReliaQual Test Site")
     yield _license_file
 
-    os.remove(_cwd + "/license.key")
+    os.remove(f"{_cwd}/license.key")
 
 
 @pytest.fixture
 def test_log_file():
     """Create a log file."""
-    _test_file = TMP_DIR + "/test_file.log"
+    _test_file = f"{TMP_DIR}/test_file.log"
     Path(_test_file).touch()
 
     yield _test_file
@@ -787,14 +787,14 @@ def test_log_file():
 def test_toml_site_configuration(test_config_dir):
     """Create a toml site configuration file."""
     _site_config = RAMSTKSiteConfiguration()
-    _site_config.RAMSTK_SITE_CONF = VIRTUAL_ENV + "/share/RAMSTK/Site.toml"
+    _site_config.RAMSTK_SITE_CONF = f"{VIRTUAL_ENV}/share/RAMSTK/Site.toml"
     _dic_site_configuration = {
         "title": "RAMSTK Site Configuration",
         "backend": {
             "dialect": "sqlite",
             "host": "localhost",
             "port": "3306",
-            "database": VIRTUAL_ENV + "/share/RAMSTK/ramstk_common.ramstk",
+            "database": f"{VIRTUAL_ENV}/share/RAMSTK/ramstk_common.ramstk",
             "user": "johnny.tester",
             "password": "clear.text.password",
         },
@@ -810,13 +810,13 @@ def test_toml_user_configuration(make_home_config_dir):
     """Create a toml user configuration file."""
     _user_config = RAMSTKUserConfiguration()
     _user_config._INSTALL_PREFIX = VIRTUAL_ENV
-    _user_config.RAMSTK_HOME_DIR = VIRTUAL_ENV + "/tmp"
-    _user_config.RAMSTK_CONF_DIR = VIRTUAL_ENV + "/tmp/.config/RAMSTK"
-    _user_config.RAMSTK_PROG_CONF = _user_config.RAMSTK_CONF_DIR + "/RAMSTK.toml"
-    _user_config.RAMSTK_DATA_DIR = _user_config.RAMSTK_CONF_DIR + "/layouts"
-    _user_config.RAMSTK_ICON_DIR = _user_config.RAMSTK_CONF_DIR + "/icons"
-    _user_config.RAMSTK_LOG_DIR = _user_config.RAMSTK_CONF_DIR + "/logs"
-    _user_config.RAMSTK_PROG_DIR = VIRTUAL_ENV + "/tmp/analyses/ramstk"
+    _user_config.RAMSTK_HOME_DIR = f"{VIRTUAL_ENV}/tmp"
+    _user_config.RAMSTK_CONF_DIR = f"{VIRTUAL_ENV}/tmp/.config/RAMSTK"
+    _user_config.RAMSTK_PROG_CONF = f"{_user_config.RAMSTK_CONF_DIR}/RAMSTK.toml"
+    _user_config.RAMSTK_DATA_DIR = f"{_user_config.RAMSTK_CONF_DIR}/layouts"
+    _user_config.RAMSTK_ICON_DIR = f"{_user_config.RAMSTK_CONF_DIR}/icons"
+    _user_config.RAMSTK_LOG_DIR = f"{_user_config.RAMSTK_CONF_DIR}/logs"
+    _user_config.RAMSTK_PROG_DIR = f"{VIRTUAL_ENV}/tmp/analyses/ramstk"
     _dic_user_configuration = {
         "title": "RAMSTK User Configuration",
         "general": {
@@ -887,82 +887,537 @@ def test_toml_user_configuration(make_home_config_dir):
             "validationfg": "#000000",
         },
         "stress": {
-            "integratedcircuit": [
-                0.8,
-                0.9,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                0.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
-            "semiconductor": [
-                1.0,
-                1.0,
-                0.7,
-                0.9,
-                1.0,
-                1.0,
-                0.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
-            "resistor": [1.0, 1.0, 0.5, 0.9, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "capacitor": [
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                0.6,
-                0.9,
-                10.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
-            "inductor": [
-                0.6,
-                0.9,
-                1.0,
-                1.0,
-                0.5,
-                0.9,
-                15.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
-            "relay": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "switch": [0.75, 0.9, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "connection": [
-                0.7,
-                0.9,
-                1.0,
-                1.0,
-                0.7,
-                0.9,
-                25.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
-            "meter": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 125.0, 125.0],
-            "miscellaneous": [
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                1.0,
-                0.0,
-                0.0,
-                125.0,
-                125.0,
-            ],
+            "integrated_circuit": {
+                "digital": {
+                    "mos": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "fanout": [1.0, 0.9, 0.9],
+                            "frequency": [0.9, 0.9, 0.9],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "fanout": [1.0, 0.9, 0.0],
+                            "frequency": [0.9, 0.8, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.8, 0.0, 0.0],
+                            "frequency": [0.8, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                    "bipolar": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "fanout": [0.9, 0.85, 0.8],
+                            "frequency": [1.0, 0.9, 0.85],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "fanout": [0.9, 0.8, 0.0],
+                            "frequency": [1.0, 0.9, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.7, 0.0, 0.0],
+                            "frequency": [0.75, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                },
+                "linear": {
+                    "mos": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "fanout": [1.0, 0.9, 0.9],
+                            "frequency": [0.9, 0.9, 0.9],
+                            "temperature": [125.0, 110.0, 100.0],
+                            "voltage": [0.8, 0.8, 0.7],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "fanout": [1.0, 0.9, 0.0],
+                            "frequency": [0.9, 0.8, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                            "voltage": [0.8, 0.7, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.8, 0.0, 0.0],
+                            "frequency": [0.8, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                            "voltage": [0.6, 0.0, 0.0],
+                        },
+                    },
+                    "bipolar": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "fanout": [0.9, 0.85, 0.8],
+                            "frequency": [1.0, 0.9, 0.85],
+                            "temperature": [125.0, 110.0, 100.0],
+                            "voltage": [0.8, 0.8, 0.7],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "fanout": [0.9, 0.8, 0.0],
+                            "frequency": [1.0, 0.9, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                            "voltage": [0.8, 0.7, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.7, 0.0, 0.0],
+                            "frequency": [0.75, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                            "voltage": [0.6, 0.0, 0.0],
+                        },
+                    },
+                },
+                "microprocessor": {
+                    "mos": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "fanout": [1.0, 0.9, 0.9],
+                            "frequency": [0.9, 0.9, 0.9],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "fanout": [1.0, 0.85, 0.0],
+                            "frequency": [0.9, 0.8, 0.0],
+                            "temperature": [85.0, 75.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.8, 0.0, 0.0],
+                            "frequency": [0.8, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                    "bipolar": {
+                        "hermetic": {
+                            "current": [0.8, 0.75, 0.7],
+                            "fanout": [0.8, 0.75, 0.7],
+                            "frequency": [0.9, 0.8, 0.75],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.8, 0.75, 0.0],
+                            "fanout": [0.8, 0.75, 0.0],
+                            "frequency": [0.9, 0.8, 0.0],
+                            "temperature": [85.0, 75.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "fanout": [0.7, 0.0, 0.0],
+                            "frequency": [0.75, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                },
+                "memory": {
+                    "mos": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "frequency": [1.0, 0.9, 0.9],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "frequency": [1.0, 0.9, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "frequency": [0.8, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                    "bipolar": {
+                        "hermetic": {
+                            "current": [0.9, 0.85, 0.8],
+                            "frequency": [1.0, 1.0, 0.9],
+                            "temperature": [125.0, 110.0, 100.0],
+                        },
+                        "plastic1": {
+                            "current": [0.9, 0.8, 0.0],
+                            "frequency": [1.0, 0.95, 0.0],
+                            "temperature": [90.0, 85.0, 0.0],
+                        },
+                        "plastic2": {
+                            "current": [0.7, 0.0, 0.0],
+                            "frequency": [0.8, 0.0, 0.0],
+                            "temperature": [70.0, 0.0, 0.0],
+                        },
+                    },
+                },
+            },
+            "semiconductor": {
+                "diode": {
+                    "general_purpose": {
+                        "jantx": {
+                            "current": [1.0, 1.0, 1.0],
+                            "surge_current": [1.0, 0.9, 0.8],
+                            "voltage": [0.95, 0.9, 0.85],
+                            "temperature": [150.0, 125.0, 125.0],
+                        },
+                        "military": {
+                            "current": [0.9, 0.9, 0.7],
+                            "surge_current": [0.8, 0.8, 0.5],
+                            "voltage": [0.8, 0.75, 0.5],
+                            "temperature": [100.0, 85.0, 70.0],
+                        },
+                        "commercial": {
+                            "current": [0.75, 0.7, 0.0],
+                            "surge_current": [0.6, 0.3, 0.0],
+                            "voltage": [0.7, 0.6, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                        },
+                    },
+                    "power_rectifier": {
+                        "jantx": {
+                            "current": [1.0, 1.0, 1.0],
+                            "voltage": [0.95, 0.9, 0.85],
+                            "temperature": [150.0, 125.0, 125.0],
+                        },
+                        "military": {
+                            "current": [0.9, 0.85, 0.6],
+                            "voltage": [0.8, 0.75, 0.3],
+                            "temperature": [100.0, 85.0, 70.0],
+                        },
+                        "commercial": {
+                            "current": [0.6, 0.5, 0.0],
+                            "voltage": [0.5, 0.3, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                        },
+                    },
+                    "schottky": {
+                        "jantx": {
+                            "power": [1.0, 1.0, 0.9],
+                            "voltage": [0.95, 0.9, 0.85],
+                            "temperature": [150.0, 125.0, 125.0],
+                        },
+                        "military": {
+                            "power": [0.9, 0.9, 0.5],
+                            "voltage": [0.8, 0.8, 0.25],
+                            "temperature": [100.0, 85.0, 70.0],
+                        },
+                        "commercial": {
+                            "power": [0.75, 0.75, 0.0],
+                            "voltage": [0.5, 0.3, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                        },
+                    },
+                    "regulator": {
+                        "jantx": {
+                            "power": [1.0, 1.0, 0.9],
+                            "temperature": [150.0, 125.0, 125.0],
+                        },
+                        "military": {
+                            "power": [0.9, 0.8, 0.5],
+                            "temperature": [100.0, 85.0, 70.0],
+                        },
+                        "commercial": {
+                            "power": [0.5, 0.5, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                        },
+                    },
+                    "suppressor": {
+                        "jantx": {
+                            "current": [1.0, 1.0, 0.9],
+                            "power": [1.0, 1.0, 0.9],
+                            "temperature": [150.0, 125.0, 125.0],
+                        },
+                        "military": {
+                            "current": [0.8, 0.8, 0.5],
+                            "power": [0.8, 0.8, 0.5],
+                            "temperature": [100.0, 85.0, 70.0],
+                        },
+                        "commercial": {
+                            "current": [0.75, 0.5, 0.0],
+                            "power": [0.75, 0.5, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                        },
+                    },
+                },
+                "thyristor": {
+                    "jantx": {
+                        "current": [1.0, 1.0, 0.9],
+                        "temperature": [150.0, 125.0, 125.0],
+                        "voltage": [1.0, 1.0, 0.9],
+                    },
+                    "military": {
+                        "current": [0.9, 0.8, 0.5],
+                        "temperature": [100.0, 85.0, 70.0],
+                        "voltage": [0.9, 0.8, 0.5],
+                    },
+                    "commercial": {
+                        "current": [0.6, 0.5, 0.0],
+                        "temperature": [70.0, 35.0, 0.0],
+                        "voltage": [0.6, 0.5, 0.0],
+                    },
+                },
+                "transistor": {
+                    "bjt": {
+                        "jantx": {
+                            "current": [1.0, 0.9, 0.9],
+                            "power": [1.0, 1.0, 0.9],
+                            "temperature": [150.0, 125.0, 125.0],
+                            "voltage": [1.0, 0.9, 0.8],
+                        },
+                        "military": {
+                            "current": [0.9, 0.8, 0.6],
+                            "power": [0.9, 0.8, 0.6],
+                            "temperature": [100.0, 85.0, 70.0],
+                            "voltage": [0.8, 0.75, 0.3],
+                        },
+                        "commercial": {
+                            "current": [0.5, 0.5, 0.0],
+                            "power": [0.5, 0.5, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                            "voltage": [0.25, 0.25, 0.0],
+                        },
+                    },
+                    "fet": {
+                        "jantx": {
+                            "power": [1.0, 1.0, 0.9],
+                            "temperature": [150.0, 125.0, 125.0],
+                            "voltage": [1.0, 0.95, 0.9],
+                        },
+                        "military": {
+                            "power": [0.9, 0.8, 0.5],
+                            "temperature": [100.0, 85.0, 70.0],
+                            "voltage": [0.8, 0.75, 0.5],
+                        },
+                        "commercial": {
+                            "power": [0.5, 0.5, 0.0],
+                            "temperature": [70.0, 35.0, 0.0],
+                            "voltage": [0.25, 0.25, 0.0],
+                        },
+                    },
+                },
+            },
+            "resistor": {
+                "fixed_composition": {
+                    "low_power": {
+                        "power": [0.65, 0.65, 0.65],
+                        "temperature": [0.65, 0.65, 0.65],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                    "high_power": {
+                        "power": [0.55, 0.55, 0.55],
+                        "temperature": [0.55, 0.55, 0.55],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                },
+                "fixed_chip": {
+                    "low_power": {
+                        "power": [0.7, 0.7, 0.7],
+                        "temperature": [0.7, 0.7, 0.7],
+                    },
+                    "high_power": {
+                        "power": [0.55, 0.55, 0.55],
+                        "temperature": [0.55, 0.55, 0.55],
+                    },
+                },
+                "fixed_film": {
+                    "low_power": {
+                        "power": [0.65, 0.65, 0.65],
+                        "temperature": [0.65, 0.65, 0.65],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                    "high_power": {
+                        "power": [0.55, 0.55, 0.55],
+                        "temperature": [0.55, 0.55, 0.55],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                },
+                "fixed_film_power": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                },
+                "fixed_film_network": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "fixed_wirewound": {
+                    "low_power": {
+                        "power": [0.7, 0.7, 0.7],
+                        "temperature": [1.0, 1.0, 1.0],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                    "high_power": {
+                        "power": [0.5, 0.5, 0.5],
+                        "temperature": [1.0, 1.0, 1.0],
+                        "voltage": [0.7, 0.7, 0.7],
+                    },
+                },
+                "fixed_wirewound_power": {
+                    "power": [0.6, 0.6, 0.6],
+                    "temperature": [0.6, 0.6, 0.6],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "fixed_wirewound_chassis": {
+                    "power": [0.5, 0.5, 0.5],
+                    "temperature": [0.5, 0.5, 0.5],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "variable_wirewound": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                },
+                "variable_wirewound_precision": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                },
+                "variable_wirewound_power": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [110.0, 110.0, 110.0],
+                },
+                "variable_composition": {
+                    "power": [0.5, 0.5, 0.5],
+                    "temperature": [0.5, 0.5, 0.5],
+                },
+                "variable_film": {
+                    "power": [0.5, 0.5, 0.5],
+                    "temperature": [0.5, 0.5, 0.5],
+                },
+                "variable_non_wirewound": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                },
+            },
+            "capacitor": {
+                "paper": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.55, 0.55, 0.55],
+                },
+                "plastic": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.55, 0.55, 0.55],
+                },
+                "metallized": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.55, 0.55, 0.55],
+                },
+                "mica": {"temperature": [25.0, 25.0, 25.0], "voltage": [0.7, 0.7, 0.7]},
+                "mica_button": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.55, 0.55, 0.55],
+                },
+                "glass": {
+                    "temperature": [15.0, 15.0, 15.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "ceramic_fixed": {
+                    "temperature": [15.0, 15.0, 15.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "temp_comp_ceramic": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "ceramic_chip": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "tantalum_chip": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "tantalum_solid": {
+                    "reverse_voltage": [0.02, 0.02, 0.02],
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "tantalum_wet": {
+                    "reverse_voltage": [0.02, 0.02, 0.02],
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "aluminum": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "aluminum_dry": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "ceramic_variable": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "piston": {
+                    "temperature": [15.0, 15.0, 15.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "trimmer": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+                "vacuum": {
+                    "temperature": [10.0, 10.0, 10.0],
+                    "voltage": [0.6, 0.6, 0.6],
+                },
+            },
+            "inductor": {
+                "low_frequency": {
+                    "current": [0.7, 0.7, 0.6],
+                    "surge_current": [0.9, 0.9, 0.8],
+                    "surge_voltage": [0.9, 0.9, 0.8],
+                    "temperature": [30.0, 30.0, 30.0],
+                    "voltage": [0.7, 0.7, 0.6],
+                },
+                "high_frequency": {
+                    "current": [0.9, 0.9, 0.8],
+                    "temperature": [30.0, 30.0, 30.0],
+                },
+            },
+            "relay": {
+                "capacitive_load": {
+                    "current": [0.7, 0.6, 0.5],
+                    "drop_out": [0.9, 0.9, 0.9],
+                    "pick_up": [1.1, 1.1, 1.1],
+                    "temperature": [10.0, 20.0, 30.0],
+                },
+                "inductive_load": {
+                    "current": [0.5, 0.4, 0.3],
+                    "drop_out": [0.9, 0.9, 0.9],
+                    "pick_up": [1.1, 1.1, 1.1],
+                    "temperature": [10.0, 20.0, 30.0],
+                },
+                "resistive_load": {
+                    "current": [0.7, 0.6, 0.5],
+                    "drop_out": [0.9, 0.9, 0.9],
+                    "pick_up": [1.1, 1.1, 1.1],
+                    "temperature": [10.0, 20.0, 30.0],
+                },
+            },
+            "switch": {
+                "lamp_load": {
+                    "current": [0.2, 0.1, 0.1],
+                    "power": [0.7, 0.6, 0.5],
+                    "surge_current": [0.8, 0.8, 0.8],
+                },
+                "inductive_load": {
+                    "current": [0.5, 0.4, 0.3],
+                    "power": [0.7, 0.6, 0.5],
+                    "surge_current": [0.8, 0.8, 0.8],
+                },
+                "resistive_load": {
+                    "current": [0.7, 0.6, 0.5],
+                    "power": [0.7, 0.6, 0.5],
+                    "surge_current": [0.8, 0.8, 0.8],
+                },
+            },
+            "connection": {"current": [1.0, 1.0, 1.0]},
+            "miscellaneous": {"lamp": {"current": [0.2, 0.1, 0.1]}},
         },
     }
 
@@ -975,7 +1430,7 @@ def test_toml_user_configuration(make_home_config_dir):
 @pytest.fixture
 def test_csv_file_function(test_import_dir):
     """Create and populate a *.csv file for testing Function imports."""
-    _test_file = TMP_DIR + "/test_inputs_functions.csv"
+    _test_file = f"{TMP_DIR}/test_inputs_functions.csv"
 
     with open(_test_file, "w", newline="") as _csv_file:
         filewriter = csv.writer(
@@ -991,7 +1446,7 @@ def test_csv_file_function(test_import_dir):
 @pytest.fixture
 def test_text_file_function(test_import_dir):
     """Create and populate a *.txt file for testing Function imports."""
-    _test_file = TMP_DIR + "/test_inputs_functions.txt"
+    _test_file = f"{TMP_DIR}/test_inputs_functions.txt"
 
     with open(_test_file, "w") as _csv_file:
         filewriter = csv.writer(
@@ -1007,7 +1462,7 @@ def test_text_file_function(test_import_dir):
 @pytest.fixture
 def test_csv_file_requirement(test_import_dir):
     """Create and populate a *.csv file for testing Requirement import mapping."""
-    _test_file = TMP_DIR + "/test_inputs_requirements.csv"
+    _test_file = f"{TMP_DIR}/test_inputs_requirements.csv"
 
     with open(_test_file, "w") as _csv_file:
         filewriter = csv.writer(
@@ -1022,7 +1477,7 @@ def test_csv_file_requirement(test_import_dir):
 @pytest.fixture
 def test_csv_file_hardware(test_import_dir):
     """Create and populate a *.csv file for testing Hardware import mapping."""
-    _test_file = TMP_DIR + "/test_inputs_hardware.csv"
+    _test_file = f"{TMP_DIR}/test_inputs_hardware.csv"
 
     with open(_test_file, "w") as _csv_file:
         filewriter = csv.writer(
@@ -1037,7 +1492,7 @@ def test_csv_file_hardware(test_import_dir):
 @pytest.fixture
 def test_csv_file_validation(test_import_dir):
     """Create and populate a *.csv file for testing Validation import mapping."""
-    _test_file = TMP_DIR + "/test_inputs_validation.csv"
+    _test_file = f"{TMP_DIR}/test_inputs_validation.csv"
 
     with open(_test_file, "w") as _csv_file:
         filewriter = csv.writer(
@@ -1052,7 +1507,7 @@ def test_csv_file_validation(test_import_dir):
 @pytest.fixture
 def test_excel_file():
     """Create and populate a *.xls file for tests."""
-    _test_file = TMP_DIR + "/test_inputs.xls"
+    _test_file = f"{TMP_DIR}/test_inputs.xls"
 
     _book = xlwt.Workbook()
     _sheet = _book.add_sheet("Sheet 1", cell_overwrite_ok=True)
@@ -1072,7 +1527,7 @@ def test_excel_file():
 @pytest.fixture
 def test_format_file():
     """Create and populate a RAMSTK layout format file."""
-    _test_file = TMP_DIR + "/Test.xml"
+    _test_file = f"{TMP_DIR}/Test.xml"
 
     _root = ET.Element("root")
     _tree = ET.SubElement(_root, "tree", name="Test")
