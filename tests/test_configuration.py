@@ -250,11 +250,9 @@ class TestCreateConfiguration:
         )
 
     def on_fail_user_configuration_no_icon_dir(self, error_message):
-        assert error_message == (
+        assert error_message[:118] == (
             "Attempt to copy RAMSTK icons from site-wide icon directory "
-            "/tmp/shibiboly/share/RAMSTK/icons/ to user's icon directory "
-            "/home/drowland/.venvs/ramstk-hh6iB4_W-py3.7/tmp/.config/RAMSTK/icons "
-            "failed."
+            "/tmp/shibiboly/share/RAMSTK/icons/ to user's icon directory"
         )
         print("\033[35m\n\tfail_create_site_configuration topic was broadcast.")
 
