@@ -550,21 +550,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_RPN_SEVERITY: Dict[int, str] = {}  # User.
         self.RAMSTK_SEVERITY: Dict[str, Tuple[str, str, str, str]] = {}  # Admin
         self.RAMSTK_STAKEHOLDERS: Dict[int, str] = {}  # User.
-        self.RAMSTK_STRESS_LIMITS: Dict[
-            int,
-            Tuple[
-                float,
-                float,
-                float,
-                float,
-                float,
-                float,
-                float,
-                float,
-                float,
-                float,
-            ],
-        ] = {}  # User.
+        self.RAMSTK_STRESS_LIMITS: Dict = {}  # User.
         self.RAMSTK_SUBCATEGORIES: Dict[int, Dict[str, str]] = {}  # Static.
         self.RAMSTK_USERS: Dict[int, Tuple[str, str, str, str, str]] = {}  # Admin.
         self.RAMSTK_VALIDATION_TYPE: Dict[int, Tuple[str, str, str]] = {}  # Admin.
@@ -634,108 +620,6 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_IMPORT_LOG = f"{self.RAMSTK_LOG_DIR}/ramstk_import.log"
 
         self.loaded = False
-
-    def _do_make_configuration_dir(self) -> None:
-        """Create the user configuration directory.
-
-        :return: None
-        :rtype: None
-        """
-        self.RAMSTK_CONF_DIR = f"{self.RAMSTK_HOME_DIR}/.config/RAMSTK"
-        if not dir_exists(self.RAMSTK_CONF_DIR):
-            try:
-                makedirs(self.RAMSTK_CONF_DIR)
-                self.RAMSTK_PROG_CONF = f"{self.RAMSTK_CONF_DIR}/RAMSTK.toml"
-            except OSError:
-                _error_msg = (
-                    f"User's configuration directory {self.RAMSTK_CONF_DIR} does not "
-                    f"exist and could not be created when attempting to create a new "
-                    f"user configuration file."
-                )
-                pub.sendMessage(
-                    "fail_create_user_configuration", error_message=_error_msg
-                )
-
-    def _do_make_data_dir(self) -> None:
-        """Create the user data directory.
-
-        :return: None
-        :rtype: None
-        """
-        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
-        if not dir_exists(self.RAMSTK_DATA_DIR):
-            try:
-                makedirs(self.RAMSTK_DATA_DIR)
-            except OSError:
-                _error_msg = (
-                    f"User's data directory {self.RAMSTK_DATA_DIR} does not exist and "
-                    f"could not be created when attempting to create a new user "
-                    f"configuration file."
-                )
-                pub.sendMessage(
-                    "fail_create_user_configuration", error_message=_error_msg
-                )
-
-    def _do_make_icon_dir(self) -> None:
-        """Create the user icon directory.
-
-        :return: None
-        :rtype: None
-        """
-        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
-
-        if not dir_exists(self.RAMSTK_ICON_DIR):
-            try:
-                makedirs(self.RAMSTK_ICON_DIR)
-            except OSError:
-                _error_msg = (
-                    f"User's icon directory {self.RAMSTK_ICON_DIR} does not exist and "
-                    f"could not be created when attempting to create a new user "
-                    f"configuration file."
-                )
-                pub.sendMessage(
-                    "fail_create_user_configuration", error_message=_error_msg
-                )
-
-    def _do_make_log_dir(self) -> None:
-        """Create the user log directory.
-
-        :return: None
-        :rtype: None
-        """
-        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
-
-        if not dir_exists(self.RAMSTK_LOG_DIR):
-            try:
-                makedirs(self.RAMSTK_LOG_DIR)
-            except OSError:
-                _error_msg = (
-                    f"User's log directory {self.RAMSTK_LOG_DIR} does not exist and "
-                    f"could not be created when attempting to create a new user "
-                    f"configuration file."
-                )
-                pub.sendMessage(
-                    "fail_create_user_configuration", error_message=_error_msg
-                )
-
-    def _do_make_program_dir(self) -> None:
-        """Create the user program directory.
-
-        :return: None
-        :rtype: None
-        """
-        if not dir_exists(self.RAMSTK_PROG_DIR):
-            try:
-                makedirs(self.RAMSTK_PROG_DIR)
-            except OSError:
-                _error_msg = (
-                    f"Program directory {self.RAMSTK_PROG_DIR} does not exist and "
-                    f"could not be created when attempting to create a new user "
-                    f"configuration file."
-                )
-                pub.sendMessage(
-                    "fail_create_user_configuration", error_message=_error_msg
-                )
 
     def do_create_user_configuration(self) -> None:
         """Create the default user configuration file.
@@ -844,126 +728,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "validationfg": "#000000",
             },
             "stress": {
-                "integratedcircuit": [
-                    0.8,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "semiconductor": [
-                    1.0,
-                    1.0,
-                    0.7,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "resistor": [
-                    1.0,
-                    1.0,
-                    0.5,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "capacitor": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.6,
-                    0.9,
-                    10.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "inductor": [
-                    0.6,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.5,
-                    0.9,
-                    15.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "relay": [
-                    0.75,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "switch": [
-                    0.75,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "connection": [
-                    0.7,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.7,
-                    0.9,
-                    25.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "meter": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
-                "miscellaneous": [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.0,
-                    0.0,
-                    125.0,
-                    125.0,
-                ],
+                "integrated_circuit": {},
+                "semiconductor": {},
+                "resistor": {},
+                "capacitor": {},
+                "inductor": {},
+                "relay": {},
+                "switch": {},
+                "connection": {},
+                "miscellaneous": {},
             },
         }
 
@@ -995,13 +768,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             for _file in self._lst_format_files:
                 self.RAMSTK_FORMAT_FILE[_file] = _config["layouts"][_file]
 
-            # Hardware categories are stored as integers, but configuration
-            # file keys are human-readable nouns.  This converts the noun key
-            # to the equivalent integer key.
-            for _category in enumerate(self._lst_categories):
-                self.RAMSTK_STRESS_LIMITS[_category[0] + 1] = _config["stress"][
-                    _category[1]
-                ]
+            self.RAMSTK_STRESS_LIMITS = _config["stress"]
 
             self.RAMSTK_BACKEND = _config["backend"]["dialect"]
             self.RAMSTK_PROG_INFO["dialect"] = _config["backend"]["dialect"]
@@ -1025,6 +792,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_TABPOS["modulebook"] = _config["general"]["moduletabpos"]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
             self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
+
             if self.RAMSTK_LOG_DIR == "":
                 self.RAMSTK_USER_LOG = "./ramstk_run.log"
                 self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
@@ -1113,16 +881,15 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "validationfg": self.RAMSTK_COLORS["validationfg"],
             },
             "stress": {
-                "integratedcircuit": self.RAMSTK_STRESS_LIMITS[1],
-                "semiconductor": self.RAMSTK_STRESS_LIMITS[2],
-                "resistor": self.RAMSTK_STRESS_LIMITS[3],
-                "capacitor": self.RAMSTK_STRESS_LIMITS[4],
-                "inductor": self.RAMSTK_STRESS_LIMITS[5],
-                "relay": self.RAMSTK_STRESS_LIMITS[6],
-                "switch": self.RAMSTK_STRESS_LIMITS[7],
-                "connection": self.RAMSTK_STRESS_LIMITS[8],
-                "meter": self.RAMSTK_STRESS_LIMITS[9],
-                "miscellaneous": self.RAMSTK_STRESS_LIMITS[10],
+                "integratedcircuit": self.RAMSTK_STRESS_LIMITS["integrated_circuit"],
+                "semiconductor": self.RAMSTK_STRESS_LIMITS["semiconductor"],
+                "resistor": self.RAMSTK_STRESS_LIMITS["resistor"],
+                "capacitor": self.RAMSTK_STRESS_LIMITS["capacitor"],
+                "inductor": self.RAMSTK_STRESS_LIMITS["inductor"],
+                "relay": self.RAMSTK_STRESS_LIMITS["relay"],
+                "switch": self.RAMSTK_STRESS_LIMITS["switch"],
+                "connection": self.RAMSTK_STRESS_LIMITS["connection"],
+                "miscellaneous": self.RAMSTK_STRESS_LIMITS["miscellaneous"],
             },
         }
 
@@ -1163,3 +930,105 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_PROG_DIR = f"{self.RAMSTK_HOME_DIR}/analyses/ramstk"
         else:
             self.RAMSTK_PROG_DIR = self.RAMSTK_HOME_DIR
+
+    def _do_make_configuration_dir(self) -> None:
+        """Create the user configuration directory.
+
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_CONF_DIR = f"{self.RAMSTK_HOME_DIR}/.config/RAMSTK"
+        if not dir_exists(self.RAMSTK_CONF_DIR):
+            try:
+                makedirs(self.RAMSTK_CONF_DIR)
+                self.RAMSTK_PROG_CONF = f"{self.RAMSTK_CONF_DIR}/RAMSTK.toml"
+            except OSError:
+                _error_msg = (
+                    f"User's configuration directory {self.RAMSTK_CONF_DIR} does not "
+                    f"exist and could not be created when attempting to create a new "
+                    f"user configuration file."
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
+
+    def _do_make_data_dir(self) -> None:
+        """Create the user data directory.
+
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_DATA_DIR = self.RAMSTK_CONF_DIR + self._data_sub_dir
+        if not dir_exists(self.RAMSTK_DATA_DIR):
+            try:
+                makedirs(self.RAMSTK_DATA_DIR)
+            except OSError:
+                _error_msg = (
+                    f"User's data directory {self.RAMSTK_DATA_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
+
+    def _do_make_icon_dir(self) -> None:
+        """Create the user icon directory.
+
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_ICON_DIR = self.RAMSTK_CONF_DIR + self._icon_sub_dir
+
+        if not dir_exists(self.RAMSTK_ICON_DIR):
+            try:
+                makedirs(self.RAMSTK_ICON_DIR)
+            except OSError:
+                _error_msg = (
+                    f"User's icon directory {self.RAMSTK_ICON_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
+
+    def _do_make_log_dir(self) -> None:
+        """Create the user log directory.
+
+        :return: None
+        :rtype: None
+        """
+        self.RAMSTK_LOG_DIR = self.RAMSTK_CONF_DIR + self._logs_sub_dir
+
+        if not dir_exists(self.RAMSTK_LOG_DIR):
+            try:
+                makedirs(self.RAMSTK_LOG_DIR)
+            except OSError:
+                _error_msg = (
+                    f"User's log directory {self.RAMSTK_LOG_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )
+
+    def _do_make_program_dir(self) -> None:
+        """Create the user program directory.
+
+        :return: None
+        :rtype: None
+        """
+        if not dir_exists(self.RAMSTK_PROG_DIR):
+            try:
+                makedirs(self.RAMSTK_PROG_DIR)
+            except OSError:
+                _error_msg = (
+                    f"Program directory {self.RAMSTK_PROG_DIR} does not exist and "
+                    f"could not be created when attempting to create a new user "
+                    f"configuration file."
+                )
+                pub.sendMessage(
+                    "fail_create_user_configuration", error_message=_error_msg
+                )

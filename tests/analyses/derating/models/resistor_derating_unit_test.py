@@ -104,7 +104,7 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
     """should determine the resistor is execeeding both limits."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
-        2,
+        6,
         test_stress_limits["resistor"],
         power_rated=0.125,
         power_ratio=0.75,
@@ -117,9 +117,9 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Power ratio of 0.75 exceeds the allowable limit of 0.65.\nCase "
+        _reason == "Power ratio of 0.75 exceeds the allowable limit of 0.6.\nCase "
         "temperature of 128.4C exceeds the derated maximum temperature of "
-        "122.0C.\nVoltage ratio of 0.8 exceeds the allowable limit of 0.7.\n"
+        "118.0C.\nVoltage ratio of 0.8 exceeds the allowable limit of 0.7.\n"
     )
 
 

@@ -16,16 +16,48 @@ from ramstk.analyses.derating import derating
 
 
 @pytest.mark.unit
-def test_check_overstress(test_stress_limits):
-    """should determine the component is not execeeding any limit."""
-    _overstress, _reason = derating.do_check_overstress(
+@pytest.mark.parametrize(
+    "category",
+    [
         "capacitor",
+        "connection",
+        "inductor",
+        "integrated_circuit",
+        "miscellaneous",
+        "relay",
+        "resistor",
+        "semiconductor",
+        "switch",
+    ],
+)
+def test_check_overstress(test_stress_limits, category):
+    """should determine the component is not execeeding any limit."""
+    if category == "miscellaneous":
+        _subcategory_id = 4
+    else:
+        _subcategory_id = 1
+
+    _overstress, _reason = derating.do_check_overstress(
+        category,
         3,
-        10,
-        test_stress_limits["capacitor"],
+        _subcategory_id,
+        test_stress_limits[category],
+        application_id=1,
+        current_ratio=0.05,
+        family_id=1,
+        package_id=2,
+        power_rated=0.125,
+        power_ratio=0.15,
+        quality_id=1,
         specification_id=1,
+        technology_id=1,
+        temperature_active=30.0,
         temperature_case=38.4,
+        temperature_hot_spot=48.2,
+        temperature_junction=70.0,
+        temperature_knee=70.0,
         temperature_rated_max=85.0,
+        type_id=1,
         voltage_ratio=0.2,
     )
 

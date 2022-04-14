@@ -86,7 +86,11 @@ def do_check_overstress(
             _environment,
             subcategory_id,
             stress_limits,
+            current_ratio=kwargs.get("current_ratio", 0.0),
             family_id=kwargs.get("family_id", 0),
+            temperature_hot_spot=kwargs.get("temperature_hot_spot", 30.0),
+            temperature_rated_max=kwargs.get("temperature_rated_max", 70.0),
+            voltage_ratio=kwargs.get("voltage_ratio", 0.0),
         )
     elif category == "integrated_circuit":
         _overstress, _reason = integratedcircuit.do_derating_analysis(
@@ -135,6 +139,7 @@ def do_check_overstress(
             power_ratio=kwargs.get("power_ratio", 0.0),
             quality_id=kwargs.get("quality_id", 1),
             temperature_junction=kwargs.get("temperature_junction", 70.0),
+            type_id=kwargs.get("type_id", 0),
             voltage_ratio=kwargs.get("voltage_ratio", 0.0),
         )
     elif category == "switch":

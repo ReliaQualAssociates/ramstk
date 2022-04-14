@@ -17,11 +17,29 @@ from ramstk.analyses.derating import inductor
 
 
 @pytest.mark.unit
-def test_do_derating_analysis_no_stresses(test_stress_limits):
+def test_do_derating_analysis_no_stresses_coil(test_stress_limits):
     """should determine the inductor is not execeeding any limit."""
     _overstress, _reason = inductor.do_derating_analysis(
         1,
         1,
+        test_stress_limits["inductor"],
+        current_ratio=0.2,
+        family_id=2,
+        temperature_hot_spot=51.3,
+        temperature_rated_max=130.0,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_no_stresses_transformer(test_stress_limits):
+    """should determine the transformer is not execeeding any limit."""
+    _overstress, _reason = inductor.do_derating_analysis(
+        1,
+        2,
         test_stress_limits["inductor"],
         current_ratio=0.2,
         family_id=2,

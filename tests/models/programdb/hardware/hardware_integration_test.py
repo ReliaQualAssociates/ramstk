@@ -870,6 +870,50 @@ class TestAnalysisMethods:
         assert _hardware.reason == ""
 
     @pytest.mark.integration
+    def test_do_calculate_part_stress_meter(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+        test_stress_limits,
+    ):
+        """calculate part stress ratios for meters."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
+
+        _hardware = test_tablemodel.do_select(8)
+        _hardware.category_id = 9
+        _hardware.subcategory_id = 2
+
+        _hardware = test_reliability.do_select(8)
+        _hardware.quality_id = 3
+
+        _hardware = test_design_electric.do_select(8)
+        _hardware.environment_active_id = 3
+        _hardware.power_operating = 0.03
+        _hardware.power_rated = 0.1
+        _hardware.temperature_case = 46.9
+        _hardware.temperature_knee = 85.0
+        _hardware.temperature_rated_max = 150.0
+        _hardware.voltage_operating = 3.3
+        _hardware.voltage_rated = 5.0
+
+        test_viewmodel._dic_stress_limits = test_stress_limits
+        test_viewmodel.do_calculate_part_stress(8)
+
+        assert _hardware.overstress == 0
+        assert _hardware.reason == ""
+
+    @pytest.mark.integration
     def test_do_predict_hazard_rate_active_part_mil_hdbk_217f(
         self,
         test_attributes,
