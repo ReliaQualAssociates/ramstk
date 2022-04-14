@@ -102,7 +102,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
-        print("\033[36m\nsucceed_retrieve_hardware topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_hardware topic was broadcast.")
 
     def on_succeed_on_select_all(self, tree):
         assert isinstance(tree, Tree)
@@ -118,7 +118,7 @@ class TestSelectMethods:
         assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
         assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
         assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
-        print("\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_hardware_bom topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
@@ -315,7 +315,7 @@ class TestInsertMethods:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(9).data["hardware"], RAMSTKHardwareRecord)
         assert tree.get_node(9).data["hardware"].hardware_id == 9
-        print("\033[36m\nsucceed_insert_hardware topic was broadcast.")
+        print("\033[36m\n\tsucceed_insert_hardware topic was broadcast.")
 
     def on_fail_insert_no_revision(self, error_message):
         assert error_message == (
@@ -323,13 +323,13 @@ class TestInsertMethods:
             "returned:\n\tKey (fld_revision_id)=(9) is not present in table "
             '"ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_hardware topic was broadcast on no hardware.")
+        print("\033[35m\n\tfail_insert_hardware topic was broadcast on no hardware.")
 
     def on_succeed_insert_hardware(self, tree):
         assert isinstance(tree, Tree)
         assert tree.contains(10)
         print(
-            "\033[36m\nsucceed_insert_hardware topic was broadcast on hardware "
+            "\033[36m\n\tsucceed_insert_hardware topic was broadcast on hardware "
             "insert."
         )
 
@@ -423,21 +423,25 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_hardware topic was broadcast.")
+        print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
 
     def on_fail_delete_non_existent_id(self, error_message):
         assert error_message == ("Attempted to delete non-existent Hardware ID 300.")
-        print("\033[35m\nfail_delete_hardware topic was broadcast on non-existent ID.")
+        print(
+            "\033[35m\n\tfail_delete_hardware topic was broadcast on non-existent ID."
+        )
 
     def on_fail_delete_no_data_package(self, error_message):
         assert error_message == ("Attempted to delete non-existent Hardware ID 2.")
-        print("\033[35m\nfail_delete_hardware topic was broadcast on no data package.")
+        print(
+            "\033[35m\n\tfail_delete_hardware topic was broadcast on no data package."
+        )
 
     def on_succeed_delete_hardware(self, tree):
         assert isinstance(tree, Tree)
         assert not tree.contains(5)
         print(
-            "\033[36m\nsucceed_retrieve_hardware_bom topic was broadcast on hardware "
+            "\033[36m\n\tsucceed_retrieve_hardware_bom topic was broadcast on hardware "
             "delete."
         )
 
@@ -522,31 +526,37 @@ class TestUpdateMethods:
             tree.get_node(2).data["hardware"].specification_number
             == "Big Specification"
         )
-        print("\033[36m\nsucceed_update_hardware topic was broadcast.")
+        print("\033[36m\n\tsucceed_update_hardware topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast for Hardware.")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast for Hardware.")
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
             "do_update: The value for one or more attributes for hardware ID 1 was the "
             "wrong type."
         )
-        print("\033[35m\nfail_update_hardware topic was broadcast on wrong data type.")
+        print(
+            "\033[35m\n\tfail_update_hardware topic was broadcast on wrong data type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_hardware topic was broadcast on root node.")
+        print("\033[35m\n\tfail_update_hardware topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
             "do_update: Attempted to save non-existent hardware with hardware ID 100."
         )
-        print("\033[35m\nfail_update_hardware topic was broadcast on non-existent ID.")
+        print(
+            "\033[35m\n\tfail_update_hardware topic was broadcast on non-existent ID."
+        )
 
     def on_fail_update_no_data_package(self, error_message):
         assert error_message == ("do_update: No data package found for hardware ID 1.")
-        print("\033[35m\nfail_update_hardware topic was broadcast on no data package.")
+        print(
+            "\033[35m\n\tfail_update_hardware topic was broadcast on no data package."
+        )
 
     @pytest.mark.integration
     def test_do_update(self, test_tablemodel):
@@ -681,17 +691,17 @@ class TestGetterSetter:
         assert attributes["total_part_count"] == 0
         assert attributes["total_power_dissipation"] == 0.0
         assert attributes["year_of_manufacture"] == 2019
-        print("\033[36m\nsucceed_get_hardware_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_hardware_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
-        print("\033[36m\nsucceed_get_hardware_tree topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_hardware_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["hardware"].cage_code == "DE34T1"
-        print("\033[36m\nsucceed_get_hardware_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_hardware_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_tablemodel):
@@ -816,6 +826,50 @@ class TestAnalysisMethods:
         assert _attributes["total_power_dissipation"] == 0.00885
 
     @pytest.mark.integration
+    def test_do_calculate_part_stress(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_viewmodel,
+        test_design_electric,
+        test_design_mechanic,
+        test_milhdbk217f,
+        test_nswc,
+        test_reliability,
+        test_stress_limits,
+    ):
+        """calculate part stress ratios and check derating limits."""
+        test_tablemodel.do_select_all(attributes={"revision_id": 1})
+        test_design_electric.do_select_all(attributes={"revision_id": 1})
+        test_design_mechanic.do_select_all(attributes={"revision_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1})
+        test_nswc.do_select_all(attributes={"revision_id": 1})
+        test_reliability.do_select_all(attributes={"revision_id": 1})
+
+        _hardware = test_tablemodel.do_select(8)
+        _hardware.category_id = 3
+        _hardware.subcategory_id = 2
+
+        _hardware = test_reliability.do_select(8)
+        _hardware.quality_id = 3
+
+        _hardware = test_design_electric.do_select(8)
+        _hardware.environment_active_id = 3
+        _hardware.power_operating = 0.03
+        _hardware.power_rated = 0.1
+        _hardware.temperature_case = 46.9
+        _hardware.temperature_knee = 85.0
+        _hardware.temperature_rated_max = 150.0
+        _hardware.voltage_operating = 3.3
+        _hardware.voltage_rated = 5.0
+
+        test_viewmodel._dic_stress_limits = test_stress_limits
+        test_viewmodel.do_calculate_part_stress(8)
+
+        assert _hardware.overstress == 0
+        assert _hardware.reason == ""
+
+    @pytest.mark.integration
     def test_do_predict_hazard_rate_active_part_mil_hdbk_217f(
         self,
         test_attributes,
@@ -826,6 +880,7 @@ class TestAnalysisMethods:
         test_milhdbk217f,
         test_nswc,
         test_reliability,
+        test_stress_limits,
     ):
         """predict the active hazard of a part using MIL-HDBK-217F."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
@@ -851,10 +906,11 @@ class TestAnalysisMethods:
         _hardware.hazard_rate_method_id = 2
         _hardware.quality_id = 3
 
+        test_viewmodel._dic_stress_limits = test_stress_limits
         test_viewmodel.do_calculate_hardware(8)
         _attributes = test_reliability.do_select(8).get_attributes()
 
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.005820122)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.003995836)
 
     @pytest.mark.integration
     def test_do_predict_hazard_rate_active_part_specified_hazard_rate(

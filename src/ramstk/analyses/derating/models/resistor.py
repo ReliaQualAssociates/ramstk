@@ -180,7 +180,7 @@ def _do_get_power_limit(
     :return: _power_limit
     :rtype: float
     """
-    if subcategory in {"fixed_film", "fixed_wirewound"}:
+    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
         return (
             stress_limits[subcategory]["high_power"]["power"][environment_id]
             if rated_power >= 0.5
@@ -205,7 +205,7 @@ def _do_get_temperature_limit(
     :return: _temperature_limit
     :rtype: float
     """
-    if subcategory in {"fixed_film", "fixed_wirewound"}:
+    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
         return (
             stress_limits[subcategory]["high_power"]["temperature"][environment_id]
             if rated_power >= 0.5
@@ -230,7 +230,7 @@ def _do_get_voltage_limit(
     :return: _voltage_limit
     :rtype: float
     """
-    if subcategory in {"fixed_film", "fixed_wirewound"}:
+    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
         return (
             stress_limits[subcategory]["high_power"]["voltage"][environment_id]
             if rated_power >= 0.5

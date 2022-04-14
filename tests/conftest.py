@@ -1422,6 +1422,18 @@ def test_stress_limits():
             },
         },
         "resistor": {
+            "fixed_composition": {
+                "low_power": {
+                    "power": [0.65, 0.65, 0.65],
+                    "temperature": [0.65, 0.65, 0.65],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+                "high_power": {
+                    "power": [0.55, 0.55, 0.55],
+                    "temperature": [0.55, 0.55, 0.55],
+                    "voltage": [0.7, 0.7, 0.7],
+                },
+            },
             "fixed_chip": {
                 "low_power": {
                     "power": [0.7, 0.7, 0.7],
