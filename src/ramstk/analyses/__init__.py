@@ -5,7 +5,6 @@
 from . import (
     allocation,
     criticality,
-    derating,
     dormancy,
     fha,
     improvementfactor,

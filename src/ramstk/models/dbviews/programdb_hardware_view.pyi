@@ -10,7 +10,9 @@ from .baseview import RAMSTKBaseView as RAMSTKBaseView
 class RAMSTKHardwareBoMView(RAMSTKBaseView):
     _tag: str
     _dic_load_functions: Dict[str, Callable[..., object]]
-    _dic_stress_limits: Dict[int, List[float]]
+    _dic_stress_limits: Dict[
+        str, Dict[str, Dict[str, Dict[str, Dict[str, List[float]]]]]
+    ]
     _dic_trees: Dict[str, treelib.Tree]
     _lst_modules: List[str]
     _hr_multiplier: float

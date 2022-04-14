@@ -354,7 +354,10 @@ class TestGetterSetterMethods:
 
 
 @pytest.mark.usefixtures(
-    "test_attributes", "test_tablemodel", "test_toml_user_configuration"
+    "test_attributes",
+    "test_tablemodel",
+    "test_toml_user_configuration",
+    "test_stress_limits",
 )
 class TestAnalysisMethods:
     """Class for testing analytical methods."""
@@ -406,95 +409,35 @@ class TestAnalysisMethods:
         assert _attributes["voltage_ratio"] == pytest.approx(0.0661)
 
     @pytest.mark.unit
-    def test_do_derating_analysis_over_limit(
-        self, test_attributes, test_tablemodel, test_toml_user_configuration
+    def test_do_derating_analysis(
+        self,
+        test_attributes,
+        test_tablemodel,
+        test_toml_user_configuration,
+        test_stress_limits,
     ):
         """should determine if a component is overstressed and the reason."""
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         _design_electric = test_tablemodel.do_select(1)
-        test_tablemodel._dic_stress_limits = (
-            test_toml_user_configuration.RAMSTK_STRESS_LIMITS
-        )
         _design_electric.hardware_id = 1
-        _design_electric.current_ratio = 1.62
-        _design_electric.power_ratio = 0.55
+        _design_electric.environment_active_id = 2
+        _design_electric.specification_id = 1
+        _design_electric.temperature_case = 78.2
+        _design_electric.temperature_rated_max = 85.0
         _design_electric.voltage_ratio = 0.58
 
         _design_electric.do_derating_analysis(
-            [
-                1.0,
-                1.0,
-                0.5,
-                0.9,
-                1.0,
-                1.0,
-            ]
+            4,
+            10,
+            2,
+            test_stress_limits,
         )
-        assert _design_electric.overstress
+        assert _design_electric.overstress == 1
         assert (
-            _design_electric.reason
-            == "Operating current ratio is greater than the harsh environment limit "
-            "of 1.0.\nOperating current ratio is greater than the mild environment "
-            "limit of 1.0.\nOperating power ratio is greater than the harsh "
-            "environment limit of 0.5.\n"
-        )
-
-        _design_electric.do_derating_analysis(
-            [
-                0.6,
-                0.9,
-                1.0,
-                1.0,
-                0.5,
-                0.9,
-            ]
-        )
-        assert _design_electric.overstress
-        assert (
-            _design_electric.reason
-            == "Operating current ratio is greater than the harsh environment limit "
-            "of 0.6.\nOperating current ratio is greater than the mild environment "
-            "limit of 0.9.\nOperating voltage ratio is greater than the harsh "
-            "environment limit of 0.5.\n"
-        )
-
-    @pytest.mark.unit
-    def test_do_derating_analysis_under_limit(
-        self, test_attributes, test_tablemodel, test_toml_user_configuration
-    ):
-        """should determine if a component is overstressed and the reason."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _design_electric = test_tablemodel.do_select(1)
-        test_tablemodel._dic_stress_limits = (
-            test_toml_user_configuration.RAMSTK_STRESS_LIMITS
-        )
-        _design_electric.hardware_id = 1
-        _design_electric.current_ratio = -0.62
-        _design_electric.power_ratio = -0.55
-        _design_electric.voltage_ratio = -0.58
-
-        _design_electric.do_derating_analysis(
-            [
-                1.0,
-                1.0,
-                0.5,
-                0.9,
-                1.0,
-                1.0,
-            ]
-        )
-        assert _design_electric.overstress
-        assert (
-            _design_electric.reason
-            == "Operating current ratio is less than the harsh environment limit of "
-            "0.0.\nOperating current ratio is less than the mild environment limit "
-            "of 0.0.\nOperating power ratio is less than the harsh environment "
-            "limit of 0.0.\nOperating power ratio is less than the mild "
-            "environment limit of 0.0.\nOperating voltage ratio is less than the "
-            "harsh environment limit of 0.0.\nOperating voltage ratio is less than "
-            "the mild environment limit of 0.0.\n"
+            _design_electric.reason == "Case temperature of 78.2C exceeds the derated "
+            "maximum temperature of 15.0C less than maximum rated temperature of "
+            "85.0C.\n"
         )
 
     @pytest.mark.unit

@@ -536,17 +536,19 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1 and self.subcategory_id in [
-            1,
-            2,
-            5,
-            6,
-            7,
-            9,
-            11,
-            13,
-            15,
-        ]:
-            self.cmbType.set_sensitive(True)
-        elif self._hazard_rate_method_id == 2 and self.subcategory_id == 8:
+        if (
+            self._hazard_rate_method_id == 1
+            and self.subcategory_id
+            in [
+                1,
+                2,
+                5,
+                6,
+                7,
+                9,
+                11,
+                13,
+                15,
+            ]
+        ) or (self._hazard_rate_method_id == 2 and self.subcategory_id == 8):
             self.cmbType.set_sensitive(True)

@@ -7,7 +7,7 @@
 """Hardware BoM View Model."""
 
 # Standard Library Imports
-from typing import Dict, List, Union
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -52,89 +52,18 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             "nswc": self._do_load_nswc,
             "reliability": self._do_load_reliability,
         }
-        self._dic_stress_limits: Dict[int, List[float]] = kwargs.get(  # type: ignore
+        self._dic_stress_limits = kwargs.get(
             "stress_limits",
             {
-                1: [
-                    0.8,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                ],
-                2: [
-                    1.0,
-                    1.0,
-                    0.7,
-                    0.9,
-                    1.0,
-                    1.0,
-                ],
-                3: [
-                    1.0,
-                    1.0,
-                    0.5,
-                    0.9,
-                    1.0,
-                    1.0,
-                ],
-                4: [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    0.6,
-                    0.9,
-                ],
-                5: [
-                    0.6,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.5,
-                    0.9,
-                ],
-                6: [
-                    0.75,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                ],
-                7: [
-                    0.75,
-                    0.9,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                ],
-                8: [
-                    0.7,
-                    0.9,
-                    1.0,
-                    1.0,
-                    0.7,
-                    0.9,
-                ],
-                9: [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                ],
-                10: [
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                    1.0,
-                ],
+                "integrated_circuit": {},
+                "semiconductor": {},
+                "resistor": {},
+                "capacitor": {},
+                "inductor": {},
+                "relay": {},
+                "switch": {},
+                "connection": {},
+                "miscellaneous": {},
             },
         )
         self._dic_trees = {
@@ -355,12 +284,17 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         """
         _record = self.tree.get_node(node_id)
 
-        _record.data["design_electric"].do_stress_analysis(
-            _record.data["hardware"].category_id
-        )
-        _record.data["design_electric"].do_derating_analysis(
-            self._dic_stress_limits[_record.data["hardware"].category_id]
-        )
+        if _record.data["hardware"].category_id != 9:
+            _record.data["design_electric"].do_stress_analysis(
+                _record.data["hardware"].category_id
+            )
+
+            _record.data["design_electric"].do_derating_analysis(
+                _record.data["hardware"].category_id,
+                _record.data["hardware"].subcategory_id,
+                _record.data["reliability"].quality_id,
+                self._dic_stress_limits,
+            )
 
     def do_calculate_power_dissipation(self, node_id: int) -> float:
         """Calculate the total power dissipation of a hardware item.

@@ -264,7 +264,7 @@ coverage: clean-test
 # This target is for use with IDE integration.
 format:
 	@echo -e "\n\t\033[1;32mAutoformatting $(SRCFILE) ...\033[0m\n"
-	$(BLACK) $(SRCFILE)
+	$(BLACK) --fast $(SRCFILE)
 	$(ISORT) $(ISORT_ARGS) $(SRCFILE)
 	$(DOCFORMATTER) $(DOCFORMATTER_ARGS) $(SRCFILE)
 
