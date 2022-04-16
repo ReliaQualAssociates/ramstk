@@ -39,7 +39,8 @@ def test_table_model(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
     pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -59,43 +60,39 @@ class TestSelectMethods:
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_design_electric")
+        pub.subscribe(
+            self.on_succeed_select_all, "succeed_retrieve_all_design_electric"
+        )
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_design_electric")
+        pub.unsubscribe(
+            self.on_succeed_select_all, "succeed_retrieve_all_design_electric"
+        )
 
 
 @pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_fail_insert_no_hardware(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_hardware_id)=(11) is not present in table "
-            '"ramstk_hardware".'
-        )
-        print(
-            "\033[35m\n\tfail_insert_design_electric topic was broadcast on no "
-            "hardware."
-        )
-
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
         self, test_attributes, test_table_model, test_hardware_table
     ):
-        """should not add a record to the record tree and update last_id."""
+        """should NOT add a record to the record tree."""
         assert test_table_model.tree.get_node(9) is None
 
+        # The design electric record is added by the database whenever a hardware
+        # record is added to the database.  Adding the new allocation record to the
+        # Design Electric tree is triggered by the "succeed_insert_hardware" message.
+        # Only records associated with part type hardware are added to the Design
+        # Electric tree.
         pub.sendMessage(
             "request_insert_hardware",
             attributes={
                 "revision_id": 1,
                 "hardware_id": 9,
                 "parent_id": 2,
-                "record_id": 9,
                 "part": 0,
             },
         )
@@ -106,16 +103,20 @@ class TestInsertMethods:
     def test_do_insert_part(
         self, test_attributes, test_table_model, test_hardware_table
     ):
-        """should add a record to the record tree and update last_id."""
+        """should add a record to the record tree."""
         assert test_table_model.tree.get_node(10) is None
 
+        # The design electric record is added by the database whenever a hardware
+        # record is added to the database.  Adding the new allocation record to the
+        # Design Electric tree is triggered by the "succeed_insert_hardware" message.
+        # Only records associated with part type hardware are added to the Design
+        # Electric tree.
         pub.sendMessage(
             "request_insert_hardware",
             attributes={
                 "revision_id": 1,
                 "hardware_id": 10,
                 "parent_id": 2,
-                "record_id": 10,
                 "part": 1,
             },
         )
@@ -131,83 +132,32 @@ class TestInsertMethods:
             test_table_model.tree.get_node(10).data["design_electric"].hardware_id == 10
         )
 
-    @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_attributes, test_table_model):
-        """should not add a record when passed a non-existent hardware ID."""
-        pub.subscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
-        assert test_table_model.tree.get_node(11) is None
-
-        test_attributes["hardware_id"] = 11
-        test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 11
-        pub.sendMessage("request_insert_design_electric", attributes=test_attributes)
-
-        assert test_table_model.tree.get_node(11) is None
-
-        pub.unsubscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_table_model")
+@pytest.mark.usefixtures("test_table_model", "test_hardware_table")
 class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    """Class for testing the do_delete() method."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_design_electric topic was broadcast.")
+    def on_succeed_delete_hardware(self, tree):
+        assert tree.get_node(8) is None
+        print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Design Electric ID 300.")
-        print(
-            "\033[35m\n\tfail_delete_design_electric topic was broadcast on "
-            "non-existent ID."
+    @pytest.mark.integration
+    def test_do_delete(self, test_table_model, test_hardware_table):
+        """should remove record from record tree."""
+        pub.subscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
+
+        assert isinstance(
+            test_table_model.tree.get_node(8).data["design_electric"],
+            RAMSTKDesignElectricRecord,
         )
 
-    def on_fail_delete_no_data_package(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == (
-                "No data package for node ID 1 in module design_electric."
-            )
-        except AssertionError:
-            assert message == ("Attempted to delete non-existent Design Electric ID 1.")
-        print(
-            "\033[35m\n\tfail_delete_design_electric topic was broadcast on no data "
-            "package."
-        )
+        # Allocation records are cascade deleted by the database server whenever the
+        # corresponding Hardware record is deleted.
+        pub.sendMessage("request_delete_hardware", node_id=8)
 
-    @pytest.mark.integration
-    def test_do_delete(self, test_table_model):
-        """should remove record from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_design_electric")
+        assert test_table_model.tree.get_node(8) is None
 
-        _last_id = test_table_model.last_id
-        pub.sendMessage("request_delete_design_electric", node_id=_last_id)
-
-        assert test_table_model.last_id == 1
-        assert test_table_model.tree.get_node(_last_id) is None
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_design_electric")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self):
-        """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_design_electric", node_id=300)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
-
-        test_table_model.tree.get_node(1).data.pop("design_electric")
-        pub.sendMessage("request_delete_design_electric", node_id=1)
-
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
+        pub.unsubscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
 
 
 @pytest.mark.usefixtures("test_table_model")
@@ -222,7 +172,7 @@ class TestUpdateMethods:
         print("\033[36m\n\tsucceed_update_design_electric topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for Design Electric.")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast for design electric.")
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
         assert logger_name == "DEBUG"
