@@ -51,7 +51,6 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
             "revision_id",
             "validation_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
