@@ -43,7 +43,8 @@ def test_table_model(test_program_dao):
     pub.unsubscribe(
         dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
     )
-    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -58,37 +59,43 @@ class TestSelectMethods:
         assert isinstance(
             tree.get_node(1).data["similar_item"], RAMSTKSimilarItemRecord
         )
-        print("\033[36m\nsucceed_retrieve_similar_item topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_all_similar_item topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
         """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_similar_item")
 
         test_table_model.do_select_all(attributes={"revision_id": 1})
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_similar_item")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_similar_item")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_table_model")
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_fail_insert_no_revision(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_revision(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  "
             "Database returned:\n\tKey (fld_revision_id)=(40) is not present "
             'in table "ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_similar_item topic was broadcast on no revision.")
+        print(
+            "\033[35m\n\tfail_insert_similar_item topic was broadcast on no revision."
+        )
 
-    def on_fail_insert_no_hardware(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_hardware(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_hardware_id)=(15) is not present in table "
             '"ramstk_hardware".'
         )
-        print("\033[35m\nfail_insert_similar_item topic was broadcast on no hardware.")
+        print(
+            "\033[35m\n\tfail_insert_similar_item topic was broadcast on no hardware."
+        )
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
@@ -103,7 +110,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 9,
                 "parent_id": 2,
-                "record_id": 9,
                 "part": 0,
             },
         )
@@ -129,7 +135,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 10,
                 "parent_id": 2,
-                "record_id": 10,
                 "part": 1,
             },
         )
@@ -139,34 +144,32 @@ class TestInsertMethods:
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_attributes, test_table_model):
         """should not add a record when passed a non-existent revision ID."""
-        pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
+        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
         assert test_table_model.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 40
         test_attributes["hardware_id"] = 10
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 10
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert test_table_model.tree.get_node(10) is None
 
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_similar_item")
+        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_insert_no_hardware(self, test_attributes, test_table_model):
         """should not add a record when passed a non-existent hardware ID."""
-        pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
+        pub.subscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
         assert test_table_model.tree.get_node(15) is None
 
         test_attributes["hardware_id"] = 15
-        test_attributes["record_id"] = 8
         pub.sendMessage("request_insert_similar_item", attributes=test_attributes)
 
         assert test_table_model.tree.get_node(15) is None
 
-        pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_similar_item")
+        pub.unsubscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_table_model")
@@ -175,21 +178,25 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_similar_item topic was broadcast.")
+        print("\033[36m\n\tsucceed_delete_similar_item topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "Attempted to delete non-existent Similar Item ID 300."
-        )
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempted to delete non-existent Similar Item ID 300."
         print(
-            "\033[35m\nfail_delete_similar_item topic was broadcast on non-existent "
+            "\033[35m\n\tfail_delete_similar_item topic was broadcast on non-existent "
             "ID."
         )
 
-    def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Similar Item ID 2.")
+    def on_fail_delete_not_in_tree(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        try:
+            assert message == "No data package for node ID 2 in module similar_item."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Similar Item ID 2."
         print(
-            "\033[35m\nfail_delete_similar_item topic was broadcast on no data package."
+            "\033[35m\n\tfail_delete_similar_item topic was broadcast on no data "
+            "package."
         )
 
     @pytest.mark.integration
@@ -207,21 +214,21 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):
         """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_similar_item")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_similar_item", node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_similar_item")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
+        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
         test_table_model.tree.get_node(2).data.pop("similar_item")
         pub.sendMessage("request_delete_similar_item", node_id=2)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_similar_item")
+        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_table_model")
@@ -233,41 +240,43 @@ class TestUpdateMethods:
         assert tree.get_node(2).data["similar_item"].parent_id == 1
         assert tree.get_node(2).data["similar_item"].percent_weight_factor == 0.9832
         assert tree.get_node(2).data["similar_item"].mtbf_goal == 12000
-        print("\033[36m\nsucceed_update_similar_item topic was broadcast.")
+        print("\033[36m\n\tsucceed_update_similar_item topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast for Similar Item.")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast for Similar Item.")
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for similar item "
-            "ID 1 was the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "The value for one or more attributes for similar item ID 1 was the wrong "
+            "type."
         )
         print(
-            "\033[35m\nfail_update_similar_item topic was broadcast on wrong data "
+            "\033[35m\n\tfail_update_similar_item topic was broadcast on wrong data "
             "type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_similar_item topic was broadcast on root node.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print("\033[35m\n\tfail_update_similar_item topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent similar item with "
-            "similar item ID 100."
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "Attempted to save non-existent similar item with similar item ID 100."
         )
         print(
-            "\033[35m\nfail_update_similar_item topic was broadcast on non-existent "
+            "\033[35m\n\tfail_update_similar_item topic was broadcast on non-existent "
             "ID."
         )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for similar item ID 1."
-        )
+    def on_fail_update_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "No data package found for similar item ID 1."
         print(
-            "\033[35m\nfail_update_similar_item topic was broadcast on no data package."
+            "\033[35m\n\tfail_update_similar_item topic was broadcast on no data "
+            "package."
         )
 
     @pytest.mark.integration
@@ -328,47 +337,45 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_table_model):
         """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
         _similar_item = test_table_model.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
         pub.sendMessage("request_update_similar_item", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_similar_item")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_table_model):
         """should send the fail message when attempting to update the root node."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
-        )
+        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
         _similar_item = test_table_model.do_select(1)
         _similar_item.change_factor_1 = {1: 2}
 
         pub.sendMessage("request_update_similar_item", node_id=0)
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_similar_item"
+            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_update_similar_item", node_id=100)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_similar_item")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_table_model):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
         test_table_model.tree.get_node(1).data.pop("similar_item")
         pub.sendMessage("request_update_similar_item", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_similar_item")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_table_model")
@@ -430,14 +437,14 @@ class TestGetterSetter:
         assert attributes["user_int_3"] == 0
         assert attributes["user_int_4"] == 0
         assert attributes["user_int_5"] == 0
-        print("\033[36m\nsucceed_get_similar_item_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_similar_item_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(
             tree.get_node(1).data["similar_item"], RAMSTKSimilarItemRecord
         )
-        print("\033[36m\nsucceed_get_similar_item_tree topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_similar_item_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
@@ -445,7 +452,7 @@ class TestGetterSetter:
             tree.get_node(1).data["similar_item"].change_description_1
             == "Testing set name from moduleview."
         )
-        print("\033[36m\nsucceed_get_similar_item_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_similar_item_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self):
@@ -500,7 +507,7 @@ class TestAnalysisMethods:
             0.0005607143
         )
         print(
-            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for "
+            "\033[36m\n\tsucceed_calculate_similar_item topic was broadcast for "
             "Topic 633."
         )
 
@@ -512,17 +519,18 @@ class TestAnalysisMethods:
             0.0062934
         )
         print(
-            "\033[36m\nsucceed_calculate_similar_item topic was broadcast for User "
+            "\033[36m\n\tsucceed_calculate_similar_item topic was broadcast for User "
             "Defined."
         )
 
-    def on_fail_calculate_unknown_method(self, error_message):
-        assert error_message == (
+    def on_fail_calculate_unknown_method(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "Failed to calculate similar item reliability for hardware ID 1.  Unknown "
             "similar item method ID 22 selected."
         )
         print(
-            "\033[35m\nfail_calculate_similar_item topic was broadcast on unknown "
+            "\033[35m\n\tfail_calculate_similar_item topic was broadcast on unknown "
             "method."
         )
 
@@ -611,9 +619,7 @@ class TestAnalysisMethods:
     @pytest.mark.integration
     def test_do_calculate_unknown_method(self, test_table_model):
         """should send the fail message with unknown similar item method specified."""
-        pub.subscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_similar_item"
-        )
+        pub.subscribe(self.on_fail_calculate_unknown_method, "do_log_debug_msg")
 
         test_table_model.tree.get_node(1).data[
             "similar_item"
@@ -621,6 +627,4 @@ class TestAnalysisMethods:
 
         pub.sendMessage("request_calculate_similar_item", node_id=1)
 
-        pub.unsubscribe(
-            self.on_fail_calculate_unknown_method, "fail_calculate_similar_item"
-        )
+        pub.unsubscribe(self.on_fail_calculate_unknown_method, "do_log_debug_msg")
