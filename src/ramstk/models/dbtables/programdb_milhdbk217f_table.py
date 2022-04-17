@@ -17,7 +17,7 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKMilHdbk217FRecord
-from .basetable import RAMSTKBaseTable
+from .basetable import RAMSTKBaseTable, do_clear_tree
 
 
 class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
@@ -98,8 +98,9 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        do_clear_tree(self.tree)
         for _node in tree.all_nodes()[1:]:
-            if not self.tree.contains(_node.identifier) and _node.data["hardware"].part:
+            if _node.data["hardware"].part:
                 _attributes = {
                     "revision_id": _node.data["hardware"].revision_id,
                     "hardware_id": _node.data["hardware"].hardware_id,

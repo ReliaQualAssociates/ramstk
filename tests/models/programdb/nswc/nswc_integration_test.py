@@ -2,7 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.nswc.nswc_integration_test.py is part of The RAMSTK Project
+#       tests.models.programdb.nswc.nswc_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -38,7 +39,8 @@ def test_table_model(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_nswc")
     pub.unsubscribe(dut.do_insert, "request_insert_nswc")
-    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -89,7 +91,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 9,
                 "parent_id": 2,
-                "record_id": 9,
                 "part": 0,
             },
         )
@@ -109,7 +110,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 10,
                 "parent_id": 2,
-                "record_id": 10,
                 "part": 1,
             },
         )
@@ -130,7 +130,6 @@ class TestInsertMethods:
 
         test_attributes["hardware_id"] = 11
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 11
         pub.sendMessage("request_insert_nswc", attributes=test_attributes)
 
         assert test_table_model.tree.get_node(11) is None
@@ -148,16 +147,16 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Nswc ID 300.")
+        assert message == "Attempted to delete non-existent Nswc ID 300."
         print("\033[35m\n\tfail_delete_nswc topic was broadcast on non-existent ID.")
 
     def on_fail_delete_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
         # Two debug messages will be sent by two different methods under this scenario.
         try:
-            assert message == ("No data package for node ID 1 in module nswc.")
+            assert message == "No data package for node ID 1 in module nswc."
         except AssertionError:
-            assert message == ("Attempted to delete non-existent Nswc ID 1.")
+            assert message == "Attempted to delete non-existent Nswc ID 1."
         print("\033[35m\n\tfail_delete_nswc topic was broadcast on no data package.")
 
     @pytest.mark.integration
@@ -216,17 +215,17 @@ class TestUpdateMethods:
 
     def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempting to update the root node 0.")
+        assert message == "Attempting to update the root node 0."
         print("\033[35m\n\tfail_update_nswc topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to save non-existent nswc with nswc ID 100.")
+        assert message == "Attempted to save non-existent nswc with nswc ID 100."
         print("\033[35m\n\tfail_update_nswc topic was broadcast on non-existent ID.")
 
     def on_fail_update_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("No data package found for nswc ID 1.")
+        assert message == "No data package found for nswc ID 1."
         print("\033[35m\n\tfail_update_nswc topic was broadcast on no data package.")
 
     @pytest.mark.integration

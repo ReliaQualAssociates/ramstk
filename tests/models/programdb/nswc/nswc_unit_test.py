@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.nswc.nswc_unit_test.py is part of The RAMSTK Project
+#       tests.models.programdb.nswc.nswc_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -130,7 +130,6 @@ class TestCreateModels:
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKNSWCRecord
@@ -215,7 +214,6 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 4
