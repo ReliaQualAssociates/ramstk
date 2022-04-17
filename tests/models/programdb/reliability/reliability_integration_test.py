@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.reliability.reliability_integration_test.py is part of The
-#       RAMSTK Project
+#       tests.models.programdb.reliability.reliability_integration_test.py is part of
+#       The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -39,7 +39,8 @@ def test_table_model(test_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_reliability")
     pub.unsubscribe(dut.do_insert, "request_insert_reliability")
-    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -90,7 +91,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 9,
                 "parent_id": 2,
-                "record_id": 9,
                 "part": 0,
             },
         )
@@ -115,7 +115,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 10,
                 "parent_id": 2,
-                "record_id": 10,
                 "part": 1,
             },
         )
@@ -136,7 +135,6 @@ class TestInsertMethods:
 
         test_attributes["hardware_id"] = 11
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 11
         pub.sendMessage("request_insert_reliability", attributes=test_attributes)
 
         assert test_table_model.tree.get_node(11) is None

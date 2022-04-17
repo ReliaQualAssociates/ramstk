@@ -17,7 +17,7 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKReliabilityRecord
-from .basetable import RAMSTKBaseTable
+from .basetable import RAMSTKBaseTable, do_clear_tree
 
 
 class RAMSTKReliabilityTable(RAMSTKBaseTable):
@@ -50,7 +50,6 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -65,7 +64,11 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self._on_insert_hardware,
+            self._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        pub.subscribe(
+            self._do_update_tree,
             "succeed_insert_hardware",
         )
 
@@ -84,8 +87,8 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
 
         return _new_record
 
-    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
-        """Add new node to the Reliability tree for the newly added Hardware.
+    def _do_update_tree(self, tree: treelib.Tree) -> None:
+        """Update the Reliability tree for the newly added or removed Hardware.
 
         Reliability records are added by triggers in the database when a new Hardware
         item is added.  This method simply adds a new node to the Reliability tree with
@@ -95,21 +98,21 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        do_clear_tree(self.tree)
         for _node in tree.all_nodes()[1:]:
-            if not self.tree.contains(_node.identifier):
-                _attributes = {
-                    "revision_id": _node.data["hardware"].revision_id,
-                    "hardware_id": _node.data["hardware"].hardware_id,
-                }
-                _record = self.do_get_new_record(_attributes)
-                self.tree.create_node(
-                    tag=self._tag,
-                    identifier=_node.data["hardware"].hardware_id,
-                    parent=0,
-                    data={self._tag: _record},
-                )
+            _attributes = {
+                "revision_id": _node.data["hardware"].revision_id,
+                "hardware_id": _node.data["hardware"].hardware_id,
+            }
+            _record = self.do_get_new_record(_attributes)
+            self.tree.create_node(
+                tag=self._tag,
+                identifier=_node.data["hardware"].hardware_id,
+                parent=0,
+                data={self._tag: _record},
+            )
 
-                pub.sendMessage(
-                    f"succeed_insert_{self._tag}",
-                    tree=self.tree,
-                )
+            pub.sendMessage(
+                f"succeed_insert_{self._tag}",
+                tree=self.tree,
+            )
