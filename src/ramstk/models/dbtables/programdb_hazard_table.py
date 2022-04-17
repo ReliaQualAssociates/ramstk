@@ -53,7 +53,6 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             "function_id",
             "hazard_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -80,7 +79,6 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
         """
         attributes["hazard_id"] = self.last_id + 1
         attributes["parent_id"] = attributes["function_id"]
-        attributes["record_id"] = attributes["hazard_id"]
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
