@@ -55,16 +55,16 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironmentRecord)
-        print("\033[36m\nsucceed_retrieve_environments topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_all_environments topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
         """should send success message with record tree as MDS."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
+        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_environments")
 
         pub.sendMessage("selected_revision", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_environments")
+        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_environments")
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
@@ -74,23 +74,25 @@ class TestInsertMethods:
     def on_succeed_insert_sibling(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(4).data["environment"], RAMSTKEnvironmentRecord)
-        print("\033[36m\nsucceed_insert_environment topic was broadcast")
+        print("\033[36m\n\tsucceed_insert_environment topic was broadcast")
 
-    def on_fail_insert_no_parent(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_parent(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  Database "
             "returned:\n\tKey (fld_mission_phase_id)=(20) is not present in table "
             '"ramstk_mission_phase".'
         )
-        print("\033[35m\nfail_insert_environment topic was broadcast.")
+        print("\033[35m\n\tfail_insert_environment topic was broadcast.")
 
-    def on_fail_insert_no_revision(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_revision(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  "
             "Database returned:\n\tKey (fld_revision_id)=(4) is not present "
             'in table "ramstk_revision".'
         )
-        print("\033[35m\nfail_insert_environment topic was broadcast")
+        print("\033[35m\n\tfail_insert_environment topic was broadcast")
 
     @pytest.mark.integration
     def test_do_insert_sibling(self, test_attributes):
@@ -98,7 +100,6 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_environment")
 
         test_attributes["parent_id"] = 0
-        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_environment")
@@ -106,26 +107,24 @@ class TestInsertMethods:
     @pytest.mark.integration
     def test_do_insert_no_parent(self, test_attributes):
         """should send the fail message when the mission phase ID does not exist."""
-        pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
+        pub.subscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
 
         test_attributes["parent_id"] = 0
-        test_attributes["record_id"] = 1
         test_attributes["mission_phase_id"] = 20
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_environment")
+        pub.unsubscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
         """should send the fail message when the revision ID does not exist."""
-        pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
+        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
         test_attributes["parent_id"] = 0
-        test_attributes["record_id"] = 1
         test_attributes["revision_id"] = 4
         pub.sendMessage("request_insert_environment", attributes=test_attributes)
 
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_environment")
+        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -134,15 +133,17 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_environment topic was broadcast.")
+        print("\033[36m\n\tsucceed_delete_environment topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Environment ID 10.")
-        print("\033[35m\nfail_delete_environment topic was broadcast.")
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempted to delete non-existent Environment ID 10."
+        print("\033[35m\n\tfail_delete_environment topic was broadcast.")
 
-    def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Environment ID 2.")
-        print("\033[35m\nfail_delete_environment topic was broadcast.")
+    def on_fail_delete_not_in_tree(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempted to delete non-existent Environment ID 2."
+        print("\033[35m\n\tfail_delete_environment topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_delete(self):
@@ -156,20 +157,20 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_mission_non_existent_id(self):
         """should send the fail message when the environment ID does not exist."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_environment")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_environment", node_id=10)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_environment")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_tablemodel):
         """should send the fail message when the node doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
+        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_environment", node_id=2)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_environment")
+        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -178,42 +179,43 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["environment"].name == ("Big test environment")
-        print("\033[36m\nsucceed_update_environment topic was broadcast")
+        assert tree.get_node(1).data["environment"].name == "Big test environment"
+        print("\033[36m\n\tsucceed_update_environment topic was broadcast")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast")
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for environment "
-            "ID 1 was the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "The value for one or more attributes for environment ID 1 was the wrong "
+            "type."
         )
         print(
-            "\033[35m\nfail_update_environment topic was broadcast on wrong data "
+            "\033[35m\n\tfail_update_environment topic was broadcast on wrong data "
             "type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_environment topic was broadcast on root node.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print("\033[35m\n\tfail_update_environment topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent environment with "
-            "environment ID 10."
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "Attempted to save non-existent environment with environment ID 10."
         )
         print(
-            "\033[35m\nfail_update_environment topic was broadcast on non-existent "
+            "\033[35m\n\tfail_update_environment topic was broadcast on non-existent "
             "ID."
         )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for environment ID 1."
-        )
+    def on_fail_update_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "No data package found for environment ID 1."
         print(
-            "\033[35m\nfail_update_environment topic was broadcast on no data "
+            "\033[35m\n\tfail_update_environment topic was broadcast on no data "
             "package."
         )
 
@@ -245,47 +247,45 @@ class TestUpdateMethods:
     @pytest.mark.integration
     def test_do_update_wrong_data_type(self, test_tablemodel):
         """should send the fail message when data type is wrong for attribute."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_environment")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """should send the fail message when data type is wrong for root node."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_environment"
-        )
+        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
         _environment = test_tablemodel.do_select(1)
         _environment.name = {1: 2}
         pub.sendMessage("request_update_environment", node_id=0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_environment"
+            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
         """should send the fail message when the environment ID does not exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_environment")
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_update_environment", node_id=10)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_environment")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_tablemodel):
         """should send the fail message when no record exists for environment ID."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_environment")
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
         test_tablemodel.tree.get_node(1).data.pop("environment")
         pub.sendMessage("request_update_environment", node_id=1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_environment")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
 class TestGetterSetter:
@@ -296,19 +296,19 @@ class TestGetterSetter:
         assert attributes["mission_phase_id"] == 1
         assert attributes["environment_id"] == 1
         assert attributes["name"] == "Condition Name"
-        print("\033[36m\nsucceed_get_environment_attributes topic was broadcast")
+        print("\033[36m\n\tsucceed_get_environment_attributes topic was broadcast")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["environment"], RAMSTKEnvironmentRecord)
-        print("\033[36m\nsucceed_get_environment_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_environment_tree topic was broadcast")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
         assert (
             tree.get_node(1).data["environment"].name == "This is the environment name."
         )
-        print("\033[36m\nsucceed_get_environment_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_environment_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self):
