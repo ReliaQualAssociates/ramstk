@@ -45,7 +45,6 @@ class RAMSTKHardwareTable(RAMSTKBaseTable):
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.

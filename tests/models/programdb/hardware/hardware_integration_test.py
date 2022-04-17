@@ -341,7 +341,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
-        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert isinstance(
@@ -359,7 +358,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 9
-        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(10) is None
@@ -399,7 +397,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 1,
                 "parent_id": 0,
-                "record_id": 1,
                 "part": 0,
             },
         )
