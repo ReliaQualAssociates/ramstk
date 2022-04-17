@@ -50,7 +50,6 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -65,7 +64,11 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self._on_insert_hardware,
+            self._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        pub.subscribe(
+            self._do_update_tree,
             "succeed_insert_hardware",
         )
 
@@ -84,8 +87,8 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
 
         return _new_record
 
-    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
-        """Add new node to the MIL-HDBK-217F tree for the newly added Hardware.
+    def _do_update_tree(self, tree: treelib.Tree) -> None:
+        """Update the MIL-HDBK-217F tree for the newly added or removed Hardware.
 
         MIL-HDBK-217F records are added by triggers in the database when a new
         Hardware item is added.  This method simply adds a new node to the MIL-HDBK-217F

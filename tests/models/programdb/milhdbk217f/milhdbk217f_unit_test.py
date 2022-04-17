@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.milhdbk217f.milhdbk217f_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.models.programdb.milhdbk217f.milhdbk217f_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -41,6 +41,8 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_delete, "request_delete_milhdbk217f")
     pub.unsubscribe(dut.do_insert, "request_insert_milhdbk217f")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -107,7 +109,6 @@ class TestCreateModels:
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKMilHdbk217FRecord
@@ -196,7 +197,6 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 4
