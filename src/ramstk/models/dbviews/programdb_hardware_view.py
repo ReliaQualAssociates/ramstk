@@ -368,7 +368,6 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         """
         for _node in self._dic_trees["hardware"].all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-
             self.tree.create_node(
                 tag="hardware",
                 identifier=_hardware.hardware_id,
