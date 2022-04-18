@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.control.control_integration_test.py is part of The RAMSTK
+#       tests.models.programdb.control.control_integration_test.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.

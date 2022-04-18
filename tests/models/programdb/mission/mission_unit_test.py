@@ -130,7 +130,6 @@ class TestInsertMethods:
         """do_insert() should send the success message after successfully inserting a
         new mission."""
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 

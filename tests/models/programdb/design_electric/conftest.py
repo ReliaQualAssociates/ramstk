@@ -1,9 +1,11 @@
 # Third Party Imports
 import pytest
 from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKDesignElectricRecord
+from ramstk.models.dbtables import RAMSTKHardwareTable
 
 
 @pytest.fixture()
@@ -260,6 +262,31 @@ def test_recordmodel(mock_program_dao):
     dut = mock_program_dao.do_select_all(RAMSTKDesignElectricRecord, _all=False)
 
     yield dut
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def test_hardware_table(test_program_dao):
+    """Get a data manager instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKHardwareTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
+    pub.unsubscribe(dut.do_update, "request_update_hardware")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
 
     # Delete the device under test.
     del dut

@@ -191,7 +191,6 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """do_insert() should send the success message after successfully inserting a
         new top-level requirement."""
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -211,7 +210,6 @@ class TestInsertMethods:
         """do_insert() should send the success message after successfully inserting a
         new child requirement."""
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -235,7 +233,6 @@ class TestDeleteMethods:
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_tablemodel):
         """_do_delete() should send the success message with the treelib Tree."""
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_delete(test_tablemodel.last_id)
 

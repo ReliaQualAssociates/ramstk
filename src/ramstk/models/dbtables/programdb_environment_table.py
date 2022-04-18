@@ -48,7 +48,6 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
             "mission_phase_id",
             "environment_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.

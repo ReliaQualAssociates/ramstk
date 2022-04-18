@@ -122,12 +122,18 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Action ID 300.")
+        try:
+            assert message == "No data package for node ID 300 in module action."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Action ID 300."
         print("\033[35m\n\tfail_delete_action topic was broadcast")
 
     def on_fail_delete_not_in_tree(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Action ID 4.")
+        try:
+            assert message == "No data package for node ID 4 in module action."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Action ID 4."
         print("\033[35m\n\tfail_delete_action topic was broadcast")
 
     @pytest.mark.integration
@@ -167,7 +173,7 @@ class TestUpdateMethods:
 
     def on_succeed_update(self, tree):
         assert isinstance(tree, Tree)
-        assert tree.get_node(3).data["action"].description == ("Get a clue.")
+        assert tree.get_node(3).data["action"].description == "Get a clue."
         assert tree.get_node(3).data["action"].action_closed == 1
         print("\033[36m\n\tsucceed_update_action topic was broadcast")
 

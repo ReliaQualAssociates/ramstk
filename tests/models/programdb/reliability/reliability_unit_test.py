@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.reliability.reliability_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.models.programdb.reliability.reliability_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -114,7 +114,6 @@ class TestCreateModels:
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
         assert test_table_model._revision_id == 0
         assert test_table_model._record == RAMSTKReliabilityRecord
@@ -211,7 +210,6 @@ class TestInsertMethods:
         test_table_model.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 4
         test_table_model.do_insert(attributes=test_attributes)
 
         assert test_table_model.last_id == 4

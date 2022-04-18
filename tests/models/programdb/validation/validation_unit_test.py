@@ -2,7 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.validation.validation_unit_test.py is part of The RAMSTK Project
+#       tests.models.programdb.validation.validation_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -188,7 +189,6 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
         test_attributes["parent_id"] = 0
-        test_attributes["record_id"] = 0
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 

@@ -20,7 +20,7 @@ from ramstk.analyses import allocation
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKAllocationRecord
-from .basetable import RAMSTKBaseTable
+from .basetable import RAMSTKBaseTable, do_clear_tree
 
 
 class RAMSTKAllocationTable(RAMSTKBaseTable):
@@ -59,7 +59,6 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -95,7 +94,11 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
             "request_calculate_allocation_goals",
         )
         pub.subscribe(
-            self._on_insert_hardware,
+            self._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        pub.subscribe(
+            self._do_update_tree,
             "succeed_insert_hardware",
         )
 
@@ -354,22 +357,21 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
 
         return _cum_weight
 
-    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
-        """Add new node to the Allocation tree for the newly added Hardware.
+    def _do_update_tree(self, tree: treelib.Tree) -> None:
+        """Update the Allocation tree for the newly added or removed Hardware.
 
         Allocation records are added by triggers in the database when a new Hardware
         item is added.  This method simply adds a new node to the Allocation tree
         with a blank record.
 
-        :param tree: the Hardware tree with the new node.
+        :param tree: the updated Hardware tree with the new node or missing the node
+            just deleted.
         :return: None
         :rtype: None
         """
+        do_clear_tree(self.tree)
         for _node in tree.all_nodes()[1:]:
-            if (
-                not self.tree.contains(_node.identifier)
-                and not _node.data["hardware"].part
-            ):
+            if not _node.data["hardware"].part:
                 _attributes = {
                     "revision_id": _node.data["hardware"].revision_id,
                     "hardware_id": _node.data["hardware"].hardware_id,

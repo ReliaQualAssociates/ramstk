@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.mission.mission_integration_test.py is part of The RAMSTK
+#       tests.models.programdb.mission.mission_integration_test.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -74,8 +74,9 @@ class TestInsertMethods:
         assert isinstance(tree.get_node(4).data["mission"], RAMSTKMissionRecord)
         print("\033[36m\n\tsucceed_insert_mission topic was broadcast")
 
-    def on_fail_insert_no_revision(self, error_message):
-        assert error_message == (
+    def on_fail_insert_no_revision(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
             "do_insert: Database error when attempting to add a record.  "
             "Database returned:\n\tKey (fld_revision_id)=(4) is not present "
             'in table "ramstk_revision".'
@@ -90,7 +91,6 @@ class TestInsertMethods:
         pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission")
 
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_tablemodel.do_insert(attributes=test_attributes)
 
         pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission")
@@ -99,14 +99,13 @@ class TestInsertMethods:
     def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
         """do_insert() should send the fail message attempting to insert a new mission
         for an non-existent revision ID."""
-        pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
+        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_attributes["revision_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_mission")
+        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -118,13 +117,27 @@ class TestDeleteMethods:
         assert tree.get_node(1) is None
         print("\033[36m\n\tsucceed_delete_mission topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Mission ID 10.")
-        print("\033[35m\n\tfail_delete_mission topic was broadcast.")
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        try:
+            assert message == "No data package for node ID 10 in module mission."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Mission ID 10."
+            print(
+                "\033[35m\n\tfail_delete_mission topic was broadcast on "
+                "non-existent ID."
+            )
 
-    def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Mission ID 2.")
-        print("\033[35m\n\tfail_delete_mission topic was broadcast.")
+    def on_fail_delete_not_in_tree(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        try:
+            assert message == "No data package for node ID 2 in module mission."
+            print(
+                "\033[35m\n\tfail_delete_mission topic was broadcast on no data "
+                "package."
+            )
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Mission ID 2."
 
     @pytest.mark.integration
     def test_do_delete(self, test_tablemodel):
@@ -140,22 +153,22 @@ class TestDeleteMethods:
     def test_do_delete_non_existent_id(self, test_tablemodel):
         """_do_delete_mission() should send the sfail message when attempting to delete
         a non-existent mission ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_mission", node_id=10)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_mission")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_delete_not_in_tree(self, test_tablemodel):
         """_do_delete() should send the fail message when attempting to remove a node
         that doesn't exist from the tree even if it exists in the database."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
+        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
         test_tablemodel.tree.remove_node(2)
         pub.sendMessage("request_delete_mission", node_id=2)
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_mission")
+        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_tablemodel")
@@ -170,25 +183,27 @@ class TestUpdateMethods:
     def on_succeed_update_all(self):
         print("\033[36m\n\tsucceed_update_all topic was broadcast")
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for mission "
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == (
+            "The value for one or more attributes for mission "
             "ID 1 was the wrong type."
         )
         print("\033[35m\n\tfail_update_mission topic was broadcast")
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
         print("\033[35m\n\tfail_update_mission topic was broadcast")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent mission with mission ID 10."
-        )
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == ("Attempted to save non-existent mission with mission ID 10.")
         print("\033[35m\n\tfail_update_mission topic was broadcast")
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for mission ID 1.")
+    def on_fail_update_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        assert message == "No data package found for mission ID 1."
         print("\033[35m\n\tfail_update_mission topic was broadcast")
 
     @pytest.mark.integration
@@ -229,22 +244,20 @@ class TestUpdateMethods:
     def test_do_update_wrong_data_type(self, test_tablemodel):
         """do_update() should return a non-zero error code when passed a Requirement ID
         that doesn't exist."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
         _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
 
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_mission")
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
-        )
+        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
         _mission = test_tablemodel.do_select(1)
         _mission.name = {1: 2}
@@ -252,29 +265,29 @@ class TestUpdateMethods:
         test_tablemodel.do_update(0)
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_mission"
+            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         test_tablemodel.do_update(10)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_mission")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_no_data_package(self, test_tablemodel):
         """do_update_usage_profile() should broadcast the fail message when attempting
         to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_mission")
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
         test_tablemodel.tree.get_node(1).data.pop("mission")
         test_tablemodel.do_update(1)
 
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_mission")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
 @pytest.mark.usefixtures("test_tablemodel")

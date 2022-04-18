@@ -22,7 +22,7 @@ from ramstk.views.gtk3 import _
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKSimilarItemRecord
-from .basetable import RAMSTKBaseTable
+from .basetable import RAMSTKBaseTable, do_clear_tree
 
 
 class RAMSTKSimilarItemTable(RAMSTKBaseTable):
@@ -54,7 +54,6 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -78,7 +77,11 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             "request_roll_up_change_descriptions",
         )
         pub.subscribe(
-            self._on_insert_hardware,
+            self._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        pub.subscribe(
+            self._do_update_tree,
             "succeed_insert_hardware",
         )
 
@@ -410,8 +413,8 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
             attributes=_attributes,
         )
 
-    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
-        """Add new node to the Similar Item tree for the newly added Hardware.
+    def _do_update_tree(self, tree: treelib.Tree) -> None:
+        """Update the Similar Item tree for the newly added or removed Hardware.
 
         Similar Item records are added by triggers in the database when a new Hardware
         item is added.  This method simply adds a new node to the Similar Item tree
@@ -421,11 +424,9 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
+        do_clear_tree(self.tree)
         for _node in tree.all_nodes()[1:]:
-            if (
-                not self.tree.contains(_node.identifier)
-                and not _node.data["hardware"].part
-            ):
+            if not _node.data["hardware"].part:
                 _attributes = {
                     "revision_id": _node.data["hardware"].revision_id,
                     "hardware_id": _node.data["hardware"].hardware_id,
