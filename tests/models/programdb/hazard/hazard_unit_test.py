@@ -2,7 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.hazards.hazards_unit_test.py is part of The RAMSTK Project
+#       tests.models.programdb.hazards.hazards_unit_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -118,7 +119,6 @@ class TestCreateModels:
             "function_id",
             "hazard_id",
             "parent_id",
-            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKHazardRecord

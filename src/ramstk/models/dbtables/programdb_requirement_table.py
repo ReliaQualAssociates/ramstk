@@ -50,7 +50,6 @@ class RAMSTKRequirementTable(RAMSTKBaseTable):
             "revision_id",
             "requirement_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.

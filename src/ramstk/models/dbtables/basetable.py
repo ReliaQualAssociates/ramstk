@@ -156,15 +156,10 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         try:
-            for _node in self.tree.children(node_id):
-                _record = self.do_select(_node.identifier)
-                self.dao.do_delete(_record)
-
-            _record = self.do_select(node_id)
-            self.dao.do_delete(_record)
-
-            self.tree.remove_node(node_id)
+            self.dao.do_delete(self.do_select(node_id))
             self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+            self._do_remove_tree_node(node_id)
 
             pub.sendMessage(
                 f"succeed_delete_{self._tag}",
@@ -270,7 +265,7 @@ class RAMSTKBaseTable:
         except (
             AttributeError,
             KeyError,
-            treelib.tree.NodeIDAbsentError,
+            NodeIDAbsentError,
             TypeError,
         ):
             pub.sendMessage(
@@ -450,3 +445,17 @@ class RAMSTKBaseTable:
 
         pub.sendMessage("request_set_cursor_active")
         pub.sendMessage(f"succeed_update_all_{self._tag}")
+
+    def _do_remove_tree_node(self, node_id: int) -> None:
+        """Delete any child nodes and then the deleted node from the treelib Tree.
+
+        :param node_id: the ID of the node to be removed from the tree.
+        :return: None
+        :rtype: None
+        """
+        try:
+            for _node in self.tree.children(node_id):
+                self.dao.do_delete(self.do_select(_node.identifier))
+            self.tree.remove_node(node_id)
+        except NodeIDAbsentError:
+            pass

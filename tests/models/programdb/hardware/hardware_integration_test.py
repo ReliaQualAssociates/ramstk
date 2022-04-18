@@ -341,7 +341,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(9) is None
 
         test_attributes["hardware_id"] = 9
-        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert isinstance(
@@ -359,7 +358,6 @@ class TestInsertMethods:
         assert test_tablemodel.tree.get_node(10) is None
 
         test_attributes["revision_id"] = 9
-        test_attributes["record_id"] = 1
         pub.sendMessage("request_insert_hardware", attributes=test_attributes)
 
         assert test_tablemodel.tree.get_node(10) is None
@@ -399,7 +397,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "hardware_id": 1,
                 "parent_id": 0,
-                "record_id": 1,
                 "part": 0,
             },
         )
@@ -425,14 +422,22 @@ class TestDeleteMethods:
         assert isinstance(tree, Tree)
         print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Hardware ID 300.")
+    def on_fail_delete_non_existent_id(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        try:
+            assert message == "No data package for node ID 300 in module hardware."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Hardware ID 300."
         print(
             "\033[35m\n\tfail_delete_hardware topic was broadcast on non-existent ID."
         )
 
-    def on_fail_delete_no_data_package(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Hardware ID 2.")
+    def on_fail_delete_no_data_package(self, logger_name, message):
+        assert logger_name == "DEBUG"
+        try:
+            assert message == "No data package for node ID 2 in module hardware."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Hardware ID 2."
         print(
             "\033[35m\n\tfail_delete_hardware topic was broadcast on no data package."
         )
@@ -461,16 +466,16 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self, test_tablemodel):
         """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_hardware")
+        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage("request_delete_hardware", node_id=300)
 
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_hardware")
+        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_delete_no_data_package(self, test_tablemodel):
         """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_hardware")
+        pub.subscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
 
         test_tablemodel.tree.get_node(2).data.pop("hardware")
         pub.sendMessage("request_delete_hardware", node_id=2)
@@ -478,7 +483,7 @@ class TestDeleteMethods:
         assert not isinstance(test_tablemodel.tree.get_node(6), RAMSTKHardwareRecord)
         assert not isinstance(test_tablemodel.tree.get_node(7), RAMSTKHardwareRecord)
 
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_hardware")
+        pub.unsubscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_delete_hardware(

@@ -154,8 +154,6 @@ class TestInsertMethods:
     @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a record to the record tree and update last_id."""
-        test_attributes["record_id"] = 1
-
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -172,7 +170,6 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
 
         test_attributes["parent_id"] = 2
-        test_attributes["record_id"] = 1
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 3

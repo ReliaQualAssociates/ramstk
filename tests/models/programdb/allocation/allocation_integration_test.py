@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.allocation.allocation_integration_test.py is part of The
+#       tests.models.programdb.allocation.allocation_integration_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
@@ -52,7 +52,8 @@ def test_table_model(test_program_dao):
     pub.unsubscribe(
         dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
     )
-    pub.unsubscribe(dut._on_insert_hardware, "succeed_insert_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -65,7 +66,7 @@ class TestSelectMethods:
     def on_succeed_select_all(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\n\t\tsucceed_retrieve_all_allocation topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_all_allocation topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
@@ -81,46 +82,24 @@ class TestSelectMethods:
 class TestInsertMethods:
     """Class for testing the insert() method."""
 
-    def on_fail_insert_no_parent(self, error_message):
-        assert error_message == ("do_insert: Parent node '9' is not in the tree")
-        print("\033[35m\n\t\tfail_insert_allocation topic was broadcast on no parent.")
-
-    def on_fail_insert_no_revision(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a "
-            "record.  Database returned:\n\tKey "
-            "(fld_revision_id)=(40) is not present in table "
-            '"ramstk_revision".'
-        )
-        print(
-            "\033[35m\n\t\tfail_insert_allocation topic was broadcast on no revision."
-        )
-
-    def on_fail_insert_no_hardware(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a "
-            "record.  Database returned:\n\tKey "
-            "(fld_hardware_id)=(9) is not present in table "
-            '"ramstk_hardware".'
-        )
-        print(
-            "\033[35m\n\t\tfail_insert_allocation topic was broadcast on no hardware."
-        )
-
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
         self, test_attributes, test_table_model, test_hardware_table
     ):
-        """should add a record to the record tree and update last_id."""
+        """should add a record to the record tree."""
         assert test_table_model.tree.get_node(9) is None
 
+        # The allocation record is added by the database whenever a hardware record is
+        # added to the database.  Adding the new allocation record to the Allocation
+        # tree is triggered by the "succeed_insert_hardware" message.  Only
+        # records associated with assembly type hardware are added to the Allocation
+        # tree.
         pub.sendMessage(
             "request_insert_hardware",
             attributes={
                 "revision_id": 1,
                 "hardware_id": 9,
                 "parent_id": 2,
-                "record_id": 9,
                 "part": 0,
             },
         )
@@ -136,123 +115,51 @@ class TestInsertMethods:
     def test_do_insert_part(
         self, test_attributes, test_table_model, test_hardware_table
     ):
-        """should not add a record to the record tree and update last_id."""
+        """should NOT add a record to the record tree."""
         assert test_table_model.tree.get_node(10) is None
 
+        # The allocation record is added by the database whenever a hardware record is
+        # added to the database.  Adding the new allocation record to the Allocation
+        # tree is triggered by the "succeed_insert_hardware" message.  Only
+        # records associated with assembly type hardware are added to the Allocation
+        # tree.
         pub.sendMessage(
             "request_insert_hardware",
             attributes={
                 "revision_id": 1,
                 "hardware_id": 10,
                 "parent_id": 2,
-                "record_id": 10,
                 "part": 1,
             },
         )
 
         assert test_table_model.tree.get_node(10) is None
 
-    @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_table_model):
-        """should not add a record when passed a non-existent parent ID."""
-        pub.subscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
 
-        assert test_table_model.tree.get_node(10) is None
-
-        test_attributes["hardware_id"] = 10
-        test_attributes["parent_id"] = 13
-        test_attributes["record_id"] = 10
-        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
-
-        assert test_table_model.tree.get_node(10) is None
-
-        pub.unsubscribe(self.on_fail_insert_no_parent, "fail_insert_allocation")
-
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_table_model):
-        """should not add a record when passed a non-existent revision ID."""
-        pub.subscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
-
-        assert test_table_model.tree.get_node(10) is None
-
-        test_attributes["revision_id"] = 40
-        test_attributes["hardware_id"] = 10
-        test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 10
-        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
-
-        assert test_table_model.tree.get_node(10) is None
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "fail_insert_allocation")
-
-    @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_attributes, test_table_model):
-        """should not add a record when passed a non-existent hardware ID."""
-        pub.subscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
-
-        assert test_table_model.tree.get_node(10) is None
-
-        test_attributes["hardware_id"] = 13
-        test_attributes["record_id"] = 10
-        pub.sendMessage("request_insert_allocation", attributes=test_attributes)
-
-        assert test_table_model.tree.get_node(10) is None
-
-        pub.unsubscribe(self.on_fail_insert_no_hardware, "fail_insert_allocation")
-
-
-@pytest.mark.usefixtures("test_table_model")
+@pytest.mark.usefixtures("test_table_model", "test_hardware_table")
 class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    """Class for testing the do_delete() method."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_allocation topic was broadcast.")
+    def on_succeed_delete_hardware(self, tree):
+        assert tree.get_node(7) is None
+        print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
 
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Allocation ID 300.")
-        print(
-            "\033[35m\nfail_delete_allocation topic was broadcast on non-existent "
-            "ID."
+    @pytest.mark.integration
+    def test_do_delete(self, test_table_model, test_hardware_table):
+        """should remove record from record tree."""
+        pub.subscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
+
+        assert isinstance(
+            test_table_model.tree.get_node(7).data["allocation"], RAMSTKAllocationRecord
         )
 
-    def on_fail_delete_no_data_package(self, error_message):
-        assert error_message == ("Attempted to delete non-existent Allocation ID 2.")
-        print(
-            "\033[35m\nfail_delete_allocation topic was broadcast on no data package."
-        )
+        # Allocation records are cascade deleted by the database server whenever the
+        # corresponding Hardware record is deleted.
+        pub.sendMessage("request_delete_hardware", node_id=7)
 
-    @pytest.mark.integration
-    def test_do_delete(self, test_table_model):
-        """should remove record from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_allocation")
+        assert test_table_model.tree.get_node(7) is None
 
-        _last_id = test_table_model.last_id
-        pub.sendMessage("request_delete_allocation", node_id=_last_id)
-
-        assert test_table_model.last_id == 6
-        assert test_table_model.tree.get_node(_last_id) is None
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_allocation")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self):
-        """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
-
-        pub.sendMessage("request_delete_allocation", node_id=300)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "fail_delete_allocation")
-
-    @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "fail_delete_allocation")
-
-        test_table_model.tree.get_node(1).data.pop("allocation")
-        pub.sendMessage("request_delete_allocation", node_id=2)
-
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "fail_delete_allocation")
+        pub.unsubscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
 
 
 @pytest.mark.usefixtures("test_table_model")
@@ -264,10 +171,10 @@ class TestUpdateMethods:
         assert tree.get_node(2).data["allocation"].parent_id == 1
         assert tree.get_node(2).data["allocation"].percent_weight_factor == 0.9832
         assert tree.get_node(2).data["allocation"].mtbf_goal == 12000
-        print("\033[36m\nsucceed_update_allocation topic was broadcast.")
+        print("\033[36m\n\tsucceed_update_allocation topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast for Allocation.")
+        print("\033[36m\n\tsucceed_update_all topic was broadcast for allocation.")
 
     def on_fail_update_wrong_data_type(self, error_message):
         assert error_message == (
@@ -275,13 +182,13 @@ class TestUpdateMethods:
             "ID 1 was the wrong type."
         )
         print(
-            "\033[35m\nfail_update_allocation topic was broadcast on wrong data "
+            "\033[35m\n\tfail_update_allocation topic was broadcast on wrong data "
             "type."
         )
 
     def on_fail_update_root_node_wrong_data_type(self, error_message):
         assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_allocation topic was broadcast on root node.")
+        print("\033[35m\n\tfail_update_allocation topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, error_message):
         assert error_message == (
@@ -289,7 +196,7 @@ class TestUpdateMethods:
             "allocation ID 100."
         )
         print(
-            "\033[35m\nfail_update_allocation topic was broadcast on non-existent ID."
+            "\033[35m\n\tfail_update_allocation topic was broadcast on non-existent ID."
         )
 
     def on_fail_update_no_data_package(self, error_message):
@@ -297,7 +204,7 @@ class TestUpdateMethods:
             "do_update: No data package found for allocation ID 1."
         )
         print(
-            "\033[35m\nfail_update_allocation topic was broadcast on no data package."
+            "\033[35m\n\tfail_update_allocation topic was broadcast on no data package."
         )
 
     @pytest.mark.integration
@@ -410,17 +317,17 @@ class TestGetterSetter:
         assert attributes["op_time_factor"] == 1
         assert attributes["soa_factor"] == 1
         assert attributes["weight_factor"] == 1
-        print("\033[36m\nsucceed_get_allocation_attributes topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_allocation_attributes topic was broadcast.")
 
     def on_succeed_get_data_manager_tree(self, tree):
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\nsucceed_get_allocation_tree topic was broadcast.")
+        print("\033[36m\n\tsucceed_get_allocation_tree topic was broadcast.")
 
     def on_succeed_set_attributes(self, tree):
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_goal == 0.00005
-        print("\033[36m\nsucceed_get_allocation_tree topic was broadcast")
+        print("\033[36m\n\tsucceed_get_allocation_tree topic was broadcast")
 
     @pytest.mark.integration
     def test_do_get_attributes(self, test_table_model):
@@ -477,7 +384,10 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.59138779
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on AGREE.")
+        print(
+            "\033[36m\n\tsucceed_calculate_allocation topic was broadcast for AGREE "
+            "method."
+        )
 
     def on_succeed_calculate_arinc(self, tree):
         assert isinstance(tree, Tree)
@@ -490,7 +400,10 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.9856513
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on ARINC.")
+        print(
+            "\033[36m\n\tsucceed_calculate_allocation topic was broadcast for ARINC "
+            "method."
+        )
 
     def on_succeed_calculate_equal(self, tree):
         assert isinstance(tree, Tree)
@@ -503,7 +416,10 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.995
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on equal.")
+        print(
+            "\033[36m\n\tsucceed_calculate_allocation topic was broadcast for EQUAL "
+            "method."
+        )
 
     def on_succeed_calculate_foo(self, tree):
         assert isinstance(tree, Tree)
@@ -516,7 +432,10 @@ class TestAnalysisMethods:
         assert tree.get_node(2).data["allocation"].reliability_alloc == pytest.approx(
             0.9403434
         )
-        print("\033[36m\nsucceed_calculate_allocation topic was broadcast on FOO.")
+        print(
+            "\033[36m\n\tsucceed_calculate_allocation topic was broadcast for FOO "
+            "method."
+        )
 
     @pytest.mark.integration
     def test_do_calculate_agree_allocation(self, test_table_model):

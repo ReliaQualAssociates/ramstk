@@ -52,7 +52,6 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
             "revision_id",
             "stakeholder_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.

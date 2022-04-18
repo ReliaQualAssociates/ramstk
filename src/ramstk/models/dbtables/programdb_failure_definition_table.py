@@ -47,7 +47,6 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
             "function_id",
             "definition_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.

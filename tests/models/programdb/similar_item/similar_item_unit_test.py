@@ -2,8 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.similar_item.similar_item_unit_test.py is part of The RAMSTK
-#       Project
+#       tests.models.programdb.similar_item.similar_item_unit_test.py is part of The
+#       RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -47,6 +47,8 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(
         dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
     )
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -131,7 +133,6 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
-            "record_id",
         ]
         assert test_tablemodel._record == RAMSTKSimilarItemRecord
         assert test_tablemodel.pkey == "hardware_id"
@@ -221,7 +222,6 @@ class TestInsertMethods:
     def test_do_insert_sibling(self, test_attributes, test_tablemodel):
         """should add a new record to the records tree and update last_id."""
         test_tablemodel.do_select_all(attributes=test_attributes)
-        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert isinstance(test_tablemodel.tree, Tree)
@@ -236,7 +236,7 @@ class TestInsertMethods:
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")
 class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    """Class for testing the do_delete() method."""
 
     @pytest.mark.unit
     def test_do_delete(self, test_attributes, test_tablemodel):

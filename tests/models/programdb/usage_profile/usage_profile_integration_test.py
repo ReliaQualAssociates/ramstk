@@ -285,7 +285,6 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "mission_id": 1,
                 "parent_id": 1,
-                "record_id": 1,
             },
         )
 
@@ -317,7 +316,6 @@ class TestInsertMethods:
                 "mission_id": 1,
                 "mission_phase_id": 1,
                 "parent_id": 1,
-                "record_id": 1,
             },
         )
 
@@ -352,7 +350,6 @@ class TestInsertMethods:
                 "mission_phase_id": 1,
                 "environment_id": 1,
                 "parent_id": 1,
-                "record_id": 1,
                 "name": "Condition Name",
             },
         )

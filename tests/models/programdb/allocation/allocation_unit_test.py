@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.allocation.allocation_unit_test.py is part of The RAMSTK
+#       tests.models.programdb.allocation.allocation_unit_test.py is part of The RAMSTK
 #       Project
 #
 # All rights reserved.
@@ -54,6 +54,8 @@ def test_tablemodel(mock_program_dao):
     pub.unsubscribe(
         dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
     )
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -94,7 +96,7 @@ class TestCreateModels:
         assert test_recordmodel.weight_factor == 1
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
+    def test_table_model_create(self, test_tablemodel):
         """should return a table manager instance."""
         assert isinstance(test_tablemodel, RAMSTKAllocationTable)
         assert isinstance(test_tablemodel.tree, Tree)
@@ -104,7 +106,6 @@ class TestCreateModels:
         assert test_tablemodel._lst_id_columns == [
             "revision_id",
             "hardware_id",
-            "record_id",
         ]
         assert test_tablemodel._revision_id == 0
         assert test_tablemodel._record == RAMSTKAllocationRecord
@@ -148,6 +149,14 @@ class TestCreateModels:
         assert pub.isSubscribed(
             test_tablemodel.do_calculate_allocation_goals,
             "request_calculate_allocation_goals",
+        )
+        assert pub.isSubscribed(
+            test_tablemodel._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        assert pub.isSubscribed(
+            test_tablemodel._do_update_tree,
+            "succeed_insert_hardware",
         )
 
 
@@ -212,7 +221,6 @@ class TestInsertMethods:
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_attributes["hardware_id"] = 4
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 4
         test_tablemodel.do_insert(attributes=test_attributes)
 
         assert test_tablemodel.last_id == 4

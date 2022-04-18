@@ -17,7 +17,7 @@ from pubsub import pub
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKDesignElectricRecord
-from .basetable import RAMSTKBaseTable
+from .basetable import RAMSTKBaseTable, do_clear_tree
 
 
 class RAMSTKDesignElectricTable(RAMSTKBaseTable):
@@ -50,7 +50,6 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
             "revision_id",
             "hardware_id",
             "parent_id",
-            "record_id",
         ]
 
         # Initialize private scalar attributes.
@@ -66,7 +65,11 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self._on_insert_hardware,
+            self._do_update_tree,
+            "succeed_delete_hardware",
+        )
+        pub.subscribe(
+            self._do_update_tree,
             "succeed_insert_hardware",
         )
 
@@ -85,19 +88,21 @@ class RAMSTKDesignElectricTable(RAMSTKBaseTable):
 
         return _new_record
 
-    def _on_insert_hardware(self, tree: treelib.Tree) -> None:
-        """Add new node to the Design Electric tree for the newly added Hardware.
+    def _do_update_tree(self, tree: treelib.Tree) -> None:
+        """Update the Design Electric tree for the newly added or removed Hardware.
 
         Design Electric records are added by triggers in the database when a new
         Hardware item is added.  This method simply adds a new node to the Design
         Electric tree with a blank record.
 
-        :param tree: the Hardware tree with the new node.
+        :param tree: the updated Hardware tree with the new node or missing the node
+            just deleted.
         :return: None
         :rtype: None
         """
+        do_clear_tree(self.tree)
         for _node in tree.all_nodes()[1:]:
-            if not self.tree.contains(_node.identifier) and _node.data["hardware"].part:
+            if _node.data["hardware"].part:
                 _attributes = {
                     "revision_id": _node.data["hardware"].revision_id,
                     "hardware_id": _node.data["hardware"].hardware_id,

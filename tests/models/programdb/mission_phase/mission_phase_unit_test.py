@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.controllers.mission_phase.mission_phase_unit_test.py is part of The
+#       tests.models.programdb.mission_phase.mission_phase_unit_test.py is part of The
 #       RAMSTK Project
 #
 # All rights reserved.
@@ -142,7 +142,6 @@ class TestInsertMethods:
         """do_insert() should send the success message after successfully inserting a
         new mission."""
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_insert(attributes=test_attributes)
 
@@ -161,7 +160,6 @@ class TestDeleteMethods:
     def test_do_delete(self, test_attributes, test_tablemodel):
         """_do_delete() should remove the passed mission phase ID."""
         test_attributes["parent_id"] = 1
-        test_attributes["record_id"] = 1
         test_tablemodel.do_select_all(attributes=test_attributes)
         test_tablemodel.do_delete(1)
 
