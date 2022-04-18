@@ -155,16 +155,32 @@ class TestDeleteMethods:
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
+        assert tree.get_node(3) is None
         print("\033[36m\n\tsucceed_delete_function topic was broadcast.")
+
+    def on_succeed_delete_with_child(self, tree):
+        assert isinstance(tree, Tree)
+        assert tree.get_node(1) is None
+        assert tree.get_node(2) is None
+        print(
+            "\033[36m\n\tsucceed_delete_function topic was broadcast on delete with "
+            "child."
+        )
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Function ID 300.")
+        try:
+            assert message == "No data package for node ID 300 in module function."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Function ID 300."
         print("\033[35m\n\tfail_delete_function topic was broadcast.")
 
     def on_fail_delete_not_in_tree(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Function ID 2.")
+        try:
+            assert message == "No data package for node ID 2 in module function."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Function ID 2."
         print("\033[35m\n\tfail_delete_function topic was broadcast.")
 
     @pytest.mark.integration
@@ -183,15 +199,14 @@ class TestDeleteMethods:
     @pytest.mark.integration
     def test_do_delete_with_child(self, test_tablemodel):
         """should remove a record and children from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_function")
+        pub.subscribe(self.on_succeed_delete_with_child, "succeed_delete_function")
 
         pub.sendMessage("request_delete_function", node_id=1)
 
-        assert test_tablemodel.last_id == 0
         assert test_tablemodel.tree.get_node(2) is None
         assert test_tablemodel.tree.get_node(1) is None
 
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_function")
+        pub.unsubscribe(self.on_succeed_delete_with_child, "succeed_delete_function")
 
     @pytest.mark.integration
     def test_do_delete_non_existent_id(self):

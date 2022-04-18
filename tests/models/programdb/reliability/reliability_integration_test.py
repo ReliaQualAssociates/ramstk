@@ -152,23 +152,26 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == ("Attempted to delete non-existent Reliability ID 300.")
-        print(
-            "\033[35m\n\tfail_delete_reliability topic was broadcast on non-existent "
-            "ID."
-        )
+        try:
+            assert message == "No data package for node ID 300 in module reliability."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Reliability ID 300."
+            print(
+                "\033[35m\n\tfail_delete_reliability topic was broadcast on "
+                "non-existent ID."
+            )
 
     def on_fail_delete_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
         # Two debug messages will be sent by two different methods under this scenario.
         try:
-            assert message == ("No data package for node ID 2 in module reliability.")
+            assert message == "No data package for node ID 2 in module reliability."
+            print(
+                "\033[35m\n\tfail_delete_reliability topic was broadcast on no data "
+                "package."
+            )
         except AssertionError:
-            assert message == ("Attempted to delete non-existent Reliability ID 2.")
-        print(
-            "\033[35m\n\tfail_delete_reliability topic was broadcast on no data "
-            "package."
-        )
+            assert message == "Attempted to delete non-existent Reliability ID 2."
 
     @pytest.mark.integration
     def test_do_delete(self, test_table_model):

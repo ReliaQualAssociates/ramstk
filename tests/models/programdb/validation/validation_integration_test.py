@@ -116,7 +116,7 @@ class TestInsertMethods:
 
 @pytest.mark.usefixtures("test_tablemodel")
 class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    """Class for testing the do_delete() method."""
 
     def on_succeed_delete(self, tree):
         assert isinstance(tree, Tree)
@@ -124,20 +124,25 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Validation ID 300."
-        print(
-            "\033[35m\n\tfail_delete_validation topic was broadcast on non-existent ID."
-        )
+        try:
+            assert message == "No data package for node ID 300 in module validation."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Validation ID 300."
+            print(
+                "\033[35m\n\tfail_delete_validation topic was broadcast on "
+                "non-existent ID."
+            )
 
     def on_fail_delete_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
         try:
             assert message == "No data package for node ID 2 in module validation."
+            print(
+                "\033[35m\n\tfail_delete_validation topic was broadcast on no data "
+                "package."
+            )
         except AssertionError:
             assert message == "Attempted to delete non-existent Validation ID 2."
-        print(
-            "\033[35m\n\tfail_delete_validation topic was broadcast on no data package."
-        )
 
     @pytest.mark.integration
     def test_do_delete_validation(self, test_tablemodel):

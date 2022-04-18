@@ -148,15 +148,18 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Hazard ID 10."
+        try:
+            assert message == "No data package for node ID 10 in module hazard."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Hazard ID 10."
         print("\033[35m\n\tfail_delete_hazard topic was broadcast on non-existent ID.")
 
     def on_fail_delete_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
         try:
-            assert message == "Attempted to delete non-existent Hazard ID 4."
-        except AssertionError:
             assert message == "No data package for node ID 4 in module hazard."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Hazard ID 4."
         print("\033[35m\n\tfail_delete_hazard topic was broadcast on no data package.")
 
     @pytest.mark.integration

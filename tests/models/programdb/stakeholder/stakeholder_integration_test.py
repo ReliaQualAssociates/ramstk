@@ -125,22 +125,25 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Stakeholder ID 300."
-        print(
-            "\033[35m\n\tfail_delete_stakeholder topic was broadcast on non-existent "
-            "ID."
-        )
+        try:
+            assert message == "No data package for node ID 300 in module stakeholder."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Stakeholder ID 300."
+            print(
+                "\033[35m\n\tfail_delete_stakeholder topic was broadcast on "
+                "non-existent ID."
+            )
 
     def on_fail_delete_no_data_package(self, logger_name, message):
         assert logger_name == "DEBUG"
         try:
             assert message == "No data package for node ID 1 in module stakeholder."
+            print(
+                "\033[35m\n\tfail_delete_stakeholder topic was broadcast on no data "
+                "package."
+            )
         except AssertionError:
             assert message == "Attempted to delete non-existent Stakeholder ID 1."
-        print(
-            "\033[35m\n\tfail_delete_stakeholder topic was broadcast on no data "
-            "package."
-        )
 
     @pytest.mark.integration
     def test_do_delete(self, test_tablemodel):

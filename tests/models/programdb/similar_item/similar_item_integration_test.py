@@ -182,22 +182,25 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Similar Item ID 300."
-        print(
-            "\033[35m\n\tfail_delete_similar_item topic was broadcast on non-existent "
-            "ID."
-        )
+        try:
+            assert message == "No data package for node ID 300 in module similar_item."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Similar Item ID 300."
+            print(
+                "\033[35m\n\tfail_delete_similar_item topic was broadcast on "
+                "non-existent ID."
+            )
 
     def on_fail_delete_not_in_tree(self, logger_name, message):
         assert logger_name == "DEBUG"
         try:
             assert message == "No data package for node ID 2 in module similar_item."
+            print(
+                "\033[35m\n\tfail_delete_similar_item topic was broadcast on no data "
+                "package."
+            )
         except AssertionError:
             assert message == "Attempted to delete non-existent Similar Item ID 2."
-        print(
-            "\033[35m\n\tfail_delete_similar_item topic was broadcast on no data "
-            "package."
-        )
 
     @pytest.mark.integration
     def test_do_delete(self, test_table_model):

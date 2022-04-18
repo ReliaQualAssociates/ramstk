@@ -161,13 +161,25 @@ class TestDeleteMethods:
 
     def on_fail_delete_non_existent_id(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Requirement ID 300."
-        print("\033[35m\n\tfail_delete_requirement topic was broadcast.")
+        try:
+            assert message == "No data package for node ID 300 in module requirement."
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Requirement ID 300."
+            print(
+                "\033[35m\n\tfail_delete_requirement topic was broadcast on "
+                "non-existent ID."
+            )
 
     def on_fail_delete_not_in_tree(self, logger_name, message):
         assert logger_name == "DEBUG"
-        assert message == "Attempted to delete non-existent Requirement ID 2."
-        print("\033[35m\n\tfail_delete_requirement topic was broadcast.")
+        try:
+            assert message == "No data package for node ID 2 in module requirement."
+            print(
+                "\033[35m\n\tfail_delete_requirement topic was broadcast on no data "
+                "package."
+            )
+        except AssertionError:
+            assert message == "Attempted to delete non-existent Requirement ID 2."
 
     @pytest.mark.integration
     def test_do_delete(self, test_tablemodel):
