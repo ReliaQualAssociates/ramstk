@@ -43,9 +43,9 @@ class UnitTestSelectMethods:
         """Should return the record for the requested ID."""
         unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _function = unit_test_table_model.do_select(1)
+        _record = unit_test_table_model.do_select(1)
 
-        assert isinstance(_function, self._record)
+        assert isinstance(_record, self._record)
 
     @pytest.mark.unit
     def test_do_select_non_existent_id(self, test_attributes, unit_test_table_model):
