@@ -14,13 +14,13 @@ from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKStatusRecord
 from ramstk.models.dbtables import RAMSTKStatusTable
+from tests import MockDAO
 
 
 @pytest.fixture(scope="function")

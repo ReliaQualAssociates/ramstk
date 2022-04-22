@@ -11,15 +11,15 @@
 
 # Third Party Imports
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKHazardRecord
 from ramstk.models.dbtables import RAMSTKHazardTable
+
+# noinspection PyUnresolvedReferences
+from tests import MockDAO
 
 TEST_PROBS = {
     "A": "Level A - Frequent",

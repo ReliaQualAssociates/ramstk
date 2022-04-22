@@ -15,15 +15,15 @@ from datetime import date, datetime, timedelta
 # Third Party Imports
 import pandas as pd
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKValidationRecord
 from ramstk.models.dbtables import RAMSTKValidationTable
+
+# noinspection PyUnresolvedReferences
+from tests import MockDAO
 
 
 @pytest.fixture(scope="function")

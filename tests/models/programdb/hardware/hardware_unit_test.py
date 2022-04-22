@@ -11,9 +11,6 @@
 
 # Third Party Imports
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -22,6 +19,9 @@ from ramstk.models.db import BaseDatabase
 from ramstk.models.dbrecords import RAMSTKHardwareRecord
 from ramstk.models.dbtables import RAMSTKHardwareTable
 from ramstk.models.dbviews import RAMSTKHardwareBoMView
+
+# noinspection PyUnresolvedReferences
+from tests import MockDAO
 
 
 @pytest.fixture(scope="function")

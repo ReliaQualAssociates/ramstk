@@ -11,13 +11,13 @@
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSubCategoryRecord
 from ramstk.models.dbtables import RAMSTKSubCategoryTable
+from tests import MockDAO
 
 
 @pytest.fixture(scope="function")

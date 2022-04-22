@@ -1,9 +1,9 @@
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFailureDefinitionRecord
+from tests import MockDAO
 
 
 @pytest.fixture
@@ -42,7 +42,7 @@ def test_attributes():
 @pytest.fixture(scope="function")
 def test_recordmodel(mock_program_dao):
     """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKFailureDefinitionRecord, _all=False)
+    dut = mock_program_dao.do_select(node_id=0)
 
     yield dut
 
