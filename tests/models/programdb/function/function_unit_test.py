@@ -21,50 +21,53 @@ from ramstk.models.dbtables import RAMSTKFunctionTable
 from tests import (
     MockDAO,
     UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
     UnitTestInsertMethods,
     UnitTestSelectMethods,
 )
 
 
-@pytest.mark.usefixtures("test_recordmodel", "unit_test_table_model")
-class UnitTestCreateFunctionModels:
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class UnitTestCreateFunction:
     """Class for unit testing Function model __init__() methods.
 
     Because each table model contains unique attributes, these methods must be
     local to the module being tested.
     """
 
+    __test__ = True
+
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """Should return a Function record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKFunctionRecord)
+        assert isinstance(test_record_model, RAMSTKFunctionRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_function"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.availability_logistics == 1.0
-        assert test_recordmodel.availability_mission == 1.0
-        assert test_recordmodel.cost == 0.0
-        assert test_recordmodel.function_code == "PRESS-001"
-        assert test_recordmodel.hazard_rate_logistics == 0.0
-        assert test_recordmodel.hazard_rate_mission == 0.0
-        assert test_recordmodel.level == 0
-        assert test_recordmodel.mmt == 0.0
-        assert test_recordmodel.mcmt == 0.0
-        assert test_recordmodel.mpmt == 0.0
-        assert test_recordmodel.mtbf_logistics == 0.0
-        assert test_recordmodel.mtbf_mission == 0.0
-        assert test_recordmodel.mttr == 0.0
-        assert test_recordmodel.name == "Function Name"
-        assert test_recordmodel.parent_id == 0
-        assert test_recordmodel.remarks == ""
-        assert test_recordmodel.safety_critical == 0
-        assert test_recordmodel.total_mode_count == 0
-        assert test_recordmodel.total_part_count == 0
-        assert test_recordmodel.type_id == 0
+        assert test_record_model.__tablename__ == "ramstk_function"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.availability_logistics == 1.0
+        assert test_record_model.availability_mission == 1.0
+        assert test_record_model.cost == 0.0
+        assert test_record_model.function_code == "PRESS-001"
+        assert test_record_model.hazard_rate_logistics == 0.0
+        assert test_record_model.hazard_rate_mission == 0.0
+        assert test_record_model.level == 0
+        assert test_record_model.mmt == 0.0
+        assert test_record_model.mcmt == 0.0
+        assert test_record_model.mpmt == 0.0
+        assert test_record_model.mtbf_logistics == 0.0
+        assert test_record_model.mtbf_mission == 0.0
+        assert test_record_model.mttr == 0.0
+        assert test_record_model.name == "Function Name"
+        assert test_record_model.parent_id == 0
+        assert test_record_model.remarks == ""
+        assert test_record_model.safety_critical == 0
+        assert test_record_model.total_mode_count == 0
+        assert test_record_model.total_part_count == 0
+        assert test_record_model.type_id == 0
 
     @pytest.mark.unit
-    def unit_test_table_model_create(self, unit_test_table_model):
+    def test_table_model_create(self, unit_test_table_model):
         """Return a Function table model instance."""
         assert isinstance(unit_test_table_model, RAMSTKFunctionTable)
         assert isinstance(unit_test_table_model.tree, Tree)
@@ -104,6 +107,8 @@ class UnitTestCreateFunctionModels:
 class UnitTestSelectFunction(UnitTestSelectMethods):
     """Class for unit testing Function table do_select() and do_select_all()."""
 
+    __test__ = True
+
     _record = RAMSTKFunctionRecord
     _tag = "function"
 
@@ -130,18 +135,29 @@ class UnitTestDeleteFunction(UnitTestDeleteMethods):
     _tag = "function"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
-class UnitTestGetterSetterFunction:
-    """Class for unit testing Function table methods that get or set.
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
+class UnitTestGetterSetterFunction(UnitTestGetterSetterMethods):
+    """Class for unit testing Function table methods that get or set."""
 
-    Because each table model gets and sets unique attributes, these methods must
-    be local to the module being tested.
-    """
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "function_id",
+        "parent_id",
+    ]
+
+    _test_attr = "safety_critical"
+    _test_default_value = 0
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
-        """Should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+    def test_get_record_model_attributes(self, test_record_model):
+        """Should return a dict of attribute key:value pairs.
+
+        This method must be local because the attributes are different for each
+        database record model.
+        """
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["availability_logistics"] == 1.0
@@ -164,39 +180,3 @@ class UnitTestGetterSetterFunction:
         assert _attributes["total_mode_count"] == 0
         assert _attributes["total_part_count"] == 0
         assert _attributes["type_id"] == 0
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
-        """Should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("function_id")
-        test_attributes.pop("parent_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self,
-        test_attributes,
-        test_recordmodel,
-    ):
-        """Should set an attribute to its default value when passed a None value."""
-        test_attributes["safety_critical"] = None
-
-        test_attributes.pop("revision_id")
-        test_attributes.pop("function_id")
-        test_attributes.pop("parent_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["safety_critical"] == 0
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self,
-        test_attributes,
-        test_recordmodel,
-    ):
-        """Should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("function_id")
-        test_attributes.pop("parent_id")
-        with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

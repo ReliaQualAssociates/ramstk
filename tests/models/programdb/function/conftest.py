@@ -153,7 +153,7 @@ def test_attributes():
 
 
 @pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
+def test_record_model(mock_program_dao):
     """Get a record model instance for each test function."""
     dut = mock_program_dao.do_select(node_id=0)
 
