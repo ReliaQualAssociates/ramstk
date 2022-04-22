@@ -121,6 +121,56 @@ class UnitTestDeleteMethods:
         assert unit_test_table_model.tree.get_node(_last_id) is None
 
 
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
+class UnitTestGetterSetterMethods:
+    """Class for unit testing table model methods that get or set."""
+
+    __test__ = False
+
+    _id_columns = []
+
+    _test_attr = None
+    _test_default_value = None
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
+        """Should return None on success."""
+        for _id in self._id_columns:
+            test_attributes.pop(_id)
+
+        assert test_record_model.set_attributes(test_attributes) is None
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_none_value(
+        self,
+        test_attributes,
+        test_record_model,
+    ):
+        """Should set an attribute to its default value when passed a None value."""
+        test_attributes[self._test_attr] = None
+        for _id in self._id_columns:
+            test_attributes.pop(_id)
+
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert (
+            test_record_model.get_attributes()[self._test_attr]
+            == self._test_default_value
+        )
+
+    @pytest.mark.unit
+    def test_set_record_model_attributes_unknown_attributes(
+        self,
+        test_attributes,
+        test_record_model,
+    ):
+        """Should raise an AttributeError when passed an unknown attribute."""
+        for _id in self._id_columns:
+            test_attributes.pop(_id)
+
+        with pytest.raises(AttributeError):
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
+
+
 @pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class SystemTestSelectMethods:
     """Class for system testing table model select() and select_all() methods."""
@@ -204,7 +254,7 @@ class SystemTestInsertMethods:
 
         pub.sendMessage(f"request_insert_{self._tag}", attributes=test_attributes)
 
-        # assert integration_test_table_model.last_id == self._next_id
+        assert integration_test_table_model.last_id == self._next_id
 
         pub.unsubscribe(self.on_succeed_insert_sibling, f"succeed_insert_{self._tag}")
 
@@ -219,7 +269,7 @@ class SystemTestInsertMethods:
 
         pub.sendMessage(f"request_insert_{self._tag}", attributes=test_attributes)
 
-        # assert integration_test_table_model.last_id == self._next_id
+        assert integration_test_table_model.last_id == self._next_id
 
         pub.unsubscribe(self.on_succeed_insert_child, f"succeed_insert_{self._tag}")
 
@@ -472,7 +522,7 @@ class SystemTestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """Should send the do_log_debug message with non-existent ID tree."""
+        """Should send the do_log_debug message with non-existent ID in tree."""
         pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
         pub.sendMessage(f"request_update_{self._tag}", node_id=100)
