@@ -55,49 +55,49 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKValidationRecord)
+        assert isinstance(test_record_model, RAMSTKValidationRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_validation"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.acceptable_maximum == 30.0
-        assert test_recordmodel.acceptable_mean == 20.0
-        assert test_recordmodel.acceptable_minimum == 10.0
-        assert test_recordmodel.acceptable_variance == 0.0
-        assert test_recordmodel.confidence == 95.0
-        assert test_recordmodel.cost_average == 0.0
-        assert test_recordmodel.cost_ll == 0.0
-        assert test_recordmodel.cost_maximum == 0.0
-        assert test_recordmodel.cost_mean == 0.0
-        assert test_recordmodel.cost_minimum == 0.0
-        assert test_recordmodel.cost_ul == 0.0
-        assert test_recordmodel.cost_variance == 0.0
-        assert test_recordmodel.date_end == datetime.strftime(
+        assert test_record_model.__tablename__ == "ramstk_validation"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.acceptable_maximum == 30.0
+        assert test_record_model.acceptable_mean == 20.0
+        assert test_record_model.acceptable_minimum == 10.0
+        assert test_record_model.acceptable_variance == 0.0
+        assert test_record_model.confidence == 95.0
+        assert test_record_model.cost_average == 0.0
+        assert test_record_model.cost_ll == 0.0
+        assert test_record_model.cost_maximum == 0.0
+        assert test_record_model.cost_mean == 0.0
+        assert test_record_model.cost_minimum == 0.0
+        assert test_record_model.cost_ul == 0.0
+        assert test_record_model.cost_variance == 0.0
+        assert test_record_model.date_end == datetime.strftime(
             date.today() + timedelta(days=30), "%Y-%m-%d"
         )
-        assert test_recordmodel.date_start == datetime.strftime(
+        assert test_record_model.date_start == datetime.strftime(
             date.today(), "%Y-%m-%d"
         )
-        assert test_recordmodel.description == ""
-        assert test_recordmodel.measurement_unit == 0
-        assert test_recordmodel.name == "PRF-0001"
-        assert test_recordmodel.status == 0.0
-        assert test_recordmodel.task_type == 0
-        assert test_recordmodel.task_specification == ""
-        assert test_recordmodel.time_average == 0.0
-        assert test_recordmodel.time_ll == 0.0
-        assert test_recordmodel.time_maximum == 0.0
-        assert test_recordmodel.time_mean == 0.0
-        assert test_recordmodel.time_minimum == 0.0
-        assert test_recordmodel.time_ul == 0.0
-        assert test_recordmodel.time_variance == 0.0
+        assert test_record_model.description == ""
+        assert test_record_model.measurement_unit == 0
+        assert test_record_model.name == "PRF-0001"
+        assert test_record_model.status == 0.0
+        assert test_record_model.task_type == 0
+        assert test_record_model.task_specification == ""
+        assert test_record_model.time_average == 0.0
+        assert test_record_model.time_ll == 0.0
+        assert test_record_model.time_maximum == 0.0
+        assert test_record_model.time_mean == 0.0
+        assert test_record_model.time_minimum == 0.0
+        assert test_record_model.time_ul == 0.0
+        assert test_record_model.time_variance == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -216,14 +216,14 @@ class TestDeleteMethods:
         assert test_tablemodel.last_id == 2
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["acceptable_maximum"] == 30.0
@@ -257,33 +257,33 @@ class TestGetterSetter:
         assert _attributes["time_variance"] == 0.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("validation_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["time_variance"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("validation_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["time_variance"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["time_variance"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("validation_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

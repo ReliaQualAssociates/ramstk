@@ -46,58 +46,58 @@ def test_table_model(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_table_model")
+@pytest.mark.usefixtures("test_record_model", "test_table_model")
 class TestCreateModels:
     """Class for testing model initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKReliabilityRecord)
+        assert isinstance(test_record_model, RAMSTKReliabilityRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_reliability"
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.add_adj_factor == 0.0
-        assert test_recordmodel.availability_logistics == 1.0
-        assert test_recordmodel.availability_mission == 1.0
-        assert test_recordmodel.avail_log_variance == 0.0
-        assert test_recordmodel.avail_mis_variance == 0.0
-        assert test_recordmodel.failure_distribution_id == 0
-        assert test_recordmodel.hazard_rate_active == 0.0
-        assert test_recordmodel.hazard_rate_dormant == 0.0
-        assert test_recordmodel.hazard_rate_logistics == 0.0
-        assert test_recordmodel.hazard_rate_method_id == 0
-        assert test_recordmodel.hazard_rate_mission == 0.0
-        assert test_recordmodel.hazard_rate_model == ""
-        assert test_recordmodel.hazard_rate_percent == 0.0
-        assert test_recordmodel.hazard_rate_software == 0.0
-        assert test_recordmodel.hazard_rate_specified == 0.0
-        assert test_recordmodel.hazard_rate_type_id == 0
-        assert test_recordmodel.hr_active_variance == 0.0
-        assert test_recordmodel.hr_dormant_variance == 0.0
-        assert test_recordmodel.hr_logistics_variance == 0.0
-        assert test_recordmodel.hr_mission_variance == 0.0
-        assert test_recordmodel.hr_specified_variance == 0.0
-        assert test_recordmodel.location_parameter == 0.0
-        assert test_recordmodel.mtbf_logistics == 0.0
-        assert test_recordmodel.mtbf_mission == 0.0
-        assert test_recordmodel.mtbf_specified == 0.0
-        assert test_recordmodel.mtbf_logistics_variance == 0.0
-        assert test_recordmodel.mtbf_mission_variance == 0.0
-        assert test_recordmodel.mtbf_specified_variance == 0.0
-        assert test_recordmodel.mult_adj_factor == 1.0
-        assert test_recordmodel.quality_id == 0
-        assert test_recordmodel.reliability_goal == 1.0
-        assert test_recordmodel.reliability_goal_measure_id == 0
-        assert test_recordmodel.reliability_logistics == 1.0
-        assert test_recordmodel.reliability_mission == 1.0
-        assert test_recordmodel.reliability_log_variance == 0.0
-        assert test_recordmodel.reliability_miss_variance == 0.0
-        assert test_recordmodel.scale_parameter == 0.0
-        assert test_recordmodel.shape_parameter == 0.0
-        assert test_recordmodel.survival_analysis_id == 0
-        assert test_recordmodel.lambda_b == 0.0
+        assert test_record_model.__tablename__ == "ramstk_reliability"
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.add_adj_factor == 0.0
+        assert test_record_model.availability_logistics == 1.0
+        assert test_record_model.availability_mission == 1.0
+        assert test_record_model.avail_log_variance == 0.0
+        assert test_record_model.avail_mis_variance == 0.0
+        assert test_record_model.failure_distribution_id == 0
+        assert test_record_model.hazard_rate_active == 0.0
+        assert test_record_model.hazard_rate_dormant == 0.0
+        assert test_record_model.hazard_rate_logistics == 0.0
+        assert test_record_model.hazard_rate_method_id == 0
+        assert test_record_model.hazard_rate_mission == 0.0
+        assert test_record_model.hazard_rate_model == ""
+        assert test_record_model.hazard_rate_percent == 0.0
+        assert test_record_model.hazard_rate_software == 0.0
+        assert test_record_model.hazard_rate_specified == 0.0
+        assert test_record_model.hazard_rate_type_id == 0
+        assert test_record_model.hr_active_variance == 0.0
+        assert test_record_model.hr_dormant_variance == 0.0
+        assert test_record_model.hr_logistics_variance == 0.0
+        assert test_record_model.hr_mission_variance == 0.0
+        assert test_record_model.hr_specified_variance == 0.0
+        assert test_record_model.location_parameter == 0.0
+        assert test_record_model.mtbf_logistics == 0.0
+        assert test_record_model.mtbf_mission == 0.0
+        assert test_record_model.mtbf_specified == 0.0
+        assert test_record_model.mtbf_logistics_variance == 0.0
+        assert test_record_model.mtbf_mission_variance == 0.0
+        assert test_record_model.mtbf_specified_variance == 0.0
+        assert test_record_model.mult_adj_factor == 1.0
+        assert test_record_model.quality_id == 0
+        assert test_record_model.reliability_goal == 1.0
+        assert test_record_model.reliability_goal_measure_id == 0
+        assert test_record_model.reliability_logistics == 1.0
+        assert test_record_model.reliability_mission == 1.0
+        assert test_record_model.reliability_log_variance == 0.0
+        assert test_record_model.reliability_miss_variance == 0.0
+        assert test_record_model.scale_parameter == 0.0
+        assert test_record_model.shape_parameter == 0.0
+        assert test_record_model.survival_analysis_id == 0
+        assert test_record_model.lambda_b == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_table_model):
@@ -236,14 +236,14 @@ class TestDeleteMethods:
         assert test_table_model.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -289,33 +289,33 @@ class TestGetterSetter:
         assert _attributes["survival_analysis_id"] == 0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["mtbf_mission"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["mtbf_mission"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["mtbf_mission"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_table_model")

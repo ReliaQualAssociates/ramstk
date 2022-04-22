@@ -83,7 +83,6 @@ class TestUpdateMethods:
     def on_fail_update_wrong_data_type(self, logger_name, message):
         """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        print(message)
         assert message == (
             f"The value for one or more attributes for {self._tag} ID "
             f"{self._update_id} was the wrong type."
@@ -114,7 +113,6 @@ class TestUpdateMethods:
     def on_fail_update_no_data_package(self, logger_name, message):
         """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        print(message)
         assert message == f"No data package found for {self._tag} ID {self._update_id}."
         print(
             f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "

@@ -48,70 +48,70 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing model initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """__init__() should create an RAMSTKDesignMechanic model."""
-        assert isinstance(test_recordmodel, RAMSTKDesignMechanicRecord)
+        assert isinstance(test_record_model, RAMSTKDesignMechanicRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_design_mechanic"
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.altitude_operating == 0.0
-        assert test_recordmodel.application_id == 0
-        assert test_recordmodel.balance_id == 0
-        assert test_recordmodel.clearance == 0.0
-        assert test_recordmodel.casing_id == 0
-        assert test_recordmodel.contact_pressure == 0.0
-        assert test_recordmodel.deflection == 0.0
-        assert test_recordmodel.diameter_coil == 0.0
-        assert test_recordmodel.diameter_inner == 0.0
-        assert test_recordmodel.diameter_outer == 0.0
-        assert test_recordmodel.diameter_wire == 0.0
-        assert test_recordmodel.filter_size == 0.0
-        assert test_recordmodel.flow_design == 0.0
-        assert test_recordmodel.flow_operating == 0.0
-        assert test_recordmodel.frequency_operating == 0.0
-        assert test_recordmodel.friction == 0.0
-        assert test_recordmodel.impact_id == 0
-        assert test_recordmodel.leakage_allowable == 0.0
-        assert test_recordmodel.length == 0.0
-        assert test_recordmodel.length_compressed == 0.0
-        assert test_recordmodel.length_relaxed == 0.0
-        assert test_recordmodel.load_design == 0.0
-        assert test_recordmodel.load_id == 0
-        assert test_recordmodel.load_operating == 0.0
-        assert test_recordmodel.lubrication_id == 0
-        assert test_recordmodel.manufacturing_id == 0
-        assert test_recordmodel.material_id == 0
-        assert test_recordmodel.meyer_hardness == 0.0
-        assert test_recordmodel.misalignment_angle == 0.0
-        assert test_recordmodel.n_ten == 0
-        assert test_recordmodel.n_cycles == 0
-        assert test_recordmodel.n_elements == 0
-        assert test_recordmodel.offset == 0.0
-        assert test_recordmodel.particle_size == 0.0
-        assert test_recordmodel.pressure_contact == 0.0
-        assert test_recordmodel.pressure_delta == 0.0
-        assert test_recordmodel.pressure_downstream == 0.0
-        assert test_recordmodel.pressure_rated == 0.0
-        assert test_recordmodel.pressure_upstream == 0.0
-        assert test_recordmodel.rpm_design == 0.0
-        assert test_recordmodel.rpm_operating == 0.0
-        assert test_recordmodel.service_id == 0
-        assert test_recordmodel.spring_index == 0.0
-        assert test_recordmodel.surface_finish == 0.0
-        assert test_recordmodel.technology_id == 0
-        assert test_recordmodel.thickness == 0.0
-        assert test_recordmodel.torque_id == 0
-        assert test_recordmodel.type_id == 0
-        assert test_recordmodel.viscosity_design == 0.0
-        assert test_recordmodel.viscosity_dynamic == 0.0
-        assert test_recordmodel.water_per_cent == 0.0
-        assert test_recordmodel.width_minimum == 0.0
+        assert test_record_model.__tablename__ == "ramstk_design_mechanic"
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.altitude_operating == 0.0
+        assert test_record_model.application_id == 0
+        assert test_record_model.balance_id == 0
+        assert test_record_model.clearance == 0.0
+        assert test_record_model.casing_id == 0
+        assert test_record_model.contact_pressure == 0.0
+        assert test_record_model.deflection == 0.0
+        assert test_record_model.diameter_coil == 0.0
+        assert test_record_model.diameter_inner == 0.0
+        assert test_record_model.diameter_outer == 0.0
+        assert test_record_model.diameter_wire == 0.0
+        assert test_record_model.filter_size == 0.0
+        assert test_record_model.flow_design == 0.0
+        assert test_record_model.flow_operating == 0.0
+        assert test_record_model.frequency_operating == 0.0
+        assert test_record_model.friction == 0.0
+        assert test_record_model.impact_id == 0
+        assert test_record_model.leakage_allowable == 0.0
+        assert test_record_model.length == 0.0
+        assert test_record_model.length_compressed == 0.0
+        assert test_record_model.length_relaxed == 0.0
+        assert test_record_model.load_design == 0.0
+        assert test_record_model.load_id == 0
+        assert test_record_model.load_operating == 0.0
+        assert test_record_model.lubrication_id == 0
+        assert test_record_model.manufacturing_id == 0
+        assert test_record_model.material_id == 0
+        assert test_record_model.meyer_hardness == 0.0
+        assert test_record_model.misalignment_angle == 0.0
+        assert test_record_model.n_ten == 0
+        assert test_record_model.n_cycles == 0
+        assert test_record_model.n_elements == 0
+        assert test_record_model.offset == 0.0
+        assert test_record_model.particle_size == 0.0
+        assert test_record_model.pressure_contact == 0.0
+        assert test_record_model.pressure_delta == 0.0
+        assert test_record_model.pressure_downstream == 0.0
+        assert test_record_model.pressure_rated == 0.0
+        assert test_record_model.pressure_upstream == 0.0
+        assert test_record_model.rpm_design == 0.0
+        assert test_record_model.rpm_operating == 0.0
+        assert test_record_model.service_id == 0
+        assert test_record_model.spring_index == 0.0
+        assert test_record_model.surface_finish == 0.0
+        assert test_record_model.technology_id == 0
+        assert test_record_model.thickness == 0.0
+        assert test_record_model.torque_id == 0
+        assert test_record_model.type_id == 0
+        assert test_record_model.viscosity_design == 0.0
+        assert test_record_model.viscosity_dynamic == 0.0
+        assert test_record_model.water_per_cent == 0.0
+        assert test_record_model.width_minimum == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):

@@ -45,25 +45,25 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKMechanismRecord)
+        assert isinstance(test_record_model, RAMSTKMechanismRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_mechanism"
-        assert test_recordmodel.description == "Test Failure Mechanism #1"
-        assert test_recordmodel.rpn == 100
-        assert test_recordmodel.rpn_new == 100
-        assert test_recordmodel.rpn_detection == 10
-        assert test_recordmodel.rpn_detection_new == 10
-        assert test_recordmodel.rpn_occurrence_new == 10
-        assert test_recordmodel.rpn_occurrence == 10
-        assert test_recordmodel.pof_include == 1
+        assert test_record_model.__tablename__ == "ramstk_mechanism"
+        assert test_record_model.description == "Test Failure Mechanism #1"
+        assert test_record_model.rpn == 100
+        assert test_record_model.rpn_new == 100
+        assert test_record_model.rpn_detection == 10
+        assert test_record_model.rpn_detection_new == 10
+        assert test_record_model.rpn_occurrence_new == 10
+        assert test_record_model.rpn_occurrence == 10
+        assert test_record_model.pof_include == 1
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -168,14 +168,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(2) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Failure Mechanism #1"
@@ -188,17 +188,17 @@ class TestGetterSetter:
         assert _attributes["rpn_occurrence_new"] == 10
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["rpn_detection_new"] = None
@@ -207,12 +207,12 @@ class TestGetterSetter:
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["rpn_detection_new"] == 10
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["rpn_detection_new"] == 10
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
@@ -220,7 +220,7 @@ class TestGetterSetter:
         test_attributes.pop("mode_id")
         test_attributes.pop("mechanism_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

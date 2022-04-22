@@ -45,39 +45,39 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKProgramInfoRecord)
+        assert isinstance(test_record_model, RAMSTKProgramInfoRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_program_info"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.function_active == 1
-        assert test_recordmodel.requirement_active == 1
-        assert test_recordmodel.hardware_active == 1
-        assert test_recordmodel.software_active == 0
-        assert test_recordmodel.rcm_active == 0
-        assert test_recordmodel.testing_active == 0
-        assert test_recordmodel.incident_active == 0
-        assert test_recordmodel.survival_active == 0
-        assert test_recordmodel.vandv_active == 1
-        assert test_recordmodel.hazard_active == 1
-        assert test_recordmodel.stakeholder_active == 1
-        assert test_recordmodel.allocation_active == 1
-        assert test_recordmodel.similar_item_active == 1
-        assert test_recordmodel.fmea_active == 1
-        assert test_recordmodel.pof_active == 1
-        assert test_recordmodel.rbd_active == 0
-        assert test_recordmodel.fta_active == 0
-        assert test_recordmodel.created_on == date.today()
-        assert test_recordmodel.created_by == ""
-        assert test_recordmodel.last_saved == date.today()
-        assert test_recordmodel.last_saved_by == ""
+        assert test_record_model.__tablename__ == "ramstk_program_info"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.function_active == 1
+        assert test_record_model.requirement_active == 1
+        assert test_record_model.hardware_active == 1
+        assert test_record_model.software_active == 0
+        assert test_record_model.rcm_active == 0
+        assert test_record_model.testing_active == 0
+        assert test_record_model.incident_active == 0
+        assert test_record_model.survival_active == 0
+        assert test_record_model.vandv_active == 1
+        assert test_record_model.hazard_active == 1
+        assert test_record_model.stakeholder_active == 1
+        assert test_record_model.allocation_active == 1
+        assert test_record_model.similar_item_active == 1
+        assert test_record_model.fmea_active == 1
+        assert test_record_model.pof_active == 1
+        assert test_record_model.rbd_active == 0
+        assert test_record_model.fta_active == 0
+        assert test_record_model.created_on == date.today()
+        assert test_record_model.created_by == ""
+        assert test_record_model.last_saved == date.today()
+        assert test_record_model.last_saved_by == ""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -169,14 +169,14 @@ class TestSelectMethods:
         assert test_tablemodel.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["function_active"] == 1
@@ -202,27 +202,27 @@ class TestGetterSetter:
         assert _attributes["last_saved_by"] == ""
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["created_on"] = None
 
         test_attributes.pop("revision_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["created_on"] == date.today()
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["created_on"] == date.today()
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

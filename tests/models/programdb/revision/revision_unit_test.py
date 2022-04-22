@@ -48,43 +48,43 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKRevisionRecord)
+        assert isinstance(test_record_model, RAMSTKRevisionRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_revision"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.availability_logistics == 0.9986
-        assert test_recordmodel.availability_mission == 0.99934
-        assert test_recordmodel.cost == 12532.15
-        assert test_recordmodel.cost_failure == 3.52e-05
-        assert test_recordmodel.cost_hour == 1.2532
-        assert test_recordmodel.hazard_rate_active == 0.0
-        assert test_recordmodel.hazard_rate_dormant == 0.0
-        assert test_recordmodel.hazard_rate_logistics == 0.0
-        assert test_recordmodel.hazard_rate_mission == 0.0
-        assert test_recordmodel.hazard_rate_software == 0.0
-        assert test_recordmodel.mmt == 0.0
-        assert test_recordmodel.mcmt == 0.0
-        assert test_recordmodel.mpmt == 0.0
-        assert test_recordmodel.mtbf_logistics == 0.0
-        assert test_recordmodel.mtbf_mission == 0.0
-        assert test_recordmodel.mttr == 0.0
-        assert test_recordmodel.name == "Original Revision"
-        assert test_recordmodel.reliability_logistics == 0.99986
-        assert test_recordmodel.reliability_mission == 0.99992
-        assert test_recordmodel.remarks == "This is the original revision."
-        assert test_recordmodel.revision_code == "Rev. -"
-        assert test_recordmodel.program_time == 2562
-        assert test_recordmodel.program_time_sd == 26.83
-        assert test_recordmodel.program_cost == 26492.83
-        assert test_recordmodel.program_cost_sd == 15.62
+        assert test_record_model.__tablename__ == "ramstk_revision"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.availability_logistics == 0.9986
+        assert test_record_model.availability_mission == 0.99934
+        assert test_record_model.cost == 12532.15
+        assert test_record_model.cost_failure == 3.52e-05
+        assert test_record_model.cost_hour == 1.2532
+        assert test_record_model.hazard_rate_active == 0.0
+        assert test_record_model.hazard_rate_dormant == 0.0
+        assert test_record_model.hazard_rate_logistics == 0.0
+        assert test_record_model.hazard_rate_mission == 0.0
+        assert test_record_model.hazard_rate_software == 0.0
+        assert test_record_model.mmt == 0.0
+        assert test_record_model.mcmt == 0.0
+        assert test_record_model.mpmt == 0.0
+        assert test_record_model.mtbf_logistics == 0.0
+        assert test_record_model.mtbf_mission == 0.0
+        assert test_record_model.mttr == 0.0
+        assert test_record_model.name == "Original Revision"
+        assert test_record_model.reliability_logistics == 0.99986
+        assert test_record_model.reliability_mission == 0.99992
+        assert test_record_model.remarks == "This is the original revision."
+        assert test_record_model.revision_code == "Rev. -"
+        assert test_record_model.program_time == 2562
+        assert test_record_model.program_time_sd == 26.83
+        assert test_record_model.program_cost == 26492.83
+        assert test_record_model.program_cost_sd == 15.62
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -192,14 +192,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(2) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["revision_id"] == 1
@@ -230,27 +230,27 @@ class TestGetterSetter:
         assert _attributes["program_cost_sd"] == 15.62
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["mtbf_mission"] = None
 
         test_attributes.pop("revision_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["mtbf_mission"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["mtbf_mission"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

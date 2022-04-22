@@ -48,51 +48,51 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing controller initialization."""
 
     @pytest.mark.unit
-    def test_ramstkmilhdbkf_create(self, test_recordmodel):
+    def test_ramstkmilhdbkf_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKMilHdbk217FRecord)
-        assert test_recordmodel.__tablename__ == "ramstk_mil_hdbk_f"
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.A1 == 0.0
-        assert test_recordmodel.A2 == 0.0
-        assert test_recordmodel.B1 == 0.0
-        assert test_recordmodel.B2 == 0.0
-        assert test_recordmodel.C1 == 0.0
-        assert test_recordmodel.C2 == 0.0
-        assert test_recordmodel.lambdaBD == 0.0
-        assert test_recordmodel.lambdaBP == 0.0
-        assert test_recordmodel.lambdaCYC == 0.0
-        assert test_recordmodel.lambdaEOS == 0.0
-        assert test_recordmodel.piA == 0.0
-        assert test_recordmodel.piC == 0.0
-        assert test_recordmodel.piCD == 0.0
-        assert test_recordmodel.piCF == 0.0
-        assert test_recordmodel.piCR == 0.0
-        assert test_recordmodel.piCV == 0.0
-        assert test_recordmodel.piCYC == 0.0
-        assert test_recordmodel.piE == 0.0
-        assert test_recordmodel.piF == 0.0
-        assert test_recordmodel.piI == 0.0
-        assert test_recordmodel.piK == 0.0
-        assert test_recordmodel.piL == 0.0
-        assert test_recordmodel.piM == 0.0
-        assert test_recordmodel.piMFG == 0.0
-        assert test_recordmodel.piN == 0.0
-        assert test_recordmodel.piNR == 0.0
-        assert test_recordmodel.piP == 0.0
-        assert test_recordmodel.piPT == 0.0
-        assert test_recordmodel.piQ == 0.0
-        assert test_recordmodel.piR == 0.0
-        assert test_recordmodel.piS == 0.0
-        assert test_recordmodel.piT == 0.0
-        assert test_recordmodel.piTAPS == 0.0
-        assert test_recordmodel.piU == 0.0
-        assert test_recordmodel.piV == 0.0
+        assert isinstance(test_record_model, RAMSTKMilHdbk217FRecord)
+        assert test_record_model.__tablename__ == "ramstk_mil_hdbk_f"
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.A1 == 0.0
+        assert test_record_model.A2 == 0.0
+        assert test_record_model.B1 == 0.0
+        assert test_record_model.B2 == 0.0
+        assert test_record_model.C1 == 0.0
+        assert test_record_model.C2 == 0.0
+        assert test_record_model.lambdaBD == 0.0
+        assert test_record_model.lambdaBP == 0.0
+        assert test_record_model.lambdaCYC == 0.0
+        assert test_record_model.lambdaEOS == 0.0
+        assert test_record_model.piA == 0.0
+        assert test_record_model.piC == 0.0
+        assert test_record_model.piCD == 0.0
+        assert test_record_model.piCF == 0.0
+        assert test_record_model.piCR == 0.0
+        assert test_record_model.piCV == 0.0
+        assert test_record_model.piCYC == 0.0
+        assert test_record_model.piE == 0.0
+        assert test_record_model.piF == 0.0
+        assert test_record_model.piI == 0.0
+        assert test_record_model.piK == 0.0
+        assert test_record_model.piL == 0.0
+        assert test_record_model.piM == 0.0
+        assert test_record_model.piMFG == 0.0
+        assert test_record_model.piN == 0.0
+        assert test_record_model.piNR == 0.0
+        assert test_record_model.piP == 0.0
+        assert test_record_model.piPT == 0.0
+        assert test_record_model.piQ == 0.0
+        assert test_record_model.piR == 0.0
+        assert test_record_model.piS == 0.0
+        assert test_record_model.piT == 0.0
+        assert test_record_model.piTAPS == 0.0
+        assert test_record_model.piU == 0.0
+        assert test_record_model.piV == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -223,14 +223,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel", "mock_program_dao")
+@pytest.mark.usefixtures("test_attributes", "test_record_model", "mock_program_dao")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -271,30 +271,30 @@ class TestGetterSetter:
         assert _attributes["piV"] == 0.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["piA"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["piA"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["piA"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

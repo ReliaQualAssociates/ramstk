@@ -43,37 +43,37 @@ def test_tablemodel(mock_common_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKSiteInfoRecord)
+        assert isinstance(test_record_model, RAMSTKSiteInfoRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_site_info"
-        assert test_recordmodel.site_name == "DEMO SITE"
-        assert test_recordmodel.product_key == "DEMO"
-        assert test_recordmodel.expire_on == date.today() + timedelta(30)
-        assert test_recordmodel.function_enabled == 1
-        assert test_recordmodel.requirement_enabled == 1
-        assert test_recordmodel.hardware_enabled == 1
-        assert test_recordmodel.software_enabled == 0
-        assert test_recordmodel.rcm_enabled == 0
-        assert test_recordmodel.testing_enabled == 0
-        assert test_recordmodel.incident_enabled == 0
-        assert test_recordmodel.survival_enabled == 0
-        assert test_recordmodel.vandv_enabled == 1
-        assert test_recordmodel.hazard_enabled == 1
-        assert test_recordmodel.stakeholder_enabled == 1
-        assert test_recordmodel.allocation_enabled == 1
-        assert test_recordmodel.similar_item_enabled == 1
-        assert test_recordmodel.fmea_enabled == 1
-        assert test_recordmodel.pof_enabled == 1
-        assert test_recordmodel.rbd_enabled == 0
-        assert test_recordmodel.fta_enabled == 0
+        assert test_record_model.__tablename__ == "ramstk_site_info"
+        assert test_record_model.site_name == "DEMO SITE"
+        assert test_record_model.product_key == "DEMO"
+        assert test_record_model.expire_on == date.today() + timedelta(30)
+        assert test_record_model.function_enabled == 1
+        assert test_record_model.requirement_enabled == 1
+        assert test_record_model.hardware_enabled == 1
+        assert test_record_model.software_enabled == 0
+        assert test_record_model.rcm_enabled == 0
+        assert test_record_model.testing_enabled == 0
+        assert test_record_model.incident_enabled == 0
+        assert test_record_model.survival_enabled == 0
+        assert test_record_model.vandv_enabled == 1
+        assert test_record_model.hazard_enabled == 1
+        assert test_record_model.stakeholder_enabled == 1
+        assert test_record_model.allocation_enabled == 1
+        assert test_record_model.similar_item_enabled == 1
+        assert test_record_model.fmea_enabled == 1
+        assert test_record_model.pof_enabled == 1
+        assert test_record_model.rbd_enabled == 0
+        assert test_record_model.fta_enabled == 0
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -155,14 +155,14 @@ class TestSelectMethods:
         assert test_tablemodel.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_attributes(self, test_recordmodel):
+    def test_get_attributes(self, test_record_model):
         """get_attributes() should return a tuple of attribute values."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
         assert _attributes["site_id"] == 1
         assert _attributes["site_name"] == "DEMO SITE"
         assert _attributes["product_key"] == "DEMO"
@@ -186,25 +186,27 @@ class TestGetterSetter:
         assert _attributes["fta_enabled"] == 0
 
     @pytest.mark.unit
-    def test_set_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes(self, test_attributes, test_record_model):
         """set_attributes() should return a zero error code on success."""
         test_attributes.pop("site_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, test_attributes, test_recordmodel):
+    def test_set_attributes_none_value(self, test_attributes, test_record_model):
         """set_attributes() should set an attribute to it's default value when the
         attribute is passed with a None value."""
         test_attributes["fmea_enabled"] = None
 
         test_attributes.pop("site_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["fmea_enabled"] == 0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["fmea_enabled"] == 0
 
     @pytest.mark.unit
-    def test_set_attributes_unknown_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes_unknown_attributes(
+        self, test_attributes, test_record_model
+    ):
         """set_attributes() should raise an AttributeError when passed an unknown
         attribute."""
         test_attributes.pop("site_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

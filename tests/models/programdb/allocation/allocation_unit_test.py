@@ -61,39 +61,39 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing model initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKAllocationRecord)
+        assert isinstance(test_record_model, RAMSTKAllocationRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_allocation"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.availability_alloc == 0.0
-        assert test_recordmodel.env_factor == 1
-        assert test_recordmodel.goal_measure_id == 1
-        assert test_recordmodel.hazard_rate_alloc == 0.0
-        assert test_recordmodel.hazard_rate_goal == 0.0
-        assert test_recordmodel.included == 1
-        assert test_recordmodel.int_factor == 1
-        assert test_recordmodel.allocation_method_id == 1
-        assert test_recordmodel.mission_time == 100.0
-        assert test_recordmodel.mtbf_alloc == 0.0
-        assert test_recordmodel.mtbf_goal == 0.0
-        assert test_recordmodel.n_sub_systems == 1
-        assert test_recordmodel.n_sub_elements == 1
-        assert test_recordmodel.parent_id == 0
-        assert test_recordmodel.percent_weight_factor == 0.0
-        assert test_recordmodel.reliability_alloc == 1.0
-        assert test_recordmodel.reliability_goal == 0.999
-        assert test_recordmodel.op_time_factor == 1
-        assert test_recordmodel.soa_factor == 1
-        assert test_recordmodel.weight_factor == 1
+        assert test_record_model.__tablename__ == "ramstk_allocation"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.availability_alloc == 0.0
+        assert test_record_model.env_factor == 1
+        assert test_record_model.goal_measure_id == 1
+        assert test_record_model.hazard_rate_alloc == 0.0
+        assert test_record_model.hazard_rate_goal == 0.0
+        assert test_record_model.included == 1
+        assert test_record_model.int_factor == 1
+        assert test_record_model.allocation_method_id == 1
+        assert test_record_model.mission_time == 100.0
+        assert test_record_model.mtbf_alloc == 0.0
+        assert test_record_model.mtbf_goal == 0.0
+        assert test_record_model.n_sub_systems == 1
+        assert test_record_model.n_sub_elements == 1
+        assert test_record_model.parent_id == 0
+        assert test_record_model.percent_weight_factor == 0.0
+        assert test_record_model.reliability_alloc == 1.0
+        assert test_record_model.reliability_goal == 0.999
+        assert test_record_model.op_time_factor == 1
+        assert test_record_model.soa_factor == 1
+        assert test_record_model.weight_factor == 1
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -247,14 +247,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -280,33 +280,33 @@ class TestGetterSetter:
         assert _attributes["weight_factor"] == 1
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["reliability_goal"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["reliability_goal"] == 1.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["reliability_goal"] == 1.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

@@ -49,71 +49,71 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing controller initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKDesignElectricRecord)
+        assert isinstance(test_record_model, RAMSTKDesignElectricRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_design_electric"
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.application_id == 0
-        assert test_recordmodel.area == 0.0
-        assert test_recordmodel.capacitance == 0.0
-        assert test_recordmodel.configuration_id == 0
-        assert test_recordmodel.construction_id == 0
-        assert test_recordmodel.contact_form_id == 0
-        assert test_recordmodel.contact_gauge == 0
-        assert test_recordmodel.contact_rating_id == 0
-        assert test_recordmodel.current_operating == 0.0
-        assert test_recordmodel.current_rated == 0.0
-        assert test_recordmodel.current_ratio == 0.0
-        assert test_recordmodel.environment_active_id == 0
-        assert test_recordmodel.environment_dormant_id == 0
-        assert test_recordmodel.family_id == 0
-        assert test_recordmodel.feature_size == 0.0
-        assert test_recordmodel.frequency_operating == 0.0
-        assert test_recordmodel.insert_id == 0
-        assert test_recordmodel.insulation_id == 0
-        assert test_recordmodel.manufacturing_id == 0
-        assert test_recordmodel.matching_id == 0
-        assert test_recordmodel.n_active_pins == 0
-        assert test_recordmodel.n_circuit_planes == 1
-        assert test_recordmodel.n_cycles == 0
-        assert test_recordmodel.n_elements == 0
-        assert test_recordmodel.n_hand_soldered == 0
-        assert test_recordmodel.n_wave_soldered == 0
-        assert test_recordmodel.operating_life == 0.0
-        assert test_recordmodel.overstress == 0
-        assert test_recordmodel.package_id == 0
-        assert test_recordmodel.power_operating == 0.0
-        assert test_recordmodel.power_rated == 0.0
-        assert test_recordmodel.power_ratio == 0.0
-        assert test_recordmodel.reason == ""
-        assert test_recordmodel.resistance == 0.0
-        assert test_recordmodel.specification_id == 0
-        assert test_recordmodel.technology_id == 0
-        assert test_recordmodel.temperature_active == 35.0
-        assert test_recordmodel.temperature_case == 0.0
-        assert test_recordmodel.temperature_dormant == 25.0
-        assert test_recordmodel.temperature_hot_spot == 0.0
-        assert test_recordmodel.temperature_junction == 0.0
-        assert test_recordmodel.temperature_rated_max == 0.0
-        assert test_recordmodel.temperature_rated_min == 0.0
-        assert test_recordmodel.temperature_rise == 0.0
-        assert test_recordmodel.theta_jc == 0.0
-        assert test_recordmodel.type_id == 0
-        assert test_recordmodel.voltage_ac_operating == 0.0
-        assert test_recordmodel.voltage_dc_operating == 0.0
-        assert test_recordmodel.voltage_esd == 0.0
-        assert test_recordmodel.voltage_rated == 0.0
-        assert test_recordmodel.voltage_ratio == 0.0
-        assert test_recordmodel.weight == 0.0
-        assert test_recordmodel.years_in_production == 1
+        assert test_record_model.__tablename__ == "ramstk_design_electric"
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.application_id == 0
+        assert test_record_model.area == 0.0
+        assert test_record_model.capacitance == 0.0
+        assert test_record_model.configuration_id == 0
+        assert test_record_model.construction_id == 0
+        assert test_record_model.contact_form_id == 0
+        assert test_record_model.contact_gauge == 0
+        assert test_record_model.contact_rating_id == 0
+        assert test_record_model.current_operating == 0.0
+        assert test_record_model.current_rated == 0.0
+        assert test_record_model.current_ratio == 0.0
+        assert test_record_model.environment_active_id == 0
+        assert test_record_model.environment_dormant_id == 0
+        assert test_record_model.family_id == 0
+        assert test_record_model.feature_size == 0.0
+        assert test_record_model.frequency_operating == 0.0
+        assert test_record_model.insert_id == 0
+        assert test_record_model.insulation_id == 0
+        assert test_record_model.manufacturing_id == 0
+        assert test_record_model.matching_id == 0
+        assert test_record_model.n_active_pins == 0
+        assert test_record_model.n_circuit_planes == 1
+        assert test_record_model.n_cycles == 0
+        assert test_record_model.n_elements == 0
+        assert test_record_model.n_hand_soldered == 0
+        assert test_record_model.n_wave_soldered == 0
+        assert test_record_model.operating_life == 0.0
+        assert test_record_model.overstress == 0
+        assert test_record_model.package_id == 0
+        assert test_record_model.power_operating == 0.0
+        assert test_record_model.power_rated == 0.0
+        assert test_record_model.power_ratio == 0.0
+        assert test_record_model.reason == ""
+        assert test_record_model.resistance == 0.0
+        assert test_record_model.specification_id == 0
+        assert test_record_model.technology_id == 0
+        assert test_record_model.temperature_active == 35.0
+        assert test_record_model.temperature_case == 0.0
+        assert test_record_model.temperature_dormant == 25.0
+        assert test_record_model.temperature_hot_spot == 0.0
+        assert test_record_model.temperature_junction == 0.0
+        assert test_record_model.temperature_rated_max == 0.0
+        assert test_record_model.temperature_rated_min == 0.0
+        assert test_record_model.temperature_rise == 0.0
+        assert test_record_model.theta_jc == 0.0
+        assert test_record_model.type_id == 0
+        assert test_record_model.voltage_ac_operating == 0.0
+        assert test_record_model.voltage_dc_operating == 0.0
+        assert test_record_model.voltage_esd == 0.0
+        assert test_record_model.voltage_rated == 0.0
+        assert test_record_model.voltage_ratio == 0.0
+        assert test_record_model.weight == 0.0
+        assert test_record_model.years_in_production == 1
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):

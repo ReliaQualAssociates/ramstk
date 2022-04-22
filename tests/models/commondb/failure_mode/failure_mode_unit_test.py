@@ -43,23 +43,23 @@ def test_tablemodel(mock_common_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKFailureModeRecord)
+        assert isinstance(test_record_model, RAMSTKFailureModeRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_failure_mode"
-        assert test_recordmodel.category_id == 1
-        assert test_recordmodel.subcategory_id == 1
-        assert test_recordmodel.mode_id == 1
-        assert test_recordmodel.description == "Short (pin-to-pin)"
-        assert test_recordmodel.mode_ratio == 0.65
-        assert test_recordmodel.source == "FMD-97"
+        assert test_record_model.__tablename__ == "ramstk_failure_mode"
+        assert test_record_model.category_id == 1
+        assert test_record_model.subcategory_id == 1
+        assert test_record_model.mode_id == 1
+        assert test_record_model.description == "Short (pin-to-pin)"
+        assert test_record_model.mode_ratio == 0.65
+        assert test_record_model.source == "FMD-97"
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -145,14 +145,14 @@ class TestSelectMethods:
         assert test_tablemodel.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_attributes(self, test_recordmodel):
+    def test_get_attributes(self, test_record_model):
         """get_attributes() should return a tuple of attribute values."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
         assert _attributes["category_id"] == 1
         assert _attributes["subcategory_id"] == 1
         assert _attributes["mode_id"] == 1
@@ -161,15 +161,15 @@ class TestGetterSetter:
         assert _attributes["source"] == "FMD-97"
 
     @pytest.mark.unit
-    def test_set_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes(self, test_attributes, test_record_model):
         """set_attributes() should return a zero error code on success."""
         test_attributes.pop("category_id")
         test_attributes.pop("subcategory_id")
         test_attributes.pop("mode_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, test_attributes, test_recordmodel):
+    def test_set_attributes_none_value(self, test_attributes, test_record_model):
         """set_attributes() should set an attribute to its default value when the
         attribute is passed with a None value."""
         test_attributes["mode_ratio"] = None
@@ -177,15 +177,17 @@ class TestGetterSetter:
         test_attributes.pop("category_id")
         test_attributes.pop("subcategory_id")
         test_attributes.pop("mode_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["mode_ratio"] == 1.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["mode_ratio"] == 1.0
 
     @pytest.mark.unit
-    def test_set_attributes_unknown_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes_unknown_attributes(
+        self, test_attributes, test_record_model
+    ):
         """set_attributes() should raise an AttributeError when passed an unknown
         attribute."""
         test_attributes.pop("category_id")
         test_attributes.pop("subcategory_id")
         test_attributes.pop("mode_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

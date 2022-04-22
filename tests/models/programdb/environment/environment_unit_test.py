@@ -45,27 +45,27 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKEnvironmentRecord)
+        assert isinstance(test_record_model, RAMSTKEnvironmentRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_environment"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.name == "Condition Name"
-        assert test_recordmodel.units == "Units"
-        assert test_recordmodel.minimum == 0.0
-        assert test_recordmodel.maximum == 0.0
-        assert test_recordmodel.mean == 0.0
-        assert test_recordmodel.variance == 0.0
-        assert test_recordmodel.ramp_rate == 0.0
-        assert test_recordmodel.low_dwell_time == 0.0
-        assert test_recordmodel.high_dwell_time == 0.0
+        assert test_record_model.__tablename__ == "ramstk_environment"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.name == "Condition Name"
+        assert test_record_model.units == "Units"
+        assert test_record_model.minimum == 0.0
+        assert test_record_model.maximum == 0.0
+        assert test_record_model.mean == 0.0
+        assert test_record_model.variance == 0.0
+        assert test_record_model.ramp_rate == 0.0
+        assert test_record_model.low_dwell_time == 0.0
+        assert test_record_model.high_dwell_time == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -168,14 +168,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["name"] == "Condition Name"
@@ -189,17 +189,17 @@ class TestGetterSetter:
         assert _attributes["high_dwell_time"] == 0.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["minimum"] = None
@@ -208,12 +208,12 @@ class TestGetterSetter:
         test_attributes.pop("mission_id")
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["minimum"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["minimum"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
@@ -221,4 +221,4 @@ class TestGetterSetter:
         test_attributes.pop("mission_phase_id")
         test_attributes.pop("environment_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

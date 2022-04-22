@@ -53,56 +53,56 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKHazardRecord)
+        assert isinstance(test_record_model, RAMSTKHazardRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_hazard_analysis"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.assembly_effect == ""
-        assert test_recordmodel.assembly_hri == 20
-        assert test_recordmodel.assembly_hri_f == 4
-        assert test_recordmodel.assembly_mitigation == ""
-        assert test_recordmodel.assembly_probability == TEST_PROBS["A"]
-        assert test_recordmodel.assembly_probability_f == TEST_PROBS["B"]
-        assert test_recordmodel.assembly_severity == "Major"
-        assert test_recordmodel.assembly_severity_f == "Medium"
-        assert test_recordmodel.function_1 == "uf1*uf2"
-        assert test_recordmodel.function_2 == "res1/ui1"
-        assert test_recordmodel.function_3 == ""
-        assert test_recordmodel.function_4 == ""
-        assert test_recordmodel.function_5 == ""
-        assert test_recordmodel.potential_cause == ""
-        assert test_recordmodel.potential_hazard == ""
-        assert test_recordmodel.remarks == ""
-        assert test_recordmodel.result_1 == 0.0
-        assert test_recordmodel.result_2 == 0.0
-        assert test_recordmodel.result_3 == 0.0
-        assert test_recordmodel.result_4 == 0.0
-        assert test_recordmodel.result_5 == 0.0
-        assert test_recordmodel.system_effect == ""
-        assert test_recordmodel.system_hri == 20
-        assert test_recordmodel.system_hri_f == 20
-        assert test_recordmodel.system_mitigation == ""
-        assert test_recordmodel.system_probability == TEST_PROBS["A"]
-        assert test_recordmodel.system_probability_f == TEST_PROBS["C"]
-        assert test_recordmodel.system_severity == "Medium"
-        assert test_recordmodel.system_severity_f == "Medium"
-        assert test_recordmodel.user_blob_1 == ""
-        assert test_recordmodel.user_blob_2 == ""
-        assert test_recordmodel.user_blob_3 == ""
-        assert test_recordmodel.user_float_1 == 1.5
-        assert test_recordmodel.user_float_2 == 0.8
-        assert test_recordmodel.user_float_3 == 0.0
-        assert test_recordmodel.user_int_1 == 2
-        assert test_recordmodel.user_int_2 == 0
-        assert test_recordmodel.user_int_3 == 0
+        assert test_record_model.__tablename__ == "ramstk_hazard_analysis"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.assembly_effect == ""
+        assert test_record_model.assembly_hri == 20
+        assert test_record_model.assembly_hri_f == 4
+        assert test_record_model.assembly_mitigation == ""
+        assert test_record_model.assembly_probability == TEST_PROBS["A"]
+        assert test_record_model.assembly_probability_f == TEST_PROBS["B"]
+        assert test_record_model.assembly_severity == "Major"
+        assert test_record_model.assembly_severity_f == "Medium"
+        assert test_record_model.function_1 == "uf1*uf2"
+        assert test_record_model.function_2 == "res1/ui1"
+        assert test_record_model.function_3 == ""
+        assert test_record_model.function_4 == ""
+        assert test_record_model.function_5 == ""
+        assert test_record_model.potential_cause == ""
+        assert test_record_model.potential_hazard == ""
+        assert test_record_model.remarks == ""
+        assert test_record_model.result_1 == 0.0
+        assert test_record_model.result_2 == 0.0
+        assert test_record_model.result_3 == 0.0
+        assert test_record_model.result_4 == 0.0
+        assert test_record_model.result_5 == 0.0
+        assert test_record_model.system_effect == ""
+        assert test_record_model.system_hri == 20
+        assert test_record_model.system_hri_f == 20
+        assert test_record_model.system_mitigation == ""
+        assert test_record_model.system_probability == TEST_PROBS["A"]
+        assert test_record_model.system_probability_f == TEST_PROBS["C"]
+        assert test_record_model.system_severity == "Medium"
+        assert test_record_model.system_severity_f == "Medium"
+        assert test_record_model.user_blob_1 == ""
+        assert test_record_model.user_blob_2 == ""
+        assert test_record_model.user_blob_3 == ""
+        assert test_record_model.user_float_1 == 1.5
+        assert test_record_model.user_float_2 == 0.8
+        assert test_record_model.user_float_3 == 0.0
+        assert test_record_model.user_int_1 == 2
+        assert test_record_model.user_int_2 == 0
+        assert test_record_model.user_int_3 == 0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -220,14 +220,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(1) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["potential_hazard"] == ""
@@ -270,16 +270,16 @@ class TestGetterSetter:
         assert _attributes["user_int_3"] == 0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("hazard_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["system_hri_f"] = None
@@ -287,19 +287,19 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("hazard_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["system_hri_f"] == 20
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["system_hri_f"] == 20
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("function_id")
         test_attributes.pop("hazard_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

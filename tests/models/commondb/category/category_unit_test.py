@@ -43,32 +43,32 @@ def test_tablemodel(mock_common_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKCategoryRecord)
+        assert isinstance(test_record_model, RAMSTKCategoryRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_category"
-        assert test_recordmodel.category_id == 1
-        assert test_recordmodel.category_type == "hardware"
-        assert test_recordmodel.name == "IC"
-        assert test_recordmodel.value == 1
-        assert test_recordmodel.description == "Integrated Circuit"
-        assert test_recordmodel.harsh_ir_limit == 0.8
-        assert test_recordmodel.mild_ir_limit == 0.9
-        assert test_recordmodel.harsh_pr_limit == 1.0
-        assert test_recordmodel.mild_pr_limit == 1.0
-        assert test_recordmodel.harsh_vr_limit == 1.0
-        assert test_recordmodel.mild_vr_limit == 1.0
-        assert test_recordmodel.harsh_deltat_limit == 0.0
-        assert test_recordmodel.mild_deltat_limit == 0.0
-        assert test_recordmodel.harsh_maxt_limit == 125.0
-        assert test_recordmodel.mild_maxt_limit == 125.0
+        assert test_record_model.__tablename__ == "ramstk_category"
+        assert test_record_model.category_id == 1
+        assert test_record_model.category_type == "hardware"
+        assert test_record_model.name == "IC"
+        assert test_record_model.value == 1
+        assert test_record_model.description == "Integrated Circuit"
+        assert test_record_model.harsh_ir_limit == 0.8
+        assert test_record_model.mild_ir_limit == 0.9
+        assert test_record_model.harsh_pr_limit == 1.0
+        assert test_record_model.mild_pr_limit == 1.0
+        assert test_record_model.harsh_vr_limit == 1.0
+        assert test_record_model.mild_vr_limit == 1.0
+        assert test_record_model.harsh_deltat_limit == 0.0
+        assert test_record_model.mild_deltat_limit == 0.0
+        assert test_record_model.harsh_maxt_limit == 125.0
+        assert test_record_model.mild_maxt_limit == 125.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -142,14 +142,14 @@ class TestSelectMethods:
         assert test_tablemodel.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_attributes(self, test_recordmodel):
+    def test_get_attributes(self, test_record_model):
         """get_attributes() should return a tuple of attribute values."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
         assert _attributes["category_id"] == 1
         assert _attributes["category_type"] == "hardware"
         assert _attributes["name"] == "IC"
@@ -167,25 +167,27 @@ class TestGetterSetter:
         assert _attributes["mild_maxt_limit"] == 125.0
 
     @pytest.mark.unit
-    def test_set_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes(self, test_attributes, test_record_model):
         """set_attributes() should return a zero error code on success."""
         test_attributes.pop("category_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, test_attributes, test_recordmodel):
+    def test_set_attributes_none_value(self, test_attributes, test_record_model):
         """set_attributes() should set an attribute to it's default value when the
         attribute is passed with a None value."""
         test_attributes["harsh_ir_limit"] = None
 
         test_attributes.pop("category_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["harsh_ir_limit"] == 0.8
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["harsh_ir_limit"] == 0.8
 
     @pytest.mark.unit
-    def test_set_attributes_unknown_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes_unknown_attributes(
+        self, test_attributes, test_record_model
+    ):
         """set_attributes() should raise an AttributeError when passed an unknown
         attribute."""
         test_attributes.pop("category_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

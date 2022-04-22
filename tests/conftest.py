@@ -2093,3 +2093,14 @@ def test_stress_limits():
         "connection": {"current": [1.0, 1.0, 1.0]},
         "miscellaneous": {"lamp": {"current": [0.2, 0.1, 0.1]}},
     }
+
+
+@pytest.fixture(scope="function")
+def test_record_model(mock_program_dao):
+    """Get a record model instance for each test function."""
+    dut = mock_program_dao.do_select(node_id=0)
+
+    yield dut
+
+    # Delete the device under test.
+    del dut

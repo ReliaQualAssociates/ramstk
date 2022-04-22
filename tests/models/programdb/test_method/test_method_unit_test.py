@@ -45,20 +45,20 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKTestMethodRecord)
+        assert isinstance(test_record_model, RAMSTKTestMethodRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_test_method"
-        assert test_recordmodel.description == "Test Test Method #1"
-        assert test_recordmodel.boundary_conditions == "Waters"
-        assert test_recordmodel.remarks == ""
+        assert test_record_model.__tablename__ == "ramstk_test_method"
+        assert test_record_model.description == "Test Test Method #1"
+        assert test_record_model.boundary_conditions == "Waters"
+        assert test_record_model.remarks == ""
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -158,14 +158,14 @@ class TestDeleteMethods:
         assert test_tablemodel.last_id == 1
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Test Method #1"
@@ -173,7 +173,7 @@ class TestGetterSetter:
         assert _attributes["remarks"] == ""
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
@@ -181,11 +181,11 @@ class TestGetterSetter:
         test_attributes.pop("mechanism_id")
         test_attributes.pop("opload_id")
         test_attributes.pop("test_method_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["boundary_conditions"] = None
@@ -196,12 +196,12 @@ class TestGetterSetter:
         test_attributes.pop("mechanism_id")
         test_attributes.pop("opload_id")
         test_attributes.pop("test_method_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["boundary_conditions"] == ""
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["boundary_conditions"] == ""
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
@@ -211,4 +211,4 @@ class TestGetterSetter:
         test_attributes.pop("opload_id")
         test_attributes.pop("test_method_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

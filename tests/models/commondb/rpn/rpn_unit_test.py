@@ -43,23 +43,24 @@ def test_tablemodel(mock_common_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKRPNRecord)
+        assert isinstance(test_record_model, RAMSTKRPNRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_rpn"
-        assert test_recordmodel.rpn_id == 1
-        assert test_recordmodel.rpn_type == "severity"
-        assert test_recordmodel.name == "Very Minor"
-        assert test_recordmodel.value == 1
+        assert test_record_model.__tablename__ == "ramstk_rpn"
+        assert test_record_model.rpn_id == 1
+        assert test_record_model.rpn_type == "severity"
+        assert test_record_model.name == "Very Minor"
+        assert test_record_model.value == 1
         assert (
-            test_recordmodel.description == "System operable with minimal interference."
+            test_record_model.description
+            == "System operable with minimal interference."
         )
 
     @pytest.mark.unit
@@ -119,14 +120,14 @@ class TestSelectMethods:
         assert test_tablemodel.do_select(100) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_attributes(self, test_recordmodel):
+    def test_get_attributes(self, test_record_model):
         """get_attributes() should return a tuple of attribute values."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
         assert _attributes["rpn_id"] == 1
         assert _attributes["rpn_type"] == "severity"
         assert _attributes["name"] == "Very Minor"
@@ -136,25 +137,27 @@ class TestGetterSetter:
         )
 
     @pytest.mark.unit
-    def test_set_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes(self, test_attributes, test_record_model):
         """set_attributes() should return a zero error code on success."""
         test_attributes.pop("rpn_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
-    def test_set_attributes_none_value(self, test_attributes, test_recordmodel):
+    def test_set_attributes_none_value(self, test_attributes, test_record_model):
         """set_attributes() should set an attribute to it's default value when the
         attribute is passed with a None value."""
         test_attributes["value"] = None
 
         test_attributes.pop("rpn_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["value"] == 0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["value"] == 0
 
     @pytest.mark.unit
-    def test_set_attributes_unknown_attributes(self, test_attributes, test_recordmodel):
+    def test_set_attributes_unknown_attributes(
+        self, test_attributes, test_record_model
+    ):
         """set_attributes() should raise an AttributeError when passed an unknown
         attribute."""
         test_attributes.pop("rpn_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

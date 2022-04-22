@@ -46,31 +46,31 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKStakeholderRecord)
+        assert isinstance(test_record_model, RAMSTKStakeholderRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_stakeholder"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.customer_rank == 1
-        assert test_recordmodel.description == "Stakeholder Input"
-        assert test_recordmodel.group == ""
-        assert test_recordmodel.improvement == 0.0
-        assert test_recordmodel.overall_weight == 0.0
-        assert test_recordmodel.planned_rank == 1
-        assert test_recordmodel.priority == 1
-        assert test_recordmodel.stakeholder == ""
-        assert test_recordmodel.user_float_1 == 1.0
-        assert test_recordmodel.user_float_2 == 1.0
-        assert test_recordmodel.user_float_3 == 1.0
-        assert test_recordmodel.user_float_4 == 1.0
-        assert test_recordmodel.user_float_5 == 1.0
+        assert test_record_model.__tablename__ == "ramstk_stakeholder"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.customer_rank == 1
+        assert test_record_model.description == "Stakeholder Input"
+        assert test_record_model.group == ""
+        assert test_record_model.improvement == 0.0
+        assert test_record_model.overall_weight == 0.0
+        assert test_record_model.planned_rank == 1
+        assert test_record_model.priority == 1
+        assert test_record_model.stakeholder == ""
+        assert test_record_model.user_float_1 == 1.0
+        assert test_record_model.user_float_2 == 1.0
+        assert test_record_model.user_float_3 == 1.0
+        assert test_record_model.user_float_4 == 1.0
+        assert test_record_model.user_float_5 == 1.0
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -196,14 +196,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["customer_rank"] == 1
@@ -222,16 +222,16 @@ class TestGetterSetter:
         assert _attributes["user_float_5"] == 1.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["overall_weight"] = None
@@ -239,19 +239,19 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["overall_weight"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["overall_weight"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("requirement_id")
         test_attributes.pop("stakeholder_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

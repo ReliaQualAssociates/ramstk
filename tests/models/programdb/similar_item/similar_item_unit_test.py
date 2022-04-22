@@ -54,72 +54,72 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing controller initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKSimilarItemRecord)
+        assert isinstance(test_record_model, RAMSTKSimilarItemRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_similar_item"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.change_description_1 == ""
-        assert test_recordmodel.change_description_2 == ""
-        assert test_recordmodel.change_description_3 == ""
-        assert test_recordmodel.change_description_4 == ""
-        assert test_recordmodel.change_description_5 == ""
-        assert test_recordmodel.change_description_6 == ""
-        assert test_recordmodel.change_description_7 == ""
-        assert test_recordmodel.change_description_8 == ""
-        assert test_recordmodel.change_description_9 == ""
-        assert test_recordmodel.change_description_10 == ""
-        assert test_recordmodel.change_factor_1 == 1.0
-        assert test_recordmodel.change_factor_2 == 1.0
-        assert test_recordmodel.change_factor_3 == 1.0
-        assert test_recordmodel.change_factor_4 == 1.0
-        assert test_recordmodel.change_factor_5 == 1.0
-        assert test_recordmodel.change_factor_6 == 1.0
-        assert test_recordmodel.change_factor_7 == 1.0
-        assert test_recordmodel.change_factor_8 == 1.0
-        assert test_recordmodel.change_factor_9 == 1.0
-        assert test_recordmodel.change_factor_10 == 1.0
-        assert test_recordmodel.environment_from_id == 0
-        assert test_recordmodel.environment_to_id == 0
-        assert test_recordmodel.function_1 == "0"
-        assert test_recordmodel.function_2 == "0"
-        assert test_recordmodel.function_3 == "0"
-        assert test_recordmodel.function_4 == "0"
-        assert test_recordmodel.function_5 == "0"
-        assert test_recordmodel.parent_id == 0
-        assert test_recordmodel.similar_item_method_id == 1
-        assert test_recordmodel.quality_from_id == 0
-        assert test_recordmodel.quality_to_id == 0
-        assert test_recordmodel.result_1 == 0.0
-        assert test_recordmodel.result_2 == 0.0
-        assert test_recordmodel.result_3 == 0.0
-        assert test_recordmodel.result_4 == 0.0
-        assert test_recordmodel.result_5 == 0.0
-        assert test_recordmodel.temperature_from == 30.0
-        assert test_recordmodel.temperature_to == 30.0
-        assert test_recordmodel.user_blob_1 == ""
-        assert test_recordmodel.user_blob_2 == ""
-        assert test_recordmodel.user_blob_3 == ""
-        assert test_recordmodel.user_blob_4 == ""
-        assert test_recordmodel.user_blob_5 == ""
-        assert test_recordmodel.user_float_1 == 0.0
-        assert test_recordmodel.user_float_2 == 0.0
-        assert test_recordmodel.user_float_3 == 0.0
-        assert test_recordmodel.user_float_4 == 0.0
-        assert test_recordmodel.user_float_5 == 0.0
-        assert test_recordmodel.user_int_1 == 0
-        assert test_recordmodel.user_int_2 == 0
-        assert test_recordmodel.user_int_3 == 0
-        assert test_recordmodel.user_int_4 == 0
-        assert test_recordmodel.user_int_5 == 0
+        assert test_record_model.__tablename__ == "ramstk_similar_item"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.change_description_1 == ""
+        assert test_record_model.change_description_2 == ""
+        assert test_record_model.change_description_3 == ""
+        assert test_record_model.change_description_4 == ""
+        assert test_record_model.change_description_5 == ""
+        assert test_record_model.change_description_6 == ""
+        assert test_record_model.change_description_7 == ""
+        assert test_record_model.change_description_8 == ""
+        assert test_record_model.change_description_9 == ""
+        assert test_record_model.change_description_10 == ""
+        assert test_record_model.change_factor_1 == 1.0
+        assert test_record_model.change_factor_2 == 1.0
+        assert test_record_model.change_factor_3 == 1.0
+        assert test_record_model.change_factor_4 == 1.0
+        assert test_record_model.change_factor_5 == 1.0
+        assert test_record_model.change_factor_6 == 1.0
+        assert test_record_model.change_factor_7 == 1.0
+        assert test_record_model.change_factor_8 == 1.0
+        assert test_record_model.change_factor_9 == 1.0
+        assert test_record_model.change_factor_10 == 1.0
+        assert test_record_model.environment_from_id == 0
+        assert test_record_model.environment_to_id == 0
+        assert test_record_model.function_1 == "0"
+        assert test_record_model.function_2 == "0"
+        assert test_record_model.function_3 == "0"
+        assert test_record_model.function_4 == "0"
+        assert test_record_model.function_5 == "0"
+        assert test_record_model.parent_id == 0
+        assert test_record_model.similar_item_method_id == 1
+        assert test_record_model.quality_from_id == 0
+        assert test_record_model.quality_to_id == 0
+        assert test_record_model.result_1 == 0.0
+        assert test_record_model.result_2 == 0.0
+        assert test_record_model.result_3 == 0.0
+        assert test_record_model.result_4 == 0.0
+        assert test_record_model.result_5 == 0.0
+        assert test_record_model.temperature_from == 30.0
+        assert test_record_model.temperature_to == 30.0
+        assert test_record_model.user_blob_1 == ""
+        assert test_record_model.user_blob_2 == ""
+        assert test_record_model.user_blob_3 == ""
+        assert test_record_model.user_blob_4 == ""
+        assert test_record_model.user_blob_5 == ""
+        assert test_record_model.user_float_1 == 0.0
+        assert test_record_model.user_float_2 == 0.0
+        assert test_record_model.user_float_3 == 0.0
+        assert test_record_model.user_float_4 == 0.0
+        assert test_record_model.user_float_5 == 0.0
+        assert test_record_model.user_int_1 == 0
+        assert test_record_model.user_int_2 == 0
+        assert test_record_model.user_int_3 == 0
+        assert test_record_model.user_int_4 == 0
+        assert test_record_model.user_int_5 == 0
 
     @pytest.mark.unit
     def test_data_manager_create(self, test_tablemodel):
@@ -249,14 +249,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -315,33 +315,33 @@ class TestGetterSetter:
         assert _attributes["user_int_5"] == 0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["function_1"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["function_1"] == "0"
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["function_1"] == "0"
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

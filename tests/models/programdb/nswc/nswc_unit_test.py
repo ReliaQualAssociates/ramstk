@@ -45,75 +45,75 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for testing model initialization."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKNSWCRecord)
+        assert isinstance(test_record_model, RAMSTKNSWCRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_nswc"
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.Cac == 0.0
-        assert test_recordmodel.Calt == 0.0
-        assert test_recordmodel.Cb == 0.0
-        assert test_recordmodel.Cbl == 0.0
-        assert test_recordmodel.Cbt == 0.0
-        assert test_recordmodel.Cbv == 0.0
-        assert test_recordmodel.Cc == 0.0
-        assert test_recordmodel.Ccf == 0.0
-        assert test_recordmodel.Ccp == 0.0
-        assert test_recordmodel.Ccs == 0.0
-        assert test_recordmodel.Ccv == 0.0
-        assert test_recordmodel.Ccw == 0.0
-        assert test_recordmodel.Cd == 0.0
-        assert test_recordmodel.Cdc == 0.0
-        assert test_recordmodel.Cdl == 0.0
-        assert test_recordmodel.Cdp == 0.0
-        assert test_recordmodel.Cds == 0.0
-        assert test_recordmodel.Cdt == 0.0
-        assert test_recordmodel.Cdw == 0.0
-        assert test_recordmodel.Cdy == 0.0
-        assert test_recordmodel.Ce == 0.0
-        assert test_recordmodel.Cf == 0.0
-        assert test_recordmodel.Cg == 0.0
-        assert test_recordmodel.Cga == 0.0
-        assert test_recordmodel.Cgl == 0.0
-        assert test_recordmodel.Cgp == 0.0
-        assert test_recordmodel.Cgs == 0.0
-        assert test_recordmodel.Cgt == 0.0
-        assert test_recordmodel.Cgv == 0.0
-        assert test_recordmodel.Ch == 0.0
-        assert test_recordmodel.Ci == 0.0
-        assert test_recordmodel.Ck == 0.0
-        assert test_recordmodel.Cl == 0.0
-        assert test_recordmodel.Clc == 0.0
-        assert test_recordmodel.Cm == 0.0
-        assert test_recordmodel.Cmu == 0.0
-        assert test_recordmodel.Cn == 0.0
-        assert test_recordmodel.Cnp == 0.0
-        assert test_recordmodel.Cnw == 0.0
-        assert test_recordmodel.Cp == 0.0
-        assert test_recordmodel.Cpd == 0.0
-        assert test_recordmodel.Cpf == 0.0
-        assert test_recordmodel.Cpv == 0.0
-        assert test_recordmodel.Cq == 0.0
-        assert test_recordmodel.Cr == 0.0
-        assert test_recordmodel.Crd == 0.0
-        assert test_recordmodel.Cs == 0.0
-        assert test_recordmodel.Csc == 0.0
-        assert test_recordmodel.Csf == 0.0
-        assert test_recordmodel.Cst == 0.0
-        assert test_recordmodel.Csv == 0.0
-        assert test_recordmodel.Csw == 0.0
-        assert test_recordmodel.Csz == 0.0
-        assert test_recordmodel.Ct == 0.0
-        assert test_recordmodel.Cv == 0.0
-        assert test_recordmodel.Cw == 0.0
-        assert test_recordmodel.Cy == 0.0
+        assert test_record_model.__tablename__ == "ramstk_nswc"
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.Cac == 0.0
+        assert test_record_model.Calt == 0.0
+        assert test_record_model.Cb == 0.0
+        assert test_record_model.Cbl == 0.0
+        assert test_record_model.Cbt == 0.0
+        assert test_record_model.Cbv == 0.0
+        assert test_record_model.Cc == 0.0
+        assert test_record_model.Ccf == 0.0
+        assert test_record_model.Ccp == 0.0
+        assert test_record_model.Ccs == 0.0
+        assert test_record_model.Ccv == 0.0
+        assert test_record_model.Ccw == 0.0
+        assert test_record_model.Cd == 0.0
+        assert test_record_model.Cdc == 0.0
+        assert test_record_model.Cdl == 0.0
+        assert test_record_model.Cdp == 0.0
+        assert test_record_model.Cds == 0.0
+        assert test_record_model.Cdt == 0.0
+        assert test_record_model.Cdw == 0.0
+        assert test_record_model.Cdy == 0.0
+        assert test_record_model.Ce == 0.0
+        assert test_record_model.Cf == 0.0
+        assert test_record_model.Cg == 0.0
+        assert test_record_model.Cga == 0.0
+        assert test_record_model.Cgl == 0.0
+        assert test_record_model.Cgp == 0.0
+        assert test_record_model.Cgs == 0.0
+        assert test_record_model.Cgt == 0.0
+        assert test_record_model.Cgv == 0.0
+        assert test_record_model.Ch == 0.0
+        assert test_record_model.Ci == 0.0
+        assert test_record_model.Ck == 0.0
+        assert test_record_model.Cl == 0.0
+        assert test_record_model.Clc == 0.0
+        assert test_record_model.Cm == 0.0
+        assert test_record_model.Cmu == 0.0
+        assert test_record_model.Cn == 0.0
+        assert test_record_model.Cnp == 0.0
+        assert test_record_model.Cnw == 0.0
+        assert test_record_model.Cp == 0.0
+        assert test_record_model.Cpd == 0.0
+        assert test_record_model.Cpf == 0.0
+        assert test_record_model.Cpv == 0.0
+        assert test_record_model.Cq == 0.0
+        assert test_record_model.Cr == 0.0
+        assert test_record_model.Crd == 0.0
+        assert test_record_model.Cs == 0.0
+        assert test_record_model.Csc == 0.0
+        assert test_record_model.Csf == 0.0
+        assert test_record_model.Cst == 0.0
+        assert test_record_model.Csv == 0.0
+        assert test_record_model.Csw == 0.0
+        assert test_record_model.Csz == 0.0
+        assert test_record_model.Ct == 0.0
+        assert test_record_model.Cv == 0.0
+        assert test_record_model.Cw == 0.0
+        assert test_record_model.Cy == 0.0
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -240,14 +240,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -310,30 +310,30 @@ class TestGetterSetter:
         assert _attributes["Cdy"] == 0.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["Cpv"] = None
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["Cpv"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["Cpv"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

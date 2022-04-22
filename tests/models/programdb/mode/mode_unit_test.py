@@ -45,42 +45,42 @@ def test_tablemodel(mock_program_dao):
     del dut
 
 
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
+@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
 class TestCreateModels:
     """Class for model initialization test suite."""
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
+    def test_record_model_create(self, test_record_model):
         """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKModeRecord)
+        assert isinstance(test_record_model, RAMSTKModeRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_mode"
-        assert test_recordmodel.effect_local == ""
-        assert test_recordmodel.mission == "Default Mission"
-        assert test_recordmodel.other_indications == ""
-        assert test_recordmodel.mode_criticality == 0.0
-        assert test_recordmodel.single_point == 0
-        assert test_recordmodel.design_provisions == ""
-        assert test_recordmodel.type_id == 0
-        assert test_recordmodel.rpn_severity_new == 1
-        assert test_recordmodel.effect_next == ""
-        assert test_recordmodel.detection_method == ""
-        assert test_recordmodel.operator_actions == ""
-        assert test_recordmodel.critical_item == 0
-        assert test_recordmodel.hazard_rate_source == ""
-        assert test_recordmodel.severity_class == ""
-        assert test_recordmodel.description == "Test Failure Mode #1"
-        assert test_recordmodel.mission_phase == ""
-        assert test_recordmodel.mode_probability == ""
-        assert test_recordmodel.remarks == ""
-        assert test_recordmodel.mode_ratio == 0.0
-        assert test_recordmodel.mode_hazard_rate == 0.0
-        assert test_recordmodel.rpn_severity == 1
-        assert test_recordmodel.isolation_method == ""
-        assert test_recordmodel.effect_end == ""
-        assert test_recordmodel.mode_op_time == 0.0
-        assert test_recordmodel.effect_probability == 0.8
+        assert test_record_model.__tablename__ == "ramstk_mode"
+        assert test_record_model.effect_local == ""
+        assert test_record_model.mission == "Default Mission"
+        assert test_record_model.other_indications == ""
+        assert test_record_model.mode_criticality == 0.0
+        assert test_record_model.single_point == 0
+        assert test_record_model.design_provisions == ""
+        assert test_record_model.type_id == 0
+        assert test_record_model.rpn_severity_new == 1
+        assert test_record_model.effect_next == ""
+        assert test_record_model.detection_method == ""
+        assert test_record_model.operator_actions == ""
+        assert test_record_model.critical_item == 0
+        assert test_record_model.hazard_rate_source == ""
+        assert test_record_model.severity_class == ""
+        assert test_record_model.description == "Test Failure Mode #1"
+        assert test_record_model.mission_phase == ""
+        assert test_record_model.mode_probability == ""
+        assert test_record_model.remarks == ""
+        assert test_record_model.mode_ratio == 0.0
+        assert test_record_model.mode_hazard_rate == 0.0
+        assert test_record_model.rpn_severity == 1
+        assert test_record_model.isolation_method == ""
+        assert test_record_model.effect_end == ""
+        assert test_record_model.mode_op_time == 0.0
+        assert test_record_model.effect_probability == 0.8
 
     @pytest.mark.unit
     def test_table_model_create(self, test_tablemodel):
@@ -185,14 +185,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(4) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
+    def test_get_record_model_attributes(self, test_record_model):
         """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["critical_item"] == 0
@@ -222,16 +222,16 @@ class TestGetterSetter:
         assert _attributes["type_id"] == 0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
+    def test_set_record_model_attributes(self, test_attributes, test_record_model):
         """should return None on success."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
+        assert test_record_model.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
     def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should set an attribute to it's default value when the a None value."""
         test_attributes["mode_ratio"] = None
@@ -239,19 +239,19 @@ class TestGetterSetter:
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["mode_ratio"] == 0.0
+        assert test_record_model.set_attributes(test_attributes) is None
+        assert test_record_model.get_attributes()["mode_ratio"] == 0.0
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
+        self, test_attributes, test_record_model
     ):
         """should raise an AttributeError when passed an unknown attribute."""
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         test_attributes.pop("mode_id")
         with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
+            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "test_tablemodel")

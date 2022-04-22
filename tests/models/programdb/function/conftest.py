@@ -150,14 +150,3 @@ def test_attributes():
         "total_part_count": 0,
         "type_id": 0,
     }
-
-
-@pytest.fixture(scope="function")
-def test_record_model(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut
