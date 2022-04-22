@@ -28,7 +28,7 @@ from tests import (
 
 
 @pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
-class UnitTestCreateFunction:
+class TestCreateFunction:
     """Class for unit testing Function model __init__() methods.
 
     Because each table model contains unique attributes, these methods must be
@@ -104,7 +104,7 @@ class UnitTestCreateFunction:
 
 
 @pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
-class UnitTestSelectFunction(UnitTestSelectMethods):
+class TestSelectFunction(UnitTestSelectMethods):
     """Class for unit testing Function table do_select() and do_select_all()."""
 
     __test__ = True
@@ -114,7 +114,7 @@ class UnitTestSelectFunction(UnitTestSelectMethods):
 
 
 @pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
-class UnitTestInsertFunction(UnitTestInsertMethods):
+class TestInsertFunction(UnitTestInsertMethods):
     """Class for unit testing Function table do_insert() method."""
 
     __test__ = True
@@ -125,7 +125,7 @@ class UnitTestInsertFunction(UnitTestInsertMethods):
 
 
 @pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
-class UnitTestDeleteFunction(UnitTestDeleteMethods):
+class TestDeleteFunction(UnitTestDeleteMethods):
     """Class for unit testing Function table do_delete() method."""
 
     __test__ = True
@@ -136,7 +136,7 @@ class UnitTestDeleteFunction(UnitTestDeleteMethods):
 
 
 @pytest.mark.usefixtures("test_attributes", "test_record_model")
-class UnitTestGetterSetterFunction(UnitTestGetterSetterMethods):
+class TestGetterSetterFunction(UnitTestGetterSetterMethods):
     """Class for unit testing Function table methods that get or set."""
 
     __test__ = True

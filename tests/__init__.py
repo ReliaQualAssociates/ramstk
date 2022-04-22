@@ -13,7 +13,6 @@ from .__base.model_test_class import (
     SystemTestGetterSetterMethods,
     SystemTestInsertMethods,
     SystemTestSelectMethods,
-    SystemTestUpdateMethods,
     UnitTestDeleteMethods,
     UnitTestGetterSetterMethods,
     UnitTestInsertMethods,
