@@ -25,11 +25,11 @@ test_change_description = "Test change description for factor #1."
 
 
 @pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
+def test_tablemodel(mock_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKSimilarItemTable()
-    dut.do_connect(mock_program_dao)
+    dut.do_connect(mock_dao)
 
     yield dut
 

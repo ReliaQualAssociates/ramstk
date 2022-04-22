@@ -22,10 +22,10 @@ from tests import MockDAO
 
 
 @pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
+def test_tablemodel(mock_dao):
     """Test fixture for Function data manager."""
     dut = RAMSTKRevisionTable()
-    dut.do_connect(mock_program_dao)
+    dut.do_connect(mock_dao)
     dut.do_select_all(
         attributes={
             None: None,

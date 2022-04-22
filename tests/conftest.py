@@ -2096,9 +2096,9 @@ def test_stress_limits():
 
 
 @pytest.fixture(scope="function")
-def test_record_model(mock_program_dao):
+def test_record_model(mock_dao):
     """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select(node_id=0)
+    dut = mock_dao.do_select(node_id=0)
 
     yield dut
 

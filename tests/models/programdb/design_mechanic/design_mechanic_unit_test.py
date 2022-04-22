@@ -23,11 +23,11 @@ from tests import MockDAO
 
 
 @pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
+def test_tablemodel(mock_dao):
     """Get a data manager instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignMechanicTable()
-    dut.do_connect(mock_program_dao)
+    dut.do_connect(mock_dao)
 
     yield dut
 
@@ -254,14 +254,14 @@ class TestDeleteMethods:
         assert test_tablemodel.tree.get_node(_last_id) is None
 
 
-@pytest.mark.usefixtures("test_attributes", "mock_program_dao")
+@pytest.mark.usefixtures("test_attributes", "mock_dao")
 class TestGetterSetter:
     """Class for testing methods that get or set."""
 
     @pytest.mark.unit
-    def test_get_record_model_attributes(self, mock_program_dao):
+    def test_get_record_model_attributes(self, mock_dao):
         """should return the record model attributes dict."""
-        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+        dut = mock_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
 
         _attributes = dut.get_attributes()
 
@@ -321,20 +321,18 @@ class TestGetterSetter:
         assert _attributes["clearance"] == 0.0
 
     @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, mock_program_dao):
+    def test_set_record_model_attributes(self, test_attributes, mock_dao):
         """should set the value of the attribute requested."""
-        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+        dut = mock_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
         assert dut.set_attributes(test_attributes) is None
 
     @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, mock_program_dao
-    ):
+    def test_set_record_model_attributes_none_value(self, test_attributes, mock_dao):
         """should set an attribute to it's default value when passed a None value."""
-        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+        dut = mock_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
@@ -345,10 +343,10 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, mock_program_dao
+        self, test_attributes, mock_dao
     ):
         """should raise an AttributeError when passed an unknown attribute."""
-        dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
+        dut = mock_dao.do_select_all(RAMSTKDesignMechanicRecord)[0]
 
         test_attributes.pop("revision_id")
         test_attributes.pop("hardware_id")
