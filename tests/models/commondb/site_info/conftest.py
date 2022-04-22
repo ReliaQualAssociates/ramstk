@@ -10,7 +10,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_common_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _site_1 = RAMSTKSiteInfoRecord()
     _site_1.site_id = 1
     _site_1.site_name = "DEMO SITE"
@@ -67,14 +67,3 @@ def test_attributes():
         "rbd_enabled": 0,
         "fta_enabled": 0,
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_common_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_common_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

@@ -10,7 +10,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _status_1 = RAMSTKProgramStatusRecord()
     _status_1.revision_id = 1
     _status_1.status_id = 1
@@ -43,14 +43,3 @@ def test_attributes():
         "date_status": date.today(),
         "time_remaining": 0.0,
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

@@ -10,7 +10,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_common_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _category_1 = RAMSTKCategoryRecord()
     _category_1.category_id = 1
     _category_1.category_type = "hardware"
@@ -55,14 +55,3 @@ def test_attributes():
         "harsh_maxt_limit": 125.0,
         "mild_maxt_limit": 125.0,
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_common_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_common_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

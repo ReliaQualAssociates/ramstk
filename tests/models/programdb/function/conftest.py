@@ -17,11 +17,11 @@ from tests import MockDAO
 
 
 @pytest.fixture(scope="function")
-def unit_test_table_model(mock_program_dao):
+def unit_test_table_model(mock_dao):
     """Get a data manager instance for each unit test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKFunctionTable()
-    dut.do_connect(mock_program_dao)
+    dut.do_connect(mock_dao)
 
     yield dut
 
@@ -64,7 +64,7 @@ def integration_test_table_model(test_program_dao):
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
     """Create a mock database table."""
     _function_1 = RAMSTKFunctionRecord()
     _function_1.revision_id = 1

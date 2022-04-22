@@ -10,7 +10,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_common_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _rpn_1 = RAMSTKRPNRecord()
     _rpn_1.rpn_id = 1
     _rpn_1.rpn_type = "severity"
@@ -54,14 +54,3 @@ def test_attributes():
         "value": 1,
         "description": "System operable with minimal interference.",
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_common_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_common_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

@@ -13,7 +13,7 @@ TEST_PROBS = {
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _hazard_1 = RAMSTKHazardRecord()
     _hazard_1.revision_id = 1
     _hazard_1.function_id = 1
@@ -110,14 +110,3 @@ def test_attributes():
         "user_int_2": 0,
         "user_int_3": 0,
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

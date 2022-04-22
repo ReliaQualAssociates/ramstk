@@ -10,7 +10,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_common_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _stakeholders_1 = RAMSTKStakeholdersRecord()
     _stakeholders_1.stakeholders_id = 1
     _stakeholders_1.stakeholder = "Customer"
@@ -29,14 +29,3 @@ def test_attributes():
         "stakeholders_id": 1,
         "stakeholder": "Customer",
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_common_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_common_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut

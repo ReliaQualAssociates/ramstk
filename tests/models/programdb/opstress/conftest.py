@@ -7,7 +7,7 @@ from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
     _opstress_1 = RAMSTKOpStressRecord()
     _opstress_1.revision_id = 1
     _opstress_1.hardware_id = 1
@@ -55,14 +55,3 @@ def test_attributes():
         "measurable_parameter": 2,
         "remarks": "",
     }
-
-
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select(node_id=0)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut
