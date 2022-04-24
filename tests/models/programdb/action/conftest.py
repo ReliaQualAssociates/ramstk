@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.action.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Action module test fixtures."""
+
 # Standard Library Imports
 from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKActionRecord
+from ramstk.models.dbtables import RAMSTKActionTable
 from tests import MockDAO
 
 
 @pytest.fixture
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _action_1 = RAMSTKActionRecord()
     _action_1.revision_id = 1
     _action_1.hardware_id = 1
@@ -47,17 +58,18 @@ def mock_dao(monkeypatch):
     _action_2.action_closed = 0
     _action_2.action_close_date = date.today() + timedelta(days=22)
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _action_1,
         _action_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture
 def test_attributes():
+    """Create a dict of Action attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -76,3 +88,25 @@ def test_attributes():
         "action_closed": 1,
         "action_close_date": date.today(),
     }
+
+
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKActionTable()
+    dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_action_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_action_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_action")
+    pub.unsubscribe(dut.do_update, "request_update_action")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
+
+    # Delete the device under test.
+    del dut

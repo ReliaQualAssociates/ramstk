@@ -2,7 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.__base.model_test_class.py is part of The RAMSTK Project
+#       tests.__base.dbtable_test_class.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -66,6 +66,14 @@ class UnitTestInsertMethods:
     _tag = ""
 
     @pytest.mark.unit
+    def test_do_get_new_record(self, test_attributes, unit_test_table_model):
+        """Should return a new record instance."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
+        assert isinstance(
+            unit_test_table_model.do_get_new_record(test_attributes), self._record
+        )
+
+    @pytest.mark.unit
     def test_do_insert_sibling(self, test_attributes, unit_test_table_model):
         """Should add a record to the record tree and update last_id."""
         unit_test_table_model.do_select_all(attributes=test_attributes)
@@ -76,7 +84,7 @@ class UnitTestInsertMethods:
 
         assert unit_test_table_model.last_id == self._next_id
         assert isinstance(
-            unit_test_table_model.tree.get_node(self._next_id).data[self._tag],
+            unit_test_table_model.tree.get_node(self._next_id - 1).data[self._tag],
             self._record,
         )
 
@@ -119,56 +127,6 @@ class UnitTestDeleteMethods:
 
         assert unit_test_table_model.last_id == self._next_id
         assert unit_test_table_model.tree.get_node(_last_id) is None
-
-
-@pytest.mark.usefixtures("test_attributes", "test_record_model")
-class UnitTestGetterSetterMethods:
-    """Class for unit testing table model methods that get or set."""
-
-    __test__ = False
-
-    _id_columns = []
-
-    _test_attr = None
-    _test_default_value = None
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_record_model):
-        """Should return None on success."""
-        for _id in self._id_columns:
-            test_attributes.pop(_id)
-
-        assert test_record_model.set_attributes(test_attributes) is None
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self,
-        test_attributes,
-        test_record_model,
-    ):
-        """Should set an attribute to its default value when passed a None value."""
-        test_attributes[self._test_attr] = None
-        for _id in self._id_columns:
-            test_attributes.pop(_id)
-
-        assert test_record_model.set_attributes(test_attributes) is None
-        assert (
-            test_record_model.get_attributes()[self._test_attr]
-            == self._test_default_value
-        )
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self,
-        test_attributes,
-        test_record_model,
-    ):
-        """Should raise an AttributeError when passed an unknown attribute."""
-        for _id in self._id_columns:
-            test_attributes.pop(_id)
-
-        with pytest.raises(AttributeError):
-            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
 
 
 @pytest.mark.usefixtures("test_attributes", "integration_test_table_model")

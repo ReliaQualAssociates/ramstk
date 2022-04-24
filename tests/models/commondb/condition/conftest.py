@@ -53,7 +53,7 @@ def test_attributes():
 
 @pytest.fixture(scope="function")
 def unit_test_table_model(mock_dao):
-    """Get a data manager instance for each unit test function."""
+    """Get a table model instance for each unit test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKConditionTable()
     dut.do_connect(mock_dao)

@@ -1,13 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.mode.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Mode module test fixtures."""
+
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKModeRecord
+from ramstk.models.dbtables import RAMSTKModeTable
 from tests import MockDAO
 
 
 @pytest.fixture
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _mode_1 = RAMSTKModeRecord()
     _mode_1.revision_id = 1
     _mode_1.hardware_id = 1
@@ -68,17 +79,18 @@ def mock_dao(monkeypatch):
     _mode_2.mode_op_time = 0.0
     _mode_2.effect_probability = 0.0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _mode_1,
         _mode_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Mode attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -109,3 +121,27 @@ def test_attributes():
         "single_point": 0,
         "type_id": 0,
     }
+
+
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKModeTable()
+    dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_mode_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_mode_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mode")
+    pub.unsubscribe(dut.do_update, "request_update_mode")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_mode")
+    pub.unsubscribe(dut.do_insert, "request_insert_mode")
+    pub.unsubscribe(dut.do_calculate_criticality, "request_calculate_criticality")
+
+    # Delete the device under test.
+    del dut

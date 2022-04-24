@@ -16,42 +16,28 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKNSWCRecord
 from ramstk.models.dbtables import RAMSTKNSWCTable
-
-# noinspection PyUnresolvedReferences
-from tests import MockDAO
-
-
-@pytest.fixture(scope="function")
-def test_tablemodel(mock_dao):
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKNSWCTable()
-    dut.do_connect(mock_dao)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_nswc_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_nswc_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_nswc")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_nswc")
-    pub.unsubscribe(dut.do_update, "request_update_nswc")
-    pub.unsubscribe(dut.do_get_tree, "request_get_nswc_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_nswc")
-    pub.unsubscribe(dut.do_insert, "request_insert_nswc")
-
-    # Delete the device under test.
-    del dut
+from tests import (
+    MockDAO,
+    UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
+    UnitTestInsertMethods,
+    UnitTestSelectMethods,
+)
 
 
-@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
-class TestCreateModels:
-    """Class for testing model initialization."""
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class TestCreateNSWCModels:
+    """Class for unit testing NSWC model __init__() methods.
+
+    Because each table model contains unique attributes, these methods must be
+    local to the module being tested.
+    """
+
+    __test__ = True
 
     @pytest.mark.unit
     def test_record_model_create(self, test_record_model):
-        """should return a record model instance."""
+        """Should return a NSWC record model instance."""
         assert isinstance(test_record_model, RAMSTKNSWCRecord)
 
         # Verify class attributes are properly initialized.
@@ -116,137 +102,105 @@ class TestCreateModels:
         assert test_record_model.Cy == 0.0
 
     @pytest.mark.unit
-    def test_table_model_create(self, test_tablemodel):
-        """should return a table manager instance."""
-        assert isinstance(test_tablemodel, RAMSTKNSWCTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_hardware_id"
-        assert test_tablemodel._db_tablename == "ramstk_nswc"
-        assert test_tablemodel._select_msg == "selected_revision"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._tag == "nswc"
-        assert test_tablemodel._lst_id_columns == [
+    def test_table_model_create(self, unit_test_table_model):
+        """Return a NSWC table model instance."""
+        assert isinstance(unit_test_table_model, RAMSTKNSWCTable)
+        assert isinstance(unit_test_table_model.tree, Tree)
+        assert isinstance(unit_test_table_model.dao, MockDAO)
+        assert unit_test_table_model._db_id_colname == "fld_hardware_id"
+        assert unit_test_table_model._db_tablename == "ramstk_nswc"
+        assert unit_test_table_model._select_msg == "selected_revision"
+        assert unit_test_table_model._root == 0
+        assert unit_test_table_model._tag == "nswc"
+        assert unit_test_table_model._lst_id_columns == [
             "revision_id",
             "hardware_id",
-            "parent_id",
         ]
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._record == RAMSTKNSWCRecord
-        assert test_tablemodel.last_id == 0
-        assert test_tablemodel.pkey == "hardware_id"
+        assert unit_test_table_model._revision_id == 0
+        assert unit_test_table_model._record == RAMSTKNSWCRecord
+        assert unit_test_table_model.last_id == 0
+        assert unit_test_table_model.pkey == "hardware_id"
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_nswc_attributes"
+            unit_test_table_model.do_get_attributes, "request_get_nswc_attributes"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "request_set_nswc_attributes"
+            unit_test_table_model.do_set_attributes, "request_set_nswc_attributes"
         )
-        assert pub.isSubscribed(test_tablemodel.do_set_attributes, "wvw_editing_nswc")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_nswc"
+            unit_test_table_model.do_set_attributes, "wvw_editing_nswc"
         )
-        assert pub.isSubscribed(test_tablemodel.do_get_tree, "request_get_nswc_tree")
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_nswc")
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_nswc")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_nswc")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
-
-    @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
-        """should return a record tree populated with DB records."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWCRecord,
+        assert pub.isSubscribed(
+            unit_test_table_model.do_update_all, "request_update_all_nswc"
         )
-        assert isinstance(
-            test_tablemodel.tree.get_node(2).data["nswc"],
-            RAMSTKNSWCRecord,
+        assert pub.isSubscribed(
+            unit_test_table_model.do_get_tree, "request_get_nswc_tree"
         )
-        assert isinstance(
-            test_tablemodel.tree.get_node(3).data["nswc"],
-            RAMSTKNSWCRecord,
+        assert pub.isSubscribed(
+            unit_test_table_model.do_select_all, "selected_revision"
         )
-
-    @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
-        """should return the record for the passed record ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _nswc = test_tablemodel.do_select(1)
-
-        assert isinstance(_nswc, RAMSTKNSWCRecord)
-        assert _nswc.revision_id == 1
-        assert _nswc.hardware_id == 1
-        assert _nswc.Calt == 0.0
-
-    @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
-        """should return None when a non-existent record ID is requested."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        assert test_tablemodel.do_select(100) is None
+        assert pub.isSubscribed(unit_test_table_model.do_update, "request_update_nswc")
+        assert pub.isSubscribed(unit_test_table_model.do_delete, "request_delete_nswc")
+        assert pub.isSubscribed(unit_test_table_model.do_insert, "request_insert_nswc")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSelectNSWC(UnitTestSelectMethods):
+    """Class for unit testing NSWC table do_select() and do_select_all()."""
 
-    @pytest.mark.unit
-    def test_do_get_new_record(self, test_attributes, test_tablemodel):
-        """should return a new record instance with ID fields populated."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _new_record = test_tablemodel.do_get_new_record(test_attributes)
+    __test__ = True
 
-        assert isinstance(_new_record, RAMSTKNSWCRecord)
-        assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 1
-
-    @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a new record to the records tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_attributes["hardware_id"] = 4
-        test_attributes["parent_id"] = 1
-        test_tablemodel.do_insert(attributes=test_attributes)
-
-        assert test_tablemodel.last_id == 4
-        assert isinstance(
-            test_tablemodel.tree.get_node(4).data["nswc"],
-            RAMSTKNSWCRecord,
-        )
-        assert test_tablemodel.tree.get_node(4).data["nswc"].revision_id == 1
-        assert test_tablemodel.tree.get_node(4).data["nswc"].hardware_id == 4
+    _record = RAMSTKNSWCRecord
+    _tag = "nswc"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestInsertNSWC(UnitTestInsertMethods):
+    """Class for unit testing NSWC table do_insert() method."""
 
-    @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
-        """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _last_id = test_tablemodel.last_id
-        test_tablemodel.do_delete(node_id=_last_id)
+    __test__ = True
 
-        assert test_tablemodel.last_id == 2
-        assert test_tablemodel.tree.get_node(_last_id) is None
+    _next_id = 0
+    _record = RAMSTKNSWCRecord
+    _tag = "nswc"
+
+    @pytest.mark.skip(reason="NSWC records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, unit_test_table_model):
+        """Should not run because NSWC records are not hierarchical."""
+        pass
+
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestDeleteNSWC(UnitTestDeleteMethods):
+    """Class for unit testing NSWC table do_delete() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKNSWCRecord
+    _tag = "nswc"
 
 
 @pytest.mark.usefixtures("test_attributes", "test_record_model")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+class TestGetterSetterNSWC(UnitTestGetterSetterMethods):
+    """Class for unit testing NSWC table methods that get or set."""
+
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "hardware_id",
+    ]
+
+    _test_attr = "Cpv"
+    _test_default_value = 0.0
 
     @pytest.mark.unit
     def test_get_record_model_attributes(self, test_record_model):
-        """should return a dict of attribute key:value pairs."""
+        """Should return a dict of attribute key:value pairs.
+
+        This method must be local because the attributes are different for each
+        database record model.
+        """
         _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
@@ -308,32 +262,3 @@ class TestGetterSetter:
         assert _attributes["Cdp"] == 0.0
         assert _attributes["Cds"] == 0.0
         assert _attributes["Cdy"] == 0.0
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_record_model):
-        """should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        assert test_record_model.set_attributes(test_attributes) is None
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_record_model
-    ):
-        """should set an attribute to it's default value when the a None value."""
-        test_attributes["Cpv"] = None
-
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        assert test_record_model.set_attributes(test_attributes) is None
-        assert test_record_model.get_attributes()["Cpv"] == 0.0
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_record_model
-    ):
-        """should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        with pytest.raises(AttributeError):
-            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})

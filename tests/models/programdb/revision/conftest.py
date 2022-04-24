@@ -1,13 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.revision.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Revision module test fixtures."""
+
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKRevisionRecord
+from ramstk.models.dbtables import RAMSTKRevisionTable
 from tests import MockDAO
 
 
 @pytest.fixture
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _revision_1 = RAMSTKRevisionRecord()
     _revision_1.revision_id = 1
     _revision_1.availability_logistics = 0.9986
@@ -64,17 +75,18 @@ def mock_dao(monkeypatch):
     _revision_2.program_cost = 0.0
     _revision_2.program_cost_sd = 0.0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _revision_1,
         _revision_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Revision attributes."""
     yield {
         "revision_id": 1,
         "availability_logistics": 0.9986,
@@ -103,3 +115,30 @@ def test_attributes():
         "program_cost": 26492.83,
         "program_cost_sd": 15.62,
     }
+
+
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Test fixture for Function data manager."""
+    dut = RAMSTKRevisionTable()
+    dut.do_connect(mock_dao)
+    dut.do_select_all(
+        attributes={
+            None: None,
+        }
+    )
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_revision")
+    pub.unsubscribe(dut.do_update, "request_update_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
+    pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
+    pub.unsubscribe(dut.do_delete, "request_delete_revision")
+    pub.unsubscribe(dut.do_insert, "request_insert_revision")
+
+    # Delete the device under test.
+    del dut

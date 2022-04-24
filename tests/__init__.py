@@ -8,13 +8,13 @@
 """The RAMSTK database record, table, and view model test classes."""
 
 # RAMSTK Local Imports
-from .__base.model_test_class import (
+from .__base.dbrecord_test_class import UnitTestGetterSetterMethods
+from .__base.dbtable_test_class import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
     SystemTestInsertMethods,
     SystemTestSelectMethods,
     UnitTestDeleteMethods,
-    UnitTestGetterSetterMethods,
     UnitTestInsertMethods,
     UnitTestSelectMethods,
 )

@@ -1,15 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.design_electric.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Design Electric module test fixtures."""
+
 # Third Party Imports
 import pytest
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKDesignElectricRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable
+from ramstk.models.dbtables import RAMSTKDesignElectricTable, RAMSTKHardwareTable
 from tests import MockDAO
 
 
 @pytest.fixture()
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _design_electric_1 = RAMSTKDesignElectricRecord()
     _design_electric_1.revision_id = 1
     _design_electric_1.hardware_id = 1
@@ -184,18 +193,19 @@ def mock_dao(monkeypatch):
     _design_electric_3.weight = 0.0
     _design_electric_3.years_in_production = 1
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _design_electric_1,
         _design_electric_2,
         _design_electric_3,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Design Electric attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -256,9 +266,35 @@ def test_attributes():
     }
 
 
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Get a data model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKDesignElectricTable()
+    dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_design_electric_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_design_electric_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_design_electric")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_design_electric")
+    pub.unsubscribe(dut.do_update, "request_update_design_electric")
+    pub.unsubscribe(dut.do_get_tree, "request_get_design_electric_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
+    pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
+
+    # Delete the device under test.
+    del dut
+
+
 @pytest.fixture(scope="class")
 def test_hardware_table(test_program_dao):
-    """Get a data manager instance for each test function."""
+    """Get a table model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKHardwareTable()
     dut.do_connect(test_program_dao)

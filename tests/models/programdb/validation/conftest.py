@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.validation.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Validation module test fixtures."""
+
 # Standard Library Imports
 from datetime import date, datetime, timedelta
 
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKValidationRecord
+from ramstk.models.dbtables import RAMSTKValidationTable
 from tests import MockDAO
 
 
 @pytest.fixture
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _validation_1 = RAMSTKValidationRecord()
     _validation_1.revision_id = 1
     _validation_1.validation_id = 1
@@ -112,18 +123,19 @@ def mock_dao(monkeypatch):
     _validation_3.time_ul = 49.0
     _validation_3.time_variance = 0.0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _validation_1,
         _validation_2,
         _validation_3,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Validation attributes."""
     yield {
         "revision_id": 1,
         "validation_id": 1,
@@ -155,3 +167,32 @@ def test_attributes():
         "time_ul": 0.0,
         "time_variance": 0.0,
     }
+
+
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKValidationTable()
+    dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_validation_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_validation_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "mvw_editing_validation")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_validation")
+    pub.unsubscribe(dut.do_update, "request_update_validation")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_validation")
+    pub.unsubscribe(dut.do_insert, "request_insert_validation")
+    pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
+    pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
+    pub.unsubscribe(
+        dut._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
+    )
+
+    # Delete the device under test.
+    del dut

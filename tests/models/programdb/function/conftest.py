@@ -107,7 +107,7 @@ def test_attributes():
 
 @pytest.fixture(scope="function")
 def unit_test_table_model(mock_dao):
-    """Get a data manager instance for each unit test function."""
+    """Get a table model instance for each unit test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKFunctionTable()
     dut.do_connect(mock_dao)
@@ -130,7 +130,7 @@ def unit_test_table_model(mock_dao):
 
 @pytest.fixture(scope="class")
 def integration_test_table_model(test_program_dao):
-    """Get a data manager instance for each system test class."""
+    """Get a table model instance for each system test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKFunctionTable()
     dut.do_connect(test_program_dao)

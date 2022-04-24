@@ -1,8 +1,18 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.hazard.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Hazard module test fixtures."""
+
 # Third Party Imports
 import pytest
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKHazardRecord
+from ramstk.models.dbtables import RAMSTKHazardTable
 from tests import MockDAO
 
 TEST_PROBS = {
@@ -14,6 +24,7 @@ TEST_PROBS = {
 
 @pytest.fixture
 def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _hazard_1 = RAMSTKHazardRecord()
     _hazard_1.revision_id = 1
     _hazard_1.function_id = 1
@@ -57,16 +68,61 @@ def mock_dao(monkeypatch):
     _hazard_1.user_int_2 = 0
     _hazard_1.user_int_3 = 0
 
-    DAO = MockDAO()
-    DAO.table = [
+    _hazard_2 = RAMSTKHazardRecord()
+    _hazard_2.revision_id = 1
+    _hazard_2.function_id = 1
+    _hazard_2.hazard_id = 2
+    _hazard_2.assembly_effect = ""
+    _hazard_2.assembly_hri = 20
+    _hazard_2.assembly_hri_f = 4
+    _hazard_2.assembly_mitigation = ""
+    _hazard_2.assembly_probability = TEST_PROBS["A"]
+    _hazard_2.assembly_probability_f = TEST_PROBS["B"]
+    _hazard_2.assembly_severity = "Major"
+    _hazard_2.assembly_severity_f = "Medium"
+    _hazard_2.function_1 = "uf1*uf2"
+    _hazard_2.function_2 = "res1/ui1"
+    _hazard_2.function_3 = ""
+    _hazard_2.function_4 = ""
+    _hazard_2.function_5 = ""
+    _hazard_2.potential_cause = ""
+    _hazard_2.potential_hazard = ""
+    _hazard_2.remarks = ""
+    _hazard_2.result_1 = 0.0
+    _hazard_2.result_2 = 0.0
+    _hazard_2.result_3 = 0.0
+    _hazard_2.result_4 = 0.0
+    _hazard_2.result_5 = 0.0
+    _hazard_2.system_effect = ""
+    _hazard_2.system_hri = 20
+    _hazard_2.system_hri_f = 20
+    _hazard_2.system_mitigation = ""
+    _hazard_2.system_probability = TEST_PROBS["A"]
+    _hazard_2.system_probability_f = TEST_PROBS["C"]
+    _hazard_2.system_severity = "Medium"
+    _hazard_2.system_severity_f = "Medium"
+    _hazard_2.user_blob_1 = ""
+    _hazard_2.user_blob_2 = ""
+    _hazard_2.user_blob_3 = ""
+    _hazard_2.user_float_1 = 1.5
+    _hazard_2.user_float_2 = 0.8
+    _hazard_2.user_float_3 = 0.0
+    _hazard_2.user_int_1 = 2
+    _hazard_2.user_int_2 = 0
+    _hazard_2.user_int_3 = 0
+
+    dao = MockDAO()
+    dao.table = [
         _hazard_1,
+        _hazard_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Hazard attributes."""
     yield {
         "revision_id": 1,
         "function_id": 1,
@@ -110,3 +166,28 @@ def test_attributes():
         "user_int_2": 0,
         "user_int_3": 0,
     }
+
+
+@pytest.fixture(scope="function")
+def unit_test_table_model(mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKHazardTable()
+    dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
+    pub.unsubscribe(dut.do_update, "request_update_hazard")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_set_attributes_all, "request_set_all_hazard_attributes")
+    pub.unsubscribe(dut.do_delete, "request_delete_hazard")
+    pub.unsubscribe(dut.do_insert, "request_insert_hazard")
+    pub.unsubscribe(dut.do_calculate_fha, "request_calculate_fha")
+
+    # Delete the device under test.
+    del dut

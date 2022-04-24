@@ -6,7 +6,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test class for testing failure mode algorithms and models."""
+"""Test class for testing failure Mode algorithms and models."""
 
 # Third Party Imports
 import pytest
@@ -16,42 +16,28 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKModeRecord
 from ramstk.models.dbtables import RAMSTKModeTable
-
-# noinspection PyUnresolvedReferences
-from tests import MockDAO
-
-
-@pytest.fixture(scope="function")
-def test_tablemodel(mock_dao):
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKModeTable()
-    dut.do_connect(mock_dao)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_mode_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_mode_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mode")
-    pub.unsubscribe(dut.do_update, "request_update_mode")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_mode_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_mode")
-    pub.unsubscribe(dut.do_insert, "request_insert_mode")
-    pub.unsubscribe(dut.do_calculate_criticality, "request_calculate_criticality")
-
-    # Delete the device under test.
-    del dut
+from tests import (
+    MockDAO,
+    UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
+    UnitTestInsertMethods,
+    UnitTestSelectMethods,
+)
 
 
-@pytest.mark.usefixtures("test_record_model", "test_tablemodel")
-class TestCreateModels:
-    """Class for model initialization test suite."""
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class TestCreateModeModels:
+    """Class for unit testing failure Mode model __init__() methods.
+
+    Because each table model contains unique attributes, these methods must be
+    local to the module being tested.
+    """
+
+    __test__ = True
 
     @pytest.mark.unit
     def test_record_model_create(self, test_record_model):
-        """should return a record model instance."""
+        """Should return a failure Mode record model instance."""
         assert isinstance(test_record_model, RAMSTKModeRecord)
 
         # Verify class attributes are properly initialized.
@@ -83,115 +69,98 @@ class TestCreateModels:
         assert test_record_model.effect_probability == 0.8
 
     @pytest.mark.unit
-    def test_table_model_create(self, test_tablemodel):
-        """should return a table model instance."""
-        assert isinstance(test_tablemodel, RAMSTKModeTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_mode_id"
-        assert test_tablemodel._db_tablename == "ramstk_mode"
-        assert test_tablemodel._tag == "mode"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._parent_id == 0
-        assert test_tablemodel.last_id == 0
+    def test_table_model_create(self, unit_test_table_model):
+        """Return a failure Mode table model instance."""
+        assert isinstance(unit_test_table_model, RAMSTKModeTable)
+        assert isinstance(unit_test_table_model.tree, Tree)
+        assert isinstance(unit_test_table_model.dao, MockDAO)
+        assert unit_test_table_model._db_id_colname == "fld_mode_id"
+        assert unit_test_table_model._db_tablename == "ramstk_mode"
+        assert unit_test_table_model._tag == "mode"
+        assert unit_test_table_model._root == 0
+        assert unit_test_table_model._revision_id == 0
+        assert unit_test_table_model._parent_id == 0
+        assert unit_test_table_model.last_id == 0
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_mode_attributes"
+            unit_test_table_model.do_get_attributes, "request_get_mode_attributes"
         )
-        assert pub.isSubscribed(test_tablemodel.do_get_tree, "request_get_mode_tree")
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_mode")
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_mode"
+            unit_test_table_model.do_get_tree, "request_get_mode_tree"
         )
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_mode")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_mode")
         assert pub.isSubscribed(
-            test_tablemodel.do_calculate_criticality, "request_calculate_criticality"
+            unit_test_table_model.do_select_all, "selected_revision"
+        )
+        assert pub.isSubscribed(unit_test_table_model.do_update, "request_update_mode")
+        assert pub.isSubscribed(
+            unit_test_table_model.do_update_all, "request_update_all_mode"
+        )
+        assert pub.isSubscribed(unit_test_table_model.do_delete, "request_delete_mode")
+        assert pub.isSubscribed(unit_test_table_model.do_insert, "request_insert_mode")
+        assert pub.isSubscribed(
+            unit_test_table_model.do_calculate_criticality,
+            "request_calculate_criticality",
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSelectMode(UnitTestSelectMethods):
+    """Class for unit testing failure Mode table do_select() and do_select_all()."""
 
-    @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
-        """should return a record tree populated with DB records."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    __test__ = True
 
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["mode"], RAMSTKModeRecord
-        )
-
-    @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
-        """should return the record for the passed record ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _mode = test_tablemodel.do_select(1)
-
-        assert isinstance(_mode, RAMSTKModeRecord)
-        assert _mode.effect_probability == 0.8
-        assert _mode.description == "Test Failure Mode #1"
-
-    @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
-        """should return None when a non-existent record ID is requested."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        assert test_tablemodel.do_select(100) is None
+    _record = RAMSTKModeRecord
+    _tag = "mode"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestInsertMode(UnitTestInsertMethods):
+    """Class for unit testing failure Mode table do_insert() method."""
 
-    @pytest.mark.unit
-    def test_do_get_new_record(self, test_attributes, test_tablemodel):
-        """should return a new record instance with ID fields populated."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _new_record = test_tablemodel.do_get_new_record(test_attributes)
+    __test__ = True
 
-        assert isinstance(_new_record, RAMSTKModeRecord)
-        assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 1
+    _next_id = 0
+    _record = RAMSTKModeRecord
+    _tag = "mode"
 
-    @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a new record to the records tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_tablemodel.do_insert(attributes=test_attributes)
-
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(3).data["mode"], RAMSTKModeRecord
-        )
-        assert test_tablemodel.tree.get_node(3).data["mode"].mode_id == 3
-        assert test_tablemodel.tree.get_node(3).data["mode"].description == ""
+    @pytest.mark.skip(reason="Mode records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, unit_test_table_model):
+        """Should not run because failure Mode records are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestDeleteMode(UnitTestDeleteMethods):
+    """Class for unit testing failure Mode table do_delete() method."""
 
-    @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
-        """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_tablemodel.do_delete(4)
+    __test__ = True
 
-        assert test_tablemodel.tree.get_node(4) is None
+    _next_id = 0
+    _record = RAMSTKModeRecord
+    _tag = "mode"
 
 
 @pytest.mark.usefixtures("test_attributes", "test_record_model")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+class TestGetterSetterMode(UnitTestGetterSetterMethods):
+    """Class for unit testing failure Mode table methods that get or set."""
+
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "hardware_id",
+        "mode_id",
+    ]
+
+    _test_attr = "mode_ratio"
+    _test_default_value = 0.0
 
     @pytest.mark.unit
     def test_get_record_model_attributes(self, test_record_model):
-        """should return a dict of attribute key:value pairs."""
+        """Should return a dict of attribute key:value pairs.
+
+        This method must be local because the attributes are different for each
+        database record model.
+        """
         _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
@@ -221,58 +190,26 @@ class TestGetterSetter:
         assert _attributes["single_point"] == 0
         assert _attributes["type_id"] == 0
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_record_model):
-        """should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        assert test_record_model.set_attributes(test_attributes) is None
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestModeAnalysisMethods:
+    """Class for failure Mode analytical method tests."""
 
     @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_record_model
-    ):
-        """should set an attribute to it's default value when the a None value."""
-        test_attributes["mode_ratio"] = None
+    def test_do_calculate_criticality(self, test_attributes, unit_test_table_model):
+        """Should calculate the failure Mode hazard rate and Mode criticality."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        assert test_record_model.set_attributes(test_attributes) is None
-        assert test_record_model.get_attributes()["mode_ratio"] == 0.0
+        unit_test_table_model.tree.get_node(1).data["mode"].mode_ratio = 0.428
+        unit_test_table_model.tree.get_node(1).data["mode"].mode_op_time = 4.2
+        unit_test_table_model.tree.get_node(1).data["mode"].effect_probability = 1.0
+        unit_test_table_model.tree.get_node(1).data["mode"].severity_class = "III"
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_record_model
-    ):
-        """should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        with pytest.raises(AttributeError):
-            test_record_model.set_attributes({"shibboly-bibbly-boo": 0.9998})
+        unit_test_table_model.do_calculate_criticality(0.00000682)
 
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestAnalysisMethods:
-    """Class for analytical method tests."""
-
-    @pytest.mark.unit
-    def test_do_calculate_criticality(self, test_attributes, test_tablemodel):
-        """should calculate the mode hazard rate and mode criticality."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        test_tablemodel.tree.get_node(1).data["mode"].mode_ratio = 0.428
-        test_tablemodel.tree.get_node(1).data["mode"].mode_op_time = 4.2
-        test_tablemodel.tree.get_node(1).data["mode"].effect_probability = 1.0
-        test_tablemodel.tree.get_node(1).data["mode"].severity_class = "III"
-
-        test_tablemodel.do_calculate_criticality(0.00000682)
-
-        assert test_tablemodel.tree.get_node(1).data[
+        assert unit_test_table_model.tree.get_node(1).data[
             "mode"
         ].mode_hazard_rate == pytest.approx(2.91896e-06)
-        assert test_tablemodel.tree.get_node(1).data[
+        assert unit_test_table_model.tree.get_node(1).data[
             "mode"
         ].mode_criticality == pytest.approx(1.2259632e-05)

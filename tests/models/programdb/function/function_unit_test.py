@@ -16,8 +16,6 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFunctionRecord
 from ramstk.models.dbtables import RAMSTKFunctionTable
-
-# noinspection PyUnresolvedReferences
 from tests import (
     MockDAO,
     UnitTestDeleteMethods,
@@ -28,7 +26,7 @@ from tests import (
 
 
 @pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
-class TestCreateFunction:
+class TestCreateFunctionModels:
     """Class for unit testing Function model __init__() methods.
 
     Because each table model contains unique attributes, these methods must be
