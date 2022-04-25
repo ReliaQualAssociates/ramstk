@@ -17,113 +17,131 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKGroupRecord
 from ramstk.models.dbtables import RAMSTKGroupTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_common_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKGroupTable()
-    dut.do_connect(test_common_dao)
-    dut.do_select_all({"group_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectGroup(SystemTestSelectMethods):
+    """Class for testing Group table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_group_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_group_attributes")
-    pub.unsubscribe(dut.do_update, "request_update_group")
-    pub.unsubscribe(dut.do_get_tree, "request_get_group_tree")
-    pub.unsubscribe(dut.do_select_all, "request_get_group_attributes")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "request_select_group"
+    _record = RAMSTKGroupRecord
+    _tag = "group"
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateGroup:
+    """Class for testing Group table do_update() and do_update_all() methods."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["group"], RAMSTKGroupRecord)
-        # There should be a root node with no data package and a node with
-        # the one RAMSTKGroupRecord record.
-        assert len(tree.all_nodes()) == 2
-        print("\033[36m\nsucceed_retrieve_group topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_tablemodel):
-        """do_select_all() should clear nodes from an existing Group tree."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_group")
-
-        test_tablemodel.do_select_all({"group_id": 1})
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_group")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKGroupRecord
+    _tag = "group"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
         assert tree.get_node(1).data["group"].description == "New Group"
         assert tree.get_node(1).data["group"].group_type == "swinger"
         print("\033[36m\nsucceed_update_group topic was broadcast")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
-
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for group ID 1 was the "
-            "wrong type."
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
         )
-        print("\033[35m\nfail_update_group topic was broadcast on wrong type.")
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_group topic was broadcast on root node.")
-
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent group with group ID "
-            "skullduggery."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
-        print("\033[35m\nfail_update_group topic was broadcast on non-existent ID.")
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
+        )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for group ID 1.")
-        print("\033[35m\nfail_update_group topic was broadcast on no data package.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
+
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"Attempted to save non-existent {self._tag} with {self._tag} "
+            f"ID 100."
+        )
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
+        )
+
+    def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == f"No data package found for {self._tag} ID {self._update_id}."
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
+        )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update(self, integration_test_table_model):
+        """Should update record attribute."""
         pub.subscribe(self.on_succeed_update, "succeed_update_group")
 
-        test_tablemodel.tree.get_node(1).data["group"].description = "New Group"
-        test_tablemodel.tree.get_node(1).data["group"].group_type = "swinger"
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data[
+            "group"
+        ].description = "New Group"
+        integration_test_table_model.tree.get_node(1).data[
+            "group"
+        ].group_type = "swinger"
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_group")
 
-        assert test_tablemodel.tree.get_node(1).data["group"].description == "New Group"
-        assert test_tablemodel.tree.get_node(1).data["group"].group_type == "swinger"
+        assert (
+            integration_test_table_model.tree.get_node(1).data["group"].description
+            == "New Group"
+        )
+        assert (
+            integration_test_table_model.tree.get_node(1).data["group"].group_type
+            == "swinger"
+        )
 
-        test_tablemodel.tree.get_node(1).data["group"].description = "Engineering, RMS"
-        test_tablemodel.tree.get_node(1).data["group"].group_type = "work"
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data[
+            "group"
+        ].description = "Engineering, RMS"
+        integration_test_table_model.tree.get_node(1).data["group"].group_type = "work"
+        integration_test_table_model.do_update(1)
 
         assert (
-            test_tablemodel.tree.get_node(1).data["group"].description
+            integration_test_table_model.tree.get_node(1).data["group"].description
             == "Engineering, RMS"
         )
-        assert test_tablemodel.tree.get_node(1).data["group"].group_type == "work"
+        assert (
+            integration_test_table_model.tree.get_node(1).data["group"].group_type
+            == "work"
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """do_update_all() should broadcast the succeed message on success."""
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all the records in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_group")
 
         pub.sendMessage("request_update_all_group")
@@ -131,110 +149,57 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_group")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message with wrong attribute data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_group")
 
-        test_tablemodel.tree.get_node(1).data["group"].group_type = None
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data["group"].group_type = None
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_group")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_root_node_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message when attempting to update root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_group"
         )
 
-        test_tablemodel.tree.get_node(1).data["group"].group_type = None
-        test_tablemodel.do_update(0)
+        integration_test_table_model.tree.get_node(1).data["group"].group_type = None
+        integration_test_table_model.do_update(0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_group"
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Group ID that
-        doesn't exist."""
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the do_log_debug message with non-existent ID in tree."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_group")
 
-        test_tablemodel.do_select_all({"group_id": 1})
-        test_tablemodel.do_update("skullduggery")
+        integration_test_table_model.do_select_all({"group_id": 1})
+        integration_test_table_model.do_update("skullduggery")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_group")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Group ID that
-        doesn't exist."""
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the do_log_debug message with no data package in tree."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_group")
 
-        test_tablemodel.tree.get_node(1).data.pop("group")
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data.pop("group")
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_group")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterGroup(SystemTestGetterSetterMethods):
+    """Class for testing Group table getter and setter methods."""
 
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert _attributes["group_id"] == 1
-        assert _attributes["group_type"] == "work"
-        assert _attributes["description"] == "Engineering, RMS"
-        print("\033[36m\nsucceed_get_group_attributes topic was broadcast.")
+    __test__ = True
 
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["group"], RAMSTKGroupRecord)
-        print("\033[36m\nsucceed_get_group_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["group"].description == "Party"
-        assert tree.get_node(1).data["group"].group_type == "swinger"
-        print("\033[36m\nsucceed_get_group_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """do_get_attributes() should return a dict of site information attributes on
-        success."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_group_attributes")
-
-        pub.sendMessage("request_get_group_attributes2", attributes={"group_id": 1})
-
-        pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_group_attributes")
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_tablemodel):
-        """on_get_tree() should return the Group treelib Tree."""
-        pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_group_tree")
-
-        pub.sendMessage("request_get_group_tree")
-
-        pub.unsubscribe(self.on_succeed_get_data_manager_tree, "succeed_get_group_tree")
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """do_set_attributes() should return None when successfully setting site
-        information attributes."""
-
-        pub.sendMessage(
-            "request_set_group_attributes",
-            node_id=1,
-            package={"description": "Party"},
-        )
-
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_group_tree")
-
-        pub.sendMessage(
-            "request_set_group_attributes",
-            node_id=1,
-            package={"group_type": "swinger"},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_group_tree")
+    _package = {"group_type": "swinger"}
+    _record = RAMSTKGroupRecord
+    _tag = "group"
+    _test_id = 1

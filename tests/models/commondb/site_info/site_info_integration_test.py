@@ -17,110 +17,133 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSiteInfoRecord
 from ramstk.models.dbtables import RAMSTKSiteInfoTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_common_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKSiteInfoTable()
-    dut.do_connect(test_common_dao)
-    dut.do_select_all({"site_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectSiteInformation(SystemTestSelectMethods):
+    """Class for testing Site Info table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_option_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_option_attributes")
-    pub.unsubscribe(dut.do_update, "request_update_option")
-    pub.unsubscribe(dut.do_get_tree, "request_get_option_tree")
-    pub.unsubscribe(dut.do_select_all, "request_get_option_attributes2")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "request_select_option"
+    _record = RAMSTKSiteInfoRecord
+    _tag = "option"
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateSiteInfo:
+    """Class for testing Site Info table do_update() and do_update_all() methods."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["option"], RAMSTKSiteInfoRecord)
-        # There should be a root node with no data package and a node with
-        # the one RAMSTKSiteInfoRecord record.
-        assert len(tree.all_nodes()) == 2
-        print("\033[36m\nsucceed_retrieve_all_siteinfo topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_tablemodel):
-        """do_select_all() should clear nodes from an existing Options tree."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_option")
-
-        test_tablemodel.do_select_all({"site_id": 1})
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_option")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKSiteInfoRecord
+    _tag = "option"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
         assert tree.get_node(1).data["option"].hardware_enabled == 0
         assert tree.get_node(1).data["option"].vandv_enabled == 0
         print("\033[36m\nsucceed_update_siteinfo topic was broadcast")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
-
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for siteinfo ID 1 was the "
-            "wrong type."
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
         )
-        print("\033[35m\nfail_update_siteinfo topic was broadcast on wrong type.")
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_siteinfo topic was broadcast on root node.")
-
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent siteinfo with siteinfo ID "
-            "skullduggery."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
-        print("\033[35m\nfail_update_siteinfo topic was broadcast on non-existent ID.")
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
+        )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == ("do_update: No data package found for siteinfo ID 1.")
-        print("\033[35m\nfail_update_siteinfo topic was broadcast on no data package.")
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
+
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"Attempted to save non-existent {self._tag} with {self._tag} "
+            f"ID 100."
+        )
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
+        )
+
+    def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == f"No data package found for {self._tag} ID {self._update_id}."
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
+        )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update(self, integration_test_table_model):
+        """Should update record attribute."""
         pub.subscribe(self.on_succeed_update, "succeed_update_option")
 
-        test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = 0
-        test_tablemodel.tree.get_node(1).data["option"].vandv_enabled = 0
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data[
+            "option"
+        ].hardware_enabled = 0
+        integration_test_table_model.tree.get_node(1).data["option"].vandv_enabled = 0
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_option")
 
-        assert test_tablemodel.tree.get_node(1).data["option"].hardware_enabled == 0
-        assert test_tablemodel.tree.get_node(1).data["option"].vandv_enabled == 0
+        assert (
+            integration_test_table_model.tree.get_node(1)
+            .data["option"]
+            .hardware_enabled
+            == 0
+        )
+        assert (
+            integration_test_table_model.tree.get_node(1).data["option"].vandv_enabled
+            == 0
+        )
 
-        test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = 1
-        test_tablemodel.tree.get_node(1).data["option"].vandv_enabled = 1
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data[
+            "option"
+        ].hardware_enabled = 1
+        integration_test_table_model.tree.get_node(1).data["option"].vandv_enabled = 1
+        integration_test_table_model.do_update(1)
 
-        assert test_tablemodel.tree.get_node(1).data["option"].hardware_enabled == 1
-        assert test_tablemodel.tree.get_node(1).data["option"].vandv_enabled == 1
+        assert (
+            integration_test_table_model.tree.get_node(1)
+            .data["option"]
+            .hardware_enabled
+            == 1
+        )
+        assert (
+            integration_test_table_model.tree.get_node(1).data["option"].vandv_enabled
+            == 1
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """do_update_all() should broadcast the succeed message on success."""
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all the records in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_option")
 
         pub.sendMessage("request_update_all_option")
@@ -128,123 +151,61 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_option")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message with wrong attribute data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_option")
 
-        test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hi ya"
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data[
+            "option"
+        ].hardware_enabled = "Hi ya"
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_option")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_root_node_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message when attempting to update root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_option"
         )
 
-        test_tablemodel.tree.get_node(1).data["option"].hardware_enabled = "Hey bud"
-        test_tablemodel.do_update(0)
+        integration_test_table_model.tree.get_node(1).data[
+            "option"
+        ].hardware_enabled = "Hey bud"
+        integration_test_table_model.do_update(0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_option"
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Options ID
-        that doesn't exist."""
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the do_log_debug message with non-existent ID in tree."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_option")
 
-        test_tablemodel.do_select_all({"site_id": 1})
-        test_tablemodel.do_update("skullduggery")
+        integration_test_table_model.do_select_all({"site_id": 1})
+        integration_test_table_model.do_update("skullduggery")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_option")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Options ID
-        that doesn't exist."""
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the do_log_debug message with no data package in tree."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_option")
 
-        test_tablemodel.tree.get_node(1).data.pop("option")
-        test_tablemodel.do_update(1)
+        integration_test_table_model.tree.get_node(1).data.pop("option")
+        integration_test_table_model.do_update(1)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_option")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterSiteInfo(SystemTestGetterSetterMethods):
+    """Class for testing Site Info table getter and setter methods."""
 
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["function_enabled"] == 1
-        assert attributes["requirement_enabled"] == 1
-        assert attributes["hardware_enabled"] == 1
-        assert attributes["software_enabled"] == 0
-        assert attributes["rcm_enabled"] == 0
-        assert attributes["testing_enabled"] == 0
-        assert attributes["incident_enabled"] == 0
-        assert attributes["survival_enabled"] == 0
-        assert attributes["vandv_enabled"] == 1
-        assert attributes["hazard_enabled"] == 1
-        assert attributes["stakeholder_enabled"] == 1
-        assert attributes["allocation_enabled"] == 1
-        assert attributes["similar_item_enabled"] == 1
-        assert attributes["fmea_enabled"] == 1
-        assert attributes["pof_enabled"] == 1
-        assert attributes["rbd_enabled"] == 0
-        print("\033[36m\nsucceed_get_siteinfo_attributes topic was broadcast.")
+    __test__ = True
 
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["option"], RAMSTKSiteInfoRecord)
-        print("\033[36m\nsucceed_get_options_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["option"].function_enabled == 1
-        assert tree.get_node(1).data["option"].requirement_enabled == 1
-        print("\033[36m\nsucceed_get_options_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """do_get_attributes() should return a dict of site information attributes on
-        success."""
-        pub.subscribe(self.on_succeed_get_attributes, "succeed_get_option_attributes")
-
-        pub.sendMessage("request_get_option_attributes2", attributes={"site_id": 1})
-
-        pub.unsubscribe(self.on_succeed_get_attributes, "succeed_get_option_attributes")
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_tablemodel):
-        """on_get_tree() should return the Options treelib Tree."""
-        pub.subscribe(self.on_succeed_get_data_manager_tree, "succeed_get_option_tree")
-
-        pub.sendMessage("request_get_option_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_option_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """do_set_attributes() should return None when successfully setting site
-        information attributes."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_option_tree")
-
-        pub.sendMessage(
-            "request_set_option_attributes",
-            node_id=1,
-            package={"function_enabled": 1},
-        )
-        pub.sendMessage(
-            "request_set_option_attributes",
-            node_id=1,
-            package={"requirement_enabled": 1},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_option_tree")
+    _package = {"function_enabled": 1}
+    _record = RAMSTKSiteInfoRecord
+    _tag = "option"
+    _test_id = 1

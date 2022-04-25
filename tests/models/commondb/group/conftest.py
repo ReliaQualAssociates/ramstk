@@ -69,3 +69,24 @@ def unit_test_table_model(mock_dao):
 
     # Delete the device under test.
     del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_common_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKGroupTable()
+    dut.do_connect(test_common_dao)
+    dut.do_select_all({"group_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_group_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_group_attributes")
+    pub.unsubscribe(dut.do_update, "request_update_group")
+    pub.unsubscribe(dut.do_get_tree, "request_get_group_tree")
+    pub.unsubscribe(dut.do_select_all, "request_get_group_attributes")
+
+    # Delete the device under test.
+    del dut
