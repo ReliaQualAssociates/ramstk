@@ -20,451 +20,307 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKRequirementRecord
 from ramstk.models.dbtables import RAMSTKRequirementTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKRequirementTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectRequirement(SystemTestSelectMethods):
+    """Class for testing Requirement table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_requirement_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_requirement_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "mvw_editing_requirement")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_requirement")
-    pub.unsubscribe(dut.do_update, "request_update_requirement")
-    pub.unsubscribe(dut.do_create_all_codes, "request_create_all_requirement_codes")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
-    pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
-    pub.unsubscribe(dut.do_delete, "request_delete_requirement")
-    pub.unsubscribe(dut.do_insert, "request_insert_requirement")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKRequirementRecord
+    _select_id = 1
+    _tag = "requirement"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select() and select_all() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertRequirement(SystemTestInsertMethods):
+    """Class for testing Requirement table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["requirement"], RAMSTKRequirementRecord)
+    __test__ = True
 
-        print("\033[36m\n\tsucceed_retrieve_all_requirement topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
-        """do_select_all() should clear the existing Tree when a new group of
-        requirements is selected."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_requirement")
-
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_requirement")
+    _insert_id = 4
+    _record = RAMSTKRequirementRecord
+    _tag = "requirement"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteRequirement(SystemTestDeleteMethods):
+    """Class for testing Requirement table do_delete() method."""
 
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(5).data["requirement"], RAMSTKRequirementRecord)
-        assert tree.get_node(5).data["requirement"].parent_id == 0
-        assert tree.get_node(5).data["requirement"].requirement_id == 5
-        assert tree.get_node(5).data["requirement"].description == "New Requirement"
+    __test__ = True
 
-        print("\033[36m\n\tsucceed_insert_requirement topic was broadcast")
-
-    def on_succeed_insert_child(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(6).data["requirement"], RAMSTKRequirementRecord)
-        assert tree.get_node(6).data["requirement"].parent_id == 1
-        assert tree.get_node(6).data["requirement"].requirement_id == 6
-        assert tree.get_node(6).data["requirement"].description == "New Requirement"
-        print("\033[36m\n\tsucceed_insert_requirement topic was broadcast")
-
-    def on_fail_insert_no_parent(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == "Parent node '32' is not in the tree"
-        print("\033[35m\n\tfail_insert_requirement topic was broadcast")
-
-    def on_fail_insert_no_revision(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id)=(10) is not present in table "
-            '"ramstk_revision".'
-        )
-        print("\033[35m\n\tfail_insert_requirement topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """do_insert() should send the success message after successfully inserting a
-        new top-level requirement."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
-
-        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_requirement")
-
-    @pytest.mark.integration
-    def test_do_insert_child(self, test_attributes, test_tablemodel):
-        """do_insert() should send the success message after successfully inserting a
-        new child requirement."""
-        pub.subscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
-
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_insert_child, "succeed_insert_requirement")
-
-    @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_tablemodel):
-        """do_insert() should send the fail message attempting to add a child to a non-
-        existent requirement."""
-        pub.subscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
-
-        test_attributes["parent_id"] = 32
-        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_parent, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
-        """_do_insert_requirement() should send the success message after successfully
-        inserting a n operating stress."""
-        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
-
-        test_attributes["revision_id"] = 10
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_requirement", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
+    _child_id = 4
+    _delete_id = 1
+    _record = RAMSTKRequirementRecord
+    _tag = "requirement"
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateRequirement:
+    """Class for testing Requirement table do_update() and do_update_all() methods."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_requirement topic was broadcast.")
+    __test__ = True
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 300 in module requirement."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Requirement ID 300."
-            print(
-                "\033[35m\n\tfail_delete_requirement topic was broadcast on "
-                "non-existent ID."
-            )
-
-    def on_fail_delete_not_in_tree(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 2 in module requirement."
-            print(
-                "\033[35m\n\tfail_delete_requirement topic was broadcast on no data "
-                "package."
-            )
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Requirement ID 2."
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
-        """_do_delete() should send the success message with the treelib Tree."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_requirement")
-
-        pub.sendMessage("request_delete_requirement", node_id=1)
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_requirement")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_tablemodel):
-        """_do_delete() should send the fail message when attempting to delete a non-
-        existent requirement."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_requirement", node_id=300)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_tablemodel):
-        """_do_delete() should send the fail message when attempting to remove a node
-        that doesn't exist from the tree even if it exists in the database."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-        test_tablemodel.tree.remove_node(2)
-        pub.sendMessage("request_delete_requirement", node_id=2)
-
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKRequirementRecord
+    _tag = "requirement"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["requirement"].description == "Test Requirement"
-        print("\033[36m\n\tsucceed_update_requirement topic was broadcast")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for requirement ID 1 was the wrong "
-            "type."
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_requirement topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+    def on_fail_update_root_node(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == "Attempting to update the root node 0."
-        print("\033[35m\n\tfail_update_requirement topic was broadcast on root node.")
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent requirement with requirement ID 100."
+        assert (
+            message == f"Attempted to save non-existent "
+            f"{self._tag.replace('_', ' ')} with"
+            f" {self._tag.replace('_', ' ')} "
+            f"ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_requirement topic was broadcast on non-existent "
-            "ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == "No data package found for requirement ID 1."
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} ID "
+            f"{self._update_id}."
+        )
         print(
-            "\033[35m\n\tfail_update_requirement topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_requirement")
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
+        pub.subscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
-        _requirement = test_tablemodel.do_select(1)
+        _requirement = integration_test_table_model.do_select(self._update_id)
         _requirement.description = "Test Requirement"
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
-        pub.sendMessage("request_update_requirement", node_id=1)
-
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_requirement")
+        pub.unsubscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """do_update_all() should update all the functions in the database."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_requirement")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
-        _requirement = test_tablemodel.do_select(1)
+        _requirement = integration_test_table_model.do_select(self._update_id)
         _requirement.description = "Big test requirement #1"
-        _requirement = test_tablemodel.do_select(2)
+        _requirement = integration_test_table_model.do_select(self._update_id + 1)
         _requirement.description = "Big test requirement #2"
 
-        pub.sendMessage("request_update_all_requirement")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
-        assert test_tablemodel.do_select(1).description == "Big test requirement #1"
-        assert test_tablemodel.do_select(2).description == "Big test requirement #2"
+        assert (
+            integration_test_table_model.do_select(1).description
+            == "Big test requirement #1"
+        )
+        assert (
+            integration_test_table_model.do_select(2).description
+            == "Big test requirement #2"
+        )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_requirement")
+        pub.unsubscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Requirement ID
-        that doesn't exist."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
-        _requirement = test_tablemodel.do_select(1)
+        _requirement = integration_test_table_model.do_select(self._update_id)
         _requirement.priority = {1: 2}
-
-        pub.sendMessage("request_update_requirement", node_id=1)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Requirement ID
-        that doesn't exist."""
-        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
+        pub.subscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
+        )
 
-        _requirement = test_tablemodel.do_select(1)
-        _requirement.priority = {1: 2}
-
-        pub.sendMessage("request_update_requirement", node_id=0)
+        pub.sendMessage(
+            f"request_update_{self._tag}t",
+            node_id=0,
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Requirement ID
-        that doesn't exist."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the fail message when updating a non-existent record ID."""
+        pub.subscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
 
-        pub.sendMessage("request_update_requirement", node_id=100)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=100,
+        )
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
+        pub.unsubscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """do_update() should send the fail_update_requirement message when there is no
-        data package attached to the node."""
-        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-        test_tablemodel.tree.get_node(1).data.pop("requirement")
-        pub.sendMessage("request_update_requirement", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["requirement_id"] == 1
-        assert attributes["description"] == ""
-        assert attributes["priority"] == 0
-        print("\033[36m\n\tsucceed_get_requirement_attributes topic was broadcast")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["requirement"], RAMSTKRequirementRecord)
-        print(
-            "\033[36m\n\tsucceed_get_requirement_tree topic was broadcast on get tree."
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
+        pub.subscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
         )
 
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["requirement"].requirement_code == "REQ-0001"
-        print(
-            "\033[36m\n\tsucceed_get_requirement_tree topic was broadcast on set "
-            "attributes."
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
         )
 
-    def on_succeed_set_attributes_default(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["requirement"].validated_date == date.today()
-        print(
-            "\033[36m\n\tsucceed_get_requirement_tree topic was broadcast on set "
-            "default attributes."
+        pub.unsubscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
         )
+
+
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterRequirement(SystemTestGetterSetterMethods):
+    """Class for testing Requirement table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"requirement_code": "REQ-0001"}
+    _record = RAMSTKRequirementRecord
+    _tag = "requirement"
+    _test_id = 1
 
     def on_succeed_create_code(self, requirement_code):
+        """Listen for succeed_create_code messages."""
         assert requirement_code == "DOYLE-0001"
         print("\033[36m\n\tsucceed_create_requirement_code topic was broadcast")
 
     def on_fail_create_code_non_existent_id(self, logger_name, message):
-        assert error_message == (
-            "do_create_code: No data package found for requirement ID 10."
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            "do_create_code: No data package found for requirement ID " "10."
         )
-        print("\033[36m\n\tfail_create_requirement_code topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """_do_get_attributes() should return a dict of requirement attributes on
-        success."""
+    def test_do_create_code(self, integration_test_table_model):
+        """Should return the new requirements code."""
         pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_requirement_attributes"
-        )
-
-        pub.sendMessage("request_get_requirement_attributes", node_id=1)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_requirement_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_tablemodel):
-        """on_get_tree() should return the requirement treelib Tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_requirements_tree"
-        )
-
-        pub.sendMessage("request_get_requirement_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_requirements_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """do_set_attributes() should send the success message."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_requirements_tree")
-
-        pub.sendMessage(
-            "request_set_requirement_attributes",
-            node_id=1,
-            package={"requirement_code": "REQ-0001"},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_requirements_tree")
-
-    @pytest.mark.integration
-    def test_do_set_attributes_default(self, test_tablemodel):
-        """do_set_attributes() should set validation date to today() if no value is
-        passed."""
-        pub.subscribe(
-            self.on_succeed_set_attributes_default, "succeed_get_requirements_tree"
+            self.on_succeed_create_code,
+            "succeed_create_requirement_code",
         )
 
         pub.sendMessage(
-            "request_set_requirement_attributes",
+            "request_create_requirement_code",
             node_id=1,
-            package={"validated_date": None},
+            prefix="DOYLE",
         )
 
         pub.unsubscribe(
-            self.on_succeed_set_attributes_default, "succeed_get_requirements_tree"
+            self.on_succeed_create_code,
+            "succeed_create_requirement_code",
         )
 
     @pytest.mark.integration
-    def test_do_create_code(self, test_tablemodel):
-        """do_create_requirement_code() should return."""
-        pub.subscribe(self.on_succeed_create_code, "succeed_create_requirement_code")
+    def test_do_create_code_non_existent_id(self, integration_test_table_model):
+        """Should send the fail message when there is no Requirement ID."""
+        pub.subscribe(
+            self.on_fail_create_code_non_existent_id,
+            "do_log_debug_msg",
+        )
 
-        pub.sendMessage("request_create_requirement_code", node_id=1, prefix="DOYLE")
+        pub.sendMessage(
+            "request_create_requirement_code",
+            node_id=10,
+            prefix="DOYLE",
+        )
 
-        pub.unsubscribe(self.on_succeed_create_code, "succeed_create_requirement_code")
+        pub.unsubscribe(
+            self.on_fail_create_code_non_existent_id,
+            "do_log_debug_msg",
+        )
 
     @pytest.mark.integration
-    def test_do_create_code_non_existent_id(self, test_tablemodel):
-        """do_create_requirement_code() should send the fail message when there is no
-        node in the tree for the passed Requirement ID."""
-        pub.subscribe(self.on_fail_create_code_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_create_requirement_code", node_id=10, prefix="DOYLE")
-
-        pub.unsubscribe(self.on_fail_create_code_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_create_all_codes(self, test_tablemodel):
+    def test_do_create_all_codes(self, integration_test_table_model):
         """do_create_requirement_code() should return."""
-        pub.sendMessage("request_create_all_requirement_codes", prefix="DOYLE")
+        pub.sendMessage(
+            "request_create_all_requirement_codes",
+            prefix="DOYLE",
+        )
 
         assert (
-            test_tablemodel.tree.get_node(2).data["requirement"].requirement_code
+            integration_test_table_model.tree.get_node(2)
+            .data[self._tag]
+            .requirement_code
             == "DOYLE-0002"
         )

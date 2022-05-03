@@ -90,3 +90,27 @@ def unit_test_table_model(mock_dao):
 
     # Delete the device under test.
     del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKOpStressTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all({"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_opstress_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_opstress_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_opstress")
+    pub.unsubscribe(dut.do_update, "request_update_opstress")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_opstress_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_opstress")
+    pub.unsubscribe(dut.do_insert, "request_insert_opstress")
+
+    # Delete the device under test.
+    del dut

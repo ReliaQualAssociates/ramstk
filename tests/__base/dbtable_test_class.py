@@ -131,18 +131,21 @@ class UnitTestDeleteMethods:
 
 @pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
 class SystemTestSelectMethods:
-    """Class for system testing table model select() and select_all() methods."""
+    """Class for system testing table model do_select() and do_select_all() methods."""
 
     __test__ = False
 
     _do_select_msg = ""
     _record = None
+    _select_id = 1
     _tag = ""
 
     def on_succeed_select_all(self, tree):
         """Listen for succeed_retrieve_all messages."""
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data[f"{self._tag}"], self._record)
+        assert isinstance(
+            tree.get_node(self._select_id).data[self._tag], self._record
+        )
         print(f"\033[36m\n\tsucceed_retrieve_all_{self._tag} topic was broadcast.")
 
     @pytest.mark.integration
@@ -161,6 +164,7 @@ class SystemTestInsertMethods:
 
     __test__ = False
 
+    _insert_id = 1
     _next_id = 0
     _record = None
     _tag = ""
@@ -255,7 +259,6 @@ class SystemTestInsertMethods:
         assert integration_test_table_model.tree.get_node(self._next_id) is None
 
         test_attributes["revision_id"] = 40
-        test_attributes["parent_id"] = 1
         pub.sendMessage(f"request_insert_{self._tag}", attributes=test_attributes)
 
         assert integration_test_table_model.tree.get_node(self._next_id) is None
@@ -269,14 +272,15 @@ class SystemTestDeleteMethods:
 
     __test__ = False
 
-    _next_id = 0
+    _child_id = 2
+    _delete_id = 1
     _record = None
     _tag = ""
 
     def on_succeed_delete(self, tree):
         """Listen for succeed_delete messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(3) is None
+        assert tree.get_node(self._delete_id) is None
         print(
             f"\033[36m\n\tsucceed_delete_{self._tag} topic was broadcast on delete "
             f"with no child."
@@ -299,7 +303,8 @@ class SystemTestDeleteMethods:
             assert message == f"No data package for node ID 300 in module {self._tag}."
         except AssertionError:
             assert (
-                message == f"Attempted to delete non-existent {self._tag.title()} "
+                message == f"Attempted to delete non-existent "
+                f"{self._tag.title().replace('_', ' ')} "
                 f"ID 300."
             )
             print(
@@ -327,11 +332,9 @@ class SystemTestDeleteMethods:
         """Should remove a record from the record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete, f"succeed_delete_{self._tag}")
 
-        _last_id = integration_test_table_model.last_id
-        pub.sendMessage(f"request_delete_{self._tag}", node_id=_last_id)
+        pub.sendMessage(f"request_delete_{self._tag}", node_id=self._delete_id)
 
-        assert integration_test_table_model.last_id == 2
-        assert integration_test_table_model.tree.get_node(_last_id) is None
+        assert integration_test_table_model.tree.get_node(self._delete_id) is None
 
         pub.unsubscribe(self.on_succeed_delete, f"succeed_delete_{self._tag}")
 
@@ -340,10 +343,10 @@ class SystemTestDeleteMethods:
         """Should remove a record and children from record tree and update last_id."""
         pub.subscribe(self.on_succeed_delete_with_child, f"succeed_delete_{self._tag}")
 
-        pub.sendMessage(f"request_delete_{self._tag}", node_id=1)
+        pub.sendMessage(f"request_delete_{self._tag}", node_id=self._delete_id)
 
-        assert integration_test_table_model.tree.get_node(2) is None
-        assert integration_test_table_model.tree.get_node(1) is None
+        assert integration_test_table_model.tree.get_node(self._child_id) is None
+        assert integration_test_table_model.tree.get_node(self._delete_id) is None
 
         pub.unsubscribe(
             self.on_succeed_delete_with_child, f"succeed_delete_{self._tag}"
@@ -375,7 +378,7 @@ class SystemTestGetterSetterMethods:
         assert isinstance(attributes, dict)
         print(f"\033[36m\n\tsucceed_get_{self._tag}_attributes topic was broadcast.")
 
-    def on_succeed_get_data_manager_tree(self, tree):
+    def on_succeed_get_table_model_tree(self, tree):
         """Listen for succeed_get_tree messages."""
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(self._test_id).data[self._tag], self._record)
@@ -404,13 +407,13 @@ class SystemTestGetterSetterMethods:
     def test_on_get_table_model_tree(self):
         """Should return the table model treelib Tree."""
         pub.subscribe(
-            self.on_succeed_get_data_manager_tree, f"succeed_get_{self._tag}_tree"
+            self.on_succeed_get_table_model_tree, f"succeed_get_{self._tag}_tree"
         )
 
         pub.sendMessage(f"request_{self._tag}_tree")
 
         pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, f"succeed_get_{self._tag}_tree"
+            self.on_succeed_get_table_model_tree, f"succeed_get_{self._tag}_tree"
         )
 
     @pytest.mark.integration

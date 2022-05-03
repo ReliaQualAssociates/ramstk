@@ -56,7 +56,7 @@ def test_attributes():
     yield {
         "revision_id": 1,
         "hardware_id": 1,
-        "mode_id": 1,
+        "mode_id": 4,
         "mechanism_id": 1,
         "opload_id": 1,
         "test_method_id": 1,
@@ -72,6 +72,30 @@ def unit_test_table_model(mock_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKTestMethodTable()
     dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_test_method_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_test_method_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_test_method")
+    pub.unsubscribe(dut.do_update, "request_update_test_method")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_test_method")
+    pub.unsubscribe(dut.do_insert, "request_insert_test_method")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKTestMethodTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 

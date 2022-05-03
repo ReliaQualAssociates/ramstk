@@ -17,362 +17,219 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFailureDefinitionRecord
 from ramstk.models.dbtables import RAMSTKFailureDefinitionTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKFailureDefinitionTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"function_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectFailureDefinition(SystemTestSelectMethods):
+    """Class for testing Failure Definition do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_definition_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_definition_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_definition")
-    pub.unsubscribe(dut.do_update, "request_update_definition")
-    pub.unsubscribe(dut.do_get_tree, "request_get_definition_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_definition")
-    pub.unsubscribe(dut.do_insert, "request_insert_definition")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKFailureDefinitionRecord
+    _select_id = 1
+    _tag = "definition"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertFailureDefinition(SystemTestInsertMethods):
+    """Class for testing Failure Definition table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["definition"],
-            RAMSTKFailureDefinitionRecord,
-        )
-        print("\033[36m\n\tsucceed_retrieve_all_definition topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKFailureDefinitionRecord instances on success when there is already a tree
-        of definitions."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_definition")
+    _insert_id = 1
+    _record = RAMSTKFailureDefinitionRecord
+    _tag = "definition"
 
-        pub.sendMessage("selected_revision", attributes=test_attributes)
+    @pytest.mark.skip(reason="Failure Definition records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Failure Definition is not hierarchical."""
+        pass
 
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_definition")
+    @pytest.mark.skip(reason="Failure Definition records are non-hierarchical.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Failure Definition is not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class to test data controller insert methods using actual database."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteFailureDefinition(SystemTestDeleteMethods):
+    """Class for testing Failure Definition table do_delete() method."""
 
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree[3].data["definition"], RAMSTKFailureDefinitionRecord)
-        print("\033[36m\n\tsucceed_insert_definition topic was broadcast")
+    __test__ = True
 
-    def on_fail_insert_no_revision(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id)=(40) is not present in table "
-            '"ramstk_revision".'
-        )
-        print("\033[35m\n\tfail_insert_function topic was broadcast.")
+    _delete_id = 1
+    _record = RAMSTKFailureDefinitionRecord
+    _tag = "definition"
 
-    def on_fail_insert_no_function(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_function_id)=(40) is not present in table "
-            '"ramstk_function".'
-        )
-        print("\033[35m\n\tfail_insert_function topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """do_insert() should send the success message after successfully inserting a
-        new definition."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_definition")
-
-        test_attributes["parent_id"] = 0
-        assert test_tablemodel.tree.get_node(4) is None
-
-        pub.sendMessage("request_insert_definition", attributes=test_attributes)
-
-        assert isinstance(
-            test_tablemodel.tree.get_node(4).data["definition"],
-            RAMSTKFailureDefinitionRecord,
-        )
-
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_definition")
-
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
-        """do_insert() should send the fail_insert_definition message when attempting
-        to insert a new definition with a non-existent revision ID."""
-        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
-
-        test_attributes["parent_id"] = 0
-        test_attributes["revision_id"] = 40
-        pub.sendMessage("request_insert_definition", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_insert_no_function(self, test_attributes, test_tablemodel):
-        """do_insert() should send the fail_insert_definition message when attempting
-        to insert a new definition with a non-existent function ID."""
-        pub.subscribe(self.on_fail_insert_no_function, "do_log_debug_msg")
-
-        test_attributes["parent_id"] = 0
-        test_attributes["function_id"] = 40
-        pub.sendMessage("request_insert_definition", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_function, "do_log_debug_msg")
+    @pytest.mark.skip(reason="Failure Definition records are non-hierarchical.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Failure Definition is not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateFailureDefinition:
+    """Class for testing Failure Definition update() and update_all() methods."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_definition topic was broadcast.")
+    __test__ = True
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 10 in module definition."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Definition ID 10."
-        print("\033[35m\n\tfail_delete_definition topic was broadcast.")
-
-    def on_fail_delete_not_in_tree(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 2 in module definition."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Definition ID 2."
-        print("\033[35m\n\tfail_delete_definition topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
-        """_do_delete_definition() should send the success message after successfully
-        deleting a definition."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_definition")
-
-        pub.sendMessage("request_delete_definition", node_id=1)
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_definition")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_tablemodel):
-        """_do_delete_definition() should send the fail message when attempting to
-        delete a non-existent definition."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        assert test_tablemodel.tree.get_node(10) is None
-
-        pub.sendMessage("request_delete_definition", node_id=10)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_tablemodel):
-        """should send the fail message when the node doesn't exist in the tree."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-        test_tablemodel.tree.remove_node(2)
-        pub.sendMessage("request_delete_definition", node_id=2)
-
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class to test data controller update methods using actual database."""
+    _record = RAMSTKFailureDefinitionRecord
+    _tag = "definition"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["definition"].definition == "Big test definition"
-        print("\033[36m\n\tsucceed_update_definition topic was broadcast")
+        print(f"\033[36m\n\tsucceed_update_{self._update_id} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for definition ID 1 was the wrong "
-            "type."
+            f"The value for one or more attributes for "
+            f"{self._tag.replace('_', ' ')} ID {self._update_id} was the wrong type."
         )
-        print("\033[35m\n\tfail_update_definition topic was broadcast")
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
+        )
 
     def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == "Attempting to update the root node 0."
-        print("\033[35m\n\tfail_update_definition topic was broadcast")
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent definition with definition ID 100."
+        assert (
+            message == f"Attempted to save non-existent {self._tag.replace('_', ' ')} "
+            f"with {self._tag.replace('_', ' ')} ID 100."
         )
-        print("\033[35m\n\tfail_update_definition topic was broadcast")
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
+        )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == "No data package found for definition ID 1."
-        print("\033[35m\n\tfail_update_definition topic was broadcast")
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} "
+            f"ID {self._update_id}."
+        )
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
+        )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """do_update() should send the succeed_update_definition on success."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_definition")
+    def test_do_update(self, integration_test_table_model):
+        """Should send the success message after updating a definition record."""
+        pub.subscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
-        _definition = test_tablemodel.do_select(1)
+        _definition = integration_test_table_model.do_select(self._update_id)
         _definition.definition = "Big test definition"
-        pub.sendMessage("request_update_definition", node_id=1)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_definition")
+        pub.unsubscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """do_update_all definition() should return None on success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_definition")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should send the success message after updating all definition records."""
+        pub.subscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
-        _definition = test_tablemodel.do_select(1)
+        _definition = integration_test_table_model.do_select(self._update_id)
         _definition.definition = "Big test definition #1"
-        _definition = test_tablemodel.do_select(2)
+        _definition = integration_test_table_model.do_select(self._update_id + 1)
         _definition.definition = "Big test definition #2"
 
-        pub.sendMessage("request_update_all_definition")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
-        _definition = test_tablemodel.do_select(1)
+        _definition = integration_test_table_model.do_select(self._update_id)
         assert _definition.definition == "Big test definition #1"
 
-        _definition = test_tablemodel.do_select(2)
+        _definition = integration_test_table_model.do_select(self._update_id + 1)
         assert _definition.definition == "Big test definition #2"
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_definition")
+        pub.unsubscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """do_update() should send the succeed_update_definition on success."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when data type is wrong for attribute."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
-        test_tablemodel.tree.get_node(1).data["definition"].definition = {
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
+        ].definition = {
             1: "Big test definition",
         }
-        pub.sendMessage("request_update_definition", node_id=1)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Requirement ID
-        that doesn't exist."""
+    def test_do_update_root_node_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when data type is wrong for root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type,
-            "fail_update_definition",
+            "do_log_debug_msg",
         )
 
-        test_tablemodel.tree.get_node(1).data["definition"].definition = {
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
+        ].definition = {
             1: "Big test definition",
         }
-        pub.sendMessage("request_update_definition", node_id=0)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type,
-            "fail_update_definition",
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """do_update_definition() should broadcast the fail message when attempting to
-        save a non-existent ID."""
+        """Should send the fail message when no record exists for definition ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
-        pub.sendMessage("request_update_definition", node_id=100)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Function ID
-        that has no data package."""
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when no data exists for definition ID."""
         pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
-        test_tablemodel.tree.get_node(1).data.pop("definition")
-        pub.sendMessage("request_update_definition", node_id=1)
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterFailureDefinition(SystemTestGetterSetterMethods):
+    """Class for testing Failure Definition table getter and setter methods."""
 
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["revision_id"] == 1
-        assert attributes["definition"] == "Failure Definition"
-        print("\033[36m\n\tsucceed_get_definition_attributes topic was broadcast")
+    __test__ = True
 
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["definition"], RAMSTKFailureDefinitionRecord
-        )
-        print("\033[36m\n\tsucceed_get_definition_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["definition"].definition == "Test Description"
-        print("\033[36m\n\tsucceed_get_definition_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """_do_get_attributes() should return a dict of definition records on
-        success."""
-        pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_definition_attributes"
-        )
-
-        test_tablemodel.do_get_attributes(node_id=1)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_definition_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self):
-        """on_get_tree() should return the definition treelib Tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_definition_tree"
-        )
-
-        pub.sendMessage("request_definition_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_definition_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """do_set_attributes() should send the success message."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_definition_tree")
-
-        pub.sendMessage(
-            "request_set_definition_attributes",
-            node_id=1,
-            package={"definition": "Test Description"},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_definition_tree")
+    _package = {"definition": "Test Description"}
+    _record = RAMSTKFailureDefinitionRecord
+    _tag = "definition"
+    _test_id = 1

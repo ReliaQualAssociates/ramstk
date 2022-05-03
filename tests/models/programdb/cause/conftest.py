@@ -96,3 +96,28 @@ def unit_test_table_model(mock_dao):
 
     # Delete the device under test.
     del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKCauseTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_cause_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_cause_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_cause")
+    pub.unsubscribe(dut.do_update, "request_update_cause")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_cause")
+    pub.unsubscribe(dut.do_insert, "request_insert_cause")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_cause_rpn")
+
+    # Delete the device under test.
+    del dut

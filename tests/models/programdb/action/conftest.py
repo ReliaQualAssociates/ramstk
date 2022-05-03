@@ -76,7 +76,7 @@ def test_attributes():
         "mode_id": 6,
         "mechanism_id": 3,
         "cause_id": 3,
-        "action_id": 1,
+        "action_id": 3,
         "description": "Test FMEA Action #1 for Cause ID #3.",
         "action_category": "",
         "action_owner": "weibullguy",
@@ -106,6 +106,31 @@ def unit_test_table_model(mock_dao):
     pub.unsubscribe(dut.do_update, "request_update_action")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
     pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_action")
+    pub.unsubscribe(dut.do_insert, "request_insert_action")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKActionTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_action_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_action_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_action")
+    pub.unsubscribe(dut.do_update, "request_update_action")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_action_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_action")
     pub.unsubscribe(dut.do_insert, "request_insert_action")
 
     # Delete the device under test.

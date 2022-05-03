@@ -32,8 +32,9 @@ class TestSelectFunction(SystemTestSelectMethods):
     __test__ = True
 
     _do_select_msg = "selected_revision"
-    _tag = "function"
     _record = RAMSTKFunctionRecord
+    _select_id = 1
+    _tag = "function"
 
 
 @pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
@@ -42,23 +43,25 @@ class TestInsertFunction(SystemTestInsertMethods):
 
     __test__ = True
 
-    _tag = "function"
+    _insert_id = 1
     _record = RAMSTKFunctionRecord
+    _tag = "function"
 
 
 @pytest.mark.usefixtures("integration_test_table_model")
-class TestDeleteMethods(SystemTestDeleteMethods):
+class TestDeleteFunction(SystemTestDeleteMethods):
     """Class for testing Function table do_delete() method."""
 
     __test__ = True
 
+    _delete_id = 1
     _next_id = 0
     _record = RAMSTKFunctionRecord
     _tag = "function"
 
 
 @pytest.mark.usefixtures("integration_test_table_model")
-class TestUpdateMethods:
+class TestUpdateFunction:
     """Class for testing Function table do_update() and do_update_all() methods."""
 
     __test__ = True
@@ -212,7 +215,7 @@ class TestUpdateMethods:
 
 
 @pytest.mark.usefixtures("integration_test_table_model")
-class TestGetterSetter(SystemTestGetterSetterMethods):
+class TestGetterSetterFunction(SystemTestGetterSetterMethods):
     """Class for testing Function table getter and setter methods."""
 
     __test__ = True

@@ -21,292 +21,299 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKProgramStatusRecord
 from ramstk.models.dbtables import RAMSTKProgramStatusTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKProgramStatusTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectProgramStatus(SystemTestSelectMethods):
+    """Class for testing Prog Status table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_program_status_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_program_status_attributes")
-    pub.unsubscribe(dut.do_update, "request_update_program_status")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_program_status_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_program_status")
-    pub.unsubscribe(dut.do_insert, "request_insert_program_status")
-    pub.unsubscribe(dut.do_get_actual_status, "request_get_actual_status")
-    pub.unsubscribe(dut._do_set_attributes, "succeed_calculate_program_remaining")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKProgramStatusRecord
+    _select_id = 1
+    _tag = "program_status"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertProgramStatus(SystemTestInsertMethods):
+    """Class for testing Program Status table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["program_status"], RAMSTKProgramStatusRecord
+    __test__ = True
+
+    _insert_id = 1
+    _record = RAMSTKProgramStatusRecord
+    _tag = "program_status"
+
+    def on_fail_insert_duplicate_date(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"do_insert: Database error when attempting to add a "
+            f"record.  Database returned:\n\tKey (fld_date_status)=({date.today()}) "
+            f"already exists."
         )
-        print("\033[36m\nsucceed_retrieve_program_status topic was broadcast.")
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
-        """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
-
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_program_statuss")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
-
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(4).data["program_status"], RAMSTKProgramStatusRecord
-        )
-        assert tree.get_node(4).data["program_status"].status_id == 4
-        assert tree.get_node(4).data["program_status"].date_status == date.today()
-        print("\033[36m\nsucceed_insert_program_status topic was broadcast.")
-
-    def on_fail_insert_duplicate_date(self, error_message):
-        assert error_message == (
-            "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_date_status)=({}) already exists.".format(
-                date.today()
-            )
-        )
         print(
-            "\033[35m\nfail_insert_program_status topic was broadcast on duplicate "
-            "date."
+            f"\033[35m\n\tfail_insert_{self._tag} topic was broadcast on duplicate "
+            f"date."
         )
 
+    @pytest.mark.skip(reason="Program Status records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Program Statuses are not hierarchical."""
+        pass
+
+    @pytest.mark.skip(reason="Program Status records are non-hierarchical.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Program Statuses are not hierarchical."""
+        pass
+
+    @pytest.mark.skip(reason="Program Status records are non-hierarchical.")
+    def test_do_insert_no_revision(self, test_attributes, integration_test_table_model):
+        """Should not run because Program Statuses are not hierarchical."""
+        pass
+
     @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a record to the record tree and update last_id."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
-
-        pub.sendMessage("request_insert_program_status", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_program_status")
-
-    @pytest.mark.integration
-    def test_do_insert_duplicate_date(self, test_attributes, test_tablemodel):
-        """should not add a record if date is being duplicated."""
-        pub.subscribe(self.on_fail_insert_duplicate_date, "fail_insert_program_status")
+    def test_do_insert_duplicate_date(
+        self, test_attributes, integration_test_table_model
+    ):
+        """Should not add a record if date is being duplicated."""
+        pub.subscribe(
+            self.on_fail_insert_duplicate_date,
+            "do_log_debug_msg",
+        )
 
         test_attributes["date_status"] = date.today()
-        pub.sendMessage("request_insert_program_status", attributes=test_attributes)
-
-        pub.unsubscribe(
-            self.on_fail_insert_duplicate_date, "fail_insert_program_status"
-        )
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
-
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\nsucceed_delete_program_status topic was broadcast.")
-
-    def on_fail_delete_non_existent_id(self, error_message):
-        assert error_message == (
-            "Attempted to delete non-existent Program Status ID 300."
-        )
-        print(
-            "\033[35m\nfail_delete_program_status topic was broadcast on "
-            "non-existent ID."
-        )
-
-    def on_fail_delete_not_in_tree(self, error_message):
-        assert error_message == (
-            "Attempted to delete non-existent Program Status ID 1."
-        )
-        print(
-            "\033[35m\nfail_delete_program_status topic was broadcast on no data "
-            "package."
-        )
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
-        """should remove record from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_program_status")
-
-        assert test_tablemodel.last_id == 3
-
         pub.sendMessage(
-            "request_delete_program_status", node_id=test_tablemodel.last_id
+            "request_insert_program_status",
+            attributes=test_attributes,
         )
-
-        assert test_tablemodel.last_id == 2
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_program_status")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_tablemodel):
-        """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "fail_delete_program_status")
-
-        pub.sendMessage("request_delete_program_status", node_id=300)
 
         pub.unsubscribe(
-            self.on_fail_delete_non_existent_id, "fail_delete_program_status"
+            self.on_fail_insert_duplicate_date,
+            "do_log_debug_msg",
         )
 
-    @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_tablemodel):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
 
-        test_tablemodel.tree.get_node(1).data.pop("program_status")
-        pub.sendMessage("request_delete_program_status", node_id=1)
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteProgramStatus(SystemTestDeleteMethods):
+    """Class for testing Program Status table do_delete() method."""
 
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "fail_delete_program_status")
+    __test__ = True
+
+    _delete_id = 3
+    _record = RAMSTKProgramStatusRecord
+    _tag = "program_status"
+
+    @pytest.mark.skip(reason="Program Status records are non-hierarchical.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Program Statuses are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateProgramStatus:
+    """Class for testing Prog Status table do_update() and do_update_all() methods."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKProgramStatusRecord
+    _tag = "program_status"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["program_status"].cost_remaining == 47832.00
-        assert tree.get_node(1).data["program_status"].time_remaining == 528.3
-        print("\033[36m\nsucceed_update_program_status topic was broadcast")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for program "
-            "status ID 1 was the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"The value for one or more attributes for {self._tag.replace('_', ' ')} "
+            f"ID {self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\nfail_update_program_status topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_program_status topic was broadcast on root node.")
+    def on_fail_update_root_node(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent program status with "
-            "program status ID 100."
-        )
-        print(
-            "\033[35m\nfail_update_program_status topic was broadcast on "
-            "non-existent ID."
-        )
-
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for program status ID 1."
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"Attempted to save non-existent "
+            f"{self._tag.replace('_', ' ')} with"
+            f" {self._tag.replace('_', ' ')} "
+            f"ID 100."
         )
         print(
-            "\033[35m\nfail_update_program_status topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
+        )
+
+    def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} ID "
+            f"{self._update_id}."
+        )
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """should update the attribute value for record ID."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_program_status")
-
-        test_tablemodel.tree.get_node(1).data[
-            "program_status"
-        ].cost_remaining = 47832.00
-        test_tablemodel.tree.get_node(1).data["program_status"].time_remaining = 528.3
-
-        pub.sendMessage("request_update_program_status", node_id=1)
-
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_program_status")
-
-    @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_program_status")
-
-        pub.sendMessage("request_update_all_program_ststus")
-
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_program_status")
-
-    @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_program_status")
-
-        _status = test_tablemodel.do_select(1)
-        _status.time_remaining = {1: 2}
-
-        pub.sendMessage("request_update_program_status", node_id=1)
-
-        pub.unsubscribe(
-            self.on_fail_update_wrong_data_type, "fail_update_program_status"
-        )
-
-    @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """should send the fail message when attempting to update the root node."""
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
         pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_program_status"
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
         )
 
-        _status = test_tablemodel.do_select(1)
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
+        ].cost_remaining = 47832.00
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
+        ].time_remaining = 528.3
+
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
+
+        pub.unsubscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
+
+        pub.sendMessage(f"request_update_all_{self._tag}")
+
+        pub.unsubscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
+        pub.subscribe(
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
+        )
+
+        _status = integration_test_table_model.do_select(self._update_id)
         _status.time_remaining = {1: 2}
-
-        pub.sendMessage("request_update_program_status", node_id=0)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_program_status"
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_tablemodel):
-        """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_program_status")
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
+        pub.subscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
+        )
 
-        test_tablemodel.do_update(100)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=0,
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_non_existent_id, "fail_update_program_status"
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_program_status")
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the fail message when updating a non-existent record ID."""
+        pub.subscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
 
-        test_tablemodel.tree.get_node(1).data.pop("program_status")
-        test_tablemodel.do_update(1)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=100,
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_no_data_package, "fail_update_program_status"
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
+        pub.subscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
+        )
+
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
         )
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterProgramStatus(SystemTestGetterSetterMethods):
+    """Class for testing ProgramS tatus table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"description": "Big test operating stress."}
+    _record = RAMSTKProgramStatusRecord
+    _tag = "program_status"
+    _test_id = 1
 
     def on_succeed_get_attributes(self, attributes):
+        """Listen for succeed_get_program_status_tree messages."""
         assert isinstance(attributes, dict)
         assert attributes["status_id"] == 1
         assert attributes["cost_remaining"] == 0.0
@@ -314,57 +321,22 @@ class TestGetterSetter:
         assert attributes["time_remaining"] == 0.0
         print("\033[36m\n\tsucceed_get_program_status_attributes topic was broadcast.")
 
-    def on_succeed_get_program_status_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["program_status"], RAMSTKProgramStatusRecord
-        )
-        print("\033[36m\n\tsucceed_get_program_status_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(4).data["program_status"].cost_remaining == 3284.68
-        assert tree.get_node(4).data["program_status"].time_remaining == 186
-        print("\033[36m\n\tsucceed_get_program_status_tree topic was broadcast")
-
     def on_succeed_get_actual_status(self, status):
+        """Listen for succeed_get_actual_status messages."""
         assert isinstance(status, pd.DataFrame)
         assert status.loc[pd.to_datetime(date.today()), "cost"] == 14608.45
         assert status.loc[pd.to_datetime(date.today()), "time"] == 469.0
         print("\033[36m\n\tsucceed_get_actual_status topic was broadcast")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """should return the attributes dict."""
+    def test_do_set_attributes(self, integration_test_table_model):
+        """Should set the value of the attribute requested."""
         pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_program_status_attributes"
+            self.on_succeed_set_attributes,
+            "succeed_get_program_status_tree",
         )
 
-        pub.sendMessage("request_get_program_status_attributes", node_id=1)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_program_status_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_tablemodel):
-        """should return the records tree."""
-        pub.subscribe(
-            self.on_succeed_get_program_status_tree, "succeed_get_program_status_tree"
-        )
-
-        pub.sendMessage("request_get_program_status_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_program_status_tree, "succeed_get_program_status_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """should set the value of the attribute requested."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_program_status_tree")
-
-        test_tablemodel._revision_id = 1
+        integration_test_table_model._revision_id = 1
         pub.sendMessage(
             "succeed_calculate_program_remaining",
             cost_remaining=3284.68,
@@ -372,32 +344,39 @@ class TestGetterSetter:
         )
 
         pub.unsubscribe(
-            self.on_succeed_set_attributes, "succeed_get_program_status_tree"
+            self.on_succeed_set_attributes,
+            "succeed_get_program_status_tree",
         )
 
     @pytest.mark.integration
-    def test_do_get_actual_status(self, test_attributes, test_tablemodel):
-        """should update and return program status."""
-        test_tablemodel._do_set_attributes(
+    def test_do_get_actual_status(self, test_attributes, integration_test_table_model):
+        """Should update and return program status."""
+        integration_test_table_model._do_set_attributes(
             cost_remaining=14608.45, time_remaining=469.00
         )
 
-        pub.subscribe(self.on_succeed_get_actual_status, "succeed_get_actual_status")
+        pub.subscribe(
+            self.on_succeed_get_actual_status,
+            "succeed_get_actual_status",
+        )
         pub.sendMessage("request_get_actual_status")
 
-        _node_id = test_tablemodel._dic_status[date.today()]
+        _node_id = integration_test_table_model._dic_status[date.today()]
 
         assert (
-            test_tablemodel.tree.get_node(_node_id)
+            integration_test_table_model.tree.get_node(_node_id)
             .data["program_status"]
             .cost_remaining
             == 14608.45
         )
         assert (
-            test_tablemodel.tree.get_node(_node_id)
+            integration_test_table_model.tree.get_node(_node_id)
             .data["program_status"]
             .time_remaining
             == 469.00
         )
 
-        pub.unsubscribe(self.on_succeed_get_actual_status, "succeed_get_actual_status")
+        pub.unsubscribe(
+            self.on_succeed_get_actual_status,
+            "succeed_get_actual_status",
+        )

@@ -205,7 +205,7 @@ def test_attributes():
     """Create a dict of Similar Item attributes."""
     yield {
         "revision_id": 1,
-        "hardware_id": 4,
+        "hardware_id": 1,
         "change_description_1": "",
         "change_description_2": "",
         "change_description_3": "",
@@ -268,6 +268,37 @@ def unit_test_table_model(mock_dao):
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKSimilarItemTable()
     dut.do_connect(mock_dao)
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_similar_item_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_similar_item_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_similar_item")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_similar_item")
+    pub.unsubscribe(dut.do_update, "request_update_similar_item")
+    pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
+    pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
+    pub.unsubscribe(dut.do_calculate_similar_item, "request_calculate_similar_item")
+    pub.unsubscribe(
+        dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
+    )
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKSimilarItemTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 

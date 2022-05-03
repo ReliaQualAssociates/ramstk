@@ -119,12 +119,39 @@ def test_attributes():
 
 @pytest.fixture(scope="function")
 def unit_test_table_model(mock_dao):
-    """Test fixture for Function data manager."""
+    """Test fixture for Revision data manager."""
     dut = RAMSTKRevisionTable()
     dut.do_connect(mock_dao)
     dut.do_select_all(
         attributes={
             None: None,
+        }
+    )
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_revision_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_revision")
+    pub.unsubscribe(dut.do_update, "request_update_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_revision_tree")
+    pub.unsubscribe(dut.do_select_all, "request_retrieve_revisions")
+    pub.unsubscribe(dut.do_delete, "request_delete_revision")
+    pub.unsubscribe(dut.do_insert, "request_insert_revision")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Test fixture for Revision data manager."""
+    dut = RAMSTKRevisionTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(
+        attributes={
+            "revision_id": None,
         }
     )
 

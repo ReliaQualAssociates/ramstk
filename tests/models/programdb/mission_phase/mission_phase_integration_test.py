@@ -17,346 +17,239 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMissionPhaseRecord
 from ramstk.models.dbtables import RAMSTKMissionPhaseTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 _test_name = "Big test mission phase"
 
 
-@pytest.fixture(scope="class")
-def test_datamanager(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKMissionPhaseTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectMissionPhase(SystemTestSelectMethods):
+    """Class for testing Mission Phase do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_mission_phase_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_mission_phase_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission_phase")
-    pub.unsubscribe(dut.do_update, "request_update_mission_phase")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
-    pub.unsubscribe(dut.do_insert, "request_insert_mission_phase")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKMissionPhaseRecord
+    _select_id = 1
+    _tag = "mission_phase"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertMissionPhase(SystemTestInsertMethods):
+    """Class for testing Mission Phase table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["mission_phase"], RAMSTKMissionPhaseRecord
-        )
-        print("\033[36m\n\tsucceed_retrieve_all_mission_phase topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_datamanager):
-        """do_select_all() should clear out an existing tree and build a new one when
-        called on a populated Mission Phase data manager."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_mission_phase")
+    _insert_id = 4
+    _record = RAMSTKMissionPhaseRecord
+    _tag = "mission_phase"
 
-        pub.sendMessage("selected_revision", attributes={"revision_id": 1})
+    @pytest.mark.skip(reason="Mission Phase records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Mission Phases are not hierarchical."""
+        pass
 
-        pub.unsubscribe(
-            self.on_succeed_select_all, "succeed_retrieve_all_mission_phase"
-        )
+    @pytest.mark.skip(reason="Mission Phase records are non-hierarchical.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Mission Phases are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_attributes", "test_datamanager")
-class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteMissionPhase(SystemTestDeleteMethods):
+    """Class for testing Mission Phase table do_delete() method."""
 
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(4).data["mission_phase"], RAMSTKMissionPhaseRecord
-        )
-        print("\033[36m\n\tsucceed_insert_mission_phase topic was broadcast")
+    __test__ = True
 
-    def on_fail_insert_no_revision(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_mission_id)=(10) is not present "
-            'in table "ramstk_mission".'
-        )
-        print("\033[35m\n\tfail_insert_mission_phase topic was broadcast")
+    _delete_id = 1
+    _record = RAMSTKMissionPhaseRecord
+    _tag = "mission_phase"
 
-    @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_datamanager):
-        """do_insert() should send the success message with the ID of the newly
-        inserted node and the data manager's tree after successfully inserting a new
-        mission."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
-
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_mission_phase", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_mission_phase")
-
-    @pytest.mark.integration
-    def test_do_insert_no_parent(self, test_attributes, test_datamanager):
-        """do_insert() should send the success message after successfully inserting a
-        new mission phase."""
-        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
-
-        test_attributes["parent_id"] = 1
-        test_attributes["mission_id"] = 10
-        pub.sendMessage("request_insert_mission_phase", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
+    @pytest.mark.skip(reason="Mission Phase records are non-hierarchical.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Mission Phases are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_datamanager")
-class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateMissionPhase:
+    """Class for testing Mission Phase do_update() and do_update_all() methods."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_mission_phase topic was broadcast.")
+    __test__ = True
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 10 in module mission_phase."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Mission Phase ID 10."
-            print(
-                "\033[35m\n\tfail_delete_mission_phase topic was broadcast on "
-                "non-existent ID."
-            )
-
-    def on_fail_delete_not_in_tree(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 2 in module mission_phase."
-            print(
-                "\033[35m\n\tfail_delete_mission_phase topic was broadcast on no "
-                "data package."
-            )
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Mission Phase ID 2."
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_datamanager):
-        """_do_delete() should remove the passed mission phase ID and broadcast the
-        success message."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_mission_phase")
-
-        pub.sendMessage("request_delete_mission_phase", node_id=1)
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_mission_phase")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_datamanager):
-        """_do_delete_mission_phase() should send the fail message when attempting to
-        delete a non-existent mission phase ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_mission_phase", node_id=10)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_not_in_tree(self, test_datamanager):
-        """_do_delete() should send the fail message when attempting to remove a node
-        that doesn't exist from the tree even if it exists in the database."""
-        pub.subscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_mission_phase", node_id=2)
-
-        pub.unsubscribe(self.on_fail_delete_not_in_tree, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_datamanager")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKMissionPhaseRecord
+    _tag = "mission_phase"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["mission_phase"].name == _test_name
-        print("\033[36m\n\tsucceed_update_mission_phase topic was broadcast")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for mission phase")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for mission phase ID 1 was the wrong "
-            "type."
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_mission_phase topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
     def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == "Attempting to update the root node 0."
-        print("\033[35m\n\tfail_update_mission_phase topic was broadcast on root node.")
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent mission phase with mission phase ID 10."
+        assert (
+            message == f"Attempted to save non-existent "
+            f"{self._tag.replace('_', ' ')} with"
+            f" {self._tag.replace('_', ' ')} "
+            f"ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_mission_phase topic was broadcast on "
-            "non-existent ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == "No data package found for mission phase ID 1."
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} ID "
+            f"{self._update_id}."
+        )
         print(
-            "\033[35m\n\tfail_update_mission_phase topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the succeed message on
-        success."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_mission_phase")
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
+        pub.subscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
-        _mission_phase = test_datamanager.do_select(1)
+        _mission_phase = integration_test_table_model.do_select(self._update_id)
         _mission_phase.name = _test_name
 
-        pub.sendMessage("request_update_mission_phase", node_id=1)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_mission_phase")
+        pub.unsubscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the succeed message on
-        success."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mission_phase")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
-        _mission_phase1 = test_datamanager.do_select(1)
+        _mission_phase1 = integration_test_table_model.do_select(self._update_id)
         _mission_phase1.name = _test_name
 
-        pub.sendMessage("request_update_all_mission_phase")
-
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mission_phase")
-
-    @pytest.mark.skip
-    def test_do_update_wrong_data_type(self, test_datamanager):
-        """do_update() should return a non-zero error code when passed a Requirement ID
-        that doesn't exist."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
-
-        _mission_phase = test_datamanager.do_select(1)
-        _mission_phase.name = {1: 2}
-
-        pub.sendMessage("request_update_mission_phase", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when attempting
-        to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
-
-        _mission_phase = test_datamanager.do_select(1)
-        _mission_phase.name = {1: 2}
-
-        pub.sendMessage("request_update_mission_phase", node_id=0)
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
         )
-
-    @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when attempting
-        to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_update_mission_phase", node_id=10)
-
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.skip
-    def test_do_update_no_data_package(self, test_datamanager):
-        """do_update_usage_profile() should broadcast the fail message when attempting
-        to save a non-existent ID."""
-        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-        test_datamanager.tree.get_node(1).data.pop("mission_phase")
-        pub.sendMessage("request_update_mission_phase", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_datamanager")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["mission_id"] == 1
-        assert attributes["mission_phase_id"] == 1
-        assert attributes["description"] == "Default Mission Phase 1"
-        print("\033[36m\n\tsucceed_get_mission_phase_attributes topic was broadcast")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["mission_phase"], RAMSTKMissionPhaseRecord
-        )
-        print("\033[36m\n\tsucceed_get_mission_phase_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["mission_phase"].phase_start == 12.86
-        print("\033[36m\n\tsucceed_get_mission_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_datamanager):
-        """_do_get_attributes() should return treelib Tree() on success."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
         pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
         )
 
-        pub.sendMessage("request_get_mission_phase_attributes", node_id=1)
+        _mission_phase = integration_test_table_model.do_select(self._update_id)
+        _mission_phase.name = {1: 2}
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_mission_phase_attributes"
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
         )
 
-    @pytest.mark.skip
-    def test_on_get_tree(self, test_datamanager):
-        """on_get_tree() should return the revision treelib Tree."""
+    @pytest.mark.integration
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
         pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_mission_phase_tree"
+            self.on_fail_update_root_node_wrong_data_type,
+            "do_log_debug_msg",
         )
 
-        pub.sendMessage("request_get_mission_phase_tree")
+        pub.sendMessage(f"request_update_{self._tag}", node_id=0)
 
         pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_mission_phase_tree"
+            self.on_fail_update_root_node_wrong_data_type,
+            "do_log_debug_msg",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the fail message when updating a non-existent record ID."""
+        pub.subscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
+
+        pub.sendMessage(f"request_update_{self._tag}", node_id=100)
+
+        pub.unsubscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.skip
-    def test_do_set_attributes(self, test_datamanager):
-        """do_set_attributes() should send the success message."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_mission_phase_tree")
-
-        pub.sendMessage(
-            "request_set_mission_phase_attributes",
-            node_id=1,
-            package={"phase_start": 12.86},
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
+        pub.subscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
         )
+
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(
-            self.on_succeed_set_attributes, "succeed_get_mission_phase_tree"
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
         )
+
+
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterMissionPhase(SystemTestGetterSetterMethods):
+    """Class for testing Mission Phase table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"phase_start": 12.86}
+    _record = RAMSTKMissionPhaseRecord
+    _tag = "mission_phase"
+    _test_id = 1

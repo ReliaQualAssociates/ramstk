@@ -191,3 +191,29 @@ def unit_test_table_model(mock_dao):
 
     # Delete the device under test.
     del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKHazardTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1, "function_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hazard_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hazard")
+    pub.unsubscribe(dut.do_update, "request_update_hazard")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hazard_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_set_attributes_all, "request_set_all_hazard_attributes")
+    pub.unsubscribe(dut.do_delete, "request_delete_hazard")
+    pub.unsubscribe(dut.do_insert, "request_insert_hazard")
+    pub.unsubscribe(dut.do_calculate_fha, "request_calculate_fha")
+
+    # Delete the device under test.
+    del dut

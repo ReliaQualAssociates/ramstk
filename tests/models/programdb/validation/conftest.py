@@ -196,3 +196,33 @@ def unit_test_table_model(mock_dao):
 
     # Delete the device under test.
     del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKValidationTable()
+    dut.do_connect(test_program_dao)
+    dut.do_select_all(attributes={"revision_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_validation_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_validation_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "mvw_editing_validation")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_validation")
+    pub.unsubscribe(dut.do_update, "request_update_validation")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_validation_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_validation")
+    pub.unsubscribe(dut.do_insert, "request_insert_validation")
+    pub.unsubscribe(dut.do_calculate_plan, "request_calculate_plan")
+    pub.unsubscribe(dut._do_calculate_task, "request_calculate_validation_task")
+    pub.unsubscribe(
+        dut._do_calculate_all_tasks, "request_calculate_all_validation_tasks"
+    )
+
+    # Delete the device under test.
+    del dut
