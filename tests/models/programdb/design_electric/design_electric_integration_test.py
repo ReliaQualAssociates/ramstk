@@ -360,7 +360,6 @@ class TestDesignElectricAnalysisMethods:
 
     def on_fail_calculate_voltage_stress(self, logger_name, message):
         """Listen for fail_calculate messages."""
-        print(message)
         assert logger_name == "DEBUG"
         assert message == (
             "Failed to calculate voltage ratio for hardware ID 1.  Rated voltage=0.0, "

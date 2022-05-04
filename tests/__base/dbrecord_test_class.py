@@ -6,7 +6,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test meta-classes for database record, table, and view models."""
+"""Test meta-classes for database record models."""
 
 # Third Party Imports
 import pytest

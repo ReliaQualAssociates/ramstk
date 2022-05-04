@@ -6,7 +6,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Test meta-classes for database record, table, and view models."""
+"""Test meta-classes for database table models."""
 
 # Third Party Imports
 import pytest
@@ -143,9 +143,7 @@ class SystemTestSelectMethods:
     def on_succeed_select_all(self, tree):
         """Listen for succeed_retrieve_all messages."""
         assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(self._select_id).data[self._tag], self._record
-        )
+        assert isinstance(tree.get_node(self._select_id).data[self._tag], self._record)
         print(f"\033[36m\n\tsucceed_retrieve_all_{self._tag} topic was broadcast.")
 
     @pytest.mark.integration

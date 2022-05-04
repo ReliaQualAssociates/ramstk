@@ -28,108 +28,14 @@ from ramstk.models.dbtables import (
 from ramstk.models.dbviews import RAMSTKUsageProfileView
 
 
-@pytest.fixture(scope="class")
-def test_mission(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKMissionTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_mission_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_mission_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission")
-    pub.unsubscribe(dut.do_update, "request_update_mission")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_mission_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_mission")
-    pub.unsubscribe(dut.do_insert, "request_insert_mission")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="class")
-def test_phase(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKMissionPhaseTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_mission_phase_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_mission_phase_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_mission_phase")
-    pub.unsubscribe(dut.do_update, "request_update_mission_phase")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_mission_phase_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_mission_phase")
-    pub.unsubscribe(dut.do_insert, "request_insert_mission_phase")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="class")
-def test_environment(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKEnvironmentTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_environment_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_environment_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_environment")
-    pub.unsubscribe(dut.do_update, "request_update_environment")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_environment_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_environment")
-    pub.unsubscribe(dut.do_insert, "request_insert_environment")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="class")
-def test_viewmodel():
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKUsageProfileView()
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission_phase")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission_phase")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission_phase")
-
-    # Delete the device under test.
-    del dut
-
-
 @pytest.mark.usefixtures(
-    "test_viewmodel", "test_mission", "test_phase", "test_environment"
+    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
 class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+    """Class for testing Usage Profile do_select() and do_select_all() methods."""
 
     def on_succeed_on_select_all(self, tree):
+        """Listen for succeed_retrieve messages."""
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord)
         assert isinstance(
@@ -138,13 +44,13 @@ class TestSelectMethods:
         assert isinstance(
             tree.get_node("1.1.1").data["usage_profile"], RAMSTKEnvironmentRecord
         )
-        print("\033[36m\nsucceed_retrieve_usage_profile topic was broadcast.")
+        print("\033[36m\n\tsucceed_retrieve_usage_profile topic was broadcast.")
 
     @pytest.mark.integration
     def test_on_select_all(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should return records tree with missions, mission phases, environments."""
+        """Should return records tree with missions, mission phases, environments."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
         test_mission.do_select_all(attributes={"revision_id": 1})
@@ -152,36 +58,39 @@ class TestSelectMethods:
         test_environment.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
-            test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
+            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            RAMSTKMissionRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("2").data["usage_profile"], RAMSTKMissionRecord
+            integration_test_view_model.tree.get_node("2").data["usage_profile"],
+            RAMSTKMissionRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("2.2").data["usage_profile"],
+            integration_test_view_model.tree.get_node("2.2").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("2.2.2").data["usage_profile"],
+            integration_test_view_model.tree.get_node("2.2.2").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3").data["usage_profile"], RAMSTKMissionRecord
+            integration_test_view_model.tree.get_node("3").data["usage_profile"],
+            RAMSTKMissionRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3.3").data["usage_profile"],
+            integration_test_view_model.tree.get_node("3.3").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("3.3.3").data["usage_profile"],
+            integration_test_view_model.tree.get_node("3.3.3").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
@@ -189,38 +98,40 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_on_select_all_tree_loaded(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should clear existing nodes from the records tree and then re-populate."""
+        """Should clear existing nodes from the records tree and then re-populate."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1})
         test_environment.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
-            test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
+            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            RAMSTKMissionRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
-        test_viewmodel.on_select_all()
+        integration_test_view_model.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node("1").data["usage_profile"], RAMSTKMissionRecord
+            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            RAMSTKMissionRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node("1.1.1").data["usage_profile"],
+            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
@@ -228,54 +139,59 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should return an empty records tree if the base tree is empty."""
-        test_viewmodel._dic_trees["mission"] = Tree()
+        """Should return an empty records tree if the base tree is empty."""
+        integration_test_view_model._dic_trees["mission"] = Tree()
 
-        assert test_viewmodel.on_select_all() is None
-        assert test_viewmodel.tree.depth() == 0
+        assert integration_test_view_model.on_select_all() is None
+        assert integration_test_view_model.tree.depth() == 0
 
 
 @pytest.mark.usefixtures(
-    "test_viewmodel", "test_mission", "test_phase", "test_environment"
+    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
 class TestInsertMethods:
-    """Class for testing the on_insert() method."""
+    """Class for testing the Usage Profile on_insert() method."""
 
     def on_succeed_insert_mission(self, tree):
+        """Listen for succeed_insert messages."""
         assert isinstance(tree, Tree)
         assert tree.contains("4")
-        print("\033[36m\nsucceed_insert_mission topic was broadcast on mission insert.")
+        print(
+            "\033[36m\n\tsucceed_insert_mission topic was broadcast on mission insert."
+        )
 
     def on_succeed_insert_mission_phase(self, tree):
+        """Listen for succeed_insert messages."""
         assert isinstance(tree, Tree)
         assert tree.contains("1.4")
         print(
-            "\033[36m\nsucceed_insert_mission_phase topic was broadcast on mission "
+            "\033[36m\n\tsucceed_insert_mission_phase topic was broadcast on mission "
             "phase insert."
         )
 
     def on_succeed_insert_environment(self, tree):
+        """Listen for succeed_insert messages."""
         assert isinstance(tree, Tree)
         assert tree.contains("1.1.4")
         print(
-            "\033[36m\nsucceed_insert_environment topic was broadcast on "
+            "\033[36m\n\tsucceed_insert_environment topic was broadcast on "
             "environment insert."
         )
 
     @pytest.mark.integration
     def test_do_insert_mission(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should add a new mission record to the records tree."""
+        """Should add a new mission record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert not test_viewmodel.tree.contains("4")
+        assert not integration_test_view_model.tree.contains("4")
 
         pub.subscribe(self.on_succeed_insert_mission, "succeed_retrieve_usage_profile")
 
@@ -284,7 +200,6 @@ class TestInsertMethods:
             attributes={
                 "revision_id": 1,
                 "mission_id": 1,
-                "parent_id": 1,
             },
         )
 
@@ -294,16 +209,16 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_mission_phase(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should add a new mission phase record to the records tree."""
+        """Should add a new mission phase record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert not test_viewmodel.tree.contains("1.4")
+        assert not integration_test_view_model.tree.contains("1.4")
 
         pub.subscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
@@ -315,11 +230,10 @@ class TestInsertMethods:
                 "revision_id": 1,
                 "mission_id": 1,
                 "mission_phase_id": 1,
-                "parent_id": 1,
             },
         )
 
-        assert test_viewmodel.tree.contains("1.4")
+        assert integration_test_view_model.tree.contains("1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
@@ -327,16 +241,16 @@ class TestInsertMethods:
 
     @pytest.mark.integration
     def test_do_insert_environment(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should add a new environment record to the records tree."""
+        """Should add a new environment record to the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_id": 1, "mission_phase_id": 1}
         )
 
-        assert not test_viewmodel.tree.contains("1.1.4")
+        assert not integration_test_view_model.tree.contains("1.1.4")
 
         pub.subscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
@@ -349,12 +263,11 @@ class TestInsertMethods:
                 "mission_id": 1,
                 "mission_phase_id": 1,
                 "environment_id": 1,
-                "parent_id": 1,
                 "name": "Condition Name",
             },
         )
 
-        assert test_viewmodel.tree.contains("1.1.4")
+        assert integration_test_view_model.tree.contains("1.1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
@@ -362,55 +275,58 @@ class TestInsertMethods:
 
 
 @pytest.mark.usefixtures(
-    "test_viewmodel", "test_mission", "test_phase", "test_environment"
+    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
 class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    """Class for testing the Usage Profile do_delete() method."""
 
     def on_succeed_delete_mission(self, tree):
+        """Listen for succeed_delete messages."""
         assert isinstance(tree, Tree)
         assert not tree.contains("1.1.1")
         assert not tree.contains("1.1")
         assert not tree.contains("1")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on mission "
+            "\033[36m\n\tsucceed_retrieve_usage_profile topic was broadcast on mission "
             "delete."
         )
 
     def on_succeed_delete_mission_phase(self, tree):
+        """Listen for succeed_delete messages."""
         assert isinstance(tree, Tree)
         assert not tree.contains("2.2.2")
         assert not tree.contains("2.2")
         assert tree.contains("2")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on mission "
+            "\033[36m\n\tsucceed_retrieve_usage_profile topic was broadcast on mission "
             "phase delete."
         )
 
     def on_succeed_delete_environment(self, tree):
+        """Listen for succeed_delete messages."""
         assert isinstance(tree, Tree)
         assert not tree.contains("3.3.3")
         assert tree.contains("3.3")
         assert tree.contains("3")
         print(
-            "\033[36m\nsucceed_retrieve_usage_profile topic was broadcast on "
+            "\033[36m\n\tsucceed_retrieve_usage_profile topic was broadcast on "
             "environment delete."
         )
 
     @pytest.mark.integration
     def test_do_delete_environment(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should remove deleted environment record from the records tree."""
+        """Should remove deleted environment record from the records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 3})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 3}
         )
 
-        assert test_viewmodel.tree.contains("3.3.3")
-        assert test_viewmodel.tree.contains("3.3")
-        assert test_viewmodel.tree.contains("3")
+        assert integration_test_view_model.tree.contains("3.3.3")
+        assert integration_test_view_model.tree.contains("3.3")
+        assert integration_test_view_model.tree.contains("3")
 
         pub.subscribe(
             self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
@@ -424,18 +340,18 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_mission_phase(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should remove deleted phase and environment records from records tree."""
+        """Should remove deleted phase and environment records from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 2})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 2}
         )
 
-        assert test_viewmodel.tree.contains("2.2.2")
-        assert test_viewmodel.tree.contains("2.2")
-        assert test_viewmodel.tree.contains("2")
+        assert integration_test_view_model.tree.contains("2.2.2")
+        assert integration_test_view_model.tree.contains("2.2")
+        assert integration_test_view_model.tree.contains("2")
 
         pub.subscribe(
             self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
@@ -449,18 +365,18 @@ class TestDeleteMethods:
 
     @pytest.mark.integration
     def test_do_delete_mission(
-        self, test_viewmodel, test_mission, test_phase, test_environment
+        self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
-        """should remove deleted mission, phase, and environment from records tree."""
+        """Should remove deleted mission, phase, and environment from records tree."""
         test_mission.do_select_all(attributes={"revision_id": 1})
         test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
         test_environment.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert test_viewmodel.tree.contains("1.1.1")
-        assert test_viewmodel.tree.contains("1.1")
-        assert test_viewmodel.tree.contains("1")
+        assert integration_test_view_model.tree.contains("1.1.1")
+        assert integration_test_view_model.tree.contains("1.1")
+        assert integration_test_view_model.tree.contains("1")
 
         pub.subscribe(self.on_succeed_delete_mission, "succeed_retrieve_usage_profile")
 
