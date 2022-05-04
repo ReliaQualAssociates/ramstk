@@ -17,7 +17,7 @@ from ramstk.models.db import BaseDatabase, RAMSTKProgramDB
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKProgramDB()
 
@@ -44,10 +44,12 @@ class TestProgramManager:
     """Test class for the RAMSTK Program Manager."""
 
     def on_succeed_open_program(self, dao):
+        """Listen for succeed_connect messages."""
         assert isinstance(dao, BaseDatabase)
-        print("\033[36m\nsucceed_connect_program_database topic was broadcast")
+        print("\033[36m\n\tsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
+        """Listen for fail_connect messages."""
         assert error_message != ""
         # (
         #    "Fatal:  database \"bad_database_url.ramstk\" does not exist\n: {
@@ -55,9 +57,12 @@ class TestProgramManager:
         #    "'postgres', 'user': 'postgres', 'password': 'postgres', 'host': "
         #    "'localhost', 'port': '5432', 'dbname': 'bad_database_url.ramstk'}"
         # )
-        print("\033[35m\nfail_connect_program_database topic was broadcast on bad URL.")
+        print(
+            "\033[35m\n\tfail_connect_program_database topic was broadcast on bad URL."
+        )
 
     def on_fail_open_program_unknown_dialect(self, error_message):
+        """Listen for fail_connect messages."""
         assert error_message != ""
         # assert error_message == (
         #    "Unknown database dialect in database connection dict: "
@@ -66,11 +71,12 @@ class TestProgramManager:
         #    'bad_database_url.ramstk'}."
         # )
         print(
-            "\033[35m\nfail_connect_program_database topic was broadcast on unknown "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast on unknown "
             "dialect."
         )
 
     def on_fail_open_program_non_string_url(self, error_message):
+        """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
         # assert error_message == (
         #    "'Fatal:  database "8742.11" does not exist\n: {\'dialect\': "
@@ -78,42 +84,51 @@ class TestProgramManager:
         # " \'localhost\', \'port\': \'5432\', \ 'dbname\': 8742.11}'"
         # )
         print(
-            "\033[35m\nfail_connect_program_database topic was broadcast on "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast on "
             "non-string URL."
         )
 
     def on_succeed_close_program(self):
-        print("\033[36m\nsucceed_disconnect_program_database topic was broadcast")
+        """Listen for succeed_disconnect messages."""
+        print("\033[36m\n\tsucceed_disconnect_program_database topic was broadcast")
 
     def on_fail_close_program(self, error_message):
+        """Listen for fail_disconnect messages."""
         assert error_message == (
             "Not currently connected to a database.  Nothing to close."
         )
-        print("\033[35m\nfail_disconnect_program_database topic was broadcast")
+        print("\033[35m\n\tfail_disconnect_program_database topic was broadcast")
 
     def on_request_update_revision(self):
-        print("\033[36m\nrequest_update_all_revision topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_revision topic was broadcast")
 
     def on_request_update_function(self):
-        print("\033[36mrequest_update_all_function topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_function topic was broadcast")
 
     def on_request_update_requirement(self):
-        print("\033[36mrequest_update_all_requirement topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_requirement topic was broadcast")
 
     def on_request_update_stakeholder(self):
-        print("\033[36mrequest_update_all_stakeholder topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_stakeholder topic was broadcast")
 
     def on_request_update_hardware(self):
-        print("\033[36mrequest_update_all_hardware topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_hardware topic was broadcast")
 
     def on_request_update_validation(self):
-        print("\033[36mrequest_update_all_validation topic was broadcast")
+        """Listen for request_update_all messages."""
+        print("\033[36m\n\trequest_update_all_validation topic was broadcast")
 
     def on_succeed_create_postgres_program(self, program_db, database):
+        """Listen for succeed_create messages."""
         assert isinstance(program_db, BaseDatabase)
         assert database["database"] == program_db.cxnargs["dbname"]
         print(
-            "\033[36m\nsucceed_create_program_database topic was broadcast "
+            "\033[36m\n\tsucceed_create_program_database topic was broadcast "
             "when creating postgres database"
         )
 
@@ -152,8 +167,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_open_program(self, test_datamanager, test_program_dao):
-        """do_open_program() should connect to the test program database and broadcast
-        the success message."""
+        """Should connect to test program database."""
         pub.subscribe(self.on_succeed_open_program, "succeed_connect_program_database")
 
         test_program_db = {
@@ -174,8 +188,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_open_program_bad_url(self, test_datamanager, test_program_dao):
-        """do_open_program() should broadcast the fail message when attempting to open
-        a bad URL."""
+        """Should broadcast the fail message when attempting to open a bad URL."""
         pub.subscribe(
             self.on_fail_open_program_bad_url, "fail_connect_program_database"
         )
@@ -196,8 +209,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_open_program_unknown_dialect(self, test_datamanager, test_program_dao):
-        """do_open_program() should broadcast the fail message when attempting to open
-        a database of unsupported dialect."""
+        """Broadcast fail message when attempting to open db of unsupported dialect."""
         pub.subscribe(
             self.on_fail_open_program_unknown_dialect, "fail_connect_program_database"
         )
@@ -218,8 +230,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_open_program_non_string_url(self, test_datamanager, test_program_dao):
-        """do_open_program() should broadcast the fail message when attempting to open
-        a non-string URL."""
+        """Should broadcast fail message when attempting to open a non-string URL."""
         pub.subscribe(
             self.on_fail_open_program_non_string_url, "fail_connect_program_database"
         )
@@ -240,8 +251,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_close_program(self, test_datamanager, test_program_dao):
-        """do_close_program() should disconnect from the test program database and
-        broadcast the success message."""
+        """Should disconnect from test program database."""
         pub.subscribe(
             self.on_succeed_close_program, "succeed_disconnect_program_database"
         )
@@ -271,8 +281,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_do_close_program_none_open(self, test_datamanager, test_program_dao):
-        """do_close_program() should broadcast the fail message if it attempts to close
-        a database when not connected."""
+        """Broadcast fail message on attempts to close database when not connected."""
         pub.subscribe(self.on_fail_close_program, "fail_disconnect_program_database")
 
         DUT = RAMSTKProgramDB()
@@ -288,8 +297,7 @@ class TestProgramManager:
 
     @pytest.mark.integration
     def test_save_program(self, test_datamanager, test_program_dao):
-        """do_save_program() should cause all workstream modules to execute their
-        save_all() method."""
+        """Should cause all workstream modules to execute their save_all() method."""
         pub.subscribe(self.on_request_update_revision, "request_update_all_revision")
         pub.subscribe(self.on_request_update_function, "request_update_all_function")
         pub.subscribe(

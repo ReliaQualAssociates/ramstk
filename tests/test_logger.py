@@ -22,7 +22,7 @@ from ramstk import RAMSTKLogManager
 
 @pytest.fixture(scope="function")
 def test_logger(test_log_file):
-    """Get a data manager instance for each test function."""
+    """Get a table model instance for each test function."""
     # Create the device under test (dut).
     dut = RAMSTKLogManager(test_log_file)
 
@@ -45,7 +45,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_create_log_manager(self, test_logger, test_log_file):
-        """__init__() should create an instance of the RAMSTKLogManager."""
+        """Should create an instance of the RAMSTKLogManager."""
         assert isinstance(test_logger, RAMSTKLogManager)
         assert isinstance(test_logger.loggers, dict)
         assert test_logger.log_file == test_log_file
@@ -57,8 +57,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_debug(self, test_logger, test_log_file):
-        """do_log_debug() should be called when the do_log_debug_msg message is
-        broadcast and log the associated debug message."""
+        """Should be called when the do_log_debug_msg message is broadcast."""
         test_logger.do_create_logger("DEBUG", "DEBUG", True)
 
         pub.sendMessage(
@@ -77,8 +76,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_info(self, test_logger, test_log_file):
-        """do_log_info() should be called when the do_log_info_msg message is broadcast
-        and log the associated debug message."""
+        """Should be called when the do_log_info_msg message is broadcast."""
         test_logger.do_create_logger("INFO", "INFO", True)
 
         pub.sendMessage(
@@ -97,8 +95,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_info_ignore_debug(self, test_logger, test_log_file):
-        """do_log_info() should not be called when the do_log_debug_msg message is
-        broadcast and the log level is INFO."""
+        """Should not be called when the do_log_debug_msg message is broadcast."""
         test_logger.do_create_logger("INFO", "INFO", True)
 
         pub.sendMessage(
@@ -115,8 +112,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_info_higher_level_messages(self, test_logger, test_log_file):
-        """do_log_info() should log WARN, ERROR, and CRITICAL level information when it
-        is an INFO log manager."""
+        """Should log WARN, ERROR, and CRITICAL level information an INFO manager."""
         test_logger.do_create_logger("INFO", "INFO")
 
         pub.sendMessage(
@@ -151,8 +147,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_warning(self, test_logger, test_log_file):
-        """do_log_warning() should be called when the do_log_warning_msg message is
-        broadcast and log the associated debug message."""
+        """Should be called when the do_log_warning_msg message is broadcast."""
         test_logger.do_create_logger("WARN", "WARN", True)
 
         pub.sendMessage(
@@ -171,7 +166,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_warning_ignore_debug_info(self, test_logger, test_log_file):
-        """do_log_warning() should not log a debug or info message."""
+        """Should not log a debug or info message."""
         test_logger.do_create_logger("WARN", "WARN", True)
 
         pub.sendMessage(
@@ -193,8 +188,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_error(self, test_logger, test_log_file):
-        """do_log_error() should be called when the do_log_error_msg message is
-        broadcast and log the associated debug message."""
+        """Should be called when the do_log_error_msg message is broadcast."""
         test_logger.do_create_logger("ERROR", "ERROR", True)
 
         pub.sendMessage(
@@ -213,7 +207,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_error_ignore_debug_info_warning(self, test_logger, test_log_file):
-        """do_log_warning() should not log a debug, info, or warning message."""
+        """Should not log a debug, info, or warning message."""
         test_logger.do_create_logger("ERROR", "ERROR", True)
 
         pub.sendMessage(
@@ -240,8 +234,7 @@ class TestLogManager:
 
     @pytest.mark.unit
     def test_do_log_critical(self, test_logger, test_log_file):
-        """do_log_critical() should be called when the do_log_critical_msg message is
-        broadcast and log the associated debug message."""
+        """Should be called when the do_log_critical_msg message is broadcast."""
         test_logger.do_create_logger("CRITICAL", "CRITICAL", True)
 
         pub.sendMessage(
