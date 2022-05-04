@@ -49,7 +49,6 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "hardware_id",
-            "parent_id",
         ]
 
         # Initialize private scalar attributes.
@@ -75,7 +74,7 @@ class RAMSTKDesignMechanicTable(RAMSTKBaseTable):
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKDesignMechanicRecord:
-        """Gets a new record instance with attributes set.
+        """Get a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None

@@ -78,7 +78,6 @@ class RAMSTKBaseTable:
     # noinspection PyUnusedLocal
     def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize an RAMSTK table model instance."""
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -392,6 +391,14 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
+        if node_id == 0:
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=_(f"Attempting to update the root node {node_id}."),
+            )
+            return
+
         try:
             self.dao.do_update(self.tree.get_node(node_id).data[self._tag])
             pub.sendMessage(
@@ -417,17 +424,13 @@ class RAMSTKBaseTable:
                 ),
             )
         except (DataAccessError, TypeError):
-            if node_id != 0:
-                _error_msg = _(
-                    f"The value for one or more attributes for "
-                    f"{self._tag.replace('_', ' ')} ID {node_id} was the wrong type."
-                )
-            else:
-                _error_msg = _(f"Attempting to update the root node {node_id}.")
             pub.sendMessage(
                 "do_log_debug_msg",
                 logger_name="DEBUG",
-                message=_error_msg,
+                message=_(
+                    f"The value for one or more attributes for "
+                    f"{self._tag.replace('_', ' ')} ID {node_id} was the wrong type."
+                ),
             )
 
         pub.sendMessage("request_set_cursor_active")

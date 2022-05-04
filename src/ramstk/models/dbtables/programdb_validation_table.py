@@ -50,7 +50,6 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "validation_id",
-            "parent_id",
         ]
 
         # Initialize private scalar attributes.
@@ -75,7 +74,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     def do_get_new_record(
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKValidationRecord:
-        """Gets a new record instance with attributes set.
+        """Get a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None

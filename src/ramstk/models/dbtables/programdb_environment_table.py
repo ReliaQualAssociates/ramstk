@@ -47,7 +47,6 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
             "mission_id",
             "mission_phase_id",
             "environment_id",
-            "parent_id",
         ]
 
         # Initialize private scalar attributes.
@@ -65,7 +64,7 @@ class RAMSTKEnvironmentTable(RAMSTKBaseTable):
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKEnvironmentRecord:
-        """Gets a new record instance with attributes set.
+        """Get a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None

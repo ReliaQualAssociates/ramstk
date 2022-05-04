@@ -46,7 +46,6 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
             "revision_id",
             "mission_id",
             "mission_phase_id",
-            "parent_id",
         ]
 
         # Initialize private scalar attributes.
@@ -64,7 +63,7 @@ class RAMSTKMissionPhaseTable(RAMSTKBaseTable):
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKMissionPhaseRecord:
-        """Gets a new record instance with attributes set.
+        """Get a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None
