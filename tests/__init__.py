@@ -18,4 +18,4 @@ from .__base.dbtable_test_class import (
     UnitTestInsertMethods,
     UnitTestSelectMethods,
 )
-from .__mocks.MockDAO import MockDAO
+from .__mocks.mock_dao import MockDAO
