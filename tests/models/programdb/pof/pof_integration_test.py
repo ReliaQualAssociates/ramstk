@@ -37,7 +37,7 @@ from ramstk.models.dbviews import RAMSTKPoFView
     "test_method",
 )
 class TestSelectPoF:
-    """Class for testing PoF do_select() and do_select_all() methods."""
+    """Class for testing PoF on_select_all() methods."""
 
     def on_succeed_on_select_all(self, tree):
         """Listen for succeed_retrieve messages."""
@@ -58,10 +58,17 @@ class TestSelectPoF:
         test_method,
     ):
         """Should return tree of mechanisms, oploads, opstress, test methods."""
-        pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
+        pub.subscribe(
+            self.on_succeed_on_select_all,
+            "succeed_retrieve_pof",
+        )
 
         test_mechanism.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+            }
         )
         test_opload.do_select_all(
             attributes={
@@ -107,7 +114,10 @@ class TestSelectPoF:
             RAMSTKTestMethodRecord,
         )
 
-        pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_pof")
+        pub.unsubscribe(
+            self.on_succeed_on_select_all,
+            "succeed_retrieve_pof",
+        )
 
     @pytest.mark.integration
     def test_on_select_all_populated_tree(
@@ -120,7 +130,11 @@ class TestSelectPoF:
     ):
         """Should clear existing nodes from the records tree and then re-populate."""
         test_mechanism.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
+            attributes={
+                "revision_id": 1,
+                "hardware_id": 1,
+                "mode_id": 6,
+            }
         )
         test_opload.do_select_all(
             attributes={
@@ -373,7 +387,7 @@ class TestInsertPoF:
     "test_opstress",
     "test_method",
 )
-class TestDeleteMethods:
+class TestDeletePoF:
     """Class for testing the PoF do_delete() method."""
 
     def on_succeed_delete_test_method(self, tree):

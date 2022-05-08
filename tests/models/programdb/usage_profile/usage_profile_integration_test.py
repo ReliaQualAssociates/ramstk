@@ -31,7 +31,7 @@ from ramstk.models.dbviews import RAMSTKUsageProfileView
 @pytest.mark.usefixtures(
     "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
-class TestSelectMethods:
+class TestSelectUsageProfile:
     """Class for testing Usage Profile do_select() and do_select_all() methods."""
 
     def on_succeed_on_select_all(self, tree):
@@ -97,7 +97,7 @@ class TestSelectMethods:
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
     @pytest.mark.integration
-    def test_on_select_all_tree_loaded(
+    def test_on_select_all_populated_tree(
         self, integration_test_view_model, test_mission, test_phase, test_environment
     ):
         """Should clear existing nodes from the records tree and then re-populate."""
@@ -151,7 +151,7 @@ class TestSelectMethods:
 @pytest.mark.usefixtures(
     "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
-class TestInsertMethods:
+class TestInsertUsageProfile:
     """Class for testing the Usage Profile on_insert() method."""
 
     def on_succeed_insert_mission(self, tree):
@@ -277,7 +277,7 @@ class TestInsertMethods:
 @pytest.mark.usefixtures(
     "integration_test_view_model", "test_mission", "test_phase", "test_environment"
 )
-class TestDeleteMethods:
+class TestDeleteUsageProfile:
     """Class for testing the Usage Profile do_delete() method."""
 
     def on_succeed_delete_mission(self, tree):

@@ -302,7 +302,7 @@ class TestGetterSetterHardware(SystemTestGetterSetterMethods):
     _package = {"cage_code": "DE34T1"}
     _record = RAMSTKHardwareRecord
     _tag = "hardware"
-    _test_id = 1
+    _test_id = 8
 
 
 @pytest.mark.usefixtures(
@@ -321,18 +321,18 @@ class TestSelectHardwareBoM:
     def on_succeed_on_select_all(self, tree):
         """Listen for succeed_retrieve messages."""
         assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["hardware"], RAMSTKHardwareRecord)
+        assert isinstance(tree.get_node(8).data["hardware"], RAMSTKHardwareRecord)
         assert isinstance(
-            tree.get_node(1).data["design_electric"],
+            tree.get_node(8).data["design_electric"],
             RAMSTKDesignElectricRecord,
         )
         assert isinstance(
-            tree.get_node(1).data["design_mechanic"],
+            tree.get_node(8).data["design_mechanic"],
             RAMSTKDesignMechanicRecord,
         )
-        assert isinstance(tree.get_node(1).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
-        assert isinstance(tree.get_node(1).data["nswc"], RAMSTKNSWCRecord)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
+        assert isinstance(tree.get_node(8).data["milhdbk217f"], RAMSTKMilHdbk217FRecord)
+        assert isinstance(tree.get_node(8).data["nswc"], RAMSTKNSWCRecord)
+        assert isinstance(tree.get_node(8).data["reliability"], RAMSTKReliabilityRecord)
         print("\033[36m\n\tsucceed_retrieve_hardware_bom topic was broadcast.")
 
     @pytest.mark.integration
@@ -357,31 +357,7 @@ class TestSelectHardwareBoM:
         test_reliability.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"],
-            RAMSTKHardwareRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_electric"],
-            RAMSTKDesignElectricRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_mechanic"],
-            RAMSTKDesignMechanicRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(1).data["milhdbk217f"],
-            RAMSTKMilHdbk217FRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(1).data["nswc"],
-            RAMSTKNSWCRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(1).data["reliability"],
-            RAMSTKReliabilityRecord,
-        )
-        assert isinstance(
-            test_viewmodel.tree.get_node(2).data["hardware"],
+            test_viewmodel.tree.get_node(8).data["hardware"],
             RAMSTKHardwareRecord,
         )
         assert isinstance(
@@ -401,6 +377,14 @@ class TestSelectHardwareBoM:
             RAMSTKNSWCRecord,
         )
         assert isinstance(
+            test_viewmodel.tree.get_node(8).data["reliability"],
+            RAMSTKReliabilityRecord,
+        )
+        assert isinstance(
+            test_viewmodel.tree.get_node(2).data["hardware"],
+            RAMSTKHardwareRecord,
+        )
+        assert isinstance(
             test_viewmodel.tree.get_node(2).data["reliability"],
             RAMSTKReliabilityRecord,
         )
@@ -408,7 +392,7 @@ class TestSelectHardwareBoM:
         pub.unsubscribe(self.on_succeed_on_select_all, "succeed_retrieve_hardware_bom")
 
     @pytest.mark.integration
-    def test_on_select_all_tree_loaded(
+    def test_on_select_all_populated_tree(
         self,
         test_tablemodel,
         test_viewmodel,
@@ -421,37 +405,37 @@ class TestSelectHardwareBoM:
         """Should clear existing nodes from the records tree and then re-populate."""
         test_tablemodel.do_select_all(attributes={"revision_id": 1})
         test_design_electric.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
+            attributes={"revision_id": 1, "hardware_id": 8}
         )
         test_design_mechanic.do_select_all(
-            attributes={"revision_id": 1, "hardware_id": 1}
+            attributes={"revision_id": 1, "hardware_id": 8}
         )
-        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
+        test_milhdbk217f.do_select_all(attributes={"revision_id": 1, "hardware_id": 8})
+        test_nswc.do_select_all(attributes={"revision_id": 1, "hardware_id": 8})
+        test_reliability.do_select_all(attributes={"revision_id": 1, "hardware_id": 8})
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"],
+            test_viewmodel.tree.get_node(8).data["hardware"],
             RAMSTKHardwareRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_electric"],
+            test_viewmodel.tree.get_node(8).data["design_electric"],
             RAMSTKDesignElectricRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_mechanic"],
+            test_viewmodel.tree.get_node(8).data["design_mechanic"],
             RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["milhdbk217f"],
+            test_viewmodel.tree.get_node(8).data["milhdbk217f"],
             RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["nswc"],
+            test_viewmodel.tree.get_node(8).data["nswc"],
             RAMSTKNSWCRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["reliability"],
+            test_viewmodel.tree.get_node(8).data["reliability"],
             RAMSTKReliabilityRecord,
         )
 
@@ -460,27 +444,27 @@ class TestSelectHardwareBoM:
         test_viewmodel.on_select_all()
 
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["hardware"],
+            test_viewmodel.tree.get_node(8).data["hardware"],
             RAMSTKHardwareRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_electric"],
+            test_viewmodel.tree.get_node(8).data["design_electric"],
             RAMSTKDesignElectricRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["design_mechanic"],
+            test_viewmodel.tree.get_node(8).data["design_mechanic"],
             RAMSTKDesignMechanicRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["milhdbk217f"],
+            test_viewmodel.tree.get_node(8).data["milhdbk217f"],
             RAMSTKMilHdbk217FRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["nswc"],
+            test_viewmodel.tree.get_node(8).data["nswc"],
             RAMSTKNSWCRecord,
         )
         assert isinstance(
-            test_viewmodel.tree.get_node(1).data["reliability"],
+            test_viewmodel.tree.get_node(8).data["reliability"],
             RAMSTKReliabilityRecord,
         )
 
@@ -633,7 +617,7 @@ class TestDeleteHardwareBoM:
     "test_reliability",
     "test_toml_user_configuration",
 )
-class TestHardwareBoMAnalysisMethods:
+class TestHardwareBoMAnalyses:
     """Class for testing Hardware BoM analytical methods."""
 
     @pytest.mark.integration
