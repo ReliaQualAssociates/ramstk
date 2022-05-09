@@ -20,16 +20,14 @@ from ramstk.models.dbrecords import (
     RAMSTKMissionPhaseRecord,
     RAMSTKMissionRecord,
 )
-from ramstk.models.dbtables import (
-    RAMSTKEnvironmentTable,
-    RAMSTKMissionPhaseTable,
-    RAMSTKMissionTable,
-)
 from ramstk.models.dbviews import RAMSTKUsageProfileView
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
+    "test_view_model",
+    "test_mission_table_model",
+    "test_mission_phase_table_model",
+    "test_environment_table_model",
 )
 class TestSelectUsageProfile:
     """Class for testing Usage Profile do_select() and do_select_all() methods."""
@@ -48,49 +46,53 @@ class TestSelectUsageProfile:
 
     @pytest.mark.integration
     def test_on_select_all(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should return records tree with missions, mission phases, environments."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(attributes={"revision_id": 1})
+        test_environment_table_model.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
-            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            test_view_model.tree.get_node("1").data["usage_profile"],
             RAMSTKMissionRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("2").data["usage_profile"],
+            test_view_model.tree.get_node("2").data["usage_profile"],
             RAMSTKMissionRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("2.2").data["usage_profile"],
+            test_view_model.tree.get_node("2.2").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("2.2.2").data["usage_profile"],
+            test_view_model.tree.get_node("2.2.2").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("3").data["usage_profile"],
+            test_view_model.tree.get_node("3").data["usage_profile"],
             RAMSTKMissionRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("3.3").data["usage_profile"],
+            test_view_model.tree.get_node("3.3").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("3.3.3").data["usage_profile"],
+            test_view_model.tree.get_node("3.3.3").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
@@ -98,40 +100,44 @@ class TestSelectUsageProfile:
 
     @pytest.mark.integration
     def test_on_select_all_populated_tree(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should clear existing nodes from the records tree and then re-populate."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1})
-        test_environment.do_select_all(attributes={"revision_id": 1})
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(attributes={"revision_id": 1})
+        test_environment_table_model.do_select_all(attributes={"revision_id": 1})
 
         assert isinstance(
-            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            test_view_model.tree.get_node("1").data["usage_profile"],
             RAMSTKMissionRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_usage_profile")
 
-        integration_test_view_model.on_select_all()
+        test_view_model.on_select_all()
 
         assert isinstance(
-            integration_test_view_model.tree.get_node("1").data["usage_profile"],
+            test_view_model.tree.get_node("1").data["usage_profile"],
             RAMSTKMissionRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1").data["usage_profile"],
             RAMSTKMissionPhaseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node("1.1.1").data["usage_profile"],
+            test_view_model.tree.get_node("1.1.1").data["usage_profile"],
             RAMSTKEnvironmentRecord,
         )
 
@@ -139,17 +145,24 @@ class TestSelectUsageProfile:
 
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should return an empty records tree if the base tree is empty."""
-        integration_test_view_model._dic_trees["mission"] = Tree()
+        test_view_model._dic_trees["mission"] = Tree()
 
-        assert integration_test_view_model.on_select_all() is None
-        assert integration_test_view_model.tree.depth() == 0
+        assert test_view_model.on_select_all() is None
+        assert test_view_model.tree.depth() == 0
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
+    "test_view_model",
+    "test_mission_table_model",
+    "test_mission_phase_table_model",
+    "test_environment_table_model",
 )
 class TestInsertUsageProfile:
     """Class for testing the Usage Profile on_insert() method."""
@@ -182,16 +195,22 @@ class TestInsertUsageProfile:
 
     @pytest.mark.integration
     def test_do_insert_mission(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should add a new mission record to the records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 1}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert not integration_test_view_model.tree.contains("4")
+        assert not test_view_model.tree.contains("4")
 
         pub.subscribe(self.on_succeed_insert_mission, "succeed_retrieve_usage_profile")
 
@@ -209,16 +228,22 @@ class TestInsertUsageProfile:
 
     @pytest.mark.integration
     def test_do_insert_mission_phase(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should add a new mission phase record to the records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 1}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert not integration_test_view_model.tree.contains("1.4")
+        assert not test_view_model.tree.contains("1.4")
 
         pub.subscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
@@ -233,7 +258,7 @@ class TestInsertUsageProfile:
             },
         )
 
-        assert integration_test_view_model.tree.contains("1.4")
+        assert test_view_model.tree.contains("1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_mission_phase, "succeed_retrieve_usage_profile"
@@ -241,16 +266,22 @@ class TestInsertUsageProfile:
 
     @pytest.mark.integration
     def test_do_insert_environment(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should add a new environment record to the records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 1}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_id": 1, "mission_phase_id": 1}
         )
 
-        assert not integration_test_view_model.tree.contains("1.1.4")
+        assert not test_view_model.tree.contains("1.1.4")
 
         pub.subscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
@@ -267,7 +298,7 @@ class TestInsertUsageProfile:
             },
         )
 
-        assert integration_test_view_model.tree.contains("1.1.4")
+        assert test_view_model.tree.contains("1.1.4")
 
         pub.unsubscribe(
             self.on_succeed_insert_environment, "succeed_retrieve_usage_profile"
@@ -275,7 +306,10 @@ class TestInsertUsageProfile:
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model", "test_mission", "test_phase", "test_environment"
+    "test_view_model",
+    "test_mission_table_model",
+    "test_mission_phase_table_model",
+    "test_environment_table_model",
 )
 class TestDeleteUsageProfile:
     """Class for testing the Usage Profile do_delete() method."""
@@ -315,18 +349,24 @@ class TestDeleteUsageProfile:
 
     @pytest.mark.integration
     def test_do_delete_environment(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should remove deleted environment record from the records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 3})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 3}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 3}
         )
 
-        assert integration_test_view_model.tree.contains("3.3.3")
-        assert integration_test_view_model.tree.contains("3.3")
-        assert integration_test_view_model.tree.contains("3")
+        assert test_view_model.tree.contains("3.3.3")
+        assert test_view_model.tree.contains("3.3")
+        assert test_view_model.tree.contains("3")
 
         pub.subscribe(
             self.on_succeed_delete_environment, "succeed_retrieve_usage_profile"
@@ -340,18 +380,24 @@ class TestDeleteUsageProfile:
 
     @pytest.mark.integration
     def test_do_delete_mission_phase(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should remove deleted phase and environment records from records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 2})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 2}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 2}
         )
 
-        assert integration_test_view_model.tree.contains("2.2.2")
-        assert integration_test_view_model.tree.contains("2.2")
-        assert integration_test_view_model.tree.contains("2")
+        assert test_view_model.tree.contains("2.2.2")
+        assert test_view_model.tree.contains("2.2")
+        assert test_view_model.tree.contains("2")
 
         pub.subscribe(
             self.on_succeed_delete_mission_phase, "succeed_retrieve_usage_profile"
@@ -365,18 +411,24 @@ class TestDeleteUsageProfile:
 
     @pytest.mark.integration
     def test_do_delete_mission(
-        self, integration_test_view_model, test_mission, test_phase, test_environment
+        self,
+        test_view_model,
+        test_mission_table_model,
+        test_mission_phase_table_model,
+        test_environment_table_model,
     ):
         """Should remove deleted mission, phase, and environment from records tree."""
-        test_mission.do_select_all(attributes={"revision_id": 1})
-        test_phase.do_select_all(attributes={"revision_id": 1, "mission_id": 1})
-        test_environment.do_select_all(
+        test_mission_table_model.do_select_all(attributes={"revision_id": 1})
+        test_mission_phase_table_model.do_select_all(
+            attributes={"revision_id": 1, "mission_id": 1}
+        )
+        test_environment_table_model.do_select_all(
             attributes={"revision_id": 1, "mission_phase_id": 1}
         )
 
-        assert integration_test_view_model.tree.contains("1.1.1")
-        assert integration_test_view_model.tree.contains("1.1")
-        assert integration_test_view_model.tree.contains("1")
+        assert test_view_model.tree.contains("1.1.1")
+        assert test_view_model.tree.contains("1.1")
+        assert test_view_model.tree.contains("1")
 
         pub.subscribe(self.on_succeed_delete_mission, "succeed_retrieve_usage_profile")
 

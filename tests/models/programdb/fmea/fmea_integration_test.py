@@ -2,7 +2,8 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.models.fmea.fmea_integration_test.py is part of The RAMSTK Project
+#       tests.models.programdb.fmea.fmea_integration_test.py is part of The RAMSTK
+#       Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -21,13 +22,6 @@ from ramstk.models.dbrecords import (
     RAMSTKMechanismRecord,
     RAMSTKModeRecord,
 )
-from ramstk.models.dbtables import (
-    RAMSTKActionTable,
-    RAMSTKCauseTable,
-    RAMSTKControlTable,
-    RAMSTKMechanismTable,
-    RAMSTKModeTable,
-)
 from ramstk.models.dbviews import RAMSTKFMEAView
 
 TEST_IDS = {
@@ -40,12 +34,12 @@ TEST_IDS = {
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model",
-    "test_mode",
-    "test_mechanism",
-    "test_cause",
-    "test_control",
-    "test_action",
+    "test_view_model",
+    "test_mode_table_model",
+    "test_mechanism_table_model",
+    "test_cause_table_model",
+    "test_control_table_model",
+    "test_action_table_model",
 )
 class TestSelectFMEA:
     """Class for testing do_select() and do_select_all() methods."""
@@ -73,21 +67,23 @@ class TestSelectFMEA:
     @pytest.mark.integration
     def test_on_select_all(
         self,
-        integration_test_view_model,
-        test_mode,
-        test_mechanism,
-        test_cause,
-        test_control,
-        test_action,
+        test_view_model,
+        test_mode_table_model,
+        test_mechanism_table_model,
+        test_cause_table_model,
+        test_control_table_model,
+        test_action_table_model,
     ):
         """Should return tree of modes, mechanisms, causess, controls, actions."""
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
-        test_mode.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_mechanism.do_select_all(
+        test_mode_table_model.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_mechanism_table_model.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
         )
-        test_cause.do_select_all(
+        test_cause_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -95,7 +91,7 @@ class TestSelectFMEA:
                 "mechanism_id": 3,
             }
         )
-        test_control.do_select_all(
+        test_control_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -104,7 +100,7 @@ class TestSelectFMEA:
                 "cause_id": 3,
             }
         )
-        test_action.do_select_all(
+        test_action_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -115,27 +111,23 @@ class TestSelectFMEA:
         )
 
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mechanism"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["control"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
@@ -144,19 +136,21 @@ class TestSelectFMEA:
     @pytest.mark.integration
     def test_on_select_all_populated_tree(
         self,
-        integration_test_view_model,
-        test_mode,
-        test_mechanism,
-        test_cause,
-        test_control,
-        test_action,
+        test_view_model,
+        test_mode_table_model,
+        test_mechanism_table_model,
+        test_cause_table_model,
+        test_control_table_model,
+        test_action_table_model,
     ):
         """Should clear existing nodes from the records tree and then re-populate."""
-        test_mode.do_select_all(attributes={"revision_id": 1, "hardware_id": 1})
-        test_mechanism.do_select_all(
+        test_mode_table_model.do_select_all(
+            attributes={"revision_id": 1, "hardware_id": 1}
+        )
+        test_mechanism_table_model.do_select_all(
             attributes={"revision_id": 1, "hardware_id": 1, "mode_id": 6}
         )
-        test_cause.do_select_all(
+        test_cause_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -164,7 +158,7 @@ class TestSelectFMEA:
                 "mechanism_id": 3,
             }
         )
-        test_control.do_select_all(
+        test_control_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -173,7 +167,7 @@ class TestSelectFMEA:
                 "cause_id": 3,
             }
         )
-        test_action.do_select_all(
+        test_action_table_model.do_select_all(
             attributes={
                 "revision_id": 1,
                 "hardware_id": 1,
@@ -184,56 +178,48 @@ class TestSelectFMEA:
         )
 
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mechanism"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["control"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
         pub.subscribe(self.on_succeed_on_select_all, "succeed_retrieve_fmeca")
 
-        integration_test_view_model.on_select_all()
+        test_view_model.on_select_all()
 
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["mode"]).data["fmeca"],
             RAMSTKModeRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["mechanism"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["mechanism"]).data["fmeca"],
             RAMSTKMechanismRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["cause"]).data["fmeca"],
             RAMSTKCauseRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["control"]).data[
-                "fmeca"
-            ],
+            test_view_model.tree.get_node(TEST_IDS["control"]).data["fmeca"],
             RAMSTKControlRecord,
         )
         assert isinstance(
-            integration_test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
+            test_view_model.tree.get_node(TEST_IDS["action"]).data["fmeca"],
             RAMSTKActionRecord,
         )
 
@@ -242,27 +228,27 @@ class TestSelectFMEA:
     @pytest.mark.integration
     def test_on_select_all_empty_base_tree(
         self,
-        integration_test_view_model,
-        test_mode,
-        test_mechanism,
-        test_cause,
-        test_control,
-        test_action,
+        test_view_model,
+        test_mode_table_model,
+        test_mechanism_table_model,
+        test_cause_table_model,
+        test_control_table_model,
+        test_action_table_model,
     ):
         """Should return an empty records tree if the base tree is empty."""
-        integration_test_view_model._dic_trees["mode"] = Tree()
+        test_view_model._dic_trees["mode"] = Tree()
 
-        assert integration_test_view_model.on_select_all() is None
-        assert integration_test_view_model.tree.depth() == 0
+        assert test_view_model.on_select_all() is None
+        assert test_view_model.tree.depth() == 0
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model",
-    "test_mode",
-    "test_mechanism",
-    "test_cause",
-    "test_control",
-    "test_action",
+    "test_view_model",
+    "test_mode_table_model",
+    "test_mechanism_table_model",
+    "test_cause_table_model",
+    "test_control_table_model",
+    "test_action_table_model",
 )
 class TestInsertFMEA:
     """Class for testing the FMEA do_insert() method."""
@@ -302,9 +288,9 @@ class TestInsertFMEA:
         print("\033[36m\n\tsucceed_retrieve_fmea topic was broadcast on action insert.")
 
     @pytest.mark.integration
-    def test_do_insert_mode(self, integration_test_view_model):
+    def test_do_insert_mode(self, test_view_model):
         """Should add a new mode record to the records tree."""
-        assert not integration_test_view_model.tree.contains("7")
+        assert not test_view_model.tree.contains("7")
 
         pub.subscribe(self.on_succeed_insert_mode, "succeed_retrieve_fmea")
 
@@ -317,14 +303,14 @@ class TestInsertFMEA:
             },
         )
 
-        assert integration_test_view_model.tree.contains("7")
+        assert test_view_model.tree.contains("7")
 
         pub.unsubscribe(self.on_succeed_insert_mode, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_insert_mechanism(self, integration_test_view_model):
+    def test_do_insert_mechanism(self, test_view_model):
         """Should add a new mechanism record to the records tree."""
-        assert not integration_test_view_model.tree.contains("6.5")
+        assert not test_view_model.tree.contains("6.5")
 
         pub.subscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_fmea")
 
@@ -338,14 +324,14 @@ class TestInsertFMEA:
             },
         )
 
-        assert integration_test_view_model.tree.contains("6.5")
+        assert test_view_model.tree.contains("6.5")
 
         pub.unsubscribe(self.on_succeed_insert_mechanism, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_insert_cause(self, integration_test_view_model):
+    def test_do_insert_cause(self, test_view_model):
         """Should add a new cause record to the records tree."""
-        assert not integration_test_view_model.tree.contains("6.3.5")
+        assert not test_view_model.tree.contains("6.3.5")
 
         pub.subscribe(self.on_succeed_insert_cause, "succeed_retrieve_fmea")
 
@@ -361,14 +347,14 @@ class TestInsertFMEA:
             },
         )
 
-        assert integration_test_view_model.tree.contains("6.3.5")
+        assert test_view_model.tree.contains("6.3.5")
 
         pub.unsubscribe(self.on_succeed_insert_cause, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_insert_control(self, integration_test_view_model):
+    def test_do_insert_control(self, test_view_model):
         """Should add a new control record to the records tree."""
-        assert not integration_test_view_model.tree.contains("6.3.3.5c")
+        assert not test_view_model.tree.contains("6.3.3.5c")
 
         pub.subscribe(self.on_succeed_insert_control, "succeed_retrieve_fmea")
 
@@ -384,14 +370,14 @@ class TestInsertFMEA:
             },
         )
 
-        assert integration_test_view_model.tree.contains("6.3.3.5c")
+        assert test_view_model.tree.contains("6.3.3.5c")
 
         pub.unsubscribe(self.on_succeed_insert_control, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_insert_action(self, integration_test_view_model):
+    def test_do_insert_action(self, test_view_model):
         """Should add a new action record to the records tree."""
-        assert not integration_test_view_model.tree.contains("6.3.3.5a")
+        assert not test_view_model.tree.contains("6.3.3.5a")
 
         pub.subscribe(self.on_succeed_insert_action, "succeed_retrieve_fmea")
 
@@ -407,18 +393,18 @@ class TestInsertFMEA:
             },
         )
 
-        assert integration_test_view_model.tree.contains("6.3.3.5a")
+        assert test_view_model.tree.contains("6.3.3.5a")
 
         pub.unsubscribe(self.on_succeed_insert_action, "succeed_retrieve_fmea")
 
 
 @pytest.mark.usefixtures(
-    "integration_test_view_model",
-    "test_mode",
-    "test_mechanism",
-    "test_cause",
-    "test_control",
-    "test_action",
+    "test_view_model",
+    "test_mode_table_model",
+    "test_mechanism_table_model",
+    "test_cause_table_model",
+    "test_control_table_model",
+    "test_action_table_model",
 )
 class TestDeleteFMEA:
     """Class for testing the FMEA do_delete() method."""
@@ -473,93 +459,93 @@ class TestDeleteFMEA:
         print("\033[36m\n\tsucceed_retrieve_fmea topic was broadcast on mode delete.")
 
     @pytest.mark.integration
-    def test_do_delete_action(self, integration_test_view_model):
+    def test_do_delete_action(self, test_view_model):
         """Should remove the deleted action record from the records tree."""
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["control"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["action"])
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["cause"])
+        assert test_view_model.tree.contains(TEST_IDS["control"])
+        assert test_view_model.tree.contains(TEST_IDS["action"])
 
         pub.subscribe(self.on_succeed_delete_action, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_action", node_id=3)
 
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["control"])
-        assert not integration_test_view_model.tree.contains(TEST_IDS["action"])
-        assert integration_test_view_model.tree.contains("6.3.3.4a")
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["cause"])
+        assert test_view_model.tree.contains(TEST_IDS["control"])
+        assert not test_view_model.tree.contains(TEST_IDS["action"])
+        assert test_view_model.tree.contains("6.3.3.4a")
 
         pub.unsubscribe(self.on_succeed_delete_action, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_delete_control(self, integration_test_view_model):
+    def test_do_delete_control(self, test_view_model):
         """Should remove the deleted control record from the records tree."""
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert integration_test_view_model.tree.contains("6.3.3.4c")
-        assert integration_test_view_model.tree.contains("6.3.3.4a")
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["cause"])
+        assert test_view_model.tree.contains("6.3.3.4c")
+        assert test_view_model.tree.contains("6.3.3.4a")
 
         pub.subscribe(self.on_succeed_delete_control, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_control", node_id=4)
 
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert not integration_test_view_model.tree.contains("6.3.3.4c")
-        assert integration_test_view_model.tree.contains("6.3.3.4a")
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["cause"])
+        assert not test_view_model.tree.contains("6.3.3.4c")
+        assert test_view_model.tree.contains("6.3.3.4a")
 
         pub.unsubscribe(self.on_succeed_delete_control, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_delete_cause(self, integration_test_view_model):
+    def test_do_delete_cause(self, test_view_model):
         """Should remove the deleted cause record from the records tree."""
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert not integration_test_view_model.tree.contains("6.3.3.4c")
-        assert integration_test_view_model.tree.contains("6.3.3.4a")
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["cause"])
+        assert not test_view_model.tree.contains("6.3.3.4c")
+        assert test_view_model.tree.contains("6.3.3.4a")
 
         pub.subscribe(self.on_succeed_delete_cause, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_cause", node_id=3)
 
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
-        assert not integration_test_view_model.tree.contains(TEST_IDS["cause"])
-        assert not integration_test_view_model.tree.contains("6.3.3.4c")
-        assert not integration_test_view_model.tree.contains("6.3.3.4a")
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert not test_view_model.tree.contains(TEST_IDS["cause"])
+        assert not test_view_model.tree.contains("6.3.3.4c")
+        assert not test_view_model.tree.contains("6.3.3.4a")
 
         pub.unsubscribe(self.on_succeed_delete_cause, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_delete_mechanism(self, integration_test_view_model):
+    def test_do_delete_mechanism(self, test_view_model):
         """Should remove the deleted mechanism record from the records tree."""
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mechanism"])
 
         pub.subscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_mechanism", node_id=3)
 
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
-        assert not integration_test_view_model.tree.contains(TEST_IDS["mechanism"])
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
+        assert not test_view_model.tree.contains(TEST_IDS["mechanism"])
 
         pub.unsubscribe(self.on_succeed_delete_mechanism, "succeed_retrieve_fmea")
 
     @pytest.mark.integration
-    def test_do_delete_mode(self, integration_test_view_model):
+    def test_do_delete_mode(self, test_view_model):
         """Should remove the deleted mode record from the records tree."""
-        assert integration_test_view_model.tree.contains(TEST_IDS["mode"])
+        assert test_view_model.tree.contains(TEST_IDS["mode"])
 
         pub.subscribe(self.on_succeed_delete_mode, "succeed_retrieve_fmea")
 
         pub.sendMessage("request_delete_mode", node_id=6)
 
-        assert not integration_test_view_model.tree.contains(TEST_IDS["mode"])
+        assert not test_view_model.tree.contains(TEST_IDS["mode"])
 
         pub.unsubscribe(self.on_succeed_delete_mode, "succeed_retrieve_fmea")
