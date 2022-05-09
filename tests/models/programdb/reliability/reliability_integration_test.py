@@ -49,7 +49,7 @@ class TestInsertReliability(SystemTestInsertMethods):
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should add a record to the record tree and update last_id."""
         assert integration_test_table_model.tree.get_node(9) is None
@@ -79,7 +79,7 @@ class TestInsertReliability(SystemTestInsertMethods):
 
     @pytest.mark.integration
     def test_do_insert_part(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should add a record to the record tree and update last_id."""
         assert integration_test_table_model.tree.get_node(10) is None

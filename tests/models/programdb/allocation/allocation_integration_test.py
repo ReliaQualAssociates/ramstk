@@ -38,14 +38,14 @@ class TestSelectAllocation(SystemTestSelectMethods):
 
 
 @pytest.mark.usefixtures(
-    "test_attributes", "integration_test_table_model", "test_hardware_table"
+    "test_attributes", "integration_test_table_model", "test_hardware_table_model"
 )
 class TestInsertAllocation:
     """Class for testing the Allocation do_insert() method."""
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(9) is None
@@ -84,7 +84,7 @@ class TestInsertAllocation:
 
     @pytest.mark.integration
     def test_do_insert_part(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should NOT add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(10) is None
@@ -260,9 +260,7 @@ class TestUpdateAllocation:
         _allocation.mtbf_goal = {1: 2}
         pub.sendMessage(f"request_update_{self._tag}", node_id=0)
 
-        pub.unsubscribe(
-            self.on_fail_update_root_node, "do_log_debug_msg"
-        )
+        pub.unsubscribe(self.on_fail_update_root_node, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):

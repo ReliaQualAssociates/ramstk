@@ -52,7 +52,7 @@ class TestInsertMILHDBK217F(SystemTestInsertMethods):
         self,
         test_attributes,
         integration_test_table_model,
-        test_hardware_table,
+        test_hardware_table_model,
     ):
         """Should NOT add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(9) is None
@@ -79,7 +79,7 @@ class TestInsertMILHDBK217F(SystemTestInsertMethods):
         self,
         test_attributes,
         integration_test_table_model,
-        test_hardware_table,
+        test_hardware_table_model,
     ):
         """Should add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(10) is None

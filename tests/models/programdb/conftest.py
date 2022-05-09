@@ -147,7 +147,7 @@ def test_environment_table_model(test_program_dao):
 
 
 @pytest.fixture(scope="class")
-def test_hardware_table(test_program_dao):
+def test_hardware_table_model(test_program_dao):
     """Create test hardware table."""
     dut = RAMSTKHardwareTable()
     dut.do_connect(test_program_dao)

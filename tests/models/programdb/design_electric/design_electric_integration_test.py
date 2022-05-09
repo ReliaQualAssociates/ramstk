@@ -49,7 +49,7 @@ class TestInsertDesignElectric(SystemTestInsertMethods):
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should NOT add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(9) is None
@@ -73,7 +73,7 @@ class TestInsertDesignElectric(SystemTestInsertMethods):
 
     @pytest.mark.integration
     def test_do_insert_sibling_part(
-        self, test_attributes, integration_test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
         """Should add a record to the record tree."""
         assert integration_test_table_model.tree.get_node(10) is None
