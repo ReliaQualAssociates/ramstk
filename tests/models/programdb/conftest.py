@@ -27,6 +27,25 @@ from ramstk.models.dbtables import (
 )
 
 
+@pytest.fixture(scope="function")
+def unit_test_table_model(test_table_model, mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    test_table_model.do_connect(mock_dao)
+
+    yield test_table_model
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_table_model, test_program_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    test_table_model.do_connect(test_program_dao)
+    test_table_model.do_select_all(attributes={"revision_id": 1})
+
+    yield test_table_model
+
+
 @pytest.fixture(scope="class")
 def test_action_table_model(test_program_dao):
     """Get a table model instance for each test class."""

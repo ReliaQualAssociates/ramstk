@@ -87,37 +87,11 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def unit_test_table_model(mock_dao):
+@pytest.fixture(scope="class")
+def test_table_model():
     """Get a table model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKStakeholderTable()
-    dut.do_connect(mock_dao)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_stakeholder_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_stakeholder_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_stakeholder")
-    pub.unsubscribe(dut.do_update, "request_update_stakeholder")
-    pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
-    pub.unsubscribe(dut.do_insert, "request_insert_stakeholder")
-    pub.unsubscribe(dut.do_calculate_stakeholder, "request_calculate_stakeholder")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.fixture(scope="class")
-def integration_test_table_model(test_program_dao):
-    """Get a table model instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKStakeholderTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
 
     yield dut
 
