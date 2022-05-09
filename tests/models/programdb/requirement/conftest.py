@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.requirement.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Requirement module test fixtures."""
+
 # Standard Library Imports
 from datetime import date
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKRequirementRecord
+from ramstk.models.dbtables import RAMSTKRequirementTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _requirement_1 = RAMSTKRequirementRecord()
     _requirement_1.revision_id = 1
     _requirement_1.requirement_id = 1
@@ -111,17 +122,18 @@ def mock_program_dao(monkeypatch):
     _requirement_2.q_verifiable_4 = 0
     _requirement_2.q_verifiable_5 = 0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _requirement_1,
         _requirement_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Requirement attributes."""
     yield {
         "revision_id": 1,
         "requirement_id": 1,
@@ -174,12 +186,26 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKRequirementRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKRequirementTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_requirement_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_requirement_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "mvw_editing_requirement")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_requirement")
+    pub.unsubscribe(dut.do_update, "request_update_requirement")
+    pub.unsubscribe(dut.do_create_all_codes, "request_create_all_requirement_codes")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_requirement_tree")
+    pub.unsubscribe(dut.do_create_code, "request_create_requirement_code")
+    pub.unsubscribe(dut.do_delete, "request_delete_requirement")
+    pub.unsubscribe(dut.do_insert, "request_insert_requirement")
 
     # Delete the device under test.
     del dut

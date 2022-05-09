@@ -17,70 +17,42 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKDesignElectricRecord
 from ramstk.models.dbtables import RAMSTKDesignElectricTable, RAMSTKHardwareTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_table_model(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKDesignElectricTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectDesignElectric(SystemTestSelectMethods):
+    """Class for testing Design Electric do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_design_electric_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_design_electric_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_design_electric")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_design_electric")
-    pub.unsubscribe(dut.do_update, "request_update_design_electric")
-    pub.unsubscribe(dut.do_get_tree, "request_get_design_electric_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_design_electric")
-    pub.unsubscribe(dut.do_insert, "request_insert_design_electric")
-    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
-    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKDesignElectricRecord
+    _select_id = 1
+    _tag = "design_electric"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertDesignElectric(SystemTestInsertMethods):
+    """Class for testing Design Electric table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
-        )
-        print("\033[36m\n\tsucceed_retrieve_design_electric topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
-        """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(
-            self.on_succeed_select_all, "succeed_retrieve_all_design_electric"
-        )
-
-        pub.sendMessage("selected_revision", attributes=test_attributes)
-
-        pub.unsubscribe(
-            self.on_succeed_select_all, "succeed_retrieve_all_design_electric"
-        )
-
-
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+    _insert_id = 1
+    _record = RAMSTKDesignElectricRecord
+    _tag = "design_electric"
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should NOT add a record to the record tree."""
-        assert test_table_model.tree.get_node(9) is None
+        """Should NOT add a record to the record tree."""
+        assert integration_test_table_model.tree.get_node(9) is None
 
         # The design electric record is added by the database whenever a hardware
         # record is added to the database.  Adding the new allocation record to the
@@ -97,14 +69,14 @@ class TestInsertMethods:
             },
         )
 
-        assert test_table_model.tree.get_node(9) is None
+        assert integration_test_table_model.tree.get_node(9) is None
 
     @pytest.mark.integration
-    def test_do_insert_part(
-        self, test_attributes, test_table_model, test_hardware_table
+    def test_do_insert_sibling_part(
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should add a record to the record tree."""
-        assert test_table_model.tree.get_node(10) is None
+        """Should add a record to the record tree."""
+        assert integration_test_table_model.tree.get_node(10) is None
 
         # The design electric record is added by the database whenever a hardware
         # record is added to the database.  Adding the new allocation record to the
@@ -122,160 +94,205 @@ class TestInsertMethods:
         )
 
         assert isinstance(
-            test_table_model.tree.get_node(10).data["design_electric"],
+            integration_test_table_model.tree.get_node(10).data["design_electric"],
             RAMSTKDesignElectricRecord,
         )
         assert (
-            test_table_model.tree.get_node(10).data["design_electric"].revision_id == 1
+            integration_test_table_model.tree.get_node(10)
+            .data["design_electric"]
+            .revision_id
+            == 1
         )
         assert (
-            test_table_model.tree.get_node(10).data["design_electric"].hardware_id == 10
+            integration_test_table_model.tree.get_node(10)
+            .data["design_electric"]
+            .hardware_id
+            == 10
         )
 
+    @pytest.mark.skip(reason="Design Electric records are added by database.")
+    def test_do_insert_sibling(self, test_attributes, integration_test_table_model):
+        """Should not run because Design Electric are added by database."""
+        pass
 
-@pytest.mark.usefixtures("test_table_model", "test_hardware_table")
-class TestDeleteMethods:
-    """Class for testing the do_delete() method."""
+    @pytest.mark.skip(reason="Design Electric records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Design Electric is not hierarchical."""
+        pass
 
-    def on_succeed_delete_hardware(self, tree):
-        assert tree.get_node(8) is None
-        print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
+    @pytest.mark.skip(reason="Design Electric records are non-hierarchical.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Design Electric is not hierarchical."""
+        pass
 
-    @pytest.mark.integration
-    def test_do_delete(self, test_table_model, test_hardware_table):
-        """should remove record from record tree."""
-        pub.subscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
-
-        assert isinstance(
-            test_table_model.tree.get_node(8).data["design_electric"],
-            RAMSTKDesignElectricRecord,
-        )
-
-        # Allocation records are cascade deleted by the database server whenever the
-        # corresponding Hardware record is deleted.
-        pub.sendMessage("request_delete_hardware", node_id=8)
-
-        assert test_table_model.tree.get_node(8) is None
-
-        pub.unsubscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
+    @pytest.mark.skip(reason="Design Electric records are added by database.")
+    def test_do_insert_no_revision(self, test_attributes, integration_test_table_model):
+        """Should not run because Design Electric are added by database."""
+        pass
 
 
-@pytest.mark.usefixtures("test_table_model")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteDesignElectric(SystemTestDeleteMethods):
+    """Class for testing Design Electric table do_delete() method."""
+
+    __test__ = True
+
+    _delete_id = 3
+    _record = RAMSTKDesignElectricRecord
+    _tag = "design_electric"
+
+    @pytest.mark.skip(reason="Design Electric records are deleted by database.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Design Electric are deleted by database."""
+        pass
+
+    @pytest.mark.skip(reason="Design Electric records are deleted by database.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Design Electric are deleted by database."""
+        pass
+
+    @pytest.mark.skip(reason="Design Electric records are deleted by database.")
+    def test_do_delete_non_existent_id(self):
+        """Should not run because Design Electric are deleted by database."""
+        pass
+
+
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateDesignElectric:
+    """Class for testing Design Electric update() and update_all() methods."""
+
+    __test__ = True
+
+    _record = RAMSTKDesignElectricRecord
+    _tag = "design_electric"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["design_electric"].parent_id == 1
-        assert tree.get_node(2).data["design_electric"].n_active_pins == 5
-        assert tree.get_node(2).data["design_electric"].temperature_active == 81
-        print("\033[36m\n\tsucceed_update_design_electric topic was broadcast.")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for design electric.")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for design electric ID 1 was the "
-            "wrong type."
+            f"The value for one or more attributes for "
+            f"{self._tag.replace('_', ' ')} ID {self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_design_electric topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
     def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == ("Attempting to update the root node 0.")
-        print(
-            "\033[35m\n\tfail_update_design_electric topic was broadcast on root node."
-        )
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent design electric with design electric "
-            "ID 100."
+        assert (
+            message == f"Attempted to save non-existent {self._tag.replace('_', ' ')} "
+            f"with {self._tag.replace('_', ' ')} ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_design_electric topic was broadcast on "
-            "non-existent ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == ("No data package found for design electric ID 1.")
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} "
+            f"ID {self._update_id}."
+        )
         print(
-            "\033[35m\n\tfail_update_design_electric topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_table_model):
-        """should update the attribute value for record ID."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_design_electric")
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
+        pub.subscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
-        _design_electric = test_table_model.do_select(8)
+        _design_electric = integration_test_table_model.do_select(self._update_id)
         _design_electric.n_active_pins = 5
         _design_electric.temperature_active = 81
-        pub.sendMessage("request_update_design_electric", node_id=8)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_design_electric")
+        pub.unsubscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_table_model):
-        """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_design_electric")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(self._update_id)
         _design_electric.n_active_pins = 5
         _design_electric.temperature_active = 81
-        _design_electric = test_table_model.do_select(8)
+        _design_electric = integration_test_table_model.do_select(self._update_id + 7)
         _design_electric.n_active_pins = 12
         _design_electric.temperature_active = 71
 
-        pub.sendMessage("request_update_all_design_electric")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
         assert (
-            test_table_model.tree.get_node(1).data["design_electric"].n_active_pins == 5
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .n_active_pins
+            == 5
         )
         assert (
-            test_table_model.tree.get_node(1).data["design_electric"].temperature_active
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .temperature_active
             == 81
         )
         assert (
-            test_table_model.tree.get_node(8).data["design_electric"].n_active_pins
+            integration_test_table_model.tree.get_node(self._update_id + 7)
+            .data[self._tag]
+            .n_active_pins
             == 12
         )
         assert (
-            test_table_model.tree.get_node(8).data["design_electric"].temperature_active
+            integration_test_table_model.tree.get_node(self._update_id + 7)
+            .data[self._tag]
+            .temperature_active
             == 71
         )
 
-        pub.unsubscribe(
-            self.on_succeed_update_all, "succeed_update_all_design_electric"
-        )
+        pub.unsubscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_table_model):
-        """should send the fail message when the wrong data type is assigned."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(self._update_id)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage("request_update_design_electric", node_id=1)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_table_model):
-        """should send the fail message when attempting to update the root node."""
+    def test_do_update_root_node_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
         pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(self._update_id)
         _design_electric.temperature_active = {1: 2}
-        pub.sendMessage("request_update_design_electric", node_id=0)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
@@ -283,150 +300,44 @@ class TestUpdateMethods:
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """should send the fail message when updating a non-existent record ID."""
+        """Should send the fail message when updating a non-existent record ID."""
         pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
-        pub.sendMessage("request_update_design_electric", node_id=100)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=100)
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
         pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
-        test_table_model.tree.get_node(1).data.pop("design_electric")
-        pub.sendMessage("request_update_design_electric", node_id=1)
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_table_model", "test_toml_user_configuration")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterDesignElectric(SystemTestGetterSetterMethods):
+    """Class for testing Design Electric table getter and setter methods."""
 
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["hardware_id"] == 8
-        assert attributes["application_id"] == 0
-        assert attributes["area"] == 0.0
-        assert attributes["capacitance"] == 0.0
-        assert attributes["configuration_id"] == 0
-        assert attributes["construction_id"] == 0
-        assert attributes["contact_form_id"] == 0
-        assert attributes["contact_gauge"] == 0
-        assert attributes["contact_rating_id"] == 0
-        assert attributes["current_operating"] == 0.0
-        assert attributes["current_rated"] == 0.0
-        assert attributes["current_ratio"] == 0.0
-        assert attributes["environment_active_id"] == 0
-        assert attributes["environment_dormant_id"] == 0
-        assert attributes["family_id"] == 0
-        assert attributes["feature_size"] == 0.0
-        assert attributes["frequency_operating"] == 0.0
-        assert attributes["insert_id"] == 0
-        assert attributes["insulation_id"] == 0
-        assert attributes["manufacturing_id"] == 0
-        assert attributes["matching_id"] == 0
-        assert attributes["n_active_pins"] == 0
-        assert attributes["n_circuit_planes"] == 1
-        assert attributes["n_cycles"] == 0
-        assert attributes["n_elements"] == 0
-        assert attributes["n_hand_soldered"] == 0
-        assert attributes["n_wave_soldered"] == 0
-        assert attributes["operating_life"] == 0.0
-        assert attributes["overstress"] == 0
-        assert attributes["package_id"] == 0
-        assert attributes["power_operating"] == 0.0
-        assert attributes["power_rated"] == 0.0
-        assert attributes["power_ratio"] == 0.0
-        assert attributes["reason"] == ""
-        assert attributes["resistance"] == 0.0
-        assert attributes["specification_id"] == 0
-        assert attributes["technology_id"] == 0
-        assert attributes["temperature_active"] == 35.0
-        assert attributes["temperature_case"] == 0.0
-        assert attributes["temperature_dormant"] == 25.0
-        assert attributes["temperature_hot_spot"] == 0.0
-        assert attributes["temperature_junction"] == 0.0
-        assert attributes["temperature_knee"] == 25.0
-        assert attributes["temperature_rated_max"] == 0.0
-        assert attributes["temperature_rated_min"] == 0.0
-        assert attributes["temperature_rise"] == 0.0
-        assert attributes["theta_jc"] == 0.0
-        assert attributes["type_id"] == 0
-        assert attributes["voltage_ac_operating"] == 0.0
-        assert attributes["voltage_dc_operating"] == 0.0
-        assert attributes["voltage_esd"] == 0.0
-        assert attributes["voltage_rated"] == 0.0
-        assert attributes["voltage_ratio"] == 0.0
-        assert attributes["weight"] == 0.0
-        assert attributes["years_in_production"] == 1
+    __test__ = True
 
-        print("\033[36m\n\tsucceed_get_design_electric_attributes topic was broadcast.")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["design_electric"], RAMSTKDesignElectricRecord
-        )
-        print("\033[36m\n\tsucceed_get_design_electric_tree topic was broadcast.")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(8).data["design_electric"].temperature_active == 65.5
-        print("\033[36m\n\tsucceed_get_design_electric_tree topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_get_table_model_attributes(self, test_table_model):
-        """should return the table model attributes dict."""
-        pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_design_electric_attributes"
-        )
-
-        test_table_model.do_get_attributes(node_id=8)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_design_electric_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_tree_data_manager(self):
-        """should return the records tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_design_electric_tree"
-        )
-
-        pub.sendMessage("request_get_design_electric_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_design_electric_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_table_model_attributes(self):
-        """should set the value of the attribute requested."""
-        pub.subscribe(
-            self.on_succeed_set_attributes, "succeed_get_design_electric_tree"
-        )
-
-        pub.sendMessage(
-            "request_set_design_electric_attributes",
-            node_id=8,
-            package={"temperature_active": 65.5},
-        )
-
-        pub.unsubscribe(
-            self.on_succeed_set_attributes, "succeed_get_design_electric_tree"
-        )
+    _package = {"temperature_active": 65.5}
+    _record = RAMSTKDesignElectricRecord
+    _tag = "design_electric"
+    _test_id = 8
 
 
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestAnalysisMethods:
-    """Class for testing analytical methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestDesignElectricAnalysisMethods:
+    """Class for testing Design Electric analytical methods."""
 
-    def on_fail_calculate_current_stress(self, error_message):
-        assert error_message == (
+    def on_fail_calculate_current_stress(self, logger_name, message):
+        """Listen for fail_calculate messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
             "Failed to calculate current ratio for hardware ID 1.  Rated current=0.0, "
             "operating current=0.0032."
         )
@@ -435,8 +346,10 @@ class TestAnalysisMethods:
             "ZeroDivisionError."
         )
 
-    def on_fail_calculate_power_stress(self, error_message):
-        assert error_message == (
+    def on_fail_calculate_power_stress(self, logger_name, message):
+        """Listen for fail_calculate messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
             "Failed to calculate power ratio for hardware ID 1.  Rated power=0.0, "
             "operating power=0.0032."
         )
@@ -445,8 +358,10 @@ class TestAnalysisMethods:
             "ZeroDivisionError."
         )
 
-    def on_fail_calculate_voltage_stress(self, error_message):
-        assert error_message == (
+    def on_fail_calculate_voltage_stress(self, logger_name, message):
+        """Listen for fail_calculate messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
             "Failed to calculate voltage ratio for hardware ID 1.  Rated voltage=0.0, "
             "operating ac voltage=0.0, operating DC voltage=0.0032."
         )
@@ -456,67 +371,73 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_current_stress_zero_operating(self, test_table_model):
-        """should calculate the ratio of operating to rated current."""
+    def test_do_calculate_current_stress_zero_operating(
+        self, integration_test_table_model
+    ):
+        """Should calculate the ratio of operating to rated current."""
         pub.subscribe(
             self.on_fail_calculate_current_stress,
-            "fail_calculate_current_stress",
+            "do_log_debug_msg",
         )
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(1)
         _design_electric.current_rated = 0.0
         _design_electric.current_operating = 0.0032
 
         _design_electric.do_calculate_current_ratio()
-        _attributes = test_table_model.do_select(1).get_attributes()
+        _attributes = integration_test_table_model.do_select(1).get_attributes()
 
         assert _attributes["current_ratio"] == 0.0
 
         pub.unsubscribe(
             self.on_fail_calculate_current_stress,
-            "fail_calculate_current_stress",
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
-    def test_do_calculate_power_stress_zero_operating(self, test_table_model):
-        """should calculate the ratio of operating to rated power."""
+    def test_do_calculate_power_stress_zero_operating(
+        self, integration_test_table_model
+    ):
+        """Should calculate the ratio of operating to rated power."""
         pub.subscribe(
             self.on_fail_calculate_power_stress,
-            "fail_calculate_power_stress",
+            "do_log_debug_msg",
         )
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(1)
         _design_electric.power_rated = 0.0
         _design_electric.power_operating = 0.0032
 
         _design_electric.do_calculate_power_ratio()
-        _attributes = test_table_model.do_select(1).get_attributes()
+        _attributes = integration_test_table_model.do_select(1).get_attributes()
 
         assert _attributes["power_ratio"] == 0.0
 
         pub.unsubscribe(
             self.on_fail_calculate_power_stress,
-            "fail_calculate_power_stress",
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
-    def test_do_calculate_voltage_stress_zero_operating(self, test_table_model):
-        """should calculate the ratio of operating to rated voltage."""
+    def test_do_calculate_voltage_stress_zero_operating(
+        self, integration_test_table_model
+    ):
+        """Should calculate the ratio of operating to rated voltage."""
         pub.subscribe(
             self.on_fail_calculate_voltage_stress,
-            "fail_calculate_voltage_stress",
+            "do_log_debug_msg",
         )
 
-        _design_electric = test_table_model.do_select(1)
+        _design_electric = integration_test_table_model.do_select(1)
         _design_electric.voltage_rated = 0.0
         _design_electric.voltage_dc_operating = 0.0032
 
         _design_electric.do_calculate_voltage_ratio()
-        _attributes = test_table_model.do_select(1).get_attributes()
+        _attributes = integration_test_table_model.do_select(1).get_attributes()
 
         assert _attributes["voltage_ratio"] == 0.0
 
         pub.unsubscribe(
             self.on_fail_calculate_voltage_stress,
-            "fail_calculate_voltage_stress",
+            "do_log_debug_msg",
         )

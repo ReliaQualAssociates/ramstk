@@ -17,77 +17,38 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKAllocationRecord
 from ramstk.models.dbtables import RAMSTKAllocationTable, RAMSTKHardwareTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_table_model(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKAllocationTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectAllocation(SystemTestSelectMethods):
+    """Class for testing Allocation table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_allocation_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_allocation_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_allocation")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_allocation")
-    pub.unsubscribe(dut.do_update, "request_update_allocation")
-    pub.unsubscribe(dut.do_get_tree, "request_get_allocation_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_allocation")
-    pub.unsubscribe(dut.do_insert, "request_insert_allocation")
-    pub.unsubscribe(
-        dut.do_calculate_agree_allocation, "request_calculate_agree_allocation"
-    )
-    pub.unsubscribe(
-        dut.do_calculate_arinc_allocation, "request_calculate_arinc_allocation"
-    )
-    pub.unsubscribe(
-        dut.do_calculate_equal_allocation, "request_calculate_equal_allocation"
-    )
-    pub.unsubscribe(dut.do_calculate_foo_allocation, "request_calculate_foo_allocation")
-    pub.unsubscribe(
-        dut.do_calculate_allocation_goals, "request_calculate_allocation_goals"
-    )
-    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
-    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKAllocationRecord
+    _select_id = 1
+    _tag = "allocation"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
-
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\n\tsucceed_retrieve_all_allocation topic was broadcast.")
-
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
-        """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_allocation")
-
-        pub.sendMessage("selected_revision", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_allocation")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_table_model", "test_hardware_table")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+@pytest.mark.usefixtures(
+    "test_attributes", "integration_test_table_model", "test_hardware_table_model"
+)
+class TestInsertAllocation:
+    """Class for testing the Allocation do_insert() method."""
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should add a record to the record tree."""
-        assert test_table_model.tree.get_node(9) is None
+        """Should add a record to the record tree."""
+        assert integration_test_table_model.tree.get_node(9) is None
 
         # The allocation record is added by the database whenever a hardware record is
         # added to the database.  Adding the new allocation record to the Allocation
@@ -105,18 +66,28 @@ class TestInsertMethods:
         )
 
         assert isinstance(
-            test_table_model.tree.get_node(9).data["allocation"], RAMSTKAllocationRecord
+            integration_test_table_model.tree.get_node(9).data["allocation"],
+            RAMSTKAllocationRecord,
         )
-        assert test_table_model.tree.get_node(9).data["allocation"].revision_id == 1
-        assert test_table_model.tree.get_node(9).data["allocation"].hardware_id == 9
-        assert test_table_model.tree.get_node(9).data["allocation"].parent_id == 2
+        assert (
+            integration_test_table_model.tree.get_node(9).data["allocation"].revision_id
+            == 1
+        )
+        assert (
+            integration_test_table_model.tree.get_node(9).data["allocation"].hardware_id
+            == 9
+        )
+        assert (
+            integration_test_table_model.tree.get_node(9).data["allocation"].parent_id
+            == 2
+        )
 
     @pytest.mark.integration
     def test_do_insert_part(
-        self, test_attributes, test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should NOT add a record to the record tree."""
-        assert test_table_model.tree.get_node(10) is None
+        """Should NOT add a record to the record tree."""
+        assert integration_test_table_model.tree.get_node(10) is None
 
         # The allocation record is added by the database whenever a hardware record is
         # added to the database.  Adding the new allocation record to the Allocation
@@ -133,247 +104,202 @@ class TestInsertMethods:
             },
         )
 
-        assert test_table_model.tree.get_node(10) is None
+        assert integration_test_table_model.tree.get_node(10) is None
 
 
-@pytest.mark.usefixtures("test_table_model", "test_hardware_table")
-class TestDeleteMethods:
-    """Class for testing the do_delete() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteAllocation(SystemTestDeleteMethods):
+    """Class for testing Allocation table do_delete() method."""
 
-    def on_succeed_delete_hardware(self, tree):
-        assert tree.get_node(7) is None
-        print("\033[36m\n\tsucceed_delete_hardware topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_delete(self, test_table_model, test_hardware_table):
-        """should remove record from record tree."""
-        pub.subscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
-
-        assert isinstance(
-            test_table_model.tree.get_node(7).data["allocation"], RAMSTKAllocationRecord
-        )
-
-        # Allocation records are cascade deleted by the database server whenever the
-        # corresponding Hardware record is deleted.
-        pub.sendMessage("request_delete_hardware", node_id=7)
-
-        assert test_table_model.tree.get_node(7) is None
-
-        pub.unsubscribe(self.on_succeed_delete_hardware, "succeed_delete_hardware")
+    _delete_id = 1
+    _next_id = 0
+    _record = RAMSTKAllocationRecord
+    _tag = "allocation"
 
 
-@pytest.mark.usefixtures("test_table_model")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateAllocation:
+    """Class for testing Allocation update() and update_all() methods."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKAllocationRecord
+    _tag = "allocation"
+    _update_id = 2
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["allocation"].parent_id == 1
-        assert tree.get_node(2).data["allocation"].percent_weight_factor == 0.9832
-        assert tree.get_node(2).data["allocation"].mtbf_goal == 12000
-        print("\033[36m\n\tsucceed_update_allocation topic was broadcast.")
+        assert tree.get_node(self._update_id).data[self._tag].parent_id == 1
+        assert (
+            tree.get_node(self._update_id).data[self._tag].percent_weight_factor
+            == 0.9832
+        )
+        assert tree.get_node(self._update_id).data[self._tag].mtbf_goal == 12000
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for allocation.")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for allocation "
-            "ID 1 was the wrong type."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_allocation topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\n\tfail_update_allocation topic was broadcast on root node.")
+    def on_fail_update_root_node(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent allocation with "
-            "allocation ID 100."
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"Attempted to save non-existent {self._tag} with {self._tag} "
+            f"ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_allocation topic was broadcast on non-existent ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for allocation ID 1."
-        )
+    def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == f"No data package found for {self._tag} ID {self._update_id}."
         print(
-            "\033[35m\n\tfail_update_allocation topic was broadcast on no data package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_table_model):
-        """should update the attribute value for record ID."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_allocation")
+    def test_do_update(self, integration_test_table_model):
+        """Should update record attribute."""
+        pub.subscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
-        _allocation = test_table_model.do_select(2)
+        _allocation = integration_test_table_model.do_select(2)
         _allocation.percent_weight_factor = 0.9832
         _allocation.mtbf_goal = 12000
-        pub.sendMessage("request_update_allocation", node_id=2)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_allocation")
+        pub.unsubscribe(self.on_succeed_update, f"succeed_update_{self._tag}")
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_table_model):
-        """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_allocation")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all the records in the database."""
+        pub.subscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
-        _allocation = test_table_model.do_select(1)
+        _allocation = integration_test_table_model.do_select(self._update_id - 1)
         _allocation.percent_weight_factor = 0.9832
         _allocation.mtbf_goal = 12000
-        _allocation = test_table_model.do_select(2)
+        _allocation = integration_test_table_model.do_select(self._update_id)
         _allocation.percent_weight_factor = 0.9961
         _allocation.mtbf_goal = 18500
 
-        pub.sendMessage("request_update_all_allocation")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
         assert (
-            test_table_model.tree.get_node(1).data["allocation"].percent_weight_factor
+            integration_test_table_model.tree.get_node(self._update_id - 1)
+            .data[self._tag]
+            .percent_weight_factor
             == 0.9832
         )
-        assert test_table_model.tree.get_node(1).data["allocation"].mtbf_goal == 12000
         assert (
-            test_table_model.tree.get_node(2).data["allocation"].percent_weight_factor
+            integration_test_table_model.tree.get_node(self._update_id - 1)
+            .data[self._tag]
+            .mtbf_goal
+            == 12000
+        )
+        assert (
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .percent_weight_factor
             == 0.9961
         )
-        assert test_table_model.tree.get_node(2).data["allocation"].mtbf_goal == 18500
-
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_allocation")
-
-    @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_table_model):
-        """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
-
-        _allocation = test_table_model.do_select(1)
-        _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_allocation")
-
-    @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_table_model):
-        """should send the fail message when attempting to update the root node."""
-        pub.subscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
+        assert (
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .mtbf_goal
+            == 18500
         )
 
-        _allocation = test_table_model.do_select(1)
-        _allocation.mtbf_goal = {1: 2}
-        pub.sendMessage("request_update_allocation", node_id=0)
+        pub.unsubscribe(self.on_succeed_update_all, f"succeed_update_all_{self._tag}")
 
-        pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "fail_update_allocation"
-        )
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message with wrong attribute data type."""
+        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
+
+        _allocation = integration_test_table_model.do_select(self._update_id)
+        _allocation.mtbf_goal = {1: 2}
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
+
+        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
+
+    @pytest.mark.integration
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the do_log_debug message when attempting to update root node."""
+        pub.subscribe(self.on_fail_update_root_node, "do_log_debug_msg")
+
+        _allocation = integration_test_table_model.do_select(self._update_id)
+        _allocation.mtbf_goal = {1: 2}
+        pub.sendMessage(f"request_update_{self._tag}", node_id=0)
+
+        pub.unsubscribe(self.on_fail_update_root_node, "do_log_debug_msg")
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
+        """Should send the do_log_debug message with non-existent ID in tree."""
+        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
-        pub.sendMessage("request_update_allocation", node_id=100)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=100)
 
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_allocation")
-
-    @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
-
-        test_table_model.tree.get_node(1).data.pop("allocation")
-        pub.sendMessage("request_update_allocation", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_allocation")
-
-
-@pytest.mark.usefixtures("test_table_model", "test_toml_user_configuration")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["hardware_id"] == 2
-        assert attributes["availability_alloc"] == 0.0
-        assert attributes["env_factor"] == 1
-        assert attributes["goal_measure_id"] == 1
-        assert attributes["hazard_rate_alloc"] == 0.0
-        assert attributes["hazard_rate_goal"] == 0.000617
-        assert attributes["included"] == 1
-        assert attributes["int_factor"] == 1
-        assert attributes["allocation_method_id"] == 4
-        assert attributes["mtbf_alloc"] == 0.0
-        assert attributes["mtbf_goal"] == 0.0
-        assert attributes["n_sub_systems"] == 1
-        assert attributes["n_sub_elements"] == 1
-        assert attributes["parent_id"] == 1
-        assert attributes["percent_weight_factor"] == 0.0
-        assert attributes["reliability_alloc"] == 1.0
-        assert attributes["op_time_factor"] == 1
-        assert attributes["soa_factor"] == 1
-        assert attributes["weight_factor"] == 1
-        print("\033[36m\n\tsucceed_get_allocation_attributes topic was broadcast.")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["allocation"], RAMSTKAllocationRecord)
-        print("\033[36m\n\tsucceed_get_allocation_tree topic was broadcast.")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["allocation"].hazard_rate_goal == 0.00005
-        print("\033[36m\n\tsucceed_get_allocation_tree topic was broadcast")
+        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
 
     @pytest.mark.integration
-    def test_do_get_attributes(self, test_table_model):
-        """should return the attributes dict."""
-        pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_allocation_attributes"
-        )
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the do_log_debug message with no data package in tree."""
+        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
-        test_table_model.do_get_attributes(node_id=2)
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(f"request_update_{self._tag}", node_id=self._update_id)
 
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_allocation_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_tree_data_manager(self):
-        """should return the records tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
-        )
-
-        pub.sendMessage("request_get_allocation_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_allocation_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self):
-        """should set the value of the attribute requested."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_allocation_tree")
-
-        pub.sendMessage(
-            "request_set_allocation_attributes",
-            node_id=2,
-            package={"hazard_rate_goal": 0.00005},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_allocation_tree")
+        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
 
 
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestAnalysisMethods:
-    """Class for testing analytical methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterAllocation(SystemTestGetterSetterMethods):
+    """Class for testing Allocation table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"hazard_rate_goal": 0.00005}
+    _record = RAMSTKAllocationRecord
+    _tag = "allocation"
+    _test_id = 1
+
+
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestAnalysisAllocation:
+    """Class for testing Allocation analytical methods."""
 
     def on_succeed_calculate_agree(self, tree):
+        """Listen for succeed_calculate_allocation message."""
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
             0.0058364814
@@ -390,6 +316,7 @@ class TestAnalysisMethods:
         )
 
     def on_succeed_calculate_arinc(self, tree):
+        """Listen for succeed_calculate_allocation message."""
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
             0.0001445267
@@ -406,6 +333,7 @@ class TestAnalysisMethods:
         )
 
     def on_succeed_calculate_equal(self, tree):
+        """Listen for succeed_calculate_allocation message."""
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
             5.012542e-05
@@ -422,6 +350,7 @@ class TestAnalysisMethods:
         )
 
     def on_succeed_calculate_foo(self, tree):
+        """Listen for succeed_calculate_allocation message."""
         assert isinstance(tree, Tree)
         assert tree.get_node(2).data["allocation"].hazard_rate_alloc == pytest.approx(
             0.0006151015
@@ -438,16 +367,28 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.integration
-    def test_do_calculate_agree_allocation(self, test_table_model):
-        """should apportion the record ID reliability goal using the AGREE method."""
+    def test_do_calculate_agree_allocation(self, integration_test_table_model):
+        """Should apportion the record ID reliability goal using the AGREE method."""
         pub.subscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
-        test_table_model.tree.get_node(1).data["allocation"].allocation_method_id = 2
-        test_table_model.tree.get_node(1).data["allocation"].reliability_goal = 0.717
-        test_table_model.tree.get_node(2).data["allocation"].mission_time = 100.0
-        test_table_model.tree.get_node(2).data["allocation"].n_sub_subsystems = 6
-        test_table_model.tree.get_node(2).data["allocation"].n_sub_elements = 2
-        test_table_model.tree.get_node(2).data["allocation"].weight_factor = 0.95
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 2
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].reliability_goal = 0.717
+        integration_test_table_model.tree.get_node(2).data[
+            "allocation"
+        ].mission_time = 100.0
+        integration_test_table_model.tree.get_node(2).data[
+            "allocation"
+        ].n_sub_subsystems = 6
+        integration_test_table_model.tree.get_node(2).data[
+            "allocation"
+        ].n_sub_elements = 2
+        integration_test_table_model.tree.get_node(2).data[
+            "allocation"
+        ].weight_factor = 0.95
 
         pub.sendMessage(
             "request_calculate_agree_allocation",
@@ -458,17 +399,23 @@ class TestAnalysisMethods:
         pub.unsubscribe(self.on_succeed_calculate_agree, "succeed_calculate_allocation")
 
     @pytest.mark.integration
-    def test_do_calculate_arinc_allocation(self, test_table_model):
-        """should apportion the record ID reliability goal using the ARINC method."""
+    def test_do_calculate_arinc_allocation(self, integration_test_table_model):
+        """Should apportion the record ID reliability goal using the ARINC method."""
         pub.subscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
-        test_table_model._node_hazard_rate = 0.000628
-        test_table_model._system_hazard_rate = 0.002681
+        integration_test_table_model._node_hazard_rate = 0.000628
+        integration_test_table_model._system_hazard_rate = 0.002681
 
-        test_table_model.tree.get_node(1).data["allocation"].allocation_method_id = 3
-        test_table_model.tree.get_node(1).data["allocation"].goal_measure_id = 2
-        test_table_model.tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-        test_table_model.tree.get_node(2).data[
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 3
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].goal_measure_id = 2
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
+        integration_test_table_model.tree.get_node(2).data[
             "allocation"
         ].hazard_rate_active = 0.000628
 
@@ -477,30 +424,44 @@ class TestAnalysisMethods:
         pub.unsubscribe(self.on_succeed_calculate_arinc, "succeed_calculate_allocation")
 
     @pytest.mark.integration
-    def test_do_calculate_equal_allocation(self, test_table_model):
-        """should apportion the record ID reliability goal using the equal method."""
+    def test_do_calculate_equal_allocation(self, integration_test_table_model):
+        """Should apportion the record ID reliability goal using the equal method."""
         pub.subscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
-        test_table_model.tree.get_node(1).data["allocation"].allocation_method_id = 1
-        test_table_model.tree.get_node(1).data["allocation"].goal_measure_id = 1
-        test_table_model.tree.get_node(1).data["allocation"].reliability_goal = 0.995
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 1
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].goal_measure_id = 1
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].reliability_goal = 0.995
 
         pub.sendMessage("request_calculate_equal_allocation", node_id=1)
 
         pub.unsubscribe(self.on_succeed_calculate_equal, "succeed_calculate_allocation")
 
     @pytest.mark.integration
-    def test_do_calculate_foo_allocation(self, test_table_model):
-        """should apportion the record ID reliability goal using the FOO method."""
+    def test_do_calculate_foo_allocation(self, integration_test_table_model):
+        """Should apportion the record ID reliability goal using the FOO method."""
         pub.subscribe(self.on_succeed_calculate_foo, "succeed_calculate_allocation")
 
-        test_table_model.tree.get_node(1).data["allocation"].allocation_method_id = 4
-        test_table_model.tree.get_node(1).data["allocation"].goal_measure_id = 1
-        test_table_model.tree.get_node(1).data["allocation"].hazard_rate_goal = 0.000617
-        test_table_model.tree.get_node(2).data["allocation"].env_factor = 6
-        test_table_model.tree.get_node(2).data["allocation"].soa_factor = 2
-        test_table_model.tree.get_node(2).data["allocation"].op_time_factor = 9
-        test_table_model.tree.get_node(2).data["allocation"].int_factor = 3
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].allocation_method_id = 4
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].goal_measure_id = 1
+        integration_test_table_model.tree.get_node(1).data[
+            "allocation"
+        ].hazard_rate_goal = 0.000617
+        integration_test_table_model.tree.get_node(2).data["allocation"].env_factor = 6
+        integration_test_table_model.tree.get_node(2).data["allocation"].soa_factor = 2
+        integration_test_table_model.tree.get_node(2).data[
+            "allocation"
+        ].op_time_factor = 9
+        integration_test_table_model.tree.get_node(2).data["allocation"].int_factor = 3
 
         pub.sendMessage("request_calculate_foo_allocation", node_id=1)
 

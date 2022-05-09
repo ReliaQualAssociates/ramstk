@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.commondb.user.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK User module test fixtures."""
+
 # Standard Library Imports
 from datetime import date, timedelta
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKUserRecord
+from ramstk.models.dbtables import RAMSTKUserTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_common_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _user_1 = RAMSTKUserRecord()
     _user_1.user_id = 1
     _user_1.user_lname = "Sweetheart"
@@ -19,16 +30,26 @@ def mock_common_dao(monkeypatch):
     _user_1.user_phone = "269-867-5309"
     _user_1.user_group_id = "10"
 
-    DAO = MockDAO()
-    DAO.table = [
+    _user_2 = RAMSTKUserRecord()
+    _user_2.user_id = 2
+    _user_2.user_lname = "Janson"
+    _user_2.user_fname = "Jillian"
+    _user_2.user_email = "jillian.janson@myclub.com"
+    _user_2.user_phone = "269-867-5310"
+    _user_2.user_group_id = "8"
+
+    dao = MockDAO()
+    dao.table = [
         _user_1,
+        _user_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of User attributes."""
     yield {
         "user_id": 1,
         "user_lname": "Sweetheart",
@@ -40,11 +61,41 @@ def test_attributes():
 
 
 @pytest.fixture(scope="function")
-def test_recordmodel(mock_common_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_common_dao.do_select_all(RAMSTKUserRecord, _all=False)
+def unit_test_table_model(mock_dao):
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKUserTable()
+    dut.do_connect(mock_dao)
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_user_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_user_attributes")
+    pub.unsubscribe(dut.do_update, "request_update_user")
+    pub.unsubscribe(dut.do_get_tree, "request_get_user_tree")
+    pub.unsubscribe(dut.do_select_all, "request_get_user_attributes")
+
+    # Delete the device under test.
+    del dut
+
+
+@pytest.fixture(scope="class")
+def integration_test_table_model(test_common_dao):
+    """Get a table model instance for each test class."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKUserTable()
+    dut.do_connect(test_common_dao)
+    dut.do_select_all({"user_id": 1})
+
+    yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_user_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_user_attributes")
+    pub.unsubscribe(dut.do_update, "request_update_user")
+    pub.unsubscribe(dut.do_get_tree, "request_get_user_tree")
+    pub.unsubscribe(dut.do_select_all, "request_get_user_attributes")
 
     # Delete the device under test.
     del dut

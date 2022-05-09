@@ -17,367 +17,278 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKStakeholderRecord
 from ramstk.models.dbtables import RAMSTKStakeholderTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKStakeholderTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectStakeholder(SystemTestSelectMethods):
+    """Class for testing Stakeholder table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_stakeholder_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_stakeholder_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_stakeholder")
-    pub.unsubscribe(dut.do_update, "request_update_stakeholder")
-    pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_stakeholder")
-    pub.unsubscribe(dut.do_insert, "request_insert_stakeholder")
-    pub.unsubscribe(dut.do_calculate_stakeholder, "request_calculate_stakeholder")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKStakeholderRecord
+    _select_id = 1
+    _tag = "stakeholder"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertStakeholder(SystemTestInsertMethods):
+    """Class for testing Stakeholder table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["stakeholder"], RAMSTKStakeholderRecord)
-        print("\033[36m\n\tsucceed_retrieve_all_stakeholder topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_tablemodel):
-        """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_all_stakeholder")
+    _insert_id = 4
+    _record = RAMSTKStakeholderRecord
+    _tag = "stakeholder"
 
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    @pytest.mark.skip(reason="Stakeholder records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Stakeholders are not hierarchical."""
+        pass
 
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["stakeholder"],
-            RAMSTKStakeholderRecord,
-        )
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_all_stakeholder")
+    @pytest.mark.skip(reason="Stakeholder records are non-hierarchical.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Stakeholders are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteStakeholder(SystemTestDeleteMethods):
+    """Class for testing Stakeholder table do_delete() method."""
 
-    def on_succeed_insert_sibling(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(3).data["stakeholder"], RAMSTKStakeholderRecord)
-        assert tree.get_node(3).data["stakeholder"].stakeholder_id == 3
-        assert tree.get_node(3).data["stakeholder"].description == "Stakeholder Input"
-        print("\033[36m\n\tsucceed_insert_stakeholder topic was broadcast")
+    __test__ = True
 
-    def on_fail_insert_no_revision(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  "
-            "Database returned:\n\tKey (fld_revision_id)=(40) is not present "
-            'in table "ramstk_revision".'
-        )
-        print("\033[35m\n\tfail_insert_stakeholder topic was broadcast on no revision.")
+    _delete_id = 1
+    _record = RAMSTKStakeholderRecord
+    _tag = "stakeholder"
 
-    @pytest.mark.integration
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a record to the record tree and update last_id."""
-        pub.subscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
-
-        assert test_tablemodel.tree.get_node(3) is None
-
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
-
-        assert test_tablemodel.last_id == 3
-
-        pub.unsubscribe(self.on_succeed_insert_sibling, "succeed_insert_stakeholder")
-
-    @pytest.mark.integration
-    def test_do_insert_no_revision(self, test_attributes, test_tablemodel):
-        """should not add a record when passed a non-existent revision ID."""
-        pub.subscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
-
-        test_attributes["revision_id"] = 40
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_stakeholder", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_fail_insert_no_revision, "do_log_debug_msg")
+    @pytest.mark.skip(reason="Stakeholder records are non-hierarchical.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Stakeholders are not hierarchical."""
+        pass
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateStakeholder:
+    """Class for testing Stakeholder table do_update() and do_update_all() methods."""
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_stakeholder topic was broadcast.")
+    __test__ = True
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 300 in module stakeholder."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Stakeholder ID 300."
-            print(
-                "\033[35m\n\tfail_delete_stakeholder topic was broadcast on "
-                "non-existent ID."
-            )
-
-    def on_fail_delete_no_data_package(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 1 in module stakeholder."
-            print(
-                "\033[35m\n\tfail_delete_stakeholder topic was broadcast on no data "
-                "package."
-            )
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Stakeholder ID 1."
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_tablemodel):
-        """should remove record from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_stakeholder")
-
-        pub.sendMessage("request_delete_stakeholder", node_id=test_tablemodel.last_id)
-
-        assert test_tablemodel.last_id == 1
-        assert test_tablemodel.tree.get_node(2) is None
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_stakeholder")
-
-    @pytest.mark.integration
-    def test_do_delete_non_existent_id(self, test_tablemodel):
-        """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_stakeholder", node_id=300)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_tablemodel):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
-
-        test_tablemodel.tree.get_node(1).data.pop("stakeholder")
-        pub.sendMessage("request_delete_stakeholder", node_id=1)
-
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKStakeholderRecord
+    _tag = "stakeholder"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(1).data["stakeholder"].description == ("Test Stakeholder")
-        print("\033[36m\n\tsucceed_update_stakeholder topic was broadcast")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for Stakeholder")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for stakeholder ID 1 was the wrong "
-            "type."
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_stakeholder topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+    def on_fail_update_root_node(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == "Attempting to update the root node 0."
-        print("\033[35m\n\tfail_update_stakeholder topic was broadcast on root node.")
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent stakeholder with stakeholder ID 100."
+        assert (
+            message == f"Attempted to save non-existent "
+            f"{self._tag.replace('_', ' ')} with"
+            f" {self._tag.replace('_', ' ')} "
+            f"ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_stakeholder topic was broadcast on non-existent "
-            "ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == "No data package found for stakeholder ID 1."
+        assert (
+            message == f"No data package found for {self._tag.replace('_', ' ')} ID "
+            f"{self._update_id}."
+        )
         print(
-            "\033[35m\n\tfail_update_stakeholder topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """should update the attribute value for record ID."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_stakeholder")
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
+        pub.subscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
-        test_tablemodel.tree.get_node(1).data[
-            "stakeholder"
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
         ].description = "Test Stakeholder"
-        pub.sendMessage("request_update_stakeholder", node_id=1)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
         assert (
-            test_tablemodel.tree.get_node(1).data["stakeholder"].description
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .description
             == "Test Stakeholder"
         )
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_stakeholder")
+        pub.unsubscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_stakeholder")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
-        test_tablemodel.tree.get_node(1).data[
-            "stakeholder"
+        integration_test_table_model.tree.get_node(self._update_id).data[
+            self._tag
         ].description = "Test Stakeholder 2"
 
-        pub.sendMessage("request_update_all_stakeholder")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
         assert (
-            test_tablemodel.tree.get_node(1).data["stakeholder"].description
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .description
             == "Test Stakeholder 2"
         )
 
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_stakeholder")
+        pub.unsubscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
+        pub.subscribe(
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
+        )
 
-        _stakeholder = test_tablemodel.do_select(1)
+        _stakeholder = integration_test_table_model.do_select(self._update_id)
         _stakeholder.user_float_1 = {1: 2}
-        pub.sendMessage("request_update_stakeholder", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """should send the fail message when attempting to update the root node."""
-        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
-
-        _stakeholder = test_tablemodel.do_select(1)
-        _stakeholder.user_float_1 = {1: 2}
-
-        pub.sendMessage("request_update_stakeholder", node_id=0)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
+        pub.subscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
+        )
+
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=0,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_update_stakeholder", node_id=100)
-
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-        test_tablemodel.tree.get_node(1).data.pop("stakeholder")
-        pub.sendMessage("request_update_stakeholder", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["stakeholder_id"] == 1
-        assert attributes["description"] == "Test Stakeholder Input"
-        assert attributes["priority"] == 1
-        print("\033[36m\n\tsucceed_get_stakeholder_attributes topic was broadcast")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data, dict)
-        assert isinstance(tree.get_node(1).data["stakeholder"], RAMSTKStakeholderRecord)
-        print("\033[36m\n\tsucceed_get_stakeholder_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert (
-            tree.get_node(1).data["stakeholder"].description
-            == "Testing set description from moduleview."
-        )
-        print("\033[36m\n\tsucceed_get_stakeholder_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self):
-        """should return the attributes dict."""
+        """Should send the fail message when updating a non-existent record ID."""
         pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
         )
-
-        pub.sendMessage("request_get_stakeholder_attributes", node_id=1)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_stakeholder_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_tree(self):
-        """should return the records tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_stakeholder_tree"
-        )
-
-        pub.sendMessage("request_get_stakeholder_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_stakeholder_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """should set the value of the attribute requested."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_stakeholder_tree")
 
         pub.sendMessage(
-            "request_set_stakeholder_attributes",
-            node_id=1,
-            package={"description": "Testing set description from moduleview."},
+            f"request_update_{self._tag}",
+            node_id=100,
         )
 
-        assert (
-            test_tablemodel.tree.get_node(1).data["stakeholder"].description
-            == "Testing set description from moduleview."
+        pub.unsubscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
         )
 
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_stakeholder_tree")
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
+        pub.subscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
+        )
+
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
+        )
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestAnalysisMethods:
-    """Class for testing analytical methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterStakeholder(SystemTestGetterSetterMethods):
+    """Class for testing Stakeholder table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"description": "Testing set description from moduleview."}
+    _record = RAMSTKStakeholderRecord
+    _tag = "stakeholder"
+    _test_id = 1
+
+
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestAnalysisStakeholder:
+    """Class for testing Stakeholder analytical methods."""
 
     def on_succeed_calculate_stakeholder(self, tree):
+        """Listen for on_succeed_calculate messages."""
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(1).data, dict)
         assert tree.get_node(1).data["stakeholder"].improvement == 1.2
@@ -385,25 +296,30 @@ class TestAnalysisMethods:
         print("\033[36m\n\tsucceed_calculate_stakeholder topic was broadcast.")
 
     @pytest.mark.integration
-    def test_do_calculate_stakeholder(self, test_tablemodel):
-        """should calculate the record's improvement factor and overall weight."""
+    def test_do_calculate_stakeholder(self, integration_test_table_model):
+        """Should calculate the record's improvement factor and overall weight."""
         pub.subscribe(
-            self.on_succeed_calculate_stakeholder, "succeed_calculate_stakeholder"
+            self.on_succeed_calculate_stakeholder,
+            "succeed_calculate_stakeholder",
         )
 
-        _stakeholder = test_tablemodel.do_select(1)
+        _stakeholder = integration_test_table_model.do_select(1)
         _stakeholder.planned_rank = 3
         _stakeholder.customer_rank = 2
         _stakeholder.priority = 4
         _stakeholder.user_float_1 = 2.6
-        test_tablemodel.do_update(1)
+        integration_test_table_model.do_update(1)
 
-        pub.sendMessage("request_calculate_stakeholder", node_id=1)
+        pub.sendMessage(
+            "request_calculate_stakeholder",
+            node_id=1,
+        )
 
-        _attributes = test_tablemodel.do_select(1).get_attributes()
+        _attributes = integration_test_table_model.do_select(1).get_attributes()
         assert _attributes["improvement"] == 1.2
         assert _attributes["overall_weight"] == 12.48
 
         pub.unsubscribe(
-            self.on_succeed_calculate_stakeholder, "succeed_calculate_stakeholder"
+            self.on_succeed_calculate_stakeholder,
+            "succeed_calculate_stakeholder",
         )

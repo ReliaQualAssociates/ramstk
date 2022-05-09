@@ -17,140 +17,141 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFailureModeRecord
 from ramstk.models.dbtables import RAMSTKFailureModeTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_tablemodel(test_common_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKFailureModeTable()
-    dut.do_connect(test_common_dao)
-    dut.do_select_all(
-        {
-            "category_id": 3,
-            "subcategory_id": 24,
-            "mode_id": 3,
-        }
-    )
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectFailureMode(SystemTestSelectMethods):
+    """Class for testing Failure Mode table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_failure_mode_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_failure_mode_attributes")
-    pub.unsubscribe(dut.do_update, "request_update_failure_mode")
-    pub.unsubscribe(dut.do_get_tree, "request_get_failure_mode_tree")
-    pub.unsubscribe(dut.do_select_all, "request_get_failure_mode_attributes")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "request_select_failure_mode"
+    _record = RAMSTKFailureModeRecord
+    _tag = "failure_mode"
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateFailureMode:
+    """Class for testing Failure Mode table do_update() and do_update_all() methods."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(1).data["failure_mode"], RAMSTKFailureModeRecord
-        )
-        # There should be a root node with no data package and a node with
-        # the one RAMSTKFailureModeRecord record.
-        assert len(tree.all_nodes()) == 2
-        print("\033[36m\nsucceed_retrieve_failure_mode topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_tablemodel):
-        """do_select_all() should clear nodes from an existing FailureMode tree."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_failure_mode")
-
-        test_tablemodel.do_select_all(
-            {
-                "category_id": 3,
-                "subcategory_id": 24,
-                "mode_id": 3,
-            }
-        )
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_failure_mode")
-
-
-@pytest.mark.usefixtures("test_tablemodel")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+    _next_id = 0
+    _record = RAMSTKFailureModeRecord
+    _tag = "failure_mode"
+    _update_id = 1
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
         assert tree.get_node(3).data["failure_mode"].description == "New Failure Mode"
         assert tree.get_node(3).data["failure_mode"].mode_ratio == 0.5
         print("\033[36m\nsucceed_update_failure_mode topic was broadcast")
 
     def on_succeed_update_all(self):
-        print("\033[36m\nsucceed_update_all topic was broadcast")
-
-    def on_fail_update_wrong_data_type(self, error_message):
-        assert error_message == (
-            "do_update: The value for one or more attributes for failure mode ID 3 "
-            "was the wrong type."
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
         )
-        print("\033[35m\nfail_update_failure_mode topic was broadcast on wrong type.")
 
-    def on_fail_update_root_node_wrong_data_type(self, error_message):
-        assert error_message == ("do_update: Attempting to update the root node 0.")
-        print("\033[35m\nfail_update_failure_mode topic was broadcast on root node.")
-
-    def on_fail_update_non_existent_id(self, error_message):
-        assert error_message == (
-            "do_update: Attempted to save non-existent failure mode with failure mode "
-            "ID skullduggery."
+    def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == (
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\nfail_update_failure_mode topic was broadcast on non-existent ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_no_data_package(self, error_message):
-        assert error_message == (
-            "do_update: No data package found for failure mode ID 3."
+    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
+
+    def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert (
+            message == f"Attempted to save non-existent {self._tag} with {self._tag} "
+            f"ID 100."
         )
         print(
-            "\033[35m\nfail_update_failure_mode topic was broadcast on no data package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
+        )
+
+    def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == f"No data package found for {self._tag} ID {self._update_id}."
+        print(
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update(self, integration_test_table_model):
+        """Should update record attribute."""
         pub.subscribe(self.on_succeed_update, "succeed_update_failure_mode")
 
-        test_tablemodel.tree.get_node(3).data[
+        integration_test_table_model.tree.get_node(3).data[
             "failure_mode"
         ].description = "New Failure Mode"
-        test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio = 0.5
-        test_tablemodel.do_update(3)
+        integration_test_table_model.tree.get_node(3).data[
+            "failure_mode"
+        ].mode_ratio = 0.5
+        integration_test_table_model.do_update(3)
 
         pub.unsubscribe(self.on_succeed_update, "succeed_update_failure_mode")
 
         assert (
-            test_tablemodel.tree.get_node(3).data["failure_mode"].description
+            integration_test_table_model.tree.get_node(3)
+            .data["failure_mode"]
+            .description
             == "New Failure Mode"
         )
-        assert test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio == 0.5
+        assert (
+            integration_test_table_model.tree.get_node(3)
+            .data["failure_mode"]
+            .mode_ratio
+            == 0.5
+        )
 
-        test_tablemodel.tree.get_node(3).data[
+        integration_test_table_model.tree.get_node(3).data[
             "failure_mode"
         ].description = "Short (pin-to-pin)"
-        test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio = 0.8
-        test_tablemodel.do_update(3)
+        integration_test_table_model.tree.get_node(3).data[
+            "failure_mode"
+        ].mode_ratio = 0.8
+        integration_test_table_model.do_update(3)
 
         assert (
-            test_tablemodel.tree.get_node(3).data["failure_mode"].description
+            integration_test_table_model.tree.get_node(3)
+            .data["failure_mode"]
+            .description
             == "Short (pin-to-pin)"
         )
-        assert test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio == 0.8
+        assert (
+            integration_test_table_model.tree.get_node(3)
+            .data["failure_mode"]
+            .mode_ratio
+            == 0.8
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_tablemodel):
-        """do_update_all() should broadcast the succeed message on success."""
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all the records in the database."""
         pub.subscribe(self.on_succeed_update_all, "succeed_update_all_mode")
 
         pub.sendMessage("request_update_all_failure_mode")
@@ -158,130 +159,67 @@ class TestUpdateMethods:
         pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_mode")
 
     @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message with wrong attribute data type."""
         pub.subscribe(self.on_fail_update_wrong_data_type, "fail_update_mode")
 
-        test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio = "Hi ya"
-        test_tablemodel.do_update(3)
+        integration_test_table_model.tree.get_node(3).data[
+            "failure_mode"
+        ].mode_ratio = "Hi ya"
+        integration_test_table_model.do_update(3)
 
         pub.unsubscribe(self.on_fail_update_wrong_data_type, "fail_update_mode")
 
     @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_tablemodel):
-        """do_update() should return a zero error code on success."""
+    def test_do_update_root_node_wrong_data_type(self, integration_test_table_model):
+        """Should send the do_log_debug message when attempting to update root node."""
         pub.subscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_failure_mode"
         )
 
-        test_tablemodel.tree.get_node(3).data["failure_mode"].mode_ratio = "Hey bud"
-        test_tablemodel.do_update(0)
+        integration_test_table_model.tree.get_node(3).data[
+            "failure_mode"
+        ].mode_ratio = "Hey bud"
+        integration_test_table_model.do_update(0)
 
         pub.unsubscribe(
             self.on_fail_update_root_node_wrong_data_type, "fail_update_failure_mode"
         )
 
     @pytest.mark.integration
-    def test_do_update_non_existent_id(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a Failure Mode
-        ID that doesn't exist."""
+    def test_do_update_non_existent_id(self, integration_test_table_model):
+        """Should send the do_log_debug message with non-existent ID in tree."""
         pub.subscribe(self.on_fail_update_non_existent_id, "fail_update_failure_mode")
 
-        test_tablemodel.do_select_all(
+        integration_test_table_model.do_select_all(
             {
                 "category_id": 3,
                 "subcategory_id": 24,
                 "mode_id": 3,
             }
         )
-        test_tablemodel.do_update("skullduggery")
+        integration_test_table_model.do_update("skullduggery")
 
         pub.unsubscribe(self.on_fail_update_non_existent_id, "fail_update_failure_mode")
 
     @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_tablemodel):
-        """do_update() should return a non-zero error code when passed a FailureMode ID
-        that doesn't exist."""
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the do_log_debug message with no data package in tree."""
         pub.subscribe(self.on_fail_update_no_data_package, "fail_update_failure_mode")
 
-        test_tablemodel.tree.get_node(3).data.pop("failure_mode")
-        test_tablemodel.do_update(3)
+        integration_test_table_model.tree.get_node(3).data.pop("failure_mode")
+        integration_test_table_model.do_update(3)
 
         pub.unsubscribe(self.on_fail_update_no_data_package, "fail_update_failure_mode")
 
 
-@pytest.mark.usefixtures("test_tablemodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterFailureMode(SystemTestGetterSetterMethods):
+    """Class for testing Failure Mode table getter and setter methods."""
 
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert _attributes["mode_id"] == 1
-        assert _attributes["failure_mode_type"] == "hardware"
-        assert _attributes["description"] == "Integrated Circuit"
-        assert _attributes["mode_ratio"] == 0.8
-        assert _attributes["source"] == 0.9
-        print("\033[36m\nsucceed_get_failure_mode_attributes topic was broadcast.")
+    __test__ = True
 
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(
-            tree.get_node(3).data["failure_mode"], RAMSTKFailureModeRecord
-        )
-        print("\033[36m\nsucceed_get_failure_mode_tree topic was broadcast")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(3).data["failure_mode"].mode_ratio == 0.8
-        assert tree.get_node(3).data["failure_mode"].source == "Me brain"
-        print("\033[36m\nsucceed_get_failure_mode_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_tablemodel):
-        """do_get_attributes() should return a dict of site information attributes on
-        success."""
-        pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_failure_mode_attributes"
-        )
-
-        pub.sendMessage(
-            "request_get_failure_mode_attributes2", attributes={"mode_id": 3}
-        )
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_failure_mode_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_data_manager_tree(self, test_tablemodel):
-        """on_get_tree() should return the FailureMode treelib Tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_failure_mode_tree"
-        )
-
-        pub.sendMessage("request_get_failure_mode_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_failure_mode_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self, test_tablemodel):
-        """do_set_attributes() should return None when successfully setting site
-        information attributes."""
-
-        pub.sendMessage(
-            "request_set_failure_mode_attributes",
-            node_id=3,
-            package={"mode_ratio": 0.8},
-        )
-
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_failure_mode_tree")
-
-        pub.sendMessage(
-            "request_set_failure_mode_attributes",
-            node_id=3,
-            package={"source": "Me brain"},
-        )
-
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_failure_mode_tree")
+    _package = {"mode_ratio": 0.8}
+    _record = RAMSTKFailureModeRecord
+    _tag = "failure_mode"
+    _test_id = 1

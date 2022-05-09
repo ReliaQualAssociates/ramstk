@@ -1,6 +1,13 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.hardware.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Hardware module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 from pubsub import pub
 
 # RAMSTK Package Imports
@@ -8,14 +15,17 @@ from ramstk.models.dbrecords import RAMSTKHardwareRecord
 from ramstk.models.dbtables import (
     RAMSTKDesignElectricTable,
     RAMSTKDesignMechanicTable,
+    RAMSTKHardwareTable,
     RAMSTKMILHDBK217FTable,
     RAMSTKNSWCTable,
     RAMSTKReliabilityTable,
 )
+from tests import MockDAO
 
 
 @pytest.fixture()
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _hardware_1 = RAMSTKHardwareRecord()
     _hardware_1.revision_id = 1
     _hardware_1.hardware_id = 1
@@ -127,18 +137,19 @@ def mock_program_dao(monkeypatch):
     _hardware_3.total_power_dissipation = 0.0
     _hardware_3.year_of_manufacture = 2019
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _hardware_1,
         _hardware_2,
         _hardware_3,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Hardware attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -178,12 +189,24 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKHardwareRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKHardwareTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
+    pub.unsubscribe(dut.do_update, "request_update_hardware")
+    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
+    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
 
     # Delete the device under test.
     del dut
@@ -191,7 +214,7 @@ def test_recordmodel(mock_program_dao):
 
 @pytest.fixture(scope="class")
 def test_design_electric(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignElectricTable()
     dut.do_connect(test_program_dao)
@@ -216,7 +239,7 @@ def test_design_electric(test_program_dao):
 
 @pytest.fixture(scope="class")
 def test_design_mechanic(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKDesignMechanicTable()
     dut.do_connect(test_program_dao)
@@ -241,7 +264,7 @@ def test_design_mechanic(test_program_dao):
 
 @pytest.fixture(scope="class")
 def test_milhdbk217f(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKMILHDBK217FTable()
     dut.do_connect(test_program_dao)
@@ -266,7 +289,7 @@ def test_milhdbk217f(test_program_dao):
 
 @pytest.fixture(scope="class")
 def test_nswc(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKNSWCTable()
     dut.do_connect(test_program_dao)
@@ -291,7 +314,7 @@ def test_nswc(test_program_dao):
 
 @pytest.fixture(scope="class")
 def test_reliability(test_program_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKReliabilityTable()
     dut.do_connect(test_program_dao)

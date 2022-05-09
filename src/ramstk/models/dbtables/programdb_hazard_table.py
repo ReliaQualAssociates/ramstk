@@ -52,7 +52,6 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
             "revision_id",
             "function_id",
             "hazard_id",
-            "parent_id",
         ]
 
         # Initialize private scalar attributes.
@@ -71,14 +70,13 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKHazardRecord:
-        """Gets a new record instance with attributes set.
+        """Get a new record instance with attributes set.
 
         :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
         attributes["hazard_id"] = self.last_id + 1
-        attributes["parent_id"] = attributes["function_id"]
 
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]

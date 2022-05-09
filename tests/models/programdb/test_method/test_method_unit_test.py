@@ -11,204 +11,147 @@
 
 # Third Party Imports
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKTestMethodRecord
 from ramstk.models.dbtables import RAMSTKTestMethodTable
+from tests import (
+    MockDAO,
+    UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
+    UnitTestInsertMethods,
+    UnitTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKTestMethodTable()
-    dut.do_connect(mock_program_dao)
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class TestCreateTestMethodModels:
+    """Class for unit testing Test Method model __init__() methods.
 
-    yield dut
+    Because each table model contains unique attributes, these methods must be
+    local to the module being tested.
+    """
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_test_method_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_test_method_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_test_method")
-    pub.unsubscribe(dut.do_update, "request_update_test_method")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_get_tree, "request_get_test_method_tree")
-    pub.unsubscribe(dut.do_delete, "request_delete_test_method")
-    pub.unsubscribe(dut.do_insert, "request_insert_test_method")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
-class TestCreateModels:
-    """Class for model initialization test suite."""
+    __test__ = True
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
-        """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKTestMethodRecord)
+    def test_record_model_create(self, test_record_model):
+        """Should return a Test Method record model instance."""
+        assert isinstance(test_record_model, RAMSTKTestMethodRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_test_method"
-        assert test_recordmodel.description == "Test Test Method #1"
-        assert test_recordmodel.boundary_conditions == "Waters"
-        assert test_recordmodel.remarks == ""
+        assert test_record_model.__tablename__ == "ramstk_test_method"
+        assert test_record_model.description == "Test Test Method #1"
+        assert test_record_model.boundary_conditions == "Waters"
+        assert test_record_model.remarks == ""
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
-        """__init__() should return a PoF data manager."""
-        assert isinstance(test_tablemodel, RAMSTKTestMethodTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert test_tablemodel._db_id_colname == "fld_test_method_id"
-        assert test_tablemodel._db_tablename == "ramstk_test_method"
-        assert test_tablemodel._tag == "test_method"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._parent_id == 0
-        assert test_tablemodel.last_id == 0
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
+    def test_data_manager_create(self, unit_test_table_model):
+        """Return a Test Method table model instance."""
+        assert isinstance(unit_test_table_model, RAMSTKTestMethodTable)
+        assert isinstance(unit_test_table_model.tree, Tree)
+        assert unit_test_table_model._db_id_colname == "fld_test_method_id"
+        assert unit_test_table_model._db_tablename == "ramstk_test_method"
+        assert unit_test_table_model._tag == "test_method"
+        assert unit_test_table_model._root == 0
+        assert unit_test_table_model._revision_id == 0
+        assert unit_test_table_model._parent_id == 0
+        assert unit_test_table_model.last_id == 0
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_test_method_attributes"
-        )
-        assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "request_set_test_method_attributes"
+            unit_test_table_model.do_select_all, "selected_revision"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "wvw_editing_test_method"
+            unit_test_table_model.do_get_attributes,
+            "request_get_test_method_attributes",
         )
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_test_method")
         assert pub.isSubscribed(
-            test_tablemodel.do_get_tree, "request_get_test_method_tree"
+            unit_test_table_model.do_set_attributes,
+            "request_set_test_method_attributes",
         )
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_test_method")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_test_method")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing data manager select_all() and select() methods."""
-
-    @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
-        """do_select_all() should return a Tree() object populated with
-        RAMSTKTestMethodRecord instances on success."""
-        test_tablemodel.do_select_all(test_attributes)
-
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["test_method"], RAMSTKTestMethodRecord
+        assert pub.isSubscribed(
+            unit_test_table_model.do_set_attributes, "wvw_editing_test_method"
         )
-
-    @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
-        """do_select() should return an instance of the RAMSTKTestMethodRecord on
-        success."""
-        test_tablemodel.do_select_all(test_attributes)
-
-        _test_method = test_tablemodel.do_select(2)
-
-        assert isinstance(_test_method, RAMSTKTestMethodRecord)
-        assert _test_method.description == "Test Test Method #2"
-        assert _test_method.boundary_conditions == "Sands"
-
-    @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
-        """do_select() should return None when a non-existent test_method ID is
-        requested."""
-        test_tablemodel.do_select_all(test_attributes)
-
-        assert test_tablemodel.do_select(100) is None
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the data manager insert() method."""
-
-    @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """_do_insert_test_method() should send the success message after successfully
-        inserting an operating load."""
-        test_tablemodel.do_select_all(test_attributes)
-
-        test_tablemodel.do_insert(attributes=test_attributes)
-
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(3).data["test_method"], RAMSTKTestMethodRecord
+        assert pub.isSubscribed(
+            unit_test_table_model.do_update, "request_update_test_method"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_get_tree, "request_get_test_method_tree"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_delete, "request_delete_test_method"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_insert, "request_insert_test_method"
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the data manager delete() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSelectTestMethod(UnitTestSelectMethods):
+    """Class for unit testing Test Method table do_select() and do_select_all()."""
+
+    __test__ = True
+
+    _record = RAMSTKTestMethodRecord
+    _tag = "test_method"
+
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestInsertTestMethod(UnitTestInsertMethods):
+    """Class for unit testing Test Method table do_insert() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKTestMethodRecord
+    _tag = "test_method"
+
+    @pytest.mark.skip(reason="Test Method records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, unit_test_table_model):
+        """Should not run because Test Method records are not hierarchical."""
+        pass
+
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestDeleteTestMethod(UnitTestDeleteMethods):
+    """Class for unit testing Test Method table do_delete() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKTestMethodRecord
+    _tag = "test_method"
+
+
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
+class TestGetterSetterTestMethod(UnitTestGetterSetterMethods):
+    """Class for unit testing Test Method table methods that get or set."""
+
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "hardware_id",
+        "mode_id",
+        "mechanism_id",
+        "opload_id",
+        "test_method_id",
+    ]
+
+    _test_attr = "boundary_conditions"
+    _test_default_value = ""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
-        """_do_delete() should send the success message with the treelib Tree when
-        successfully deleting a test method."""
-        test_tablemodel.do_select_all(test_attributes)
-        test_tablemodel.do_delete(test_tablemodel.last_id)
+    def test_get_record_model_attributes(self, test_record_model):
+        """Should return a dict of attribute key:value pairs.
 
-        assert test_tablemodel.last_id == 1
-
-
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
-        """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        This method must be local because the attributes are different for each
+        database record model.
+        """
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "Test Test Method #1"
         assert _attributes["boundary_conditions"] == "Waters"
         assert _attributes["remarks"] == ""
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
-        """should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        test_attributes.pop("mechanism_id")
-        test_attributes.pop("opload_id")
-        test_attributes.pop("test_method_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
-    ):
-        """should set an attribute to it's default value when the a None value."""
-        test_attributes["boundary_conditions"] = None
-
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        test_attributes.pop("mechanism_id")
-        test_attributes.pop("opload_id")
-        test_attributes.pop("test_method_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["boundary_conditions"] == ""
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
-    ):
-        """should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("mode_id")
-        test_attributes.pop("mechanism_id")
-        test_attributes.pop("opload_id")
-        test_attributes.pop("test_method_id")
-        with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})

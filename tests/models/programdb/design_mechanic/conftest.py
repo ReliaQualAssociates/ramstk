@@ -1,15 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.design_mechanic.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Design Mechanic module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKDesignMechanicRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable
+from ramstk.models.dbtables import RAMSTKDesignMechanicTable, RAMSTKHardwareTable
+from tests import MockDAO
 
 
 @pytest.fixture()
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _design_mechanic_1 = RAMSTKDesignMechanicRecord()
     _design_mechanic_1.revision_id = 1
     _design_mechanic_1.hardware_id = 1
@@ -178,18 +187,19 @@ def mock_program_dao(monkeypatch):
     _design_mechanic_3.water_per_cent = 0.0
     _design_mechanic_3.width_minimum = 0.0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _design_mechanic_1,
         _design_mechanic_2,
         _design_mechanic_3,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Design Mechanic attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -248,37 +258,26 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKDesignMechanicRecord, _all=False)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut
-
-
 @pytest.fixture(scope="class")
-def test_hardware_table(test_program_dao):
-    """Get a data manager instance for each test function."""
+def test_table_model():
+    """Get a table model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKHardwareTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+    dut = RAMSTKDesignMechanicTable()
 
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
-    pub.unsubscribe(dut.do_update, "request_update_hardware")
-    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_get_attributes, "request_get_design_mechanic_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_design_mechanic_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_design_mechanic")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_design_mechanic")
+    pub.unsubscribe(dut.do_update, "request_update_design_mechanic")
+    pub.unsubscribe(dut.do_get_tree, "request_get_design_mechanic_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
-    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
+    pub.unsubscribe(dut.do_delete, "request_delete_design_mechanic")
+    pub.unsubscribe(dut.do_insert, "request_insert_design_mechanic")
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut

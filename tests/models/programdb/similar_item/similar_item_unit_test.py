@@ -11,252 +11,208 @@
 
 # Third Party Imports
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
 from ramstk.models.dbtables import RAMSTKSimilarItemTable
+from tests import (
+    MockDAO,
+    UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
+    UnitTestInsertMethods,
+    UnitTestSelectMethods,
+)
 
 test_change_description = "Test change description for factor #1."
 
 
-@pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKSimilarItemTable()
-    dut.do_connect(mock_program_dao)
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class TestCreateSimilarItemModels:
+    """Class for unit testing Similar Item model __init__() methods.
 
-    yield dut
+    Because each table model contains unique attributes, these methods must be
+    local to the module being tested.
+    """
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_similar_item_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_similar_item_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_similar_item")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_similar_item")
-    pub.unsubscribe(dut.do_update, "request_update_similar_item")
-    pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
-    pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
-    pub.unsubscribe(dut.do_calculate_similar_item, "request_calculate_similar_item")
-    pub.unsubscribe(
-        dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
-    )
-    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
-    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.mark.usefixtures("test_recordmodel", "test_tablemodel")
-class TestCreateModels:
-    """Class for testing controller initialization."""
+    __test__ = True
 
     @pytest.mark.unit
-    def test_record_model_create(self, test_recordmodel):
-        """should return a record model instance."""
-        assert isinstance(test_recordmodel, RAMSTKSimilarItemRecord)
+    def test_record_model_create(self, test_record_model):
+        """Should return a Similar Item record model instance."""
+        assert isinstance(test_record_model, RAMSTKSimilarItemRecord)
 
         # Verify class attributes are properly initialized.
-        assert test_recordmodel.__tablename__ == "ramstk_similar_item"
-        assert test_recordmodel.revision_id == 1
-        assert test_recordmodel.hardware_id == 1
-        assert test_recordmodel.change_description_1 == ""
-        assert test_recordmodel.change_description_2 == ""
-        assert test_recordmodel.change_description_3 == ""
-        assert test_recordmodel.change_description_4 == ""
-        assert test_recordmodel.change_description_5 == ""
-        assert test_recordmodel.change_description_6 == ""
-        assert test_recordmodel.change_description_7 == ""
-        assert test_recordmodel.change_description_8 == ""
-        assert test_recordmodel.change_description_9 == ""
-        assert test_recordmodel.change_description_10 == ""
-        assert test_recordmodel.change_factor_1 == 1.0
-        assert test_recordmodel.change_factor_2 == 1.0
-        assert test_recordmodel.change_factor_3 == 1.0
-        assert test_recordmodel.change_factor_4 == 1.0
-        assert test_recordmodel.change_factor_5 == 1.0
-        assert test_recordmodel.change_factor_6 == 1.0
-        assert test_recordmodel.change_factor_7 == 1.0
-        assert test_recordmodel.change_factor_8 == 1.0
-        assert test_recordmodel.change_factor_9 == 1.0
-        assert test_recordmodel.change_factor_10 == 1.0
-        assert test_recordmodel.environment_from_id == 0
-        assert test_recordmodel.environment_to_id == 0
-        assert test_recordmodel.function_1 == "0"
-        assert test_recordmodel.function_2 == "0"
-        assert test_recordmodel.function_3 == "0"
-        assert test_recordmodel.function_4 == "0"
-        assert test_recordmodel.function_5 == "0"
-        assert test_recordmodel.parent_id == 0
-        assert test_recordmodel.similar_item_method_id == 1
-        assert test_recordmodel.quality_from_id == 0
-        assert test_recordmodel.quality_to_id == 0
-        assert test_recordmodel.result_1 == 0.0
-        assert test_recordmodel.result_2 == 0.0
-        assert test_recordmodel.result_3 == 0.0
-        assert test_recordmodel.result_4 == 0.0
-        assert test_recordmodel.result_5 == 0.0
-        assert test_recordmodel.temperature_from == 30.0
-        assert test_recordmodel.temperature_to == 30.0
-        assert test_recordmodel.user_blob_1 == ""
-        assert test_recordmodel.user_blob_2 == ""
-        assert test_recordmodel.user_blob_3 == ""
-        assert test_recordmodel.user_blob_4 == ""
-        assert test_recordmodel.user_blob_5 == ""
-        assert test_recordmodel.user_float_1 == 0.0
-        assert test_recordmodel.user_float_2 == 0.0
-        assert test_recordmodel.user_float_3 == 0.0
-        assert test_recordmodel.user_float_4 == 0.0
-        assert test_recordmodel.user_float_5 == 0.0
-        assert test_recordmodel.user_int_1 == 0
-        assert test_recordmodel.user_int_2 == 0
-        assert test_recordmodel.user_int_3 == 0
-        assert test_recordmodel.user_int_4 == 0
-        assert test_recordmodel.user_int_5 == 0
+        assert test_record_model.__tablename__ == "ramstk_similar_item"
+        assert test_record_model.revision_id == 1
+        assert test_record_model.hardware_id == 1
+        assert test_record_model.change_description_1 == ""
+        assert test_record_model.change_description_2 == ""
+        assert test_record_model.change_description_3 == ""
+        assert test_record_model.change_description_4 == ""
+        assert test_record_model.change_description_5 == ""
+        assert test_record_model.change_description_6 == ""
+        assert test_record_model.change_description_7 == ""
+        assert test_record_model.change_description_8 == ""
+        assert test_record_model.change_description_9 == ""
+        assert test_record_model.change_description_10 == ""
+        assert test_record_model.change_factor_1 == 1.0
+        assert test_record_model.change_factor_2 == 1.0
+        assert test_record_model.change_factor_3 == 1.0
+        assert test_record_model.change_factor_4 == 1.0
+        assert test_record_model.change_factor_5 == 1.0
+        assert test_record_model.change_factor_6 == 1.0
+        assert test_record_model.change_factor_7 == 1.0
+        assert test_record_model.change_factor_8 == 1.0
+        assert test_record_model.change_factor_9 == 1.0
+        assert test_record_model.change_factor_10 == 1.0
+        assert test_record_model.environment_from_id == 0
+        assert test_record_model.environment_to_id == 0
+        assert test_record_model.function_1 == "0"
+        assert test_record_model.function_2 == "0"
+        assert test_record_model.function_3 == "0"
+        assert test_record_model.function_4 == "0"
+        assert test_record_model.function_5 == "0"
+        assert test_record_model.parent_id == 0
+        assert test_record_model.similar_item_method_id == 1
+        assert test_record_model.quality_from_id == 0
+        assert test_record_model.quality_to_id == 0
+        assert test_record_model.result_1 == 0.0
+        assert test_record_model.result_2 == 0.0
+        assert test_record_model.result_3 == 0.0
+        assert test_record_model.result_4 == 0.0
+        assert test_record_model.result_5 == 0.0
+        assert test_record_model.temperature_from == 30.0
+        assert test_record_model.temperature_to == 30.0
+        assert test_record_model.user_blob_1 == ""
+        assert test_record_model.user_blob_2 == ""
+        assert test_record_model.user_blob_3 == ""
+        assert test_record_model.user_blob_4 == ""
+        assert test_record_model.user_blob_5 == ""
+        assert test_record_model.user_float_1 == 0.0
+        assert test_record_model.user_float_2 == 0.0
+        assert test_record_model.user_float_3 == 0.0
+        assert test_record_model.user_float_4 == 0.0
+        assert test_record_model.user_float_5 == 0.0
+        assert test_record_model.user_int_1 == 0
+        assert test_record_model.user_int_2 == 0
+        assert test_record_model.user_int_3 == 0
+        assert test_record_model.user_int_4 == 0
+        assert test_record_model.user_int_5 == 0
 
     @pytest.mark.unit
-    def test_data_manager_create(self, test_tablemodel):
-        """should return a table model instance."""
-        assert isinstance(test_tablemodel, RAMSTKSimilarItemTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert test_tablemodel._db_id_colname == "fld_hardware_id"
-        assert test_tablemodel._db_tablename == "ramstk_similar_item"
-        assert test_tablemodel._tag == "similar_item"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._lst_id_columns == [
+    def test_data_manager_create(self, unit_test_table_model):
+        """Return a Similar Item table model instance."""
+        assert isinstance(unit_test_table_model, RAMSTKSimilarItemTable)
+        assert isinstance(unit_test_table_model.tree, Tree)
+        assert unit_test_table_model._db_id_colname == "fld_hardware_id"
+        assert unit_test_table_model._db_tablename == "ramstk_similar_item"
+        assert unit_test_table_model._tag == "similar_item"
+        assert unit_test_table_model._root == 0
+        assert unit_test_table_model._lst_id_columns == [
             "revision_id",
             "hardware_id",
         ]
-        assert test_tablemodel._record == RAMSTKSimilarItemRecord
-        assert test_tablemodel.pkey == "hardware_id"
+        assert unit_test_table_model._record == RAMSTKSimilarItemRecord
+        assert unit_test_table_model.pkey == "hardware_id"
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_similar_item_attributes"
+            unit_test_table_model.do_get_attributes,
+            "request_get_similar_item_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "request_set_similar_item_attributes"
+            unit_test_table_model.do_set_attributes,
+            "request_set_similar_item_attributes",
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "wvw_editing_similar_item"
+            unit_test_table_model.do_set_attributes, "wvw_editing_similar_item"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_tree, "succeed_calculate_similar_item"
+            unit_test_table_model.do_set_tree, "succeed_calculate_similar_item"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_similar_item"
+            unit_test_table_model.do_update_all, "request_update_all_similar_item"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_get_tree, "request_get_similar_item_tree"
-        )
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
-        assert pub.isSubscribed(
-            test_tablemodel.do_update, "request_update_similar_item"
+            unit_test_table_model.do_get_tree, "request_get_similar_item_tree"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_delete, "request_delete_similar_item"
+            unit_test_table_model.do_select_all, "selected_revision"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_insert, "request_insert_similar_item"
+            unit_test_table_model.do_update, "request_update_similar_item"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_roll_up_change_descriptions,
+            unit_test_table_model.do_delete, "request_delete_similar_item"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_insert, "request_insert_similar_item"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_roll_up_change_descriptions,
             "request_roll_up_change_descriptions",
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSelectSimilarItem(UnitTestSelectMethods):
+    """Class for unit testing Similar Item table do_select() and do_select_all()."""
+
+    __test__ = True
+
+    _record = RAMSTKSimilarItemRecord
+    _tag = "similar_item"
+
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestInsertSimilarItem(UnitTestInsertMethods):
+    """Class for unit testing Similar Item table do_insert() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKSimilarItemRecord
+    _tag = "similar_item"
+
+    @pytest.mark.skip(reason="Similar Item records are non-hierarchical.")
+    def test_do_insert_child(self, test_attributes, unit_test_table_model):
+        """Should not run because Similar Item records are not hierarchical."""
+        pass
+
+
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestDeleteSimilarItem(UnitTestDeleteMethods):
+    """Class for unit testing Similar Item table do_delete() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKSimilarItemRecord
+    _tag = "similiar_item"
+
+
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
+class TestGetterSetterSimilarItem(UnitTestGetterSetterMethods):
+    """Class for unit testing Similar Item table methods that get or set."""
+
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "hardware_id",
+    ]
+
+    _test_attr = "function_1"
+    _test_default_value = "0"
 
     @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
-        """should return a record tree populated with DB records."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    def test_get_record_model_attributes(self, test_record_model):
+        """Should return a dict of attribute key:value pairs.
 
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["similar_item"],
-            RAMSTKSimilarItemRecord,
-        )
-
-    @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
-        """should return the record for the passed record ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _similar_item = test_tablemodel.do_select(1)
-
-        assert isinstance(_similar_item, RAMSTKSimilarItemRecord)
-        assert _similar_item.change_description_1 == ""
-        assert _similar_item.temperature_from == 30.0
-
-    @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
-        """should return None when a non-existent record ID is requested."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        assert test_tablemodel.do_select(100) is None
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
-
-    @pytest.mark.unit
-    def test_do_get_new_record(self, test_attributes, test_tablemodel):
-        """should return a new record instance with ID fields populated."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _new_record = test_tablemodel.do_get_new_record(test_attributes)
-
-        assert isinstance(_new_record, RAMSTKSimilarItemRecord)
-        assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 4
-
-    @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a new record to the records tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_tablemodel.do_insert(attributes=test_attributes)
-
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(
-            test_tablemodel.tree.get_node(4).data["similar_item"],
-            RAMSTKSimilarItemRecord,
-        )
-        assert test_tablemodel.tree.get_node(4).data["similar_item"].revision_id == 1
-        assert test_tablemodel.tree.get_node(4).data["similar_item"].hardware_id == 4
-        assert test_tablemodel.tree.get_node(4).data["similar_item"].parent_id == 1
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the do_delete() method."""
-
-    @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
-        """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _last_id = test_tablemodel.last_id
-        test_tablemodel.do_delete(test_tablemodel.last_id)
-
-        assert test_tablemodel.last_id == 2
-        assert test_tablemodel.tree.get_node(_last_id) is None
-
-
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
-        """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        This method must be local because the attributes are different for each
+        database record model.
+        """
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["hardware_id"] == 1
@@ -314,58 +270,31 @@ class TestGetterSetter:
         assert _attributes["user_int_4"] == 0
         assert _attributes["user_int_5"] == 0
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
-        """should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
-    ):
-        """should set an attribute to it's default value when the a None value."""
-        test_attributes["function_1"] = None
-
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["function_1"] == "0"
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
-    ):
-        """should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestAnalysisMethods:
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSimilarItemAnalysisMethods:
     """Class for similar item methods test suite."""
 
     @pytest.mark.unit
-    def test_do_roll_up_change_descriptions(self, test_attributes, test_tablemodel):
-        """should combine all child change descriptions into one for the parent."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    def test_do_roll_up_change_descriptions(
+        self, test_attributes, unit_test_table_model
+    ):
+        """Should combine all child change descriptions into one for the parent."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _record = test_tablemodel.do_select(2)
+        _record = unit_test_table_model.do_select(2)
         _record.change_description_1 = "This is change description 1 for assembly 2."
         _record.change_description_2 = "This is change description 2 for assembly 2."
         _record.change_description_3 = "This is change description 3 for assembly 2."
 
-        _record = test_tablemodel.do_select(3)
+        _record = unit_test_table_model.do_select(3)
         _record.change_description_1 = "This is change description 1 for assembly 3."
         _record.change_description_2 = "This is change description 2 for assembly 3."
         _record.change_description_3 = "This is change description 3 for assembly 3."
 
-        test_tablemodel.do_roll_up_change_descriptions(1)
+        unit_test_table_model.do_roll_up_change_descriptions(1)
 
-        _record = test_tablemodel.do_select(1)
+        _record = unit_test_table_model.do_select(1)
         assert _record.change_description_1 == (
             "This is change description 1 for assembly 2.\n\nThis is change "
             "description 1 for assembly 3.\n\n"
@@ -380,13 +309,13 @@ class TestAnalysisMethods:
         )
 
     @pytest.mark.unit
-    def test_do_calculate_topic_633(self, test_attributes, test_tablemodel):
-        """should calculate the Topic 6.3.3 similar item."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    def test_do_calculate_topic_633(self, test_attributes, unit_test_table_model):
+        """Should calculate the Topic 6.3.3 similar item."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        test_tablemodel._node_hazard_rate = 0.000628
+        unit_test_table_model._node_hazard_rate = 0.000628
 
-        _record = test_tablemodel.do_select(1)
+        _record = unit_test_table_model.do_select(1)
         _record.similar_item_method_id = 1
         _record.change_description_1 = test_change_description
         _record.environment_from_id = 2
@@ -396,7 +325,7 @@ class TestAnalysisMethods:
         _record.temperature_from = 55.0
         _record.temperature_to = 65.0
 
-        test_tablemodel._do_calculate_topic_633(1)
+        unit_test_table_model._do_calculate_topic_633(1)
 
         assert _record.change_factor_1 == 0.8
         assert _record.change_factor_2 == 1.4
@@ -405,12 +334,12 @@ class TestAnalysisMethods:
         assert _record.change_description_1 == test_change_description
 
     @pytest.mark.unit
-    def test_do_calculate_user_defined(self, test_attributes, test_tablemodel):
-        """should calculate user-defined similar item."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_tablemodel._node_hazard_rate = 0.000617
+    def test_do_calculate_user_defined(self, test_attributes, unit_test_table_model):
+        """Should calculate user-defined similar item."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
+        unit_test_table_model._node_hazard_rate = 0.000617
 
-        _record = test_tablemodel.do_select(1)
+        _record = unit_test_table_model.do_select(1)
 
         _record.similar_item_method_id = 2
         _record.change_description_1 = test_change_description
@@ -422,9 +351,9 @@ class TestAnalysisMethods:
         _record.function_4 = "0"
         _record.function_5 = "0"
 
-        test_tablemodel._do_calculate_user_defined(1)
+        unit_test_table_model._do_calculate_user_defined(1)
 
-        assert _record.change_description_1 == (test_change_description)
+        assert _record.change_description_1 == test_change_description
         assert _record.change_factor_1 == 0.85
         assert _record.change_factor_2 == 1.2
         assert _record.result_1 == pytest.approx(0.00062934)

@@ -17,73 +17,42 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKReliabilityRecord
 from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKReliabilityTable
+from tests import (
+    SystemTestDeleteMethods,
+    SystemTestGetterSetterMethods,
+    SystemTestInsertMethods,
+    SystemTestSelectMethods,
+)
 
 
-@pytest.fixture(scope="class")
-def test_table_model(test_program_dao):
-    """Get a data manager instance for each test class."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKReliabilityTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestSelectReliability(SystemTestSelectMethods):
+    """Class for testing Reliability table do_select() and do_select_all() methods."""
 
-    yield dut
+    __test__ = True
 
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_reliability_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_reliability_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_reliability")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_reliability")
-    pub.unsubscribe(dut.do_update, "request_update_reliability")
-    pub.unsubscribe(dut.do_get_tree, "request_get_reliability_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_reliability")
-    pub.unsubscribe(dut.do_insert, "request_insert_reliability")
-    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
-    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
-
-    # Delete the device under test.
-    del dut
+    _do_select_msg = "selected_revision"
+    _record = RAMSTKReliabilityRecord
+    _select_id = 1
+    _tag = "reliability"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_table_model")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "integration_test_table_model")
+class TestInsertReliability(SystemTestInsertMethods):
+    """Class for testing Reliability table do_insert() method."""
 
-    def on_succeed_select_all(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
-        print("\033[36m\n\tsucceed_retrieve_reliability topic was broadcast.")
+    __test__ = True
 
-    @pytest.mark.integration
-    def test_do_select_all_populated_tree(self, test_attributes, test_table_model):
-        """should clear nodes from an existing records tree and re-populate."""
-        pub.subscribe(self.on_succeed_select_all, "succeed_retrieve_reliability")
-
-        pub.sendMessage("selected_revision", attributes=test_attributes)
-
-        pub.unsubscribe(self.on_succeed_select_all, "succeed_retrieve_reliability")
-
-
-@pytest.mark.usefixtures("test_attributes", "test_table_model", "test_hardware_table")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
-
-    def on_fail_insert_no_hardware(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_hardware_id)=(11) is not present in table "
-            '"ramstk_hardware".'
-        )
-        print("\033[35m\n\tfail_insert_reliability topic was broadcast on no hardware.")
+    _insert_id = 8
+    _record = RAMSTKReliabilityRecord
+    _tag = "reliability"
 
     @pytest.mark.integration
     def test_do_insert_sibling_assembly(
-        self, test_attributes, test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should not add a record to the record tree and update last_id."""
-        assert test_table_model.tree.get_node(9) is None
+        """Should add a record to the record tree and update last_id."""
+        assert integration_test_table_model.tree.get_node(9) is None
 
         pub.sendMessage(
             "request_insert_hardware",
@@ -96,18 +65,24 @@ class TestInsertMethods:
         )
 
         assert isinstance(
-            test_table_model.tree.get_node(9).data["reliability"],
+            integration_test_table_model.tree.get_node(9).data[self._tag],
             RAMSTKReliabilityRecord,
         )
-        assert test_table_model.tree.get_node(9).data["reliability"].revision_id == 1
-        assert test_table_model.tree.get_node(9).data["reliability"].hardware_id == 9
+        assert (
+            integration_test_table_model.tree.get_node(9).data[self._tag].revision_id
+            == 1
+        )
+        assert (
+            integration_test_table_model.tree.get_node(9).data[self._tag].hardware_id
+            == 9
+        )
 
     @pytest.mark.integration
     def test_do_insert_part(
-        self, test_attributes, test_table_model, test_hardware_table
+        self, test_attributes, integration_test_table_model, test_hardware_table_model
     ):
-        """should add a record to the record tree and update last_id."""
-        assert test_table_model.tree.get_node(10) is None
+        """Should add a record to the record tree and update last_id."""
+        assert integration_test_table_model.tree.get_node(10) is None
 
         pub.sendMessage(
             "request_insert_hardware",
@@ -120,315 +95,273 @@ class TestInsertMethods:
         )
 
         assert isinstance(
-            test_table_model.tree.get_node(10).data["reliability"],
+            integration_test_table_model.tree.get_node(10).data[self._tag],
             RAMSTKReliabilityRecord,
         )
-        assert test_table_model.tree.get_node(10).data["reliability"].revision_id == 1
-        assert test_table_model.tree.get_node(10).data["reliability"].hardware_id == 10
+        assert (
+            integration_test_table_model.tree.get_node(10).data[self._tag].revision_id
+            == 1
+        )
+        assert (
+            integration_test_table_model.tree.get_node(10).data[self._tag].hardware_id
+            == 10
+        )
 
-    @pytest.mark.integration
-    def test_do_insert_no_hardware(self, test_attributes, test_table_model):
-        """should not add a record when passed a non-existent hardware ID."""
-        pub.subscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
+    @pytest.mark.skip(reason="Reliability records are added by database.")
+    def test_do_insert_sibling(self, test_attributes, integration_test_table_model):
+        """Should not run because Reliability are added by database."""
+        pass
 
-        assert test_table_model.tree.get_node(11) is None
+    @pytest.mark.skip(reason="Reliability records are added by database.")
+    def test_do_insert_child(self, test_attributes, integration_test_table_model):
+        """Should not run because Reliability are added by database."""
+        pass
 
-        test_attributes["hardware_id"] = 11
-        test_attributes["parent_id"] = 1
-        pub.sendMessage("request_insert_reliability", attributes=test_attributes)
+    @pytest.mark.skip(reason="Reliability records are added by database.")
+    def test_do_insert_no_parent(self, test_attributes, integration_test_table_model):
+        """Should not run because Reliability are added by database."""
+        pass
 
-        assert test_table_model.tree.get_node(11) is None
+    @pytest.mark.skip(reason="Reliability records are added by database.")
+    def test_do_insert_no_revision(self, test_attributes, integration_test_table_model):
+        """Should not run because Reliability are added by database."""
+        pass
 
-        pub.unsubscribe(self.on_fail_insert_no_hardware, "do_log_debug_msg")
 
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestDeleteReliability(SystemTestDeleteMethods):
+    """Class for testing Reliability table do_delete() method."""
 
-@pytest.mark.usefixtures("test_table_model")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
+    __test__ = True
 
-    def on_succeed_delete(self, tree):
-        assert isinstance(tree, Tree)
-        print("\033[36m\n\tsucceed_delete_reliability topic was broadcast.")
+    _delete_id = 1
+    _record = RAMSTKReliabilityRecord
+    _tag = "reliability"
 
-    def on_fail_delete_non_existent_id(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        try:
-            assert message == "No data package for node ID 300 in module reliability."
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Reliability ID 300."
-            print(
-                "\033[35m\n\tfail_delete_reliability topic was broadcast on "
-                "non-existent ID."
-            )
+    @pytest.mark.skip(reason="Reliability records are deleted by database.")
+    def test_do_delete_with_child(self, integration_test_table_model):
+        """Should not run because Reliability are deleted by database."""
+        pass
 
-    def on_fail_delete_no_data_package(self, logger_name, message):
-        assert logger_name == "DEBUG"
-        # Two debug messages will be sent by two different methods under this scenario.
-        try:
-            assert message == "No data package for node ID 2 in module reliability."
-            print(
-                "\033[35m\n\tfail_delete_reliability topic was broadcast on no data "
-                "package."
-            )
-        except AssertionError:
-            assert message == "Attempted to delete non-existent Reliability ID 2."
-
-    @pytest.mark.integration
-    def test_do_delete(self, test_table_model):
-        """should remove record from record tree and update last_id."""
-        pub.subscribe(self.on_succeed_delete, "succeed_delete_reliability")
-
-        _last_id = test_table_model.last_id
-        pub.sendMessage("request_delete_reliability", node_id=_last_id)
-
-        assert test_table_model.last_id == 7
-        assert test_table_model.tree.get_node(_last_id) is None
-
-        pub.unsubscribe(self.on_succeed_delete, "succeed_delete_reliability")
-
-    @pytest.mark.integration
+    @pytest.mark.skip(reason="Reliability records are deleted by database.")
     def test_do_delete_non_existent_id(self):
-        """should send the fail message when passed a non-existent record ID."""
-        pub.subscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_delete_reliability", node_id=300)
-
-        pub.unsubscribe(self.on_fail_delete_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_delete_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
-
-        test_table_model.tree.get_node(2).data.pop("reliability")
-        pub.sendMessage("request_delete_reliability", node_id=2)
-
-        pub.unsubscribe(self.on_fail_delete_no_data_package, "do_log_debug_msg")
+        """Should not run because Reliability are deleted by database."""
+        pass
 
 
-@pytest.mark.usefixtures("test_table_model")
-class TestUpdateMethods:
-    """Class for testing update() and update_all() methods."""
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestUpdateReliability:
+    """Class for testing Reliability table do_update() and do_update_all() methods."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKReliabilityRecord
+    _tag = "reliability"
+    _update_id = 2
 
     def on_succeed_update(self, tree):
+        """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["reliability"].category_id == 5
-        assert tree.get_node(2).data["reliability"].subcategory_id == 81
-        print("\033[36m\n\tsucceed_update_reliability topic was broadcast.")
+        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
-        print("\033[36m\n\tsucceed_update_all topic was broadcast for Reliability.")
+        """Listen for succeed_update messages."""
+        print(
+            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"{self._tag}s"
+        )
 
     def on_fail_update_wrong_data_type(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "The value for one or more attributes for reliability ID 1 was the wrong "
-            "type."
+            f"The value for one or more attributes for {self._tag} ID "
+            f"{self._update_id} was the wrong type."
         )
         print(
-            "\033[35m\n\tfail_update_reliability topic was broadcast on wrong data "
-            "type."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on wrong data "
+            f"type."
         )
 
-    def on_fail_update_root_node_wrong_data_type(self, logger_name, message):
+    def on_fail_update_root_node(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == ("Attempting to update the root node 0.")
-        print("\033[35m\n\tfail_update_reliability topic was broadcast on root node.")
+        assert message == "Attempting to update the root node 0."
+        print(f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on root node.")
 
     def on_fail_update_non_existent_id(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == (
-            "Attempted to save non-existent reliability with reliability ID 100."
+        assert (
+            message == f"Attempted to save non-existent {self._tag} with {self._tag} "
+            f"ID 100."
         )
         print(
-            "\033[35m\n\tfail_update_reliability topic was broadcast on "
-            "non-existent ID."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on non-existent "
+            f"ID."
         )
 
     def on_fail_update_no_data_package(self, logger_name, message):
+        """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
-        assert message == ("No data package found for reliability ID 1.")
+        assert message == f"No data package found for {self._tag} ID {self._update_id}."
         print(
-            "\033[35m\n\tfail_update_reliability topic was broadcast on no data "
-            "package."
+            f"\033[35m\n\tfail_update_{self._tag} topic was broadcast on no data "
+            f"package."
         )
 
     @pytest.mark.integration
-    def test_do_update(self, test_table_model):
-        """should update the attribute value for record ID."""
-        pub.subscribe(self.on_succeed_update, "succeed_update_reliability")
+    def test_do_update(self, integration_test_table_model):
+        """Should update the attribute value for record ID."""
+        pub.subscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
-        _reliability = test_table_model.do_select(2)
+        _reliability = integration_test_table_model.do_select(self._update_id)
         _reliability.category_id = 5
         _reliability.subcategory_id = 81
-        pub.sendMessage("request_update_reliability", node_id=2)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
 
-        pub.unsubscribe(self.on_succeed_update, "succeed_update_reliability")
+        pub.unsubscribe(
+            self.on_succeed_update,
+            f"succeed_update_{self._tag}",
+        )
 
     @pytest.mark.integration
-    def test_do_update_all(self, test_table_model):
-        """should update all records in the records tree."""
-        pub.subscribe(self.on_succeed_update_all, "succeed_update_all_reliability")
+    def test_do_update_all(self, integration_test_table_model):
+        """Should update all records in the records tree."""
+        pub.subscribe(
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
 
-        _reliability = test_table_model.do_select(1)
+        _reliability = integration_test_table_model.do_select(self._update_id - 1)
         _reliability.category_id = 5
         _reliability.subcategory_id = 81
-        _reliability = test_table_model.do_select(2)
+        _reliability = integration_test_table_model.do_select(self._update_id)
         _reliability.category_id = 12
         _reliability.subcategory_id = 71
 
-        pub.sendMessage("request_update_all_reliability")
+        pub.sendMessage(f"request_update_all_{self._tag}")
 
-        assert test_table_model.tree.get_node(1).data["reliability"].category_id == 5
         assert (
-            test_table_model.tree.get_node(1).data["reliability"].subcategory_id == 81
+            integration_test_table_model.tree.get_node(self._update_id - 1)
+            .data[self._tag]
+            .category_id
+            == 5
         )
-        assert test_table_model.tree.get_node(2).data["reliability"].category_id == 12
         assert (
-            test_table_model.tree.get_node(2).data["reliability"].subcategory_id == 71
+            integration_test_table_model.tree.get_node(self._update_id - 1)
+            .data[self._tag]
+            .subcategory_id
+            == 81
         )
-
-        pub.unsubscribe(self.on_succeed_update_all, "succeed_update_all_reliability")
-
-    @pytest.mark.integration
-    def test_do_update_wrong_data_type(self, test_table_model):
-        """should send the fail message when the wrong data type is assigned."""
-        pub.subscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
-
-        _reliability = test_table_model.do_select(1)
-        _reliability.hazard_rate_active = {1: 2}
-        pub.sendMessage("request_update_reliability", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_wrong_data_type, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_update_root_node_wrong_data_type(self, test_table_model):
-        """should send the fail message when attempting to update the root node."""
-        pub.subscribe(self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg")
-
-        _reliability = test_table_model.do_select(1)
-        _reliability.hazard_rate_dormant = {1: 2}
-        pub.sendMessage("request_update_reliability", node_id=0)
+        assert (
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .category_id
+            == 12
+        )
+        assert (
+            integration_test_table_model.tree.get_node(self._update_id)
+            .data[self._tag]
+            .subcategory_id
+            == 71
+        )
 
         pub.unsubscribe(
-            self.on_fail_update_root_node_wrong_data_type, "do_log_debug_msg"
+            self.on_succeed_update_all,
+            f"succeed_update_all_{self._tag}",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_wrong_data_type(self, integration_test_table_model):
+        """Should send the fail message when the wrong data type is assigned."""
+        pub.subscribe(
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
+        )
+
+        _reliability = integration_test_table_model.do_select(self._update_id)
+        _reliability.hazard_rate_active = {1: 2}
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_wrong_data_type,
+            "do_log_debug_msg",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_root_node(self, integration_test_table_model):
+        """Should send the fail message when attempting to update the root node."""
+        pub.subscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
+        )
+
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=0,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_root_node,
+            "do_log_debug_msg",
         )
 
     @pytest.mark.integration
     def test_do_update_non_existent_id(self):
-        """should send the fail message when updating a non-existent record ID."""
-        pub.subscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
-
-        pub.sendMessage("request_update_reliability", node_id=100)
-
-        pub.unsubscribe(self.on_fail_update_non_existent_id, "do_log_debug_msg")
-
-    @pytest.mark.integration
-    def test_do_update_no_data_package(self, test_table_model):
-        """should send the fail message when the record ID has no data package."""
-        pub.subscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-        test_table_model.tree.get_node(1).data.pop("reliability")
-        pub.sendMessage("request_update_reliability", node_id=1)
-
-        pub.unsubscribe(self.on_fail_update_no_data_package, "do_log_debug_msg")
-
-
-@pytest.mark.usefixtures("test_table_model", "test_toml_user_configuration")
-class TestGetterSetter:
-    """Class for testing methods that get or set."""
-
-    def on_succeed_get_attributes(self, attributes):
-        assert isinstance(attributes, dict)
-        assert attributes["hardware_id"] == 2
-        assert attributes["add_adj_factor"] == 0.0
-        assert attributes["availability_logistics"] == 1.0
-        assert attributes["availability_mission"] == 1.0
-        assert attributes["avail_log_variance"] == 0.0
-        assert attributes["avail_mis_variance"] == 0.0
-        assert attributes["failure_distribution_id"] == 0
-        assert attributes["hazard_rate_active"] == 0.00617
-        assert attributes["hazard_rate_dormant"] == 0.0
-        assert attributes["hazard_rate_logistics"] == 0.0
-        assert attributes["hazard_rate_method_id"] == 0
-        assert attributes["hazard_rate_mission"] == 0.0
-        assert attributes["hazard_rate_model"] == ""
-        assert attributes["hazard_rate_percent"] == 0.0
-        assert attributes["hazard_rate_software"] == 0.0
-        assert attributes["hazard_rate_specified"] == 0.0
-        assert attributes["hazard_rate_type_id"] == 0
-        assert attributes["hr_active_variance"] == 0.0
-        assert attributes["hr_dormant_variance"] == 0.0
-        assert attributes["hr_logistics_variance"] == 0.0
-        assert attributes["hr_mission_variance"] == 0.0
-        assert attributes["hr_specified_variance"] == 0.0
-        assert attributes["lambda_b"] == 0.0
-        assert attributes["location_parameter"] == 0.0
-        assert attributes["mtbf_logistics"] == 0.0
-        assert attributes["mtbf_mission"] == 0.0
-        assert attributes["mtbf_specified"] == 0.0
-        assert attributes["mtbf_logistics_variance"] == 0.0
-        assert attributes["mtbf_mission_variance"] == 0.0
-        assert attributes["mtbf_specified_variance"] == 0.0
-        assert attributes["mult_adj_factor"] == 1.0
-        assert attributes["quality_id"] == 0
-        assert attributes["reliability_goal"] == 0.0
-        assert attributes["reliability_goal_measure_id"] == 0
-        assert attributes["reliability_logistics"] == 1.0
-        assert attributes["reliability_mission"] == 1.0
-        assert attributes["reliability_log_variance"] == 0.0
-        assert attributes["reliability_miss_variance"] == 0.0
-        assert attributes["scale_parameter"] == 0.0
-        assert attributes["shape_parameter"] == 0.0
-        assert attributes["survival_analysis_id"] == 0
-
-        print("\033[36m\n\tsucceed_get_reliability_attributes topic was broadcast.")
-
-    def on_succeed_get_data_manager_tree(self, tree):
-        assert isinstance(tree, Tree)
-        assert isinstance(tree.get_node(1).data["reliability"], RAMSTKReliabilityRecord)
-        print("\033[36m\n\tsucceed_get_reliability_tree topic was broadcast.")
-
-    def on_succeed_set_attributes(self, tree):
-        assert isinstance(tree, Tree)
-        assert tree.get_node(2).data["reliability"].location_parameter == 65.5
-        print("\033[36m\n\tsucceed_get_reliability_tree topic was broadcast")
-
-    @pytest.mark.integration
-    def test_do_get_attributes(self, test_table_model):
-        """should return the attributes dict."""
+        """Should send the fail message when updating a non-existent record ID."""
         pub.subscribe(
-            self.on_succeed_get_attributes, "succeed_get_reliability_attributes"
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
         )
-
-        test_table_model.do_get_attributes(node_id=2)
-
-        pub.unsubscribe(
-            self.on_succeed_get_attributes, "succeed_get_reliability_attributes"
-        )
-
-    @pytest.mark.integration
-    def test_on_get_tree_data_manager(self):
-        """should return the records tree."""
-        pub.subscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_reliability_tree"
-        )
-
-        pub.sendMessage("request_get_reliability_tree")
-
-        pub.unsubscribe(
-            self.on_succeed_get_data_manager_tree, "succeed_get_reliability_tree"
-        )
-
-    @pytest.mark.integration
-    def test_do_set_attributes(self):
-        """should set the value of the attribute requested."""
-        pub.subscribe(self.on_succeed_set_attributes, "succeed_get_reliability_tree")
 
         pub.sendMessage(
-            "request_set_reliability_attributes",
-            node_id=2,
-            package={"location_parameter": 65.5},
+            f"request_update_{self._tag}",
+            node_id=100,
         )
 
-        pub.unsubscribe(self.on_succeed_set_attributes, "succeed_get_reliability_tree")
+        pub.unsubscribe(
+            self.on_fail_update_non_existent_id,
+            "do_log_debug_msg",
+        )
+
+    @pytest.mark.integration
+    def test_do_update_no_data_package(self, integration_test_table_model):
+        """Should send the fail message when the record ID has no data package."""
+        pub.subscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
+        )
+
+        integration_test_table_model.tree.get_node(self._update_id).data.pop(self._tag)
+        pub.sendMessage(
+            f"request_update_{self._tag}",
+            node_id=self._update_id,
+        )
+
+        pub.unsubscribe(
+            self.on_fail_update_no_data_package,
+            "do_log_debug_msg",
+        )
+
+
+@pytest.mark.usefixtures("integration_test_table_model")
+class TestGetterSetterReliability(SystemTestGetterSetterMethods):
+    """Class for testing Reliability table getter and setter methods."""
+
+    __test__ = True
+
+    _package = {"location_parameter": 65.5}
+    _record = RAMSTKReliabilityRecord
+    _tag = "reliability"
+    _test_id = 1

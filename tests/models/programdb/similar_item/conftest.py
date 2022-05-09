@@ -1,15 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.similar_item.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Similar Item module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
 from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKSimilarItemRecord
-from ramstk.models.dbtables import RAMSTKHardwareTable
+from ramstk.models.dbtables import RAMSTKHardwareTable, RAMSTKSimilarItemTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _similar_item_1 = RAMSTKSimilarItemRecord()
     _similar_item_1.revision_id = 1
     _similar_item_1.hardware_id = 1
@@ -181,21 +190,22 @@ def mock_program_dao(monkeypatch):
     _similar_item_3.user_int_4 = 0
     _similar_item_3.user_int_5 = 0
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _similar_item_1,
         _similar_item_2,
         _similar_item_3,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Similar Item attributes."""
     yield {
         "revision_id": 1,
-        "hardware_id": 4,
+        "hardware_id": 1,
         "change_description_1": "",
         "change_description_2": "",
         "change_description_3": "",
@@ -252,37 +262,30 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKSimilarItemRecord, _all=False)
-
-    yield dut
-
-    # Delete the device under test.
-    del dut
-
-
 @pytest.fixture(scope="class")
-def test_hardware_table(test_program_dao):
-    """Get a data manager instance for each test function."""
+def test_table_model():
+    """Get a table model instance for each test function."""
     # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKHardwareTable()
-    dut.do_connect(test_program_dao)
-    dut.do_select_all(attributes={"revision_id": 1})
+    dut = RAMSTKSimilarItemTable()
 
     yield dut
 
     # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
-    pub.unsubscribe(dut.do_update, "request_update_hardware")
-    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
+    pub.unsubscribe(dut.do_get_attributes, "request_get_similar_item_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_similar_item_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_similar_item")
+    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_similar_item")
+    pub.unsubscribe(dut.do_update, "request_update_similar_item")
+    pub.unsubscribe(dut.do_get_tree, "request_get_similar_item_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
-    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
+    pub.unsubscribe(dut.do_delete, "request_delete_similar_item")
+    pub.unsubscribe(dut.do_insert, "request_insert_similar_item")
+    pub.unsubscribe(dut.do_calculate_similar_item, "request_calculate_similar_item")
+    pub.unsubscribe(
+        dut.do_roll_up_change_descriptions, "request_roll_up_change_descriptions"
+    )
+    pub.unsubscribe(dut._do_update_tree, "succeed_delete_hardware")
+    pub.unsubscribe(dut._do_update_tree, "succeed_insert_hardware")
 
     # Delete the device under test.
     del dut

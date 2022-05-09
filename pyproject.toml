@@ -285,4 +285,3 @@ ignore = [
 	'D204',
 	'D213',
 ]
-match = 'src/ramstk/*.py'

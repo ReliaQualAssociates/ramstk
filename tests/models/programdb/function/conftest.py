@@ -1,13 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.function.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Function module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKFunctionRecord
+from ramstk.models.dbtables import RAMSTKFunctionTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _function_1 = RAMSTKFunctionRecord()
     _function_1.revision_id = 1
     _function_1.function_id = 1
@@ -67,6 +78,7 @@ def mock_program_dao(monkeypatch):
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Function attributes."""
     yield {
         "revision_id": 1,
         "function_id": 1,
@@ -93,12 +105,23 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKFunctionRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each unit test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKFunctionTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_function_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_function_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_function")
+    pub.unsubscribe(dut.do_update, "request_update_function")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_function_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_function")
+    pub.unsubscribe(dut.do_insert, "request_insert_function")
 
     # Delete the device under test.
     del dut

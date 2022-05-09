@@ -11,9 +11,6 @@
 
 # Third Party Imports
 import pytest
-
-# noinspection PyUnresolvedReferences
-from mocks import MockDAO
 from pubsub import pub
 from treelib import Tree
 
@@ -22,35 +19,18 @@ from ramstk.models.db import BaseDatabase
 from ramstk.models.dbrecords import RAMSTKHardwareRecord
 from ramstk.models.dbtables import RAMSTKHardwareTable
 from ramstk.models.dbviews import RAMSTKHardwareBoMView
-
-
-@pytest.fixture(scope="function")
-def test_tablemodel(mock_program_dao):
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKHardwareTable()
-    dut.do_connect(mock_program_dao)
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_get_attributes, "request_get_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "request_set_hardware_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_hardware")
-    pub.unsubscribe(dut.do_set_tree, "succeed_calculate_hardware")
-    pub.unsubscribe(dut.do_update, "request_update_hardware")
-    pub.unsubscribe(dut.do_get_tree, "request_get_hardware_tree")
-    pub.unsubscribe(dut.do_select_all, "selected_revision")
-    pub.unsubscribe(dut.do_delete, "request_delete_hardware")
-    pub.unsubscribe(dut.do_insert, "request_insert_hardware")
-
-    # Delete the device under test.
-    del dut
+from tests import (
+    MockDAO,
+    UnitTestDeleteMethods,
+    UnitTestGetterSetterMethods,
+    UnitTestInsertMethods,
+    UnitTestSelectMethods,
+)
 
 
 @pytest.fixture(scope="function")
 def test_viewmodel():
-    """Get a data manager instance for each test function."""
+    """Get a table model instance for each test function."""
     # Create the device under test (dut).
     dut = RAMSTKHardwareBoMView()
 
@@ -82,53 +62,72 @@ def test_viewmodel():
     del dut
 
 
-@pytest.mark.usefixtures("test_tablemodel", "test_viewmodel")
-class TestCreateModels:
-    """Class for testing model initialization."""
+@pytest.mark.usefixtures("test_record_model", "unit_test_table_model")
+class TestCreateHardwareModels:
+    """Class for unit testing Hardware model __init__() methods.
+
+    Because each table model contains unique attributes, these methods must be
+    local to the module being tested.
+    """
+
+    __test__ = True
 
     @pytest.mark.unit
-    def test_table_model_create(self, test_tablemodel):
-        """should return a table model instance."""
-        assert isinstance(test_tablemodel, RAMSTKHardwareTable)
-        assert isinstance(test_tablemodel.tree, Tree)
-        assert isinstance(test_tablemodel.dao, MockDAO)
-        assert test_tablemodel._db_id_colname == "fld_hardware_id"
-        assert test_tablemodel._db_tablename == "ramstk_hardware"
-        assert test_tablemodel._select_msg == "selected_revision"
-        assert test_tablemodel._root == 0
-        assert test_tablemodel._tag == "hardware"
-        assert test_tablemodel._lst_id_columns == [
+    def test_record_model_create(self, test_record_model):
+        """Should return a Hardware record model instance."""
+        pass
+
+    @pytest.mark.unit
+    def test_table_model_create(self, unit_test_table_model):
+        """Return a Hardware table model instance."""
+        assert isinstance(unit_test_table_model, RAMSTKHardwareTable)
+        assert isinstance(unit_test_table_model.tree, Tree)
+        assert isinstance(unit_test_table_model.dao, MockDAO)
+        assert unit_test_table_model._db_id_colname == "fld_hardware_id"
+        assert unit_test_table_model._db_tablename == "ramstk_hardware"
+        assert unit_test_table_model._select_msg == "selected_revision"
+        assert unit_test_table_model._root == 0
+        assert unit_test_table_model._tag == "hardware"
+        assert unit_test_table_model._lst_id_columns == [
             "revision_id",
             "hardware_id",
             "parent_id",
         ]
-        assert test_tablemodel._revision_id == 0
-        assert test_tablemodel._record == RAMSTKHardwareRecord
-        assert test_tablemodel.last_id == 0
-        assert test_tablemodel.pkey == "hardware_id"
+        assert unit_test_table_model._revision_id == 0
+        assert unit_test_table_model._record == RAMSTKHardwareRecord
+        assert unit_test_table_model.last_id == 0
+        assert unit_test_table_model.pkey == "hardware_id"
         assert pub.isSubscribed(
-            test_tablemodel.do_get_attributes, "request_get_hardware_attributes"
+            unit_test_table_model.do_get_attributes, "request_get_hardware_attributes"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "request_set_hardware_attributes"
+            unit_test_table_model.do_set_attributes, "request_set_hardware_attributes"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_set_attributes, "wvw_editing_hardware"
+            unit_test_table_model.do_set_attributes, "wvw_editing_hardware"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_update_all, "request_update_all_hardware"
+            unit_test_table_model.do_update_all, "request_update_all_hardware"
         )
         assert pub.isSubscribed(
-            test_tablemodel.do_get_tree, "request_get_hardware_tree"
+            unit_test_table_model.do_get_tree, "request_get_hardware_tree"
         )
-        assert pub.isSubscribed(test_tablemodel.do_select_all, "selected_revision")
-        assert pub.isSubscribed(test_tablemodel.do_update, "request_update_hardware")
-        assert pub.isSubscribed(test_tablemodel.do_delete, "request_delete_hardware")
-        assert pub.isSubscribed(test_tablemodel.do_insert, "request_insert_hardware")
+        assert pub.isSubscribed(
+            unit_test_table_model.do_select_all, "selected_revision"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_update, "request_update_hardware"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_delete, "request_delete_hardware"
+        )
+        assert pub.isSubscribed(
+            unit_test_table_model.do_insert, "request_insert_hardware"
+        )
 
     @pytest.mark.unit
     def test_view_model_create(self, test_viewmodel):
-        """should return a view manager instance."""
+        """Return a Hardware BoM view model instance."""
         assert isinstance(test_viewmodel, RAMSTKHardwareBoMView)
         assert isinstance(test_viewmodel.tree, Tree)
         assert isinstance(test_viewmodel.dao, BaseDatabase)
@@ -217,119 +216,79 @@ class TestCreateModels:
         )
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestSelectMethods:
-    """Class for testing select_all() and select() methods."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestSelectHardware(UnitTestSelectMethods):
+    """Class for unit testing Hardware table do_select() and do_select_all()."""
 
-    @pytest.mark.unit
-    def test_do_select_all(self, test_attributes, test_tablemodel):
-        """should return a record tree populated with DB records."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+    __test__ = True
 
-        assert isinstance(
-            test_tablemodel.tree.get_node(1).data["hardware"],
-            RAMSTKHardwareRecord,
-        )
-        assert isinstance(
-            test_tablemodel.tree.get_node(2).data["hardware"],
-            RAMSTKHardwareRecord,
-        )
-        assert isinstance(
-            test_tablemodel.tree.get_node(3).data["hardware"],
-            RAMSTKHardwareRecord,
-        )
-
-    @pytest.mark.unit
-    def test_do_select(self, test_attributes, test_tablemodel):
-        """should return the record for the passed record ID."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        _hardware = test_tablemodel.do_select(1)
-
-        assert isinstance(_hardware, RAMSTKHardwareRecord)
-        assert _hardware.revision_id == 1
-        assert _hardware.hardware_id == 1
-        assert _hardware.year_of_manufacture == 2019
-
-    @pytest.mark.unit
-    def test_do_select_non_existent_id(self, test_attributes, test_tablemodel):
-        """should return None when a non-existent record ID is requested."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-
-        assert test_tablemodel.do_select(100) is None
+    _record = RAMSTKHardwareRecord
+    _tag = "hardware"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestInsertMethods:
-    """Class for testing the insert() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestInsertHardware(UnitTestInsertMethods):
+    """Class for unit testing Hardware table do_insert() method."""
 
-    @pytest.mark.unit
-    def test_do_get_new_record(self, test_attributes, test_tablemodel):
-        """should return a new record instance with ID fields populated."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _new_record = test_tablemodel.do_get_new_record(test_attributes)
+    __test__ = True
 
-        assert isinstance(_new_record, RAMSTKHardwareRecord)
-        assert _new_record.revision_id == 1
-        assert _new_record.hardware_id == 4
-
-    @pytest.mark.unit
-    def test_do_insert_sibling(self, test_attributes, test_tablemodel):
-        """should add a new record to the records tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        test_attributes["hardware_id"] = 4
-        test_tablemodel.do_insert(attributes=test_attributes)
-
-        assert test_tablemodel.last_id == 4
-        assert isinstance(
-            test_tablemodel.tree.get_node(4).data["hardware"],
-            RAMSTKHardwareRecord,
-        )
-        assert test_tablemodel.tree.get_node(4).data["hardware"].revision_id == 1
-        assert test_tablemodel.tree.get_node(4).data["hardware"].hardware_id == 4
+    _next_id = 0
+    _record = RAMSTKHardwareRecord
+    _tag = "hardware"
 
     @pytest.mark.unit
     def test_do_make_comp_ref_des(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should create the composite reference designator."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should create the composite reference designator."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(1)
+        _hardware = unit_test_table_model.do_select(1)
         _hardware.ref_des = "SS8"
 
-        _hardware = test_tablemodel.do_select(2)
+        _hardware = unit_test_table_model.do_select(2)
         _hardware.ref_des = "A9"
 
         test_viewmodel.do_make_composite_ref_des(1)
 
-        assert test_tablemodel.do_select(1).comp_ref_des == "SS8"
-        assert test_tablemodel.do_select(2).comp_ref_des == "SS8:A9"
+        assert unit_test_table_model.do_select(1).comp_ref_des == "SS8"
+        assert unit_test_table_model.do_select(2).comp_ref_des == "SS8:A9"
 
 
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel")
-class TestDeleteMethods:
-    """Class for testing the delete() method."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
+class TestDeleteHardware(UnitTestDeleteMethods):
+    """Class for unit testing Hardware table do_delete() method."""
+
+    __test__ = True
+
+    _next_id = 0
+    _record = RAMSTKHardwareRecord
+    _tag = "hardware"
+
+
+@pytest.mark.usefixtures("test_attributes", "test_record_model")
+class TestGetterSetterHardware(UnitTestGetterSetterMethods):
+    """Class for unit testing Hardware table methods that get or set."""
+
+    __test__ = True
+
+    _id_columns = [
+        "revision_id",
+        "hardware_id",
+        "parent_id",
+    ]
+
+    _test_attr = "nsn"
+    _test_default_value = ""
 
     @pytest.mark.unit
-    def test_do_delete(self, test_attributes, test_tablemodel):
-        """should remove the record from the record tree and update last_id."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
-        _last_id = test_tablemodel.last_id
-        test_tablemodel.do_delete(node_id=_last_id)
+    def test_get_record_model_attributes(self, test_record_model):
+        """Should return a dict of attribute key:value pairs.
 
-        assert test_tablemodel.last_id == 2
-        assert test_tablemodel.tree.get_node(_last_id) is None
-
-
-@pytest.mark.usefixtures("test_attributes", "test_recordmodel", "mock_program_dao")
-class TestGetterSetterMethods:
-    """Class for testing methods that get and set."""
-
-    @pytest.mark.unit
-    def test_get_record_model_attributes(self, test_recordmodel):
-        """should return a dict of attribute key:value pairs."""
-        _attributes = test_recordmodel.get_attributes()
+        This method must be local because the attributes are different for each
+        database record model.
+        """
+        _attributes = test_record_model.get_attributes()
 
         assert isinstance(_attributes, dict)
         assert _attributes["alt_part_number"] == ""
@@ -366,171 +325,106 @@ class TestGetterSetterMethods:
         assert _attributes["total_power_dissipation"] == 0.0
         assert _attributes["year_of_manufacture"] == 2019
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes(self, test_attributes, test_recordmodel):
-        """should return None on success."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("parent_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.alt_part_number == ""
-        assert test_recordmodel.attachments == ""
-        assert test_recordmodel.cage_code == ""
-        assert test_recordmodel.category_id == 0
-        assert test_recordmodel.comp_ref_des == "S1"
-        assert test_recordmodel.cost == 0.0
-        assert test_recordmodel.cost_failure == 0.0
-        assert test_recordmodel.cost_hour == 0.0
-        assert test_recordmodel.cost_type_id == 2
-        assert test_recordmodel.description == "Test System"
-        assert test_recordmodel.duty_cycle == 100.0
-        assert test_recordmodel.figure_number == ""
-        assert test_recordmodel.lcn == ""
-        assert test_recordmodel.level == 0
-        assert test_recordmodel.manufacturer_id == 0
-        assert test_recordmodel.mission_time == 100.0
-        assert test_recordmodel.name == ""
-        assert test_recordmodel.nsn == ""
-        assert test_recordmodel.page_number == ""
-        assert test_recordmodel.parent_id == 0
-        assert test_recordmodel.part == 0
-        assert test_recordmodel.part_number == ""
-        assert test_recordmodel.quantity == 1
-        assert test_recordmodel.ref_des == "S1"
-        assert test_recordmodel.remarks == ""
-        assert test_recordmodel.repairable == 0
-        assert test_recordmodel.specification_number == ""
-        assert test_recordmodel.subcategory_id == 0
-        assert test_recordmodel.tagged_part == 0
-        assert test_recordmodel.total_cost == 0.0
-        assert test_recordmodel.total_part_count == 0
-        assert test_recordmodel.total_power_dissipation == 0.0
-        assert test_recordmodel.year_of_manufacture == 2019
 
-    @pytest.mark.unit
-    def test_set_record_model_attributes_none_value(
-        self, test_attributes, test_recordmodel
-    ):
-        """should set an attribute to it's default value when the a None value."""
-        test_attributes["nsn"] = None
-
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("parent_id")
-        assert test_recordmodel.set_attributes(test_attributes) is None
-        assert test_recordmodel.get_attributes()["nsn"] == ""
-
-    @pytest.mark.unit
-    def test_set_record_model_attributes_unknown_attributes(
-        self, test_attributes, test_recordmodel
-    ):
-        """should raise an AttributeError when passed an unknown attribute."""
-        test_attributes.pop("revision_id")
-        test_attributes.pop("hardware_id")
-        test_attributes.pop("parent_id")
-        with pytest.raises(AttributeError):
-            test_recordmodel.set_attributes({"shibboly-bibbly-boo": 0.9998})
-
-
-@pytest.mark.usefixtures("test_attributes", "test_tablemodel", "test_viewmodel")
-class TestAnalysisMethods:
-    """Class for testing analytical methods."""
+@pytest.mark.usefixtures("test_attributes", "unit_test_table_model", "test_viewmodel")
+class TestHardwareAnalysisMethods:
+    """Class for testing Hardware analytical methods."""
 
     @pytest.mark.unit
     def test_do_calculate_cost_part(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should calculate the total cost for a part."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should calculate the total cost for a part."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = unit_test_table_model.do_select(3)
         _hardware.cost_type_id = 2
         _hardware.part = 1
         _hardware.cost = 12.98
         _hardware.quantity = 2
 
         test_viewmodel.do_calculate_cost(3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
+        _attributes = unit_test_table_model.do_select(3).get_attributes()
 
         assert _attributes["total_cost"] == 25.96
 
     @pytest.mark.unit
     def test_do_calculate_cost_assembly(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should calculate the total cost of an assembly."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should calculate the total cost of an assembly."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(1)
+        _hardware = unit_test_table_model.do_select(1)
         _hardware.cost_type_id = 2
         _hardware.part = 0
         _hardware.quantity = 1
-        _hardware = test_tablemodel.do_select(2)
+        _hardware = unit_test_table_model.do_select(2)
         _hardware.cost_type_id = 2
         _hardware.part = 0
         _hardware.quantity = 3
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = unit_test_table_model.do_select(3)
         _hardware.cost_type_id = 1
         _hardware.part = 1
         _hardware.cost = 12.98
 
         test_viewmodel.do_calculate_cost(1)
-        _attributes = test_tablemodel.do_select(1).get_attributes()
+        _attributes = unit_test_table_model.do_select(1).get_attributes()
 
         assert _attributes["total_cost"] == 38.94
 
     @pytest.mark.unit
     def test_do_calculate_cost_no_type_id(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should calculate the total cost for a part."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should calculate the total cost for a part."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = unit_test_table_model.do_select(3)
         _hardware.cost_type_id = 0
         _hardware.part = 1
         _hardware.cost = 12.98
         _hardware.quantity = 2
 
         test_viewmodel.do_calculate_cost(3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
+        _attributes = unit_test_table_model.do_select(3).get_attributes()
 
         assert _attributes["total_cost"] == 0.0
 
     @pytest.mark.unit
     def test_do_calculate_part_count_part(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should calculate the total part count of a part."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should calculate the total part count of a part."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = unit_test_table_model.do_select(3)
         _hardware.part = 1
         _hardware.quantity = 2
 
         test_viewmodel.do_calculate_part_count(3)
-        _attributes = test_tablemodel.do_select(3).get_attributes()
+        _attributes = unit_test_table_model.do_select(3).get_attributes()
 
         assert _attributes["total_part_count"] == 2
 
     @pytest.mark.unit
     def test_do_calculate_part_count_assembly(
-        self, test_attributes, test_tablemodel, test_viewmodel
+        self, test_attributes, unit_test_table_model, test_viewmodel
     ):
-        """should calculate the total part count of an assembly."""
-        test_tablemodel.do_select_all(attributes=test_attributes)
+        """Should calculate the total part count of an assembly."""
+        unit_test_table_model.do_select_all(attributes=test_attributes)
 
-        _hardware = test_tablemodel.do_select(1)
+        _hardware = unit_test_table_model.do_select(1)
         _hardware.part = 0
         _hardware.quantity = 1
-        _hardware = test_tablemodel.do_select(2)
+        _hardware = unit_test_table_model.do_select(2)
         _hardware.part = 0
         _hardware.quantity = 3
-        _hardware = test_tablemodel.do_select(3)
+        _hardware = unit_test_table_model.do_select(3)
         _hardware.part = 1
         _hardware.quantity = 2
 
         test_viewmodel.do_calculate_part_count(1)
-        _attributes = test_tablemodel.do_select(1).get_attributes()
+        _attributes = unit_test_table_model.do_select(1).get_attributes()
 
         assert _attributes["total_part_count"] == 6

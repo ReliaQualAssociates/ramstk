@@ -1,16 +1,27 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.program_info.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Program Information module test fixtures."""
+
 # Standard Library Imports
 from datetime import date
 
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKProgramInfoRecord
+from ramstk.models.dbtables import RAMSTKProgramInfoTable
+from tests import MockDAO
 
 
 @pytest.fixture(scope="function")
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _program_1 = RAMSTKProgramInfoRecord()
     _program_1.revision_id = 1
     _program_1.function_active = 1
@@ -35,16 +46,42 @@ def mock_program_dao(monkeypatch):
     _program_1.last_saved = date.today()
     _program_1.last_saved_by = ""
 
-    DAO = MockDAO()
-    DAO.table = [
+    _program_2 = RAMSTKProgramInfoRecord()
+    _program_2.revision_id = 2
+    _program_2.function_active = 1
+    _program_2.requirement_active = 1
+    _program_2.hardware_active = 1
+    _program_2.software_active = 0
+    _program_2.rcm_active = 0
+    _program_2.testing_active = 0
+    _program_2.incident_active = 0
+    _program_2.survival_active = 0
+    _program_2.vandv_active = 1
+    _program_2.hazard_active = 1
+    _program_2.stakeholder_active = 1
+    _program_2.allocation_active = 1
+    _program_2.similar_item_active = 1
+    _program_2.fmea_active = 1
+    _program_2.pof_active = 1
+    _program_2.rbd_active = 0
+    _program_2.fta_active = 0
+    _program_2.created_on = date.today()
+    _program_2.created_by = ""
+    _program_2.last_saved = date.today()
+    _program_2.last_saved_by = ""
+
+    dao = MockDAO()
+    dao.table = [
         _program_1,
+        _program_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Program Information attributes."""
     yield {
         "revision_id": 1,
         "function_active": 1,
@@ -71,12 +108,20 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKProgramInfoRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKProgramInfoTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_preference_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_preference_attributes")
+    pub.unsubscribe(dut.do_update, "request_update_preference")
+    pub.unsubscribe(dut.do_get_tree, "request_get_preference_tree")
+    pub.unsubscribe(dut.do_select_all, "request_program_preferences")
 
     # Delete the device under test.
     del dut

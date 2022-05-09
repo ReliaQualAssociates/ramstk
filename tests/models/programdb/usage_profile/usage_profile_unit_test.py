@@ -20,76 +20,53 @@ from ramstk.models.db import BaseDatabase
 from ramstk.models.dbviews import RAMSTKUsageProfileView
 
 
-@pytest.fixture(scope="function")
-def test_viewmodel():
-    """Get a data manager instance for each test function."""
-    # Create the device under test (dut) and connect to the database.
-    dut = RAMSTKUsageProfileView()
-
-    yield dut
-
-    # Unsubscribe from pypubsub topics.
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_insert_mission_phase")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_retrieve_all_mission_phase")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_environment")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission")
-    pub.unsubscribe(dut.do_set_tree, "succeed_delete_mission_phase")
-
-    # Delete the device under test.
-    del dut
-
-
-@pytest.mark.usefixtures("test_viewmodel")
-class TestCreateControllers:
-    """Class for testing controller initialization."""
+@pytest.mark.usefixtures("test_view_model")
+class TestCreateModel:
+    """Class for testing view model initialization."""
 
     @pytest.mark.unit
-    def test_data_manager(self, test_viewmodel):
-        """should return a view manager instance."""
-        assert isinstance(test_viewmodel, RAMSTKUsageProfileView)
-        assert isinstance(test_viewmodel.tree, Tree)
-        assert isinstance(test_viewmodel.dao, BaseDatabase)
-        assert test_viewmodel._tag == "usage_profile"
-        assert test_viewmodel._root == 0
-        assert test_viewmodel._revision_id == 0
-        assert test_viewmodel._dic_load_functions == {
-            "mission": test_viewmodel._do_load_missions,
-            "mission_phase": test_viewmodel._do_load_mission_phases,
-            "environment": test_viewmodel._do_load_environments,
+    def test_view_model(self, test_view_model):
+        """Should return a view model instance."""
+        assert isinstance(test_view_model, RAMSTKUsageProfileView)
+        assert isinstance(test_view_model.tree, Tree)
+        assert isinstance(test_view_model.dao, BaseDatabase)
+        assert test_view_model._tag == "usage_profile"
+        assert test_view_model._root == 0
+        assert test_view_model._revision_id == 0
+        assert test_view_model._dic_load_functions == {
+            "mission": test_view_model._do_load_missions,
+            "mission_phase": test_view_model._do_load_mission_phases,
+            "environment": test_view_model._do_load_environments,
         }
-        assert isinstance(test_viewmodel._dic_trees["mission"], Tree)
-        assert isinstance(test_viewmodel._dic_trees["mission_phase"], Tree)
-        assert isinstance(test_viewmodel._dic_trees["environment"], Tree)
-        assert test_viewmodel._lst_modules == [
+        assert isinstance(test_view_model._dic_trees["mission"], Tree)
+        assert isinstance(test_view_model._dic_trees["mission_phase"], Tree)
+        assert isinstance(test_view_model._dic_trees["environment"], Tree)
+        assert test_view_model._lst_modules == [
             "mission",
             "mission_phase",
             "environment",
         ]
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_insert_environment"
+            test_view_model.do_set_tree, "succeed_insert_environment"
         )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_insert_mission")
+        assert pub.isSubscribed(test_view_model.do_set_tree, "succeed_insert_mission")
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_insert_mission_phase"
-        )
-        assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_all_environment"
+            test_view_model.do_set_tree, "succeed_insert_mission_phase"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_retrieve_all_mission"
+            test_view_model.do_set_tree, "succeed_retrieve_all_environment"
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree,
+            test_view_model.do_set_tree, "succeed_retrieve_all_mission"
+        )
+        assert pub.isSubscribed(
+            test_view_model.do_set_tree,
             "succeed_retrieve_all_mission_phase",
         )
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_delete_environment"
+            test_view_model.do_set_tree, "succeed_delete_environment"
         )
-        assert pub.isSubscribed(test_viewmodel.do_set_tree, "succeed_delete_mission")
+        assert pub.isSubscribed(test_view_model.do_set_tree, "succeed_delete_mission")
         assert pub.isSubscribed(
-            test_viewmodel.do_set_tree, "succeed_delete_mission_phase"
+            test_view_model.do_set_tree, "succeed_delete_mission_phase"
         )

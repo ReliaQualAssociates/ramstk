@@ -1,13 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.cause.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK Cause module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKCauseRecord
+from ramstk.models.dbtables import RAMSTKCauseTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _cause_1 = RAMSTKCauseRecord()
     _cause_1.revision_id = 1
     _cause_1.mode_id = 6
@@ -35,17 +46,18 @@ def mock_program_dao(monkeypatch):
     _cause_2.rpn_occurrence = 6
     _cause_2.rpn_occurrence_new = 4
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _cause_1,
         _cause_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of Cause attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -62,12 +74,24 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKCauseRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKCauseTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_cause_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_cause_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_cause")
+    pub.unsubscribe(dut.do_update, "request_update_cause")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_cause_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_cause")
+    pub.unsubscribe(dut.do_insert, "request_insert_cause")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_cause_rpn")
 
     # Delete the device under test.
     del dut

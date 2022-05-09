@@ -11,7 +11,6 @@ from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
-from sqlalchemy.orm.exc import ObjectDeletedError
 from treelib import Tree
 
 # RAMSTK Local Imports
@@ -52,9 +51,9 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
             "nswc": self._do_load_nswc,
             "reliability": self._do_load_reliability,
         }
-        self._dic_stress_limits = kwargs.get(
+        self._dic_stress_limits: Dict[str, Dict[str, float]] = kwargs.get(
             "stress_limits",
-            {
+            {  # type: ignore
                 "integrated_circuit": {},
                 "semiconductor": {},
                 "resistor": {},
@@ -388,13 +387,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         for _node in self._dic_trees["design_electric"].all_nodes()[1:]:
-            _design_electric = _node.data["design_electric"]
-
-            try:
-                _par_node = self.tree.get_node(_design_electric.hardware_id)
-                _par_node.data["design_electric"] = _design_electric
-            except ObjectDeletedError:
-                self._dic_trees["design_electric"].remove_node(_node.identifier)
+            _par_node = self.tree.get_node(_node.data["design_electric"].hardware_id)
+            _par_node.data["design_electric"] = _node.data["design_electric"]
 
     def _do_load_design_mechanic(self) -> None:
         """Load the design_mechanic into the tree.
@@ -403,13 +397,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         for _node in self._dic_trees["design_mechanic"].all_nodes()[1:]:
-            _design_mechanic = _node.data["design_mechanic"]
-
-            try:
-                _par_node = self.tree.get_node(_design_mechanic.hardware_id)
-                _par_node.data["design_mechanic"] = _design_mechanic
-            except ObjectDeletedError:
-                self._dic_trees["design_mechanic"].remove_node(_node.identifier)
+            _par_node = self.tree.get_node(_node.data["design_mechanic"].hardware_id)
+            _par_node.data["design_mechanic"] = _node.data["design_mechanic"]
 
     def _do_load_milhdbk217f(self) -> None:
         """Load the MIL-HDBK-217F data into the tree.
@@ -418,13 +407,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         for _node in self._dic_trees["milhdbk217f"].all_nodes()[1:]:
-            _milhdbk217f = _node.data["milhdbk217f"]
-
-            try:
-                _par_node = self.tree.get_node(_milhdbk217f.hardware_id)
-                _par_node.data["milhdbk217f"] = _milhdbk217f
-            except ObjectDeletedError:
-                self._dic_trees["milhdbk217f"].remove_node(_node.identifier)
+            _par_node = self.tree.get_node(_node.data["milhdbk217f"].hardware_id)
+            _par_node.data["milhdbk217f"] = _node.data["milhdbk217f"]
 
     def _do_load_nswc(self) -> None:
         """Load the NSWC data into the tree.
@@ -433,13 +417,8 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         for _node in self._dic_trees["nswc"].all_nodes()[1:]:
-            _nswc = _node.data["nswc"]
-
-            try:
-                _par_node = self.tree.get_node(_nswc.hardware_id)
-                _par_node.data["nswc"] = _nswc
-            except ObjectDeletedError:
-                self._dic_trees["nswc"].remove_node(_node.identifier)
+            _par_node = self.tree.get_node(_node.data["nswc"].hardware_id)
+            _par_node.data["nswc"] = _node.data["nswc"]
 
     def _do_load_reliability(self) -> None:
         """Load the reliability data into the tree.
@@ -448,10 +427,5 @@ class RAMSTKHardwareBoMView(RAMSTKBaseView):
         :rtype: None
         """
         for _node in self._dic_trees["reliability"].all_nodes()[1:]:
-            _reliability = _node.data["reliability"]
-
-            try:
-                _par_node = self.tree.get_node(_reliability.hardware_id)
-                _par_node.data["reliability"] = _reliability
-            except ObjectDeletedError:
-                self._dic_trees["reliability"].remove_node(_node.identifier)
+            _par_node = self.tree.get_node(_node.data["reliability"].hardware_id)
+            _par_node.data["reliability"] = _node.data["reliability"]

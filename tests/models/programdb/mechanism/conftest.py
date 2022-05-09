@@ -1,13 +1,24 @@
+# -*- coding: utf-8 -*-
+#
+#       tests.models.programdb.mechanism.conftest.py is part of The RAMSTK Project
+#
+# All rights reserved.
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+"""The RAMSTK failure Mechanism module test fixtures."""
+
 # Third Party Imports
 import pytest
-from mocks import MockDAO
+from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKMechanismRecord
+from ramstk.models.dbtables import RAMSTKMechanismTable
+from tests import MockDAO
 
 
 @pytest.fixture
-def mock_program_dao(monkeypatch):
+def mock_dao(monkeypatch):
+    """Create a mock database table."""
     _mechanism_1 = RAMSTKMechanismRecord()
     _mechanism_1.revision_id = 1
     _mechanism_1.hardware_id = 1
@@ -36,17 +47,18 @@ def mock_program_dao(monkeypatch):
     _mechanism_2.rpn_occurrence = 10
     _mechanism_2.pof_include = 1
 
-    DAO = MockDAO()
-    DAO.table = [
+    dao = MockDAO()
+    dao.table = [
         _mechanism_1,
         _mechanism_2,
     ]
 
-    yield DAO
+    yield dao
 
 
 @pytest.fixture(scope="function")
 def test_attributes():
+    """Create a dict of failure Mechanism attributes."""
     yield {
         "revision_id": 1,
         "hardware_id": 1,
@@ -63,12 +75,24 @@ def test_attributes():
     }
 
 
-@pytest.fixture(scope="function")
-def test_recordmodel(mock_program_dao):
-    """Get a record model instance for each test function."""
-    dut = mock_program_dao.do_select_all(RAMSTKMechanismRecord, _all=False)
+@pytest.fixture(scope="class")
+def test_table_model():
+    """Get a table model instance for each test function."""
+    # Create the device under test (dut) and connect to the database.
+    dut = RAMSTKMechanismTable()
 
     yield dut
+
+    # Unsubscribe from pypubsub topics.
+    pub.unsubscribe(dut.do_get_attributes, "request_get_mechanism_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "request_set_mechanism_attributes")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_mechanism")
+    pub.unsubscribe(dut.do_update, "request_update_mechanism")
+    pub.unsubscribe(dut.do_select_all, "selected_revision")
+    pub.unsubscribe(dut.do_get_tree, "request_get_mechanism_tree")
+    pub.unsubscribe(dut.do_delete, "request_delete_mechanism")
+    pub.unsubscribe(dut.do_insert, "request_insert_mechanism")
+    pub.unsubscribe(dut.do_calculate_rpn, "request_calculate_mechanism_rpn")
 
     # Delete the device under test.
     del dut

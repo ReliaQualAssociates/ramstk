@@ -23,7 +23,7 @@ from ramstk.models.dbrecords import RAMSTKSiteInfoRecord
 
 @pytest.fixture(scope="class")
 def test_datamanager(test_common_dao):
-    """Get a data manager instance for each test class."""
+    """Get a table model instance for each test class."""
     # Create the device under test (dut).
     dut = RAMSTKCommonDB()
 
@@ -47,6 +47,7 @@ class TestCommonManager:
     """Class for testing functions to load common variables."""
 
     def on_succeed_create_postgres_common(self, common_db, database):
+        """Listen for succeed_create message."""
         assert isinstance(common_db, BaseDatabase)
         assert database["database"] == "ramstk_common_test_db"
         print(
@@ -55,6 +56,7 @@ class TestCommonManager:
         )
 
     def on_fail_read_license(self, error_message):
+        """Listen for fail_read_license message."""
         assert error_message == (
             "Unable to read license key file.  Defaulting to a 30-day demo license."
         )
