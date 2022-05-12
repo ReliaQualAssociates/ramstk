@@ -169,7 +169,7 @@ class HardwareModuleView(RAMSTKModuleView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self._do_set_record_id,
+            self._do_set_pkeys,
             f"selected_{self._tag}",
         )
 
@@ -301,8 +301,8 @@ class HardwareModuleView(RAMSTKModuleView):
             },
         )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the work stream module's record ID and, if any, parent ID.
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's primary key values.
 
         :param attributes: the attribute dict for the selected work stream module item.
         :return: None
@@ -476,7 +476,7 @@ class HardwareGeneralDataView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(
-            self._do_set_record_id,
+            self._do_set_pkeys,
             f"selected_{self._tag}",
         )
 
@@ -493,11 +493,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         )
         super().do_set_cursor_active()
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the work stream module's record ID and, if any, parent ID.
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's primary key values.
 
-        :param attributes: the attributes dict for the selected work stream
-            module item.
+        :param attributes: the attribute dict for the selected work stream module item.
         :return: None
         :rtype: None
         """
@@ -669,7 +668,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
             "hardware_category_changed",
         )
         pub.subscribe(
-            self._do_set_record_id,
+            self._do_set_pkeys,
             f"selected_{self._tag}",
         )
 
@@ -681,7 +680,7 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # If there was a component selected, hide it's widgets.  We get an
+        # If there was a component selected, hide its widgets.  We get an
         # attribute error if no parts have been selected in the current
         # session.
         if self._vpnRight.get_child2() is not None:
@@ -728,11 +727,10 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
                 node_id=self.dic_pkeys["record_id"],
             )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the work stream module's record ID and, if any, parent ID.
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's primary key values.
 
-        :param attributes: the attributes dict for the selected work stream
-            module item.
+        :param attributes: the attribute dict for the selected work stream module item.
         :return: None
         :rtype: None
         """
@@ -899,7 +897,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
             "hardware_category_changed",
         )
         pub.subscribe(
-            self._do_set_record_id,
+            self._do_set_pkeys,
             f"selected_{self._tag}",
         )
 
@@ -910,7 +908,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        # If there was a component selected, hide it's widgets.  We get an
+        # If there was a component selected, hide its widgets.  We get an
         # attribute error if no parts have been selected in the current
         # session.
         if self._vpnRight.get_child2() is not None:
@@ -956,8 +954,8 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
                 error_message=_error,
             )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
-        """Set the work stream module's record ID and, if any, parent ID.
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's primary key values.
 
         :param attributes: the attribute dict for the selected work stream
             module item.

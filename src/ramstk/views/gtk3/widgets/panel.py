@@ -727,7 +727,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, f"succeed_insert_{self._tag}")
-        pub.subscribe(self.do_refresh_tree, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"wvw_editing_{self._tag}")
         pub.subscribe(self.on_delete_treerow, f"succeed_delete_{self._tag}")
@@ -740,11 +739,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        _model = self.tvwTreeView.get_model()
         try:
-            _model.clear()
+            self.tvwTreeView.get_model().clear()
         except AttributeError:
-            pass
+            self.tvwTreeView.get_model().get_model().clear()
 
     def do_load_panel(self, tree: treelib.Tree) -> None:
         """Load data into the RAMSTKTreeView on a tree type panel.
@@ -919,7 +917,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
-                    f"An error occurred while refreshing {self._tag} data for Record "
+                    f"An error occurred while refreshing {self._tag} data for record "
                     f"ID {self._record_id} in the view.  Key {_key} does not exist in "
                     f"attribute dictionary."
                 ),
@@ -930,7 +928,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while refreshing {self._tag} data "
-                    f"for Record ID {self._record_id} in the view.  Data {_value} for "
+                    f"for record ID {self._record_id} in the view.  Data {_value} for "
                     f"{_key} is the wrong type."
                 ),
             )
@@ -1027,11 +1025,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             for _idx, _key in enumerate(self.tvwTreeView.visible)
         }
         self.tvwTreeView.do_set_visible_columns()
-
-        pub.sendMessage(
-            f"selected_{self._tag}",
-            attributes={"node_id": attributes[f"{self.level}_id"]},
-        )
 
     def on_cell_change(
         self,

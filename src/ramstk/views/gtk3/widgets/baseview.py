@@ -447,7 +447,8 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor_busy()
         pub.sendMessage(
-            f"request_update_{self._tag}", node_id=self.dic_pkeys["record_id"]
+            f"request_update_{self._tag}",
+            node_id=self.dic_pkeys["record_id"],
         )
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -457,7 +458,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_all_{self._tag}")
+        pub.sendMessage(
+            f"request_update_all_{self._tag}",
+        )
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """Set the cursor for the Module, List, and Work Book Gdk.Window().

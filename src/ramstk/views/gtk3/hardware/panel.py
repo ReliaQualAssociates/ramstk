@@ -18,7 +18,10 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
+# noinspection PyPackageRequirements
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
+
+# noinspection PyPackageRequirements
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
     RAMSTKComboBox,
@@ -610,7 +613,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
                 "gchararray",
             ],
         }
-        self.dic_icons = {"assembly": None, "part": None}
+        self.dic_icons = {"assembly": "", "part": ""}
         self.dic_subcategories: Dict[int, List[str]] = {0: [""]}
 
         # Initialize public list class attributes.
@@ -746,8 +749,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
             )
 
             # We need the reliability attributes to be requested first so the
-            # component panels will get reliability attributes first.  Some of the
-            # reliability attributes control widget sensitivity on the component panels.
+            # component panels will get reliability attributes first.  Some reliability
+            # attributes control widget sensitivity on the component panels.
             for _table in [
                 "reliability",
                 "design_electric",
@@ -1156,11 +1159,13 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _model = self.cmbCategory.get_model()
-        _model.clear()
+        self.cmbCategory.get_model().clear()
 
         _categories = [[value] for value in category.values()]
-        self.cmbCategory.do_load_combo(entries=_categories)  # type: ignore
+        self.cmbCategory.do_load_combo(
+            entries=_categories,
+            signal="changed",
+        )
 
     def _do_load_subcategories(self, category_id: int) -> None:
         """Load the subcategory RAMSTKComboBox().
@@ -1168,8 +1173,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :param category_id: the ID of the selected category.
         :return: None
         """
-        _model = self.cmbSubcategory.get_model()
-        _model.clear()
+        self.cmbSubcategory.get_model().clear()
 
         if category_id > 0:
             _subcategories = SortedDict(self.dicSubcategories[category_id])
@@ -1212,12 +1216,14 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
         """
-        self._do_load_subcategories(category_id=combo.get_active())
+        self._category_id = (  # pylint: disable=attribute-defined-outside-init
+            combo.get_active()
+        )
+
+        self._do_load_subcategories(category_id=self._category_id)
         pub.sendMessage(
             "hardware_category_changed",
-            attributes={
-                "category_id": combo.get_active(),
-            },
+            attributes={"category_id": self._category_id},
         )
 
 
