@@ -111,9 +111,10 @@ class HardwareModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/hardware.png"
-        )
+        self._dic_icons[
+            "tab"
+        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/hardware.png"
+
 
         # Initialize private list attributes.
         self._lst_callbacks[0] = self._do_request_insert_sibling

@@ -1416,7 +1416,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         _row = combo.get_active_iter()
 
         try:
-            _cage_code = str(str(_model.get(_row, 2)[0]))
+            _cage_code = str(_model.get(_row, 2)[0])
         except TypeError:
             _cage_code = ""
 

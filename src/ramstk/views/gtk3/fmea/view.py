@@ -280,7 +280,7 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: _attributes
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self._revision_id,
             "hardware_id": self._hardware_id,
             "mode_id": self.__do_get_mode_id(),
@@ -289,8 +289,6 @@ class FMEAWorkView(RAMSTKWorkView):
             "control_id": self.__do_get_control_id(),
             "action_id": self.__do_get_action_id(),
         }
-
-        return _attributes
 
     def __do_get_action_id(self) -> int:
         """Read the action ID from the FMEA worksheet.
@@ -386,9 +384,10 @@ class FMEAWorkView(RAMSTKWorkView):
             x[1][0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
         ]
         self._pnlPanel.lst_users = [
-            x[1][0] + ", " + x[1][1]
+            f"{x[1][0]}, {x[1][1]}"
             for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS.items()
         ]
+
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
     def __do_load_rpn_lists(self) -> None:
