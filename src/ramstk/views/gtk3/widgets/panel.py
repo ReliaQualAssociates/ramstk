@@ -554,11 +554,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         _new_text: Any = ""
 
         try:
-            if str(datatype) == "gfloat":
+            if datatype == "gfloat":
                 _new_text = float(entry.do_get_text())
-            elif str(datatype) == "gint":
+            elif datatype == "gint":
                 _new_text = int(entry.do_get_text())
-            elif str(datatype) == "gchararray":
+            elif datatype == "gchararray":
                 _new_text = str(entry.do_get_text())
         except (KeyError, ValueError):
             pub.sendMessage(

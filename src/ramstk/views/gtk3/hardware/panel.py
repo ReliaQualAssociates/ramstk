@@ -713,9 +713,7 @@ class HardwareTreePanel(RAMSTKTreePanel):
         :param selection: the Hardware class Gtk.TreeSelection().
         :return: None
         """
-        _attributes = super().on_row_change(selection)
-
-        if _attributes:
+        if _attributes := super().on_row_change(selection):
             self._record_id = _attributes["hardware_id"]
             self._parent_id = _attributes["parent_id"]
             self.part = _attributes["part"]
@@ -1416,7 +1414,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         _row = combo.get_active_iter()
 
         try:
-            _cage_code = str(str(_model.get(_row, 2)[0]))
+            _cage_code = str(_model.get(_row, 2)[0])
         except TypeError:
             _cage_code = ""
 
