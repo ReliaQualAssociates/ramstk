@@ -1213,7 +1213,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :rtype: None
         """
         pub.sendMessage(
-            f"lvw_editing_{self._tag}",
+            f"wvw_editing_{self._tag}",
             node_id=node_id,
             package=package,
         )

@@ -48,7 +48,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         # Initialize private list class attributes.
 
         # Initialize private scalar class attributes.
-        self._on_edit_message: str = f"lvw_editing_{self._tag}"
+        self._on_edit_message: str = f"wvw_editing_{self._tag}"
 
         # Initialize public dictionary class attributes.
         self.dic_attribute_widget_map = {

@@ -98,7 +98,7 @@ def test_table_model():
     # Unsubscribe from pypubsub topics.
     pub.unsubscribe(dut.do_get_attributes, "request_get_stakeholder_attributes")
     pub.unsubscribe(dut.do_set_attributes, "request_set_stakeholder_attributes")
-    pub.unsubscribe(dut.do_set_attributes, "lvw_editing_stakeholder")
+    pub.unsubscribe(dut.do_set_attributes, "wvw_editing_stakeholder")
     pub.unsubscribe(dut.do_update, "request_update_stakeholder")
     pub.unsubscribe(dut.do_get_tree, "request_get_stakeholder_tree")
     pub.unsubscribe(dut.do_select_all, "selected_revision")
