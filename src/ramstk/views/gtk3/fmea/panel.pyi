@@ -73,10 +73,19 @@ class FMEATreePanel(RAMSTKTreePanel):
     def __do_load_mechanism(
         self, node: treelib.Node, row: Gtk.TreeIter
     ) -> Gtk.TreeIter: ...
+    def __do_clear_modes(self) -> None: ...
+    def __do_clear_modes_on_category_change(
+        self,
+        attributes: Dict[str, int],
+    ) -> None: ...
+    def __do_clear_modes_on_subcategory_change(
+        self,
+        subcategory_id: int,
+    ) -> None: ...
     def __do_load_missions(
         self,
         tree: treelib.Tree = ...,
-        node_id: Any = ...,
+        node_id: str = ...,
         row: Gtk.TreeIter = ...,
     ) -> None: ...
     def __do_load_mission_phases(self, mission: str) -> None: ...

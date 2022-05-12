@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, Tuple
+from typing import Any, Callable, Dict, List, Tuple
 
 # Third Party Imports
 import treelib
@@ -18,14 +18,14 @@ from ramstk.views.gtk3.widgets import RAMSTKTreePanel as RAMSTKTreePanel
 class HardwareTreePanel(RAMSTKTreePanel):
     _select_msg: str
     _tag: str
-    _title: Any
-    _dic_row_loader: Any
-    dic_attribute_widget_map: Any
-    dic_icons: Any
+    _title: str
+    _dic_row_loader: Dict[str, Callable]
+    dic_attribute_widget_map: Dict[str, List[Any]]
+    dic_icons: Dict[str, str]
     def __init__(self) -> None: ...
     def _on_module_switch(self, module: str = ...) -> None: ...
-    _record_id: Any
-    _parent_id: Any
+    _record_id: int
+    _parent_id: int
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None: ...
     def __do_load_hardware(
         self, node: treelib.Node, row: Gtk.TreeIter
@@ -48,8 +48,8 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
     txtPartNumber: RAMSTKEntry
     txtRefDes: RAMSTKEntry
     txtSpecification: RAMSTKEntry
-    dic_attribute_widget_map: Any
-    dicSubcategories: Any
+    dic_attribute_widget_map: Dict[str, List[Any]]
+    dicSubcategories: Dict[int, Dict[int, str]]
     def __init__(self) -> None: ...
     def do_load_categories(self, category: Dict[int, str]) -> None: ...
     def _do_load_subcategories(self, category_id: int) -> None: ...
@@ -68,7 +68,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
     txtNSN: RAMSTKEntry
     txtQuantity: RAMSTKEntry
     txtYearMade: RAMSTKEntry
-    dic_attribute_widget_map: Any
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...
     def do_load_cost_types(self) -> None: ...
     def do_load_manufacturers(
@@ -83,5 +83,5 @@ class HardwareMiscellaneousPanel(RAMSTKFixedPanel):
     chkTagged: RAMSTKCheckButton
     txtAttachments: RAMSTKTextView
     txtRemarks: RAMSTKTextView
-    dic_attribute_widget_map: Any
+    dic_attribute_widget_map: Dict[str, List[Any]]
     def __init__(self) -> None: ...

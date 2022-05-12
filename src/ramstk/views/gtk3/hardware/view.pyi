@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Callable, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.configuration import (
@@ -105,9 +105,9 @@ class HardwareModuleView(RAMSTKModuleView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlPanel: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlPanel: RAMSTKPanel
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
@@ -116,29 +116,29 @@ class HardwareModuleView(RAMSTKModuleView):
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> Any: ...
     def _do_request_insert_part(self, __button: Gtk.ToolButton) -> None: ...
     def _do_request_insert_sibling(self, __button: Gtk.ToolButton) -> Any: ...
-    _record_id: Any
-    _parent_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    _record_id: int
+    _parent_id: int
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
 class HardwareGeneralDataView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _pnlGeneralData: Any
-    _pnlLogistics: Any
-    _pnlMiscellaneous: Any
-    _lst_callbacks: Any
-    _lst_icons: Any
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
+    _pnlGeneralData: RAMSTKPanel
+    _pnlLogistics: RAMSTKPanel
+    _pnlMiscellaneous: RAMSTKPanel
+    _lst_callbacks: List[Callable]
+    _lst_icons: List[str]
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None: ...
     _record_id: Any
     _parent_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
 class HardwareAssessmentInputView(RAMSTKWorkView):
@@ -146,15 +146,15 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _dic_component_panels: Any
-    _lst_callbacks: Any
-    _lst_icons: Any
-    _lst_tooltips: Any
-    _pnlReliabilityInput: Any
-    _pnlEnvironmentalInput: Any
-    _pnlStressInput: Any
-    _vpnLeft: Any
-    _vpnRight: Any
+    _dic_component_panels: Dict[int, RAMSTKPanel]
+    _lst_callbacks: List[Callable]
+    _lst_icons: List[str]
+    _lst_tooltips: List[str]
+    _pnlReliabilityInput: RAMSTKPanel
+    _pnlEnvironmentalInput: RAMSTKPanel
+    _pnlStressInput: RAMSTKPanel
+    _vpnLeft: Gtk.VPaned
+    _vpnRight: Gtk.VPaned
     _hazard_rate_method_id: int
     _subcategory_id: int
     def __init__(
@@ -163,9 +163,9 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None: ...
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None: ...
     def _do_request_update(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    _parent_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    _record_id: int
+    _parent_id: int
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
 
 class HardwareAssessmentResultsView(RAMSTKWorkView):
@@ -173,23 +173,23 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _dic_component_results: Any
-    _lst_callbacks: Any
-    _lst_icons: Any
-    _lst_tooltips: Any
+    _dic_component_results: Dict[int, RAMSTKPanel]
+    _lst_callbacks: List[Callable]
+    _lst_icons: List[str]
+    _lst_tooltips: List[str]
     _hazard_rate_method_id: int
     _subcategory_id: int
-    _pnlAvailabilityResults: Any
-    _pnlReliabilityResults: Any
-    _pnlStressResults: Any
-    _vpnLeft: Any
-    _vpnRight: Any
+    _pnlAvailabilityResults: RAMSTKPanel
+    _pnlReliabilityResults: RAMSTKPanel
+    _pnlStressResults: RAMSTKPanel
+    _vpnLeft: Gtk.VPaned
+    _vpnRight: Gtk.VPaned
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None: ...
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    _parent_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    _record_id: int
+    _parent_id: int
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None: ...
     def __make_ui(self) -> None: ...
