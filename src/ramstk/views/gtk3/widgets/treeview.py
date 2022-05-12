@@ -12,6 +12,7 @@ import datetime
 from typing import Any, Callable, Dict, List, Tuple
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 import toml
 import treelib
 
@@ -244,10 +245,9 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         _row = self.unfilt_model.get_iter_first()
 
-        while _row is not None:
-            if self.unfilt_model.get_value(_row, search_col) == value:
-                break
-
+        while (
+            _row is not None and self.unfilt_model.get_value(_row, search_col) != value
+        ):
             _row = self.unfilt_model.iter_next(_row)
 
         return _row
@@ -442,8 +442,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """Retrieve the Gtk.TreeModel() from a Gtk.CellRendererCombo().
 
         :param column: the column number to retrieve the cell's model.
-        :param clear: whether or not to clear the Gtk.TreeModel().
-            Default is True.
+        :param clear: whether to clear the Gtk.TreeModel().  Default is True.
         :return: _model
         :rtype: :class:`Gtk.TreeModel`
         """

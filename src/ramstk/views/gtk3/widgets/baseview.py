@@ -714,8 +714,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
             "insert_part"
         ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/insert_part.png"
 
-        self._dic_key_index: Dict[str, int] = {}
-
         # Initialize private list attributes.
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)
         self._lst_callbacks.insert(1, super().do_request_delete)

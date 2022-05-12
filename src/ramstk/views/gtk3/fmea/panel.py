@@ -14,10 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
-
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
     RAMSTKFixedPanel,
