@@ -391,21 +391,25 @@ ROW_DATA = [
 
 
 def setup_test_directory(test_dir) -> None:
+    """Create test configuration directory."""
     if not os.path.exists(test_dir):
         os.makedirs(test_dir, exist_ok=True)
 
 
 def populate_test_directory(test_dir) -> None:
+    """Create test icon and layout directory."""
     dir_util.copy_tree(f"{os.getcwd()}/data/icons/", f"{test_dir}/icons/")
     dir_util.copy_tree(f"{os.getcwd()}/data/layouts/", f"{test_dir}/layouts/")
 
 
 def teardown_test_directory(test_dir) -> None:
+    """Remove test configuration directory."""
     if os.path.exists(test_dir):
         shutil.rmtree(test_dir)
 
 
 def setup_test_db(db_config) -> None:
+    """Create a test postgres database."""
     conn = psycopg2.connect(
         host=db_config["host"],
         port=db_config["port"],
@@ -428,24 +432,8 @@ def setup_test_db(db_config) -> None:
     conn.close()
 
 
-def create_test_db(db_config, sql_file) -> None:
-    conn = psycopg2.connect(
-        host=db_config["host"],
-        port=db_config["port"],
-        dbname=db_config["database"],
-        user=db_config["user"],
-        password=db_config["password"],
-    )
-    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    conn.set_session(autocommit=True)
-
-    cursor = conn.cursor()
-    cursor.execute(open(sql_file, "r").read())
-    cursor.close()
-    conn.close()
-
-
 def populate_test_db(db_config, sql_file) -> None:
+    """Populate test database."""
     conn = psycopg2.connect(
         host=db_config["host"],
         port=db_config["port"],
@@ -463,6 +451,7 @@ def populate_test_db(db_config, sql_file) -> None:
 
 
 def teardown_test_db(db_config) -> None:
+    """Drop test database."""
     conn = psycopg2.connect(
         host=db_config["host"],
         port=db_config["port"],
@@ -650,7 +639,7 @@ def test_program_dao():
     setup_test_db(db_config=test_config)
 
     # Create the test database tables.
-    create_test_db(db_config=test_config, sql_file="./data/postgres_program_db.sql")
+    populate_test_db(db_config=test_config, sql_file="./data/postgres_program_db.sql")
 
     # Populate the test database tables.
     populate_test_db(
@@ -826,6 +815,7 @@ def test_toml_user_configuration(make_home_config_dir):
             "calcreltime": "100.0",
             "decimal": "6",
             "modesource": "1",
+            "clearmodes": "false",
             "moduletabpos": "top",
             "listtabpos": "bottom",
             "worktabpos": "bottom",
@@ -1560,6 +1550,7 @@ def test_format_file():
 
 @pytest.fixture(scope="function")
 def test_stress_limits():
+    """Create test stress limit dict."""
     yield {
         "integrated_circuit": {
             "digital": {

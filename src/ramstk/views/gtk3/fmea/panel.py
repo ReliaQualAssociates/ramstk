@@ -419,6 +419,7 @@ class FMEATreePanel(RAMSTKTreePanel):
     # Define public dictionary class attributes.
 
     # Define public dictionary list attributes.
+    lst_control_types = ["", "Detection", "Prevention"]
 
     # Define public dictionary scalar attributes.
 
@@ -1230,7 +1231,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.lst_users: List[str] = []
 
         # Initialize public scalar attributes.
-        self.level: str = ""
+        self.clear_modes: bool = False
+        self.level: str = "mode"
 
         super().do_set_properties()
         super().do_make_panel()
@@ -1244,12 +1246,32 @@ class FMEATreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_retrieve_fmeca")
-        pub.subscribe(super().do_load_panel, "succeed_calculate_rpn")
+        pub.subscribe(
+            super().do_load_panel,
+            "succeed_retrieve_fmeca",
+        )
+        pub.subscribe(
+            super().do_load_panel,
+            "succeed_calculate_rpn",
+        )
 
-        pub.subscribe(self._on_select_hardware, "selected_hardware")
+        pub.subscribe(
+            self._on_select_hardware,
+            "selected_hardware",
+        )
 
-        pub.subscribe(self.__do_load_missions, "succeed_retrieve_usage_profile")
+        pub.subscribe(
+            self.__do_clear_modes_on_category_change,
+            "hardware_category_changed",
+        )
+        pub.subscribe(
+            self.__do_clear_modes_on_subcategory_change,
+            "changed_subcategory",
+        )
+        pub.subscribe(
+            self.__do_load_missions,
+            "succeed_retrieve_usage_profile",
+        )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
@@ -1362,18 +1384,28 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        _attributes = super().on_row_change(selection)
         _model, _row = selection.get_selected()
-
         if _row is None:
             return
 
-        self.do_get_fmea_level(_model, _row)
-        super().do_set_visible_columns(_attributes)
-        self._record_id = _attributes[f"{self.level}_id"]
+        _attributes = super().on_row_change(selection)
+        try:
+            _attributes["type_id"] = self.lst_control_types.index(
+                _attributes["type_id"]
+            )
+        except ValueError:
+            _attributes["type_id"] = 0
 
-        _mission = _model.get_value(_row, 8)
-        self.__do_load_mission_phases(_mission)
+        self.do_get_fmea_level(_model, _row)
+        self._record_id = _attributes[f"{self.level}_id"]
+        super().do_set_visible_columns(_attributes)
+
+        self.__do_load_mission_phases(_model.get_value(_row, 8))
+
+        pub.sendMessage(
+            f"selected_{self.level}",
+            attributes=_attributes,
+        )
 
     def _on_select_hardware(
         self, attributes: Dict[str, Union[int, float, str]]
@@ -1387,6 +1419,53 @@ class FMEATreePanel(RAMSTKTreePanel):
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
 
+    def __do_clear_modes(self) -> None:
+        """Clear existing failure modes from the FMEA worksheet and RAMSTK database.
+
+        :return: None
+        :rtype: None
+        """
+        _row = self.tvwTreeView.get_model().get_iter_first()
+
+        while _row is not None:
+            pub.sendMessage(
+                "request_delete_mode",
+                node_id=self.tvwTreeView.get_model().get_value(_row, 2),
+            )
+            _row = self.tvwTreeView.get_model().iter_next(_row)
+
+    # noinspection PyUnusedLocal
+    def __do_clear_modes_on_category_change(
+        self,
+        attributes: Dict[str, int],  # pylint: disable=unused-argument
+    ) -> None:
+        """Clear existing failure modes when a new component category is selected.
+
+        This is a wrapper for __do_clear_modes().
+
+        :param attributes: the ID of the newly selected component category.
+        :return: None
+        :rtype: None
+        """
+        if self.clear_modes:
+            self.__do_clear_modes()
+
+    # noinspection PyUnusedLocal
+    def __do_clear_modes_on_subcategory_change(
+        self,
+        subcategory_id: int,  # pylint: disable=unused-argument
+    ) -> None:
+        """Clear existing failure modes when a new component subcategory is selected.
+
+        This is a wrapper for __do_clear_modes().
+
+        :param subcategory_id: the ID of the newly selected component subcategory.
+        :return: None
+        :rtype: None
+        """
+        if self.clear_modes:
+            self.__do_clear_modes()
+
     def __do_get_rpn_names(
         self,
         entity: object,
@@ -1397,10 +1476,16 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: (_occurrence, _detection, _occurrence_new, _detection_new)
         :rtype: tuple
         """
-        _occurrence = str(self.lst_rpn_occurrence[entity.rpn_occurrence])
-        _detection = str(self.lst_rpn_detection[entity.rpn_detection])
-        _occurrence_new = str(self.lst_rpn_occurrence[entity.rpn_occurrence_new])
-        _detection_new = str(self.lst_rpn_detection[entity.rpn_detection_new])
+        _occurrence = str(
+            self.lst_rpn_occurrence[entity.rpn_occurrence],  # type: ignore
+        )
+        _detection = str(self.lst_rpn_detection[entity.rpn_detection])  # type: ignore
+        _occurrence_new = str(
+            self.lst_rpn_occurrence[entity.rpn_occurrence_new],  # type: ignore
+        )
+        _detection_new = str(
+            self.lst_rpn_detection[entity.rpn_detection_new],  # type: ignore
+        )
 
         return _occurrence, _detection, _occurrence_new, _detection_new
 
@@ -1648,7 +1733,7 @@ class FMEATreePanel(RAMSTKTreePanel):
             0.0,
             0.0,
             0.0,
-            _entity.type_id,
+            self._lst_control_type[_entity.type_id],
             "",
             "",
             "",
@@ -1696,7 +1781,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :rtype: None
         """
         self.tvwTreeView.do_load_combo_cell(
-            self.tvwTreeView.position["type_id"], self.lst_control_types
+            self.tvwTreeView.position["type_id"],
+            self.lst_control_types,
         )
 
     def __do_load_mechanism(
@@ -1800,7 +1886,7 @@ class FMEATreePanel(RAMSTKTreePanel):
     def __do_load_missions(
         self,
         tree: treelib.Tree = treelib.Tree(),
-        node_id: Any = "",
+        node_id: str = "",
         row: Gtk.TreeIter = None,
     ) -> None:
         """Load the mission and mission phase dicts.

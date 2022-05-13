@@ -231,18 +231,22 @@ class TestCreateConfiguration:
     """Class for testing the site configuration module."""
 
     def on_create_site_configuration(self):
+        """Listen for succeed messages."""
         print("\033[36m\n\tsucceed_create_site_configuration topic was broadcast.")
 
     def on_fail_site_configuration_no_config_file(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "Failed to write site configuration file /biboly/RAMSTK/RAMSTK.toml."
         )
         print("\033[35m\n\tfail_create_site_configuration topic was broadcast.")
 
     def on_create_user_configuration(self):
+        """Listen for succeed messages."""
         print("\033[36m\n\tsucceed_create_user_configuration topic was broadcast.")
 
     def on_fail_user_configuration_no_conf_file(self, error_message):
+        """Listen for fail messages."""
         assert error_message == ("User configuration file None is not a file.")
         print(
             "\033[35m\n\tfail_create_user_configuration topic was broadcast; no "
@@ -250,6 +254,7 @@ class TestCreateConfiguration:
         )
 
     def on_fail_user_configuration_no_icon_dir(self, error_message):
+        """Listen for fail messages."""
         assert error_message[:118] == (
             "Attempt to copy RAMSTK icons from site-wide icon directory "
             "/tmp/shibiboly/share/RAMSTK/icons/ to user's icon directory"
@@ -257,6 +262,7 @@ class TestCreateConfiguration:
         print("\033[35m\n\tfail_create_site_configuration topic was broadcast.")
 
     def on_fail_create_user_configuration(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "User's configuration directory "
             "/opt/.config/RAMSTK does not exist and "
@@ -269,6 +275,7 @@ class TestCreateConfiguration:
         )
 
     def on_fail_create_data_dir(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "User's data directory "
             "/opt/.config/RAMSTK/layouts does not "
@@ -282,6 +289,7 @@ class TestCreateConfiguration:
         )
 
     def on_fail_create_icon_dir(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "User's icon directory "
             "/opt/.config/RAMSTK/icons does not "
@@ -295,6 +303,7 @@ class TestCreateConfiguration:
         )
 
     def on_fail_create_log_dir(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "User's log directory "
             "/opt/.config/RAMSTK/logs does not exist "
@@ -308,6 +317,7 @@ class TestCreateConfiguration:
         )
 
     def on_fail_create_program_dir(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "Program directory /opt/analyses/ramstk does "
             "not exist and could not be created when "
@@ -372,6 +382,7 @@ class TestCreateConfiguration:
         assert DUT.RAMSTK_RISK_POINTS == [4, 10]
         assert DUT.RAMSTK_MODE == ""
         assert DUT.RAMSTK_MODE_SOURCE == 1  # 1=FMD-97
+        assert DUT.RAMSTK_MODE_CLEAR is False
         assert DUT.RAMSTK_BACKEND == ""
         assert DUT.RAMSTK_REPORT_SIZE == "letter"
         assert DUT.RAMSTK_HR_MULTIPLIER == 1.0
@@ -435,8 +446,7 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_create_site_configuration(self):
-        """do_create_site_configuration() should broadcast the succcess message on
-        success."""
+        """Broadcast the succcess message on success."""
         pub.subscribe(
             self.on_create_site_configuration, "succeed_create_site_configuration"
         )
@@ -454,8 +464,7 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_create_site_configuration_no_config_file(self):
-        """do_create_site_configuration() should broadcast the fail message on
-        success."""
+        """Broadcast the success message on success."""
         pub.subscribe(
             self.on_fail_site_configuration_no_config_file,
             "fail_create_site_configuration",
@@ -551,8 +560,7 @@ class TestCreateConfiguration:
 
     @pytest.mark.unit
     def test_do_make_configuration_dir(self):
-        """_do_make_configuration_dir() should create a configuration directory and set
-        the RAMSTK_PROG_CONF file os.path."""
+        """Create a configuration directory and set RAMSTK_PROG_CONF file os.path."""
         _temp_dir = f"{VIRTUAL_ENV}/tmp/{tempfile.mkdtemp()}"
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
@@ -647,16 +655,19 @@ class TestGetterSetter:
     """Class for testing that the site configuration module can be read."""
 
     def on_fail_get_site_configuration(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "Failed to read Site configuration file " "{0:s}/share/RAMSTK/BigSite.toml."
         ).format(VIRTUAL_ENV)
         print("\033[35m\n\tfail_get_site_configuration topic was broadcast.")
 
     def on_succeed_set_site_configuration(self, configuration):
+        """Listen for success messages."""
         assert isinstance(configuration, str)
         print("\033[36m\n\tsucceed_set_site_configuration topic was broadcast.")
 
     def on_fail_get_user_configuration(self, error_message):
+        """Listen for fail messages."""
         assert error_message == (
             "Failed to read User configuration file "
             "{0:s}/tmp/.config/RAMSTK/BigUser.toml."
@@ -665,8 +676,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_get_site_configuration(self):
-        """get_site_configuration() should broadcast the succcess message on
-        success."""
+        """Broadcast succcess message on success."""
         DUT = RAMSTKSiteConfiguration()
         DUT.RAMSTK_SITE_CONF = f"{VIRTUAL_ENV}/share/RAMSTK/Site.toml"
 
@@ -683,8 +693,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_get_site_configuration_no_conf_file(self):
-        """get_site_configuration() should broadcase the fail message when there is no
-        configuration file."""
+        """Broadcase fail message when there is no configuration file."""
         pub.subscribe(
             self.on_fail_get_site_configuration, "fail_get_site_configuration"
         )
@@ -710,8 +719,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_site_directories_no_site_conf_file(self):
-        """set_site_directories() should return None on success and create a new site
-        configuration file if one doesn't exist."""
+        """Return None on success and create new site configuration."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
@@ -726,8 +734,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_site_configuration(self):
-        """set_site_configuration() should return None and update the contents of
-        Site.conf on success."""
+        """Return None and update the contents of Site.conf on success."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKSiteConfiguration()
         DUT._INSTALL_PREFIX = _temp_dir
@@ -834,8 +841,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_get_user_configuration_no_conf_file(self):
-        """get_user_configuration() should broadcase the fail message when there is no
-        configuration file."""
+        """Broadcase the fail message when there is no configuration file."""
         pub.subscribe(
             self.on_fail_get_user_configuration, "fail_get_user_configuration"
         )
@@ -851,8 +857,7 @@ class TestGetterSetter:
 
     @pytest.mark.skip
     def test_get_user_configuration_no_log_dir(self, test_toml_user_configuration):
-        """get_user_configuration() should set the log files relative to the current
-        directory when RAMSTK_LOG_DIR is an empty string."""
+        """Set log files relative to current directory when RAMSTK_LOG_DIR is empty."""
         # There is no way to set the log directory to an empty string without
         # creating a test configuration file that does just that.
         DUT = test_toml_user_configuration
@@ -911,8 +916,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories(self):
-        """set_user_variables() should return None on success when configuration
-        directory structure exists in user's $HOME."""
+        """Return None on success when configuration directory structure exists."""
         DUT = RAMSTKUserConfiguration()
         DUT.RAMSTK_HOME_DIR = f"{VIRTUAL_ENV}/tmp"
 
@@ -929,8 +933,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories_no_home(self):
-        """set_user_variables() should return None on success when configuration
-        directory structure does NOT exist in user's $HOME."""
+        """Return None when configuration directory structure does NOT exist."""
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV
         DUT.RAMSTK_HOME_DIR = f"{VIRTUAL_ENV}/home"
@@ -946,8 +949,7 @@ class TestGetterSetter:
 
     @pytest.mark.unit
     def test_set_user_directories_no_user_conf_sub_dirs(self):
-        """set_user_variables() should return None and set the default directories when
-        the user's doesn't exist."""
+        """Return None and set the default directories when user's doesn't exist."""
         _temp_dir = tempfile.mkdtemp()
         DUT = RAMSTKUserConfiguration()
         DUT._INSTALL_PREFIX = VIRTUAL_ENV

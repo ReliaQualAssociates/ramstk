@@ -115,7 +115,6 @@ class RAMSTKBaseTable:
         pub.subscribe(self.do_insert, f"request_insert_{self._tag}")
         pub.subscribe(self.do_select_all, self._select_msg)
         pub.subscribe(self.do_set_attributes, f"request_set_{self._tag}_attributes")
-        pub.subscribe(self.do_set_attributes, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_set_attributes, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_set_attributes, f"wvw_editing_{self._tag}")
         pub.subscribe(

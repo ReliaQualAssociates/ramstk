@@ -7,6 +7,11 @@
 # All rights reserved.
 """Class for testing RAMSTK module algorithms and models."""
 
+# Standard Library Imports
+import os
+import random
+import string
+
 # Third Party Imports
 import pytest
 from pubsub import pub
@@ -130,6 +135,24 @@ class TestProgramManager:
         print(
             "\033[36m\n\tsucceed_create_program_database topic was broadcast "
             "when creating postgres database"
+        )
+
+    def on_succeed_create_sqlite_program(self, program_db, database):
+        """Listen for succeed_create messages."""
+        assert isinstance(program_db, BaseDatabase)
+        assert database["database"] == program_db.cxnargs["dbname"]
+        print(
+            "\033[36m\n\tsucceed_create_program_database topic was broadcast "
+            "when creating sqlite database"
+        )
+
+    def on_fail_create_program(self, logger_name, message):
+        """Listen for do_log_debug messages."""
+        assert logger_name == "DEBUG"
+        assert message == "SQL file doyle_program_db.sql could not be found."
+        print(
+            "\033[36m\n\tfail_create_program_database topic was broadcast when "
+            "passed an unknown sql file."
         )
 
     @pytest.mark.unit
@@ -284,16 +307,16 @@ class TestProgramManager:
         """Broadcast fail message on attempts to close database when not connected."""
         pub.subscribe(self.on_fail_close_program, "fail_disconnect_program_database")
 
-        DUT = RAMSTKProgramDB()
-        DUT.do_close_program()
+        dut = RAMSTKProgramDB()
+        dut.do_close_program()
 
-        assert isinstance(DUT.program_dao, BaseDatabase)
+        assert isinstance(dut.program_dao, BaseDatabase)
 
         pub.unsubscribe(self.on_fail_close_program, "fail_disconnect_program_database")
-        pub.unsubscribe(DUT.do_create_program, "request_create_program")
-        pub.unsubscribe(DUT.do_open_program, "request_open_program")
-        pub.unsubscribe(DUT.do_close_program, "request_close_program")
-        pub.unsubscribe(DUT.do_save_program, "request_update_program")
+        pub.unsubscribe(dut.do_create_program, "request_create_program")
+        pub.unsubscribe(dut.do_open_program, "request_open_program")
+        pub.unsubscribe(dut.do_close_program, "request_close_program")
+        pub.unsubscribe(dut.do_save_program, "request_update_program")
 
     @pytest.mark.integration
     def test_save_program(self, test_datamanager, test_program_dao):
@@ -360,3 +383,55 @@ class TestProgramManager:
         pub.unsubscribe(
             self.on_succeed_create_postgres_program, "succeed_create_program_database"
         )
+
+    @pytest.mark.integration
+    def test_do_create_sqlite_program(
+        self, test_datamanager, test_bald_dao, test_toml_user_configuration
+    ):
+        """do_create_program() should broadcast the success message."""
+        db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+        pub.subscribe(
+            self.on_succeed_create_sqlite_program, "succeed_create_program_database"
+        )
+
+        test_program_db = {
+            "dialect": "sqlite",
+            "user": "sqlite",
+            "password": "sqlite",
+            "host": "localhost",
+            "port": "3306",
+            "database": f"/tmp/{db_name}",
+        }
+
+        test_datamanager.user_configuration = test_toml_user_configuration
+        test_datamanager.do_create_program(test_bald_dao, test_program_db)
+
+        pub.unsubscribe(
+            self.on_succeed_create_sqlite_program, "succeed_create_program_database"
+        )
+
+        os.remove(f"/tmp/{db_name}")
+
+    @pytest.mark.integration
+    def test_do_create_no_dialect_program(
+        self, test_datamanager, test_bald_dao, test_toml_user_configuration
+    ):
+        """do_create_program() should broadcast the success message."""
+        db_name = "".join(random.choices(string.ascii_uppercase + string.digits, k=10))
+
+        pub.subscribe(self.on_fail_create_program, "do_log_debug_msg")
+
+        test_program_db = {
+            "dialect": "doyle",
+            "user": "doyle",
+            "password": "rowland",
+            "host": "localhost",
+            "port": "3306",
+            "database": f"/tmp/{db_name}",
+        }
+
+        test_datamanager.user_configuration = test_toml_user_configuration
+        test_datamanager.do_create_program(test_bald_dao, test_program_db)
+
+        pub.unsubscribe(self.on_fail_create_program, "do_log_debug_msg")

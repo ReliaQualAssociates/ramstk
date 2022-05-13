@@ -37,7 +37,6 @@ class RAMSTKProgramDB:
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTK program database model."""
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -109,18 +108,27 @@ class RAMSTKProgramDB:
         :return: None
         :rtype: None
         """
-        with open(
-            f"{self.user_configuration.RAMSTK_CONF_DIR}/"
-            f"{database['dialect']}_program_db.sql",
-            "r",
-            encoding="utf-8",
-        ) as _sql_file:
-            self.program_dao = program_db
-            do_create_program_db(database, _sql_file)
+        try:
+            with open(
+                f"{self.user_configuration.RAMSTK_CONF_DIR}/"
+                f"{database['dialect']}_program_db.sql",
+                "r",
+                encoding="utf-8",
+            ) as _sql_file:
+                self.program_dao = program_db
+                do_create_program_db(database, _sql_file)
+                pub.sendMessage(
+                    "succeed_create_program_database",
+                    program_db=self.program_dao,
+                    database=database,
+                )
+        except FileNotFoundError:
             pub.sendMessage(
-                "succeed_create_program_database",
-                program_db=self.program_dao,
-                database=database,
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=(
+                    f"SQL file {database['dialect']}_program_db.sql could not be found."
+                ),
             )
 
     def do_open_program(

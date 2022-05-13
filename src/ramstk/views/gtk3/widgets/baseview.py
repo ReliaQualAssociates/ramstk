@@ -447,7 +447,8 @@ class RAMSTKBaseView(Gtk.HBox):
         """
         self.do_set_cursor_busy()
         pub.sendMessage(
-            f"request_update_{self._tag}", node_id=self.dic_pkeys["record_id"]
+            f"request_update_{self._tag}",
+            node_id=self.dic_pkeys["record_id"],
         )
 
     def do_request_update_all(self, __button: Gtk.ToolButton) -> None:
@@ -457,7 +458,9 @@ class RAMSTKBaseView(Gtk.HBox):
         :return: None
         """
         self.do_set_cursor_busy()
-        pub.sendMessage(f"request_update_all_{self._tag}")
+        pub.sendMessage(
+            f"request_update_all_{self._tag}",
+        )
 
     def do_set_cursor(self, cursor: Gdk.CursorType) -> None:
         """Set the cursor for the Module, List, and Work Book Gdk.Window().
@@ -710,8 +713,6 @@ class RAMSTKModuleView(RAMSTKBaseView):
         self._dic_icons[
             "insert_part"
         ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/insert_part.png"
-
-        self._dic_key_index: Dict[str, int] = {}
 
         # Initialize private list attributes.
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)

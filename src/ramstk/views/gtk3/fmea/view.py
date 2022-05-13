@@ -13,15 +13,24 @@ from typing import Any, Dict, List, Tuple
 from pubsub import pub
 
 # RAMSTK Package Imports
+# noinspection PyPackageRequirements
 from ramstk.configuration import (
     RAMSTK_CONTROL_TYPES,
     RAMSTK_CRITICALITY,
     RAMSTK_FAILURE_PROBABILITY,
     RAMSTKUserConfiguration,
 )
+
+# noinspection PyPackageRequirements
 from ramstk.logger import RAMSTKLogManager
+
+# noinspection PyPackageRequirements
 from ramstk.views.gtk3 import Gtk, _
+
+# noinspection PyPackageRequirements
 from ramstk.views.gtk3.assistants import AddControlAction
+
+# noinspection PyPackageRequirements
 from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -75,13 +84,13 @@ class FMEAWorkView(RAMSTKWorkView):
     # Define private list class attributes.
 
     # Define private scalar class attributes.
-    _tag: str = "fmea"
     _pixbuf: bool = True
     _tablabel: str = _("FMEA")
     _tabtooltip: str = _(
         "Displays failure mode and effects analysis (FMEA) information for the "
         "selected Hardware item."
     )
+    _tag: str = "fmea"
 
     # Define public dictionary class attributes.
 
@@ -151,9 +160,29 @@ class FMEAWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_record_id, f"selected_{self._tag}")
         pub.subscribe(
-            self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
+            self._do_set_pkeys,
+            "selected_mode",
+        )
+        pub.subscribe(
+            self._do_set_pkeys,
+            "selected_mechanism",
+        )
+        pub.subscribe(
+            self._do_set_pkeys,
+            "selected_cause",
+        )
+        pub.subscribe(
+            self._do_set_pkeys,
+            "selected_control",
+        )
+        pub.subscribe(
+            self._do_set_pkeys,
+            "selected_action",
+        )
+        pub.subscribe(
+            self._on_select_hardware,
+            "selected_hardware",
         )
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
@@ -223,7 +252,20 @@ class FMEAWorkView(RAMSTKWorkView):
 
         pub.sendMessage(f"request_insert_{_level}", attributes=_attributes)
 
-    def _on_get_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
+        """Set the work stream module's primary key values.
+
+        :param attributes: the attribute dict for the selected work stream module item.
+        :return: None
+        :rtype: None
+        """
+        self._tag = self._pnlPanel.level
+
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["hardware_id"] = attributes["hardware_id"]
+        self.dic_pkeys["record_id"] = attributes[f"{self._tag}_id"]
+
+    def _on_select_hardware(self, attributes: Dict[str, Any]) -> None:
         """Set the hardware ID.
 
         :param attributes:
@@ -238,28 +280,95 @@ class FMEAWorkView(RAMSTKWorkView):
         :return: _attributes
         :rtype: dict
         """
-        _attributes = {
+        return {
             "revision_id": self._revision_id,
             "hardware_id": self._hardware_id,
-            "mode_id": 0,
-            "mechanism_id": 0,
-            "cause_id": 0,
-            "control_id": 0,
-            "action_id": 0,
+            "mode_id": self.__do_get_mode_id(),
+            "mechanism_id": self.__do_get_mechanism_id(),
+            "cause_id": self.__do_get_cause_id(),
+            "control_id": self.__do_get_control_id(),
+            "action_id": self.__do_get_action_id(),
         }
 
+    def __do_get_action_id(self) -> int:
+        """Read the action ID from the FMEA worksheet.
+
+        :return: action_id
+        :rtype: int
+        """
         (
             _model,
             _row,
         ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
 
-        _attributes["mode_id"] = _model.get_value(_row, 2)
-        _attributes["mechanism_id"] = _model.get_value(_row, 3)
-        _attributes["cause_id"] = _model.get_value(_row, 4)
-        _attributes["control_id"] = _model.get_value(_row, 5)
-        _attributes["action_id"] = _model.get_value(_row, 6)
+        try:
+            return _model.get_value(_row, 6)
+        except TypeError:
+            return 0
 
-        return _attributes
+    def __do_get_cause_id(self) -> int:
+        """Read the cause ID from the FMEA worksheet.
+
+        :return: cause_id
+        :rtype: int
+        """
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        try:
+            return _model.get_value(_row, 4)
+        except TypeError:
+            return 0
+
+    def __do_get_control_id(self) -> int:
+        """Read the control ID from the FMEA worksheet.
+
+        :return: control_id
+        :rtype: int
+        """
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        try:
+            return _model.get_value(_row, 5)
+        except TypeError:
+            return 0
+
+    def __do_get_mechanism_id(self) -> int:
+        """Read the failure Mechanism ID from the FMEA worksheet.
+
+        :return: mechanism_id
+        :rtype: int
+        """
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        try:
+            return _model.get_value(_row, 3)
+        except TypeError:
+            return 0
+
+    def __do_get_mode_id(self) -> int:
+        """Read the failure Mode ID from the FMEA worksheet.
+
+        :return: mode_id
+        :rtype: int
+        """
+        (
+            _model,
+            _row,
+        ) = self._pnlPanel.tvwTreeView.get_selection().get_selected()
+
+        try:
+            return _model.get_value(_row, 2)
+        except TypeError:
+            return 0
 
     def __do_load_action_lists(self) -> None:
         """Load the Gtk.CellRendererCombo()s associated with FMEA actions.
@@ -275,9 +384,10 @@ class FMEAWorkView(RAMSTKWorkView):
             x[1][0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_ACTION_STATUS.items()
         ]
         self._pnlPanel.lst_users = [
-            x[1][0] + ", " + x[1][1]
+            f"{x[1][0]}, {x[1][1]}"
             for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_USERS.items()
         ]
+
         self._pnlPanel.lst_control_types = RAMSTK_CONTROL_TYPES
 
     def __do_load_rpn_lists(self) -> None:
@@ -320,6 +430,7 @@ class FMEAWorkView(RAMSTKWorkView):
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
         self._pnlPanel.dic_icons = self._dic_icons
+        self._pnlPanel.clear_modes = self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODE_CLEAR
 
         super().do_embed_treeview_panel()
         self.__do_load_action_lists()

@@ -292,7 +292,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _key,
             _value,
         ) in self.dic_attribute_widget_map.items():
-            # Value[1] is the widget who's callback is being set.
+            # Value[1] is the widget whose callback is being set.
             _value[1].dic_handler_id[_value[2]] = _value[1].connect(
                 _value[2],  # Widget's callback signal.
                 _value[3],  # Callback function/method.
@@ -471,7 +471,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         :param node_id: the list of IDs of the work stream module item
             being edited.  This unused parameter is part of the PyPubSub
-            message data package that this method responds to so it must
+            message data package to which this method responds, so it must
             remain in the argument list.
         :param package: a dict containing the attribute name as key and
             the new attribute value as the value.
@@ -554,11 +554,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         _new_text: Any = ""
 
         try:
-            if str(datatype) == "gfloat":
+            if datatype == "gfloat":
                 _new_text = float(entry.do_get_text())
-            elif str(datatype) == "gint":
+            elif datatype == "gint":
                 _new_text = int(entry.do_get_text())
-            elif str(datatype) == "gchararray":
+            elif datatype == "gchararray":
                 _new_text = str(entry.do_get_text())
         except (KeyError, ValueError):
             pub.sendMessage(
@@ -727,7 +727,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_clear_panel, "request_clear_views")
         pub.subscribe(self.do_load_panel, f"succeed_insert_{self._tag}")
-        pub.subscribe(self.do_refresh_tree, f"lvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"mvw_editing_{self._tag}")
         pub.subscribe(self.do_refresh_tree, f"wvw_editing_{self._tag}")
         pub.subscribe(self.on_delete_treerow, f"succeed_delete_{self._tag}")
@@ -740,11 +739,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
-        _model = self.tvwTreeView.get_model()
         try:
-            _model.clear()
+            self.tvwTreeView.get_model().clear()
         except AttributeError:
-            pass
+            self.tvwTreeView.get_model().get_model().clear()
 
     def do_load_panel(self, tree: treelib.Tree) -> None:
         """Load data into the RAMSTKTreeView on a tree type panel.
@@ -919,7 +917,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
-                    f"An error occurred while refreshing {self._tag} data for Record "
+                    f"An error occurred while refreshing {self._tag} data for record "
                     f"ID {self._record_id} in the view.  Key {_key} does not exist in "
                     f"attribute dictionary."
                 ),
@@ -930,7 +928,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while refreshing {self._tag} data "
-                    f"for Record ID {self._record_id} in the view.  Data {_value} for "
+                    f"for record ID {self._record_id} in the view.  Data {_value} for "
                     f"{_key} is the wrong type."
                 ),
             )
@@ -1012,6 +1010,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.set_level_indentation(2)
         self.tvwTreeView.set_rubber_banding(True)
 
+    # noinspection PyUnusedLocal
     def do_set_visible_columns(
         self,
         attributes: Dict[str, Union[float, int, str]],
@@ -1027,11 +1026,6 @@ class RAMSTKTreePanel(RAMSTKPanel):
             for _idx, _key in enumerate(self.tvwTreeView.visible)
         }
         self.tvwTreeView.do_set_visible_columns()
-
-        pub.sendMessage(
-            f"selected_{self._tag}",
-            attributes={"node_id": attributes[f"{self.level}_id"]},
-        )
 
     def on_cell_change(
         self,
@@ -1215,12 +1209,12 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         :param node_id: the ID of the record in the RAMSTK Program database table whose
             attributes are to be set.
-        :param package: the key:value pair of the attribute to set.
+        :param package: the key:value of the attribute to set.
         :return: None
         :rtype: None
         """
         pub.sendMessage(
-            f"lvw_editing_{self._tag}",
+            f"wvw_editing_{self._tag}",
             node_id=node_id,
             package=package,
         )

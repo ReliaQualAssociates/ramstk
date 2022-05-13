@@ -590,17 +590,18 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         self.RAMSTK_RISK_POINTS = [4, 10]
 
         # Initialize public scalar attributes.
-        self.RAMSTK_MODE = ""
-        self.RAMSTK_MODE_SOURCE = 1
         self.RAMSTK_BACKEND = ""
-        self.RAMSTK_REPORT_SIZE = "letter"
-        self.RAMSTK_HR_MULTIPLIER = 1.0
         self.RAMSTK_DEC_PLACES = 6
-        self.RAMSTK_MTIME = 100.0
         self.RAMSTK_GUI_LAYOUT = "advanced"
-        self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
+        self.RAMSTK_HR_MULTIPLIER = 1.0
         self.RAMSTK_LOCALE = "en_US.UTF8"
         self.RAMSTK_LOGLEVEL = "INFO"
+        self.RAMSTK_METHOD = "STANDARD"  # STANDARD or LRM
+        self.RAMSTK_MODE = ""
+        self.RAMSTK_MODE_CLEAR = False
+        self.RAMSTK_MODE_SOURCE = 1
+        self.RAMSTK_REPORT_SIZE = "letter"
+        self.RAMSTK_MTIME = 100.0
         if sys.platform in ["linux", "linux2"]:
             self.RAMSTK_OS = "Linux"
             self.RAMSTK_CONF_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
@@ -667,6 +668,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "calcreltime": "100.0",
                 "decimal": "6",
                 "modesource": "1",
+                "clearmodes": "false",
                 "moduletabpos": "top",
                 "listtabpos": "bottom",
                 "worktabpos": "bottom",
@@ -788,6 +790,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_DEC_PLACES = int(_config["general"]["decimal"])
             self.RAMSTK_MTIME = float(_config["general"]["calcreltime"])
             self.RAMSTK_MODE_SOURCE = _config["general"]["modesource"]
+            self.RAMSTK_MODE_CLEAR = _config["general"]["clearmodes"].title() == "True"
             self.RAMSTK_TABPOS["listbook"] = _config["general"]["listtabpos"]
             self.RAMSTK_TABPOS["modulebook"] = _config["general"]["moduletabpos"]
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
@@ -820,6 +823,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
                 "calcreltime": str(self.RAMSTK_MTIME),
                 "decimal": str(self.RAMSTK_DEC_PLACES),
                 "modesource": str(self.RAMSTK_MODE_SOURCE),
+                "clearmodes": str(self.RAMSTK_MODE_CLEAR),
                 "moduletabpos": self.RAMSTK_TABPOS["modulebook"],
                 "listtabpos": self.RAMSTK_TABPOS["listbook"],
                 "worktabpos": self.RAMSTK_TABPOS["workbook"],
