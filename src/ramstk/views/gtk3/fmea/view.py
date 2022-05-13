@@ -430,6 +430,7 @@ class FMEAWorkView(RAMSTKWorkView):
         _hpaned: Gtk.HPaned = super().do_make_layout_lr()
 
         self._pnlPanel.dic_icons = self._dic_icons
+        self._pnlPanel.clear_modes = self.RAMSTK_USER_CONFIGURATION.RAMSTK_MODE_CLEAR
 
         super().do_embed_treeview_panel()
         self.__do_load_action_lists()

@@ -1231,6 +1231,7 @@ class FMEATreePanel(RAMSTKTreePanel):
         self.lst_users: List[str] = []
 
         # Initialize public scalar attributes.
+        self.clear_modes: bool = False
         self.level: str = "mode"
 
         super().do_set_properties()
@@ -1446,7 +1447,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        self.__do_clear_modes()
+        if self.clear_modes:
+            self.__do_clear_modes()
 
     # noinspection PyUnusedLocal
     def __do_clear_modes_on_subcategory_change(
@@ -1461,7 +1463,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         :return: None
         :rtype: None
         """
-        self.__do_clear_modes()
+        if self.clear_modes:
+            self.__do_clear_modes()
 
     def __do_get_rpn_names(
         self,

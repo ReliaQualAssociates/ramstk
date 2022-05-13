@@ -292,7 +292,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _key,
             _value,
         ) in self.dic_attribute_widget_map.items():
-            # Value[1] is the widget who's callback is being set.
+            # Value[1] is the widget whose callback is being set.
             _value[1].dic_handler_id[_value[2]] = _value[1].connect(
                 _value[2],  # Widget's callback signal.
                 _value[3],  # Callback function/method.
@@ -471,7 +471,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         :param node_id: the list of IDs of the work stream module item
             being edited.  This unused parameter is part of the PyPubSub
-            message data package that this method responds to so it must
+            message data package to which this method responds, so it must
             remain in the argument list.
         :param package: a dict containing the attribute name as key and
             the new attribute value as the value.
@@ -1010,6 +1010,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         self.tvwTreeView.set_level_indentation(2)
         self.tvwTreeView.set_rubber_banding(True)
 
+    # noinspection PyUnusedLocal
     def do_set_visible_columns(
         self,
         attributes: Dict[str, Union[float, int, str]],
@@ -1208,7 +1209,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
 
         :param node_id: the ID of the record in the RAMSTK Program database table whose
             attributes are to be set.
-        :param package: the key:value pair of the attribute to set.
+        :param package: the key:value of the attribute to set.
         :return: None
         :rtype: None
         """

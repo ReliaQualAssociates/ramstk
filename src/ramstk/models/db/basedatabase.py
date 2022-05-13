@@ -13,7 +13,6 @@ from typing import Any, Dict, List, TextIO, Tuple
 # Third Party Imports
 import psycopg2  # type: ignore
 from psycopg2 import sql  # type: ignore
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT  # type: ignore
 from pubsub import pub
 
 # noinspection PyPackageRequirements
@@ -24,6 +23,8 @@ from sqlalchemy.engine import Engine  # type: ignore
 
 # noinspection PyPackageRequirements
 from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
+
+# noinspection PyPackageRequirements
 from sqlalchemy.orm.exc import FlushError  # type: ignore
 
 # RAMSTK Package Imports
@@ -39,12 +40,13 @@ def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
     :return: None
     :rtype: None
     """
-    conn: Any = ""
-
     if database["dialect"] == "sqlite":
         conn = sqlite3.connect(database["database"])
         conn.executescript(sql_file.read().strip())
-    elif database["dialect"] == "postgres":
+
+        conn.close()
+
+    if database["dialect"] == "postgres":
         # Create the database.
         conn = psycopg2.connect(
             host=database["host"],
@@ -53,7 +55,8 @@ def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
             # deepcode ignore NoHardcodedPasswords:
             password=database["password"],
         )
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        conn.isolation_level = 4
+        conn.autocommit = True  # type: ignore
 
         cursor = conn.cursor()
         cursor.execute(
@@ -75,14 +78,15 @@ def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
             # deepcode ignore NoHardcodedPasswords:
             password=database["password"],
         )
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        conn.isolation_level = 4
+        conn.autocommit = True
         conn.set_session(autocommit=True)
 
         cursor = conn.cursor()
         cursor.execute(sql_file.read())
         cursor.close()
 
-    conn.close()
+        conn.close()
 
 
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
@@ -154,38 +158,49 @@ class BaseDatabase:
         self.cxnargs["port"] = database["port"]
         self.cxnargs["dbname"] = database["database"]
 
-        try:
-            if self.cxnargs["dialect"] == "sqlite":
-                self.database = f"sqlite:///{self.cxnargs['dbname']}"
-            elif self.cxnargs["dialect"] == "postgres":
-                self.database = (
-                    f"postgresql+psycopg2://{self.cxnargs['user']}:"
-                    f"{self.cxnargs['password']}@{self.cxnargs['host']}:"
-                    f"{self.cxnargs['port']}/{self.cxnargs['dbname']}"
-                )
-            else:
-                _error_msg = (
-                    f"Unknown database dialect in database connection "
-                    f"dict: {self.cxnargs}."
-                )
-                pub.sendMessage(
-                    "do_log_error_msg", logger_name="ERROR", message=_error_msg
-                )
-                raise DataAccessError(_error_msg)
-            self.engine, self.session = do_open_session(self.database)
-        except exc.OperationalError as _error:
-            _error_msg = f"{str(_error.orig).capitalize()}: {self.cxnargs}"
-            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
-            raise DataAccessError(_error_msg) from _error
-        except TypeError as _error:
-            _error_msg = (
-                f"Unknown dialect or non-string value in database "
-                f"connection: {self.cxnargs['dialect']}, "
-                f"{self.cxnargs['dbname']}"
+        if self.cxnargs["dialect"] not in ["postgres", "sqlite"]:
+            pub.sendMessage(
+                "do_log_error_msg",
+                logger_name="ERROR",
+                message=(
+                    f"Unknown dialect in database connection: "
+                    f"{self.cxnargs['dialect']}."
+                ),
+            )
+            return
+
+        if not isinstance(self.cxnargs["dbname"], str):
+            pub.sendMessage(
+                "do_log_error_msg",
+                logger_name="ERROR",
+                message=(
+                    f"Non-string value in database connection: "
+                    f"{self.cxnargs['dbname']}."
+                ),
+            )
+            return
+
+        if self.cxnargs["dialect"] == "sqlite":
+            self.database = f"sqlite:///{self.cxnargs['dbname']}"
+
+        if self.cxnargs["dialect"] == "postgres":
+            self.database = (
+                f"postgresql+psycopg2://{self.cxnargs['user']}:"
+                f"{self.cxnargs['password']}@{self.cxnargs['host']}:"
+                f"{self.cxnargs['port']}/{self.cxnargs['dbname']}"
             )
 
-            pub.sendMessage("do_log_error_msg", logger_name="ERROR", message=_error_msg)
-            raise DataAccessError(_error_msg) from _error
+        try:
+            self.engine, self.session = do_open_session(self.database)
+        except exc.OperationalError as _error:
+            pub.sendMessage(
+                "do_log_error_msg",
+                logger_name="ERROR",
+                message=f"{str(_error.orig).capitalize()}: {self.cxnargs}",
+            )
+            raise DataAccessError(
+                f"{str(_error.orig).capitalize()}: {self.cxnargs}"
+            ) from _error
 
     def do_delete(self, item: object) -> None:
         """Delete a record from the RAMSTK Program database.
