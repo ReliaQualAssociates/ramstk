@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.18.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.18.1) (2022-05-13)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.18.0...v0.18.1)
+
+Bug Fixes
+
+- feat: add methods to remove existing failure modes [\#1068](https://github.com/ReliaQualAssociates/ramstk/pull/1068) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- test: move tests into meta-class [\#1066](https://github.com/ReliaQualAssociates/ramstk/pull/1066) ([weibullguy](https://github.com/weibullguy))
+- refactor: remove record\_id attribute from table models [\#1058](https://github.com/ReliaQualAssociates/ramstk/pull/1058) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.18.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.18.0) (2022-04-14)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.17.1...v0.18.0)
@@ -162,11 +175,6 @@ Bug Fixes
 Bug Fixes
 
 - fix: set database login password invisible [\#967](https://github.com/ReliaQualAssociates/ramstk/pull/967) ([weibullguy](https://github.com/weibullguy))
-
-**Merged pull requests:**
-
-- ci: update ci/cd workflows [\#966](https://github.com/ReliaQualAssociates/ramstk/pull/966) ([weibullguy](https://github.com/weibullguy))
-- docs: Update Documentation for v0.16.0 [\#964](https://github.com/ReliaQualAssociates/ramstk/pull/964) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.14](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.14) (2022-02-12)
 
