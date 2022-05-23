@@ -64,7 +64,7 @@ Babel = "^2.9.0"
 bandit = "^1.7.0"
 black = "^22.0.0"
 coveralls = "^3.0.0"
-coverage = {extras = ["toml"], version = "^6.2"}
+coverage = {extras = ["toml"], version = "^6.4"}
 docformatter = "^1.4"
 isort = "^5.7.0"
 mccabe = "^0.7.0"
