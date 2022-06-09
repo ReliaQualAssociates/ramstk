@@ -18,13 +18,9 @@ from pubsub import pub
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
-from ramstk.views.gtk3.assistants import (
-    CreateProject,
-    ExportProject,
-    ImportProject,
-    OpenProject,
-)
+from ramstk.views.gtk3.assistants import CreateProject, ImportProject, OpenProject
 from ramstk.views.gtk3.books import RAMSTKModuleBook, RAMSTKWorkBook
+from ramstk.views.gtk3.export import ExportDialog
 from ramstk.views.gtk3.options import OptionsDialog
 from ramstk.views.gtk3.preferences import PreferencesDialog
 from ramstk.views.gtk3.widgets import RAMSTKMessageDialog
@@ -201,6 +197,44 @@ class RAMSTKDesktop(Gtk.Window):
         """
         pub.sendMessage("request_close_project")
 
+    def _do_request_export_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
+        """Request the project export assistant be launched.
+
+        :param __widget: the Gtk.ImageMenuItem() that called this class.
+        :return: None
+        :rtype: None
+        """
+        _dic_modules = {
+            "revision": False,
+            "requirement": False,
+            "function": False,
+            "hardware": False,
+            "validation": False,
+            "usage_profile": False,
+            "hazard": False,
+            "allocation": False,
+            "similar_item": False,
+            "fmeca": False,
+            "dfmea": False,
+            "pof": False,
+            "stakeholder": False,
+        }
+        _dialog = ExportDialog(
+            configuration=self.RAMSTK_USER_CONFIGURATION,
+            parent=self,
+        )
+
+        if _dialog.do_run() == Gtk.ResponseType.OK:
+            _dic_modules, _file_name = _dialog.do_get_export_information()
+
+            pub.sendMessage(
+                "request_export_data",
+                modules=_dic_modules,
+                file_name=_file_name,
+            )
+
+        _dialog.do_destroy()
+
     def _do_request_options_assistant(self, __widget: Gtk.ImageMenuItem) -> None:
         """Request the EditOptions assistant be launched.
 
@@ -247,8 +281,7 @@ class RAMSTKDesktop(Gtk.Window):
         """Request to save the open RAMSTK Program.
 
         :param Gtk.Widget widget: the Gtk.Widget() that called this method.
-        :keyword bool end: indicates whether or not to quit RAMSTK after saving
-            the project.
+        :keyword bool end: indicates whether to quit RAMSTK after saving the project.
         :return: None
         :rtype: None
         """
@@ -274,7 +307,7 @@ class RAMSTKDesktop(Gtk.Window):
     def _do_set_status_icon(self, connected: bool = False) -> None:
         """Set the status icon in the system tay to indicate connection status.
 
-        :param bool connected: whether or not RAMSTK is connected to a program
+        :param bool connected: indicates whether RAMSTK is connected to a program
             database.
         :return: None
         :rtype: None
@@ -348,9 +381,8 @@ class RAMSTKDesktop(Gtk.Window):
     def _on_select(self, title: str) -> None:
         """Respond to load the Work View Gtk.Notebook() widgets.
 
-        This method handles the results of the an individual module's
-        _on_select() method.  It sets the title of the RAMSTK Work Book and
-        raises an error dialog if needed.
+        This method handles the results of the individual module's _on_select() method.
+        It sets the title of the RAMSTK Work Book and raises an error dialog if needed.
 
         :return: None
         :rtype: None
@@ -426,9 +458,7 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_items[2].connect(
             "activate", ImportProject, self.RAMSTK_USER_CONFIGURATION, self
         )
-        _menu_items[3].connect(
-            "activate", ExportProject, self.RAMSTK_USER_CONFIGURATION, self
-        )
+        _menu_items[3].connect("activate", self._do_request_export_assistant)
         _menu_items[4].connect("activate", self._do_request_save_project)
         _menu_items[5].connect("activate", self._do_request_close_project)
         _menu_items[6].connect("activate", destroy)

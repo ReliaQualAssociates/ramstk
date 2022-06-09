@@ -180,7 +180,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
 
         :param value: the information to update the RAMSTKCheckButton() to
             display.
-        :keyword str signal: the name of the signal whose handler ID the
+        :param str signal: the name of the signal whose handler ID the
             RAMSTKCheckButton() needs to block.
         :return: None
         :rtype: None
@@ -188,7 +188,7 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
-        self.set_active(int(value))
+        self.set_active(value)
         self.handler_unblock(_handler_id)
 
 
@@ -214,7 +214,7 @@ class RAMSTKFileChooserButton(Gtk.FileChooserButton, RAMSTKWidget):
 
             * *height* (int) -- height of the RAMSTKFileChooserButton() widget.
                 Default is 30.
-            * *select-action*  -- the Gtk.FileChooserAction to set for the button.
+            * *select-action* -- the Gtk.FileChooserAction to set for the button.
             * *tooltip* (str) -- the tooltip, if any, for the RAMSTKFileChooserButton().
                 Default is a message to file a QA-type issue to have one added.
             * *width* (int) -- width of the RAMSTKFileChooserButton() widget.
@@ -310,7 +310,7 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
 
         :param value: the information to update the RAMSTKSpinButton() to
             display.
-        :keyword str signal: the name of the signal whose handler ID the
+        :param str signal: the name of the signal whose handler ID the
             RAMSTKSpinButton() needs to block.
         :return: None
         :rtype: None
@@ -318,5 +318,5 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         _handler_id = self.dic_handler_id[signal]
 
         self.handler_block(_handler_id)
-        self.set_value(int(value))
+        self.set_value(value)
         self.handler_unblock(_handler_id)
