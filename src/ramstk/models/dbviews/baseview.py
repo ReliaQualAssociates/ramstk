@@ -53,7 +53,6 @@ class RAMSTKBaseView:
     # noinspection PyUnusedLocal
     def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize a RAMSTK view model instance."""
-
         # Initialize private dictionary attributes.
         self._dic_load_functions: Dict[str, Callable[..., object]] = {}
         self._dic_trees: Dict[str, treelib.Tree] = {}
@@ -79,6 +78,18 @@ class RAMSTKBaseView:
         self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
+        pub.subscribe(self.do_get_tree, f"request_get_{self._tag}_tree")
+
+    def do_get_tree(self) -> None:
+        """Retrieve the records tree.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            f"succeed_get_{self._tag}_tree",
+            tree=self.tree,
+        )
 
     def do_set_tree(self, tree: treelib.Tree) -> None:
         """Assign the treelib Tree() for the constituent module.

@@ -1,7 +1,7 @@
 # This workflow runs when a PR is opened, reopened, or synchronized or is called from
 # another workflow.
 #
-# - Job 1:
+# - Job 1 (test on ubuntu):
 #     - Set up the postgresql service.
 #     - Update and install non-pip packages (pygobject, etc.).
 #     - Set up the matrix of Python versions to test against.
@@ -10,6 +10,7 @@
 #     - Create a coverage report for each Python version to use with Coveralls.
 # - Job 2:
 #     - Aggregate and upload each Python's version coverage report for Coveralls.
+# - Job 3 (test on windows):
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
