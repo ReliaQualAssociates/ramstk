@@ -204,21 +204,6 @@ class RAMSTKDesktop(Gtk.Window):
         :return: None
         :rtype: None
         """
-        _dic_modules = {
-            "revision": False,
-            "requirement": False,
-            "function": False,
-            "hardware": False,
-            "validation": False,
-            "usage_profile": False,
-            "hazard": False,
-            "allocation": False,
-            "similar_item": False,
-            "fmeca": False,
-            "dfmea": False,
-            "pof": False,
-            "stakeholder": False,
-        }
         _dialog = ExportDialog(
             configuration=self.RAMSTK_USER_CONFIGURATION,
             parent=self,

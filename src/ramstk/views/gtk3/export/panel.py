@@ -80,9 +80,6 @@ class ExportPanel(RAMSTKFixedPanel):
         self.chkFMEA: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Export FMEA/FMECA Data")
         )
-        self.chkDFMEA: RAMSTKCheckButton = RAMSTKCheckButton(
-            label=_("Export DFMEA Data")
-        )
         self.chkPoF: RAMSTKCheckButton = RAMSTKCheckButton(
             label=_("Export Physics of Failure (PoF) Data")
         )
@@ -261,24 +258,8 @@ class ExportPanel(RAMSTKFixedPanel):
                 _(""),
                 "gint",
             ],
-            "export_dfmea": [
-                10,
-                self.chkDFMEA,
-                "toggled",
-                None,
-                "",
-                1,
-                {
-                    "bg_color": "#FFFFFF",
-                    "editable": True,
-                    "fg_color": "#000000",
-                    "visible": True,
-                },
-                _(""),
-                "gint",
-            ],
             "export_pof": [
-                11,
+                10,
                 self.chkPoF,
                 "toggled",
                 None,
@@ -294,7 +275,7 @@ class ExportPanel(RAMSTKFixedPanel):
                 "gint",
             ],
             "export_usage_profile": [
-                12,
+                11,
                 self.chkUsageProfile,
                 "toggled",
                 None,
@@ -356,10 +337,12 @@ class ExportPanel(RAMSTKFixedPanel):
 
         _y_pos = [_fixed.child_get_property(_label, "y") for _label in _widgets[:13:2]]
 
-        for _idx, _label in enumerate(_widgets[14::2]):
+        # The meta-class method do_make_panel() places all the widgets in a single
+        # column.  Here we are adjusting the widgets into two columns.  See #1085.
+        for _idx, _label in enumerate(_widgets[13::2]):
             _fixed.move(_label, 300, _y_pos[_idx])
 
-        for _idx, _button in enumerate(_widgets[15::2]):
+        for _idx, _button in enumerate(_widgets[14::2]):
             _fixed.move(_button, 300, _y_pos[_idx])
 
         _fixed.put(_lblFileName, 10, _y_pos[-1] + 70)

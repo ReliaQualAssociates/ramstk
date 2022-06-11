@@ -8,6 +8,7 @@
 """RAMSTK GTK3 Project Export Views."""
 
 # Standard Library Imports
+import os
 from typing import Dict, Tuple
 
 # RAMSTK Package Imports
@@ -38,7 +39,8 @@ class ExportDialog(RAMSTKDialog):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._default_file_name = f"{configuration.RAMSTK_PROG_DIR}/ramstk_export.txt"
+        self._default_path = f"{configuration.RAMSTK_PROG_DIR}"
+        self._default_file_name = "ramstk_export.txt"
         self._pnlPanel: RAMSTKPanel = ExportPanel(
             analysis_path=configuration.RAMSTK_PROG_DIR,
             parent=parent,
@@ -72,12 +74,14 @@ class ExportDialog(RAMSTKDialog):
             "allocation": self._pnlPanel.chkAllocation.get_active(),
             "similar_item": self._pnlPanel.chkSimilarItem.get_active(),
             "fmeca": self._pnlPanel.chkFMEA.get_active(),
-            "dfmea": self._pnlPanel.chkDFMEA.get_active(),
             "pof": self._pnlPanel.chkPoF.get_active(),
         }
         _file_name = self._pnlPanel.txtFileName.get_text()
         if _file_name == "":
-            _file_name = self._default_file_name
+            _file_name = f"{self._default_path}/{self._default_file_name}"
+
+        if os.path.dirname(_file_name) == "":
+            _file_name = f"{self._default_path}/{_file_name}"
 
         return _dic_modules, _file_name
 
