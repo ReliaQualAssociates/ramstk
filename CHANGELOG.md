@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.19.0](https://github.com/ReliaQualAssociates/ramstk/tree/v0.19.0) (2022-06-12)
+
+[Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.18.1...v0.19.0)
+
+New Features
+
+- feat: add ability to export RAMSTK program data [\#1088](https://github.com/ReliaQualAssociates/ramstk/pull/1088) ([weibullguy](https://github.com/weibullguy))
+
+**Merged pull requests:**
+
+- ci: add msys2 test suite to GH action workflow [\#1073](https://github.com/ReliaQualAssociates/ramstk/pull/1073) ([weibullguy](https://github.com/weibullguy))
+- test: move tests into meta-class [\#1066](https://github.com/ReliaQualAssociates/ramstk/pull/1066) ([weibullguy](https://github.com/weibullguy))
+
 ## [v0.18.1](https://github.com/ReliaQualAssociates/ramstk/tree/v0.18.1) (2022-05-13)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.18.0...v0.18.1)
@@ -147,34 +160,17 @@ Bug Fixes
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.17...v0.15.18)
 
-Bug Fixes
-
-- fix: hazard rate multiplier not being used correctly [\#975](https://github.com/ReliaQualAssociates/ramstk/pull/975) ([weibullguy](https://github.com/weibullguy))
-- fix: add mission phase and environment to Usage Profile [\#973](https://github.com/ReliaQualAssociates/ramstk/pull/973) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.17](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.17) (2022-02-18)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.16...v0.15.17)
-
-Bug Fixes
-
-- fix: create 'Add' button for failure definition and stakeholder [\#972](https://github.com/ReliaQualAssociates/ramstk/pull/972) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.16](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.16) (2022-02-17)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.15...v0.15.16)
 
-Bug Fixes
-
-- fix: allow cancelling of database open/create dialog [\#970](https://github.com/ReliaQualAssociates/ramstk/pull/970) ([weibullguy](https://github.com/weibullguy))
-
 ## [v0.15.15](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.15) (2022-02-17)
 
 [Full Changelog](https://github.com/ReliaQualAssociates/ramstk/compare/v0.15.14...v0.15.15)
-
-Bug Fixes
-
-- fix: set database login password invisible [\#967](https://github.com/ReliaQualAssociates/ramstk/pull/967) ([weibullguy](https://github.com/weibullguy))
 
 ## [v0.15.14](https://github.com/ReliaQualAssociates/ramstk/tree/v0.15.14) (2022-02-12)
 
