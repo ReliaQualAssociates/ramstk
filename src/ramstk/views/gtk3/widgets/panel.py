@@ -7,7 +7,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 Panel Class."""
 
+
 # Standard Library Imports
+import contextlib
 import inspect
 from typing import Any, Dict, List, Union
 
@@ -176,13 +178,11 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         )
 
         # Generally used with panels that display results and are, thus, uneditable.
-        try:
+        with contextlib.suppress(AttributeError):
             pub.subscribe(
                 self._do_load_entries,
                 f"succeed_get_{self._tag}_attributes",
             )
-        except AttributeError:
-            pass
 
     def do_clear_panel(self) -> None:
         """Clear the contents of the widgets on a fixed type panel.
@@ -222,6 +222,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        # See ISSUE #1085
         _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
 
         # Extract the list of labels and associated widgets from the attribute-widget
@@ -750,11 +751,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         :param tree: the treelib Tree containing the module to load.
         :return: None
         """
-        try:
+        with contextlib.suppress(AttributeError):
             self.tvwTreeView.unfilt_model.clear()
-        except AttributeError:
-            pass
-
         try:
             self.tvwTreeView.do_load_tree(tree, None)
             self.tvwTreeView.expand_all()
@@ -866,11 +864,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
             self.tvwTreeView.cellprops[_key] = _attrs[_key][6]
             self.tvwTreeView.cellprops[_key]["bg_color"] = _bg_color
             self.tvwTreeView.cellprops[_key]["fg_color"] = _fg_color
-            try:
+            with contextlib.suppress(IndexError):
                 self.tvwTreeView.headings[_key] = _value[7]
-            except IndexError:
-                pass
-
         self.tvwTreeView.do_make_columns()
 
         if self._filtered_tree:

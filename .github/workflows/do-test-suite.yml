@@ -1,7 +1,7 @@
 # This workflow runs when a PR is opened, reopened, or synchronized or is called from
 # another workflow.
 #
-# - Job 1:
+# - Job 1 (test on ubuntu):
 #     - Set up the postgresql service.
 #     - Update and install non-pip packages (pygobject, etc.).
 #     - Set up the matrix of Python versions to test against.
@@ -10,6 +10,7 @@
 #     - Create a coverage report for each Python version to use with Coveralls.
 # - Job 2:
 #     - Aggregate and upload each Python's version coverage report for Coveralls.
+# - Job 3 (test on windows):
 name: Execute RAMSTK Test Suite with Coverage
 
 on:
@@ -90,7 +91,7 @@ jobs:
 
   upload_coveralls:
     name: Upload Results to Coveralls
-    needs: test_suite
+    needs: ubuntu
     runs-on: ubuntu-latest
     steps:
       - name: Upload coverage report to Coveralls
@@ -100,6 +101,10 @@ jobs:
 
   msys2:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
     strategy:
       fail-fast: false
       matrix:
@@ -118,6 +123,7 @@ jobs:
           update: true
           install: >-
             git
+            base-devel
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
@@ -126,9 +132,8 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3-gobject
 
       - name: Install RAMSTK and test with coverage
-        shell: msys2 {0}
         run: |
-          pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
+          pip install --user -U pip setuptools>12.0 urllib3 poetry importlib_metadata
           make depends
           make install
           make coverage
