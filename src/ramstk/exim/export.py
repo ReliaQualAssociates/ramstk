@@ -116,7 +116,7 @@ class Export:
         _file, dummy = os.path.splitext(file_name)
 
         for (
-            __,
+            dummy,
             _data,
         ) in self._dic_output_data.items():
             self._df_output_data = pd.DataFrame(_data)
