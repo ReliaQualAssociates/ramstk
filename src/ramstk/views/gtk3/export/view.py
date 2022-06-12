@@ -66,7 +66,7 @@ class ExportDialog(RAMSTKDialog):
             "revision": self._pnlPanel.chkRevisions.get_active(),
             "requirement": self._pnlPanel.chkRequirements.get_active(),
             "function": self._pnlPanel.chkFunctions.get_active(),
-            "hardware": self._pnlPanel.chkHardware.get_active(),
+            "hardware_bom": self._pnlPanel.chkHardware.get_active(),
             "validation": self._pnlPanel.chkValidation.get_active(),
             "usage_profile": self._pnlPanel.chkUsageProfile.get_active(),
             "stakeholder": self._pnlPanel.chkStakeholder.get_active(),
