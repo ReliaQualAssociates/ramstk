@@ -101,6 +101,10 @@ jobs:
 
   msys2:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
     strategy:
       fail-fast: false
       matrix:
@@ -119,6 +123,7 @@ jobs:
           update: true
           install: >-
             git
+            base-devel
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
@@ -127,10 +132,8 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3-gobject
 
       - name: Install RAMSTK and test with coverage
-        shell: msys2 {0}
         run: |
-          export PATH=$PATH:"C:/Users/runneradmin/.local/bin"
           pip install --user -U pip setuptools>12.0 urllib3 poetry importlib_metadata
-          mingw-w64-${{ matrix.arch }}-make depends
-          mingw-w64-${{ matrix.arch }}-make install
-          mingw-w64-${{ matrix.arch }}-make coverage
+          make depends
+          make install
+          make coverage
