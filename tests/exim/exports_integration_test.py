@@ -10,6 +10,8 @@
 
 # Third Party Imports
 import pandas as pd
+
+# noinspection PyPackageRequirements
 import pytest
 from pubsub import pub
 
@@ -21,6 +23,7 @@ from ramstk.models.dbtables import (
     RAMSTKRequirementTable,
     RAMSTKValidationTable,
 )
+from ramstk.models.dbviews import RAMSTKHardwareBoMView
 
 
 @pytest.mark.usefixtures("test_program_dao")
@@ -29,165 +32,161 @@ class TestExport:
 
     @pytest.mark.integration
     def test_do_load_output_function(self, test_program_dao):
-        """do_load_output() should return a Pandas DataFrame when loading Functions for
-        export."""
+        """Should create a dict of Function attributes for export."""
         _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
         pub.sendMessage("request_get_function_tree")
 
-        assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["function"], dict)
+        assert isinstance(dut._dic_output_data, dict)
+        assert isinstance(dut._dic_output_data["function"], dict)
 
     @pytest.mark.integration
     def test_do_load_output_requirement(self, test_program_dao):
-        """do_load_output() should return None when loading Requirements for export."""
+        """Should create a dict of Requirement attributes for export."""
         _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
         pub.sendMessage("request_get_requirement_tree")
 
-        assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["requirement"], dict)
+        assert isinstance(dut._dic_output_data, dict)
+        assert isinstance(dut._dic_output_data["requirement"], dict)
 
     @pytest.mark.integration
     def test_do_load_output_hardware(self, test_program_dao):
-        """do_load_output() should return None when loading Hardware for export."""
-        _hardware = RAMSTKHardwareTable()
-        _hardware.do_connect(test_program_dao)
-        _hardware.do_select_all(attributes={"revision_id": 1})
+        """Should create a dict of Hardware attributes for export."""
+        _hardware = RAMSTKHardwareBoMView()
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_hardware_tree")
+        pub.sendMessage("request_get_hardware_bom_tree")
 
-        assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["hardware"], dict)
+        assert isinstance(dut._dic_output_data, dict)
+        assert isinstance(dut._dic_output_data["hardware_bom"], dict)
 
     @pytest.mark.integration
     def test_do_load_output_validation(self, test_program_dao):
-        """do_load_output() should return None when loading Validations for export."""
+        """Should create a dict of Validation attributes for export."""
         _validation = RAMSTKValidationTable()
         _validation.do_connect(test_program_dao)
         _validation.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
         pub.sendMessage("request_get_validation_tree")
 
-        assert isinstance(DUT._dic_output_data, dict)
-        assert isinstance(DUT._dic_output_data["validation"], dict)
+        assert isinstance(dut._dic_output_data, dict)
+        assert isinstance(dut._dic_output_data["validation"], dict)
 
     @pytest.mark.integration
     def test_do_export_to_csv(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to a CSV file."""
+        """Should return None when exporting to a CSV file."""
         _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
         pub.sendMessage("request_get_functions_tree")
 
         _test_csv = test_export_dir + "test_export_function.csv"
-        assert DUT._do_export("csv", _test_csv) is None
+        assert dut._do_export({"requirement": True}, _test_csv) is None
 
     @pytest.mark.integration
     def test_do_export_to_xls(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to an Excel file."""
+        """Should return None when exporting to a legacy Excel file."""
         _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         _test_excel = test_export_dir + "test_export_requirement.xls"
-        assert DUT._do_export("excel", _test_excel) is None
+        assert dut._do_export({"requirement": True}, _test_excel) is None
 
     @pytest.mark.integration
     def test_do_export_to_xlsx(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to an Excel file."""
+        """Should return None when exporting to an Excel file."""
         _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         _test_excel = test_export_dir + "test_export_requirement.xlsx"
-        assert DUT._do_export("excel", _test_excel) is None
+        assert dut._do_export({"requirement": True}, _test_excel) is None
 
     @pytest.mark.integration
     def test_do_export_to_xlsm(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to an Excel file."""
+        """Should return None when exporting to a macro-enabled Excel file."""
         _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         _test_excel = test_export_dir + "test_export_requirement.xlsm"
-        assert DUT._do_export("excel", _test_excel) is None
+        assert dut._do_export({"requirement": True}, _test_excel) is None
 
     @pytest.mark.integration
     def test_do_export_to_excel_unknown_extension(
         self, test_program_dao, test_export_dir
     ):
-        """do_export() should return None when exporting to an Excel file and default
-        to using the xlwt engine."""
+        """Should return None when exporting to an Excel file."""
         _requirement = RAMSTKRequirementTable()
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         _test_excel = test_export_dir + "test_export_requirement.xlbb"
-        assert DUT._do_export("excel", _test_excel) is None
+        assert dut._do_export({"requirement": True}, _test_excel) is None
 
     @pytest.mark.integration
     def test_do_export_to_text(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to a text file."""
+        """Should return None when exporting to a delimited text file."""
         _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_functions_tree")
+        pub.sendMessage("request_get_function_tree")
 
         _test_text = test_export_dir + "test_export_function.txt"
-        assert DUT._do_export("text", _test_text) is None
+        assert dut._do_export({"function": True}, _test_text) is None
 
     @pytest.mark.integration
     def test_do_export_unknown_type(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to a text file."""
+        """Should return None and default to a text file."""
         _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_functions_tree")
+        pub.sendMessage("request_get_function_tree")
 
-        _test_text = test_export_dir + "test_export_function.txt"
-        assert DUT._do_export("pdf", _test_text) is None
+        _test_text = test_export_dir + "test_export_function.pdf"
+        assert dut._do_export({"requirement": True}, _test_text) is None
 
     @pytest.mark.integration
     def test_do_export_multi_sheet(self, test_program_dao, test_export_dir):
-        """do_export() should return None when exporting to a text file."""
+        """Should return None when exporting to a text file."""
         _function = RAMSTKFunctionTable()
         _function.do_connect(test_program_dao)
         _function.do_select_all(attributes={"revision_id": 1})
@@ -196,13 +195,17 @@ class TestExport:
         _requirement.do_connect(test_program_dao)
         _requirement.do_select_all(attributes={"revision_id": 1})
 
-        DUT = Export()
+        dut = Export()
 
-        pub.sendMessage("request_get_functions_tree")
-        pub.sendMessage("request_get_requirements_tree")
+        pub.sendMessage("request_get_function_tree")
+        pub.sendMessage("request_get_requirement_tree")
 
         _test_multi = test_export_dir + "test_export_multi.xlsx"
 
-        pub.sendMessage("request_export_data", file_type="excel", file_name=_test_multi)
+        pub.sendMessage(
+            "request_export_data",
+            modules={"requirement": True, "function": True, "hardware_bom": False},
+            file_name=_test_multi,
+        )
 
-        assert isinstance(DUT._df_output_data, pd.core.frame.DataFrame)
+        assert isinstance(dut._df_output_data, pd.core.frame.DataFrame)
