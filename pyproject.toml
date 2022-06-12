@@ -246,7 +246,7 @@ good-names = [
 ]
 attr-rgx = '^_{0,2}[a-zA-Z]{1,10}_{0,1}[a-zA-Z]{0,10}_{0,1}[a-zA-Z]{0,10}$'
 variable = '^_{0,2}[a-zA-Z]{1,10}_{0,1}[a-zA-Z]{0,10}_{0,1}[a-zA-Z]{0,10}$'
-dummy-variables-rgx = '__|^.*[^_]_$'
+dummy-variables-rgx = '__|dummy'
 
 [tool.pylint.typecheck]
 ignore-mixin-members = true

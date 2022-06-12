@@ -113,7 +113,7 @@ class Export:
         :return: None
         :rtype: None
         """
-        _file, __ = os.path.splitext(file_name)
+        _file, dummy = os.path.splitext(file_name)
 
         for (
             __,

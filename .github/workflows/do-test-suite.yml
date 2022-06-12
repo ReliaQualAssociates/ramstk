@@ -129,7 +129,8 @@ jobs:
       - name: Install RAMSTK and test with coverage
         shell: msys2 {0}
         run: |
-          pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
+          pip install --user -U pip setuptools>12.0 urllib3 poetry
+          importlib_metadata
           make depends
           make install
           make coverage
