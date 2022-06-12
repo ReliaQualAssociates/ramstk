@@ -222,6 +222,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :return: None
         :rtype: None
         """
+        # See ISSUE #1085
         _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
 
         # Extract the list of labels and associated widgets from the attribute-widget
