@@ -338,7 +338,7 @@ class ExportPanel(RAMSTKFixedPanel):
         _y_pos = [_fixed.child_get_property(_label, "y") for _label in _widgets[:13:2]]
 
         # The meta-class method do_make_panel() places all the widgets in a single
-        # column.  Here we are adjusting the widgets into two columns.  See #1085.
+        # column.  Here we are adjusting the widgets into two columns.  See ISSUE #1085.
         for _idx, _label in enumerate(_widgets[13::2]):
             _fixed.move(_label, 300, _y_pos[_idx])
 

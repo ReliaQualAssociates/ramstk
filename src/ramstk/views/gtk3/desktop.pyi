@@ -11,7 +11,6 @@ from ramstk.views.gtk3 import GObject as GObject
 from ramstk.views.gtk3 import Gtk as Gtk
 from ramstk.views.gtk3 import _ as _
 from ramstk.views.gtk3.assistants import CreateProject as CreateProject
-from ramstk.views.gtk3.assistants import ExportProject as ExportProject
 from ramstk.views.gtk3.assistants import ImportProject as ImportProject
 from ramstk.views.gtk3.assistants import OpenProject as OpenProject
 from ramstk.views.gtk3.books import RAMSTKModuleBook as RAMSTKModuleBook

@@ -113,10 +113,10 @@ class Export:
         :return: None
         :rtype: None
         """
-        _file, _extension = os.path.splitext(file_name)
+        _file, __ = os.path.splitext(file_name)
 
         for (
-            _key,
+            __,
             _data,
         ) in self._dic_output_data.items():
             self._df_output_data = pd.DataFrame(_data)
