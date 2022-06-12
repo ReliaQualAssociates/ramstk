@@ -28,6 +28,7 @@ body {
 }
 
 div.document {
+    display: flex;
     background-color: white;
 }
 
@@ -119,9 +120,36 @@ div.sphinxsidebar input {
 }
 
 
+
+    
+    
+
 /* for collapsible sidebar */
-div#sidebarbutton {
+#sidebarbutton {
+    height: 100%;
     background-color: #3c6e83;
+    margin-left: 0;
+    color: #FFFFFF;
+    border-left: 1px solid white;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding-top: 1px;
+    float: right;
+    display: table; /* for vertically centering the <span> */
+}
+
+#sidebarbutton:hover {
+    background-color: white;
+}
+
+#sidebarbutton span {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+div.sphinxsidebarwrapper {
+    float: left;
+    margin-right: 0;
 }
 
 
@@ -210,7 +238,7 @@ div.seealso {
     border: 1px solid #ff6;
 }
 
-div.topic {
+div.topic, aside.topic {
     background-color: #eee;
 }
 
