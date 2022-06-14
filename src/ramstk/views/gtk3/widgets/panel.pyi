@@ -20,6 +20,7 @@ from .label import do_make_label_group as do_make_label_group
 from .plot import RAMSTKPlot as RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow as RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView as RAMSTKTreeView
+from .widget import RAMSTKWidget
 
 class RAMSTKPanel(RAMSTKFrame):
     _record_field: str
@@ -44,7 +45,16 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     _record_id: int
     on_edit_callback: str
     def do_load_panel(self, attributes: Dict[str, Any]) -> None: ...
-    def do_make_panel(self, **kwargs: Dict[str, Any]) -> None: ...
+    def do_make_panel(
+        self, **kwargs: Dict[str, Union[bool, float, int, str]]
+    ) -> None: ...
+    @staticmethod
+    def do_place_widgets(
+        x_pos: List[int],
+        labels: List[RAMSTKLabel],
+        widgets: List[RAMSTKWidget],
+        fixed: Gtk.Fixed,
+    ) -> Gtk.Fixed: ...
     def do_set_callbacks(self) -> None: ...
     def do_set_properties(self, **kwargs: Any) -> None: ...
     def on_changed_combo(
