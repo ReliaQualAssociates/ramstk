@@ -113,9 +113,6 @@ jobs:
             arch: x86_64
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
       - name: setup-msys2
         uses: msys2/setup-msys2@v2
         with:
@@ -131,9 +128,17 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3-pip
             mingw-w64-${{ matrix.arch }}-python3-gobject
 
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
       - name: Install RAMSTK and test with coverage
         run: |
-          pip install --user -U pip setuptools>12.0 urllib3 poetry importlib_metadata
+          python -m pip install -U pip setuptools>12.0 urllib3 poetry importlib_metadata
           make depends
           make install
           make coverage
