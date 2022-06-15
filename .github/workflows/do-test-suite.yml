@@ -125,12 +125,7 @@ jobs:
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
-            mingw-w64-${{ matrix.arch }}-python3
-            mingw-w64-${{ matrix.arch }}-python3-pip
             mingw-w64-${{ matrix.arch }}-python3-gobject
-
-      - name: Put MSYS2_MinGW64 on PATH
-        run: echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Setup Python
         uses: actions/setup-python@v2
