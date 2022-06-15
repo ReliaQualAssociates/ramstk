@@ -18,6 +18,7 @@ on:
     branches:
       - 'master'
       - '!release/**'
+      - '!dependabot/**'
     paths:
       - "**.py"
       - "!docs/**"
@@ -33,7 +34,7 @@ on:
 
 jobs:
   ubuntu:
-    name: Run Test Suite
+    name: Run Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -100,6 +101,7 @@ jobs:
           parallel-finished: true
 
   msys2:
+    name: Run Test Suite on Windows (msys2)
     runs-on: windows-latest
     defaults:
       run:

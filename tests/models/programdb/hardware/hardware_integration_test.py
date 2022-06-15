@@ -9,6 +9,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware module integrations."""
 
+# Standard Library Imports
+from time import sleep
+
 # Third Party Imports
 import pytest
 from pubsub import pub
@@ -63,7 +66,7 @@ def test_viewmodel():
     """Get a data manager instance for each test class."""
     # Create the device under test (dut) and connect to the database.
     dut = RAMSTKHardwareBoMView()
-
+    sleep(1)
     yield dut
 
     # Unsubscribe from pypubsub topics.

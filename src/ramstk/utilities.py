@@ -14,7 +14,7 @@ import os.path
 import sys
 import warnings
 from datetime import datetime
-from typing import Any, Callable, List
+from typing import Any, Callable, List, Union
 
 # Third Party Imports
 from dateutil.parser import parse
@@ -36,7 +36,7 @@ def date_to_ordinal(date: str) -> int:
 
 
 def deprecated(func: Callable) -> Callable:
-    """This is a decorator to mark functions as deprecated."""
+    """Decorate other functions as deprecated."""
 
     @functools.wraps(func)
     def new_func(*args, **kwargs):
@@ -73,7 +73,9 @@ def file_exists(_file: str) -> bool:
     return os.path.isfile(_file)
 
 
-def none_to_default(field: Any, default: Any) -> Any:
+def none_to_default(
+    field: Union[bool, float, int, str], default: Union[bool, float, int, str]
+) -> Union[bool, float, int, str]:
     """Convert None values into default values.
 
     :param field: the original value that may be None.
