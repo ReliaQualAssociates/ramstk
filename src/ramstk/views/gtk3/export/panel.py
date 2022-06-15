@@ -297,7 +297,7 @@ class ExportPanel(RAMSTKFixedPanel):
         # Initialize public scalar instance attributes.
 
         super().do_set_properties()
-        super().do_make_panel()
+        super().do_make_panel(n_columns=2)
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
@@ -335,15 +335,7 @@ class ExportPanel(RAMSTKFixedPanel):
         _fixed = self.get_children()[0].get_children()[0].get_children()[0]
         _widgets = _fixed.get_children()
 
-        _y_pos = [_fixed.child_get_property(_label, "y") for _label in _widgets[:13:2]]
-
-        # The meta-class method do_make_panel() places all the widgets in a single
-        # column.  Here we are adjusting the widgets into two columns.  See ISSUE #1085.
-        for _idx, _label in enumerate(_widgets[13::2]):
-            _fixed.move(_label, 300, _y_pos[_idx])
-
-        for _idx, _button in enumerate(_widgets[14::2]):
-            _fixed.move(_button, 300, _y_pos[_idx])
+        _y_pos = [_fixed.child_get_property(_label, "y") for _label in _widgets[:12:2]]
 
         _fixed.put(_lblFileName, 10, _y_pos[-1] + 70)
         _fixed.put(self.txtFileName, 250, _y_pos[-1] + 70)

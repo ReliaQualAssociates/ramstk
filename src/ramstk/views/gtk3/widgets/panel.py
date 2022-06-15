@@ -33,6 +33,7 @@ from .label import RAMSTKLabel, do_make_label_group
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView
+from .widget import RAMSTKWidget
 
 register_matplotlib_converters()
 
@@ -216,73 +217,104 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_make_panel(self, **kwargs: Dict[str, Any]) -> None:
+    def do_make_panel(self, **kwargs: Dict[str, Union[bool, float, int, str]]) -> None:
         """Create a panel with the labels and widgets on a Gtk.Fixed().
 
         :return: None
         :rtype: None
         """
-        # See ISSUE #1085
         _justify = kwargs.get("justify", Gtk.Justification.RIGHT)
+        _n_columns: int = kwargs.get("n_columns", 1)  # type: ignore
 
         # Extract the list of labels and associated widgets from the attribute-widget
         # map.
+        _lst_widgets: List[RAMSTKWidget] = [
+            x[1][1] for x in self.dic_attribute_widget_map.items()
+        ]
         _lst_labels = [x[1][7] for x in self.dic_attribute_widget_map.items()]
 
-        # noinspection PyTypeChecker
-        (_x_pos, _labels) = do_make_label_group(
-            _lst_labels,
-            bold=False,  # type: ignore
-            justify=_justify,
-            x_pos=5,  # type: ignore
-            y_pos=5,  # type: ignore
-        )
-        _fixed = self.do_place_labels(_x_pos, _labels)
+        _n_widgets: int = len(_lst_widgets)
+        _breakpoint: int = _n_widgets // _n_columns
+        _fixed: Gtk.Fixed = Gtk.Fixed()
+        for _column in range(_n_columns):
+            # noinspection PyTypeChecker
+            (_x_pos, _labels) = do_make_label_group(
+                _lst_labels[_column * _breakpoint : (_column + 1) * _breakpoint],
+                bold=False,  # type: ignore
+                justify=_justify,
+                x_pos=_column * 300 + 5,  # type: ignore
+                y_pos=5,  # type: ignore
+            )
+            if _x_pos == 0:
+                _x_pos = _column * 300 + 5
+
+            _fixed = self.do_place_widgets(
+                [_column * 300 + 5, _x_pos],
+                _labels,
+                _lst_widgets[_column * _breakpoint : (_column + 1) * _breakpoint],
+                _fixed,
+            )
 
         _scrollwindow: RAMSTKScrolledWindow = RAMSTKScrolledWindow(_fixed)
 
         self.add(_scrollwindow)
 
-    def do_place_labels(self, x_pos: int, labels: List[RAMSTKLabel]) -> Gtk.Fixed:
+    @staticmethod
+    def do_place_widgets(
+        x_pos: List[int],
+        labels: List[RAMSTKLabel],
+        widgets: List[RAMSTKWidget],
+        fixed: Gtk.Fixed,
+    ) -> Gtk.Fixed:
         """Place the labels on the Gtk.Fixed.
 
         :param x_pos: the x-coordinate position to place the RAMSTLabel() objects.
         :param labels: the list of RAMSTKLabel() objects to place.
-        :return: _fixed
+        :param widgets: the list of RAMSTKWidget() objects to place.
+        :param fixed: the Gtk.Fixed() on which to place the widgets.
+        :return: fixed
         :rtype: Gtk.Fixed
         """
-        _lst_widgets: List[RAMSTKLabel] = [
-            x[1][1] for x in self.dic_attribute_widget_map.items()
-        ]
         _y_pos: int = 5
 
-        _fixed: Gtk.Fixed = Gtk.Fixed()
         for _idx, _label in enumerate(labels):
-            _fixed.put(_label, 5, _y_pos)
+            fixed.put(
+                _label,
+                x_pos[0],
+                _y_pos,
+            )
 
-            _minimum: Gtk.Requisition = _lst_widgets[  # type: ignore
+            _minimum: Gtk.Requisition = widgets[  # type: ignore
                 _idx
             ].get_preferred_size()[0]
             if _minimum.height <= 0:
-                _minimum.height = _lst_widgets[_idx].height  # type: ignore
+                _minimum.height = widgets[_idx].height  # type: ignore
 
             # RAMSTKTextViews are placed inside a scrollwindow so that's
             # what needs to be placed on the container.
-            if isinstance(_lst_widgets[_idx], RAMSTKTextView):
-                _fixed.put(
-                    _lst_widgets[_idx].scrollwindow,  # type: ignore
-                    x_pos + 10,
+            if isinstance(widgets[_idx], RAMSTKTextView):
+                fixed.put(
+                    widgets[_idx].scrollwindow,  # type: ignore
+                    x_pos[1] + 10,
                     _y_pos,
                 )
                 _y_pos += _minimum.height + 30
-            elif isinstance(_lst_widgets[_idx], RAMSTKCheckButton):
-                _fixed.put(_lst_widgets[_idx], x_pos + 10, _y_pos)
+            elif isinstance(widgets[_idx], RAMSTKCheckButton):
+                fixed.put(
+                    widgets[_idx],
+                    x_pos[1] + 10,
+                    _y_pos,
+                )
                 _y_pos += _minimum.height + 30
             else:
-                _fixed.put(_lst_widgets[_idx], x_pos + 10, _y_pos)
+                fixed.put(
+                    widgets[_idx],
+                    x_pos[1] + 10,
+                    _y_pos,
+                )
                 _y_pos += _minimum.height + 5
 
-        return _fixed
+        return fixed
 
     def do_set_callbacks(self) -> None:
         """Set the callback methods for RAMSTKTreeView().
