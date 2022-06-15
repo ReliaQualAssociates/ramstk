@@ -3,7 +3,7 @@
 #       ramstk.exceptions.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTK Exceptions Module."""
 
 
@@ -13,13 +13,10 @@ class RAMSTKError(Exception):
     def __init__(self, msg: str = "") -> None:
         """Initialize the basic RAMSTK exception.
 
-        :keyword str msg: the message to display to the user when this
+        :param str msg: the message to display to the user when this
             exception is raised.
         """
-        if not msg:
-            # Set some default useless error message
-            msg = "An error occured with RAMSTK."
-
+        self.msg = msg or "An error occured with RAMSTK."
         super().__init__(msg)
 
 
@@ -38,8 +35,6 @@ class DataAccessError(RAMSTKError):
         """
         super().__init__(msg=msg)
 
-        self.msg = msg
-
 
 class OutOfRangeError(RAMSTKError):
     """Exception raised when an input value is outside legal limits."""
@@ -51,5 +46,3 @@ class OutOfRangeError(RAMSTKError):
             exception is raised.
         """
         super().__init__(msg=msg)
-
-        self.msg = msg
