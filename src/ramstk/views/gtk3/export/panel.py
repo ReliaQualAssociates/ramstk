@@ -297,7 +297,7 @@ class ExportPanel(RAMSTKFixedPanel):
         # Initialize public scalar instance attributes.
 
         super().do_set_properties()
-        super().do_make_panel(n_columns=2)
+        super().do_make_panel(n_columns=2)  # type: ignore
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.

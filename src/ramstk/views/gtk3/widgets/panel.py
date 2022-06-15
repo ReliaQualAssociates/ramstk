@@ -239,7 +239,9 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         for _column in range(_n_columns):
             # noinspection PyTypeChecker
             (_x_pos, _labels) = do_make_label_group(
-                _lst_labels[_column * _breakpoint : (_column + 1) * _breakpoint],
+                # fmt: off
+                _lst_labels[_column * _breakpoint: (_column + 1) * _breakpoint],
+                # fmt: on
                 bold=False,  # type: ignore
                 justify=_justify,
                 x_pos=_column * 300 + 5,  # type: ignore
@@ -251,7 +253,9 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _fixed = self.do_place_widgets(
                 [_column * 300 + 5, _x_pos],
                 _labels,
-                _lst_widgets[_column * _breakpoint : (_column + 1) * _breakpoint],
+                # fmt: off
+                _lst_widgets[_column * _breakpoint: (_column + 1) * _breakpoint],
+                # fmt: on
                 _fixed,
             )
 
