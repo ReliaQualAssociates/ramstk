@@ -30,7 +30,7 @@ def date_to_ordinal(date: str) -> int:
     :rtype: int
     """
     try:
-        return parse(str(date)).toordinal()
+        return parse(date).toordinal()
     except (ValueError, TypeError):
         return parse("01/01/1970").toordinal()
 
@@ -95,7 +95,7 @@ def none_to_string(string: None) -> str:
     :rtype: str
     """
     _return = string
-    if string is None or string == "None":
+    if _return is None or _return == "None":
         _return = ""
 
     return _return
@@ -111,7 +111,7 @@ def ordinal_to_date(ordinal: int) -> str:
     :rtype: str
     """
     try:
-        return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
+        return str(datetime.fromordinal(ordinal).strftime("%Y-%m-%d"))
     except ValueError:
         ordinal = datetime.now().toordinal()
         return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
@@ -159,9 +159,9 @@ def string_to_boolean(string: str) -> bool:
     :return: _result
     :rtype: bool
     """
-    _string = str(string)
+    _string = string
 
-    return _string.lower() in ["true", "yes", "t", "y"]
+    return _string.lower() in {"true", "yes", "t", "y"}
 
 
 def get_install_prefix() -> str:
