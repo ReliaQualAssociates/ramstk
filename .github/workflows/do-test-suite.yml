@@ -130,6 +130,8 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3
             mingw-w64-${{ matrix.arch }}-python3-pip
             mingw-w64-${{ matrix.arch }}-python3-gobject
+            mingw-w64-${{ matrix.arch }}-python3-numpy
+            mingw-w64-${{ matrix.arch }}-python3-scipy
 
       - name: Checkout Code
         uses: actions/checkout@v2
