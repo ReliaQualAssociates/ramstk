@@ -77,32 +77,38 @@ def test_none_to_string_string():
 
 @pytest.mark.unit
 def test_string_to_boolean_true():
-    """Should return a 1 when passed True."""
-    assert string_to_boolean(True) == 1
+    """Should True when passed True."""
+    assert string_to_boolean("True")
 
 
 @pytest.mark.unit
 def test_string_to_boolean_yes():
-    """Should return a 1 when passed 'yes'."""
-    assert string_to_boolean("yes") == 1
+    """Should return True when passed 'yes'."""
+    assert string_to_boolean("yes")
 
 
 @pytest.mark.unit
 def test_string_to_boolean_t():
-    """Should return a 1 when passed 't'."""
-    assert string_to_boolean("t") == 1
+    """Should return True when passed 't'."""
+    assert string_to_boolean("t")
 
 
 @pytest.mark.unit
 def test_string_to_boolean_y():
-    """Should return a 1 when passed 'y'."""
-    assert string_to_boolean("y") == 1
+    """Should return True when passed 'y'."""
+    assert string_to_boolean("y")
 
 
 @pytest.mark.unit
 def test_string_to_boolean_false():
-    """Should return a 0 when passed False."""
-    assert string_to_boolean(False) == 0
+    """Should return False when passed False."""
+    assert not string_to_boolean("False")
+
+
+@pytest.mark.unit
+def test_string_to_boolean_boolean():
+    """Should True when passed boolean True."""
+    assert string_to_boolean(True)
 
 
 @pytest.mark.unit
@@ -124,7 +130,7 @@ def test_ordinal_to_date():
 
 
 @pytest.mark.unit
-def test_ordinal_to_date_value_error():
+def test_ordinal_to_date_type_error():
     """Should return current date in YYYY-MM-DD format when passed a non-ordinal."""
     _ordinal = datetime.now().toordinal()
     _today = str(datetime.fromordinal(int(_ordinal)).strftime("%Y-%m-%d"))

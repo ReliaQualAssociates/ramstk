@@ -17,6 +17,7 @@ from datetime import datetime
 from typing import Any, Callable, List, Union
 
 # Third Party Imports
+# noinspection PyPackageRequirements
 from dateutil.parser import parse
 
 _ = gettext.gettext
@@ -30,7 +31,7 @@ def date_to_ordinal(date: str) -> int:
     :rtype: int
     """
     try:
-        return parse(str(date)).toordinal()
+        return parse(date).toordinal()
     except (ValueError, TypeError):
         return parse("01/01/1970").toordinal()
 
@@ -74,7 +75,7 @@ def file_exists(_file: str) -> bool:
 
 
 def none_to_default(
-    field: Union[bool, float, int, str], default: Union[bool, float, int, str]
+    field: None, default: Union[bool, float, int, str]
 ) -> Union[bool, float, int, str]:
     """Convert None values into default values.
 
@@ -87,7 +88,7 @@ def none_to_default(
     return default if field is None else field
 
 
-def none_to_string(string: None) -> str:
+def none_to_string(string: Union[None, str]) -> str:
     """Convert None types to an empty string.
 
     :param string: the string to convert.
@@ -95,7 +96,7 @@ def none_to_string(string: None) -> str:
     :rtype: str
     """
     _return = string
-    if string is None or string == "None":
+    if _return is None or _return == "None":
         _return = ""
 
     return _return
@@ -111,8 +112,8 @@ def ordinal_to_date(ordinal: int) -> str:
     :rtype: str
     """
     try:
-        return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
-    except ValueError:
+        return str(datetime.fromordinal(ordinal).strftime("%Y-%m-%d"))
+    except TypeError:
         ordinal = datetime.now().toordinal()
         return str(datetime.fromordinal(int(ordinal)).strftime("%Y-%m-%d"))
 
@@ -152,16 +153,17 @@ def integer_to_boolean(integer: int) -> bool:
     return integer > 0
 
 
-def string_to_boolean(string: str) -> bool:
+def string_to_boolean(string: Union[bool, str]) -> bool:
     """Convert string representations of TRUE/FALSE to a boolean value.
 
     :param string: the string to convert.
     :return: _result
     :rtype: bool
     """
-    _string = str(string)
-
-    return _string.lower() in ["true", "yes", "t", "y"]
+    try:
+        return string.lower() in {"true", "yes", "t", "y"}  # type: ignore
+    except AttributeError:
+        return string  # type: ignore
 
 
 def get_install_prefix() -> str:
