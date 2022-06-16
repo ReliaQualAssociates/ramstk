@@ -139,6 +139,7 @@ jobs:
       - name: Install RAMSTK and test with coverage
         run: |
           python3 -m pip install -U setuptools>12.0 urllib3 poetry importlib_metadata
+          poetry shell
           make depends
           make install
           make coverage
