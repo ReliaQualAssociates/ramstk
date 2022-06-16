@@ -18,6 +18,7 @@ on:
     branches:
       - 'master'
       - '!release/**'
+      - '!dependabot/**'
     paths:
       - "**.py"
       - "!docs/**"
@@ -33,7 +34,7 @@ on:
 
 jobs:
   ubuntu:
-    name: Run Test Suite
+    name: Run Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -100,6 +101,7 @@ jobs:
           parallel-finished: true
 
   msys2:
+    name: Run Test Suite on Windows (msys2)
     runs-on: windows-latest
     defaults:
       run:
@@ -128,6 +130,8 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3
             mingw-w64-${{ matrix.arch }}-python3-pip
             mingw-w64-${{ matrix.arch }}-python3-gobject
+            mingw-w64-${{ matrix.arch }}-python3-numpy
+            mingw-w64-${{ matrix.arch }}-python3-scipy
 
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -135,6 +139,7 @@ jobs:
       - name: Install RAMSTK and test with coverage
         run: |
           python3 -m pip install -U pip wheel setuptools>12.0 urllib3 poetry importlib_metadata
+          poetry shell
           make depends
           make install
           make coverage

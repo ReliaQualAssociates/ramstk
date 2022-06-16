@@ -20,7 +20,7 @@ on:
 
 jobs:
   test_suite:
-    name: Run Dummy Test Suite
+    name: Run Dummy Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -43,3 +43,10 @@ jobs:
     steps:
       - run: |
           echo "No test suite required; no coverage report generated."
+
+  msys2:
+    name: Run Dummy Test Suite on Windows (msys2)
+    runs-on: windows-latest
+    steps:
+      - run: |
+          echo "Test suite not required for Windows."
