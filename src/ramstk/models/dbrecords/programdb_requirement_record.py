@@ -14,9 +14,6 @@ from datetime import date
 # Third Party Imports
 from sqlalchemy import Column, Date, ForeignKey, Integer, String
 
-# RAMSTK Package Imports
-from ramstk.utilities import none_to_default
-
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
 from .baserecord import RAMSTKBaseRecord
@@ -296,6 +293,4 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         # characters wide and then create the code.
         _zeds = 4 - len(str(self.requirement_id))
         _pad = "0" * _zeds
-        _code = f"{prefix}-{_pad}{self.requirement_id}"
-
-        self.requirement_code = str(none_to_default(_code, ""))
+        self.requirement_code = f"{prefix}-{_pad}{self.requirement_id}"
