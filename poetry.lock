@@ -1430,7 +1430,7 @@ python-versions = "*"
 
 [[package]]
 name = "sphinx"
-version = "5.0.1"
+version = "5.0.2"
 description = "Python documentation generator"
 category = "dev"
 optional = false
@@ -1553,7 +1553,7 @@ test = ["pytest"]
 
 [[package]]
 name = "sphinxcontrib-spelling"
-version = "7.5.0"
+version = "7.5.1"
 description = "Sphinx spelling extension"
 category = "dev"
 optional = false
@@ -2903,8 +2903,8 @@ sortedcontainers = [
     {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
 ]
 sphinx = [
-    {file = "Sphinx-5.0.1-py3-none-any.whl", hash = "sha256:36aa2a3c2f6d5230be94585bc5d74badd5f9ed8f3388b8eedc1726fe45b1ad30"},
-    {file = "Sphinx-5.0.1.tar.gz", hash = "sha256:f4da1187785a5bc7312cc271b0e867a93946c319d106363e102936a3d9857306"},
+    {file = "Sphinx-5.0.2-py3-none-any.whl", hash = "sha256:d3e57663eed1d7c5c50895d191fdeda0b54ded6f44d5621b50709466c338d1e8"},
+    {file = "Sphinx-5.0.2.tar.gz", hash = "sha256:b18e978ea7565720f26019c702cd85c84376e948370f1cd43d60265010e1c7b0"},
 ]
 sphinx-py3doc-enhanced-theme = [
     {file = "sphinx-py3doc-enhanced-theme-2.4.0.tar.gz", hash = "sha256:170ac7aad9c8f61c4400b7ec64d2b944c2158ad328d725818095c42950a3675c"},
@@ -2938,8 +2938,8 @@ sphinxcontrib-serializinghtml = [
     {file = "sphinxcontrib_serializinghtml-1.1.5-py2.py3-none-any.whl", hash = "sha256:352a9a00ae864471d3a7ead8d7d79f5fc0b57e8b3f95e9867eb9eb28999b92fd"},
 ]
 sphinxcontrib-spelling = [
-    {file = "sphinxcontrib-spelling-7.5.0.tar.gz", hash = "sha256:d92bdc1d63f361b6e0a171b9d68518101745485317f15861501e387f1b78f6ab"},
-    {file = "sphinxcontrib_spelling-7.5.0-py3-none-any.whl", hash = "sha256:da64b9939eca553ebc6930ae82921c0d4aa7b6a7b5d46726b620b421c14b1f30"},
+    {file = "sphinxcontrib-spelling-7.5.1.tar.gz", hash = "sha256:0fc4c248639ecef3d48a04754feba174468e6b36b56c903025c50d60d6cfb4ef"},
+    {file = "sphinxcontrib_spelling-7.5.1-py3-none-any.whl", hash = "sha256:092670510f521471867706708a6db0f3314b7695cb7b0b96ae7a45f6c4fda3ed"},
 ]
 sqlalchemy = [
     {file = "SQLAlchemy-1.4.37-cp27-cp27m-macosx_10_14_x86_64.whl", hash = "sha256:d9050b0c4a7f5538650c74aaba5c80cd64450e41c206f43ea6d194ae6d060ff9"},

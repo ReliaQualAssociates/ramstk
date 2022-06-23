@@ -798,6 +798,11 @@ CREATE TABLE ramstk_op_stress (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE,
     FOREIGN KEY(fld_opload_id) REFERENCES ramstk_op_load (fld_opload_id) ON DELETE CASCADE
 );
+CREATE TABLE ramstk_load_history (
+    fld_load_history_id INTEGER NOT NULL,
+    fld_description VARCHAR(512) DEFAULT '',
+    PRIMARY KEY (fld_load_history_id)
+);
 CREATE TABLE ramstk_test_method (
     fld_revision_id INTEGER NOT NULL,
     fld_hardware_id INTEGER NOT NULL,
@@ -847,12 +852,18 @@ CREATE TABLE ramstk_validation (
     FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 
-CREATE TABLE ramstk_load_history (
-    fld_load_history_id INTEGER NOT NULL,
-    fld_description VARCHAR(512) DEFAULT '',
-    PRIMARY KEY (fld_load_history_id)
+CREATE TABLE ramstk_matrix (
+    fld_revision_id INTEGER NOT NULL,
+	fld_matrix_id INTEGER NOT NULL,
+	fld_matrix VARCHAR NULL,
+	fld_column_id INTEGER NULL,
+	fld_row_id INTEGER NULL,
+	fld_relationship VARCHAR NULL,
+	PRIMARY KEY (fld_matrix_id),
+	FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 
+-- Future tables
 CREATE TABLE ramstk_test (
     fld_revision_id INTEGER NOT NULL,
     fld_test_id INTEGER NOT NULL,
@@ -1214,7 +1225,6 @@ CREATE TABLE ramstk_survival_data (
     PRIMARY KEY (fld_record_id),
     FOREIGN KEY(fld_survival_id) REFERENCES ramstk_survival (fld_survival_id)
 );
-
 CREATE TABLE ramstk_unit (
     fld_unit_id INTEGER NOT NULL,
     fld_code VARCHAR(256),
