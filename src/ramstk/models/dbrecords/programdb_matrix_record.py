@@ -37,11 +37,15 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         {"extend_existing": True},
     )
 
-    revision_id = Column("fld_revision_id", Integer, nullable=False)
+    revision_id = Column(
+        "fld_revision_id",
+        Integer,
+        nullable=False,
+    )
     matrix_id = Column(
         "fld_matrix_id",
         Integer,
-        primary_key=False,
+        primary_key=True,
         default=-1,
         nullable=False,
     )
@@ -49,7 +53,6 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     description = Column(
         "fld_description",
         String,
-        primary_key=True,
         default=__defaults__["description"],
         nullable=False,
     )
@@ -58,8 +61,16 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         Integer,
         default=__defaults__["column_id"],
     )
-    row_id = Column("fld_row_id", Integer, default=__defaults__["row_id"])
-    correlation = Column("fld_correlation", String, default=__defaults__["correlation"])
+    row_id = Column(
+        "fld_row_id",
+        Integer,
+        default=__defaults__["row_id"],
+    )
+    correlation = Column(
+        "fld_correlation",
+        String,
+        default=__defaults__["correlation"],
+    )
 
     # Define the relationships to other tables in the RAMSTK Program database.
 

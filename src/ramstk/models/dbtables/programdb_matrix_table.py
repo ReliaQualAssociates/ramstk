@@ -43,7 +43,7 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         # Initialize private list attributes.
         self._lst_id_columns = [
             "revision_id",
-            "matrix_id",
+            "description",
         ]
 
         # Initialize private scalar attributes.
@@ -70,6 +70,6 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.matrix_id = self.last_id + 1
-        _new_record.description = ""
+        _new_record.description = attributes["description"]
 
         return _new_record

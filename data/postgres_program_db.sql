@@ -859,7 +859,7 @@ CREATE TABLE ramstk_matrix (
 	fld_column_id INTEGER NULL DEFAULT 0,
 	fld_row_id INTEGER NULL DEFAULT 0,
 	fld_correlation VARCHAR NULL DEFAULT '',
-	PRIMARY KEY (fld_description),
+	PRIMARY KEY (fld_matrix_id),
 	FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
 

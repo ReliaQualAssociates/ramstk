@@ -216,8 +216,12 @@ class RAMSTKBaseTable:
         """
         try:
             _record = self.do_get_new_record(attributes)
+            attributes.pop(self.pkey)
             for _id in self._lst_id_columns:
-                attributes.pop(_id)
+                try:
+                    attributes.pop(_id)
+                except KeyError:
+                    pass
 
             _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1
@@ -342,6 +346,7 @@ class RAMSTKBaseTable:
             )
             _attributes = {}
 
+        _attributes.pop(self.pkey)
         for _field in self._lst_id_columns:
             try:
                 _attributes.pop(_field)
