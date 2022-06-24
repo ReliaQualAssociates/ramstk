@@ -143,6 +143,7 @@ class SystemTestSelectMethods:
     def on_succeed_select_all(self, tree):
         """Listen for succeed_retrieve_all messages."""
         assert isinstance(tree, Tree)
+        print(tree)
         assert isinstance(tree.get_node(self._select_id).data[self._tag], self._record)
         print(f"\033[36m\n\tsucceed_retrieve_all_{self._tag} topic was broadcast.")
 
