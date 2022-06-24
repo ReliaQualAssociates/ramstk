@@ -244,6 +244,11 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         backref="revision",
         passive_deletes=True,
     )
+    matrix: relationship = relationship(
+        "RAMSTKMatrixRecord",
+        backref="revision",
+        passive_deletes=True,
+    )
 
     def get_attributes(self):
         """Retrieve current values of the RAMSTKRevision data model attributes.

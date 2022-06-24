@@ -855,10 +855,10 @@ CREATE TABLE ramstk_validation (
 CREATE TABLE ramstk_matrix (
     fld_revision_id INTEGER NOT NULL,
 	fld_matrix_id INTEGER NOT NULL,
-	fld_matrix VARCHAR NULL,
+	fld_description VARCHAR NULL,
 	fld_column_id INTEGER NULL,
 	fld_row_id INTEGER NULL,
-	fld_relationship VARCHAR NULL,
+	fld_correlation VARCHAR NULL,
 	PRIMARY KEY (fld_matrix_id),
 	FOREIGN KEY(fld_revision_id) REFERENCES ramstk_revision (fld_revision_id) ON DELETE CASCADE
 );
