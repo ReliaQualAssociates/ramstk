@@ -8,6 +8,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKMatrix Record Module."""
 
+# Standard Library Imports
+from typing import Dict, Union
+
 # Third Party Imports
 # noinspection PyPackageRequirements
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
@@ -74,7 +77,7 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self):
+    def get_attributes(self) -> Dict[str, Union[int, str]]:
         """Retrieve current values of the RAMSTKMatrix db record model attributes.
 
         :return: {matrix_id, description, column_id, row_id, correlation} pairs.

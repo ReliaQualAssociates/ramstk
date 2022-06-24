@@ -6,7 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Metaclass for the database table models."""
 
+
 # Standard Library Imports
+import contextlib
 from datetime import date
 from typing import Any, Callable, Dict, List, Type, Union
 
@@ -218,11 +220,8 @@ class RAMSTKBaseTable:
             _record = self.do_get_new_record(attributes)
             attributes.pop(self.pkey)
             for _id in self._lst_id_columns:
-                try:
+                with contextlib.suppress(KeyError):
                     attributes.pop(_id)
-                except KeyError:
-                    pass
-
             _record.set_attributes(attributes)  # type: ignore
             _identifier = self.last_id + 1
 
@@ -246,6 +245,7 @@ class RAMSTKBaseTable:
                 logger_name="DEBUG",
                 message=str(_error.msg),
             )
+
         except NodeIDAbsentError as _error:
             pub.sendMessage(
                 "do_log_debug_msg",
@@ -328,7 +328,7 @@ class RAMSTKBaseTable:
 
         :param node_id: the ID of the record in the RAMSTK Program database
             table whose attributes are to be set.
-        :param package: the key:value pair of the attribute to set.
+        :param package: the key:value pair for the attribute to set.
         :return: None
         :rtype: None
         """
@@ -346,13 +346,11 @@ class RAMSTKBaseTable:
             )
             _attributes = {}
 
-        _attributes.pop(self.pkey)
+        with contextlib.suppress(KeyError):
+            _attributes.pop(self.pkey)
         for _field in self._lst_id_columns:
-            try:
+            with contextlib.suppress(KeyError):
                 _attributes.pop(_field)
-            except KeyError:
-                pass
-
         if _key in _attributes:
             _attributes[_key] = _value
 
@@ -460,9 +458,7 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
-        try:
+        with contextlib.suppress(NodeIDAbsentError):
             for _node in self.tree.children(node_id):
                 self.dao.do_delete(self.do_select(_node.identifier))
             self.tree.remove_node(node_id)
-        except NodeIDAbsentError:
-            pass
