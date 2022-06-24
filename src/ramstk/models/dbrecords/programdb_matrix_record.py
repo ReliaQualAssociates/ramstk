@@ -41,7 +41,7 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     matrix_id = Column(
         "fld_matrix_id",
         Integer,
-        primary_key=True,
+        primary_key=False,
         default=-1,
         nullable=False,
     )
@@ -49,7 +49,9 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     description = Column(
         "fld_description",
         String,
+        primary_key=True,
         default=__defaults__["description"],
+        nullable=False,
     )
     column_id = Column(
         "fld_column_id",

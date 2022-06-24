@@ -70,5 +70,6 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         _new_record = self._record()
         _new_record.revision_id = attributes["revision_id"]
         _new_record.matrix_id = self.last_id + 1
+        _new_record.description = ""
 
         return _new_record
