@@ -59,17 +59,17 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         # Subscribe to PyPubSub messages.
 
     def do_get_new_record(  # pylint: disable=method-hidden
-        self, attributes: Dict[str, Union[date, float, int, str]]
+        self, attribute_dic: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKMatrixRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new record.
+        :param attribute_dic: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
-        _new_record = self._record()
-        _new_record.revision_id = attributes["revision_id"]
-        _new_record.matrix_id = self.last_id + 1
-        _new_record.description = attributes["description"]
+        _new_record_obj = self._record()
+        _new_record_obj.revision_id = attribute_dic["revision_id"]
+        _new_record_obj.matrix_id = self.last_id + 1
+        _new_record_obj.description = attribute_dic["description"]
 
-        return _new_record
+        return _new_record_obj
