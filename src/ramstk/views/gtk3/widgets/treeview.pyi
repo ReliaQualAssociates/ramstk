@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, List, Tuple
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 # RAMSTK Package Imports
 from ramstk.utilities import deprecated as deprecated
@@ -15,9 +15,18 @@ from .label import RAMSTKLabel as RAMSTKLabel
 from .widget import RAMSTKWidget as RAMSTKWidget
 
 def do_make_column(
-    cells: List[object], **kwargs: Dict[str, Any]
+    cells_lst: List[Gtk.CellRenderer],
+    **property_kwargs: Dict[str, Union[bool, str]],
 ) -> Gtk.TreeViewColumn: ...
-def do_set_cell_properties(cell: object, properties: Dict[str, Any]) -> None: ...
+def do_set_cell_properties(
+    cell_obj: Union[
+        Gtk.CellRendererCombo,
+        Gtk.CellRendererSpin,
+        Gtk.CellRendererText,
+        Gtk.CellRendererToggle,
+    ],
+    property_dic: Dict[str, Union[bool, float, int, str]],
+) -> None: ...
 
 class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     _has_pixbuf: bool
@@ -33,9 +42,20 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     filt_model: Gtk.TreeModelFilter
     unfilt_model: Gtk.TreeModel
     def __init__(self) -> None: ...
+    def do_change_cell(
+        self,
+        cell: Gtk.CellRendererCombo,
+        path: str,
+        new_row: Gtk.TreeIter,
+        position: int,
+    ) -> int: ...
     def do_edit_cell(
-        self, cell: Gtk.CellRenderer, path: str, new_text: Any, position: int
-    ) -> Any: ...
+        self,
+        cell: Gtk.CellRenderer,
+        path: str,
+        new_text: Union[bool, float, int, str],
+        position: int,
+    ) -> Union[bool, float, int, str]: ...
     def do_expand_tree(self) -> None: ...
     def do_get_row_by_value(self, search_col: int, value: Any) -> Gtk.TreeIter: ...
     def do_insert_row(self, data: Dict[str, Any], prow: Gtk.TreeIter = ...) -> None: ...
