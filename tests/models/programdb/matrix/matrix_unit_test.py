@@ -46,7 +46,7 @@ class TestCreateMatrixModels:
         assert test_record_model.description == "validation-requirement"
         assert test_record_model.column_id == 6
         assert test_record_model.row_id == 3
-        assert test_record_model.correlation == "P"
+        assert test_record_model.correlation == 1
 
     @pytest.mark.unit
     def test_table_model_create(self, unit_test_table_model):
@@ -148,4 +148,4 @@ class TestGetterSetterMatrix(UnitTestGetterSetterMethods):
 
         assert isinstance(_attributes, dict)
         assert _attributes["description"] == "validation-requirement"
-        assert _attributes["correlation"] == "P"
+        assert _attributes["correlation"] == 1

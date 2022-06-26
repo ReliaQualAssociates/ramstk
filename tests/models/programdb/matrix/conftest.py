@@ -30,7 +30,7 @@ def mock_dao(monkeypatch):
     _matrix_one.description = DESCRIPTION
     _matrix_one.column_id = 6
     _matrix_one.row_id = 3
-    _matrix_one.correlation = "P"
+    _matrix_one.correlation = 1
 
     _matrix_two = RAMSTKMatrixRecord()
     _matrix_two.revision_id = 1
@@ -38,7 +38,7 @@ def mock_dao(monkeypatch):
     _matrix_two.description = DESCRIPTION
     _matrix_two.column_id = 6
     _matrix_two.row_id = 4
-    _matrix_two.correlation = "C"
+    _matrix_two.correlation = 2
 
     dao = MockDAO()
     dao.table = [
@@ -58,7 +58,7 @@ def test_attributes():
         "description": DESCRIPTION,
         "column_id": 6,
         "row_id": 3,
-        "correlation": "P",
+        "correlation": 1,
     }
 
 
