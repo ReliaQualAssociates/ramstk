@@ -9,7 +9,7 @@
 """RAMSTKMatrix Record Module."""
 
 # Standard Library Imports
-from typing import Dict, Union
+from typing import Dict
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -27,7 +27,7 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         "description": "",
         "column_id": 0,
         "row_id": 0,
-        "correlation": "",
+        "correlation": 0,
     }
     __tablename__ = "ramstk_matrix"
     __table_args__ = (
@@ -71,13 +71,13 @@ class RAMSTKMatrixRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
     correlation = Column(
         "fld_correlation",
-        String,
+        Integer,
         default=__defaults__["correlation"],
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
 
-    def get_attributes(self) -> Dict[str, Union[int, str]]:
+    def get_attributes(self) -> Dict[str, Column]:
         """Retrieve current values of the RAMSTKMatrix db record model attributes.
 
         :return: {matrix_id, description, column_id, row_id, correlation} pairs.
