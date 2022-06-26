@@ -18,7 +18,7 @@ import toml
 import treelib
 
 # RAMSTK Package Imports
-from ramstk.utilities import deprecated, string_to_boolean
+from ramstk.utilities import string_to_boolean
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango
 
 # RAMSTK Local Imports
@@ -28,7 +28,7 @@ from .widget import RAMSTKWidget
 
 def do_make_column(
     cells_lst: List[Gtk.CellRenderer],
-    **kwargs: Dict[str, Union[bool, str]],
+    **kwargs,
 ) -> Gtk.TreeViewColumn:
     """Make a Gtk.TreeViewColumn().
 
@@ -40,7 +40,7 @@ def do_make_column(
     _header_str = kwargs.get("heading", "")
     _visible_flag = kwargs.get("visible", True)
 
-    _column_obj = Gtk.TreeViewColumn("")
+    _column_obj: Gtk.TreeViewColumn = Gtk.TreeViewColumn("")
 
     for _cell_obj in cells_lst:
         if isinstance(_cell_obj, Gtk.CellRendererPixbuf):
@@ -48,7 +48,7 @@ def do_make_column(
         else:
             _column_obj.pack_start(_cell_obj, True)
 
-    _label_obj = RAMSTKLabel(_header_str)  # type: ignore
+    _label_obj = RAMSTKLabel(_header_str)
     _label_obj.do_set_properties(
         width=-1,
         height=-1,
@@ -236,28 +236,6 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         _model_obj[path_str][position_int] = new_text_obj
 
         return new_text_obj
-
-    @deprecated
-    def do_expand_tree(self) -> None:
-        """Expand the RAMSTKTreeView().
-
-        Currently unused.  Determine if it has value.
-
-        :return: None
-        :rtype: None
-        """
-        _model_obj = self.get_model()
-        try:
-            _row_obj = _model_obj.get_iter_first()
-        except AttributeError:
-            _row_obj = None
-
-        self.expand_all()
-        if _row_obj is not None:
-            _path_str = _model_obj.get_path(_row_obj)
-            _column_obj = self.get_column(0)
-            self.set_cursor(_path_str, None, False)
-            self.row_activated(_path_str, _column_obj)
 
     def do_get_row_by_value(self, search_col_int: int, value_obj: Any) -> Gtk.TreeIter:
         """Find the row in the RAMSTKTreeView() containing the passed value.
