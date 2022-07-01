@@ -558,6 +558,7 @@ def make_home_config_dir():
         "./data/postgres_program_db.sql",
         f"{_config_dir}/postgres_program_db.sql",
     )
+    shutil.copytree("./data/icons", f"{_config_dir}/icons/", dirs_exist_ok=True)
 
     yield _config_dir
 
