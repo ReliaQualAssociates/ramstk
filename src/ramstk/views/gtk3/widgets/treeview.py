@@ -19,7 +19,7 @@ import treelib
 
 # RAMSTK Package Imports
 from ramstk.utilities import string_to_boolean
-from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango
+from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, Pango, _
 
 # RAMSTK Local Imports
 from .label import RAMSTKLabel
@@ -38,6 +38,10 @@ def do_make_column(
     :rtype: :class:`Gtk.TreeViewColumn`
     """
     _header_str = kwargs.get("heading", "")
+    _tooltip_str = kwargs.get(
+        "tooltip",
+        _("Missing tooltip, please file a type:style issue to have one added."),
+    )
     _visible_flag = kwargs.get("visible", True)
 
     _column_obj: Gtk.TreeViewColumn = Gtk.TreeViewColumn("")
@@ -50,9 +54,10 @@ def do_make_column(
 
     _label_obj = RAMSTKLabel(_header_str)
     _label_obj.do_set_properties(
-        width=-1,
         height=-1,
         justify=Gtk.Justification.CENTER,
+        tooltip=_tooltip_str,
+        width=-1,
     )
     _column_obj.set_widget(_label_obj)
     _column_obj.set_resizable(True)
