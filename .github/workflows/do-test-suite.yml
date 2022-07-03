@@ -133,14 +133,15 @@ jobs:
             mingw-w64-${{ matrix.arch }}-python3-numpy
             mingw-w64-${{ matrix.arch }}-python3-scipy
             mingw-w64-${{ matrix.arch }}-python3-setuptools
+            mingw-w64-${{ matrix.arch }}-python3-wheel
 
       - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Install RAMSTK and test with coverage
         run: |
-          python3 -m pip install -U pip wheel urllib3 poetry importlib_metadata
-          poetry shell
+          export SETUPTOOLS_USE_DISTUTILS=stdlib
+          python3 -m pip install -U urllib3 poetry importlib_metadata
           make depends
           make install
           make coverage
