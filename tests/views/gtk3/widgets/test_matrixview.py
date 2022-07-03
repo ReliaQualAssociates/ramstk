@@ -25,7 +25,9 @@ class TestRAMSTKMatrixView:
         dut = RAMSTKMatrixView()
 
         assert isinstance(dut, RAMSTKMatrixView)
+        assert dut.column_id_dic == {}
         assert dut.icons_dic == {"complete": "", "none": "", "partial": ""}
+        assert dut.row_id_dic == {}
         assert dut.n_columns == 0
         assert dut.n_rows == 0
 
@@ -111,14 +113,15 @@ class TestRAMSTKMatrixView:
         """Should add a row and populate with column heading RAMSTKLabels."""
         dut = RAMSTKMatrixView()
 
+        assert dut.column_id_dic == {}
         assert dut.n_columns == 0
         assert dut.n_rows == 0
 
         dut.do_set_column_headings(
             [
-                ("Column 1", "Tooltip 1"),
-                ("Column 2", "Tooltip 2"),
-                ("Column 3", "Tooltip 3"),
+                ("Column 1", "Tooltip 1", 12),
+                ("Column 2", "Tooltip 2", 28),
+                ("Column 3", "Tooltip 3", 3),
             ],
         )
 
@@ -128,6 +131,9 @@ class TestRAMSTKMatrixView:
             dut.get_child_at(3, 0),
         ]
 
+        assert dut.column_id_dic["Column 1"] == 12
+        assert dut.column_id_dic["Column 2"] == 28
+        assert dut.column_id_dic["Column 3"] == 3
         assert dut.n_columns == 3
         assert dut.n_rows == 1
         assert isinstance(_label_lst[0], RAMSTKLabel)
@@ -147,12 +153,13 @@ class TestRAMSTKMatrixView:
 
         assert dut.n_columns == 0
         assert dut.n_rows == 0
+        assert dut.row_id_dic == {}
 
         dut.do_set_row_headings(
             [
-                ("Row 1", "Tooltip 1"),
-                ("Row 2", "Tooltip 2"),
-                ("Row 3", "Tooltip 3"),
+                ("Row 1", "Tooltip 1", 4),
+                ("Row 2", "Tooltip 2", 8),
+                ("Row 3", "Tooltip 3", 12),
             ],
         )
 
@@ -164,6 +171,9 @@ class TestRAMSTKMatrixView:
 
         assert dut.n_columns == 1
         assert dut.n_rows == 3
+        assert dut.row_id_dic["Row 1"] == 4
+        assert dut.row_id_dic["Row 2"] == 8
+        assert dut.row_id_dic["Row 3"] == 12
         assert isinstance(_label_lst[0], RAMSTKLabel)
         assert _label_lst[0].get_label() == "<b><span>Row 1</span></b>"
         assert _label_lst[0].get_property("tooltip-markup") == "Tooltip 1"
@@ -188,16 +198,16 @@ class TestRAMSTKMatrixView:
 
         dut.do_set_column_headings(
             [
-                ("Column 1", "Column Tooltip 1"),
-                ("Column 2", "Column Tooltip 2"),
-                ("Column 3", "Column Tooltip 3"),
+                ("Column 1", "Column Tooltip 1", 12),
+                ("Column 2", "Column Tooltip 2", 28),
+                ("Column 3", "Column Tooltip 3", 3),
             ],
         )
         dut.do_set_row_headings(
             [
-                ("Row 1", "Row Tooltip 1"),
-                ("Row 2", "Row Tooltip 2"),
-                ("Row 3", "Row Tooltip 3"),
+                ("Row 1", "Row Tooltip 1", 4),
+                ("Row 2", "Row Tooltip 2", 8),
+                ("Row 3", "Row Tooltip 3", 12),
             ],
         )
 
