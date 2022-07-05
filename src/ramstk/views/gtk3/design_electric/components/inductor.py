@@ -248,7 +248,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_specification_combobox()
 
         self.cmbConstruction.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
+            [[_("Fixed")], [_("Variable")]],
         )
 
         self._do_set_sensitive()
@@ -263,21 +263,25 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         super().do_load_common(attributes)
 
-        self.cmbFamily.do_update(attributes["family_id"], signal="changed")
+        self.cmbFamily.do_update(
+            attributes["family_id"],
+        )
 
         if self._hazard_rate_method_id == 2:
             self.cmbSpecification.do_update(
-                attributes["specification_id"], signal="changed"
+                attributes["specification_id"],
             )
-            self.cmbInsulation.do_update(attributes["insulation_id"], signal="changed")
+            self.cmbInsulation.do_update(
+                attributes["insulation_id"],
+            )
             self.cmbConstruction.do_update(
-                attributes["construction_id"], signal="changed"
+                attributes["construction_id"],
             )
             self.txtArea.do_update(
-                str(self.fmt.format(attributes["area"])), signal="changed"
+                str(self.fmt.format(attributes["area"])),
             )
             self.txtWeight.do_update(
-                str(self.fmt.format(attributes["weight"])), signal="changed"
+                str(self.fmt.format(attributes["weight"])),
             )  # noqa
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
@@ -293,7 +297,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -351,7 +354,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("Power Transformer or Filter")],
                 [_("RF Transformer")],
             ]
-        self.cmbFamily.do_load_combo(_data, signal="changed")
+        self.cmbFamily.do_load_combo(
+            _data,
+        )
 
     def __do_load_insulation_combobox(self) -> None:
         """Load the insulation RAMSTKComboBox().
@@ -363,7 +368,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_insulation[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbInsulation.do_load_combo(_data, signal="changed")
+        self.cmbInsulation.do_load_combo(
+            _data,
+        )
 
     def __do_load_quality_combobox(self) -> None:
         """Load the quality RAMSTKComboBox().
@@ -382,7 +389,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _data,
+        )
 
     def __do_load_specification_combobox(self) -> None:
         """Load the specification RAMSTKComboBox().
@@ -394,4 +403,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_specifications[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbSpecification.do_load_combo(_data, signal="changed")
+        self.cmbSpecification.do_load_combo(
+            _data,
+        )

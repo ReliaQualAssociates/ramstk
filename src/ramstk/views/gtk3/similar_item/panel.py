@@ -93,7 +93,6 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
                 [_("Topic 633"), 0],
                 [_("User-Defined"), 1],
             ],
-            signal="changed",
         )
 
     def _do_set_sensitive(self, attributes: Dict[str, Union[int, float, str]]) -> None:
@@ -106,7 +105,6 @@ class SimilarItemMethodPanel(RAMSTKFixedPanel):
         self.cmbSimilarItemMethod.set_sensitive(True)
         self.cmbSimilarItemMethod.do_update(
             attributes["similar_item_method_id"],
-            signal="changed",
         )
 
     def _on_method_changed(self, combo: RAMSTKComboBox) -> None:
@@ -1281,8 +1279,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     def do_filter_tree(
         self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
     ) -> bool:
-        """Filter Similar Item to show only those associated with the selected
-        Hardware.
+        """Filter Similar Item to show only those associated with selected Hardware.
 
         :param model: the filtered model for the Similar Item RAMSTKTreeView.
         :param row: the iter to check against condition(s).

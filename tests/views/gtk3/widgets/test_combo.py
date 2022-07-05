@@ -32,8 +32,9 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_create_combobox_not_simple(self):
-        """__init__() should create a RAMSTKComboBox with three columns when passed simple=False."""
-        DUT = RAMSTKComboBox(index=2, simple=False)
+        """__init__() should create a RAMSTKComboBox with three columns when passed
+        simple=False."""
+        DUT = RAMSTKComboBox(position_idx=2, simple_flag=False)
 
         assert isinstance(DUT, RAMSTKComboBox)
         assert DUT._index == 2
@@ -56,7 +57,8 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_set_properties_default_values(self):
-        """do_set_properties() should set the default properties of a RAMSTKComboBox when no keywords are passed to the method."""
+        """do_set_properties() should set the default properties of a RAMSTKComboBox
+        when no keywords are passed to the method."""
         DUT = RAMSTKComboBox()
         DUT.do_set_properties()
 
@@ -68,7 +70,8 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_set_properties_zero_height(self):
-        """do_set_properties() should set the height to the default value if it is passed as zero."""
+        """do_set_properties() should set the height to the default value if it is
+        passed as zero."""
         DUT = RAMSTKComboBox()
         DUT.do_set_properties(height=0)
 
@@ -76,7 +79,8 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_set_properties_zero_width(self):
-        """do_set_properties() should set the width to the default value if it is passed as zero."""
+        """do_set_properties() should set the width to the default value if it is
+        passed as zero."""
         DUT = RAMSTKComboBox()
         DUT.do_set_properties(width=0)
 
@@ -84,7 +88,8 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_do_load_combo_simple(self):
-        """do_load_combo() should load a list of string values into a simple RAMSTKComboBox."""
+        """do_load_combo() should load a list of string values into a simple
+        RAMSTKComboBox."""
         _test_list = [
             ["This"],
             ["is"],
@@ -100,19 +105,21 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_do_load_combo_not_simple(self):
-        """do_load_combo() should load a list of string values into a non-simple RAMSTKComboBox."""
+        """do_load_combo() should load a list of string values into a non-simple
+        RAMSTKComboBox."""
         _test_list = [
             ["This", "is", "a"],
             ["test", "of", "the"],
             ["RAMSTKComboBox", "not", "simple"],
         ]
-        DUT = RAMSTKComboBox(index=1, simple=False)
+        DUT = RAMSTKComboBox(position_idx=1, simple_flag=False)
 
-        assert DUT.do_load_combo(_test_list, simple=False) is None
+        assert DUT.do_load_combo(_test_list, simple_flag=False) is None
 
     @pytest.mark.gui
     def test_do_load_combo_simple_not_string_list(self):
-        """do_load_combo() should raise a TypeError when passed a list of other than strings to load or a single non-string value."""
+        """do_load_combo() should raise a TypeError when passed a list of other than
+        strings to load or a single non-string value."""
         _test_list = [0, 1, 2, 3, 4]
         DUT = RAMSTKComboBox()
 
@@ -123,7 +130,8 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_do_get_options_simple(self):
-        """do_get_options() should return a dict of all the options available in a simple RAMSTKComboBox."""
+        """do_get_options() should return a dict of all the options available in a
+        simple RAMSTKComboBox."""
         _test_list = [
             ["This"],
             ["is"],
@@ -151,14 +159,15 @@ class TestRAMSTKComboBox:
 
     @pytest.mark.gui
     def test_do_get_options_not_simple(self):
-        """do_load_combo() should load a list of string values into a non-simple RAMSTKComboBox."""
+        """do_load_combo() should load a list of string values into a non-simple
+        RAMSTKComboBox."""
         _test_list = [
             ["This", "is", "a"],
             ["test", "of", "the"],
             ["RAMSTKComboBox", "not", "simple"],
         ]
-        DUT = RAMSTKComboBox(index=1, simple=False)
-        DUT.do_load_combo(_test_list, simple=False)
+        DUT = RAMSTKComboBox(position_idx=1, simple_flag=False)
+        DUT.do_load_combo(_test_list, simple_flag=False)
 
         _options = DUT.do_get_options()
         assert isinstance(_options, dict)

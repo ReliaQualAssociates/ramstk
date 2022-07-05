@@ -218,13 +218,10 @@ class CapacitorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
             self.lblModel.do_update(self._dic_part_stress[self.subcategory_id])
             self.txtPiCV.do_update(
                 str(self.fmt.format(attributes["piCV"])),
-                signal="changed",
             )
             self.txtPiCF.do_update(
                 str(self.fmt.format(attributes["piCF"])),
-                signal="changed",
             )
             self.txtPiC.do_update(
                 str(self.fmt.format(attributes["piC"])),
-                signal="changed",
             )

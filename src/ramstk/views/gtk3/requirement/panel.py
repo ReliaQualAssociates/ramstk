@@ -1046,7 +1046,9 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         )
 
         self.cmbOwner: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(index=1, simple=False)
+        self.cmbRequirementType: RAMSTKComboBox = RAMSTKComboBox(
+            position_idx=1, simple_flag=False
+        )
         self.cmbPriority: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtCode: RAMSTKEntry = RAMSTKEntry()
@@ -1266,7 +1268,7 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         """
         _requirement_types: List[Tuple[str]] = list(requirement_types.values())
 
-        self.cmbRequirementType.do_load_combo(entries=_requirement_types, simple=False)
+        self.cmbRequirementType.do_load_combo(_requirement_types, simple_flag=False)
 
     def do_load_workgroups(self, workgroups: Dict[int, Tuple[str]]) -> None:
         """Load the workgroups RAMSTKComboBox().
@@ -1286,7 +1288,9 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update(str(requirement_code), signal="changed")
+        self.txtCode.do_update(
+            str(requirement_code),
+        )
 
     @staticmethod
     def _do_select_date(

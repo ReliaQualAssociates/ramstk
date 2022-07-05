@@ -101,15 +101,12 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
 
         self.txtLambdaB.do_update(
             str(self.fmt.format(self._lambda_b or 0.0)),
-            signal="changed",
         )
         self.txtPiQ.do_update(
             str(self.fmt.format(attributes["piQ"] or 1.0)),
-            signal="changed",
         )
         self.txtPiE.do_update(
             str(self.fmt.format(attributes["piE"] or 1.0)),
-            signal="changed",
         )
 
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:

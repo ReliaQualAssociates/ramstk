@@ -7,7 +7,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Miscellaneous Devices Input Panel."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -177,12 +179,13 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
+        self.cmbQuality.do_load_combo(
+            [["MIL-SPEC"], [_("Lower")]],
+        )
 
         # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
             [[_("Incandescent, AC")], [_("Incandescent, DC")]],
-            signal="changed",
         )
 
         # Load the type RAMSTKComboBox().
@@ -193,7 +196,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("Discrete LC Components")],
                     [_("Discrete LC and Crystal Components")],
                 ],
-                signal="changed",
             )
         elif self._hazard_rate_method_id == 2:
             self.cmbType.do_load_combo(
@@ -203,7 +205,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("MIL-F-18327 Discrete LC Components")],
                     [_("MIL-F-18327 Discrete LC and Crystal Components")],
                 ],
-                signal="changed",
             )
 
         self._do_set_sensitive()
@@ -231,7 +232,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -252,10 +252,8 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             2: self.__do_set_filter_sensitive,
             4: self.__do_set_lamp_sensitive,
         }
-        try:
+        with contextlib.suppress(KeyError):
             _dic_method[self.subcategory_id]()
-        except KeyError:
-            pass
 
     def __do_set_crystal_sensitive(self) -> None:
         """Set the widget sensitivity as needed for a Crystal.

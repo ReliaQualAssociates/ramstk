@@ -224,14 +224,18 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
+        self.cmbQuality.do_load_combo(
+            [["MIL-SPEC"], [_("Lower")]],
+        )
 
         # Load the application RAMSTKComboBox().
         try:
             _data = self._dic_applications[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
+        self.cmbApplication.do_load_combo(
+            _data,
+        )
 
         # Load the construction RAMSTKComboBox().
         try:
@@ -241,14 +245,18 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_constructions[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
+        self.cmbConstruction.do_load_combo(
+            _data,
+        )
 
         # Load the contact form RAMSTKComboBox().
         try:
             _data = self._dic_contact_forms[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbContactForm.do_load_combo(_data, signal="changed")
+        self.cmbContactForm.do_load_combo(
+            _data,
+        )
 
         self._do_set_sensitive()
 
@@ -265,7 +273,6 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()

@@ -65,10 +65,10 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
             _("RAMSTK Log Directory")
         )
 
-        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbReportSize: RAMSTKComboBox = RAMSTKComboBox(simple=True)
+        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbReportSize: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtFRMultiplier: RAMSTKEntry = RAMSTKEntry()
         self.txtDecimalPlaces: RAMSTKEntry = RAMSTKEntry()
@@ -296,29 +296,25 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
 
         self.cmbModuleBookTabPosition.do_update(
             _positions[self._configuration.RAMSTK_TABPOS["modulebook"].lower()],
-            signal="changed",
         )
         self.cmbWorkBookTabPosition.do_update(
             _positions[self._configuration.RAMSTK_TABPOS["workbook"].lower()],
-            signal="changed",
         )
         self.cmbListBookTabPosition.do_update(
             _positions[self._configuration.RAMSTK_TABPOS["listbook"].lower()],
-            signal="changed",
         )
         self.cmbReportSize.do_update(
             _papersize[self._configuration.RAMSTK_REPORT_SIZE.lower()],
-            signal="changed",
         )
 
         self.txtFRMultiplier.do_update(
-            str(self._configuration.RAMSTK_HR_MULTIPLIER), signal="changed"
+            str(self._configuration.RAMSTK_HR_MULTIPLIER),
         )
         self.txtDecimalPlaces.do_update(
-            str(self._configuration.RAMSTK_DEC_PLACES), signal="changed"
+            str(self._configuration.RAMSTK_DEC_PLACES),
         )
         self.txtMissionTime.do_update(
-            str(self._configuration.RAMSTK_MTIME), signal="changed"
+            str(self._configuration.RAMSTK_MTIME),
         )
 
         self.btnConfDir.set_current_folder(self._configuration.RAMSTK_CONF_DIR)
@@ -737,7 +733,7 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         super().__init__()
 
         # Initialize widgets.
-        self.cmbFormatFiles: RAMSTKComboBox = RAMSTKComboBox(simple=False)
+        self.cmbFormatFiles: RAMSTKComboBox = RAMSTKComboBox(simple_flag=False)
         self.tvwTreeView: RAMSTKTreeView = RAMSTKTreeView()
 
         # Initialize private dict instance attributes.
@@ -791,7 +787,7 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
                 [_("Usage Profile"), "usage_profile", ""],
                 [_("Validation"), "validation", ""],
             ],
-            simple=False,
+            simple_flag=False,
         )
 
     def _do_load_format(self, module: str) -> None:

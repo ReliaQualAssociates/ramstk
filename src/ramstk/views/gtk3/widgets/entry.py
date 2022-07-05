@@ -70,12 +70,12 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         if _bold:
             self.modify_font(Pango.FontDescription("bold"))
 
-    def do_update(self, value: Any, signal: str = "") -> None:
+    def do_update(self, value: Any, signal_str: str = "changed") -> None:
         """Update the RAMSTK Entry with a new value.
 
         :param value: the information to update the RAMSTKEntry() to
             display.
-        :keyword signal: the name of the signal whose handler ID the
+        :keyword signal_str: the name of the signal whose handler ID the
             RAMSTKEntry() needs to block.
         :return: None
         :rtype: None
@@ -89,7 +89,7 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         # usually happens when the widget is being used to display results
         # and has no associated callback method.
         try:
-            _handler_id = self.dic_handler_id[signal]
+            _handler_id = self.dic_handler_id[signal_str]
 
             self.handler_block(_handler_id)
             self.set_text(_value)
@@ -180,12 +180,12 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.set_property("width-request", self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, signal: str = "") -> None:
+    def do_update(self, value: str, signal_str: str = "changed") -> None:
         """Update the RAMSTK TextView with a new value.
 
         :param value: the information to update the RAMSTKTextView() to
             display.
-        :keyword str signal: the name of the signal whose handler ID the
+        :keyword signal_str: the name of the signal whose handler ID the
             RAMSTKTextView() needs to block.
         :return: None
         :rtype: None
@@ -196,10 +196,10 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         # usually happens when the widget is being used to display results
         # and has no associated callback method.
         try:
-            _handler_id = self.dic_handler_id[signal]
+            _handler_id = self.dic_handler_id[signal_str]
 
             _buffer.handler_block(_handler_id)
-            _buffer.set_text(str(value))
+            _buffer.set_text(value)
             _buffer.handler_unblock(_handler_id)
         except KeyError:
-            _buffer.set_text(str(value))
+            _buffer.set_text(value)

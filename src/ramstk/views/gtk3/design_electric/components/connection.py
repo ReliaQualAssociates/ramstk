@@ -435,14 +435,18 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _data,
+        )
 
         # Load the connector type RAMSTKComboBox().
         try:
             _data = self._dic_type[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbType.do_load_combo(
+            _data,
+        )
 
         # Clear the remaining ComboBox()s.  These are loaded dynamically
         # based on the selection made in other ComboBox()s.
@@ -467,7 +471,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             _inserts = self._dic_insert[_type_id][_spec_id]
         except KeyError:
             _inserts = []
-        self.cmbInsert.do_load_combo(entries=_inserts, signal="changed")
+        self.cmbInsert.do_load_combo(
+            entries_lst=_inserts,
+        )
 
     def _do_load_specification(self, combo: RAMSTKComboBox) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Connection attribute.
@@ -482,7 +488,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             _specifications = self._dic_specification[_type_id]
         except KeyError:
             _specifications = []
-        self.cmbSpecification.do_load_combo(entries=_specifications, signal="changed")
+        self.cmbSpecification.do_load_combo(
+            entries_lst=_specifications,
+        )
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
@@ -497,7 +505,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()

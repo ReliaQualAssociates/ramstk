@@ -210,13 +210,10 @@ class ConnectionMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
             self.txtPiC.do_update(
                 str(self.fmt.format(attributes["piC"])),
-                signal="changed",
             )
             self.txtPiK.do_update(
                 str(self.fmt.format(attributes["piK"])),
-                signal="changed",
             )
             self.txtPiP.do_update(
                 str(self.fmt.format(attributes["piP"])),
-                signal="changed",
             )

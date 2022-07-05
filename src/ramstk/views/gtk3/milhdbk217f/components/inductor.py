@@ -162,5 +162,4 @@ class InductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
 
             self.txtPiC.do_update(
                 str(self.fmt.format(attributes["piC"])),
-                signal="changed",
             )

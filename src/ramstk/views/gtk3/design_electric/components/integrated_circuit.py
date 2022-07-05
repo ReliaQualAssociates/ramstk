@@ -7,7 +7,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Input Panel."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -430,7 +432,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Load the Construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo(
-            [["FLOTOX"], [_("Textured Poly")]], signal="changed"
+            [["FLOTOX"], [_("Textured Poly")]],
         )
 
         # Load the error correction code RAMSTKComboBox().
@@ -440,12 +442,11 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("On-chip Hamming code")],
                 [_("Two-Needs-One redundant cell approach")],
             ],
-            signal="changed",
         )
 
         # Load the manufacturing process RAMSTKComboBox().
         self.cmbManufacturing.do_load_combo(
-            [["QML or QPL"], ["Non-QML or non-QPL"]], signal="changed"
+            [["QML or QPL"], ["Non-QML or non-QPL"]],
         )
 
         # Load the package RAMSTKComboBox().
@@ -461,7 +462,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("Nonhermetic Pin Grid Array (PGA)")],
                 [_("Nonhermetic SMT")],
             ],
-            signal="changed",
         )
 
         # Load the technology RAMSTKComboBox().
@@ -475,14 +475,18 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_technology[subcategory_id]
         except KeyError:
             _data = []
-        self.cmbTechnology.do_load_combo(_data, signal="changed")
+        self.cmbTechnology.do_load_combo(
+            _data,
+        )
 
         # Load the device type RAMSTKComboBox().
         try:
             _data = self._dic_types[subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbType.do_load_combo(
+            _data,
+        )
 
         self._do_set_sensitive()
 
@@ -499,7 +503,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -539,12 +542,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             9: self.__do_set_gaas_sensitive,
             10: self.__do_set_vhsic_vlsi_sensitive,
         }
-        try:
+        with contextlib.suppress(KeyError):
             # noinspection PyArgumentList
             _dic_method[self.subcategory_id]()
-        except KeyError:
-            pass
-
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.set_sensitive(True)
             self.txtNElements.set_sensitive(True)
@@ -563,12 +563,10 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                     [_("Driver and High Power (> 100mW)")],
                     [_("Unknown")],
                 ],
-                signal="changed",
             )
         else:
             self.cmbApplication.do_load_combo(
                 [[_("All digital devices")]],
-                signal="changed",
             )
 
     def __do_set_dram_sensitive(self) -> None:

@@ -427,7 +427,6 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -468,7 +467,9 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_applications[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
+        self.cmbApplication.do_load_combo(
+            _data,
+        )
 
     def __do_load_construction(self) -> None:
         """Load the construction RAMSTKComboBox() with selections.
@@ -481,7 +482,6 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 [_("Metallurgically Bonded")],
                 [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
             ],
-            signal="changed",
         )
 
     def __do_load_matching(self) -> None:
@@ -494,7 +494,9 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_matchings[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbMatching.do_load_combo(_data, signal="changed")
+        self.cmbMatching.do_load_combo(
+            _data,
+        )
 
     def __do_load_quality(self) -> None:
         """Load the quality RAMSTKComboBox() with selections.
@@ -522,7 +524,9 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _data,
+        )
 
     def __do_load_type(self) -> None:
         """Load the type RAMSTKComboBox() with selections.
@@ -541,7 +545,9 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_types[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbType.do_load_combo(
+            _data,
+        )
 
     def __do_set_application_sensitive(self) -> None:
         """Set the application RAMSTKComboBox() sensitive or not.

@@ -187,7 +187,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         :param environments: the list of active environments.
         :return: None
         """
-        self.cmbActiveEnviron.do_load_combo(entries=environments)
+        self.cmbActiveEnviron.do_load_combo(entries_lst=environments)
 
     def do_load_environment_dormant(self, environments: List[str]) -> None:
         """Load the dormant environments RAMSTKComboBox().
@@ -195,7 +195,7 @@ class DesignElectricEnvironmentalInputPanel(RAMSTKFixedPanel):
         :param environments: the list of dormant environments.
         :return: None
         """
-        self.cmbDormantEnviron.do_load_combo(entries=environments)
+        self.cmbDormantEnviron.do_load_combo(entries_lst=environments)
 
 
 class DesignElectricStressInputPanel(RAMSTKFixedPanel):

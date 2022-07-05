@@ -635,29 +635,36 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             except KeyError:
                 _quality = []
 
-        self.cmbQuality.do_load_combo(_quality, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _quality,
+        )
 
         try:
             _specification: List[Any] = self._dic_specifications[self.subcategory_id]
         except KeyError:
             _specification = []
 
-        self.cmbSpecification.do_load_combo(_specification, signal="changed")
-
-        self.cmbStyle.do_load_combo([], signal="changed")
-
-        self.cmbConfiguration.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
+        self.cmbSpecification.do_load_combo(
+            _specification,
         )
 
-        _construction: List[Any] = [
-            [_("Slug, All Tantalum")],
-            [_("Foil, Hermetic")],
-            [_("Slug, Hermetic")],
-            [_("Foil, Non-Hermetic")],
-            [_("Slug, Non-Hermetic")],
-        ]
-        self.cmbConstruction.do_load_combo(_construction, signal="changed")
+        self.cmbStyle.do_load_combo(
+            [],
+        )
+
+        self.cmbConfiguration.do_load_combo(
+            [[_("Fixed")], [_("Variable")]],
+        )
+
+        self.cmbConstruction.do_load_combo(
+            [
+                [_("Slug, All Tantalum")],
+                [_("Foil, Hermetic")],
+                [_("Slug, Hermetic")],
+                [_("Foil, Non-Hermetic")],
+                [_("Slug, Non-Hermetic")],
+            ],
+        )
 
         self._do_set_sensitive()
 
@@ -674,7 +681,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -696,7 +702,9 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 _styles = self._dic_styles[self.subcategory_id]
         except KeyError:
             _styles = []
-        self.cmbStyle.do_load_combo(entries=_styles, signal="changed")
+        self.cmbStyle.do_load_combo(
+            entries_lst=_styles,
+        )
 
     def _do_set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.

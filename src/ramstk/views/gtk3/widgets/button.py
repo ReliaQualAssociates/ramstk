@@ -175,17 +175,17 @@ class RAMSTKCheckButton(Gtk.CheckButton, RAMSTKWidget):
         self.get_child().set_property("height-request", self.height)
         self.get_child().set_property("width-request", self.width)
 
-    def do_update(self, value: int, signal: str = "") -> None:
+    def do_update(self, value: int, signal_str: str = "") -> None:
         """Update the RAMSTK CheckButton with a new value.
 
         :param value: the information to update the RAMSTKCheckButton() to
             display.
-        :param str signal: the name of the signal whose handler ID the
+        :param str signal_str: the name of the signal whose handler ID the
             RAMSTKCheckButton() needs to block.
         :return: None
         :rtype: None
         """
-        _handler_id = self.dic_handler_id[signal]
+        _handler_id = self.dic_handler_id[signal_str]
 
         self.handler_block(_handler_id)
         self.set_active(value)
@@ -305,17 +305,17 @@ class RAMSTKSpinButton(Gtk.SpinButton, RAMSTKWidget):
         self.set_snap_to_ticks(_snap_to_ticks)
         self.set_update_policy(Gtk.SpinButtonUpdatePolicy.IF_VALID)
 
-    def do_update(self, value: int, signal: str = "") -> None:
+    def do_update(self, value: int, signal_str: str = "") -> None:
         """Update the RAMSTK Spin Button with a new value.
 
         :param value: the information to update the RAMSTKSpinButton() to
             display.
-        :param str signal: the name of the signal whose handler ID the
+        :param str signal_str: the name of the signal whose handler ID the
             RAMSTKSpinButton() needs to block.
         :return: None
         :rtype: None
         """
-        _handler_id = self.dic_handler_id[signal]
+        _handler_id = self.dic_handler_id[signal_str]
 
         self.handler_block(_handler_id)
         self.set_value(value)

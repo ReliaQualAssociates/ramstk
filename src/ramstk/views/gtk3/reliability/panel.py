@@ -298,7 +298,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
             supports.
         :return: None
         """
-        self.cmbFailureDist.do_load_combo(entries=distributions)
+        self.cmbFailureDist.do_load_combo(distributions)
 
     def do_load_hr_methods(self, methods: List[str]) -> None:
         """Load the hazard rate method RAMSTKComboBox().
@@ -312,7 +312,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
         :param methods: the list of methods for assessing the hazard rate.
         :return: None
         """
-        self.cmbHRMethod.do_load_combo(entries=methods)
+        self.cmbHRMethod.do_load_combo(methods)
 
     def do_load_hr_types(self, hr_types: List[str]) -> None:
         """Load the hazard rate type RAMSTKComboBox().
@@ -328,7 +328,7 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
             for a hardware item.
         :return: None
         """
-        self.cmbHRType.do_load_combo(entries=hr_types)
+        self.cmbHRType.do_load_combo(hr_types)
 
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set certain widgets sensitive or insensitive.
@@ -808,43 +808,33 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         """
         self.txtActiveHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_active"] or 0.0)),
-            signal="changed",
         )
         self.txtActiveHtVar.do_update(
             str(self.fmt.format(attributes["hr_active_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtDormantHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_dormant"] or 0.0)),
-            signal="changed",
         )
         self.txtDormantHtVar.do_update(
             str(self.fmt.format(attributes["hr_dormant_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtSoftwareHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_software"] or 0.0)),
-            signal="changed",
         )
         self.txtLogisticsHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_logistics"] or 0.0)),
-            signal="changed",
         )
         self.txtLogisticsHtVar.do_update(
             str(self.fmt.format(attributes["hr_logistics_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_mission"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionHtVar.do_update(
             str(self.fmt.format(attributes["hr_mission_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtPercentHt.do_update(
             str(self.fmt.format(attributes["hazard_rate_percent"] or 0.0)),
-            signal="changed",
         )
 
     def _do_load_entries_mtbf(self, attributes: Dict[str, Any]) -> None:
@@ -855,19 +845,15 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         """
         self.txtLogisticsMTBF.do_update(
             str(self.fmt.format(attributes["mtbf_logistics"] or 0.0)),
-            signal="changed",
         )
         self.txtLogisticsMTBFVar.do_update(
             str(self.fmt.format(attributes["mtbf_logistics_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionMTBF.do_update(
             str(self.fmt.format(attributes["mtbf_mission"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionMTBFVar.do_update(
             str(self.fmt.format(attributes["mtbf_mission_variance"] or 0.0)),
-            signal="changed",
         )
 
     def _do_load_entries_reliability(self, attributes: Dict[str, Any]) -> None:
@@ -878,19 +864,15 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
         """
         self.txtLogisticsRt.do_update(
             str(self.fmt.format(attributes["reliability_logistics"] or 1.0)),
-            signal="changed",
         )
         self.txtLogisticsRtVar.do_update(
             str(self.fmt.format(attributes["reliability_log_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionRt.do_update(
             str(self.fmt.format(attributes["reliability_mission"] or 1.0)),
-            signal="changed",
         )
         self.txtMissionRtVar.do_update(
             str(self.fmt.format(attributes["reliability_miss_variance"] or 0.0)),
-            signal="changed",
         )
 
     def __do_nudge_widgets(self) -> None:
@@ -1145,19 +1127,15 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         """
         self.txtLogisticsAt.do_update(
             str(self.fmt.format(attributes["availability_logistics"] or 1.0)),
-            signal="changed",
         )
         self.txtLogisticsAtVar.do_update(
             str(self.fmt.format(attributes["avail_log_variance"] or 0.0)),
-            signal="changed",
         )
         self.txtMissionAt.do_update(
             str(self.fmt.format(attributes["availability_mission"] or 1.0)),
-            signal="changed",
         )
         self.txtMissionAtVar.do_update(
             str(self.fmt.format(attributes["avail_mis_variance"] or 0.0)),
-            signal="changed",
         )
 
     def _do_load_entries_hardware(self, attributes: Dict[str, Any]) -> None:
@@ -1171,19 +1149,15 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         """
         self.txtTotalCost.do_update(
             str(locale.currency(attributes["total_cost"])),
-            signal="changed",
         )
         self.txtCostFailure.do_update(
             str(locale.currency(attributes["cost_failure"])),
-            signal="changed",
         )
         self.txtCostHour.do_update(
             str(locale.currency(attributes["cost_hour"])),
-            signal="changed",
         )
         self.txtPartCount.do_update(
             str(f"{attributes['total_part_count']}"),
-            signal="changed",
         )
 
     def __do_nudge_widgets(self) -> None:

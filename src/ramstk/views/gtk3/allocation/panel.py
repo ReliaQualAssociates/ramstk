@@ -188,11 +188,11 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
         """
         self.cmbAllocationGoal.set_sensitive(True)
         self.cmbAllocationGoal.do_update(
-            attributes["goal_measure_id"], signal="changed"
+            attributes["goal_measure_id"],
         )
         self.cmbAllocationMethod.set_sensitive(True)
         self.cmbAllocationMethod.do_update(
-            attributes["allocation_method_id"], signal="changed"
+            attributes["allocation_method_id"],
         )
         self.txtReliabilityGoal.set_sensitive(False)
         self.txtMTBFGoal.set_sensitive(False)
@@ -202,19 +202,16 @@ class AllocationGoalMethodPanel(RAMSTKFixedPanel):
             self.txtReliabilityGoal.set_sensitive(True)
             self.txtReliabilityGoal.do_update(
                 attributes["reliability_goal"],
-                signal="changed",
             )
         elif self._goal_id == 2:  # Expressed as a hazard rate.
             self.txtHazardRateGoal.set_sensitive(True)
             self.txtHazardRateGoal.do_update(
                 attributes["hazard_rate_goal"],
-                signal="changed",
             )
         elif self._goal_id == 3:  # Expressed as an MTBF.
             self.txtMTBFGoal.set_sensitive(True)
             self.txtMTBFGoal.do_update(
                 attributes["mtbf_goal"],
-                signal="changed",
             )
 
     def _on_goal_changed(self, combo: RAMSTKComboBox) -> None:

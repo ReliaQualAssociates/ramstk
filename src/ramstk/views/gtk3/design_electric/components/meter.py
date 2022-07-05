@@ -163,11 +163,13 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _data,
+        )
 
         # Load the meter application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
-            [[_("Ammeter")], [_("Voltmeter")], [_("Other")]], signal="changed"
+            [[_("Ammeter")], [_("Voltmeter")], [_("Other")]],
         )
 
         # Load the meter type RAMSTKComboBox().
@@ -175,7 +177,9 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_types[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbType.do_load_combo(
+            _data,
+        )
 
         self._do_set_sensitive()
 
@@ -192,7 +196,6 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()

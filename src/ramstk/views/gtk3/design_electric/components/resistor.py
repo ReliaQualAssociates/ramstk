@@ -357,7 +357,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -398,7 +397,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbConstruction.do_load_combo(
             _data,
-            signal="changed",
         )
 
     def __do_load_quality_combo(self) -> None:
@@ -422,8 +420,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         except KeyError:
             _quality = [[""]]
         self.cmbQuality.do_load_combo(
-            entries=_quality,
-            signal="changed",
+            _quality,
         )
 
     def __do_load_specification_combo(self) -> None:
@@ -438,7 +435,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = []
         self.cmbSpecification.do_load_combo(
             _data,
-            signal="changed",
         )
 
     def __do_load_style_combo(self) -> None:
@@ -455,8 +451,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         except (KeyError, IndexError):
             _styles = [[""]]
         self.cmbStyle.do_load_combo(
-            entries=_styles,
-            signal="changed",
+            _styles,
         )
 
     def __do_load_type_combo(self) -> None:
@@ -473,8 +468,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         except KeyError:
             _types = []
         self.cmbType.do_load_combo(
-            entries=_types,
-            signal="changed",
+            _types,
         )
 
     def __do_set_construction_combo_sensitive(self) -> None:

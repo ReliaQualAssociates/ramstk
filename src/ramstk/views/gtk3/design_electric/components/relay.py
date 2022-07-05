@@ -367,9 +367,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self.__do_load_quality_combo()
         self.__do_load_type_combo()
 
-        self.cmbLoadType.do_load_combo(self._lst_technology, signal="changed")
-        self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
-        self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
+        self.cmbLoadType.do_load_combo(
+            self._lst_technology,
+        )
+        self.cmbContactForm.do_load_combo(
+            self._lst_contact_form,
+        )
+        self.cmbContactRating.do_load_combo(
+            self._lst_contact_rating,
+        )
 
         self._do_set_sensitive()
 
@@ -386,7 +392,6 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbQuality.set_sensitive(True)
         self.cmbQuality.do_update(
             self._quality_id,
-            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -454,7 +459,9 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_application[_contact_rating_id]
         except KeyError:
             _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
+        self.cmbApplication.do_load_combo(
+            _data,
+        )
 
     def __do_load_construction_combo(self) -> None:
         """Load the selections in the Relay construction RAMSTKComboBox().
@@ -468,7 +475,9 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_construction[_contact_rating_id][_application_id]
         except KeyError:
             _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
+        self.cmbConstruction.do_load_combo(
+            _data,
+        )
 
     def __do_load_quality_combo(self) -> None:
         """Load the selections in the Relay quality RAMSTKComboBox().
@@ -487,7 +496,9 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 _data = self._dic_quality[self.subcategory_id]
             except KeyError:
                 _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            _data,
+        )
 
     def __do_load_type_combo(self) -> None:
         """Load the selections in the Relay type RAMSTKComboBox().
@@ -499,4 +510,6 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             _data = self._dic_pc_types[self.subcategory_id]
         except KeyError:
             _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbType.do_load_combo(
+            _data,
+        )

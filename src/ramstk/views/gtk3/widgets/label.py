@@ -31,7 +31,7 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         RAMSTKWidget.__init__(self)
 
-        self.set_markup("<span>" + text + "</span>")
+        self.set_markup(f"<span>{text}</span>")
         self.show_all()
 
     def get_attribute(self, attribute: str) -> Any:
@@ -69,35 +69,38 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _bold = kwargs.get("bold", True)
-        _justify = kwargs.get("justify", Gtk.Justification.LEFT)
-        _wrap = kwargs.get("wrap", False)
+        _angle_flt = kwargs.get("angle", 0.0)
+        _bold_flag = kwargs.get("bold", True)
+        _justify_int = kwargs.get("justify", Gtk.Justification.LEFT)
+        _selectable_flag = kwargs.get("selectable", False)
+        _wrap_flag = kwargs.get("wrap", False)
 
-        self.set_property("wrap", _wrap)
-        self.set_property("justify", _justify)
-        if _justify == Gtk.Justification.CENTER:
+        self.set_property("justify", _justify_int)
+        self.set_property("selectable", _selectable_flag)
+        self.set_property("wrap", _wrap_flag)
+        if _justify_int == Gtk.Justification.CENTER:
             self.set_xalign(0.5)
-        elif _justify == Gtk.Justification.LEFT:
+        elif _justify_int == Gtk.Justification.LEFT:
             self.set_xalign(0.05)
         else:
             self.set_xalign(0.99)
         self.set_yalign(0.5)
-        if _bold:
-            _text = self.get_property("label")
-            _text = "<b>" + _text + "</b>"
-            self.set_markup(_text)
+        if _bold_flag:
+            _label_str = self.get_property("label")
+            _label_str = f"<b>{_label_str}</b>"
+            self.set_markup(_label_str)
 
     # pylint: disable=unused-argument
-    def do_update(self, text: str, signal: str = "") -> None:
+    def do_update(self, text: str, signal_str: str = "") -> None:
         """Update the text displayed by the label.
 
         :param text: the information to update the RAMSTKLabel() to display.
-        :param signal: the name of the signal whose handler ID the RAMSTKLabel()
+        :param signal_str: the name of the signal whose handler ID the RAMSTKLabel()
             needs to block.  Unused in this method, but required for compatibility.
         :return: None
         :rtype: None
         """
-        self.set_markup("<span>" + text + "</span>")
+        self.set_markup(f"<span>{text}</span>")
 
 
 def do_make_label_group(

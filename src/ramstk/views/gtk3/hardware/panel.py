@@ -1163,8 +1163,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
 
         _categories = [[value] for value in category.values()]
         self.cmbCategory.do_load_combo(
-            entries=_categories,
-            signal="changed",
+            _categories,
         )
 
     def _do_load_subcategories(self, category_id: int) -> None:
@@ -1178,7 +1177,9 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         if category_id > 0:
             _subcategories = SortedDict(self.dicSubcategories[category_id])
             _subcategory = [[_subcategories[_key]] for _key in _subcategories]
-            self.cmbSubcategory.do_load_combo(entries=_subcategory, signal="changed")
+            self.cmbSubcategory.do_load_combo(
+                _subcategory,
+            )
 
     def _do_set_comp_ref_des(self, comp_ref_des: str) -> None:
         """Set the value in the composite reference designator RAMSTKEntry().
@@ -1189,7 +1190,6 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         """
         self.txtCompRefDes.do_update(
             comp_ref_des,
-            signal="changed",
         )
 
     def _request_load_component(self, combo: RAMSTKComboBox) -> None:
@@ -1252,7 +1252,7 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         # Initialize widgets.
         self.cmbCostType: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbManufacturer: RAMSTKComboBox = RAMSTKComboBox(simple=False)
+        self.cmbManufacturer: RAMSTKComboBox = RAMSTKComboBox(simple_flag=False)
         self.txtCAGECode: RAMSTKEntry = RAMSTKEntry()
         self.txtCost: RAMSTKEntry = RAMSTKEntry()
         self.txtNSN: RAMSTKEntry = RAMSTKEntry()
@@ -1401,8 +1401,8 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         """
         _manufacturer = list(manufacturers.values())
         self.cmbManufacturer.do_load_combo(
-            entries=_manufacturer,  # type: ignore
-            simple=False,
+            _manufacturer,  # type: ignore
+            simple_flag=False,
         )
 
     def _do_load_cage_code(self, combo: RAMSTKComboBox) -> None:
@@ -1420,7 +1420,9 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
         except TypeError:
             _cage_code = ""
 
-        self.txtCAGECode.do_update(_cage_code, signal="changed")
+        self.txtCAGECode.do_update(
+            _cage_code,
+        )
         pub.sendMessage(
             f"wvw_editing_{self._tag}",
             node_id=self._record_id,
