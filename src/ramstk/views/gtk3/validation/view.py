@@ -25,6 +25,7 @@ from ramstk.views.gtk3.widgets import (
 
 # RAMSTK Local Imports
 from . import (
+    ValidationRequirementPanel,
     ValidationTaskDescriptionPanel,
     ValidationTaskEffortPanel,
     ValidationTreePanel,
@@ -75,9 +76,9 @@ class ValidationModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/validation.png"
-        )
+        self._dic_icons[
+            "tab"
+        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/validation.png"
 
         # Initialize private list attributes.
         self._lst_mnu_labels = [
@@ -326,5 +327,128 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         # self._pnlProgramEffort.fmt = self.fmt
         _vpaned_right.pack1(self._pnlTaskEffort, True, True)
         # _vpaned_right.pack2(self._pnlProgramEffort, True, True)
+
+        self.show_all()
+
+
+class ValidationMatrixView(RAMSTKWorkView):
+    """Display general Validation attribute data in the RAMSTK Work Book.
+
+    The Validation Work View displays all the general data attributes for the
+    selected Validation. The attributes of a Validation General Data Work View
+    are:
+
+    :cvar dict _dic_keys:
+    :cvar list _lst_labels: the list of label text.
+    :cvar str _tag: the name of the module.
+
+    :ivar list _lst_callbacks: the list of callback methods for the view's
+        toolbar buttons and pop-up menu.  The methods are listed in the order
+        they appear on the toolbar and pop-up menu.
+    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
+        and pop-up menu.  The icons are listed in the order they appear on the
+        toolbar and pop-up menu.
+    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
+        menu.  The labels are listed in the order they appear in the menu.
+    :ivar list _lst_tooltips: the list of tooltips for the view's
+        toolbar buttons and pop-up menu.  The tooltips are listed in the
+        order they appear on the toolbar or pop-up menu.
+    """
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _tag: str = "validation_requirement"
+    _tablabel: str = _("Requirements\nMatrix")
+    _tabtooltip: str = _(
+        "Displays general information for the selected Verification task."
+    )
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None:
+        """Initialize the Validation Work View general data page.
+
+        :param configuration: the RAMSTKUserConfiguration class instance.
+        :param logger: the RAMSTKLogManager class instance.
+        """
+        super().__init__(configuration, logger)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+        self._lst_callbacks = [
+            super().do_request_update,
+            super().do_request_update_all,
+        ]
+        self._lst_icons = ["save", "save-all"]
+        self._lst_mnu_labels = [
+            _("Save"),
+            _("Save All"),
+        ]
+        self._lst_tooltips = [
+            _("Save changes to the selected Verification task."),
+            _("Save changes to all Verification tasks."),
+        ]
+
+        # Initialize private scalar attributes.
+        self._pnlRequirementMatrix: RAMSTKPanel = ValidationRequirementPanel()
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        self.__make_ui()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_record_id, "selected_validation")
+
+    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+        """Set the Verification task record ID.
+
+        :param attributes: the attribute dict for the selected Validation task.
+        :return: None
+        :rtype: None
+        """
+        self.dic_pkeys["revision_id"] = attributes["revision_id"]
+        self.dic_pkeys["validation_id"] = attributes["validation_id"]
+        self.dic_pkeys["record_id"] = attributes["validation_id"]
+
+    def __do_load_lists(self) -> None:
+        """Load panel lists and dictionaries.
+
+        :return: None
+        :rtype: None
+        """
+        self._pnlRequirementMatrix.grdMatrixView.icons_dic["none"] = self._dic_icons[
+            "none"
+        ]
+        self._pnlRequirementMatrix.grdMatrixView.icons_dic["partial"] = self._dic_icons[
+            "partial"
+        ]
+        self._pnlRequirementMatrix.grdMatrixView.icons_dic[
+            "complete"
+        ] = self._dic_icons["complete"]
+
+    def __make_ui(self) -> None:
+        """Build the user interface for the Validation General Data tab.
+
+        :return: None
+        :rtype: None
+        """
+        super().do_make_layout()
+
+        self.__do_load_lists()
+        self.pack_start(self._pnlRequirementMatrix, True, True, 1)
 
         self.show_all()

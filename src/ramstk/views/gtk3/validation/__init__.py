@@ -9,8 +9,9 @@
 
 # RAMSTK Local Imports
 from .panel import (
+    ValidationRequirementPanel,
     ValidationTaskDescriptionPanel,
     ValidationTaskEffortPanel,
     ValidationTreePanel,
 )
-from .view import ValidationGeneralDataView, ValidationModuleView
+from .view import ValidationGeneralDataView, ValidationMatrixView, ValidationModuleView

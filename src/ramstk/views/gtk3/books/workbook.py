@@ -6,7 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Work Book."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Dict, List
 
 # Third Party Imports
@@ -35,7 +37,7 @@ from ramstk.views.gtk3.revision import RevisionWorkView
 from ramstk.views.gtk3.similar_item import SimilarItemWorkView
 from ramstk.views.gtk3.stakeholder import StakeholderWorkView
 from ramstk.views.gtk3.usage_profile import UsageProfileWorkView
-from ramstk.views.gtk3.validation import ValidationGeneralDataView
+from ramstk.views.gtk3.validation import ValidationGeneralDataView, ValidationMatrixView
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
 
 
@@ -89,6 +91,7 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
             "validation": [
                 ValidationGeneralDataView(configuration, logger),
                 ProgramStatusWorkView(configuration, logger),
+                ValidationMatrixView(configuration, logger),
             ],
         }
 
@@ -110,8 +113,6 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         for _page in self.get_children():
             self.remove(_page)
 
-        try:
+        with contextlib.suppress(KeyError):
             for _workspace in self.dic_work_views[module]:
                 self.insert_page(_workspace, _workspace.hbx_tab_label, -1)
-        except KeyError:
-            pass

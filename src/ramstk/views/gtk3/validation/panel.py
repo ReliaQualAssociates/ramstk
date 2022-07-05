@@ -6,7 +6,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """GTK3 Validation Panels."""
 
+
 # Standard Library Imports
+import contextlib
 from datetime import date
 from typing import Dict, List, Tuple, Union
 
@@ -22,6 +24,7 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKDateSelect,
     RAMSTKEntry,
     RAMSTKFixedPanel,
+    RAMSTKMatrixPanel,
     RAMSTKSpinButton,
     RAMSTKTextView,
     RAMSTKTreePanel,
@@ -1049,7 +1052,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         for _index, _key in enumerate(measurement_unit):
             self._dic_units[_index + 1] = measurement_unit[_key][1]
             _units.append([measurement_unit[_key][1]])
-        self.cmbMeasurementUnit.do_load_combo(entries=_units)
+        self.cmbMeasurementUnit.do_load_combo(_units)
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]
@@ -1076,7 +1079,7 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
                 validation_type[_key][1],
             ]
             _task_types.append([validation_type[_key][1]])
-        self.cmbTaskType.do_load_combo(entries=_task_types)
+        self.cmbTaskType.do_load_combo(_task_types)
 
     def _do_make_task_code(self, combo: RAMSTKComboBox) -> None:
         """Create the validation task code.
@@ -1090,21 +1093,21 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        try:
+        with contextlib.suppress(AttributeError, KeyError):
             _index = combo.get_active()
 
             _task_type = self._dic_task_types[_index][0]
             _task_code = f"{_task_type}-{self._record_id:04d}"
 
-            self.txtCode.do_update(str(_task_code), signal="changed")
+            self.txtCode.do_update(
+                str(_task_code),
+            )
 
             pub.sendMessage(
                 "wvw_editing_validation",
                 node_id=self._record_id,
                 package={"name": _task_code},
             )
-        except (AttributeError, KeyError):
-            pass
 
     @staticmethod
     def _do_select_date(
@@ -1395,7 +1398,9 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        self.txtCode.do_update(str(task_code), signal="changed")
+        self.txtCode.do_update(
+            str(task_code),
+        )
 
     def _do_make_task_code(self, task_type: str) -> str:
         """Create the validation task code.
@@ -1486,3 +1491,85 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         _fixed.move(self.txtMeanCostLL, _x_pos, _y_pos)
         _fixed.move(self.txtMeanCost, _x_pos + 175, _y_pos)
         _fixed.move(self.txtMeanCostUL, _x_pos + 350, _y_pos)
+
+
+class ValidationRequirementPanel(RAMSTKMatrixPanel):
+    """Panel to display effort data about the selected Validation task."""
+
+    # Define private dictionary class attributes.
+
+    # Define private list class attributes.
+
+    # Define private scalar class attributes.
+    _record_field = "validation_id"
+    _select_msg = "selected_validation"
+    _tag = "validation_requirement"
+    _title = _("Verification Task Effort")
+
+    # Define public dictionary class attributes.
+
+    # Define public list class attributes.
+
+    # Define public scalar class attributes.
+
+    def __init__(self) -> None:
+        """Initialize an instance of the Validation-Requirement Matrix panel."""
+        super().__init__()
+
+        # Initialize widgets.
+
+        # Initialize private dict instance attributes.
+
+        # Initialize private list instance attributes.
+
+        # Initialize private scalar instance attributes.
+
+        # Initialize public dict instance attributes.
+
+        # Initialize public list instance attributes.
+
+        # Initialize public scalar instance attributes.
+
+        # super().do_set_properties()
+        super().do_make_panel()
+        # super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        pub.subscribe(self._do_set_column_headers, "succeed_retrieve_all_requirement")
+        pub.subscribe(self._do_set_row_headers, "succeed_retrieve_all_validation")
+
+    def _do_set_column_headers(self, tree: treelib.Tree) -> None:
+        """Set the column headings for the RAMSTKMatrixView().
+
+        :param tree: the Requirement tree.
+        :return: None
+        :rtype: None
+        """
+        _column_name_lst = [
+            (
+                _node_obj.data["requirement"].requirement_code,
+                _node_obj.data["requirement"].description,
+                _node_obj.data["requirement"].requirement_id,
+            )
+            for _node_obj in tree.all_nodes()[1:]
+        ]
+
+        self.grdMatrixView.do_set_column_headings(_column_name_lst)
+
+    def _do_set_row_headers(self, tree: treelib.Tree) -> None:
+        """Set the row headings for the RAMSTKMatrixView().
+
+        :param tree: the Validation & Verification task tree.
+        :return: None
+        :rtype: None
+        """
+        _row_name_lst = [
+            (
+                _node_obj.data["validation"].name,
+                _node_obj.data["validation"].description,
+                _node_obj.data["validation"].validation_id,
+            )
+            for _node_obj in tree.all_nodes()[1:]
+        ]
+
+        self.grdMatrixView.do_set_row_headings(_row_name_lst)

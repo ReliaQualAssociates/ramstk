@@ -143,6 +143,7 @@ jobs:
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
           python3 -m pip install -U urllib3 poetry importlib_metadata
+          poetry shell
           make depends
           make install
           make coverage
