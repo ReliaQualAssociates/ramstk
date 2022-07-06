@@ -9,7 +9,7 @@
 
 # Standard Library Imports
 from datetime import datetime
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import Gtk, Pango
@@ -62,28 +62,31 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
         """
         super().do_set_properties(**kwargs)
 
-        _bold = kwargs.get("bold", False)
-        _editable = kwargs.get("editable", True)
+        _bold_flag = kwargs.get("bold", False)
+        _editable_flag = kwargs.get("editable", True)
 
-        self.set_property("editable", _editable)
+        self.set_property("editable", _editable_flag)
 
-        if _bold:
-            self.modify_font(Pango.FontDescription("bold"))
+        if _bold_flag:
+            self.override_font(Pango.FontDescription("bold"))
 
-    def do_update(self, value: Any, signal_str: str = "changed") -> None:
+    def do_update(
+        self,
+        value_obj: Union[bool, float, int, str],
+        signal_str: str = "changed",
+    ) -> None:
         """Update the RAMSTK Entry with a new value.
 
-        :param value: the information to update the RAMSTKEntry() to
-            display.
-        :keyword signal_str: the name of the signal whose handler ID the
-            RAMSTKEntry() needs to block.
+        :param value_obj: the information to update the RAMSTKEntry() to display.
+        :param signal_str: the name of the signal whose handler ID the RAMSTKEntry()
+            needs to block.
         :return: None
         :rtype: None
         """
         try:
-            _value = datetime.strftime(value, "%Y-%m-%d")
+            _value_str = datetime.strftime(value_obj, "%Y-%m-%d")  # type: ignore
         except TypeError:
-            _value = str(value)
+            _value_str = str(value_obj)
 
         # Sometimes there is no handler ID for the RAMSTKEntry().  This
         # usually happens when the widget is being used to display results
@@ -92,10 +95,10 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
             _handler_id = self.dic_handler_id[signal_str]
 
             self.handler_block(_handler_id)
-            self.set_text(_value)
+            self.set_text(_value_str)
             self.handler_unblock(_handler_id)
         except KeyError:
-            self.set_text(_value)
+            self.set_text(_value_str)
 
 
 class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
@@ -105,47 +108,53 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
     _default_height = 100
     _default_width = 200
 
-    def __init__(self, txvbuffer: Gtk.TextBuffer) -> None:
+    def __init__(self, buffer_obj: Gtk.TextBuffer) -> None:
         """Create RAMSTK TextView() widgets.
 
         Returns a Gtk.TextView() embedded in a Gtk.ScrolledWindow().
 
-        :param txvbuffer: the Gtk.TextBuffer() to associate with the
-            RAMSTKTextView().
+        :param buffer_obj: the Gtk.TextBuffer() to associate with the RAMSTKTextView().
         :return: None
         :rtype: None
         """
         RAMSTKWidget.__init__(self)
 
-        self.set_buffer(txvbuffer)
+        self.set_buffer(buffer_obj)
         self.set_wrap_mode(Gtk.WrapMode.WORD)
 
         self.scrollwindow = Gtk.ScrolledWindow()
         self.scrollwindow.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.scrollwindow.add_with_viewport(self)
 
-        self.tag_bold = txvbuffer.create_tag("bold", weight=Pango.Weight.BOLD)
+        self.tag_bold = buffer_obj.create_tag("bold", weight=Pango.Weight.BOLD)
 
     # pylint: disable=arguments-differ
     def connect(
         self,
-        signal: str,
-        callback: Callable,
-        index: int,
-        message: str,
+        signal_str: str,
+        callback_obj: Callable,
+        position_idx: int,
+        message_str: str,
     ) -> int:
         """Connect textview's buffer to a callback method or function.
 
-        :param signal:
-        :param callback:
-        :param index:
-        :param message:
+        :param signal_str: the name of the signal whose handler ID the Gtk.TextBuffer()
+            needs to block.
+        :param callback_obj: the function or method to handle RAMSTKTextView() edits.
+        :param position_idx: the index position in the view using the RAMSTKTextView().
+        :param message_str: the pubsub message the RAMSTKTextView() responds to.
         """
-        _buffer = self.do_get_buffer()
-        return _buffer.connect(signal, callback, index, message, self)
+        _buffer_obj = self.do_get_buffer()
+        return _buffer_obj.connect(
+            signal_str,
+            callback_obj,
+            position_idx,
+            message_str,
+            self,
+        )
 
     def do_get_buffer(self) -> Gtk.TextBuffer:
-        """Return the Gtk.TextBuffer() emedded in the RAMSTK TextView.
+        """Return the Gtk.TextBuffer() emedded in the RAMSTKTextView().
 
         :return: buffer; the embedded Gtk.TextBuffer()
         :rtype: :class:`Gtk.TextBuffer`
@@ -158,9 +167,10 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         :return: text; the text in the Gtk.TextBuffer().
         :rtype: str
         """
-        _buffer = self.do_get_buffer()
+        _buffer_obj = self.do_get_buffer()
+        _start_obj, _end_obj = _buffer_obj.get_bounds()
 
-        return _buffer.get_text(*_buffer.get_bounds(), True)
+        return _buffer_obj.get_text(_start_obj, _end_obj, True)
 
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set the properties of the RAMSTK TextView.
@@ -180,17 +190,20 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         self.scrollwindow.set_property("width-request", self.width)
         self.scrollwindow.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
 
-    def do_update(self, value: str, signal_str: str = "changed") -> None:
+    def do_update(
+        self,
+        value_str: str,
+        signal_str: str = "changed",
+    ) -> None:
         """Update the RAMSTK TextView with a new value.
 
-        :param value: the information to update the RAMSTKTextView() to
-            display.
-        :keyword signal_str: the name of the signal whose handler ID the
-            RAMSTKTextView() needs to block.
+        :param value_str: the information to update the RAMSTKTextView() to display.
+        :param signal_str: the name of the signal whose handler ID the RAMSTKTextView()
+            needs to block.
         :return: None
         :rtype: None
         """
-        _buffer = self.do_get_buffer()
+        _buffer_obj = self.do_get_buffer()
 
         # Sometimes there is no handler ID for the RAMSTKTextView().  This
         # usually happens when the widget is being used to display results
@@ -198,8 +211,8 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
         try:
             _handler_id = self.dic_handler_id[signal_str]
 
-            _buffer.handler_block(_handler_id)
-            _buffer.set_text(value)
-            _buffer.handler_unblock(_handler_id)
+            _buffer_obj.handler_block(_handler_id)
+            _buffer_obj.set_text(value_str)
+            _buffer_obj.handler_unblock(_handler_id)
         except KeyError:
-            _buffer.set_text(value)
+            _buffer_obj.set_text(value_str)
