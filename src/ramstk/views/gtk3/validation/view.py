@@ -7,7 +7,7 @@
 """GTK3 Validation Views."""
 
 # Standard Library Imports
-from typing import Any, Dict, Union
+from typing import Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -135,9 +135,10 @@ class RAMSTKValidationModuleView(RAMSTKModuleView):
 
         _dialog_obj.do_destroy()
 
+    # pylint: disable=invalid-name
     def _do_set_record_id(
         self,
-        attributes: Dict[str, Any],  # pylint: disable=invalid-name
+        attributes: Dict[str, Union[bool, float, int, str]],
     ) -> None:
         """Set the Verification task's record ID.
 
@@ -408,7 +409,9 @@ class RAMSTKValidationMatrixView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlRequirementMatrix: RAMSTKPanel = RAMSTKValidationRequirementPanel()
+        self._pnlRequirementMatrix: RAMSTKValidationRequirementPanel = (
+            RAMSTKValidationRequirementPanel()
+        )
 
         # Initialize public dictionary attributes.
 

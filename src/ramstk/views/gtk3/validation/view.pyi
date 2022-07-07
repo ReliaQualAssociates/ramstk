@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Callable, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
@@ -12,40 +12,74 @@ from ramstk.views.gtk3.widgets import RAMSTKPanel as RAMSTKPanel
 from ramstk.views.gtk3.widgets import RAMSTKWorkView as RAMSTKWorkView
 
 # RAMSTK Local Imports
-from . import ValidationTaskDescriptionPanel as ValidationTaskDescriptionPanel
-from . import ValidationTaskEffortPanel as ValidationTaskEffortPanel
-from . import ValidationTreePanel as ValidationTreePanel
+from . import RAMSTKValidationRequirementPanel as RAMSTKValidationRequirementPanel
+from . import (
+    RAMSTKValidationTaskDescriptionPanel as RAMSTKValidationTaskDescriptionPanel,
+)
+from . import RAMSTKValidationTaskEffortPanel as RAMSTKValidationTaskEffortPanel
+from . import RAMSTKValidationTreePanel as RAMSTKValidationTreePanel
 
-class ValidationModuleView(RAMSTKModuleView):
+class RAMSTKValidationModuleView(RAMSTKModuleView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlPanel: Any
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlPanel: RAMSTKValidationTreePanel
+
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def do_request_delete(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    _record_id: int
+
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Union[bool, int, float, str]],
+    ) -> None: ...
     def __make_ui(self) -> None: ...
 
-class ValidationGeneralDataView(RAMSTKWorkView):
+class RAMSTKValidationGeneralDataView(RAMSTKWorkView):
     _tag: str
     _tablabel: str
     _tabtooltip: str
-    _lst_callbacks: Any
-    _lst_icons: Any
-    _lst_mnu_labels: Any
-    _lst_tooltips: Any
-    _pnlTaskDescription: Any
-    _pnlTaskEffort: Any
+    _lst_callbacks: List[Callable]
+    _lst_icons: List[str]
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlTaskDescription: RAMSTKValidationTaskDescriptionPanel
+    _pnlTaskEffort: RAMSTKValidationTaskEffortPanel
+
     def __init__(
         self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
     ) -> None: ...
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None: ...
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None: ...
-    _record_id: Any
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None: ...
+    _record_id: int
+
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Union[bool, float, int, str]],
+    ) -> None: ...
+    def __make_ui(self) -> None: ...
+
+class RAMSTKValidationMatrixView(RAMSTKWorkView):
+    _tag: str
+    _tablabel: str
+    _tabtooltip: str
+    _record_id: int
+    _lst_callbacks: List[Callable]
+    _lst_icons: List[str]
+    _lst_mnu_labels: List[str]
+    _lst_tooltips: List[str]
+    _pnlRequirementMatrix: RAMSTKValidationRequirementPanel
+
+    def __init__(
+        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+    ) -> None: ...
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Union[bool, float, int, str]],
+    ) -> None: ...
+    def __do_load_lists(self) -> None: ...
     def __make_ui(self) -> None: ...
