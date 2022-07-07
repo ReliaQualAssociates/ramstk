@@ -289,7 +289,7 @@ ignore = [
 
 [tool.autopep8]
 count = true
-exclude = ".git, .tox, *.pyc, *.pyo, *.xml, *.md, *.toml, *.yaml, *.lock, *.cfg, Makefile, build, dist, *.egg-info, config, docs, locale, tests, tools"
+exclude = ".git, .tox, *.pyc, *.pyi, *.pyo, *.xml, *.md, *.toml, *.yaml, *.yml, *.lock, *.cfg, Makefile, build, dist, *.egg-info, config, docs, locale, tests, tools"
 format = "pylint"
 ignore = ["C326", "C330", "E121", "E123", "E126", "E133", "E242", "E265",
 	"E402", "W503", "W504"]

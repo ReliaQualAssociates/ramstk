@@ -54,6 +54,7 @@ jobs:
           use-isort: true
           use-docformatter: true
           use-pycodestyle: false
+          use-autopep8: false
           use-pydocstyle: false
           use-mypy: false
           use-pylint: false
@@ -68,6 +69,7 @@ jobs:
           extra-isort-options: "--settings-file ./pyproject.toml"
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""
+          extra-autopep8-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: ""
           extra-pylint-options: ""
@@ -86,7 +88,8 @@ jobs:
           use-yapf: false
           use-isort: false
           use-docformatter: false
-          use-pycodestyle: true
+          use-pycodestyle: false
+          use-autopep8: true
           use-pydocstyle: true
           use-mypy: false
           use-pylint: false
@@ -100,7 +103,8 @@ jobs:
           extra-yapf-options: ""
           extra-isort-options: ""
           extra-docformatter-options: ""
-          extra-pycodestyle-options: "--config=./setup.cfg --count"
+          extra-pycodestyle-options: ""
+          extra-autopep8-options: "--diff"
           extra-pydocstyle-options: "--count"
           extra-mypy-options: ""
           extra-pylint-options: ""
@@ -119,6 +123,7 @@ jobs:
           use-isort: false
           use-docformatter: false
           use-pycodestyle: false
+          use-autopep8: false
           use-pydocstyle: false
           use-mypy: true
           use-pylint: false
@@ -133,6 +138,7 @@ jobs:
           extra-isort-options: ""
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""
+          extra-autopep8-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: "--config-file ./pyproject.toml"
           extra-pylint-options: ""
@@ -152,6 +158,7 @@ jobs:
           use-isort: false
           use-docformatter: false
           use-pycodestyle: false
+          use-autopep8: false
           use-pydocstyle: false
           use-mypy: false
           use-pylint: true
@@ -166,6 +173,7 @@ jobs:
           extra-isort-options: ""
           extra-docformatter-options: ""
           extra-pycodestyle-options: ""
+          extra-autopep8-options: ""
           extra-pydocstyle-options: ""
           extra-mypy-options: ""
           extra-pylint-options: "-j0 --rcfile=./pyproject.toml"

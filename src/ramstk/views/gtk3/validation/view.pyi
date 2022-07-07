@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Callable, Dict, List
+from typing import Callable, Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration as RAMSTKUserConfiguration
