@@ -208,11 +208,9 @@ disable = ['duplicate-code']
 
 [tool.pylint.messages_control]
 disable = [
-	'invalid-name',
 	'line-too-long',
 	'too-many-instance-attributes',
 	'too-few-public-methods',
-	'relative-import',
 	'fixme',
 	'anomalous-unicode-escape-in-string',
 	'import-error',

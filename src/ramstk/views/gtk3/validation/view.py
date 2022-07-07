@@ -7,7 +7,7 @@
 """GTK3 Validation Views."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -25,14 +25,14 @@ from ramstk.views.gtk3.widgets import (
 
 # RAMSTK Local Imports
 from . import (
-    ValidationRequirementPanel,
-    ValidationTaskDescriptionPanel,
-    ValidationTaskEffortPanel,
-    ValidationTreePanel,
+    RAMSTKValidationRequirementPanel,
+    RAMSTKValidationTaskDescriptionPanel,
+    RAMSTKValidationTaskEffortPanel,
+    RAMSTKValidationTreePanel,
 )
 
 
-class ValidationModuleView(RAMSTKModuleView):
+class RAMSTKValidationModuleView(RAMSTKModuleView):
     """Display Validation attribute data in the RAMSTK Module Book.
 
     The Validation Module View displays all the Validations associated with the
@@ -95,7 +95,7 @@ class ValidationModuleView(RAMSTKModuleView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlPanel = ValidationTreePanel()
+        self._pnlPanel = RAMSTKValidationTreePanel()
 
         # Initialize public dictionary attributes.
 
@@ -108,36 +108,40 @@ class ValidationModuleView(RAMSTKModuleView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
 
-    def do_request_delete(self, __button: Gtk.ToolButton) -> None:
+    def do_request_delete(self, __button_obj: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKValidation table.
 
-        :param __button: the Gtk.ToolButton() that called this method.
+        :param __button_obj: the Gtk.ToolButton() that called this method.
         :return: None
         """
-        _parent = self.get_parent().get_parent().get_parent().get_parent().get_parent()
-        _prompt = _(
+        _parent_obj = (
+            self.get_parent().get_parent().get_parent().get_parent().get_parent()
+        )
+        _prompt_str = _(
             "You are about to delete Validation {0:d} and all "
             "data associated with it.  Is this really what "
             "you want to do?"
         ).format(self.dic_pkeys["record_id"])
-        _dialog: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent)
-        _dialog.do_set_message(_prompt)
-        _dialog.do_set_message_type("question")
+        _dialog_obj: RAMSTKMessageDialog = RAMSTKMessageDialog(parent=_parent_obj)
+        _dialog_obj.do_set_message(_prompt_str)
+        _dialog_obj.do_set_message_type("question")
 
-        if _dialog.do_run() == Gtk.ResponseType.YES:
+        if _dialog_obj.do_run() == Gtk.ResponseType.YES:
             super().do_set_cursor_busy()
             pub.sendMessage(
                 "request_delete_validation",
                 node_id=self.dic_pkeys["record_id"],
             )
 
-        _dialog.do_destroy()
+        _dialog_obj.do_destroy()
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Any],  # pylint: disable=invalid-name
+    ) -> None:
         """Set the Verification task's record ID.
 
-        :param attributes: the attribute dict for the selected Verification
-            task.
+        :param attributes: the attribute dict for the selected Verification task.
         :return: None
         :rtype: None
         """
@@ -166,7 +170,7 @@ class ValidationModuleView(RAMSTKModuleView):
         )
 
 
-class ValidationGeneralDataView(RAMSTKWorkView):
+class RAMSTKValidationGeneralDataView(RAMSTKWorkView):
     """Display general Validation attribute data in the RAMSTK Work Book.
 
     The Validation Work View displays all the general data attributes for the
@@ -247,8 +251,8 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlTaskDescription: RAMSTKPanel = ValidationTaskDescriptionPanel()
-        self._pnlTaskEffort: RAMSTKPanel = ValidationTaskEffortPanel()
+        self._pnlTaskDescription: RAMSTKPanel = RAMSTKValidationTaskDescriptionPanel()
+        self._pnlTaskEffort: RAMSTKPanel = RAMSTKValidationTaskEffortPanel()
         # self._pnlProgramEffort: RAMSTKPanel = ProgramEffortPanel()
 
         # Initialize public dictionary attributes.
@@ -267,10 +271,10 @@ class ValidationGeneralDataView(RAMSTKWorkView):
 
         pub.subscribe(self._do_set_record_id, "selected_validation")
 
-    def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
+    def _do_request_calculate(self, __button_obj: Gtk.ToolButton) -> None:
         """Request to calculate the selected validation task.
 
-        :param __button: the Gtk.ToolButton() that called this method.
+        :param __button_obj: the Gtk.ToolButton() that called this method.
         :return: None
         :rtype: None
         """
@@ -280,10 +284,10 @@ class ValidationGeneralDataView(RAMSTKWorkView):
             node_id=self.dic_pkeys["record_id"],
         )
 
-    def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
+    def _do_request_calculate_all(self, __button_obj: Gtk.ToolButton) -> None:
         """Request to calculate program cost and time.
 
-        :param __button: the Gtk.ToolButton() that called this method.
+        :param __button_obj: the Gtk.ToolButton() that called this method.
         :return: None
         :rtype: None
         """
@@ -292,7 +296,11 @@ class ValidationGeneralDataView(RAMSTKWorkView):
             "request_calculate_all_validation_tasks",
         )
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    # pylint: disable=invalid-name
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Union[bool, float, int, str]],
+    ) -> None:
         """Set the Verification task record ID.
 
         :param attributes: the attribute dict for the selected Validation task.
@@ -309,7 +317,7 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         :return: None
         :rtype: None
         """
-        _hpaned, _vpaned_right = super().do_make_layout_lrr()
+        _hpaned_obj, _vpaned_right_obj = super().do_make_layout_lrr()
 
         self._pnlTaskDescription.fmt = self.fmt
         self._pnlTaskDescription.do_load_measurement_units(
@@ -318,20 +326,20 @@ class ValidationGeneralDataView(RAMSTKWorkView):
         self._pnlTaskDescription.do_load_validation_types(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
-        _hpaned.pack1(self._pnlTaskDescription, True, True)
+        _hpaned_obj.pack1(self._pnlTaskDescription, True, True)
 
         self._pnlTaskEffort.fmt = self.fmt
         self._pnlTaskEffort.do_load_validation_types(
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
         # self._pnlProgramEffort.fmt = self.fmt
-        _vpaned_right.pack1(self._pnlTaskEffort, True, True)
-        # _vpaned_right.pack2(self._pnlProgramEffort, True, True)
+        _vpaned_right_obj.pack1(self._pnlTaskEffort, True, True)
+        # _vpaned_right_obj.pack2(self._pnlProgramEffort, True, True)
 
         self.show_all()
 
 
-class ValidationMatrixView(RAMSTKWorkView):
+class RAMSTKValidationMatrixView(RAMSTKWorkView):
     """Display general Validation attribute data in the RAMSTK Work Book.
 
     The Validation Work View displays all the general data attributes for the
@@ -400,7 +408,7 @@ class ValidationMatrixView(RAMSTKWorkView):
         ]
 
         # Initialize private scalar attributes.
-        self._pnlRequirementMatrix: RAMSTKPanel = ValidationRequirementPanel()
+        self._pnlRequirementMatrix: RAMSTKPanel = RAMSTKValidationRequirementPanel()
 
         # Initialize public dictionary attributes.
 
@@ -413,7 +421,11 @@ class ValidationMatrixView(RAMSTKWorkView):
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_validation")
 
-    def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
+    # pylint: disable=invalid-name
+    def _do_set_record_id(
+        self,
+        attributes: Dict[str, Union[bool, float, int, str]],
+    ) -> None:
         """Set the Verification task record ID.
 
         :param attributes: the attribute dict for the selected Validation task.

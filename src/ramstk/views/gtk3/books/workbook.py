@@ -37,7 +37,10 @@ from ramstk.views.gtk3.revision import RevisionWorkView
 from ramstk.views.gtk3.similar_item import SimilarItemWorkView
 from ramstk.views.gtk3.stakeholder import StakeholderWorkView
 from ramstk.views.gtk3.usage_profile import UsageProfileWorkView
-from ramstk.views.gtk3.validation import ValidationGeneralDataView, ValidationMatrixView
+from ramstk.views.gtk3.validation import (
+    RAMSTKValidationGeneralDataView,
+    RAMSTKValidationMatrixView,
+)
 from ramstk.views.gtk3.widgets import RAMSTKBaseBook, RAMSTKBaseView
 
 
@@ -89,9 +92,9 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
                 PoFWorkView(configuration, logger),
             ],
             "validation": [
-                ValidationGeneralDataView(configuration, logger),
+                RAMSTKValidationGeneralDataView(configuration, logger),
                 ProgramStatusWorkView(configuration, logger),
-                ValidationMatrixView(configuration, logger),
+                RAMSTKValidationMatrixView(configuration, logger),
             ],
         }
 

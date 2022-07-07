@@ -28,10 +28,11 @@ from ramstk.views.gtk3.widgets import (
     RAMSTKSpinButton,
     RAMSTKTextView,
     RAMSTKTreePanel,
+    RAMSTKWidget,
 )
 
 
-class ValidationTreePanel(RAMSTKTreePanel):
+class RAMSTKValidationTreePanel(RAMSTKTreePanel):
     """Panel to display flat list of validation tasks."""
 
     # Define private dictionary class attributes.
@@ -59,8 +60,8 @@ class ValidationTreePanel(RAMSTKTreePanel):
         }
 
         # Initialize private list class attributes.
-        self._lst_measurement_units: List[str] = []
-        self._lst_verification_types: List[str] = []
+        self._measurement_units: List[str] = []
+        self._verification_types: List[str] = []
 
         # Initialize private scalar class attributes.
 
@@ -560,101 +561,110 @@ class ValidationTreePanel(RAMSTKTreePanel):
         )
 
     def do_load_measurement_units(
-        self, measurement_unit: Dict[int, Tuple[str, str]]
+        self, measurement_unit_dic: Dict[int, Tuple[str, str]]
     ) -> None:
         """Load the verification task measurement unit list.
 
-        :param measurement_unit: the dict containing the units of measure.
+        :param measurement_unit_dic: the dict containing the units of measure.
         :return: None
         """
-        self._lst_measurement_units = [""]
+        self._measurement_units = [""]
 
-        _cell = self.tvwTreeView.get_column(
+        _cell_obj = self.tvwTreeView.get_column(
             self.tvwTreeView.position["measurement_unit"]
         ).get_cells()[0]
-        _cell.set_property("has-entry", False)
-        _cellmodel = _cell.get_property("model")
-        _cellmodel.clear()
-        _cellmodel.append([""])
+        _cell_obj.set_property("has-entry", False)
+        _cellmodel_obj = _cell_obj.get_property("model")
+        _cellmodel_obj.clear()
+        _cellmodel_obj.append([""])
 
         # pylint: disable=unused-variable
-        for _key, value in measurement_unit.items():
-            self._lst_measurement_units.append(measurement_unit[_key][1])
-            _cellmodel.append([value[1]])
+        for _unit_idx, _value_tpl in measurement_unit_dic.items():
+            self._measurement_units.append(measurement_unit_dic[_unit_idx][1])
+            _cellmodel_obj.append([_value_tpl[1]])
 
     def do_load_verification_types(
-        self, verification_type: Dict[int, Tuple[str, str]]
+        self, verification_type_dic: Dict[int, Tuple[str, str]]
     ) -> None:
         """Load the verification task type list.
 
-        :param verification_type: the dict containing the verification task
-            types.
+        :param verification_type_dic: the dict containing the verification task types.
         :return: None
         """
-        self._lst_verification_types = [""]
+        self._verification_types = [""]
 
-        _cell = self.tvwTreeView.get_column(
+        _cell_obj = self.tvwTreeView.get_column(
             self.tvwTreeView.position["task_type"]
         ).get_cells()[0]
-        _cell.set_property("has-entry", False)
-        _cellmodel = _cell.get_property("model")
-        _cellmodel.clear()
-        _cellmodel.append([""])
+        _cell_obj.set_property("has-entry", False)
+        _cellmodel_obj = _cell_obj.get_property("model")
+        _cellmodel_obj.clear()
+        _cellmodel_obj.append([""])
 
         # pylint: disable=unused-variable
-        for _key, value in verification_type.items():
-            self._lst_verification_types.append(verification_type[_key][1])
-            _cellmodel.append([value[1]])
+        for _type_idx, _value_tpl in verification_type_dic.items():
+            self._verification_types.append(verification_type_dic[_type_idx][1])
+            _cellmodel_obj.append([_value_tpl[1]])
 
-    def _on_module_switch(self, module: str = "") -> None:
+    def _on_module_switch(
+        self,
+        module: str = "",  # pylint: disable=invalid-name
+    ) -> None:
         """Respond to change in selected Module View module (tab).
 
-        :param module: the name of the module that was just selected.
+        :param str module: the name of the module that was just selected.
         :return: None
         """
-        _model, _row = self.tvwTreeView.selection.get_selected()
+        _model_obj, _row_obj = self.tvwTreeView.selection.get_selected()
 
-        if module == self._tag and _row is not None:
-            _code = _model.get_value(_row, self.tvwTreeView.position["validation_id"])
-            _name = _model.get_value(_row, self.tvwTreeView.position["name"])
-            _title = _(f"Analyzing Validation Task {_code}: {_name}")
+        if module == self._tag and _row_obj is not None:
+            _code_str = _model_obj.get_value(
+                _row_obj, self.tvwTreeView.position["validation_id"]
+            )
+            _name_str = _model_obj.get_value(
+                _row_obj, self.tvwTreeView.position["name"]
+            )
+            _title_str = _(f"Analyzing Validation Task {_code_str}: {_name_str}")
 
-            pub.sendMessage("request_set_title", title=_title)
+            pub.sendMessage("request_set_title", title=_title_str)
 
-    def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
+    def _on_row_change(self, selection_obj: Gtk.TreeSelection) -> None:
         """Handle events for the Validation Module View RAMSTKTreeView().
 
         This method is called whenever a Validation Module View
         RAMSTKTreeView() row is activated/changed.
 
-        :param selection: the Validation class Gtk.TreeSelection().
+        :param selection_obj: the Validation class Gtk.TreeSelection().
         :return: None
         """
-        _attributes = super().on_row_change(selection)
+        _attribute_dic = super().on_row_change(selection_obj)
 
-        if _attributes:
-            self._record_id = _attributes["validation_id"]
+        if _attribute_dic:
+            self._record_id = _attribute_dic["validation_id"]
 
-            _attributes["measurement_unit"] = self._lst_measurement_units.index(
-                _attributes["measurement_unit"]
+            _attribute_dic["measurement_unit"] = self._measurement_units.index(
+                _attribute_dic["measurement_unit"]
             )
-            _attributes["task_type"] = self._lst_verification_types.index(
-                _attributes["task_type"]
+            _attribute_dic["task_type"] = self._verification_types.index(
+                _attribute_dic["task_type"]
             )
 
-            _title = _(f"Analyzing Verification Task {_attributes['name']}")
+            _title_str = _(f"Analyzing Verification Task {_attribute_dic['name']}")
 
             pub.sendMessage(
                 "selected_validation",
-                attributes=_attributes,
+                attributes=_attribute_dic,
             )
             pub.sendMessage(
                 "request_set_title",
-                title=_title,
+                title=_title_str,
             )
 
+    # pylint: disable=invalid-name
     def _on_workview_edit(
-        self, node_id: int, package: Dict[str, Union[bool, float, int, str]]
+        self,
+        node_id: int,
+        package: Dict[str, Union[bool, float, int, str]],
     ) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
@@ -666,87 +676,87 @@ class ValidationTreePanel(RAMSTKTreePanel):
         :param package: the key:value for the data being updated.
         :return: None
         """
-        [[_key, _value]] = package.items()
+        [[_key_str, _value_obj]] = package.items()
 
-        _column = self.tvwTreeView.get_column(self.tvwTreeView.position[_key])
-        _cell = _column.get_cells()[-1]
+        _column_obj = self.tvwTreeView.get_column(self.tvwTreeView.position[_key_str])
+        _cell_obj = _column_obj.get_cells()[-1]
 
-        if isinstance(_cell, Gtk.CellRendererCombo):
-            if _key == "measurement_unit":
-                package[_key] = self._lst_measurement_units[_value]
-            elif _key == "task_type":
-                package[_key] = self._lst_verification_types[_value]
+        if isinstance(_cell_obj, Gtk.CellRendererCombo):
+            if _key_str == "measurement_unit":
+                package[_key_str] = self._measurement_units[_value_obj]  # type: ignore
+            elif _key_str == "task_type":
+                package[_key_str] = self._verification_types[_value_obj]  # type: ignore
 
             super().do_refresh_tree(node_id, package)
 
     def __do_load_validation(
-        self, node: treelib.Node, row: Gtk.TreeIter
+        self, node_obj: treelib.Node, row_obj: Gtk.TreeIter
     ) -> Gtk.TreeIter:
         """Load a verification task into the RAMSTKTreeView().
 
         :param node: the treelib Node() with the mode data to load.
         :param row: the parent row of the task to load into the validation tree.
-        :return: _new_row; the row that was just populated with validation data.
+        :return: _new_row_obj; the row that was just populated with validation data.
         :rtype: :class:`Gtk.TreeIter`
         """
-        _new_row = None
-        _date_format = "%Y-%m-%d"
+        _new_row_obj = None
+        _date_format_str = "%Y-%m-%d"
 
         # pylint: disable=unused-variable
-        _entity = node.data["validation"]
+        _entity_obj = node_obj.data["validation"]
 
-        _attributes = [
-            _entity.revision_id,
-            _entity.validation_id,
-            _entity.acceptable_maximum,
-            _entity.acceptable_mean,
-            _entity.acceptable_minimum,
-            _entity.acceptable_variance,
-            _entity.confidence,
-            _entity.cost_average,
-            _entity.cost_ll,
-            _entity.cost_maximum,
-            _entity.cost_mean,
-            _entity.cost_minimum,
-            _entity.cost_ul,
-            _entity.cost_variance,
-            _entity.date_end.strftime(_date_format),
-            _entity.date_start.strftime(_date_format),
-            _entity.description,
-            self._lst_measurement_units[_entity.measurement_unit],
-            _entity.name,
-            _entity.status,
-            _entity.task_specification,
-            self._lst_verification_types[_entity.task_type],
-            _entity.time_average,
-            _entity.time_ll,
-            _entity.time_maximum,
-            _entity.time_mean,
-            _entity.time_minimum,
-            _entity.time_ul,
-            _entity.time_variance,
+        _attribute_lst = [
+            _entity_obj.revision_id,
+            _entity_obj.validation_id,
+            _entity_obj.acceptable_maximum,
+            _entity_obj.acceptable_mean,
+            _entity_obj.acceptable_minimum,
+            _entity_obj.acceptable_variance,
+            _entity_obj.confidence,
+            _entity_obj.cost_average,
+            _entity_obj.cost_ll,
+            _entity_obj.cost_maximum,
+            _entity_obj.cost_mean,
+            _entity_obj.cost_minimum,
+            _entity_obj.cost_ul,
+            _entity_obj.cost_variance,
+            _entity_obj.date_end.strftime(_date_format_str),
+            _entity_obj.date_start.strftime(_date_format_str),
+            _entity_obj.description,
+            self._measurement_units[_entity_obj.measurement_unit],
+            _entity_obj.name,
+            _entity_obj.status,
+            _entity_obj.task_specification,
+            self._verification_types[_entity_obj.task_type],
+            _entity_obj.time_average,
+            _entity_obj.time_ll,
+            _entity_obj.time_maximum,
+            _entity_obj.time_mean,
+            _entity_obj.time_minimum,
+            _entity_obj.time_ul,
+            _entity_obj.time_variance,
         ]
 
         try:
-            _new_row = self.tvwTreeView.unfilt_model.append(row, _attributes)
+            _new_row_obj = self.tvwTreeView.unfilt_model.append(row_obj, _attribute_lst)
         except (AttributeError, TypeError, ValueError):
-            _message = _(
-                f"An error occurred when loading verification task {node.identifier} "
-                f"into the verification tree.  This might indicate it was missing it's "
-                f"data package, some of the data in the package was missing, or "
-                f"some of the data was the wrong type.  Row data was: "
-                f"{_attributes}"
+            _message_str = _(
+                f"An error occurred when loading verification task "
+                f"{node_obj.identifier} into the verification tree.  This might "
+                f"indicate it was missing it's data package, some of the data in the "
+                f"package was missing, or some of the data was the wrong type.  Row "
+                f"data was: {_attribute_lst}"
             )
             pub.sendMessage(
                 "do_log_warning_msg",
                 logger_name="WARNING",
-                message=_message,
+                message=_message_str,
             )
 
-        return _new_row
+        return _new_row_obj
 
 
-class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
+class RAMSTKValidationTaskDescriptionPanel(RAMSTKFixedPanel):
     """Panel to display general data about the selected Validation task."""
 
     # Define private dictionary class attributes.
@@ -1031,11 +1041,11 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         # Subscribe to PyPubSub messages.
 
     def do_load_measurement_units(
-        self, measurement_unit: Dict[int, Tuple[str, str]]
+        self, measurement_unit_dic: Dict[int, Tuple[str, str]]
     ) -> None:
         """Load the measurement units RAMSTKComboBox().
 
-        :param measurement_unit: the list of measurement units to load.  The
+        :param measurement_unit_dic: the dict of measurement units to load.  The
             key is an integer representing the ID field in the database.  The
             value is a tuple with a unit abbreviation, unit name, and generic
             unit type.  For example:
@@ -1045,21 +1055,21 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _model = self.cmbMeasurementUnit.get_model()
-        _model.clear()
+        _model_obj = self.cmbMeasurementUnit.get_model()
+        _model_obj.clear()
 
-        _units = []
-        for _index, _key in enumerate(measurement_unit):
-            self._dic_units[_index + 1] = measurement_unit[_key][1]
-            _units.append([measurement_unit[_key][1]])
-        self.cmbMeasurementUnit.do_load_combo(_units)
+        _unit_lst = []
+        for _unit_idx, _key_str in enumerate(measurement_unit_dic):
+            self._dic_units[_unit_idx + 1] = measurement_unit_dic[_key_str][1]
+            _unit_lst.append([measurement_unit_dic[_key_str][1]])
+        self.cmbMeasurementUnit.do_load_combo(_unit_lst)
 
     def do_load_validation_types(
-        self, validation_type: Dict[int, Tuple[str, str]]
+        self, validation_type_dic: Dict[int, Tuple[str, str]]
     ) -> None:
         """Load the validation task types RAMSTKComboBox().
 
-        :param validation_type: a dict of validation task types.  The key is an
+        :param validation_type_dic: a dict of validation task types.  The key is an
             integer representing the ID field in the database.  The value is a
             tuple with a task code, task name, and generic task type.  For
             example:
@@ -1069,19 +1079,19 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _model = self.cmbTaskType.get_model()
-        _model.clear()
+        _model_obj = self.cmbTaskType.get_model()
+        _model_obj.clear()
 
-        _task_types = []
-        for _index, _key in enumerate(validation_type):
-            self._dic_task_types[_index + 1] = [
-                validation_type[_key][0],
-                validation_type[_key][1],
+        _task_type_lst = []
+        for _type_idx, _key_str in enumerate(validation_type_dic):
+            self._dic_task_types[_type_idx + 1] = [
+                validation_type_dic[_key_str][0],
+                validation_type_dic[_key_str][1],
             ]
-            _task_types.append([validation_type[_key][1]])
-        self.cmbTaskType.do_load_combo(_task_types)
+            _task_type_lst.append([validation_type_dic[_key_str][1]])
+        self.cmbTaskType.do_load_combo(_task_type_lst)
 
-    def _do_make_task_code(self, combo: RAMSTKComboBox) -> None:
+    def _do_make_task_code(self, combo_obj: RAMSTKComboBox) -> None:
         """Create the validation task code.
 
         This method builds the task code based on the task type and the task
@@ -1089,54 +1099,56 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
 
             task type 3-letter abbreviation-task ID
 
-        :param combo: the RAMSTKComboBox() that called this method.
+        :param combo_obj: the RAMSTKComboBox() that called this method.
         :return: None
         :rtype: None
         """
         with contextlib.suppress(AttributeError, KeyError):
-            _index = combo.get_active()
+            _task_type_idx = combo_obj.get_active()
 
-            _task_type = self._dic_task_types[_index][0]
-            _task_code = f"{_task_type}-{self._record_id:04d}"
+            _task_type_str = self._dic_task_types[_task_type_idx][0]
+            _task_code_str = f"{_task_type_str}-{self._record_id:04d}"
 
             self.txtCode.do_update(
-                str(_task_code),
+                str(_task_code_str),
             )
 
             pub.sendMessage(
                 "wvw_editing_validation",
                 node_id=self._record_id,
-                package={"name": _task_code},
+                package={"name": _task_code_str},
             )
 
     @staticmethod
     def _do_select_date(
-        __button: RAMSTKButton, __event: Gdk.Event, entry: RAMSTKEntry
+        __button_obj: RAMSTKButton,
+        __event_obj: Gdk.Event,
+        entry_obj: RAMSTKEntry,
     ) -> str:
         """Request to launch a date selection dialog.
 
         This method is used to select the validation date for the Validation.
 
-        :param __button: the ramstk.RAMSTKButton() that called this method.
-        :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
-        :param __event: the Gdk.Event() that called this method.
-        :type __event: :class:`Gdk.Event`
-        :param entry: the Gtk.Entry() that the new date should be displayed in.
-        :type entry: :class:`Gtk.Entry`
+        :param __button_obj: the ramstk.RAMSTKButton() that called this method.
+        :type __button_obj: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
+        :param __event_obj: the Gdk.Event() that called this method.
+        :type __event_obj: :class:`Gdk.Event`
+        :param entry_obj: the Gtk.Entry() that the new date should be displayed in.
+        :type entry_obj: :class:`Gtk.Entry`
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-        _dialog: RAMSTKDateSelect = RAMSTKDateSelect()
+        _dialog_obj: RAMSTKDateSelect = RAMSTKDateSelect()
 
-        _date = _dialog.do_run()
-        _dialog.do_destroy()
+        _date_obj = _dialog_obj.do_run()
+        _dialog_obj.do_destroy()
 
-        entry.set_text(str(_date))
+        entry_obj.set_text(str(_date_obj))
 
-        return _date
+        return _date_obj
 
 
-class ValidationTaskEffortPanel(RAMSTKFixedPanel):
+class RAMSTKValidationTaskEffortPanel(RAMSTKFixedPanel):
     """Panel to display effort data about the selected Validation task."""
 
     # Define private dictionary class attributes.
@@ -1371,11 +1383,11 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         pub.subscribe(self._on_calculate_task, "succeed_calculate_validation_task")
 
     def do_load_validation_types(
-        self, validation_type: Dict[int, Tuple[str, str]]
+        self, validation_type_dic: Dict[int, Tuple[str, str]]
     ) -> None:
         """Load the validation task types RAMSTKComboBox().
 
-        :param validation_type: a dict of validation task types.  The key is an
+        :param validation_type_dic: a dict of validation task types.  The key is an
             integer representing the ID field in the database.  The value is a
             tuple with a task code, task name, and generic task type.  For
             example:
@@ -1385,24 +1397,24 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        for _index, _key in enumerate(validation_type):
-            self._dic_task_types[_index + 1] = [
-                validation_type[_key][0],
-                validation_type[_key][1],
+        for _task_type_idx, _key_str in enumerate(validation_type_dic):
+            self._dic_task_types[_task_type_idx + 1] = [
+                validation_type_dic[_key_str][0],
+                validation_type_dic[_key_str][1],
             ]
 
-    def _do_load_code(self, task_code: int) -> None:
+    def _do_load_code(self, task_code_int: int) -> None:
         """Load the Validation code RAMSTKEntry().
 
-        :param task_code: the Validation code to load.
+        :param task_code_int: the Validation code to load.
         :return: None
         :rtype: None
         """
         self.txtCode.do_update(
-            str(task_code),
+            str(task_code_int),
         )
 
-    def _do_make_task_code(self, task_type: str) -> str:
+    def _do_make_task_code(self, task_type_str: str) -> str:
         """Create the validation task code.
 
         This method builds the task code based on the task type and the task
@@ -1410,52 +1422,57 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
 
             task type 3-letter abbreviation-task ID
 
-        :param task_type: the three letter abbreviation for the task type.
+        :param task_type_str: the three letter abbreviation for the task type.
         :return: _code
         :rtype: str
         """
-        _code = ""
+        _task_code_str = ""
 
         # pylint: disable=unused-variable
-        for __, _type in self._dic_task_types.items():
-            if _type[1] == task_type:
-                _code = f"{_type[0]}-{self._record_id:04d}"
+        for _task_type_idx, _type_tpl in self._dic_task_types.items():
+            if _type_tpl[1] == task_type_str:
+                _task_code_str = f"{_type_tpl[0]}-{self._record_id:04d}"
 
         pub.sendMessage(
             "wvw_editing_validation",
             node_id=self._record_id,
-            package={"name": _code},
+            package={"name": _task_code_str},
         )
 
-        return _code
+        return _task_code_str
 
     @staticmethod
     def _do_select_date(
-        __button: RAMSTKButton, __event: Gdk.Event, entry: RAMSTKEntry
+        __button_obj: RAMSTKButton,
+        __event_obj: Gdk.Event,
+        entry_obj: RAMSTKEntry,
     ) -> str:
         """Request to launch a date selection dialog.
 
         This method is used to select the validation date for the Validation.
 
-        :param __button: the ramstk.RAMSTKButton() that called this method.
-        :type __button: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
-        :param __event: the Gdk.Event() that called this method.
-        :type __event: :class:`Gdk.Event`
-        :param entry: the Gtk.Entry() that the new date should be displayed in.
-        :type entry: :class:`Gtk.Entry`
-        :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
+        :param __button_obj: the ramstk.RAMSTKButton() that called this method.
+        :type __button_obj: :class:`ramstk.gui.gtk.ramstk.RAMSTKButton`
+        :param __event_obj: the Gdk.Event() that called this method.
+        :type __event_obj: :class:`Gdk.Event`
+        :param entry_obj: the Gtk.Entry() that the new date should be displayed in.
+        :type entry_obj: :class:`Gtk.Entry`
+        :return: _date_str; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-        _dialog: RAMSTKDateSelect = RAMSTKDateSelect()
+        _dialog_obj: RAMSTKDateSelect = RAMSTKDateSelect()
 
-        _date = _dialog.do_run()
-        _dialog.do_destroy()
+        _date_str = _dialog_obj.do_run()
+        _dialog_obj.do_destroy()
 
-        entry.set_text(str(_date))
+        entry_obj.set_text(str(_date_str))
 
-        return _date
+        return _date_str
 
-    def _on_calculate_task(self, attributes: Dict[str, Union[float, int, str]]) -> None:
+    def _on_calculate_task(
+        self,
+        attributes: Dict[str, Union[float, int, str]],  # pylint: disable=invalid-name
+    ) -> None:
         """Wrap _do_load_panel() on successful task calculation.
 
         :param attributes: the verification task attribute dict.
@@ -1471,29 +1488,31 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        _fixed: Gtk.Fixed = self.get_children()[0].get_children()[0].get_children()[0]
+        _fixed_obj: Gtk.Fixed = (
+            self.get_children()[0].get_children()[0].get_children()[0]
+        )
 
-        _time_entry: RAMSTKEntry = _fixed.get_children()[9]
-        _cost_entry: RAMSTKEntry = _fixed.get_children()[21]
+        _time_entry_obj: RAMSTKWidget = _fixed_obj.get_children()[9]
+        _cost_entry_obj: RAMSTKWidget = _fixed_obj.get_children()[21]
 
         # We add the mean time and mean time UL to the same y position as
         # the mean time LL widget.
-        _x_pos: int = _fixed.child_get_property(_time_entry, "x")
-        _y_pos: int = _fixed.child_get_property(_time_entry, "y")
-        _fixed.move(self.txtMeanTimeLL, _x_pos, _y_pos)
-        _fixed.move(self.txtMeanTime, _x_pos + 175, _y_pos)
-        _fixed.move(self.txtMeanTimeUL, _x_pos + 350, _y_pos)
+        _x_pos_int: int = _fixed_obj.child_get_property(_time_entry_obj, "x")
+        _y_pos_int: int = _fixed_obj.child_get_property(_time_entry_obj, "y")
+        _fixed_obj.move(self.txtMeanTimeLL, _x_pos_int, _y_pos_int)
+        _fixed_obj.move(self.txtMeanTime, _x_pos_int + 175, _y_pos_int)
+        _fixed_obj.move(self.txtMeanTimeUL, _x_pos_int + 350, _y_pos_int)
 
         # We add the mean cost and mean cost UL to the same y position as
         # the mean cost LL widget.
-        _x_pos = _fixed.child_get_property(_cost_entry, "x")
-        _y_pos = _fixed.child_get_property(_cost_entry, "y")
-        _fixed.move(self.txtMeanCostLL, _x_pos, _y_pos)
-        _fixed.move(self.txtMeanCost, _x_pos + 175, _y_pos)
-        _fixed.move(self.txtMeanCostUL, _x_pos + 350, _y_pos)
+        _x_pos_int = _fixed_obj.child_get_property(_cost_entry_obj, "x")
+        _y_pos_int = _fixed_obj.child_get_property(_cost_entry_obj, "y")
+        _fixed_obj.move(self.txtMeanCostLL, _x_pos_int, _y_pos_int)
+        _fixed_obj.move(self.txtMeanCost, _x_pos_int + 175, _y_pos_int)
+        _fixed_obj.move(self.txtMeanCostUL, _x_pos_int + 350, _y_pos_int)
 
 
-class ValidationRequirementPanel(RAMSTKMatrixPanel):
+class RAMSTKValidationRequirementPanel(RAMSTKMatrixPanel):
     """Panel to display effort data about the selected Validation task."""
 
     # Define private dictionary class attributes.
@@ -1538,10 +1557,10 @@ class ValidationRequirementPanel(RAMSTKMatrixPanel):
         pub.subscribe(self._do_set_column_headers, "succeed_retrieve_all_requirement")
         pub.subscribe(self._do_set_row_headers, "succeed_retrieve_all_validation")
 
-    def _do_set_column_headers(self, tree: treelib.Tree) -> None:
+    def _do_set_column_headers(self, tree_obj: treelib.Tree) -> None:
         """Set the column headings for the RAMSTKMatrixView().
 
-        :param tree: the Requirement tree.
+        :param tree_obj: the Requirement tree.
         :return: None
         :rtype: None
         """
@@ -1551,15 +1570,15 @@ class ValidationRequirementPanel(RAMSTKMatrixPanel):
                 _node_obj.data["requirement"].description,
                 _node_obj.data["requirement"].requirement_id,
             )
-            for _node_obj in tree.all_nodes()[1:]
+            for _node_obj in tree_obj.all_nodes()[1:]
         ]
 
         self.grdMatrixView.do_set_column_headings(_column_name_lst)
 
-    def _do_set_row_headers(self, tree: treelib.Tree) -> None:
+    def _do_set_row_headers(self, tree_obj: treelib.Tree) -> None:
         """Set the row headings for the RAMSTKMatrixView().
 
-        :param tree: the Validation & Verification task tree.
+        :param tree_obj: the Validation & Verification task tree.
         :return: None
         :rtype: None
         """
@@ -1569,7 +1588,7 @@ class ValidationRequirementPanel(RAMSTKMatrixPanel):
                 _node_obj.data["validation"].description,
                 _node_obj.data["validation"].validation_id,
             )
-            for _node_obj in tree.all_nodes()[1:]
+            for _node_obj in tree_obj.all_nodes()[1:]
         ]
 
         self.grdMatrixView.do_set_row_headings(_row_name_lst)
