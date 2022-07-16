@@ -8,7 +8,10 @@
 
 # Standard Library Imports
 from datetime import date
-from typing import Dict, Type, Union
+from typing import Dict, List, Type, Union
+
+# Third Party Imports
+import pandas as pd
 
 # RAMSTK Local Imports
 from ..dbrecords import RAMSTKMatrixRecord
@@ -50,6 +53,7 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         self._record: Type[RAMSTKMatrixRecord] = RAMSTKMatrixRecord
 
         # Initialize public dictionary attributes.
+        self.matrix_df = pd.DataFrame()
 
         # Initialize public list attributes.
 
@@ -57,6 +61,17 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         self.pkey = "matrix_id"
 
         # Subscribe to PyPubSub messages.
+
+    def do_build_matrix(self, column_lst: List[str], row_lst: List[str]) -> None:
+        """Build the matrix from the columns and rows provided.
+
+        :param column_lst: the list of column header strings.
+        :param row_lst: the list of row header strings.
+        :return: None
+        :rtype: None
+        """
+        _column_dic = {_column_str: [0] * len(row_lst) for _column_str in column_lst}
+        self.matrix_df = pd.DataFrame(_column_dic, index=row_lst)
 
     def do_get_new_record(  # pylint: disable=method-hidden
         self, attribute_dic: Dict[str, Union[date, float, int, str]]

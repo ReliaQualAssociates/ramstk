@@ -17,6 +17,7 @@ from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
+    RAMSTKLabel,
     RAMSTKMessageDialog,
     RAMSTKModuleView,
     RAMSTKPanel,
@@ -382,30 +383,27 @@ class RAMSTKValidationMatrixView(RAMSTKWorkView):
     # Define public scalar class attributes.
 
     def __init__(
-        self, configuration: RAMSTKUserConfiguration, logger: RAMSTKLogManager
+        self, configuration_obj: RAMSTKUserConfiguration, logger_obj: RAMSTKLogManager
     ) -> None:
         """Initialize the Validation Work View general data page.
 
-        :param configuration: the RAMSTKUserConfiguration class instance.
-        :param logger: the RAMSTKLogManager class instance.
+        :param configuration_obj: the RAMSTKUserConfiguration class instance.
+        :param logger_obj: the RAMSTKLogManager class instance.
         """
-        super().__init__(configuration, logger)
+        super().__init__(configuration_obj, logger_obj)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
         self._lst_callbacks = [
-            super().do_request_update,
-            super().do_request_update_all,
+            self._do_request_update_all,
         ]
-        self._lst_icons = ["save", "save-all"]
+        self._lst_icons = ["save-all"]
         self._lst_mnu_labels = [
-            _("Save"),
             _("Save All"),
         ]
         self._lst_tooltips = [
-            _("Save changes to the selected Verification task."),
-            _("Save changes to all Verification tasks."),
+            _("Save changes to the Verification-Requirement matrix."),
         ]
 
         # Initialize private scalar attributes.
@@ -423,6 +421,31 @@ class RAMSTKValidationMatrixView(RAMSTKWorkView):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_set_record_id, "selected_validation")
+
+    def _do_request_update_all(self, __button_obj: Gtk.Button) -> None:
+        """Request to update matrix records to RAMSTK program database.
+
+        :param __button: the Gtk.ToolButton() that called this method.
+        :return: None
+        """
+        _correlation_int = 0
+        _row_id = 0
+
+        self.do_set_cursor_busy()
+
+        for _row_idx in range(2, self._pnlRequirementMatrix.grdMatrixView.n_rows + 1):
+            for _column_idx in range(
+                self._pnlRequirementMatrix.grdMatrixView.n_columns
+            ):
+                _obj = self._pnlRequirementMatrix.grdMatrixView.get_child_at(
+                    _column_idx,
+                    _row_idx,
+                )
+                if isinstance(_obj, RAMSTKLabel):
+                    _row_id = _obj.get_label()
+                else:
+                    _correlation_int = _obj.get_value()
+                print(_row_id, _correlation_int)
 
     # pylint: disable=invalid-name
     def _do_set_record_id(

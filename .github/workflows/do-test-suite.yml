@@ -131,6 +131,7 @@ jobs:
             mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
             mingw-w64-${{ matrix.arch }}-python3
+            mingw-w64-${{ matrix.arch }}-python3-devel
             mingw-w64-${{ matrix.arch }}-python3-pip
             mingw-w64-${{ matrix.arch }}-python3-gobject
             mingw-w64-${{ matrix.arch }}-python3-msgpack

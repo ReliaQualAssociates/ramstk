@@ -1557,10 +1557,11 @@ class RAMSTKValidationRequirementPanel(RAMSTKMatrixPanel):
         pub.subscribe(self._do_set_column_headers, "succeed_retrieve_all_requirement")
         pub.subscribe(self._do_set_row_headers, "succeed_retrieve_all_validation")
 
-    def _do_set_column_headers(self, tree_obj: treelib.Tree) -> None:
+    # pylint: disable=invalid-name
+    def _do_set_column_headers(self, tree: treelib.Tree) -> None:
         """Set the column headings for the RAMSTKMatrixView().
 
-        :param tree_obj: the Requirement tree.
+        :param tree: the Requirement tree.
         :return: None
         :rtype: None
         """
@@ -1570,15 +1571,16 @@ class RAMSTKValidationRequirementPanel(RAMSTKMatrixPanel):
                 _node_obj.data["requirement"].description,
                 _node_obj.data["requirement"].requirement_id,
             )
-            for _node_obj in tree_obj.all_nodes()[1:]
+            for _node_obj in tree.all_nodes()[1:]
         ]
 
         self.grdMatrixView.do_set_column_headings(_column_name_lst)
 
-    def _do_set_row_headers(self, tree_obj: treelib.Tree) -> None:
+    # pylint: disable=invalid-name
+    def _do_set_row_headers(self, tree: treelib.Tree) -> None:
         """Set the row headings for the RAMSTKMatrixView().
 
-        :param tree_obj: the Validation & Verification task tree.
+        :param tree: the Validation & Verification task tree.
         :return: None
         :rtype: None
         """
@@ -1588,7 +1590,7 @@ class RAMSTKValidationRequirementPanel(RAMSTKMatrixPanel):
                 _node_obj.data["validation"].description,
                 _node_obj.data["validation"].validation_id,
             )
-            for _node_obj in tree_obj.all_nodes()[1:]
+            for _node_obj in tree.all_nodes()[1:]
         ]
 
         self.grdMatrixView.do_set_row_headings(_row_name_lst)

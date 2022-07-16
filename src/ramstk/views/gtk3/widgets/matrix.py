@@ -130,13 +130,11 @@ class RAMSTKMatrixView(Gtk.Grid):
         :return: None
         :rtype: None
         """
-        self.n_columns = 0
-
         for _column_name_tpl in column_name_lst:
             self.do_add_column(_column_name_tpl[0], _column_name_tpl[1])
             self.column_id_dic[_column_name_tpl[0]] = _column_name_tpl[2]
 
-        self.n_rows = 1
+        self.n_rows += 1
 
     def do_set_row_headings(
         self,
@@ -162,13 +160,11 @@ class RAMSTKMatrixView(Gtk.Grid):
         :return: None
         :rtype: None
         """
-        self.n_rows = 0
-
         for _row_name_tpl in row_name_lst:
             self.do_add_row(_row_name_tpl[0], _row_name_tpl[1])
             self.row_id_dic[_row_name_tpl[0]] = _row_name_tpl[2]
 
-        self.n_columns = 1
+        self.n_columns += 1
 
     def _do_add_widgets(
         self,
@@ -198,7 +194,7 @@ class RAMSTKMatrixView(Gtk.Grid):
         )
         self.attach(_label_obj, position_tpl[0], position_tpl[1], 1, 1)
 
-        for _add_idx in range(n_positions_int - 1):
+        for _add_idx in range(n_positions_int):
             _combo_obj = self._do_make_combobox()
             if row_flag:
                 self.attach(_combo_obj, _add_idx + 1, position_tpl[1], 1, 1)
@@ -214,12 +210,13 @@ class RAMSTKMatrixView(Gtk.Grid):
         """
         _combo_obj = RAMSTKComboBox(1)
         _model_obj = Gtk.ListStore(*[GObject.TYPE_STRING, GdkPixbuf.Pixbuf])
-        for _option_idx, _pixbuf_key_str in enumerate(self.icons_dic):
+
+        for _pixbuf_key_str in ["none", "partial", "complete"]:
             _pixbuf_obj = GdkPixbuf.Pixbuf.new_from_file_at_size(
                 self.icons_dic[_pixbuf_key_str], 22, 22
             )
             _model_obj.append(
-                [["", "Partial", "Complete"][_option_idx], _pixbuf_obj],
+                [_pixbuf_key_str.upper(), _pixbuf_obj],
             )
         _combo_obj.set_model(_model_obj)
         _combo_obj.do_set_properties(
@@ -228,7 +225,7 @@ class RAMSTKMatrixView(Gtk.Grid):
                 "column and row with a blank meaning no relationship, a P meaning "
                 "partial, and a C meaning complete."
             ),
-            width=35,
+            width=25,
         )
         _cell_obj = Gtk.CellRendererPixbuf()
         _combo_obj.pack_start(_cell_obj, True)

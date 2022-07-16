@@ -70,7 +70,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
             "request_calculate_all_validation_tasks",
         )
 
-    # pylint: disable=method-hidden
+    # pylint: disable=method-hidden, invalid-name
     def do_get_new_record(
         self, attributes: Dict[str, Union[date, float, int, str]]
     ) -> RAMSTKValidationRecord:
@@ -80,12 +80,12 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _new_record = self._record()
-        _new_record.revision_id = attributes["revision_id"]
-        _new_record.validation_id = self.last_id + 1
-        _new_record.name = "New Validation Task"
+        _new_record_obj = self._record()
+        _new_record_obj.revision_id = attributes["revision_id"]
+        _new_record_obj.validation_id = self.last_id + 1
+        _new_record_obj.name = f"New Validation Task {self.last_id + 1}"
 
-        return _new_record
+        return _new_record_obj
 
     def do_calculate_plan(self) -> None:
         """Calculate the planned burndown of the overall validation effort.
@@ -98,47 +98,47 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: _planned; the pandas DataFrame() containing the planned
             burndown hours for the entire validation effort.
         """
-        _dic_planned = {}  # type: ignore
-        _time_ll = 0.0
-        _time_mean = 0.0
-        _time_ul = 0.0
-        _start_date = date.today()
+        _planned_dic = {}  # type: ignore
+        _time_ll_flt = 0.0
+        _time_mean_flt = 0.0
+        _time_ul_flt = 0.0
+        _start_date_obj = date.today()
 
-        for _node in self.tree.all_nodes()[1:]:
+        for _node_obj in self.tree.all_nodes()[1:]:
             # Calculate the three times if the mean task time is zero.
-            if _node.data["validation"].time_mean <= 0.0:
-                _node.data["validation"].calculate_task_time()
+            if _node_obj.data["validation"].time_mean <= 0.0:
+                _node_obj.data["validation"].calculate_task_time()
 
             # Keep a running total of the three times and the earliest task
             # start date.  The earliest start date will be assigned the
             # total number of hours in the validation program.
-            _start_date = min(
-                _start_date,
-                pd.to_datetime(_node.data["validation"].date_start),
+            _start_date_obj = min(
+                _start_date_obj,
+                pd.to_datetime(_node_obj.data["validation"].date_start),
             )
-            _time_ll += _node.data["validation"].time_ll
-            _time_mean += _node.data["validation"].time_mean
-            _time_ul += _node.data["validation"].time_ul
+            _time_ll_flt += _node_obj.data["validation"].time_ll
+            _time_mean_flt += _node_obj.data["validation"].time_mean
+            _time_ul_flt += _node_obj.data["validation"].time_ul
 
             # Calculate the sum of task hours for each, unique end date.
-            _end_date = _node.data["validation"].date_end
+            _end_date_obj = _node_obj.data["validation"].date_end
             try:
                 # Update the end date's times.
-                _dic_planned[pd.to_datetime(_end_date)][0] += _node.data[
+                _planned_dic[pd.to_datetime(_end_date_obj)][0] += _node_obj.data[
                     "validation"
                 ].time_ll
-                _dic_planned[pd.to_datetime(_end_date)][1] += _node.data[
+                _planned_dic[pd.to_datetime(_end_date_obj)][1] += _node_obj.data[
                     "validation"
                 ].time_mean
-                _dic_planned[pd.to_datetime(_end_date)][2] += _node.data[
+                _planned_dic[pd.to_datetime(_end_date_obj)][2] += _node_obj.data[
                     "validation"
                 ].time_ul
             except KeyError:
                 # Add the first time to the end date.
-                _dic_planned[pd.to_datetime(_end_date)] = [
-                    _node.data["validation"].time_ll,
-                    _node.data["validation"].time_mean,
-                    _node.data["validation"].time_ul,
+                _planned_dic[pd.to_datetime(_end_date_obj)] = [
+                    _node_obj.data["validation"].time_ll,
+                    _node_obj.data["validation"].time_mean,
+                    _node_obj.data["validation"].time_ul,
                 ]
 
         # Create a pandas DataFrame() of the task times sorted by date in
@@ -147,26 +147,26 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         # the validation effort, not the total task hours planned to
         # complete on each day.
         # noinspection PyTypeChecker
-        _planned = pd.DataFrame(
-            _dic_planned.values(),
-            index=_dic_planned.keys(),
+        _planned_df = pd.DataFrame(
+            _planned_dic.values(),
+            index=_planned_dic.keys(),
             columns=["lower", "mean", "upper"],
         ).sort_index(ascending=False)
 
         # Calculate the total task time remaining on each planned end date
         # and then sort the DataFrame() by date in ascending order.
-        _planned = _planned.cumsum() - _planned
-        _planned.loc[_start_date] = [_time_ll, _time_mean, _time_ul]
-        _planned = _planned.sort_index()
+        _planned_df = _planned_df.cumsum() - _planned_df
+        _planned_df.loc[_start_date_obj] = [_time_ll_flt, _time_mean_flt, _time_ul_flt]
+        _planned_df = _planned_df.sort_index()
 
-        _dic_plan = {
-            "plan": _planned,
+        _planned_dic = {
+            "plan": _planned_df,
             "assessed": self._do_select_assessment_targets(),
         }
 
         pub.sendMessage(
             "succeed_calculate_verification_plan",
-            attributes=_dic_plan,
+            attributes=_planned_dic,
         )
 
     def _do_calculate_all_tasks(self) -> None:
@@ -179,17 +179,17 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _program_cost_remaining = 0.0
-        _program_time_remaining = 0.0
+        _program_cost_remaining_flt = 0.0
+        _program_time_remaining_flt = 0.0
 
-        for _node in self.tree.all_nodes()[1:]:
-            self._do_calculate_task(_node.identifier)
+        for _node_obj in self.tree.all_nodes()[1:]:
+            self._do_calculate_task(_node_obj.identifier)
 
-            _program_cost_remaining += _node.data["validation"].cost_average * (
-                1.0 - _node.data["validation"].status / 100.0
+            _program_cost_remaining_flt += _node_obj.data["validation"].cost_average * (
+                1.0 - _node_obj.data["validation"].status / 100.0
             )
-            _program_time_remaining += _node.data["validation"].time_average * (
-                1.0 - _node.data["validation"].status / 100.0
+            _program_time_remaining_flt += _node_obj.data["validation"].time_average * (
+                1.0 - _node_obj.data["validation"].status / 100.0
             )
 
         pub.sendMessage(
@@ -198,8 +198,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         )
         pub.sendMessage(
             "succeed_calculate_program_remaining",
-            cost_remaining=_program_cost_remaining,
-            time_remaining=_program_time_remaining,
+            cost_remaining=_program_cost_remaining_flt,
+            time_remaining=_program_time_remaining_flt,
         )
 
     def _do_calculate_task(self, node_id: int) -> None:
@@ -212,19 +212,19 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: None
         :rtype: None
         """
-        _node = self.tree.get_node(node_id)
+        _node_obj = self.tree.get_node(node_id)
 
-        _node.data["validation"].calculate_task_time()
-        _node.data["validation"].calculate_task_cost()
+        _node_obj.data["validation"].calculate_task_time()
+        _node_obj.data["validation"].calculate_task_cost()
 
-        _attributes = _node.data["validation"].get_attributes()
+        _attribute_dic = _node_obj.data["validation"].get_attributes()
         self.do_set_attributes_all(
-            attributes=_attributes,
+            attributes=_attribute_dic,
         )
 
         pub.sendMessage(
             "succeed_calculate_validation_task",
-            attributes=_attributes,
+            attributes=_attribute_dic,
         )
 
     def _do_select_assessment_targets(self) -> pd.DataFrame:
@@ -233,19 +233,19 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         :return: _assessed; a pandas DataFrame() containing the assessment
             dates as the index and associated targets.
         """
-        _dic_assessed = {
-            pd.to_datetime(_node.data["validation"].date_end): [
-                _node.data["validation"].acceptable_minimum,
-                _node.data["validation"].acceptable_mean,
-                _node.data["validation"].acceptable_maximum,
+        _assessed_dic = {
+            pd.to_datetime(_node_obj.data["validation"].date_end): [
+                _node_obj.data["validation"].acceptable_minimum,
+                _node_obj.data["validation"].acceptable_mean,
+                _node_obj.data["validation"].acceptable_maximum,
             ]
-            for _node in self.tree.all_nodes()[1:]
-            if _node.data["validation"].task_type == 5
+            for _node_obj in self.tree.all_nodes()[1:]
+            if _node_obj.data["validation"].task_type == 5
         }
 
         # noinspection PyTypeChecker
         return pd.DataFrame(
-            _dic_assessed.values(),
-            index=_dic_assessed.keys(),
+            _assessed_dic.values(),
+            index=_assessed_dic.keys(),
             columns=["lower", "mean", "upper"],
         ).sort_index()
