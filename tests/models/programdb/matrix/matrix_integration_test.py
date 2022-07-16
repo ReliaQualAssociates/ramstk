@@ -259,7 +259,7 @@ class TestGetterSetterMatrix(SystemTestGetterSetterMethods):
 
     __test__ = True
 
-    _package = {"matrix_owner": "John Jacob Jingleheimer Schmidt"}
+    _package = {"description": "John Jacob Jingleheimer Schmidt"}
     _record = RAMSTKMatrixRecord
     _tag = "matrix"
     _test_id = 1

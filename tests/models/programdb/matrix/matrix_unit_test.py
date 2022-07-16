@@ -12,6 +12,7 @@
 from datetime import date, timedelta
 
 # Third Party Imports
+import pandas as pd
 import pytest
 from pubsub import pub
 from treelib import Tree
@@ -54,6 +55,7 @@ class TestCreateMatrixModels:
         assert isinstance(unit_test_table_model, RAMSTKMatrixTable)
         assert isinstance(unit_test_table_model.tree, Tree)
         assert isinstance(unit_test_table_model.dao, MockDAO)
+        assert isinstance(unit_test_table_model.matrix_df, pd.DataFrame)
         assert unit_test_table_model._db_id_colname == "fld_matrix_id"
         assert unit_test_table_model._db_tablename == "ramstk_matrix"
         assert unit_test_table_model._tag == "matrix"
@@ -96,6 +98,23 @@ class TestSelectMatrix(UnitTestSelectMethods):
     _record = RAMSTKMatrixRecord
     _tag = "matrix"
 
+    @pytest.mark.unit
+    def test_do_build_matrix(self, unit_test_table_model):
+        """Should create a pandas DataFrame from a list of column and row headers."""
+        _column_lst = ["FUN-0001", "PRF-0002"]
+        _row_lst = ["RAA-0001", "RFF-0002", "FTA-0005"]
+
+        unit_test_table_model.do_build_matrix(_column_lst, _row_lst)
+
+        assert isinstance(unit_test_table_model.matrix_df["FUN-0001"], pd.Series)
+        assert isinstance(unit_test_table_model.matrix_df["PRF-0002"], pd.Series)
+        assert unit_test_table_model.matrix_df["FUN-0001"]["RAA-0001"] == 0
+        assert unit_test_table_model.matrix_df["FUN-0001"]["RFF-0002"] == 0
+        assert unit_test_table_model.matrix_df["FUN-0001"]["FTA-0005"] == 0
+        assert unit_test_table_model.matrix_df["PRF-0002"]["RAA-0001"] == 0
+        assert unit_test_table_model.matrix_df["PRF-0002"]["RFF-0002"] == 0
+        assert unit_test_table_model.matrix_df["PRF-0002"]["FTA-0005"] == 0
+
 
 @pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
 class TestInsertMatrix(UnitTestInsertMethods):
@@ -111,6 +130,32 @@ class TestInsertMatrix(UnitTestInsertMethods):
     def test_do_insert_child(self, test_attributes, unit_test_table_model):
         """Should not run because Matrices are not hierarchical."""
         pass
+
+    @pytest.mark.unit
+    def test_do_insert_column(self, unit_test_table_model):
+        """Should add a column to the matrix data frame."""
+        _column_lst = ["FUN-0001", "PRF-0002"]
+        _row_lst = ["RAA-0001", "RFF-0002", "FTA-0005"]
+
+        unit_test_table_model.do_build_matrix(_column_lst, _row_lst)
+        unit_test_table_model.do_insert_column("REL-0003")
+
+        assert isinstance(unit_test_table_model.matrix_df["REL-0003"], pd.Series)
+        assert unit_test_table_model.matrix_df["REL-0003"]["RAA-0001"] == 0
+        assert unit_test_table_model.matrix_df["REL-0003"]["RFF-0002"] == 0
+        assert unit_test_table_model.matrix_df["REL-0003"]["FTA-0005"] == 0
+
+    @pytest.mark.unit
+    def test_do_insert_row(self, unit_test_table_model):
+        """Should add a row to the matrix data frame."""
+        _column_lst = ["FUN-0001", "PRF-0002"]
+        _row_lst = ["RAA-0001", "RFF-0002", "FTA-0005"]
+
+        unit_test_table_model.do_build_matrix(_column_lst, _row_lst)
+        unit_test_table_model.do_insert_row("RAA-0003")
+
+        assert unit_test_table_model.matrix_df["FUN-0001"]["RAA-0003"] == 0
+        assert unit_test_table_model.matrix_df["PRF-0002"]["RAA-0003"] == 0
 
 
 @pytest.mark.usefixtures("test_attributes", "unit_test_table_model")
