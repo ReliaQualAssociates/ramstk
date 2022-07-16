@@ -88,3 +88,25 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         _new_record_obj.description = attribute_dic["description"]
 
         return _new_record_obj
+
+    def do_insert_column(self, column_header_str: str) -> None:
+        """Add a new column to the matrix data frame.
+
+        :param column_header_str: the string to use for the column header.
+        :return: None
+        :rtype: None
+        """
+        self.matrix_df[column_header_str] = [0] * len(self.matrix_df.index)
+
+    def do_insert_row(self, row_header_str: str) -> None:
+        """Add a new row to the matrix data frame.
+
+        :param row_header_str: the string to use for the row header.
+        :return: None
+        :rtype: None
+        """
+        _new_row_df = pd.DataFrame(
+            {_column_str: 0 for _column_str in self.matrix_df.columns},
+            index=[row_header_str],
+        )
+        self.matrix_df = pd.concat([self.matrix_df, _new_row_df])
