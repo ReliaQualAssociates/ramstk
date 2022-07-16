@@ -130,13 +130,13 @@ jobs:
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
-            mingw-w64-${{ matrix.arch }}-python3
-            mingw-w64-${{ matrix.arch }}-python3-devel
-            mingw-w64-${{ matrix.arch }}-python3-pip
-            mingw-w64-${{ matrix.arch }}-python3-gobject
-            mingw-w64-${{ matrix.arch }}-python3-msgpack
-            mingw-w64-${{ matrix.arch }}-python3-setuptools
-            mingw-w64-${{ matrix.arch }}-python3-wheel
+            mingw-w64-${{ matrix.arch }}-python
+            mingw-w64-${{ matrix.arch }}-python-devel
+            mingw-w64-${{ matrix.arch }}-python-pip
+            mingw-w64-${{ matrix.arch }}-python-gobject
+            mingw-w64-${{ matrix.arch }}-python-msgpack
+            mingw-w64-${{ matrix.arch }}-python-setuptools
+            mingw-w64-${{ matrix.arch }}-python-wheel
 
       - name: Checkout Code
         uses: actions/checkout@v2
