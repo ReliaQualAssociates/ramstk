@@ -127,16 +127,12 @@ jobs:
             gcc-fortran
             git
             make
+            python
+            python-devel
+            python-pip
             mingw-w64-${{ matrix.arch }}-cairo
-            mingw-w64-${{ matrix.arch }}-make
             mingw-w64-${{ matrix.arch }}-gtk3
-            mingw-w64-${{ matrix.arch }}-python
-            mingw-w64-${{ matrix.arch }}-python-devel
-            mingw-w64-${{ matrix.arch }}-python-pip
-            mingw-w64-${{ matrix.arch }}-python-gobject
-            mingw-w64-${{ matrix.arch }}-python-msgpack
-            mingw-w64-${{ matrix.arch }}-python-setuptools
-            mingw-w64-${{ matrix.arch }}-python-wheel
+            mingw-w64-${{ matrix.arch }}-gobject-introspection
 
       - name: Checkout Code
         uses: actions/checkout@v2
