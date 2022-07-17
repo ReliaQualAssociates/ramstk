@@ -217,7 +217,8 @@ disable = [
 	'anomalous-unicode-escape-in-string',
 	'import-error',
 	'no-member',
-	'no-else-return'
+	'no-else-return',
+	'cyclic-import',
 ]
 
 [tool.pylint.reports]
