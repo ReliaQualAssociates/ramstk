@@ -47,8 +47,6 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
         self._lst_id_columns = [
             "revision_id",
             "matrix_id",
-            "column_id",
-            "row_id",
         ]
 
         # Initialize private scalar attributes.
