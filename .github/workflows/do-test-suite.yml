@@ -126,15 +126,15 @@ jobs:
             gcc-libs
             gcc-fortran
             git
-            lapack
             make
-            openblas
             python
             python-devel
-            mingw-w64-${{ matrix.arch }}-python-pip
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-gtk3
             mingw-w64-${{ matrix.arch }}-gobject-introspection
+            mingw-w64-${{ matrix.arch }}-lapack
+            mingw-w64-${{ matrix.arch }}-openblas
+            mingw-w64-${{ matrix.arch }}-python-pip
 
       - name: Checkout Code
         uses: actions/checkout@v2
