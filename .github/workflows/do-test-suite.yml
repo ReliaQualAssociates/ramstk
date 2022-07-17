@@ -126,7 +126,9 @@ jobs:
             gcc-libs
             gcc-fortran
             git
+            lapack
             make
+            openblas
             python
             python-devel
             mingw-w64-${{ matrix.arch }}-python-pip
