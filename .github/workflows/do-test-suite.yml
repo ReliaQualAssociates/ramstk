@@ -127,8 +127,8 @@ jobs:
             gcc-fortran
             git
             make
-            python
-            python-devel
+            mingw-w64-${{ matrix.arch }}-python
+            mingw-w64-${{ matrix.arch }}-python-devel
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-gtk3
             mingw-w64-${{ matrix.arch }}-gobject-introspection
