@@ -36,6 +36,7 @@ from .programdb_failure_definition_table import RAMSTKFailureDefinitionTable
 from .programdb_function_table import RAMSTKFunctionTable
 from .programdb_hardware_table import RAMSTKHardwareTable
 from .programdb_hazard_table import RAMSTKHazardTable
+from .programdb_matrix_table import RAMSTKMatrixTable
 from .programdb_mechanism_table import RAMSTKMechanismTable
 from .programdb_milhdbk217f_table import RAMSTKMILHDBK217FTable
 from .programdb_mission_phase_table import RAMSTKMissionPhaseTable
