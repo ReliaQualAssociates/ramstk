@@ -544,7 +544,6 @@ def make_home_config_dir():
     # Set up the test home configuration directory.
     setup_test_directory(_config_dir)
     setup_test_directory(f"{_config_dir}/layouts")
-    setup_test_directory(f"{_config_dir}/icons")
     setup_test_directory(f"{_config_dir}/log")
 
     # Set up the test analyses directory.
@@ -558,6 +557,11 @@ def make_home_config_dir():
         "./data/postgres_program_db.sql",
         f"{_config_dir}/postgres_program_db.sql",
     )
+    if str(sys.version_info[0]) + "." + str(sys.version_info[1]) == "3.7":
+        shutil.copytree("./data/icons", f"{_config_dir}/icons/")
+    else:
+        setup_test_directory(f"{_config_dir}/icons")
+        shutil.copytree("./data/icons", f"{_config_dir}/icons/", dirs_exist_ok=True)
 
     yield _config_dir
 
