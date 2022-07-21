@@ -122,19 +122,26 @@ jobs:
           update: true
           install: >-
             base-devel
-            gcc
-            gcc-libs
-            gcc-fortran
             git
-            make
-            python
             python-devel
-            mingw-w64-${{ matrix.arch }}-cairo
-            mingw-w64-${{ matrix.arch }}-gtk3
-            mingw-w64-${{ matrix.arch }}-gobject-introspection
-            mingw-w64-${{ matrix.arch }}-lapack
-            mingw-w64-${{ matrix.arch }}-openblas
-            mingw-w64-${{ matrix.arch }}-python-pip
+            mingw-w64 -${{matrix.arch}}-gcc
+            mingw-w64 -${{matrix.arch}}-gcc-libs
+            mingw-w64 -${{matrix.arch}}-gcc-fortran
+            mingw-w64 -${{matrix.arch}}-make
+            mingw-w64 -${{matrix.arch}}-python
+            mingw-w64 -${{matrix.arch}}-cairo
+            mingw-w64 -${{matrix.arch}}-gtk3
+            mingw-w64 -${{matrix.arch}}-gobject-introspection
+            mingw-w64 -${{matrix.arch}}-lapack
+            mingw-w64 -${{matrix.arch}}-openblas
+            mingw-w64 -${{matrix.arch}}-python-pip
+            mingw-w64 -${{matrix.arch}}-python-numpy
+            mingw-w64 -${{matrix.arch}}-python-scipy
+
+      - name: Put MSYS2_MINGW64 on PATH
+        # there is not yet an environment variable for this path from msys2/setup-msys2
+        run: |
+          echo "${{ runner.temp }}/msys64/mingw64/bin" | Out-File - FilePath $env: GITHUB_PATH - Encoding utf8 - Append
 
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -143,7 +150,5 @@ jobs:
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
           python3 -m pip install -U urllib3 poetry importlib_metadata
-          poetry shell
-          make depends
           make install
           make coverage

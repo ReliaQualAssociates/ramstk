@@ -35,7 +35,7 @@ repos:
           verbose: true
           language: python
           additional_dependencies: [ autopep8 ]
-          args: [--in-place]
+          args: [--in-place, --exclude, '*.toml, *.yaml, *.yml']
     - repo: https://github.com/pycqa/pydocstyle
       rev: 6.1.1
       hooks:
@@ -58,15 +58,15 @@ repos:
       hooks:
         - id: eradicate
           args: []
-    -   repo: local
-        hooks:
-        -   id: wily
-            name: wily
-            entry: wily diff
-            verbose: true
-            language: python
-            additional_dependencies: [wily]
-            args: [--no-detail]
+    - repo: local
+      hooks:
+        - id: wily
+          name: wily
+          entry: wily diff
+          verbose: true
+          language: python
+          additional_dependencies: [wily]
+          args: [--no-detail]
     - repo: https://github.com/rstcheck/rstcheck
       rev: 'v6.0.0.post1'
       hooks:
