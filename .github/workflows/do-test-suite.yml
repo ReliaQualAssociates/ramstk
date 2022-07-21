@@ -128,7 +128,7 @@ jobs:
             git
             make
             python
-            python-dev
+            python-devel
             mingw-w64-${{ matrix.arch }}-cairo
             mingw-w64-${{ matrix.arch }}-gtk3
             mingw-w64-${{ matrix.arch }}-gobject-introspection
