@@ -91,7 +91,7 @@ class RAMSTKMatrixView(Gtk.Grid):
         self,
         column_idx: int,
         row_idx: int,
-    ) -> object:
+    ) -> Gtk.Widget:
         """Get the interactive widget at column/row.
 
         :param column_idx: the index of the column in the matrix to retrieve the
