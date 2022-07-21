@@ -141,11 +141,11 @@ requirements:
 	$(POETRY) lock
 
 depends:
-	pip install -U pip wheel
+	$(PYTHON) -m pip install -U pip wheel
 	$(POETRY) install --no-root
 
 upgrade:
-	pip install -U pip wheel
+	$(PYTHON) -m pip install -U pip wheel
 	$(POETRY) update
 	$(POETRY) install
 
