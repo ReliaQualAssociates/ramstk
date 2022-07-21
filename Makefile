@@ -151,11 +151,6 @@ upgrade:
 
 # Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc
-
-# OS is only defined on Windows.
-ifdef OS
-	@echo -e "\n\tRAMSTK cannot be installed on Windows at this time.  Sorry."
-else
 	@echo -e "\n\t\033[1;32mInstalling RAMSTK and all data files to $(PREFIX) ...\033[0m\n"
 	pip install . --prefix=$(PREFIX)
 	${MKDIR} "$(PREFIX)/share/RAMSTK"
@@ -184,7 +179,6 @@ else
 	${COPY} "./data/postgres_program_db.sql" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/Site.toml" "$(PREFIX)/share/RAMSTK/"
 	${COPY} "./data/RAMSTK.toml" "$(PREFIX)/share/RAMSTK/"
-endif
 
 install.dev:
 	@echo -e "\n\t\033[1;32mInstalling RAMSTK only to $(PREFIX) ...\033[0m\n"
