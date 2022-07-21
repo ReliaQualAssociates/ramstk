@@ -14,6 +14,7 @@ from .__base.dbtable_test_class import (
     SystemTestGetterSetterMethods,
     SystemTestInsertMethods,
     SystemTestSelectMethods,
+    SystemTestUpdateMethods,
     UnitTestDeleteMethods,
     UnitTestInsertMethods,
     UnitTestSelectMethods,
