@@ -35,7 +35,7 @@ DOCFORMATTER	= $(shell which docformatter)
 ISORT       = $(shell which isort)
 MYPY		= $(shell which mypy)
 POETRY		= $(shell which poetry)
-PYCODESTYLE	= $(shell which autopep8)
+PYCODESTYLE	= $(shell which pycodestyle)
 PYDOCSTYLE	= $(shell which pydocstyle)
 PYLINT		= $(shell which pylint)
 PYROMA		= $(shell which pyroma)
@@ -52,7 +52,7 @@ ICONS32		= $(shell ls ./data/icons/32x32)
 DOCFORMATTER_ARGS	= --in-place --config ./pyproject.toml
 ISORT_ARGS	= --settings-file ./pyproject.toml --atomic
 MYPY_ARGS	= --config-file ./pyproject.toml
-PYCODESTYLE_ARGS	= --in-place
+PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 
@@ -141,16 +141,11 @@ requirements:
 	$(POETRY) lock
 
 depends:
-ifdef OS
-	pip install -U --user pip wheel
+	$(PYTHON) -m pip install -U pip wheel
 	$(POETRY) install --no-root
-else
-	pip install -U pip wheel
-	$(POETRY) install --no-root
-endif
 
 upgrade:
-	pip install -U pip wheel
+	$(PYTHON) -m pip install -U pip wheel
 	$(POETRY) update
 	$(POETRY) install
 

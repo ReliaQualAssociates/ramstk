@@ -49,44 +49,58 @@ class RAMSTKMatrixView(Gtk.Grid):
         self.n_columns = 0
         self.n_rows = 0
 
-    def do_add_column(self, heading_str: str, tooltip_str: str) -> None:
+    def do_add_column(self) -> None:
         """Add a column to the RAMSTKMatrixView().
 
-        :param heading_str: the text to display as the heading for the new column.
-        :param tooltip_str: the tooltip for the new column's header widget.
         :return: None
         :rtype: None
         """
         self.insert_column(self.n_columns + 1)
-
-        self._do_add_widgets(
-            (self.n_columns + 1, 0),
-            self.n_rows,
-            heading_str,
-            tooltip_str,
-            row_flag=False,
-        )
-
         self.n_columns += 1
 
-    def do_add_row(self, heading_str: str, tooltip_str: str) -> None:
+    def do_add_row(self) -> None:
         """Add a row to the RAMSTKMatrixView().
 
-        :param heading_str: the text to display as the heading for the new row.
-        :param tooltip_str: the tooltip for the new row's header widget.
         :return: None
         :rtype: None
         """
         self.insert_row(self.n_rows + 1)
-
-        self._do_add_widgets(
-            (0, self.n_rows + 1),
-            self.n_columns,
-            heading_str,
-            tooltip_str,
-        )
-
         self.n_rows += 1
+
+    def do_build_matrix(
+        self,
+        column_name_lst: List[Tuple[str, str, int]],
+        row_name_lst: List[Tuple[str, str, int]],
+    ) -> None:
+        """Build an M row x N column matrix.
+
+        :param column_name_lst: a list of tuples with the name and description of the
+            items to use as the column headings and the tooltips.
+        :param row_name_lst: a list of tuples with the name and description of the
+            items to use as the row headings and the tooltips.
+        :return: None
+        :rtype: None
+        """
+        self.do_set_column_headings(column_name_lst)
+        self.do_set_row_headings(row_name_lst)
+
+        for _row_idx in range(self.n_rows):
+            self._do_add_widgets(self.n_columns, _row_idx + 1)
+
+    def do_get_widget(
+        self,
+        column_idx: int,
+        row_idx: int,
+    ) -> Gtk.Widget:
+        """Get the interactive widget at column/row.
+
+        :param column_idx: the index of the column in the matrix to retrieve the
+            widget.
+        :param row_idx: the index of the row in the matrix to retrieve the widget.
+        :return: _widget_obj, the widget at the column/row intersection in the matrix.
+        :rtype: object
+        """
+        return self.get_child_at(column_idx, row_idx)
 
     def do_remove_column(self, position_idx: int) -> None:
         """Remove the RAMSTKMatrixView() column at position_idx.
@@ -96,7 +110,6 @@ class RAMSTKMatrixView(Gtk.Grid):
         :rtype: None
         """
         self.remove_column(position_idx)
-
         self.n_columns -= 1
 
     def do_remove_row(self, position_idx: int) -> None:
@@ -107,7 +120,6 @@ class RAMSTKMatrixView(Gtk.Grid):
         :rtype: None
         """
         self.remove_row(position_idx)
-
         self.n_rows -= 1
 
     def do_set_column_headings(
@@ -131,10 +143,13 @@ class RAMSTKMatrixView(Gtk.Grid):
         :rtype: None
         """
         for _column_name_tpl in column_name_lst:
-            self.do_add_column(_column_name_tpl[0], _column_name_tpl[1])
+            self.do_add_column()
+            self._do_add_label(
+                (self.n_columns, 0),
+                _column_name_tpl[0],
+                _column_name_tpl[1],
+            )
             self.column_id_dic[_column_name_tpl[0]] = _column_name_tpl[2]
-
-        self.n_rows += 1
 
     def do_set_row_headings(
         self,
@@ -161,27 +176,26 @@ class RAMSTKMatrixView(Gtk.Grid):
         :rtype: None
         """
         for _row_name_tpl in row_name_lst:
-            self.do_add_row(_row_name_tpl[0], _row_name_tpl[1])
+            self.do_add_row()
+            self._do_add_label(
+                (0, self.n_rows),
+                _row_name_tpl[0],
+                _row_name_tpl[1],
+            )
             self.row_id_dic[_row_name_tpl[0]] = _row_name_tpl[2]
 
-        self.n_columns += 1
-
-    def _do_add_widgets(
+    def _do_add_label(
         self,
         position_tpl: Tuple[int, int],
-        n_positions_int: int,
         heading_str: str,
         tooltip_str: str,
-        row_flag: bool = True,
     ) -> None:
-        """Add either a column or row to the RAMSTKMatrixView().
+        """Add either a column or row label to the RAMSTKMatrixView().
 
         :param position_tpl: the column number and row number to attach the left
             side and top side respectively of new widgets to.
-        :param n_positions_int: the number of columns or rows in the RAMSTKMatrixView().
         :param heading_str: the text to display as the heading for the new column/row.
         :param tooltip_str: the tooltip for the new column's/row's header widget.
-        :param row_flag: indicates whether to insert a column or a row (default).
         :return: None
         :rtype: None
         """
@@ -192,15 +206,31 @@ class RAMSTKMatrixView(Gtk.Grid):
             tooltip=tooltip_str,
             wrap=False,
         )
+        _label_obj.set_angle(90.0)
+
         self.attach(_label_obj, position_tpl[0], position_tpl[1], 1, 1)
 
+    def _do_add_widgets(
+        self,
+        n_positions_int: int,
+        position_int: int,
+        row_flag: bool = True,
+    ) -> None:
+        """Add interactive widgets to the grid cells.
+
+        :param n_positions_int: the number of columns or rows in the RAMSTKMatrixView().
+        :param position_int: the left (for columns) or top (for rows) position of the
+            new widget.
+        :param row_flag: indicates whether to insert a column or a row (default).
+        :return: None
+        :rtype: None
+        """
         for _add_idx in range(n_positions_int):
             _combo_obj = self._do_make_combobox()
             if row_flag:
-                self.attach(_combo_obj, _add_idx + 1, position_tpl[1], 1, 1)
+                self.attach(_combo_obj, _add_idx + 1, position_int, 1, 1)
             else:
-                self.attach(_combo_obj, position_tpl[0], _add_idx + 1, 1, 1)
-                _label_obj.set_angle(90.0)
+                self.attach(_combo_obj, position_int, _add_idx + 1, 1, 1)
 
     def _do_make_combobox(self) -> RAMSTKComboBox:
         """Create a RAMSTKComboBox() to display the relationship results for a cell.

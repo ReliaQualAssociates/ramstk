@@ -655,16 +655,6 @@ class RAMSTKMatrixPanel(RAMSTKPanel):
             self.do_clear_panel,
             "request_clear_views",
         )
-        # pub.subscribe(
-        #    self.do_load_panel,
-        #    f"selected_{self._tag}",
-        # )
-        # pub.subscribe(
-        #    self.do_load_panel,
-        #    f"succeed_get_{self._tag}_attributes",
-        # )
-
-        # Generally used with panels that display results and are, thus, uneditable.
 
     def do_clear_panel(self) -> None:
         """Clear the contents of the matrix.
@@ -687,18 +677,16 @@ class RAMSTKMatrixPanel(RAMSTKPanel):
         :param attribute_dic: the attribute dict for the selected item.
         :return: None
         """
-        # The first to rows are comprised of the column heading label and a
-        # RAMSTKEntry for the column element database ID.  We skip these.
-        for _row_idx in range(self.grdMatrixView.n_rows - 2):
-            _row_label_str = self.grdMatrixView.get_child_at(0, _row_idx + 2).get_text()
+        # The first row is for column heading labels.  We skip this row.
+        for _row_idx in range(self.grdMatrixView.n_rows - 1):
+            _row_label_str = self.grdMatrixView.get_child_at(0, _row_idx + 1).get_text()
             _row_data_obj = attribute_dic[_row_label_str]
 
-            # The first two columns are comprised of the row heading label and a
-            # RAMSTKEntry for the row element database ID.  We skip these.
-            for _column_idx in range(len(_row_data_obj) - 2):
+            # The first column is for row heading labels.  We skip this row.
+            for _column_idx in range(len(_row_data_obj) - 1):
                 _combo_obj = self.grdMatrixView.get_child_at(
-                    _column_idx + 2,
-                    _row_idx + 2,
+                    _column_idx + 1,
+                    _row_idx + 1,
                 )
                 _combo_obj.do_load_combo(
                     _row_data_obj,
@@ -706,15 +694,12 @@ class RAMSTKMatrixPanel(RAMSTKPanel):
 
         pub.sendMessage("request_set_cursor_active")
 
-    def do_make_panel(self, **kwargs: Dict[str, Union[bool, float, int, str]]) -> None:
+    def do_make_panel(self) -> None:
         """Create a panel with an embedded RAMSTKMatrixView().
 
         :return: None
         :rtype: None
         """
-        _n_columns_int = kwargs.get("n_columns", 1)
-        _n_rows_int = kwargs.get("n_rows", 1)
-
         _scrollwindow_obj: RAMSTKScrolledWindow = RAMSTKScrolledWindow(
             self.grdMatrixView
         )
@@ -726,65 +711,43 @@ class RAMSTKMatrixPanel(RAMSTKPanel):
 
         :return: None
         """
-
-    def do_set_properties(self, **kwargs: Any) -> None:
-        """Set properties of the RAMSTKMatrixPanel() widgets.
-
-        :return: None
-        """
+        for _row_idx in range(self.grdMatrixView.n_rows):
+            for _column_idx in range(self.grdMatrixView.n_columns):
+                _combo_obj: Gtk.Widget = self.grdMatrixView.do_get_widget(
+                    _column_idx,
+                    _row_idx,
+                )
+                _combo_obj.connect(
+                    "changed",
+                    self.on_changed_combo,
+                    _combo_obj,
+                )
 
     def on_changed_combo(
-        self, combo: RAMSTKComboBox, key: str, message: str
-    ) -> Dict[Union[str, Any], Any]:
+        self,
+        combo_obj: RAMSTKComboBox,
+    ) -> int:
         """Retrieve changes made in RAMSTKComboBox() widgets.
 
-        This method publishes the PyPubSub message that it is passed.  This
-        is usually sufficient to ensure the attributes are updated by the
-        datamanager.  This method also return a dict with {_key: _new_text}
-        if this information is needed by the child class.
-
-        :param combo: the RAMSTKComboBox() that called the method.
-        :param key: the name in the class' Gtk.TreeModel() associated
-            with the attribute from the calling Gtk.Widget().
-        :param message: the PyPubSub message to publish.
-        :return: {_key: _new_text}; the work stream module's attribute name
-            and the new value from the RAMSTKComboBox().  The value {'': -1}
-            will be returned when a KeyError or ValueError is raised by this
-            method.
+        :param combo_obj: the RAMSTKComboBox() that called the method.
+        :return: _combo_idx
+        :rtype: int
         """
-        _key: str = ""
-        _new_text: int = -1
-
-        combo.handler_block(combo.dic_handler_id["changed"])
+        _combo_idx = -1
 
         try:
-            _new_text = int(combo.get_active())
-
-            # Only if something is selected should we send the message.
-            # Otherwise, attributes get updated to a value of -1 which isn't
-            # correct.  And it sucks trying to figure out why, so leave the
-            # conditional unless you have a more elegant (and there prolly
-            # is) solution.
-            if _new_text > -1:
-                pub.sendMessage(
-                    message,
-                    node_id=self._record_id,
-                    package={key: _new_text},
-                )
+            _combo_idx = combo_obj.get_active()
         except (KeyError, ValueError):
             pub.sendMessage(
                 "do_log_debug_msg",
                 logger_name="DEBUG",
                 message=_(
                     f"An error occurred while editing {self._tag} data for record ID "
-                    f"{self._record_id} in the view.  Key {key} does not exist in "
-                    f"attribute dictionary."
+                    f"{self._record_id} in the view."
                 ),
             )
 
-        combo.handler_unblock(combo.dic_handler_id["changed"])
-
-        return {_key: _new_text}
+        return _combo_idx
 
 
 class RAMSTKPlotPanel(RAMSTKPanel):

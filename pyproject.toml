@@ -208,6 +208,7 @@ disable = ['duplicate-code']
 
 [tool.pylint.messages_control]
 disable = [
+	'invalid-name',
 	'line-too-long',
 	'too-many-instance-attributes',
 	'too-few-public-methods',
@@ -215,7 +216,8 @@ disable = [
 	'anomalous-unicode-escape-in-string',
 	'import-error',
 	'no-member',
-	'no-else-return'
+	'no-else-return',
+	'cyclic-import',
 ]
 
 [tool.pylint.reports]
@@ -243,9 +245,8 @@ max-module-lines = 5000
 good-names = [
 	'_'
 ]
-argument-rgx = '(self)|(cls)|(args)|(kwargs)|^_{0,2}([a-zA-Z0-9]{1,15}_{0,1})*_(df|dic|flag|flt|id|idx|int|lst|obj|str|tpl)$'
 attr-rgx = '^_{0,2}[a-zA-Z]{1,10}_{0,1}[a-zA-Z]{0,10}_{0,1}[a-zA-Z]{0,10}$'
-variable-rgx = '(self)|(cls)|(args)|(kwargs)|^_{0,2}([a-zA-Z0-9]{1,15}_{0,1})*_(df|dic|flag|flt|id|idx|int|lst|obj|str|tpl)$'
+variable-rgx = '^_{0,2}[a-zA-Z]{1,10}_{0,1}[a-zA-Z]{0,10}_{0,1}[a-zA-Z]{0,10}$'
 
 [tool.pylint.typecheck]
 ignore-mixin-members = true
@@ -282,27 +283,7 @@ ignore_roles = [
 
 [tool.pydocstyle]
 ignore = [
-	"D203",
-	"D204",
-	"D213",
+	'D203',
+	'D204',
+	'D213',
 ]
-
-[tool.autopep8]
-count = true
-exclude = ".git, .tox, *.pyc, *.pyi, *.pyo, *.xml, *.md, *.toml, *.yaml, *.yml, *.lock, *.cfg, Makefile, build, dist, *.egg-info, config, docs, locale, tests, tools"
-format = "pylint"
-ignore = [
-	"C326",
-	"C330",
-	"E121",
-	"E123",
-	"E126",
-	"E133",
-	"E242",
-	"E265",
-	"E402",
-	"W503",
-	"W504"
-]
-max_line_length = 88
-statistics = true
