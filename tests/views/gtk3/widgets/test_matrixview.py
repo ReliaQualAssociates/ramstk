@@ -14,6 +14,17 @@ import pytest
 from ramstk.views.gtk3 import GdkPixbuf, Gtk
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKLabel, RAMSTKMatrixView
 
+COLUMN_HEADINGS = [
+    ("Column 1", "Column Tooltip 1", 12),
+    ("Column 2", "Column Tooltip 2", 28),
+    ("Column 3", "Column Tooltip 3", 3),
+]
+ROW_HEADINGS = [
+    ("Row 1", "Row Tooltip 1", 4),
+    ("Row 2", "Row Tooltip 2", 8),
+    ("Row 3", "Row Tooltip 3", 12),
+]
+
 
 @pytest.mark.usefixtures("test_toml_user_configuration")
 class TestRAMSTKMatrixView:
@@ -95,11 +106,7 @@ class TestRAMSTKMatrixView:
         assert dut.n_rows == 0
 
         dut.do_set_column_headings(
-            [
-                ("Column 1", "Tooltip 1", 12),
-                ("Column 2", "Tooltip 2", 28),
-                ("Column 3", "Tooltip 3", 3),
-            ],
+            COLUMN_HEADINGS,
         )
 
         _label_lst = [
@@ -133,11 +140,7 @@ class TestRAMSTKMatrixView:
         assert dut.row_id_dic == {}
 
         dut.do_set_row_headings(
-            [
-                ("Row 1", "Tooltip 1", 4),
-                ("Row 2", "Tooltip 2", 8),
-                ("Row 3", "Tooltip 3", 12),
-            ],
+            ROW_HEADINGS,
         )
 
         _label_lst = [
@@ -170,21 +173,13 @@ class TestRAMSTKMatrixView:
                 _icon_str
             ] = f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
 
-        _column_headings = [
-            ("Column 1", "Column Tooltip 1", 12),
-            ("Column 2", "Column Tooltip 2", 28),
-            ("Column 3", "Column Tooltip 3", 3),
-        ]
-        _row_headings = [
-            ("Row 1", "Row Tooltip 1", 4),
-            ("Row 2", "Row Tooltip 2", 8),
-            ("Row 3", "Row Tooltip 3", 12),
-        ]
-
         assert dut.n_columns == 0
         assert dut.n_rows == 0
 
-        dut.do_build_matrix(_column_headings, _row_headings)
+        dut.do_build_matrix(
+            COLUMN_HEADINGS,
+            ROW_HEADINGS,
+        )
 
         assert dut.n_columns == 3
         assert dut.n_rows == 3
@@ -248,18 +243,10 @@ class TestRAMSTKMatrixView:
             dut.icons_dic[
                 _icon_str
             ] = f"{test_toml_user_configuration.RAMSTK_ICON_DIR}/32x32/{_icon_str}.png"
-
-        _column_headings = [
-            ("Column 1", "Column Tooltip 1", 12),
-            ("Column 2", "Column Tooltip 2", 28),
-            ("Column 3", "Column Tooltip 3", 3),
-        ]
-        _row_headings = [
-            ("Row 1", "Row Tooltip 1", 4),
-            ("Row 2", "Row Tooltip 2", 8),
-            ("Row 3", "Row Tooltip 3", 12),
-        ]
-        dut.do_build_matrix(_column_headings, _row_headings)
+        dut.do_build_matrix(
+            COLUMN_HEADINGS,
+            ROW_HEADINGS,
+        )
 
         assert isinstance(dut.get_child_at(1, 1), RAMSTKComboBox)
         assert isinstance(dut.get_child_at(1, 2), RAMSTKComboBox)
