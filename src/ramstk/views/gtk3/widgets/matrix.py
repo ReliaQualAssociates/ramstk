@@ -87,6 +87,21 @@ class RAMSTKMatrixView(Gtk.Grid):
         for _row_idx in range(self.n_rows):
             self._do_add_widgets(self.n_columns, _row_idx + 1)
 
+    def do_get_widget(
+        self,
+        column_idx: int,
+        row_idx: int,
+    ) -> object:
+        """Get the interactive widget at column/row.
+
+        :param column_idx: the index of the column in the matrix to retrieve the
+            widget.
+        :param row_idx: the index of the row in the matrix to retrieve the widget.
+        :return: _widget_obj, the widget at the column/row intersection in the matrix.
+        :rtype: object
+        """
+        return self.get_child_at(column_idx, row_idx)
+
     def do_remove_column(self, position_idx: int) -> None:
         """Remove the RAMSTKMatrixView() column at position_idx.
 
