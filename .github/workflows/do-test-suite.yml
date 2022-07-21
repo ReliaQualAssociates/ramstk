@@ -124,19 +124,19 @@ jobs:
             base-devel
             git
             python-devel
-            mingw-w64 -${{matrix.arch}}-gcc
-            mingw-w64 -${{matrix.arch}}-gcc-libs
-            mingw-w64 -${{matrix.arch}}-gcc-fortran
-            mingw-w64 -${{matrix.arch}}-make
-            mingw-w64 -${{matrix.arch}}-python
-            mingw-w64 -${{matrix.arch}}-cairo
-            mingw-w64 -${{matrix.arch}}-gtk3
-            mingw-w64 -${{matrix.arch}}-gobject-introspection
-            mingw-w64 -${{matrix.arch}}-lapack
-            mingw-w64 -${{matrix.arch}}-openblas
-            mingw-w64 -${{matrix.arch}}-python-pip
-            mingw-w64 -${{matrix.arch}}-python-numpy
-            mingw-w64 -${{matrix.arch}}-python-scipy
+            mingw-w64-${{matrix.arch}}-gcc
+            mingw-w64-${{matrix.arch}}-gcc-libs
+            mingw-w64-${{matrix.arch}}-gcc-fortran
+            mingw-w64-${{matrix.arch}}-make
+            mingw-w64-${{matrix.arch}}-python
+            mingw-w64-${{matrix.arch}}-cairo
+            mingw-w64-${{matrix.arch}}-gtk3
+            mingw-w64-${{matrix.arch}}-gobject-introspection
+            mingw-w64-${{matrix.arch}}-lapack
+            mingw-w64-${{matrix.arch}}-openblas
+            mingw-w64-${{matrix.arch}}-python-pip
+            mingw-w64-${{matrix.arch}}-python-numpy
+            mingw-w64-${{matrix.arch}}-python-scipy
 
       - name: Put MSYS2_MINGW64 on PATH
         # there is not yet an environment variable for this path from msys2/setup-msys2
