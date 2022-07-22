@@ -707,7 +707,7 @@ class RAMSTKMatrixPanel(RAMSTKPanel):
         self.add(_scrollwindow_obj)
 
     def do_set_callbacks(self) -> None:
-        """Set the callback methods for RAMSTKMatrixView().
+        """Set the callback methods for RAMSTKMatrixView() widgets.
 
         :return: None
         """
