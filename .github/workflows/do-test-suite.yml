@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ 3.7, 3.8, 3.9, '3.10' ]
+        python: [ 3.8, 3.9, '3.10' ]
 
     services:
       postgres:
@@ -145,5 +145,5 @@ jobs:
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
           python3 -m pip install -U urllib3 poetry importlib_metadata
-          make install
+          make PREFIX="/mingw64" install
           make coverage

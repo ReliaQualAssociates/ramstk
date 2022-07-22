@@ -35,7 +35,7 @@ repos:
           verbose: true
           language: python
           additional_dependencies: [ autopep8 ]
-          args: [--in-place, --exclude, '*.toml, *.yaml, *.yml']
+          args: [--in-place, --exclude, '*.toml, *.yaml, *.yml, *.lock, *.md, Makefile']
     - repo: https://github.com/pycqa/pydocstyle
       rev: 6.1.1
       hooks:
