@@ -3,7 +3,6 @@
 
    CONTRIBUTING.md
 
-.. _coding-standards:
 Coding Standards
 ================
 
