@@ -25,7 +25,7 @@ jobs:
           success-state: Conventional commits compliant title detected.
           failure-state: Pull request title is not conventional commits compliant!
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RAMSTK_PAT }}
 
   pr-labeler:
     permissions: write-all
@@ -35,4 +35,4 @@ jobs:
       - name: Apply Labels to PR
         uses: TimonVS/pr-labeler-action@v3
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RAMSTK_PAT }}
