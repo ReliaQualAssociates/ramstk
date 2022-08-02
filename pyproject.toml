@@ -276,6 +276,7 @@ report = "warning"
 ignore_directives = [
 	"automodule",
 	"tabularcolumns",
+	"toctree",
 ]
 ignore_roles = [
 	"numref",

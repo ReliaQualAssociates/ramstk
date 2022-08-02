@@ -15,6 +15,7 @@ on:
 
 jobs:
   good-pr-title:
+    permissions: write-all
     name: Ensure Conventional PR Title
     runs-on: ubuntu-latest
     steps:
@@ -27,6 +28,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   pr-labeler:
+    permissions: write-all
     name: Label Pull Request from Branch Name
     runs-on: ubuntu-latest
     steps:
