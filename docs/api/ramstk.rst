@@ -1,11 +1,7 @@
-RAMSTK Packages
-===============
-
 .. toctree::
    :maxdepth: 2
 
    ramstk.analyses
-   ramstk.db
    ramstk.exim
    ramstk.models
    ramstk.views
