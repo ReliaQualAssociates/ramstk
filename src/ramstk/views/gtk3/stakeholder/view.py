@@ -121,7 +121,7 @@ class StakeholderWorkView(RAMSTKWorkView):
             )
         except ValueError:
             _new_key = 1
-        self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = str(new_text)
+        self.RAMSTK_USER_CONFIGURATION.RAMSTK_AFFINITY_GROUPS[_new_key] = new_text
 
     # pylint: disable=unused-argument
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:

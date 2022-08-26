@@ -323,7 +323,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
 
     def __init__(self, **kwargs) -> None:
         """Initialize an instance of the RAMSTKDateSelect class."""
-        _dlgparent = kwargs.get("dlgparent", None)
+        _dlgparent = kwargs.get("dlgparent")
 
         super().__init__(self)
 

@@ -115,8 +115,8 @@ class PreferencesDialog(RAMSTKBaseView):
         :param __button: the Gtk.Button() that called this method.
         :return: None
         """
-        _conf_file = self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR + "/RAMSTK.toml"
-        copyfile(_conf_file, _conf_file + "_bak")
+        _conf_file = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/RAMSTK.toml"
+        copyfile(_conf_file, f"{_conf_file}_bak")
         self.RAMSTK_USER_CONFIGURATION.set_user_configuration()
 
         try:
@@ -144,12 +144,13 @@ class PreferencesDialog(RAMSTKBaseView):
 
         copyfile(
             self._pnlTreeViewLayout.fmt_file,
-            self._pnlTreeViewLayout.fmt_file + "_bak",
+            f"{self._pnlTreeViewLayout.fmt_file}_bak",
         )
+
 
         # Get the format file for the Gtk.TreeView to be edited.  Make a
         # backup copy by appending the current date.
-        _now = datetime.today().strftime("%Y%m%d")
+        _now = datetime.now().strftime("%Y%m%d")
         _bak_file = f"{self._pnlTreeViewLayout.fmt_file[:-5]}_bak_{_now}.toml"
         copyfile(self._pnlTreeViewLayout.fmt_file, _bak_file)
 

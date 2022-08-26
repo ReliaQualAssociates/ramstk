@@ -64,9 +64,10 @@ class FunctionModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons["tab"] = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR + "/32x32/function.png"
-        )
+        self._dic_icons[
+            "tab"
+        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/function.png"
+
 
         # Initialize private list attributes.
         self._lst_callbacks.insert(1, super().do_request_insert_child)

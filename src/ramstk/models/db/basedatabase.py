@@ -335,9 +335,9 @@ class BaseDatabase:
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        _keys: List[str] = kwargs.get("key", None)
-        _values: List[Any] = kwargs.get("value", None)
-        _order: Any = kwargs.get("order", None)
+        _keys: List[str] = kwargs.get("key")
+        _values: List[Any] = kwargs.get("value")
+        _order: Any = kwargs.get("order")
         _all: bool = kwargs.get("_all", True)
 
         _filters = {}

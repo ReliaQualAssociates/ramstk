@@ -292,15 +292,15 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
     _configuration.get_user_configuration()
 
     if _configuration.RAMSTK_DATA_DIR == "":
-        _configuration.RAMSTK_DATA_DIR = _configuration.RAMSTK_CONF_DIR + "/layouts"
+        _configuration.RAMSTK_DATA_DIR = f"{_configuration.RAMSTK_CONF_DIR}/layouts"
         _configuration.set_user_configuration()
 
     if _configuration.RAMSTK_ICON_DIR == "":
-        _configuration.RAMSTK_ICON_DIR = _configuration.RAMSTK_CONF_DIR + "/icons"
+        _configuration.RAMSTK_ICON_DIR = f"{_configuration.RAMSTK_CONF_DIR}/icons"
         _configuration.set_user_configuration()
 
     if _configuration.RAMSTK_LOG_DIR == "":
-        _configuration.RAMSTK_LOG_DIR = _configuration.RAMSTK_CONF_DIR + "/logs"
+        _configuration.RAMSTK_LOG_DIR = f"{_configuration.RAMSTK_CONF_DIR}/logs"
         _configuration.set_user_configuration()
 
     _logger = do_initialize_loggers(

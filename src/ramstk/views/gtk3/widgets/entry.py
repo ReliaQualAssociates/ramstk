@@ -199,7 +199,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
             _handler_id = self.dic_handler_id[signal]
 
             _buffer.handler_block(_handler_id)
-            _buffer.set_text(str(value))
+            _buffer.set_text(value)
             _buffer.handler_unblock(_handler_id)
         except KeyError:
-            _buffer.set_text(str(value))
+            _buffer.set_text(value)

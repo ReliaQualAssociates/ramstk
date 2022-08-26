@@ -92,40 +92,41 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     :rtype: tuple
     """
     _location = kwargs.get("location", 0.0)  # Initial guess for location.
-    _floc = kwargs.get("floc", None)  # Value to fix location parameter.
+    _floc = kwargs.get("floc")
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     # method is not an argument to fit() until scipy-1.7.1.
     if _floc is None:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = expon.fit(
+        _location, _scale = (
+            expon.fit(
                 data,
                 loc=_location,
                 scale=_scale,
                 method=_method,
             )
-        else:
-            _location, _scale = expon.fit(
+            if scipy.__version__ >= "1.7.1"
+            else expon.fit(
                 data,
                 loc=_location,
                 scale=_scale,
             )
+        )
+
+    elif scipy.__version__ >= "1.7.1":
+        _location, _scale = expon.fit(
+            data,
+            loc=_location,
+            floc=_floc,
+            scale=_scale,
+            method=_method,
+        )
     else:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-                method=_method,
-            )
-        else:
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-            )
+        _location, _scale = expon.fit(
+            data,
+            loc=_location,
+            floc=_floc,
+            scale=_scale,
+        )
 
     return _location, _scale

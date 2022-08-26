@@ -35,9 +35,13 @@ def _calculate_agree_apportionment(
     _n_sub_systems: Any = int(attributes["n_sub_systems"])
     _n_sub_elements: Any = int(attributes["n_sub_elements"])
     try:
-        _mtbf_alloc: Any = (_n_sub_systems * _weight_factor * _time_i) / (
-            _n_sub_elements * (-log(float(parent_goal)))
+        _mtbf_alloc: Any = (
+            _n_sub_systems
+            * _weight_factor
+            * _time_i
+            / (_n_sub_elements * -log(parent_goal))
         )
+
         _hazard_rate_alloc: Any = 1.0 / _mtbf_alloc
         _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _time_i)
 
@@ -84,7 +88,7 @@ def _calculate_arinc_apportionment(
     _mission_time: Any = float(attributes["mission_time"])
     _weight_factor: Any = float(attributes["weight_factor"])
     try:
-        _hazard_rate_alloc: Any = _weight_factor * float(parent_goal)
+        _hazard_rate_alloc: Any = _weight_factor * parent_goal
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
         _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _mission_time)
     except ZeroDivisionError:
@@ -121,7 +125,7 @@ def _calculate_equal_apportionment(
     _mission_time: Any = float(attributes["mission_time"])
     _weight_factor: Any = float(attributes["weight_factor"])
     try:
-        _reliability_alloc: Any = float(parent_goal) ** _weight_factor
+        _reliability_alloc: Any = parent_goal**_weight_factor
         _hazard_rate_alloc: Any = -1.0 * log(_reliability_alloc) / _mission_time
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
 
@@ -188,7 +192,7 @@ def _calculate_foo_apportionment(
         _weight_factor: Any = (
             _intricacy * _state_of_art * _operating_time * _environment
         )
-        _percent_weight_factor: Any = _weight_factor / int(cum_weight)
+        _percent_weight_factor: Any = _weight_factor / cum_weight
 
         _hazard_rate_alloc: Any = _percent_weight_factor * parent_goal
         _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc

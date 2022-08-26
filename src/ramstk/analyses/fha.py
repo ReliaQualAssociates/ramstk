@@ -216,9 +216,7 @@ def set_user_defined_functions(
     for _idx in [6, 7, 8, 9, 10]:
         try:
             _key = list(fha.keys())[_idx]
-            fha[_key] = (
-                "0.0" if not str(functions[_idx - 6]) else str(functions[_idx - 6])
-            )
+            fha[_key] = str(functions[_idx - 6]) or "0.0"
         except IndexError:
             fha[_key] = "0.0"
 
