@@ -37,7 +37,7 @@ python = "^3.8,<4.0"
 lifelines = "^0.27.0"
 matplotlib = "^3.3.4"
 numpy = [
-	{ version  = "^1.23", python = "^3.8", markers = "sys_platform == 'linux'" }
+	{ version  = "^1.23,<1.24", python = "^3.8", markers = "sys_platform =='linux'" }
 ]
 openpyxl = "^3.0.6"
 pandas = [
