@@ -69,7 +69,7 @@ coverage = {extras = ["toml"], version = "^6.4"}
 docformatter = "^1.4"
 isort = "^5.7.0"
 mccabe = "^0.7.0"
-mock = "^4.0.3"
+mock = "^5.0.0"
 mypy = "^0.991"
 pep8 = "^1.7.1"
 pre-commit = "^2.18.0"
