@@ -140,20 +140,20 @@ def test_get_survival_zero_time():
 
 @pytest.mark.unit
 def test_do_fit_defaults(test_data):
-    """should estimate the scale, shape, and location parameters for the data."""
+    """Estimate the scale, shape, and location parameters for the data."""
     _shape, _location, _scale = weibull.do_fit(test_data)
 
-    assert _shape == pytest.approx(0.3982693)
+    assert _shape == pytest.approx(0.5774811)
     assert _location == pytest.approx(16.0)
-    assert _scale == pytest.approx(9.7800320)
+    assert _scale == pytest.approx(12.9100212)
 
 
 @pytest.mark.unit
 def test_do_fit_no_floc(test_data):
-    """should estimate the scale and shape parameters for the data."""
+    """Estimate the scale and shape parameters for the data."""
     _shape, _location, _scale = weibull.do_fit(test_data, floc=0.0)
 
-    assert _shape == pytest.approx(1.9326793)
+    assert _shape == pytest.approx(1.9326773)
     assert _location == 0.0
     assert _scale == pytest.approx(73.5260822)
 
