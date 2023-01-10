@@ -18,6 +18,7 @@ on:
     branches:
       - 'master'
       - '!release/**'
+      - '!dependabot/**'
     paths:
       - "**.py"
       - "!docs/**"
@@ -33,11 +34,11 @@ on:
 
 jobs:
   ubuntu:
-    name: Run Test Suite
+    name: Run Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ 3.7, 3.8, 3.9, '3.10' ]
+        python: [ 3.8, 3.9, '3.10' ]
 
     services:
       postgres:
@@ -100,6 +101,7 @@ jobs:
           parallel-finished: true
 
   msys2:
+    name: Run Test Suite on Windows (msys2)
     runs-on: windows-latest
     defaults:
       run:
@@ -113,27 +115,35 @@ jobs:
             arch: x86_64
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
       - name: setup-msys2
         uses: msys2/setup-msys2@v2
         with:
           msystem: ${{ matrix.msystem }}
           update: true
           install: >-
-            git
             base-devel
-            mingw-w64-${{ matrix.arch }}-cairo
-            mingw-w64-${{ matrix.arch }}-make
-            mingw-w64-${{ matrix.arch }}-gtk3
-            mingw-w64-${{ matrix.arch }}-python3
-            mingw-w64-${{ matrix.arch }}-python3-pip
-            mingw-w64-${{ matrix.arch }}-python3-gobject
+            git
+            python-devel
+            mingw-w64-${{matrix.arch}}-gcc
+            mingw-w64-${{matrix.arch}}-gcc-libs
+            mingw-w64-${{matrix.arch}}-gcc-fortran
+            mingw-w64-${{matrix.arch}}-make
+            mingw-w64-${{matrix.arch}}-python
+            mingw-w64-${{matrix.arch}}-cairo
+            mingw-w64-${{matrix.arch}}-gtk3
+            mingw-w64-${{matrix.arch}}-gobject-introspection
+            mingw-w64-${{matrix.arch}}-lapack
+            mingw-w64-${{matrix.arch}}-openblas
+            mingw-w64-${{matrix.arch}}-python-pip
+            mingw-w64-${{matrix.arch}}-python-numpy
+            mingw-w64-${{matrix.arch}}-python-scipy
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
       - name: Install RAMSTK and test with coverage
         run: |
-          pip install --user -U pip setuptools>12.0 urllib3 poetry importlib_metadata
-          make depends
-          make install
+          export SETUPTOOLS_USE_DISTUTILS=stdlib
+          python3 -m pip install -U urllib3 poetry importlib_metadata
+          make PREFIX="/mingw64" install
           make coverage

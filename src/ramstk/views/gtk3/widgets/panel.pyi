@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Tuple, Union
 
 # Third Party Imports
 import treelib
@@ -17,9 +17,11 @@ from .entry import RAMSTKTextView as RAMSTKTextView
 from .frame import RAMSTKFrame as RAMSTKFrame
 from .label import RAMSTKLabel as RAMSTKLabel
 from .label import do_make_label_group as do_make_label_group
+from .matrix import RAMSTKMatrixView as RAMSTKMatrixView
 from .plot import RAMSTKPlot as RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow as RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView as RAMSTKTreeView
+from .widget import RAMSTKWidget
 
 class RAMSTKPanel(RAMSTKFrame):
     _record_field: str
@@ -44,7 +46,16 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     _record_id: int
     on_edit_callback: str
     def do_load_panel(self, attributes: Dict[str, Any]) -> None: ...
-    def do_make_panel(self, **kwargs: Dict[str, Any]) -> None: ...
+    def do_make_panel(
+        self, **kwargs: Dict[str, Union[bool, float, int, str]]
+    ) -> None: ...
+    @staticmethod
+    def do_place_widgets(
+        x_pos: List[int],
+        labels: List[RAMSTKLabel],
+        widgets: List[RAMSTKWidget],
+        fixed: Gtk.Fixed,
+    ) -> Gtk.Fixed: ...
     def do_set_callbacks(self) -> None: ...
     def do_set_properties(self, **kwargs: Any) -> None: ...
     def on_changed_combo(
@@ -67,6 +78,23 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     def __do_read_text(
         self, entry: RAMSTKEntry, keys: str, datatype: str
     ) -> Dict[str, Any]: ...
+
+class RAMSTKMatrixPanel(RAMSTKPanel):
+    grdMatrixView: RAMSTKMatrixView
+    def __init__(self) -> None: ...
+    def do_clear_panel(self) -> None: ...
+    def do_load_panel(
+        self,
+        attribute_dic: Dict[str, Union[List[int], Tuple[int]]],
+    ) -> None: ...
+    def do_make_panel(
+        self, **kwargs: Dict[str, Union[bool, float, int, str]]
+    ) -> None: ...
+    def do_set_callbacks(self) -> None: ...
+    def on_changed_combo(
+        self,
+        combo_obj: RAMSTKComboBox,
+    ) -> None: ...
 
 class RAMSTKPlotPanel(RAMSTKPanel):
     pltPlot: RAMSTKPlot

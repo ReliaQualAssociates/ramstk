@@ -4,7 +4,7 @@
 #       ramstk.views.gtk3.widgets.__init__.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The RAMSTK GTK3 widgets package."""
 
 # RAMSTK Local Imports
@@ -29,7 +29,14 @@ from .dialog import (
 from .entry import RAMSTKEntry, RAMSTKTextView
 from .frame import RAMSTKFrame
 from .label import RAMSTKLabel, do_make_label_group
-from .panel import RAMSTKFixedPanel, RAMSTKPanel, RAMSTKPlotPanel, RAMSTKTreePanel
+from .matrix import RAMSTKMatrixView
+from .panel import (
+    RAMSTKFixedPanel,
+    RAMSTKMatrixPanel,
+    RAMSTKPanel,
+    RAMSTKPlotPanel,
+    RAMSTKTreePanel,
+)
 from .plot import RAMSTKPlot
 from .scrolledwindow import RAMSTKScrolledWindow
 from .treeview import RAMSTKTreeView

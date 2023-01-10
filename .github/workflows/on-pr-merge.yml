@@ -124,4 +124,5 @@ jobs:
         run: |
           cd docs
           make latexpdf LATEXMKOPTS="-silent -f"
+          ls _build/latex
           cd ..

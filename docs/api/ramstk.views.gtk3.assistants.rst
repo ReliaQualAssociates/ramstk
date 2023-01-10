@@ -1,10 +1,10 @@
 RAMSTK Assistants Package
 =========================
 
-RAMSTK Export Assistant
------------------------
+RAMSTK Function Assistant
+-------------------------
 
-.. automodule:: ramstk.views.gtk3.assistants.export
+.. automodule:: ramstk.views.gtk3.assistants.edit_function
    :members:
    :undoc-members:
    :show-inheritance:
@@ -37,14 +37,6 @@ RAMSTK Project Assistant
 ------------------------
 
 .. automodule:: ramstk.views.gtk3.assistants.project
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-RAMSTK Similar Item Assistant
------------------------------
-
-.. automodule:: ramstk.views.gtk3.assistants.similaritem
    :members:
    :undoc-members:
    :show-inheritance:

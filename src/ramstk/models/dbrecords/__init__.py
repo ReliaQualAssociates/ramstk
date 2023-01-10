@@ -36,6 +36,7 @@ from .programdb_failure_definition_record import RAMSTKFailureDefinitionRecord
 from .programdb_function_record import RAMSTKFunctionRecord
 from .programdb_hardware_record import RAMSTKHardwareRecord
 from .programdb_hazard_record import RAMSTKHazardRecord
+from .programdb_matrix_record import RAMSTKMatrixRecord
 from .programdb_mechanism_record import RAMSTKMechanismRecord
 from .programdb_milhdbk217f_record import RAMSTKMilHdbk217FRecord
 from .programdb_mission_phase_record import RAMSTKMissionPhaseRecord

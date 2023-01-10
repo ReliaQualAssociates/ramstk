@@ -20,11 +20,11 @@ on:
 
 jobs:
   test_suite:
-    name: Run Dummy Test Suite
+    name: Run Dummy Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [ 3.7, 3.8, 3.9, '3.10' ]
+        python: [ 3.8, 3.9, '3.10' ]
 
     steps:
       - name: Set up Python ${{ matrix.python }}
@@ -43,3 +43,10 @@ jobs:
     steps:
       - run: |
           echo "No test suite required; no coverage report generated."
+
+  msys2:
+    name: Run Dummy Test Suite on Windows (msys2)
+    runs-on: windows-latest
+    steps:
+      - run: |
+          echo "Test suite not required for Windows."

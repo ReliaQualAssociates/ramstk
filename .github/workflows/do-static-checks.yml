@@ -16,6 +16,7 @@ on:
   push:
     branches-ignore:
       - 'release/**'
+      - 'dependabot/**'
     paths:
       - "**.py"
     tags-ignore:
