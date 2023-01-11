@@ -44,7 +44,7 @@ jobs:
         id: relversion
         if: contains(steps.prlabels.outputs.labels, ' Release ')
         run: |
-          echo "::set-output name=rel_version::$(echo $(cat VERSION))"
+          echo "{rel_version}={$(echo $(cat VERSION))}" >> $GITHUB_OUTPUT
           echo "cut_release=1" >> $GITHUB_ENV
 
       - name: Cut the release
@@ -119,7 +119,7 @@ jobs:
 
       - name: Get new version
         id: newversion
-        run: echo "::set-output name=version::$(echo $(cat VERSION))"
+        run: echo "{version}={$(echo $(cat VERSION))}" >> $GITHUB_OUTPUT
 
       - name: Get next semantic version
         id: nextversion
