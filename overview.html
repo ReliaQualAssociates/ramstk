@@ -10,9 +10,6 @@
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -70,24 +67,24 @@ package manager to install RAMSTK.</p>
 <p>Once you have installed any missing development file packages using your
 operating system’s package manager, download the &lt;version&gt; of RAMSTK
 source from GitHub you wish to install.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/ReliaQualAssociates/ramstk/archive/v0.15.14.tar.gz
-$ tar -xf v0.15.14.tar.gz
-$ <span class="nb">cd</span> ramstk-0.15.14
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>wget<span class="w"> </span>https://github.com/ReliaQualAssociates/ramstk/archive/v0.15.14.tar.gz
+$<span class="w"> </span>tar<span class="w"> </span>-xf<span class="w"> </span>v0.15.14.tar.gz
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>ramstk-0.15.14
 </pre></div>
 </div>
 <p>The other option for obtaining the RAMSTK source code is to clone the
 repository.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/ReliaQualAssociates/ramstk.git ramstk.git
-$ <span class="nb">cd</span> ramstk.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ReliaQualAssociates/ramstk.git<span class="w"> </span>ramstk.git
+$<span class="w"> </span><span class="nb">cd</span><span class="w"> </span>ramstk.git
 </pre></div>
 </div>
 <p>Create and activate a virtual environment however you are acustomed to.
 One approach is to use pyenv and poetry.  Using pyenv isn’t necessary
 unless you want to install and use a Python version other than that
 provided by your operating system.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pyenv install <span class="m">3</span>.8.7
-$ poetry env use ~/.pyenv/shims/python3.8
-$ poetry shell
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pyenv<span class="w"> </span>install<span class="w"> </span><span class="m">3</span>.8.7
+$<span class="w"> </span>poetry<span class="w"> </span>env<span class="w"> </span>use<span class="w"> </span>~/.pyenv/shims/python3.8
+$<span class="w"> </span>poetry<span class="w"> </span>shell
 </pre></div>
 </div>
 <p>This will install Python-3.8.7 and tell poetry to use the Python interpreter
@@ -96,20 +93,20 @@ the virtual environment using Python-3.8.7 as the interpreter.</p>
 <p>Now that the virtual environment is activated, you can install the
 necessary RAMSTK dependencies and RAMSTK itself.  Omitting the PREFIX
 variable will cause RAMSTK to install to /usr/local by default.</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ make depends
-$ make <span class="nv">PREFIX</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span> install
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>make<span class="w"> </span>depends
+$<span class="w"> </span>make<span class="w"> </span><span class="nv">PREFIX</span><span class="o">=</span><span class="nv">$VIRTUAL_ENV</span><span class="w"> </span>install
 </pre></div>
 </div>
 <p>When upgrading RAMSTK, you can simply:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip install -U ramstk
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>-U<span class="w"> </span>ramstk
 </pre></div>
 </div>
 <p>This will only install the latest RAMSTK version from PyPi and will leave
 configuration, data, and icon files untouched.  If you cloned the RAMSTK
 repository, you can also use the Makefile:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ git switch master
-$ git pull
-$ make install.dev
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>git<span class="w"> </span>switch<span class="w"> </span>master
+$<span class="w"> </span>git<span class="w"> </span>pull
+$<span class="w"> </span>make<span class="w"> </span>install.dev
 </pre></div>
 </div>
 </section>
@@ -224,7 +221,7 @@ $ make install.dev
 
     <div class="footer" role="contentinfo">
         &#169; Copyright since 2007, Doyle &#34;weibullguy&#34; Rowland.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
     </div>
   </body>
 </html>
