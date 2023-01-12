@@ -24,6 +24,15 @@ RAMSTK User Guide
    user/modules
 
 ##################
+RAMSTK Development
+##################
+
+.. toctree::
+   :maxdepth: 2
+
+   api/ramstk
+
+##################
 Indices and Tables
 ##################
 

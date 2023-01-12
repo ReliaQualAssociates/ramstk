@@ -357,7 +357,7 @@ Design Conventions for RAMSTK
 #. All WorkView classes shall have the following attributes:
 
    +-----------------+----------------+----------------------------------------+
-   | Attribute       | Type           | Description                            |                                                                 |
+   | Attribute       | Type           | Description                            |
    +=================+================+========================================+
    | _dic_icons      | Dict[str, str] | dict of icons to use with the key being|
    |                 |                | a human readable name and the value    |

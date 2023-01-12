@@ -249,9 +249,10 @@ class RAMSTKBaseView(Gtk.HBox):
         |  N  |                   |                   |
         |  S  |                   |                   |
         +-----+-------------------+-------------------+
+
         self.make_toolbuttons -----+--> self
                                    |
-                      _hpaned -----+
+        _hpaned -------------------+
 
         :return: _hpaned; the Gtk.HPaned() that creates the left and right
             sides for further population.
@@ -277,7 +278,8 @@ class RAMSTKBaseView(Gtk.HBox):
         |  N  |                   |                   |
         |  S  |                   |                   |
         +-----+-------------------+-------------------+
-           self.make_toolbuttons  -----+--> self
+
+        self.make_toolbuttons  --------+--> self
                                        |
         _vpaned_right -----> _hpaned --+
 
@@ -308,9 +310,10 @@ class RAMSTKBaseView(Gtk.HBox):
         |  N  |                   |                   |
         |  S  |                   |                   |
         +-----+-------------------+-------------------+
-           self.make_toolbuttons  -----+--> self
+
+        self.make_toolbuttons  --------+--> self
                                        |
-         _vpaned_left -----> _hpaned --+
+        _vpaned_left -----> _hpaned ---+
 
         :return: (_hpaned, _vpaned_left); the Gtk.HPaned() and Gtk.Vpaned()
             that create the left and right sections for further population.
@@ -339,9 +342,10 @@ class RAMSTKBaseView(Gtk.HBox):
         |  N  |                   |                   |
         |  S  |                   |                   |
         +-----+-------------------+-------------------+
-           self.make_toolbuttons  -----+--> self
+
+        self.make_toolbuttons  --------+--> self
                                        |
-         _vpaned_left --+--> _hpaned --+
+        _vpaned_left ---+--> _hpaned --+
                         |
         _vpaned_right --+
 

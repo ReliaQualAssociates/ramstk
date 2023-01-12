@@ -90,6 +90,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends latexmk
           cd docs
           pip install -r requirements.txt
+          make clean
           make html
           cd ..
 
@@ -123,6 +124,7 @@ jobs:
       - name: Build pdf documentation
         run: |
           cd docs
+          make clean
           make latexpdf LATEXMKOPTS="-silent -f"
           ls _build/latex
           cd ..
