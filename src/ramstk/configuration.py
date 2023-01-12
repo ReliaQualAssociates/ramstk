@@ -12,9 +12,11 @@ import glob
 import sys
 
 # pylint: disable=no-name-in-module
+# pylint: disable=deprecated-module
 from distutils import dir_util, file_util
 
 # pylint: disable=no-name-in-module
+# pylint: disable=deprecated-module
 from distutils.errors import DistutilsFileError
 from os import environ, makedirs
 from typing import Any, Dict, Tuple, Union
