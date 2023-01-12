@@ -10,6 +10,9 @@
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css" />
     
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
     
@@ -17,8 +20,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="&lt;no title&gt;" href="api/modules.html" />
-    <link rel="prev" title="Contributing to the RAMS ToolKit (RAMSTK)" href="CONTRIBUTING.html" />
+    <link rel="next" title="Project History" href="history.html" />
+    <link rel="prev" title="Contributing to the RAMS ToolKit (RAMSTK)" href="contributing.html" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
     <meta name="viewport" content="width=device-width,initial-scale=0.8">
@@ -31,7 +34,7 @@
       <ul>
         <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
         <li><a href="index.html">RAMSTK 0.19.0 documentation</a> &#187;</li>
-          <li><a href="contributing.html" accesskey="U">Coding Standards</a> &#187;</li> 
+          <li><a href="contributing.html" accesskey="U">Contributing to the RAMS ToolKit (RAMSTK)</a> &#187;</li> 
       </ul>
     </div>
     
@@ -527,7 +530,70 @@ leading underscores ‘__’.</p></td>
 </tbody>
 </table>
 </li>
-<li><p>All WorkView classes shall have the following attributes:</p></li>
+<li><p>All WorkView classes shall have the following attributes:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Attribute</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>_dic_icons</p></td>
+<td><p>Dict[str, str]</p></td>
+<td><p>dict of icons to use with the key being
+a human readable name and the value
+being the absolute path to the icon
+file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>_lst_label_text</p></td>
+<td><p>List[str]</p></td>
+<td><p>list of text for each label that will
+be displayed on the WorkView.</p></td>
+</tr>
+<tr class="row-even"><td><p>_lst_widgets</p></td>
+<td><p>List[object]</p></td>
+<td><p>list of widgets to place on the
+WorkView.</p></td>
+</tr>
+<tr class="row-odd"><td><p>_module</p></td>
+<td><p>str</p></td>
+<td><p>name of the RAMSTK workflow module
+(e.g., ‘revision’, ‘hardware’, etc.)</p></td>
+</tr>
+<tr class="row-even"><td><p>_notebook</p></td>
+<td><p>RASMTKNotebook</p></td>
+<td><p>Gtk.Notebook that contains each of the
+‘pages’ for the module’s WorkView.</p></td>
+</tr>
+<tr class="row-odd"><td><p>_revision_id</p></td>
+<td><p>int</p></td>
+<td><p>currently selected Revision ID.</p></td>
+</tr>
+<tr class="row-even"><td><p>_parent_id</p></td>
+<td><p>int</p></td>
+<td><p>parent ID of the currently selected
+workflow item.</p></td>
+</tr>
+<tr class="row-odd"><td><p>_record_id</p></td>
+<td><p>int</p></td>
+<td><p>ID (e.g., function ID, hardware ID,
+etc.) of the currently selected
+workflow item.</p></td>
+</tr>
+<tr class="row-even"><td><p>_fmt</p></td>
+<td><p>str</p></td>
+<td><p>format string for displaying numerical
+information.</p></td>
+</tr>
+<tr class="row-odd"><td><p>_hbx_tab_label</p></td>
+<td><p>Gtk.HBox</p></td>
+<td><p>Gtk.HBox containing the label for the
+Gtk.Notebook tab.</p></td>
+</tr>
+</tbody>
+</table>
+</li>
 <li><p>_lst_label_text and _lst_widgets <strong>shall</strong>:</p>
 <table class="docutils align-default">
 <thead>
@@ -632,13 +698,13 @@ labels/widgets are divided into the different sections).</p></td>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="CONTRIBUTING.html"
+    <p class="topless"><a href="contributing.html"
                           title="previous chapter">Contributing to the RAMS ToolKit (RAMSTK)</a></p>
   </div>
   <div>
     <h4>Next topic</h4>
-    <p class="topless"><a href="api/modules.html"
-                          title="next chapter">&lt;no title&gt;</a></p>
+    <p class="topless"><a href="history.html"
+                          title="next chapter">Project History</a></p>
   </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -672,17 +738,17 @@ labels/widgets are divided into the different sections).</p></td>
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="api/modules.html" title="&lt;no title&gt;"
+          <a href="history.html" title="Project History"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="CONTRIBUTING.html" title="Contributing to the RAMS ToolKit (RAMSTK)"
+          <a href="contributing.html" title="Contributing to the RAMS ToolKit (RAMSTK)"
              accesskey="P">previous</a> |</li>
       </ul>
     </div>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright since 2007, Doyle &#34;weibullguy&#34; Rowland.
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
