@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -113,13 +113,13 @@ jobs:
     needs: cut-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.2.0
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Get new version
         id: newversion
-        run: echo "{version}={$(cat VERSION)}" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
 
       - name: Get next semantic version
         id: nextversion
