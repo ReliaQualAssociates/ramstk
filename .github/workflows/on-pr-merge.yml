@@ -120,11 +120,3 @@ jobs:
           branch: gh-pages
           directory: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build pdf documentation
-        run: |
-          cd docs
-          make clean
-          make latexpdf LATEXMKOPTS="-silent -f"
-          ls _build/latex
-          cd ..
