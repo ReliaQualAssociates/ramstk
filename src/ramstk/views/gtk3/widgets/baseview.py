@@ -189,12 +189,6 @@ class RAMSTKBaseView(Gtk.HBox):
 
         :return: None
         """
-        _fmt_file = (
-            self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR
-            + "/layouts/"
-            + self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._tag]
-        )
-
         try:
             _bg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}bg"]
             _fg_color = self.RAMSTK_USER_CONFIGURATION.RAMSTK_COLORS[f"{self._tag}fg"]
@@ -202,6 +196,7 @@ class RAMSTKBaseView(Gtk.HBox):
             _bg_color = "#FFFFFF"
             _fg_color = "#000000"
 
+        _fmt_file = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/layouts/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_FORMAT_FILE[self._tag]}"
         self._pnlPanel.do_make_treeview(
             bg_color=_bg_color,
             fg_color=_fg_color,
