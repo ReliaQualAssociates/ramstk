@@ -50,10 +50,10 @@ jobs:
           ver_minor=$(echo $cur_version | cut -d '.' -f2)
           ver_patch=$(echo $cur_version | cut -d '.' -f3)
 
-          echo "{cur_version}=$cur_version" >> $GITHUB_OUTPUT
-          echo "{ver_major}=$ver_major" >> $GITHUB_OUTPUT
-          echo "{ver_minor}=$ver_minor" >> $GITHUB_OUTPUT
-          echo "{ver_patch}=$ver_patch" >> $GITHUB_OUTPUT
+          echo "cur_version=$cur_version" >> $GITHUB_OUTPUT
+          echo "ver_major=$ver_major" >> $GITHUB_OUTPUT
+          echo "ver_minor=$ver_minor" >> $GITHUB_OUTPUT
+          echo "ver_patch=$ver_patch" >> $GITHUB_OUTPUT
 
       - name: Determine next Semantic version
         id: semver
@@ -65,16 +65,16 @@ jobs:
         id: nextversion
         run: |
           if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
-            echo "{next_version}={${{ steps.semver.outputs.major }}}" >> $GITHUB_OUTPUT
+            echo "next_version=${{ steps.semver.outputs.major }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
-            echo "{next_version}={${{ steps.semver.outputs.minor }}}" >> $GITHUB_OUTPUT
+            echo "next_version=${{ steps.semver.outputs.minor }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
-            echo "{next_version}={${{ steps.semver.outputs.patch }}}" >> $GITHUB_OUTPUT
+            echo "next_version=${{ steps.semver.outputs.patch }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           else
-            echo "{next_version}={${{ steps.curversion.outputs.cur_version }}}" >> $GITHUB_OUTPUT
+            echo "next_version=${{ steps.curversion.outputs.cur_version }}" >> $GITHUB_OUTPUT
             echo "do_release=0" >> $GITHUB_ENV
           fi
 
