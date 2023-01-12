@@ -22,7 +22,6 @@ GTK3/PyGobject View Package
    ramstk.views.gtk3.stakeholder
    ramstk.views.gtk3.usage_profile
    ramstk.views.gtk3.validation
-   ramstk.views.gtk3.widgets
 
 GTK3/PyGobject Desktop Module
 -----------------------------

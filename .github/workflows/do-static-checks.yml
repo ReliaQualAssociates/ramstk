@@ -17,6 +17,7 @@ on:
     branches-ignore:
       - 'release/**'
       - 'dependabot/**'
+      - 'docs/**'
     paths:
       - "**.py"
     tags-ignore:
