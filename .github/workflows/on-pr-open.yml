@@ -31,6 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Apply Labels to PR
-        uses: TimonVS/pr-labeler-action@v3
+        uses: TimonVS/pr-labeler-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
