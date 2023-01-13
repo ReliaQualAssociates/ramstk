@@ -133,14 +133,14 @@ jobs:
           number: ${{ steps.newversion.outputs.version }}
 
       - name: Create new minor release milestone
-        uses: WyriHaximus/github-action-create-milestone@master
+        uses: WyriHaximus/github-action-create-milestone@v1.2.0
         with:
           title: "${{ steps.nextversion.outputs.v_minor }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create new major release milestone
-        uses: WyriHaximus/github-action-create-milestone@master
+        uses: WyriHaximus/github-action-create-milestone@v1.2.0
         with:
           title: "${{ steps.nextversion.outputs.v_major }}"
         env:
