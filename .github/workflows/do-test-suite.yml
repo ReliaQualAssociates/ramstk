@@ -17,7 +17,7 @@ on:
   push:
     branches:
       - 'master'
-      - 'dependabot/pip/**'
+      - '!dependabot/pip/**'
       - '!release/**'
     paths:
       - "**.py"
