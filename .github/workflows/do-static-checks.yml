@@ -17,6 +17,7 @@ on:
     branches-ignore:
       - 'release/**'
       - 'dependabot/**'
+      - 'docs/**'
     paths:
       - "**.py"
     tags-ignore:
@@ -34,7 +35,7 @@ jobs:
     name: Check for Security Vulnerabilities
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Run bandit against repository
         uses: jpetrucciani/bandit-check@master
         with:
@@ -44,7 +45,7 @@ jobs:
     name: Check Code Formatting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check code format with black, isort, and docformatter
         uses: weibullguy/python-lint-plus@master
         with:
@@ -79,7 +80,7 @@ jobs:
     name: Check Code Styling
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check code style with pycodestyle and pydocstyle
         uses: weibullguy/python-lint-plus@master
         with:
@@ -113,7 +114,7 @@ jobs:
     name: Check Code Type Hinting
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Check code type hinting with mypy
         uses: weibullguy/python-lint-plus@master
         with:
@@ -148,7 +149,7 @@ jobs:
     name: Check Code Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Lint code with pylint
         uses: weibullguy/python-lint-plus@master
         with:

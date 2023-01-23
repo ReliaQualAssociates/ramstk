@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: master
@@ -28,7 +28,7 @@ jobs:
         id: newversion
         run: |
           new_tag=${GITHUB_REF/refs\/tags\//}
-          echo "::set-output name=new_version::$(echo $new_tag)"
+          echo "{new_version}={$(echo $new_tag)}" >> $GITHUB_OUTPUT
           echo "New tag is: $new_tag"
           echo "GitHub ref: ${{ github.ref }}"
 
