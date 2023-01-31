@@ -10,7 +10,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -119,7 +119,7 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    hazard: relationship = relationship(
+    hazard: Mapped[relationship] = relationship(
         "RAMSTKHazardRecord",
         backref="function",
         passive_deletes=True,

@@ -10,7 +10,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, Float, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -199,47 +199,47 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    failures: relationship = relationship(
+    failures: Mapped[relationship] = relationship(
         "RAMSTKFailureDefinitionRecord",
         backref="revision",
         passive_deletes=True,
     )
-    mission: relationship = relationship(
+    mission: Mapped[relationship] = relationship(
         "RAMSTKMissionRecord",
         backref="revision",
         passive_deletes=True,
     )
-    function: relationship = relationship(
+    function: Mapped[relationship] = relationship(
         "RAMSTKFunctionRecord",
         backref="revision",
         passive_deletes=True,
     )
-    requirement: relationship = relationship(
+    requirement: Mapped[relationship] = relationship(
         "RAMSTKRequirementRecord",
         backref="revision",
         passive_deletes=True,
     )
-    stakeholder: relationship = relationship(
+    stakeholder: Mapped[relationship] = relationship(
         "RAMSTKStakeholderRecord",
         backref="revision",
         passive_deletes=True,
     )
-    hardware: relationship = relationship(
+    hardware: Mapped[relationship] = relationship(
         "RAMSTKHardwareRecord",
         backref="revision",
         passive_deletes=True,
     )
-    validation: relationship = relationship(
+    validation: Mapped[relationship] = relationship(
         "RAMSTKValidationRecord",
         backref="revision",
         passive_deletes=True,
     )
-    hazard: relationship = relationship(
+    hazard: Mapped[relationship] = relationship(
         "RAMSTKHazardRecord",
         backref="revision",
         passive_deletes=True,
     )
-    program_status: relationship = relationship(
+    program_status: Mapped[relationship] = relationship(
         "RAMSTKProgramStatusRecord",
         backref="revision",
         passive_deletes=True,

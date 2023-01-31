@@ -10,7 +10,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -68,11 +68,11 @@ class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     phase_end = Column("fld_phase_end", Float, default=__defaults__["phase_end"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mission: relationship = relationship(
+    mission: Mapped[relationship] = relationship(
         "RAMSTKMissionRecord",
         back_populates="phase",
     )
-    environment: relationship = relationship(
+    environment: Mapped[relationship] = relationship(
         "RAMSTKEnvironmentRecord",
         back_populates="phase",
         cascade="all,delete",
