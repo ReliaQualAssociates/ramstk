@@ -120,39 +120,39 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     :rtype: tuple
     """
     _location = kwargs.get("location", 0.0)  # Initial guess for location.
-    _floc = kwargs.get("floc", None)  # Value to fix location parameter.
+    _floc = kwargs.get("floc")
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = weibull_min.fit(
+        _shape, _location, _scale = (
+            weibull_min.fit(
                 data,
                 loc=_location,
                 scale=_scale,
                 method=_method,
             )
-        else:
-            _shape, _location, _scale = weibull_min.fit(
+            if scipy.__version__ >= "1.7.1"
+            else weibull_min.fit(
                 data,
                 loc=_location,
                 scale=_scale,
             )
+        )
+    elif scipy.__version__ >= "1.7.1":
+        _shape, _location, _scale = weibull_min.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+            method=_method,
+        )
     else:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-                method=_method,
-            )
-        else:
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-            )
+        _shape, _location, _scale = weibull_min.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+        )
 
     return _shape, _location, _scale
