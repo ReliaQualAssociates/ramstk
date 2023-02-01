@@ -16,7 +16,7 @@ from scipy.stats import expon
 
 
 def get_hazard_rate(scale: float, location: float = 0.0) -> float:
-    """Calculates the hazard rate given a scale and location parameter.
+    """Calculate the hazard rate given a scale and location parameter.
 
     This function calculates the rate parameter (lambda) given the scale (MTBF)
     and, optionally, a location parameter.
