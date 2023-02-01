@@ -1281,12 +1281,12 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     def do_filter_tree(
         self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
     ) -> bool:
-        """Filter Similar Item to show only those associated with the selected
-        Hardware.
+        """Filter to show only those associated with the selected Hardware.
 
         :param model: the filtered model for the Similar Item RAMSTKTreeView.
         :param row: the iter to check against condition(s).
-        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :param data: unused in this method; required by Gtk.TreeModelFilter()
+            widget.
         :return: True if row should be visible, False else.
         :rtype: bool
         """

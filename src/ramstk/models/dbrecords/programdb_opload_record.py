@@ -9,7 +9,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -73,16 +73,16 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism: relationship = relationship(
+    mechanism: Mapped[relationship] = relationship(
         "RAMSTKMechanismRecord",
         back_populates="op_load",
     )
-    op_stress: relationship = relationship(
+    op_stress: Mapped[relationship] = relationship(
         "RAMSTKOpStressRecord",
         back_populates="op_load",
         cascade="all,delete",
     )
-    test_method: relationship = relationship(
+    test_method: Mapped[relationship] = relationship(
         "RAMSTKTestMethodRecord",
         back_populates="op_load",
         cascade="all,delete",

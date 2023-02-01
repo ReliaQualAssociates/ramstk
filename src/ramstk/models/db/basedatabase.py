@@ -26,6 +26,7 @@ from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
 
 # noinspection PyPackageRequirements
 from sqlalchemy.orm.exc import FlushError  # type: ignore
+from sqlalchemy.sql import text
 
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
@@ -335,9 +336,9 @@ class BaseDatabase:
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        _keys: List[str] = kwargs.get("key", None)
-        _values: List[Any] = kwargs.get("value", None)
-        _order: Any = kwargs.get("order", None)
+        _keys: List[str] = kwargs.get("key")
+        _values: List[Any] = kwargs.get("value")
+        _order: Any = kwargs.get("order")
         _all: bool = kwargs.get("_all", True)
 
         _filters = {}
@@ -419,7 +420,7 @@ class BaseDatabase:
             # RAMSTK.
             _databases.extend(
                 db[0]
-                for db in _session.execute(_query)
+                for db in _session.execute(text(_query))
                 if db[0] not in ["postgres", "template0", "template1"]
             )
 
@@ -450,7 +451,7 @@ class BaseDatabase:
         )
 
         try:
-            _last_id = self.session.execute(_sql_statement).first()[0]
+            _last_id = self.session.execute(text(_sql_statement)).first()[0]
         except (exc.ProgrammingError, TypeError):
             _last_id = 0
 

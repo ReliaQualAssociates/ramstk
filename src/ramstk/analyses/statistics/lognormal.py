@@ -18,10 +18,10 @@ from scipy.stats import lognorm
 def get_hazard_rate(
     shape: float, time: float, location: float = 0.0, scale: float = 1.0
 ) -> float:
-    """Calculates the hazard rate given a scale, shape, and location parameter.
+    """Calculate the hazard rate given a scale, shape, and location parameter.
 
-    This function calculates the rate parameter given the scale, shape, time, and,
-    optionally, a location parameter.
+    This function calculates the rate parameter given the scale, shape, time,
+    and, optionally, a location parameter.
 
         >>> get_hazard_rate(0.9663, 4, scale=33.65)
         0.6610467490673426
@@ -103,8 +103,7 @@ def get_survival(
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float, float]:
-    """Fits the provided data to the LOGN distribution and estimates scale and
-    location.
+    """Fit the data to the LOGN distribution and estimates scale and location.
 
     :param data: the data to use in the fit.
     :return: (_shape, _location, _scale); the estimated parameters.

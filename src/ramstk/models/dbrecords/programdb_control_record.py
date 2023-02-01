@@ -10,7 +10,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -72,7 +72,9 @@ class RAMSTKControlRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     type_id = Column("fld_type_id", String(512), default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship("RAMSTKCauseRecord", back_populates="control")  # type: ignore
+    cause: Mapped[relationship] = relationship(
+        "RAMSTKCauseRecord", back_populates="control"
+    )
 
     is_mode = False
     is_mechanism = False
