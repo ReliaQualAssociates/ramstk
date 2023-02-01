@@ -138,16 +138,21 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
                 textcoords="offset points",
                 size=12,
                 va="center",
-                bbox=dict(boxstyle="round", fc="#E5E5E5", ec="None", alpha=0.5),
-                arrowprops=dict(
-                    arrowstyle="wedge,tail_width=1.",
-                    fc="#E5E5E5",
-                    ec="None",
-                    alpha=0.5,
-                    patchA=None,
-                    patchB=Ellipse((2, -1), 0.5, 0.5),
-                    relpos=(0.2, 0.5),
-                ),
+                bbox={
+                    "boxstyle": "round",
+                    "fc": "#E5E5E5",
+                    "ec": "None",
+                    "alpha": 0.5,
+                },
+                arrowprops={
+                    "arrowstyle": "wedge,tail_width=1.",
+                    "fc": "#E5E5E5",
+                    "ec": "None",
+                    "alpha": 0.5,
+                    "patchA": None,
+                    "patchB": Ellipse((2, -1), 0.5, 0.5),
+                    "relpos": (0.2, 0.5),
+                },
             )
 
     def _do_load_plan(self, plan: pd.DataFrame) -> None:

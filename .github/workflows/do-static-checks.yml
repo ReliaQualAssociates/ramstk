@@ -53,9 +53,9 @@ jobs:
           use-black: true
           use-isort: true
           use-docformatter: true
-          extra-black-options: ""
+          extra-black-options: "--config ./pyproject.toml"
           extra-isort-options: "--settings-file ./pyproject.toml"
-          extra-docformatter-options: ""
+          extra-docformatter-options: "--config ./pyproject.toml"
 
   style-check:
     name: Check Code Styling
