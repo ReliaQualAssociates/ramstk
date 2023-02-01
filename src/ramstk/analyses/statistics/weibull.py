@@ -18,10 +18,10 @@ from scipy.stats import weibull_min
 def get_hazard_rate(
     shape: float, scale: float, time: float, location: float = 0.0
 ) -> float:
-    """Calculates the hazard rate given a scale, shape, and location parameter.
+    """Calculate the hazard rate given a scale, shape, and location parameter.
 
-    This function calculates the rate parameter given the scale, shape, time, and,
-    optionally, a location parameter.
+    This function calculates the rate parameter given the scale, shape, time,
+    and, optionally, a location parameter.
 
         >>> get_hazard_rate(2.5, 525.0, 105.0)
         0.02359719987177253

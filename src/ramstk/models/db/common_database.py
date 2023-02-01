@@ -56,7 +56,6 @@ class RAMSTKCommonDB:
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTK common database model."""
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -816,7 +815,6 @@ class RAMSTKCommonDB:
         :return: user_configuration
         :rtype: RAMSTKUserConfiguration
         """
-
         for _record in (
             self.common_dao.session.query(RAMSTKTypeRecord)
             .filter(RAMSTKTypeRecord.type_type == "validation")
