@@ -18,17 +18,16 @@ from ramstk.analyses import stress
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_stress_ratio():
-    """calculate_stress_ratio() should return a float stress ratio on success."""
+    """Return a float stress ratio on success."""
     _stress_ratio = stress.calculate_stress_ratio(0.625, 1.25)
 
-    assert pytest.approx(_stress_ratio, 0.5)
+    assert pytest.approx(_stress_ratio) == 0.5
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_stress_ratio_string_input():
-    """calculate_stress_ratio() should raise a TypeError if passed a string as a stress
-    value."""
+    """Raise a TypeError if passed a string as a stress value."""
     with pytest.raises(TypeError):
         stress.calculate_stress_ratio(0.625, "1.25")
 
@@ -36,7 +35,6 @@ def test_calculate_stress_ratio_string_input():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_stress_ratio_zero_rated():
-    """calculate_stress_ratio() should raise a ZeroDivisionError if passed a rated
-    stress of zero."""
+    """Raise a ZeroDivisionError if passed a rated stress of zero."""
     with pytest.raises(ZeroDivisionError):
         stress.calculate_stress_ratio(0.625, 0.0)

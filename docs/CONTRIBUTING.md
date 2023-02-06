@@ -9,12 +9,12 @@ The following is a set of guidelines for contributing to RAMSTK, which is hosted
 [How Can I Contribute?](#how-can-i-contribute)
   * [For Everyone](#for-everyone)
       * [Reporting Issues](#reporting-issues)
-      * [Suggesting Enhancements](#suggesting-enhancements)
   * [For Developers' Eyes Only](#for-developers-eyes-only)
-      * [Style Guidelines](#style-guidlines)
+      * [Style Guidelines](#style-guidelines)
       * [Process Guidelines](#process-guidelines)
 
 
+(#code-of-conduct)=
 ## Code of Conduct
 
 The fundamental rules are:
@@ -29,10 +29,13 @@ The fundamental rules are:
 
 See the Code of Conduct file in the root `RAMSTK` directory.
 
+(#how-can-i-contribute)=
 ## How Can I Contribute?
 
-## For Everyone
+(#for-everyone)=
+### For Everyone
 
+(#reporting-issues)=
 #### Reporting Issues
 
 > The only dumb issue is the unreported issue.
@@ -41,11 +44,11 @@ The purpose of an issue (or bug, condition, corrective action, FRACA) tracking s
 
 > **Note:** If you find a **Closed** issue that seems like it is the same thing that you're experiencing, open a new issue and include a link to the original issue in the body of your new one.
 
-#### Before Submitting an Issue Report
+##### Before Submitting an Issue Report
 
 **Perform a search** to see if the problem has already been reported.  If it has **and the issue is still open**, add a comment to the existing issue instead of opening a new one.
 
-#### How to Submit a Useful Issue Report
+##### How to Submit a Useful Issue Report
 
 Issues are tracked as [GitHub issues](https://github.com/ReliaQualAssociates/ramstk/issues/).
 
@@ -107,11 +110,13 @@ do
 done
 ```
 
-## For Developers' Eyes Only
+(#for-developers-eyes-only)=
+### For Developers' Eyes Only
 
 As a RAMSTK developer, if you are working on something outside the RAMSTK issue system, you are likely working on the wrong thing.  If an issue doesn't exist, create it *before* you start writing.  The issue system is there to facilitate managing the development program and creating schedules.
 
-### Style Guidelines
+(#style-guidelines)=
+#### Style Guidelines
 
 Please refer to the RAMSTK Coding Standards.
 
@@ -130,7 +135,7 @@ RAMSTK uses GitHub actions to manage tagging and releasing.  Conditional actions
 
 Major version bumps will occur whenever a pull request has the label 'major'.  Major version changes seldom occur and, as such, will be labeled manually.  Minor and patch version bumps will occur when a pull request has the label 'minor' and 'patch' respectively.
 
-RAMSTK uses a GitHub action to apply the 'minor' and 'patch' labels to a pull request.  These labels are applied based on the pull request's base branch name.  The file .gihub/pr-labeler.yml contains the up to date mapping between branch name and pull request label.  At the time of writing, the mapping is as follows:
+RAMSTK uses a GitHub action to apply the 'minor' and 'patch' labels to a pull request.  These labels are applied based on the pull request's base branch name.  The file .gihub/pr-labeler.yml contains the up-to-date mapping between branch name and pull request label.  At the time of writing, the mapping is as follows:
 
    | Branch Name |      Label(s)      |
    | ----------- | :----------------- |
@@ -153,13 +158,13 @@ Please adhere to the branch naming convention above if you plan to open a pull r
 
 There is a commit message template in the root directory for RAMSTK named .gitcommitmessage.txt.  Use this template to build commit messages.
 
-#### Always Add Descriptive Log Messages
+##### Always Add Descriptive Log Messages
 
 Log messages should be understandable to someone who sees only the log. They shouldn't depend on information outside the context of the commit. Try to put the log messages only to those files which are really affected by the change described in the log message.
 
 In particular put all important information which can't be seen from the diff in the log message.
 
-#### Use Issue System Numbers
+##### Use Issue System Numbers
 
 Add the bug number to the log message. In order to keep the issue tracking system in sync with the git repositories, you should reference the issue report in your commits, and close the fixed issues in the issue tracking system.
 
@@ -173,9 +178,10 @@ When working on an issue, pull request, etc., you very well may find a section o
     #
     # Long and detailed description of work to be performed.
 
-The github action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
+The GitHub action, dtinth/todo-actions will find these ISSUE comments when code is pushed to the master branch and convert them to an issue.  We believe it is more efficient to identify issues and document them in-line while working rather than having to stop and open an issue.  This results in better issue management.
 
-### Process Guidelines
+(#process-guidelines)=
+#### Process Guidelines
 
 RAMSTK attempts to use:
 
@@ -183,21 +189,21 @@ RAMSTK attempts to use:
 * Trunk based development
 * Continuous integration
 
-#### Never Write a Test That Doesn't Have an Engineering Specification
+##### Never Write a Test That Doesn't Have an Engineering Specification
 
 It's not necessary to create a user story (stakeholder input) prior to writing an engineering specification, but it is perfectly acceptable to do so.  As a developer, you may simply write the engineering specification.  If working on an issue reported by a stakeholder, convert their user story to an engineering specification.  Communicate with the stakeholder who reported the issue if you need clarification.  This process helps identify epics versus simple user stories and will result in a better product and happier users (developers will be happier too).
 
-A test does not need to be code executable by pytest.  It may be a step by step procedure or checklist.  This would be appropriate for GUI design/layout related specifications where it would be more efficient to simply launch RAMSTK and visually inspect that the specification is met.
+A test does not need to be code executable by pytest.  It may be a step-by-step procedure or checklist.  This would be appropriate for GUI design/layout related specifications where it would be more efficient to simply launch RAMSTK and visually inspect that the specification is met.
 
-#### Never Write Code That Doesn't Have a Test
+##### Never Write Code That Doesn't Have a Test
 
 And make sure the test(s) pass before committing.  If you add functionality to RAMSTK, there should be one or more tests for the new functionality.  There should be a test(s) to ensure the new code works with good inputs.  There should also be test(s) to ensure the code responds properly with bad inputs.
 
-#### Never Commit Code That Doesn't Run
+##### Never Commit Code That Doesn't Run
 
 Run the code and correct all errors before committing.  Make sure that newly added files are committed.  If they are missing your local copy will run fine but nobody else will be able to run RAMSTK.  This is not desirable.
 
-#### Always Statically Check Your Code
+##### Always Statically Check Your Code
 
 Statically check every file you edit between commits.  At a minimum, the following static checkers should be used:
 
@@ -242,21 +248,21 @@ In addition, it is recommended you install the pre-commit tasks found in .pre-co
    * Check MANIFEST.in with check-manifest
    * Check for packaging errors with pyroma
 
-#### Double Check Before You Create a Pull Request
+##### Double Check Before You Create a Pull Request
 
 Do a ```git pull --rebase``` to keep your checkout up-to-date. Invoke ```git diff``` before committing. Take messages from git about conflicts, unknown files, etc. seriously. ```git diff``` will tell you exactly what you will be committing.  Check if that's really what you intended to commit.
 
-#### Code Review by Other Developers
+##### Code Review by Other Developers
 
 Don't commit changes to the public API of RAMSTK without prior review by other developers.  Requiring a review for these changes is intended to avoid problems for the users of the APIs and to improve the quality of the APIs.  This is ensured by using pull requests when you're ready to commit; the pull request will be merged by a developer with the authority to merge it.
 
-#### Don't Create a Pull Request for Code You Don't Understand
+##### Don't Create a Pull Request for Code You Don't Understand
 
 Avoid things like "I don't know why it crashes, but when I do this, it does not crash anymore." or "I'm not completely sure if that's right, but at least it works for me.".
 
 If you don't find a solution to a problem, discuss it with other developers.  Don't create a pull request if other developers disagree  If there are disagreements over code changes, these should be resolved by discussing them.
 
-#### Commit Complete Changesets
+##### Commit Complete Changesets
 
 git has the ability to commit more than one file at a time. Therefore, please commit all related changes in multiple files, even if they span over multiple directories at the same time in the same commit. This way, you ensure that git stays in a runnable state before and after the commit and that the commit history is more helpful.
 

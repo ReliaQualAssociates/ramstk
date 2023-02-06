@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ssh-key: "${{ secrets.COMMIT_KEY }}"
@@ -50,10 +50,10 @@ jobs:
           ver_minor=$(echo $cur_version | cut -d '.' -f2)
           ver_patch=$(echo $cur_version | cut -d '.' -f3)
 
-          echo "::set-output name=cur_version::$(echo $cur_version)"
-          echo "::set-output name=ver_major::$(echo $ver_major)"
-          echo "::set-output name=ver_minor::$(echo $ver_minor)"
-          echo "::set-output name=ver_patch::$(echo $ver_patch)"
+          echo "cur_version=$cur_version" >> $GITHUB_OUTPUT
+          echo "ver_major=$ver_major" >> $GITHUB_OUTPUT
+          echo "ver_minor=$ver_minor" >> $GITHUB_OUTPUT
+          echo "ver_patch=$ver_patch" >> $GITHUB_OUTPUT
 
       - name: Determine next Semantic version
         id: semver
@@ -65,23 +65,23 @@ jobs:
         id: nextversion
         run: |
           if [ -n "$GITHUB_PR_LABEL_BUMP_MAJOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.major }})"
+            echo "next_version=${{ steps.semver.outputs.major }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_MINOR" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.minor }})"
+            echo "next_version=${{ steps.semver.outputs.minor }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           elif [ -n "$GITHUB_PR_LABEL_BUMP_PATCH" ]; then
-            echo "::set-output name=next_version::$(echo ${{ steps.semver.outputs.patch }})"
+            echo "next_version=${{ steps.semver.outputs.patch }}" >> $GITHUB_OUTPUT
             echo "do_release=1" >> $GITHUB_ENV
           else
-            echo "::set-output name=next_version::$(echo ${{ steps.curversion.outputs.cur_version }})"
+            echo "next_version=${{ steps.curversion.outputs.cur_version }}" >> $GITHUB_OUTPUT
             echo "do_release=0" >> $GITHUB_ENV
           fi
 
       - name: Import GPG key
         if: ${{ env.do_release == 1 }}
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v4
+        uses: crazy-max/ghaction-import-gpg@v5
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}

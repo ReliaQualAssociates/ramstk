@@ -16,10 +16,10 @@ from scipy.stats import norm
 
 
 def get_hazard_rate(location: float, scale: float, time: float) -> float:
-    """Calculates the hazard rate given a location and scale parameter.
+    """Calculate the hazard rate given a location and scale parameter.
 
-    This function calculates the rate parameter given the scale, shape, time, and,
-    optionally, a location parameter.
+    This function calculates the rate parameter given the scale, shape, time,
+    and, optionally, a location parameter.
 
         >>> get_hazard_rate(100.0, 10.0, 85.0)
         0.013878975045885079

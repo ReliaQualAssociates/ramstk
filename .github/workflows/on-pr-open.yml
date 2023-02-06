@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Ensure PR title follows conventional commits specification
-        uses: aslafy-z/conventional-pr-title-action@master
+        uses: aslafy-z/conventional-pr-title-action@v3
         with:
           success-state: Conventional commits compliant title detected.
           failure-state: Pull request title is not conventional commits compliant!
@@ -31,6 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Apply Labels to PR
-        uses: TimonVS/pr-labeler-action@v3
+        uses: TimonVS/pr-labeler-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -6,7 +6,7 @@
     <tr>
         <th>Tests</th>
         <td>
-        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/workflow/status/ReliaQualAssociates/ramstk/RAMSTK%20Test%20Suite?label=Build%20%26%20Test">
+        <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/ReliaQualAssociates/ramstk/do-test-suite.yml?branch=master">
         <a href="https://codecov.io/gh/ReliaQualAssociates/ramstk"><img src="https://codecov.io/gh/ReliaQualAssociates/ramstk/branch/master/graph/badge.svg?token=sFOa7EjZAg"/></a>
         <a href='https://coveralls.io/github/ReliaQualAssociates/ramstk?branch=master'><img src='https://coveralls.io/repos/github/ReliaQualAssociates/ramstk/badge.svg?branch=master' alt='Coverage Status' /></a>
     </td>

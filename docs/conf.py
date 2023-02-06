@@ -19,7 +19,7 @@ copyright = (  # pylint: disable=redefined-builtin
 author = "Doyle Rowland"
 
 # The short X.Y version
-version = "0.15"
+version = "0.19"
 # The full version, including alpha/beta/rc tags
 release = "0.19.0"
 
@@ -34,7 +34,7 @@ extensions = [
     "sphinx.ext.imgmath",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    "recommonmark",
+    "myst_parser",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,7 +55,7 @@ language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ["_build"]
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = None

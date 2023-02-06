@@ -1,7 +1,8 @@
 .. toctree::
    :maxdepth: 2
 
-   CONTRIBUTING.md
+.. include:: CONTRIBUTING.md
+    :parser: myst_parser.sphinx_
 
 Coding Standards
 ================
@@ -10,11 +11,3 @@ Coding Standards
    :maxdepth: 2
 
    CODING_STDS
-
-API Documentation
-=================
-
-.. toctree::
-   :maxdepth: 2
-
-   api/modules
