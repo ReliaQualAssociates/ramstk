@@ -2,16 +2,22 @@
 # do-test-suite workflow aren't met.  This allows PRs to be merged when the
 # conditions aren't met for a protected branch.  See
 # https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/troubleshooting-required-status-checks
-name: Dummy RAMSTK Test Suite with Coverage
+name: Execute RAMSTK Test Suite with Coverage
 
 on:
   push:
-    paths-ignore:
+    branches:
+      - '!master'
+      - 'dependabot/pip/**'
+      - 'release/**'
+      - 'chore/**'
+    paths:
       - "**.py"
+      - "docs/**"
     tags-ignore:
-      - "v*"
+      - "*"
   pull_request:
-    paths-ignore:
+    paths:
       - "**.py"
     types:
       - "opened"
@@ -19,7 +25,7 @@ on:
       - "synchronize"
 
 jobs:
-  test_suite:
+  ubuntu:
     name: Run Dummy Test Suite on Linux
     runs-on: ubuntu-latest
     strategy:
