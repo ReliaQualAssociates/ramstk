@@ -19,6 +19,7 @@ on:
       - 'master'
       - '!dependabot/pip/**'
       - '!release/**'
+      - '!chore/**'
     paths:
       - "**.py"
       - "!docs/**"
