@@ -18,6 +18,7 @@ on:
       - 'release/**'
       - 'dependabot/**'
       - 'docs/**'
+      - 'chore/**'
     paths:
       - "**.py"
     tags-ignore:
