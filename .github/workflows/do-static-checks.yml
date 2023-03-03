@@ -69,7 +69,7 @@ jobs:
           python-root-list: "src/ramstk"
           use-pycodestyle: true
           use-pydocstyle: true
-          extra-pycodestyle-options: "-config=./setup.cfg --count"
+          extra-pycodestyle-options: "--config=./setup.cfg --count"
           extra-pydocstyle-options: "--count"
 
   type-check:
