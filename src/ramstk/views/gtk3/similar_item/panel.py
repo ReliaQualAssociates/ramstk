@@ -1267,11 +1267,13 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(super().do_load_panel, "succeed_calculate_similar_item")
-        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
+        pub.subscribe(self._do_set_hardware_attributes,
+                      "succeed_get_hardware_tree")
         pub.subscribe(
             self._do_set_reliability_attributes, "succeed_get_reliability_tree"
         )
-        pub.subscribe(self._on_method_changed, "succeed_change_similar_item_method")
+        pub.subscribe(self._on_method_changed,
+                      "succeed_change_similar_item_method")
         pub.subscribe(self._on_select_hardware, "selected_hardware")
 
     # pylint: disable=unused-argument
@@ -1279,11 +1281,12 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     def do_filter_tree(
         self, model: Gtk.TreeModel, row: Gtk.TreeIter, data: Any
     ) -> bool:
-        """Filter Similar Item to show only those associated with selected Hardware.
+        """Filter to show only those associated with the selected Hardware.
 
         :param model: the filtered model for the Similar Item RAMSTKTreeView.
         :param row: the iter to check against condition(s).
-        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
+        :param data: unused in this method; required by Gtk.TreeModelFilter()
+            widget.
         :return: True if row should be visible, False else.
         :rtype: bool
         """
@@ -1323,11 +1326,16 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         _model = self.tvwTreeView.get_model()
 
-        _model.set_value(row, self.tvwTreeView.position["function_1"], function[0])
-        _model.set_value(row, self.tvwTreeView.position["function_2"], function[1])
-        _model.set_value(row, self.tvwTreeView.position["function_3"], function[2])
-        _model.set_value(row, self.tvwTreeView.position["function_4"], function[3])
-        _model.set_value(row, self.tvwTreeView.position["function_5"], function[4])
+        _model.set_value(
+            row, self.tvwTreeView.position["function_1"], function[0])
+        _model.set_value(
+            row, self.tvwTreeView.position["function_2"], function[1])
+        _model.set_value(
+            row, self.tvwTreeView.position["function_3"], function[2])
+        _model.set_value(
+            row, self.tvwTreeView.position["function_4"], function[3])
+        _model.set_value(
+            row, self.tvwTreeView.position["function_5"], function[4])
 
     def _do_set_hardware_attributes(self, tree: treelib.Tree) -> None:
         """Set the attributes when the hardware tree is retrieved.
@@ -1338,7 +1346,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _hardware = _node.data["hardware"]
-            _row = self.tvwTreeView.do_get_row_by_value(1, _hardware.hardware_id)
+            _row = self.tvwTreeView.do_get_row_by_value(
+                1, _hardware.hardware_id)
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -1355,7 +1364,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         for _node in tree.all_nodes()[1:]:
             _reliability = _node.data["reliability"]
-            _row = self.tvwTreeView.do_get_row_by_value(1, _reliability.hardware_id)
+            _row = self.tvwTreeView.do_get_row_by_value(
+                1, _reliability.hardware_id)
             if _row is not None:
                 self.tvwTreeView.unfilt_model.set_value(
                     _row,
@@ -1411,7 +1421,8 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
         """
         self._parent_id = attributes["hardware_id"]
         self.tvwTreeView.filt_model.refilter()
-        pub.sendMessage("request_get_similar_item_attributes", node_id=self._parent_id)
+        pub.sendMessage("request_get_similar_item_attributes",
+                        node_id=self._parent_id)
 
     def __do_load_similar_item(self, node: Any = "", row: Gtk.TreeIter = None) -> None:
         """Load the similar item RAMSTKTreeView().

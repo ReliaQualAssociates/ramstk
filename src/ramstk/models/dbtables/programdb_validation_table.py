@@ -64,7 +64,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self.do_calculate_plan, "request_calculate_plan")
-        pub.subscribe(self._do_calculate_task, "request_calculate_validation_task")
+        pub.subscribe(self._do_calculate_task,
+                      "request_calculate_validation_task")
         pub.subscribe(
             self._do_calculate_all_tasks,
             "request_calculate_all_validation_tasks",
@@ -76,7 +77,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     ) -> RAMSTKValidationRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new record.
+        :param attributes: the dict of attribute values to assign to the new
+            record.
         :return: None
         :rtype: None
         """
@@ -156,7 +158,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
         # Calculate the total task time remaining on each planned end date
         # and then sort the DataFrame() by date in ascending order.
         _planned_df = _planned_df.cumsum() - _planned_df
-        _planned_df.loc[_start_date_obj] = [_time_ll_flt, _time_mean_flt, _time_ul_flt]
+        _planned_df.loc[_start_date_obj] = [
+            _time_ll_flt, _time_mean_flt, _time_ul_flt]
         _planned_df = _planned_df.sort_index()
 
         _planned_dic = {

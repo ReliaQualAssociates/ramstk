@@ -10,7 +10,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -81,7 +81,7 @@ class RAMSTKTestMethodRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     remarks = Column("fld_remarks", String, default=__defaults__["remarks"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    op_load: relationship = relationship(
+    op_load: Mapped[relationship] = relationship(
         "RAMSTKOpLoadRecord",
         back_populates="test_method",
     )

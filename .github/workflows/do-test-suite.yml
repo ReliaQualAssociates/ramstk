@@ -19,6 +19,7 @@ on:
       - 'master'
       - '!dependabot/pip/**'
       - '!release/**'
+      - '!chore/**'
     paths:
       - "**.py"
       - "!docs/**"
@@ -144,6 +145,6 @@ jobs:
       - name: Install RAMSTK and test with coverage
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
-          python3 -m pip install -U urllib3 poetry importlib_metadata numpy scipy
+          python3 -m pip install -U urllib3 poetry importlib_metadata
           make PREFIX="/mingw64" install
           make coverage

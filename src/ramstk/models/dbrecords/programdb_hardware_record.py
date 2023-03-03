@@ -14,7 +14,7 @@ from typing import Dict, Union
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, UniqueConstraint
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -175,43 +175,43 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    allocation: relationship = relationship(
+    allocation: Mapped[relationship] = relationship(
         "RAMSTKAllocationRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    sia: relationship = relationship(
+    sia: Mapped[relationship] = relationship(
         "RAMSTKSimilarItemRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    reliability: relationship = relationship(
+    reliability: Mapped[relationship] = relationship(
         "RAMSTKReliabilityRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    milhdbkf: relationship = relationship(
+    milhdbkf: Mapped[relationship] = relationship(
         "RAMSTKMilHdbk217FRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    nswc: relationship = relationship(
+    nswc: Mapped[relationship] = relationship(
         "RAMSTKNSWCRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    design_electric: relationship = relationship(
+    design_electric: Mapped[relationship] = relationship(
         "RAMSTKDesignElectricRecord",
         uselist=False,
         backref="hardware",
         passive_deletes=True,
     )
-    design_mechanic: relationship = relationship(
+    design_mechanic: Mapped[relationship] = relationship(
         "RAMSTKDesignMechanicRecord",
         uselist=False,
         backref="hardware",

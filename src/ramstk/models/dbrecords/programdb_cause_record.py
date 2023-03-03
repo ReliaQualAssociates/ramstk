@@ -9,7 +9,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -94,15 +94,15 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism: relationship = relationship(
+    mechanism: Mapped[relationship] = relationship(
         "RAMSTKMechanismRecord", back_populates="cause"
     )
-    control: relationship = relationship(
+    control: Mapped[relationship] = relationship(
         "RAMSTKControlRecord",
         back_populates="cause",
         cascade="delete, delete-orphan",
     )
-    action: relationship = relationship(
+    action: Mapped[relationship] = relationship(
         "RAMSTKActionRecord",
         back_populates="cause",
         cascade="delete, delete-orphan",

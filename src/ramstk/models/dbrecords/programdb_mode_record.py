@@ -9,7 +9,7 @@
 
 # Third Party Imports
 from sqlalchemy import Column, Float, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -168,7 +168,7 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     type_id = Column("fld_type_id", Integer, default=__defaults__["type_id"])
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    mechanism: relationship = relationship(
+    mechanism: Mapped[relationship] = relationship(
         "RAMSTKMechanismRecord",
         back_populates="mode",
         cascade="all,delete",

@@ -78,7 +78,8 @@ class RAMSTKMatrixTable(RAMSTKBaseTable):
     ) -> RAMSTKMatrixRecord:
         """Get a new record instance with attributes set.
 
-        :param attribute_dic: the dict of attribute values to assign to the new record.
+        :param attribute_dic: the dict of attribute values to assign to the new
+            record.
         :return: None
         :rtype: None
         """

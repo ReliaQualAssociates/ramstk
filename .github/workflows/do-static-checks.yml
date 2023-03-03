@@ -18,6 +18,7 @@ on:
       - 'release/**'
       - 'dependabot/**'
       - 'docs/**'
+      - 'chore/**'
     paths:
       - "**.py"
     tags-ignore:
@@ -51,30 +52,11 @@ jobs:
         with:
           python-root-list: "src/ramstk"
           use-black: true
-          use-yapf: false
           use-isort: true
           use-docformatter: true
-          use-pycodestyle: false
-          use-autopep8: false
-          use-pydocstyle: false
-          use-mypy: false
-          use-pylint: false
-          use-flake8: false
-          use-mccabe: false
-          use-radon: false
-          use-rstcheck: false
-          use-check-manifest: false
-          use-pyroma: false
-          extra-black-options: ""
-          extra-yapf-options: ""
+          extra-black-options: "--config ./pyproject.toml"
           extra-isort-options: "--settings-file ./pyproject.toml"
-          extra-docformatter-options: ""
-          extra-pycodestyle-options: ""
-          extra-autopep8-options: ""
-          extra-pydocstyle-options: ""
-          extra-mypy-options: ""
-          extra-pylint-options: ""
-          extra-flake8-options: ""
+          extra-docformatter-options: "--config ./pyproject.toml"
 
   style-check:
     name: Check Code Styling
@@ -85,30 +67,10 @@ jobs:
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
-          use-black: false
-          use-yapf: false
-          use-isort: false
-          use-docformatter: false
-          use-pycodestyle: false
-          use-autopep8: true
+          use-pycodestyle: true
           use-pydocstyle: true
-          use-mypy: false
-          use-pylint: false
-          use-flake8: false
-          use-mccabe: false
-          use-radon: false
-          use-rstcheck: false
-          use-check-manifest: false
-          use-pyroma: false
-          extra-black-options: ""
-          extra-yapf-options: ""
-          extra-isort-options: ""
-          extra-docformatter-options: ""
-          extra-pycodestyle-options: ""
-          extra-autopep8-options: "--diff"
+          extra-pycodestyle-options: "-config=./setup.cfg --count"
           extra-pydocstyle-options: "--count"
-          extra-mypy-options: ""
-          extra-pylint-options: ""
 
   type-check:
     name: Check Code Type Hinting
@@ -119,31 +81,8 @@ jobs:
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
-          use-black: false
-          use-yapf: false
-          use-isort: false
-          use-docformatter: false
-          use-pycodestyle: false
-          use-autopep8: false
-          use-pydocstyle: false
           use-mypy: true
-          use-pylint: false
-          use-flake8: false
-          use-mccabe: false
-          use-radon: false
-          use-rstcheck: false
-          use-check-manifest: false
-          use-pyroma: false
-          extra-black-options: ""
-          extra-yapf-options: ""
-          extra-isort-options: ""
-          extra-docformatter-options: ""
-          extra-pycodestyle-options: ""
-          extra-autopep8-options: ""
-          extra-pydocstyle-options: ""
           extra-mypy-options: "--config-file ./pyproject.toml"
-          extra-pylint-options: ""
-          extra-flake8-options: ""
 
   lint-check:
     name: Check Code Lint
@@ -154,28 +93,5 @@ jobs:
         uses: weibullguy/python-lint-plus@master
         with:
           python-root-list: "src/ramstk"
-          use-black: false
-          use-yapf: false
-          use-isort: false
-          use-docformatter: false
-          use-pycodestyle: false
-          use-autopep8: false
-          use-pydocstyle: false
-          use-mypy: false
           use-pylint: true
-          use-flake8: false
-          use-mccabe: false
-          use-radon: false
-          use-rstcheck: false
-          use-check-manifest: false
-          use-pyroma: false
-          extra-black-options: ""
-          extra-yapf-options: ""
-          extra-isort-options: ""
-          extra-docformatter-options: ""
-          extra-pycodestyle-options: ""
-          extra-autopep8-options: ""
-          extra-pydocstyle-options: ""
-          extra-mypy-options: ""
           extra-pylint-options: "-j0 --rcfile=./pyproject.toml"
-          extra-flake8-options: ""

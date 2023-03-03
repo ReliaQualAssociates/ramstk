@@ -13,7 +13,7 @@ from datetime import date, timedelta
 
 # Third Party Imports
 from sqlalchemy import Column, Date, ForeignKeyConstraint, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import Mapped, relationship
 
 # RAMSTK Local Imports
 from .. import RAMSTK_BASE
@@ -120,7 +120,9 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     )
 
     # Define the relationships to other tables in the RAMSTK Program database.
-    cause = relationship("RAMSTKCauseRecord", back_populates="action")  # type: ignore
+    cause: Mapped[relationship] = relationship(
+        "RAMSTKCauseRecord", back_populates="action"
+    )
 
     is_mode = False
     is_mechanism = False
