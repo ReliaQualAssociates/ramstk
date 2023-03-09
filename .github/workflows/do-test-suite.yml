@@ -17,7 +17,6 @@ on:
   push:
     branches:
       - 'master'
-      - '!dependabot/pip/**'
       - '!release/**'
       - '!chore/**'
     paths:
