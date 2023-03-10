@@ -17,11 +17,13 @@ on:
   push:
     branches:
       - 'master'
+      - 'dependabot'
       - '!release/**'
       - '!chore/**'
+      - "!docs/**"
     paths:
       - "**.py"
-      - "!docs/**"
+      - "**.lock"
     tags-ignore:
       - "*"
   pull_request:
