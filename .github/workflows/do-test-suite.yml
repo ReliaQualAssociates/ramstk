@@ -23,6 +23,7 @@ on:
       - "!docs/**"
     paths:
       - "**.py"
+      - "**.lock"
     tags-ignore:
       - "*"
   pull_request:

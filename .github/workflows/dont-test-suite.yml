@@ -12,8 +12,6 @@ on:
       - 'release/**'
       - 'chore/**'
       - "docs/**"
-    paths:
-      - "**.py"
     tags-ignore:
       - "*"
   pull_request:
