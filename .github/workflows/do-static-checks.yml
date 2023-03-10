@@ -14,10 +14,12 @@ name: Perform Static Checks on RAMSTK Code Base
 
 on:
   push:
-    branches-ignore:
-      - 'release/**'
-      - 'docs/**'
-      - 'chore/**'
+    branches:
+      - 'master'
+      - 'dependabot'
+      - '!release/**'
+      - '!chore/**'
+      - '!docs/**'
     paths:
       - "**.py"
     tags-ignore:

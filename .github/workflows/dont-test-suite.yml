@@ -8,12 +8,12 @@ on:
   push:
     branches:
       - '!master'
-      - 'dependabot/pip/**'
+      - '!dependabot/**'
       - 'release/**'
       - 'chore/**'
+      - "docs/**"
     paths:
       - "**.py"
-      - "docs/**"
     tags-ignore:
       - "*"
   pull_request:
