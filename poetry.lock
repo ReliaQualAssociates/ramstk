@@ -1575,14 +1575,14 @@ files = [
 
 [[package]]
 name = "openpyxl"
-version = "3.1.1"
+version = "3.1.2"
 description = "A Python library to read/write Excel 2010 xlsx/xlsm files"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "openpyxl-3.1.1-py2.py3-none-any.whl", hash = "sha256:a0266e033e65f33ee697254b66116a5793c15fc92daf64711080000df4cfe0a8"},
-    {file = "openpyxl-3.1.1.tar.gz", hash = "sha256:f06d44e2c973781068bce5ecf860a09bcdb1c7f5ce1facd5e9aa82c92c93ae72"},
+    {file = "openpyxl-3.1.2-py2.py3-none-any.whl", hash = "sha256:f91456ead12ab3c6c2e9491cf33ba6d08357d802192379bb482f1033ade496f5"},
+    {file = "openpyxl-3.1.2.tar.gz", hash = "sha256:a6f5977418eff3b2d5500d54d9db50c8277a368436f4e4f8ddb1be3422870184"},
 ]
 
 [package.dependencies]
@@ -2459,14 +2459,14 @@ jupyter = ["ipywidgets (>=7.5.1,<8.0.0)"]
 
 [[package]]
 name = "rstcheck"
-version = "6.1.1"
+version = "6.1.2"
 description = "Checks syntax of reStructuredText and code blocks nested within it"
 category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "rstcheck-6.1.1-py3-none-any.whl", hash = "sha256:edeff9ad0644d12bd250100b677887424193789254c90d95c13375062ee2cbac"},
-    {file = "rstcheck-6.1.1.tar.gz", hash = "sha256:8e43485a644e794b8127f8c4868ef62c14ec7919bdda6cb16642157055d32e47"},
+    {file = "rstcheck-6.1.2-py3-none-any.whl", hash = "sha256:4aaa46e0debc179f849807c453fa384fd2b75167faf5b1274115730805fab529"},
+    {file = "rstcheck-6.1.2.tar.gz", hash = "sha256:f9cb07a72ef9a81d1e32187eae29b00a89421ccba1bde0b1652a08ed0923f61b"},
 ]
 
 [package.dependencies]
@@ -2476,7 +2476,7 @@ typer = {version = ">=0.4.1,<0.8", extras = ["all"]}
 [package.extras]
 docs = ["m2r2 (>=0.3.2)", "sphinx", "sphinx-autobuild (==2021.3.14)", "sphinx-click (>=4.0.3,<5.0.0)", "sphinx-rtd-dark-mode (>=1.2.4,<2.0.0)", "sphinx-rtd-theme (<1)", "sphinxcontrib-spelling (>=7.3)"]
 sphinx = ["sphinx"]
-testing = ["coverage-conditional-plugin (>=0.5)", "coverage[toml] (>=6.0)", "pytest (>=6.0)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.0)", "pytest-sugar (>=0.9.5)"]
+testing = ["coverage-conditional-plugin (>=0.5)", "coverage[toml] (>=6.0)", "pytest (>=7.2)", "pytest-cov (>=3.0)", "pytest-randomly (>=3.0)", "pytest-sugar (>=0.9.5)"]
 toml = ["tomli"]
 
 [[package]]
