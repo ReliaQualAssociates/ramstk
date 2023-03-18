@@ -1159,7 +1159,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _columns = self.tvwTreeView.get_columns()
         for i, _key in enumerate(self.tvwTreeView.headings):
             _label = RAMSTKLabel(
-                "<span weight='bold'>" + self.tvwTreeView.headings[_key] + "</span>"
+                f"<span weight='bold'>{self.tvwTreeView.headings[_key]}</span>"
             )
             _label.do_set_properties(
                 height=-1, justify=Gtk.Justification.CENTER, wrap=True
