@@ -196,7 +196,12 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         :return: None
         :rtype: None
         """
-        (self.time_ll, self.time_mean, self.time_ul, _sd,) = do_calculate_beta_bounds(
+        (
+            self.time_ll,
+            self.time_mean,
+            self.time_ul,
+            _sd,
+        ) = do_calculate_beta_bounds(
             self.time_minimum,
             self.time_average,
             self.time_maximum,
@@ -214,7 +219,12 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         :return: None
         :rtype: None
         """
-        (self.cost_ll, self.cost_mean, self.cost_ul, _sd,) = do_calculate_beta_bounds(
+        (
+            self.cost_ll,
+            self.cost_mean,
+            self.cost_ul,
+            _sd,
+        ) = do_calculate_beta_bounds(
             self.cost_minimum,
             self.cost_average,
             self.cost_maximum,

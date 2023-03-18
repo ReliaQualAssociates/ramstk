@@ -196,7 +196,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _idx,  # pylint: disable=unused-variable
             _value_obj,
         ) in self.dic_attribute_widget_map.items():
-            _value_obj[1].do_update(_value_obj[4], signal_str=_value_obj[2])
+            _value_obj[1].do_update(_value_obj[4], signal=_value_obj[2])
 
     def do_load_panel(
         self,
@@ -213,7 +213,7 @@ class RAMSTKFixedPanel(RAMSTKPanel):
             _new_text_str = attributes.get(_key_str, _value_obj[5])
             _value_obj[1].do_update(
                 _new_text_str,
-                signal_str=_value_obj[2],
+                signal=_value_obj[2],
             )
 
         pub.sendMessage("request_set_cursor_active")
@@ -1159,7 +1159,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         _columns = self.tvwTreeView.get_columns()
         for i, _key in enumerate(self.tvwTreeView.headings):
             _label = RAMSTKLabel(
-                "<span weight='bold'>" + self.tvwTreeView.headings[_key] + "</span>"
+                f"<span weight='bold'>{self.tvwTreeView.headings[_key]}</span>"
             )
             _label.do_set_properties(
                 height=-1, justify=Gtk.Justification.CENTER, wrap=True
