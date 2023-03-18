@@ -420,7 +420,6 @@ class RAMSTKCommonDB:
             .filter(RAMSTKCategoryRecord.category_type == "hardware")
             .all()
         ):
-
             _subcats = {}
             user_configuration.RAMSTK_FAILURE_MODES[_record.category_id] = {}
             user_configuration.RAMSTK_STRESS_LIMITS[

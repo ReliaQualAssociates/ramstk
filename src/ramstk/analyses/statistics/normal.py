@@ -36,7 +36,11 @@ def get_hazard_rate(location: float, scale: float, time: float) -> float:
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return norm.pdf(time, loc=location, scale=scale,) / norm.sf(
+    return norm.pdf(
+        time,
+        loc=location,
+        scale=scale,
+    ) / norm.sf(
         time,
         loc=location,
         scale=scale,

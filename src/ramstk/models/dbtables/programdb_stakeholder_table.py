@@ -108,7 +108,10 @@ class RAMSTKStakeholderTable(RAMSTKBaseTable):
         _record = self.tree.get_node(node_id).data[self._tag]
         _attributes = _record.get_attributes()
 
-        (_improvement, _overall_weight,) = improvementfactor.calculate_improvement(
+        (
+            _improvement,
+            _overall_weight,
+        ) = improvementfactor.calculate_improvement(
             _attributes["planned_rank"],
             _attributes["customer_rank"],
             _attributes["priority"],
