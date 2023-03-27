@@ -3172,17 +3172,18 @@ files = [
 
 [[package]]
 name = "treelib"
-version = "1.6.1"
+version = "1.6.3"
 description = "A Python 2/3 implementation of tree structure."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "treelib-1.6.1.tar.gz", hash = "sha256:1cbfffb2d2b75ccac27d0200cee0507b6fbb0726e0afb9fae017ade5d2ce8788"},
+    {file = "treelib-1.6.3-py3-none-any.whl", hash = "sha256:2a7096d6b7e711bbc1e67f942430be7d7882e8c45b197bd1cbfb5cd35705b0cc"},
+    {file = "treelib-1.6.3.tar.gz", hash = "sha256:a0db5fd55d6cb4f307aecef4de184920a75db95e45f80e5860adf38718a2970a"},
 ]
 
 [package.dependencies]
-future = "*"
+six = "*"
 
 [[package]]
 name = "trove-classifiers"
