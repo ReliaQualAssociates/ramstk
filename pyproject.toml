@@ -68,6 +68,8 @@ black = "^23.0.0"
 coveralls = "^3.0.0"
 coverage = {extras = ["toml"], version = "^6.4"}
 docformatter = "^1.4"
+flake8 = "^6.0.0"
+flake8-pyproject = "^1.2.3"
 isort = "^5.7.0"
 mccabe = "^0.7.0"
 mock = "^5.0.0"
@@ -259,8 +261,8 @@ ignored-classes = [
 max-args = 6
 
 [tool.docformatter]
-wrap-summaries = 87
-wrap-descriptions = 81
+wrap-summaries = 88
+wrap-descriptions = 88
 
 [tool.mypy]
 allow_subclassing_any = true
@@ -289,3 +291,6 @@ ignore = [
 	'D204',
 	'D213',
 ]
+
+[tool.flake8]
+max-line-length = 88
