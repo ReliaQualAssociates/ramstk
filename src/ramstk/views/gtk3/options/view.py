@@ -22,8 +22,8 @@ class OptionsDialog(RAMSTKDialog):
     Program database.  RAMSTK options are site-specific or program-specific and
     apply to all users.  Options should not be confused with user-specific
     configurations preferences which are stored in RAMSTK.conf in each user's
-    $HOME/.config/RAMSTK directory and are applicable only to that specific
-    user.  Configuration preferences are edited with the Preferences assistant.
+    $HOME/.config/RAMSTK directory and are applicable only to that specific user.
+    Configuration preferences are edited with the Preferences assistant.
 
     Attributes of the EditOptions are:
     """

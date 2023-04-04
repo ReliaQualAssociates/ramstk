@@ -128,7 +128,6 @@ class BaseDatabase:
 
     def __init__(self) -> None:
         """Initialize an instance of the Base database model."""
-
         # Initialize private dictionary instance attributes.
 
         # Initialize private list instance attributes.
