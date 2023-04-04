@@ -67,7 +67,7 @@ bandit = "^1.7.5"
 black = "^23.3.0"
 coveralls = "^3.0.0"
 coverage = {extras = ["toml"], version = "^6.4"}
-docformatter = "^1.4"
+docformatter = "^1.6"
 isort = "^5.7.0"
 mccabe = "^0.7.0"
 mock = "^5.0.0"
