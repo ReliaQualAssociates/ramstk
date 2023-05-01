@@ -1292,14 +1292,13 @@ files = [
 
 [[package]]
 name = "lifelines"
-version = "0.27.4"
+version = "0.27.6"
 description = "Survival analysis in Python, including Kaplan Meier, Nelson Aalen and regression"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "lifelines-0.27.4-py3-none-any.whl", hash = "sha256:c5c6254ca32bb28f7e1d7e9b4fae33de717ebfc9dc71b6fc9c4a3fc20e63e4e5"},
-    {file = "lifelines-0.27.4.tar.gz", hash = "sha256:62f7e911a64c8f723eef4207174fb1df39a94f79eca557cdf53d310eb6be132f"},
+    {file = "lifelines-0.27.6-py3-none-any.whl", hash = "sha256:b9eec87be4a476bb217825a849d856797df6b7d80c6f7a70c498156ddd54d824"},
 ]
 
 [package.dependencies]
