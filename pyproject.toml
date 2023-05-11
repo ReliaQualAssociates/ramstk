@@ -289,3 +289,7 @@ ignore = [
 	'D204',
 	'D213',
 ]
+
+[tool.ruff]
+select = ["PL",]
+exclude = ["*.pyi"]

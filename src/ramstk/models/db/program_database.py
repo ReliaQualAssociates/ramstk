@@ -13,30 +13,27 @@ from typing import Dict
 from pubsub import pub
 
 # RAMSTK Package Imports
-from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.exceptions import DataAccessError
 
 # RAMSTK Local Imports
-from .basedatabase import BaseDatabase, do_create_program_db
+from .basedatabase import BaseDatabase
 
 
-class RAMSTKProgramDB:
+class RAMSTKProgramDB(BaseDatabase):
     """The RAMSTK program database model class.
 
     The attributes of a RAMSTK program database model are:
 
-    :ivar dic_tables: a dict containing the instances of all the database table
+    :ivar tables: a dict containing the instances of all the database table
         models this program database model is managing.
     :ivar dic_views: a dict containing the instances of all the database view
         models this program database model is managing.
-    :ivar user_configuration: the RAMSTKUserConfiguration instance associated with
-        this progam database model.
-    :ivar program_dao: the BaseDatabase() object that will connect to the
-        RAMSTK program database.
     """
 
     def __init__(self) -> None:
         """Initialize an instance of the RAMSTK program database model."""
+        super().__init__()
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -44,7 +41,7 @@ class RAMSTKProgramDB:
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_tables: Dict[str, object] = {
+        self.tables: Dict[str, object] = {
             "action": object,
             "allocation": object,
             "cause": object,
@@ -87,66 +84,54 @@ class RAMSTKProgramDB:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.user_configuration: RAMSTKUserConfiguration = RAMSTKUserConfiguration()
-        self.program_dao: BaseDatabase = BaseDatabase()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_create_program, "request_create_program")
+        pub.subscribe(self._do_create_database, "request_create_program")
         pub.subscribe(self.do_open_program, "request_open_program")
         pub.subscribe(self.do_open_program, "succeed_create_program_database")
         pub.subscribe(self.do_close_program, "request_close_program")
         pub.subscribe(self.do_save_program, "request_update_program")
 
-    def do_create_program(
-        self, program_db: BaseDatabase, database: Dict[str, str]
+    def _do_create_database(
+        self,
+        database: Dict[str, str],
+        sql_file: str,
     ) -> None:
         """Create a new RAMSTK Program database.
 
-        :param program_db: the BaseDatabase() that is to be used to create and connect
-            to the new RAMSTK program database.
-        :param database: a dict containing the database connection arguments.
+        :param dict database: a dict containing the database connection
+            arguments.
+        :param str sql_file: the file containing the SQL statements for
+            creating the database.
         :return: None
         :rtype: None
         """
         try:
-            with open(
-                f"{self.user_configuration.RAMSTK_CONF_DIR}/"
-                f"{database['dialect']}_program_db.sql",
-                "r",
-                encoding="utf-8",
-            ) as _sql_file:
-                self.program_dao = program_db
-                do_create_program_db(database, _sql_file)
-                pub.sendMessage(
-                    "succeed_create_program_database",
-                    program_db=self.program_dao,
-                    database=database,
-                )
+            self.do_create_database(
+                database,
+                sql_file,
+            )
+            pub.sendMessage(
+                "succeed_create_program_database",
+                database=database,
+            )
         except FileNotFoundError:
             pub.sendMessage(
                 "do_log_debug_msg",
                 logger_name="DEBUG",
-                message=(
-                    f"SQL file {database['dialect']}_program_db.sql could not be found."
-                ),
+                message=(f"SQL file {sql_file} could not be found."),
             )
 
-    def do_open_program(
-        self, program_db: BaseDatabase, database: Dict[str, str]
-    ) -> None:
+    def do_open_program(self, database: Dict[str, str]) -> None:
         """Open an RAMSTK Program database for analyses.
 
-        :param program_db: the BaseDatabase() that is to be used to create and
-            connect to the new RAMSTK program database.
         :param database: a dictionary of parameters to pass to the DAO.
         :return: None
         :rtype: None
         """
-        self.program_dao = program_db
-
         try:
-            self.program_dao.do_connect(database)
-            pub.sendMessage("succeed_connect_program_database", dao=self.program_dao)
+            self.do_connect(database)
+            pub.sendMessage("succeed_connect_program_database", dao=self)
             pub.sendMessage(
                 "request_retrieve_revisions", attributes={"revision_id": None}
             )
@@ -161,7 +146,7 @@ class RAMSTKProgramDB:
         :raises: AttributeError if a database isn't open.
         """
         try:
-            self.program_dao.do_disconnect()
+            self.do_disconnect()
             pub.sendMessage("succeed_disconnect_program_database")
         except AttributeError:
             _error_msg = "Not currently connected to a database.  Nothing to close."

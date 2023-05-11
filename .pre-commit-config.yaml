@@ -21,8 +21,8 @@ repos:
       hooks:
         - id: isort
           args: [--settings-file, ./pyproject.toml]
-    - repo: https://github.com/weibullguy/docformatter
-      rev: v1.5
+    - repo: https://github.com/PyCQA/docformatter
+      rev: v1.6.5
       hooks:
         - id: docformatter
           additional_dependencies: [tomli]
@@ -31,7 +31,7 @@ repos:
       rev: 6.0.0
       hooks:
         - id: flake8
-          args: []
+          args: [--max-line-length, "88"]
     - repo: https://github.com/pycqa/pydocstyle
       rev: 6.3.0
       hooks:

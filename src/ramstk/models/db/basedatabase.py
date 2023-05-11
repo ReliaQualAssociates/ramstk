@@ -16,7 +16,7 @@ from psycopg2 import sql  # type: ignore
 from pubsub import pub
 
 # noinspection PyPackageRequirements
-from sqlalchemy import create_engine, exc
+from sqlalchemy import Select, create_engine, exc
 
 # noinspection PyPackageRequirements,PyProtectedMember
 from sqlalchemy.engine import Engine  # type: ignore
@@ -32,62 +32,68 @@ from sqlalchemy.sql import text
 from ramstk.exceptions import DataAccessError
 
 
-def do_create_program_db(database: Dict[str, str], sql_file: TextIO) -> None:
-    """Create a shiny new, unpopulated RAMSTK program database.
+def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
+    """Create a postgres database.
 
-    :param database: a dict containing the database connection arguments.
-    :param sql_file: the absolute path to the text file containing the
-        SQL statements for creating a bare RAMSTK Program Database.
+    :param dict database: the database connection information.
+    :param TextIO sql_file: the file containing the SQL statements used to
+        create the database.
     :return: None
-    :rtype: None
     """
-    if database["dialect"] == "sqlite":
-        conn = sqlite3.connect(database["database"])
-        conn.executescript(sql_file.read().strip())
+    # Create the database.
+    conn = psycopg2.connect(
+        host=database["host"],
+        dbname="postgres",
+        user=database["user"],
+        # deepcode ignore NoHardcodedPasswords:
+        password=database["password"],
+    )
+    conn.isolation_level = 4
+    conn.autocommit = True  # type: ignore
 
-        conn.close()
-
-    if database["dialect"] == "postgres":
-        # Create the database.
-        conn = psycopg2.connect(
-            host=database["host"],
-            dbname="postgres",
-            user=database["user"],
-            # deepcode ignore NoHardcodedPasswords:
-            password=database["password"],
+    cursor = conn.cursor()
+    cursor.execute(
+        sql.SQL("DROP DATABASE IF EXISTS {}").format(
+            sql.Identifier(database["database"])
         )
-        conn.isolation_level = 4
-        conn.autocommit = True  # type: ignore
+    )
+    cursor.execute(
+        sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database["database"]))
+    )
+    cursor.close()
+    conn.close()
 
-        cursor = conn.cursor()
-        cursor.execute(
-            sql.SQL("DROP DATABASE IF EXISTS {}").format(
-                sql.Identifier(database["database"])
-            )
-        )
-        cursor.execute(
-            sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database["database"]))
-        )
-        cursor.close()
-        conn.close()
+    # Populate the database.
+    conn = psycopg2.connect(
+        host=database["host"],
+        dbname=database["database"],
+        user=database["user"],
+        # deepcode ignore NoHardcodedPasswords:
+        password=database["password"],
+    )
+    conn.isolation_level = 4
+    conn.autocommit = True
+    conn.set_session(autocommit=True)
 
-        # Populate the database.
-        conn = psycopg2.connect(
-            host=database["host"],
-            dbname=database["database"],
-            user=database["user"],
-            # deepcode ignore NoHardcodedPasswords:
-            password=database["password"],
-        )
-        conn.isolation_level = 4
-        conn.autocommit = True
-        conn.set_session(autocommit=True)
+    cursor = conn.cursor()
+    cursor.execute(sql_file.read())
+    cursor.close()
 
-        cursor = conn.cursor()
-        cursor.execute(sql_file.read())
-        cursor.close()
+    conn.close()
 
-        conn.close()
+
+def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
+    """Create a SQLite3 database.
+
+    :param dict database: the database connection information.
+    :param TextIO sql_file: the file containing the SQL statements used to
+        create the database.
+    :return: None
+    """
+    conn = sqlite3.connect(database["database"])
+    conn.executescript(sql_file.read().strip())
+
+    conn.close()
 
 
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
@@ -106,20 +112,17 @@ def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
 class BaseDatabase:
     """The Base Database model."""
 
+    # Define private class dictionary attributes.
+
+    # Define private class list attributes.
+
+    # Define private class scalar attributes.
+
     # Define public class dict attributes.
-    cxnargs: Dict[str, str] = {
-        "dialect": "",
-        "user": "",
-        "password": "",
-        "host": "",
-        "port": "",
-        "dbname": "",
-    }
+
+    # Define public class list attributes.
 
     # Define public class scalar attributes.
-    engine: Engine = None  # type: ignore
-    session: scoped_session = None  # type: ignore
-    database: str = ""
     sqlstatements: Dict[str, str] = {
         "select": "SELECT {0:s} ",
         "from": "FROM {0:s} ",
@@ -128,7 +131,6 @@ class BaseDatabase:
 
     def __init__(self) -> None:
         """Initialize an instance of the Base database model."""
-
         # Initialize private dictionary instance attributes.
 
         # Initialize private list instance attributes.
@@ -136,10 +138,21 @@ class BaseDatabase:
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
+        self.cxnargs: Dict[str, str] = {
+            "dialect": "",
+            "user": "",
+            "password": "",
+            "host": "",
+            "port": "",
+            "dbname": "",
+        }
 
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
+        self.engine: Engine = None  # type: ignore
+        self.session: scoped_session = None  # type: ignore
+        self.database: str = ""
 
     def do_connect(self, database: Dict) -> None:
         """Connect to the database.
@@ -168,7 +181,12 @@ class BaseDatabase:
                     f"{self.cxnargs['dialect']}."
                 ),
             )
-            return
+            raise (
+                DataAccessError(
+                    f"Unknown dialect in database connection: "
+                    f"{self.cxnargs['dialect']}."
+                )
+            )
 
         if not isinstance(self.cxnargs["dbname"], str):
             pub.sendMessage(
@@ -179,7 +197,12 @@ class BaseDatabase:
                     f"{self.cxnargs['dbname']}."
                 ),
             )
-            return
+            raise (
+                DataAccessError(
+                    f"Non-string value in database connection: "
+                    f"{self.cxnargs['dbname']}."
+                )
+            )
 
         if self.cxnargs["dialect"] == "sqlite":
             self.database = f"sqlite:///{self.cxnargs['dbname']}"
@@ -202,6 +225,33 @@ class BaseDatabase:
             raise DataAccessError(
                 f"{str(_error.orig).capitalize()}: {self.cxnargs}"
             ) from _error
+
+    def do_create_database(
+        self,
+        database: Dict[str, str],
+        sql_file: str,
+    ) -> None:
+        """Create a database from the passed parameters.
+
+        :param dict database: the dictionary containing the parameters for
+            connecting to the database server.
+        :param str sql_file: the file containing the SQL statements used
+        to create the database.
+        :return: None
+        :rtype: None
+        """
+        with open(
+            sql_file,
+            "r",
+            encoding="utf-8",
+        ) as _sql_file:
+            if database["dialect"] == "postgres":
+                do_create_postgres_db(database, _sql_file)
+
+            if database["dialect"] == "sqlite":
+                do_create_sqlite3_db(database, _sql_file)
+
+            self.do_connect(database)
 
     def do_delete(self, item: object) -> None:
         """Delete a record from the RAMSTK Program database.
@@ -253,6 +303,15 @@ class BaseDatabase:
         # noinspection PyTypeChecker
         self.session = None  # type: ignore
         self.database = ""
+
+    def do_execute_query(self, query_: Select) -> List[object]:
+        """Execute an SQLAlchemy query.
+
+        :param query_: the SQLAlchemy query to execute.
+        :return: results; a list of dbrecord objects.
+        :rtype: list
+        """
+        return self.session.scalars(query_)
 
     def do_insert(self, record: object) -> None:
         """Add a new record to a database table.
