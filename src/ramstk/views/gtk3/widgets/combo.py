@@ -25,13 +25,20 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     _default_height = 30
     _default_width = 200
 
-    def __init__(self, index: int = 0, simple: bool = True) -> None:
+    def __init__(
+        self,
+        index: int = 0,
+        simple: bool = True,
+        n_items: int = 2,
+    ) -> None:
         """Create RAMSTK ComboBox widgets.
 
         :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
             display.  Default is 0.
         :keyword bool simple: indicates whether to make a simple (one item) or
-            complex (three item) RAMSTKComboBox.  Default is True.
+            complex (n_item) RAMSTKComboBox.  Default is True.
+        :keyword int n_items: the number of items (columns) to add for a
+            non-simple RAMSTKComboBox.
         """
         RAMSTKWidget.__init__(self)
 
@@ -41,6 +48,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
 
         # Initialize private scalar attributes.
         self._index: int = index
+        self._n_items: int = n_items
 
         _list = Gtk.ListStore()
         # Initialize public dictionary attributes.
@@ -50,9 +58,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         # Initialize public scalar attributes.
 
         if not simple:
-            _list.set_column_types(
-                [GObject.TYPE_STRING, GObject.TYPE_STRING, GObject.TYPE_STRING]
-            )
+            _list.set_column_types([GObject.TYPE_STRING] * self._n_items)
         else:
             _list.set_column_types([GObject.TYPE_STRING])
         self.set_model(_list)
@@ -119,8 +125,7 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
             _handler_id = -1
 
         if not simple:
-            _model.append(["", "", ""])
-            # pylint: disable=unused-variable
+            _model.append([""] * self._n_items)
             for _entry in entries:
                 _model.append(list(_entry))
         else:

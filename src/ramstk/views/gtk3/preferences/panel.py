@@ -65,10 +65,10 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
             _("RAMSTK Log Directory")
         )
 
-        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox(simple=True)
-        self.cmbReportSize: RAMSTKComboBox = RAMSTKComboBox(simple=True)
+        self.cmbModuleBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbWorkBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbListBookTabPosition: RAMSTKComboBox = RAMSTKComboBox()
+        self.cmbReportSize: RAMSTKComboBox = RAMSTKComboBox()
 
         self.txtFRMultiplier: RAMSTKEntry = RAMSTKEntry()
         self.txtDecimalPlaces: RAMSTKEntry = RAMSTKEntry()
@@ -777,19 +777,58 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         """
         self.cmbFormatFiles.do_load_combo(
             [
-                [_("Allocation"), "allocation", ""],
-                [_("Failure Definition"), "failure_definition", ""],
-                [_("(D)FME(C)A"), "fmea", ""],
-                [_("Function"), "function", ""],
-                [_("Hardware"), "hardware", ""],
-                [_("Hazards Analysis"), "hazard", ""],
-                [_("Physics of Failure Analysis"), "pof", ""],
-                [_("Requirements"), "requirement", ""],
-                [_("Revisions"), "revision", ""],
-                [_("Similar Item Analysis"), "similar_item", ""],
-                [_("Stakeholder Inputs"), "stakeholder", ""],
-                [_("Usage Profile"), "usage_profile", ""],
-                [_("Validation"), "validation", ""],
+                [
+                    _("Allocation"),
+                    "allocation",
+                ],
+                [
+                    _("Failure Definition"),
+                    "failure_definition",
+                ],
+                [
+                    _("(D)FME(C)A"),
+                    "fmea",
+                ],
+                [
+                    _("Function"),
+                    "function",
+                ],
+                [
+                    _("Hardware"),
+                    "hardware",
+                ],
+                [
+                    _("Hazards Analysis"),
+                    "hazard",
+                ],
+                [
+                    _("Physics of Failure Analysis"),
+                    "pof",
+                ],
+                [
+                    _("Requirements"),
+                    "requirement",
+                ],
+                [
+                    _("Revisions"),
+                    "revision",
+                ],
+                [
+                    _("Similar Item Analysis"),
+                    "similar_item",
+                ],
+                [
+                    _("Stakeholder Inputs"),
+                    "stakeholder",
+                ],
+                [
+                    _("Usage Profile"),
+                    "usage_profile",
+                ],
+                [
+                    _("Validation"),
+                    "validation",
+                ],
             ],
             simple=False,
         )

@@ -397,18 +397,15 @@ class FMEAWorkView(RAMSTKWorkView):
         :rtype: None
         """
         self._pnlPanel.lst_rpn_detection = [
-            x[1]["name"]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION.items()
+            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_DETECTION.items()
         ]
         self._pnlPanel.lst_rpn_detection.insert(0, "")
         self._pnlPanel.lst_rpn_occurrence = [
-            x[1]["name"]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE.items()
+            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_OCCURRENCE.items()
         ]
         self._pnlPanel.lst_rpn_occurrence.insert(0, "")
         self._pnlPanel.lst_rpn_severity = [
-            x[1]["name"]
-            for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY.items()
+            x[0] for x in self.RAMSTK_USER_CONFIGURATION.RAMSTK_RPN_SEVERITY.items()
         ]
         self._pnlPanel.lst_rpn_severity.insert(0, "")
 

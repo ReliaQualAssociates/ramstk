@@ -121,8 +121,8 @@ class CreateProject:
 
             pub.sendMessage(
                 "request_create_program",
-                program_db=BaseDatabase(),
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+                sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",
             )
 
         _dialog.destroy()
@@ -194,14 +194,13 @@ class OpenProject:
                 if _dialog.exists:
                     pub.sendMessage(
                         "request_open_program",
-                        program_db=BaseDatabase(),
                         database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
                     )
                 else:
                     pub.sendMessage(
                         "request_create_program",
-                        program_db=BaseDatabase(),
                         database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
+                        sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",
                     )
 
                 if _dialog.btnSave.get_active():

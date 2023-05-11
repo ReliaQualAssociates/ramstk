@@ -282,7 +282,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """
         _model = self.get_cell_model(index)
         for _item in items:
-            _model.append([_item])
+            _model.append([str(_item)])
 
     def do_load_tree(self, tree: treelib.Tree, row: Gtk.TreeIter = None) -> None:
         """Load the RAMSTKTreeView with the contents of the tree."""
