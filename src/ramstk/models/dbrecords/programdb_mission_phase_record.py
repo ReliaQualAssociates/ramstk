@@ -20,8 +20,8 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKMissionPhaseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_mission_phase in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mission. This table
-    shares a One-to-Many relationship with ramstk_environment.
+    This table shares a Many-to-One relationship with ramstk_mission. This table shares
+    a One-to-Many relationship with ramstk_environment.
     """
 
     __defaults__ = {

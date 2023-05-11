@@ -37,10 +37,10 @@ except RuntimeError:
 class RAMSTKPlot:
     """The RAMSTKPlot class.
 
-    This module contains RAMSTK plot class.  This class is derived from the
-    applicable pyGTK widgets and matplotlib plots, but are provided with RAMSTK
-    specific property values and methods.  This ensures a consistent look and
-    feel to widgets in the RAMSTK application.
+    This module contains RAMSTK plot class.  This class is derived from the applicable
+    pyGTK widgets and matplotlib plots, but are provided with RAMSTK specific property
+    values and methods.  This ensures a consistent look and feel to widgets in the
+    RAMSTK application.
     """
 
     def __init__(self) -> None:

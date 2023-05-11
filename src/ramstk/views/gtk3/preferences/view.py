@@ -35,10 +35,10 @@ class PreferencesDialog(RAMSTKBaseView):
     """Assistant to provide a GUI to set various RAMSTK config preferences.
 
     RAMSTK preferences are stored in the RAMSTK Site database and the user's Site
-    configuration file and Program configuration file. Configurations preferences
-    are stored in Site.conf or RAMSTK.conf in each user's $HOME/.config/RAMSTK
-    directory and are applicable only to that specific user.  Configuration
-    preferences are edited with the Preferences assistant.
+    configuration file and Program configuration file. Configurations preferences are
+    stored in Site.conf or RAMSTK.conf in each user's $HOME/.config/RAMSTK directory and
+    are applicable only to that specific user.  Configuration preferences are edited
+    with the Preferences assistant.
     """
 
     # Define private dict class attributes.
