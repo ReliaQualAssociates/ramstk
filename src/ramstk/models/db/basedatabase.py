@@ -8,7 +8,7 @@
 
 # Standard Library Imports
 import sqlite3
-from typing import Any, Dict, List, TextIO, Tuple
+from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 # Third Party Imports
 import psycopg2  # type: ignore
@@ -150,7 +150,7 @@ class BaseDatabase:
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.engine: Engine = None  # type: ignore
+        self.engine: Optional[Engine] = None  # type: ignore
         self.session: scoped_session = None  # type: ignore
         self.database: str = ""
 

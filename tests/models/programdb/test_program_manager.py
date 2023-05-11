@@ -51,7 +51,7 @@ class TestProgramManager:
     def on_succeed_open_program(self, dao):
         """Listen for succeed_connect messages."""
         assert isinstance(dao, BaseDatabase)
-        print("\033[32m\n\tsucceed_connect_program_database topic was " "broadcast")
+        print("\033[32m\n\tsucceed_connect_program_database topic was broadcast")
 
     def on_fail_open_program_bad_url(self, error_message):
         """Listen for fail_connect messages."""
@@ -89,14 +89,14 @@ class TestProgramManager:
 
     def on_succeed_close_program(self):
         """Listen for succeed_disconnect messages."""
-        print("\033[32m\n\tsucceed_disconnect_program_database topic was " "broadcast")
+        print("\033[32m\n\tsucceed_disconnect_program_database topic was broadcast")
 
     def on_fail_close_program(self, error_message):
         """Listen for fail_disconnect messages."""
         assert error_message == (
             "Not currently connected to a database.  Nothing to close."
         )
-        print("\033[33m\n\tfail_disconnect_program_database topic was " "broadcast")
+        print("\033[33m\n\tfail_disconnect_program_database topic was broadcast")
 
     def on_request_update_revision(self):
         """Listen for request_update_all messages."""
