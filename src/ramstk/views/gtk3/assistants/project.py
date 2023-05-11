@@ -122,7 +122,7 @@ class CreateProject:
             pub.sendMessage(
                 "request_create_program",
                 database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
-                sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",
+                sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",  # noqa
             )
 
         _dialog.destroy()
@@ -200,7 +200,7 @@ class OpenProject:
                     pub.sendMessage(
                         "request_create_program",
                         database=self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO,
-                        sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",
+                        sql_file=f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_CONF_DIR}/{self.RAMSTK_USER_CONFIGURATION.RAMSTK_PROG_INFO['dialect']}_program_db.sql",  # noqa
                     )
 
                 if _dialog.btnSave.get_active():
