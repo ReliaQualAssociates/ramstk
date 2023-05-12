@@ -8,6 +8,6 @@
 """The RAMSTK database models package."""
 
 # RAMSTK Local Imports
-from .basedatabase import BaseDatabase, do_create_program_db
+from .basedatabase import BaseDatabase
 from .common_database import RAMSTKCommonDB
 from .program_database import RAMSTKProgramDB

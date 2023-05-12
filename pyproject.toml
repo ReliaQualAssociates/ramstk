@@ -259,8 +259,11 @@ ignored-classes = [
 max-args = 6
 
 [tool.docformatter]
-wrap-summaries = 87
-wrap-descriptions = 81
+non-cap = [
+	"milhdbk217f",
+]
+wrap-summaries = 88
+wrap-descriptions = 88
 
 [tool.mypy]
 allow_subclassing_any = true
@@ -289,3 +292,7 @@ ignore = [
 	'D204',
 	'D213',
 ]
+
+[tool.ruff]
+select = ["PL",]
+exclude = ["*.pyi"]

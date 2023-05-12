@@ -41,6 +41,7 @@ PYLINT		= $(shell which pylint)
 PYROMA		= $(shell which pyroma)
 RADON		= $(shell which radon)
 RSTCHECK	= $(shell which rstcheck)
+RUFF		= $(shell which ruff)
 TWINE		= $(shell which twine)
 
 # Data files.
@@ -55,6 +56,7 @@ MYPY_ARGS	= --config-file ./pyproject.toml
 PYCODESTYLE_ARGS	= --count --config=./setup.cfg
 PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
+RUFF_ARGS =
 
 PYVERS		= 3.7 3.8 3.9 3.10
 
@@ -293,7 +295,7 @@ security:
 # This target is for use with IDE integration.
 lint:
 	@echo -e "\n\t\033[1;32mLinting $(SRCFILE) ...\033[0m\n"
-	$(PYLINT) $(PYLINT_ARGS) $(SRCFILE)
+	$(RUFF) $(RUFF_ARGS) $(SRCFILE)
 
 dupcheck:
 	$(info Checking for duplicate code ...)

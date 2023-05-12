@@ -20,8 +20,8 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_function table in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_revision. This table
-    shares a One-to-Many relationship with ramstk_mode.
+    This table shares a Many-to-One relationship with ramstk_revision. This table shares
+    a One-to-Many relationship with ramstk_mode.
     """
 
     __defaults__ = {

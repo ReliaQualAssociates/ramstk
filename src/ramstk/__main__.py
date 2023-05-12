@@ -7,15 +7,17 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """The main program for the RAMSTK application."""
 
+
 # Standard Library Imports
 import os
 import shutil
 import sys
 from time import sleep
-from typing import Tuple
+from typing import Dict, List, Tuple, Union
 
 # Third Party Imports
 from pubsub import pub
+from sqlalchemy import Select, select
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
@@ -23,6 +25,23 @@ from ramstk.exceptions import DataAccessError
 from ramstk.exim import Export, Import
 from ramstk.logger import RAMSTKLogManager
 from ramstk.models.db import BaseDatabase, RAMSTKCommonDB, RAMSTKProgramDB
+from ramstk.models.dbrecords import (
+    RAMSTKCategoryRecord,
+    RAMSTKFailureModeRecord,
+    RAMSTKGroupRecord,
+    RAMSTKHazardsRecord,
+    RAMSTKLoadHistoryRecord,
+    RAMSTKManufacturerRecord,
+    RAMSTKMeasurementRecord,
+    RAMSTKMethodRecord,
+    RAMSTKModelRecord,
+    RAMSTKRPNRecord,
+    RAMSTKStakeholdersRecord,
+    RAMSTKStatusRecord,
+    RAMSTKSubCategoryRecord,
+    RAMSTKTypeRecord,
+    RAMSTKUserRecord,
+)
 from ramstk.models.dbtables import (
     RAMSTKActionTable,
     RAMSTKAllocationTable,
@@ -65,7 +84,7 @@ from ramstk.views.gtk3 import Gtk, RAMSTKDesktop, _
 from ramstk.views.gtk3.widgets import RAMSTKDatabaseSelect
 
 
-def do_connect_to_site_db(conn_info) -> BaseDatabase:
+def do_connect_to_site_db(conn_info) -> RAMSTKCommonDB:
     """Connect to the site (common) database.
 
     :param conn_info: the site database connection information.
@@ -79,7 +98,7 @@ def do_connect_to_site_db(conn_info) -> BaseDatabase:
         f"{conn_info['host']} using port {conn_info['port']}.",
     )
 
-    _site_db = BaseDatabase()
+    _site_db = RAMSTKCommonDB()
     try:
         _site_db.do_connect(conn_info)
     except DataAccessError:
@@ -133,7 +152,7 @@ def do_first_run(configuration: RAMSTKSiteConfiguration) -> None:
 
 
 def do_initialize_databases(
-    configuration: RAMSTKUserConfiguration, site_db: BaseDatabase
+    configuration: RAMSTKUserConfiguration, site_db: RAMSTKCommonDB
 ) -> Tuple[RAMSTKProgramDB, RAMSTKCommonDB]:
     """Initialize the databases for the current instance of RAMSTK.
 
@@ -145,38 +164,37 @@ def do_initialize_databases(
     :rtype: RAMSTKProgramDB, RAMSTKCommonDB
     """
     _program_db = RAMSTKProgramDB()
-    _site_db = RAMSTKCommonDB()
 
-    _program_db.dic_tables["action"] = RAMSTKActionTable()
-    _program_db.dic_tables["allocation"] = RAMSTKAllocationTable()
-    _program_db.dic_tables["cause"] = RAMSTKCauseTable()
-    _program_db.dic_tables["control"] = RAMSTKControlTable()
-    _program_db.dic_tables["design_electric"] = RAMSTKDesignElectricTable()
-    _program_db.dic_tables["design_mechanic"] = RAMSTKDesignMechanicTable()
-    _program_db.dic_tables["environment"] = RAMSTKEnvironmentTable()
-    _program_db.dic_tables["failure_definition"] = RAMSTKFailureDefinitionTable()
-    _program_db.dic_tables["function"] = RAMSTKFunctionTable()
-    _program_db.dic_tables["hardware"] = RAMSTKHardwareTable()
-    _program_db.dic_tables["hazards"] = RAMSTKHazardTable()
-    _program_db.dic_tables["mechanism"] = RAMSTKMechanismTable()
-    _program_db.dic_tables["milhdbk217f"] = RAMSTKMILHDBK217FTable()
-    _program_db.dic_tables["mission"] = RAMSTKMissionTable()
-    _program_db.dic_tables["mission_phase"] = RAMSTKMissionPhaseTable()
-    _program_db.dic_tables["mode"] = RAMSTKModeTable()
-    _program_db.dic_tables["nswc"] = RAMSTKNSWCTable()
-    _program_db.dic_tables["opload"] = RAMSTKOpLoadTable()
-    _program_db.dic_tables["opstress"] = RAMSTKOpStressTable()
-    _program_db.dic_tables["program_info"] = RAMSTKProgramInfoTable()
-    _program_db.dic_tables["program_status"] = RAMSTKProgramStatusTable()
-    _program_db.dic_tables["reliability"] = RAMSTKReliabilityTable()
-    _program_db.dic_tables["requirement"] = RAMSTKRequirementTable()
-    _program_db.dic_tables["revision"] = RAMSTKRevisionTable()
-    _program_db.dic_tables["similar_item"] = RAMSTKSimilarItemTable()
-    _program_db.dic_tables["stakeholder"] = RAMSTKStakeholderTable()
-    _program_db.dic_tables["test_method"] = RAMSTKTestMethodTable()
-    _program_db.dic_tables["validation"] = RAMSTKValidationTable()
-    _program_db.dic_tables["export"] = Export()
-    _program_db.dic_tables["import"] = Import()
+    _program_db.tables["action"] = RAMSTKActionTable()
+    _program_db.tables["allocation"] = RAMSTKAllocationTable()
+    _program_db.tables["cause"] = RAMSTKCauseTable()
+    _program_db.tables["control"] = RAMSTKControlTable()
+    _program_db.tables["design_electric"] = RAMSTKDesignElectricTable()
+    _program_db.tables["design_mechanic"] = RAMSTKDesignMechanicTable()
+    _program_db.tables["environment"] = RAMSTKEnvironmentTable()
+    _program_db.tables["failure_definition"] = RAMSTKFailureDefinitionTable()
+    _program_db.tables["function"] = RAMSTKFunctionTable()
+    _program_db.tables["hardware"] = RAMSTKHardwareTable()
+    _program_db.tables["hazards"] = RAMSTKHazardTable()
+    _program_db.tables["mechanism"] = RAMSTKMechanismTable()
+    _program_db.tables["milhdbk217f"] = RAMSTKMILHDBK217FTable()
+    _program_db.tables["mission"] = RAMSTKMissionTable()
+    _program_db.tables["mission_phase"] = RAMSTKMissionPhaseTable()
+    _program_db.tables["mode"] = RAMSTKModeTable()
+    _program_db.tables["nswc"] = RAMSTKNSWCTable()
+    _program_db.tables["opload"] = RAMSTKOpLoadTable()
+    _program_db.tables["opstress"] = RAMSTKOpStressTable()
+    _program_db.tables["program_info"] = RAMSTKProgramInfoTable()
+    _program_db.tables["program_status"] = RAMSTKProgramStatusTable()
+    _program_db.tables["reliability"] = RAMSTKReliabilityTable()
+    _program_db.tables["requirement"] = RAMSTKRequirementTable()
+    _program_db.tables["revision"] = RAMSTKRevisionTable()
+    _program_db.tables["similar_item"] = RAMSTKSimilarItemTable()
+    _program_db.tables["stakeholder"] = RAMSTKStakeholderTable()
+    _program_db.tables["test_method"] = RAMSTKTestMethodTable()
+    _program_db.tables["validation"] = RAMSTKValidationTable()
+    _program_db.tables["export"] = Export()
+    _program_db.tables["import"] = Import()
     _program_db.user_configuration = configuration
 
     _program_db.dic_views["fmea"] = RAMSTKFMEAView()
@@ -187,12 +205,11 @@ def do_initialize_databases(
     _program_db.dic_views["usage_profile"] = RAMSTKUsageProfileView()
 
     # noinspection PyTypeChecker
-    _site_db.common_dao = site_db
-    _site_db.dic_tables["options"] = RAMSTKSiteInfoTable()
-    _site_db.dic_tables["options"].dao = site_db  # type: ignore
-    _site_db.dic_tables["options"].do_select_all({"site_id": 1})  # type: ignore
+    site_db.tables["options"] = RAMSTKSiteInfoTable()
+    site_db.tables["options"].dao = site_db
+    site_db.tables["options"].do_select_all({"site_id": 1})  # type: ignore
 
-    return _program_db, _site_db
+    return _program_db, site_db
 
 
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
@@ -225,6 +242,60 @@ def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager:
     return _logger
 
 
+def do_load_configuration_list(
+    config_list: List[str],
+    database: BaseDatabase,
+    query: Select,
+    key_column: str,
+    fields: List[str],
+) -> None:
+    """Load the configuration list with the contents from the database.
+
+    :param config_list: the configuration list to load with results.
+    :param query: the SELECT query for retrieving the configuration list
+    results.
+    :param database: the database containing the table to query.
+    :param key_column: the column to use as the record key.
+    :param fields: the record fields to load into the configuration list.
+    :return: None
+    """
+    for _record in database.do_execute_query(query):
+        _attributes = _record.get_attributes()
+        _values = ()
+        for _field in fields:
+            _values = _values + (_attributes[_field],)
+        config_list[_attributes[key_column]] = _values
+
+
+def do_load_failure_modes(
+    database: RAMSTKCommonDB, category_id: int, subcategory_id: int
+) -> Dict[int, Union[float, str]]:
+    """Load dict of failure modes.
+
+    :param database: the Common Database manager.
+    :param category_id: the category ID for the failure modes to load.
+    :param subcategory_id: the subcategory ID for the failure modes to load.
+    :return: the dict of failures modes for the passed category ID, subcategory
+        ID pair.
+    :rtype: dict
+    """
+    return {
+        _mode.mode_id: [  # type: ignore
+            _mode.description,
+            _mode.mode_ratio,
+            _mode.source,
+        ]
+        for _mode in (
+            database.do_execute_query(
+                select(RAMSTKFailureModeRecord).filter(
+                    RAMSTKFailureModeRecord.category_id == category_id,
+                    RAMSTKFailureModeRecord.subcategory_id == subcategory_id,
+                )
+            )
+        )
+    }
+
+
 def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     """Create a site configuration instance.
 
@@ -240,9 +311,16 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
         :return: None
         :rtype: None
         """
-        pub.sendMessage("do_log_debug_msg", logger_name="DEBUG", message=error_message)
+        pub.sendMessage(
+            "do_log_debug_msg",
+            logger_name="DEBUG",
+            message=error_message,
+        )
 
-    pub.subscribe(on_fail_create_site_configuration, "fail_create_site_configuration")
+    pub.subscribe(
+        on_fail_create_site_configuration,
+        "fail_create_site_configuration",
+    )
 
     pub.sendMessage(
         "do_log_info_msg",
@@ -291,16 +369,16 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
     _configuration.set_user_directories()
     _configuration.get_user_configuration()
 
-    if _configuration.RAMSTK_DATA_DIR == "":
-        _configuration.RAMSTK_DATA_DIR = _configuration.RAMSTK_CONF_DIR + "/layouts"
+    if not _configuration.RAMSTK_DATA_DIR:
+        _configuration.RAMSTK_DATA_DIR = f"{_configuration.RAMSTK_CONF_DIR}/layouts"
         _configuration.set_user_configuration()
 
-    if _configuration.RAMSTK_ICON_DIR == "":
-        _configuration.RAMSTK_ICON_DIR = _configuration.RAMSTK_CONF_DIR + "/icons"
+    if not _configuration.RAMSTK_ICON_DIR:
+        _configuration.RAMSTK_ICON_DIR = f"{_configuration.RAMSTK_CONF_DIR}/icons"
         _configuration.set_user_configuration()
 
-    if _configuration.RAMSTK_LOG_DIR == "":
-        _configuration.RAMSTK_LOG_DIR = _configuration.RAMSTK_CONF_DIR + "/logs"
+    if not _configuration.RAMSTK_LOG_DIR:
+        _configuration.RAMSTK_LOG_DIR = f"{_configuration.RAMSTK_CONF_DIR}/logs"
         _configuration.set_user_configuration()
 
     _logger = do_initialize_loggers(
@@ -347,11 +425,308 @@ def the_one_ring() -> None:
 
     (
         _program_db,  # pylint: disable=unused-variable
-        _site_db,
+        site_db,
     ) = do_initialize_databases(user_configuration, site_db)
 
-    user_configuration = _site_db.do_load_site_variables(user_configuration)
+    pub.sendMessage(
+        "do_log_info_msg",
+        logger_name="INFO",
+        message="Loading global RAMSTK configuration variables.",
+    )
 
+    do_load_configuration_list(
+        user_configuration.RAMSTK_ACTION_CATEGORY,
+        site_db,
+        select(RAMSTKCategoryRecord).where(
+            RAMSTKCategoryRecord.category_type == "action"
+        ),
+        "category_id",
+        [
+            "name",
+            "description",
+            "value",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_ACTION_STATUS,
+        site_db,
+        select(RAMSTKStatusRecord).where(RAMSTKStatusRecord.status_type == "action"),
+        "status_id",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_AFFINITY_GROUPS,
+        site_db,
+        select(RAMSTKGroupRecord).where(RAMSTKGroupRecord.group_type == "affinity"),
+        "group_id",
+        [
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_CATEGORIES,
+        site_db,
+        select(RAMSTKCategoryRecord).where(
+            RAMSTKCategoryRecord.category_type == "hardware"
+        ),
+        "category_id",
+        [
+            "description",
+        ],
+    )
+    for _category_id in user_configuration.RAMSTK_CATEGORIES:
+        user_configuration.RAMSTK_FAILURE_MODES[_category_id] = {}
+        user_configuration.RAMSTK_SUBCATEGORIES[_category_id] = {}
+        do_load_configuration_list(
+            user_configuration.RAMSTK_SUBCATEGORIES[_category_id],
+            site_db,
+            select(RAMSTKSubCategoryRecord).where(
+                RAMSTKSubCategoryRecord.category_id == _category_id
+            ),
+            "subcategory_id",
+            [
+                "description",
+            ],
+        )
+        for _subcategory_id in user_configuration.RAMSTK_SUBCATEGORIES[
+            _category_id
+        ].keys():
+            user_configuration.RAMSTK_FAILURE_MODES[_category_id][
+                _subcategory_id
+            ] = do_load_failure_modes(
+                site_db,
+                _category_id,
+                _subcategory_id,
+            )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_DAMAGE_MODELS,
+        site_db,
+        select(RAMSTKModelRecord).where(RAMSTKModelRecord.model_type == "damage"),
+        "model_id",
+        [
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_DETECTION_METHODS,
+        site_db,
+        select(RAMSTKMethodRecord).where(RAMSTKMethodRecord.method_type == "detection"),
+        "method_id",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_HAZARDS,
+        site_db,
+        select(RAMSTKHazardsRecord),
+        "hazard_id",
+        [
+            "hazard_category",
+            "hazard_subcategory",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_INCIDENT_CATEGORY,
+        site_db,
+        select(RAMSTKCategoryRecord).where(
+            RAMSTKCategoryRecord.category_type == "incident"
+        ),
+        "category_id",
+        [
+            "name",
+            "description",
+            "value",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_INCIDENT_STATUS,
+        site_db,
+        select(RAMSTKStatusRecord).where(RAMSTKStatusRecord.status_type == "incident"),
+        "status_id",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_INCIDENT_TYPE,
+        site_db,
+        select(RAMSTKTypeRecord).where(RAMSTKTypeRecord.type_type == "incident"),
+        "type_id",
+        [
+            "code",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_LOAD_HISTORY,
+        site_db,
+        select(RAMSTKLoadHistoryRecord),
+        "history_id",
+        [
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_MANUFACTURERS,
+        site_db,
+        select(RAMSTKManufacturerRecord),
+        "manufacturer_id",
+        [
+            "description",
+            "location",
+            "cage_code",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_MEASURABLE_PARAMETERS,
+        site_db,
+        select(RAMSTKMeasurementRecord).where(
+            RAMSTKMeasurementRecord.measurement_type == "damage"
+        ),
+        "measurement_id",
+        [
+            "code",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_MEASUREMENT_UNITS,
+        site_db,
+        select(RAMSTKMeasurementRecord).where(
+            RAMSTKMeasurementRecord.measurement_type == "unit"
+        ),
+        "measurement_id",
+        [
+            "code",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_REQUIREMENT_TYPE,
+        site_db,
+        select(RAMSTKTypeRecord).where(RAMSTKTypeRecord.type_type == "requirement"),
+        "type_id",
+        [
+            "code",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_RPN_DETECTION,
+        site_db,
+        select(RAMSTKRPNRecord).where(RAMSTKRPNRecord.rpn_type == "detection"),
+        "value",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_RPN_OCCURRENCE,
+        site_db,
+        select(RAMSTKRPNRecord).where(RAMSTKRPNRecord.rpn_type == "occurrence"),
+        "value",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_RPN_SEVERITY,
+        site_db,
+        select(RAMSTKRPNRecord).where(RAMSTKRPNRecord.rpn_type == "severity"),
+        "value",
+        [
+            "name",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_SEVERITY,
+        site_db,
+        select(RAMSTKCategoryRecord).where(
+            RAMSTKCategoryRecord.category_type == "risk"
+        ),
+        "category_id",
+        [
+            "name",
+            "description",
+            "value",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_STAKEHOLDERS,
+        site_db,
+        select(RAMSTKStakeholdersRecord),
+        "stakeholders_id",
+        [
+            "stakeholder",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_STRESS_LIMITS,
+        site_db,
+        select(RAMSTKCategoryRecord).where(
+            RAMSTKCategoryRecord.category_type == "hardware"
+        ),
+        "category_id",
+        [
+            "harsh_ir_limit",
+            "mild_ir_limit",
+            "harsh_pr_limit",
+            "mild_pr_limit",
+            "harsh_vr_limit",
+            "mild_vr_limit",
+            "harsh_deltat_limit",
+            "mild_deltat_limit",
+            "harsh_maxt_limit",
+            "mild_maxt_limit",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_USERS,
+        site_db,
+        select(RAMSTKUserRecord),
+        "user_id",
+        [
+            "user_lname",
+            "user_fname",
+            "user_email",
+            "user_phone",
+            "user_group_id",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_VALIDATION_TYPE,
+        site_db,
+        select(RAMSTKTypeRecord).where(RAMSTKTypeRecord.type_type == "validation"),
+        "type_id",
+        [
+            "code",
+            "description",
+        ],
+    )
+    do_load_configuration_list(
+        user_configuration.RAMSTK_WORKGROUPS,
+        site_db,
+        select(RAMSTKGroupRecord).where(RAMSTKGroupRecord.group_type == "workgroup"),
+        "group_id",
+        [
+            "description",
+        ],
+    )
+
+    pub.sendMessage(
+        "do_log_info_msg",
+        logger_name="INFO",
+        message="Loaded global RAMSTK configuration variables.",
+    )
     pub.sendMessage(
         "do_log_info_msg",
         logger_name="INFO",
