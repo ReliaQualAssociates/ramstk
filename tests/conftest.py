@@ -33,7 +33,7 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
-from ramstk.models.db import BaseDatabase
+from ramstk.models.db import BaseDatabase, RAMSTKCommonDB
 
 _ = gettext.gettext
 
@@ -489,9 +489,9 @@ def make_shibboly():
 def test_config_dir():
     """Create a configuration directory if one doesn't exist.
 
-    This creates a configuration directory in the virtual environment base to
-    allow testing certain functions/methods that look for a user configuration
-    directory otherwise defaulting to the site-wide configuration directory.
+    This creates a configuration directory in the virtual environment base to allow
+    testing certain functions/methods that look for a user configuration directory
+    otherwise defaulting to the site-wide configuration directory.
     """
     _config_dir = f"{VIRTUAL_ENV}/share/RAMSTK"
 
@@ -608,7 +608,7 @@ def test_common_dao():
     populate_test_db(db_config=test_config, sql_file=testql_file)
 
     # Use the RAMSTK DAO to connect to the fresh, new test database.
-    dao = BaseDatabase()
+    dao = RAMSTKCommonDB()
     dao.do_connect(test_config)
 
     yield dao
@@ -1526,22 +1526,22 @@ def test_format_file():
     _root = ET.Element("root")
     _tree = ET.SubElement(_root, "tree", name="Test")
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(
+    ET.SubElement(
         _column,
         "defaulttitle",
     ).text = "Default Title 0"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(
+    ET.SubElement(
         _column,
         "defaulttitle",
     ).text = "Default Title 1"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(
+    ET.SubElement(
         _column,
         "defaulttitle",
     ).text = "Default Title 2"
     _column = ET.SubElement(_tree, "column")
-    _usertitle = ET.SubElement(
+    ET.SubElement(
         _column,
         "defaulttitle",
     ).text = "Default Title 3"

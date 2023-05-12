@@ -311,9 +311,16 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
         :return: None
         :rtype: None
         """
-        pub.sendMessage("do_log_debug_msg", logger_name="DEBUG", message=error_message)
+        pub.sendMessage(
+            "do_log_debug_msg",
+            logger_name="DEBUG",
+            message=error_message,
+        )
 
-    pub.subscribe(on_fail_create_site_configuration, "fail_create_site_configuration")
+    pub.subscribe(
+        on_fail_create_site_configuration,
+        "fail_create_site_configuration",
+    )
 
     pub.sendMessage(
         "do_log_info_msg",
