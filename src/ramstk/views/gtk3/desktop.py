@@ -465,19 +465,11 @@ class RAMSTKDesktop(Gtk.Window):
         _menu_items: List[Gtk.ImageMenuItem] = []
 
         for _idx, _ico in enumerate(icons):
-            if _ico != "":
-                _icon = (
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + "/16x16/"
-                    + _ico
-                    + ".png"
-                )
-            else:
-                _icon = (
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + "/16x16/default.png"
-                )
-
+            _icon = (
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/16x16/{_ico}.png"
+                if _ico != ""
+                else f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/16x16/default.png"
+            )
             _menu_item = Gtk.ImageMenuItem()
             _image = Gtk.Image()
             _image.set_from_file(_icon)
@@ -522,19 +514,11 @@ class RAMSTKDesktop(Gtk.Window):
         _buttons: List[Gtk.ToolButton] = []
 
         for _idx, _ico in enumerate(icons):
-            if _ico != "":
-                _icon = (
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + "/32x32/"
-                    + _ico
-                    + ".png"
-                )
-            else:
-                _icon = (
-                    self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR
-                    + "/32x32/default.png"
-                )
-
+            _icon = (
+                f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/{_ico}.png"
+                if _ico != ""
+                else f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/default.png"
+            )
             _button = Gtk.ToolButton()
             _button.set_tooltip_text(tooltips[_idx])
             _image = Gtk.Image()
