@@ -303,6 +303,7 @@ def do_read_site_configuration() -> RAMSTKSiteConfiguration:
         this run of RAMSTK.
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """
+
     def on_fail_create_site_configuration(error_message: str) -> None:
         """Log error message when there's a failure to create the site conf.
 
@@ -351,6 +352,7 @@ def do_read_user_configuration() -> Tuple[RAMSTKUserConfiguration, RAMSTKLogMana
         this run of RAMSTK.
     :rtype: :class:`ramstk.configuration.RAMSTKUserConfiguration`
     """
+
     def on_fail_create_user_configuration(error_message: str) -> None:
         """Log error message when there's a failure to create the user conf.
 

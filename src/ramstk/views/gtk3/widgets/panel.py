@@ -844,6 +844,7 @@ class RAMSTKPlotPanel(RAMSTKPanel):
 
         :return: None
         """
+
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set properties of the RAMSTKPanel() widgets.
 
