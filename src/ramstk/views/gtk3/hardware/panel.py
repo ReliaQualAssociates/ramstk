@@ -1152,7 +1152,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
             "succeed_make_comp_ref_des",
         )
 
-    def do_load_categories(self, category: Dict[int, str]) -> None:
+    def do_load_categories(self, category: Dict[int, Tuple[str]]) -> None:
         """Load the category RAMSTKComboBox().
 
         :param category: the dictionary of hardware categories to load.
@@ -1161,7 +1161,7 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         """
         self.cmbCategory.get_model().clear()
 
-        _categories = [[value] for value in category.values()]
+        _categories = [[value[0]] for value in category.values()]
         self.cmbCategory.do_load_combo(
             entries=_categories,
             signal="changed",
@@ -1252,7 +1252,10 @@ class HardwareLogisticsPanel(RAMSTKFixedPanel):
 
         # Initialize widgets.
         self.cmbCostType: RAMSTKComboBox = RAMSTKComboBox()
-        self.cmbManufacturer: RAMSTKComboBox = RAMSTKComboBox(simple=False)
+        self.cmbManufacturer: RAMSTKComboBox = RAMSTKComboBox(
+            simple=False,
+            n_items=3,
+        )
         self.txtCAGECode: RAMSTKEntry = RAMSTKEntry()
         self.txtCost: RAMSTKEntry = RAMSTKEntry()
         self.txtNSN: RAMSTKEntry = RAMSTKEntry()

@@ -19,9 +19,9 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_cause in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mechanism. This
-    table shared a One-to-Many relationship with ramstk_control. This table
-    shared a One-to-Many relationship with ramstk_action.
+    This table shares a Many-to-One relationship with ramstk_mechanism. This table
+    shared a One-to-Many relationship with ramstk_control. This table shared a One-to-
+    Many relationship with ramstk_action.
     """
 
     __defaults__ = {

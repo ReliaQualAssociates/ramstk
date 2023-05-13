@@ -21,8 +21,8 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent ramstk_hazard_analysis table in the Program database.
 
-    This table shares a Many-to-One relationship with ramstk_revision. This table
-    shares a Many-to-One relationship with ramstk_function.
+    This table shares a Many-to-One relationship with ramstk_revision. This table shares
+    a Many-to-One relationship with ramstk_function.
     """
 
     __defaults__ = {

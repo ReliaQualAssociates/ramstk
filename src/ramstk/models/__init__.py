@@ -8,6 +8,6 @@
 """The RAMSTK database models package."""
 
 # Third Party Imports
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 RAMSTK_BASE = declarative_base()

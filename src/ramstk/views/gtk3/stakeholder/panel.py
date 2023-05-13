@@ -369,9 +369,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _cellmodel.clear()
         _cellmodel.append([""])
 
-        # pylint: disable=unused-variable
-        for _key, _group in stakeholders.items():
-            _cellmodel.append([_group])
+        for __, _group in stakeholders.items():
+            _cellmodel.append([_group[0]])
 
     def _do_load_requirements(self, tree: treelib.Tree) -> None:
         """Load the requirement ID list when Requirements are retrieved.
