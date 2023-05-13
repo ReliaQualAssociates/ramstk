@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add in progress label
-        uses: andymckay/labeler@master
+        uses: weibullguy/labeler@master
         with:
           add-labels: "status: closed"
           remove-labels: "status: inprogress"
@@ -39,7 +39,7 @@ jobs:
 
       - name: Get PR labels
         id: prlabels
-        uses: joerick/pr-labels-action@v1.0.6
+        uses: joerick/pr-labels-action@v1.0.9
 
       - name: Get current version
         id: curversion

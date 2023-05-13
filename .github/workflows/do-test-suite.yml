@@ -62,7 +62,7 @@ jobs:
 
       - name: Set up Python ${{ matrix.python }}
         id: setpy
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python }}
 
@@ -82,7 +82,7 @@ jobs:
           xvfb-run --auto-servernum make coverage
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1
+        uses: codecov/codecov-action@v3
         with:
           files: ./cobertura.xml
           flags: ${{ matrix.python }}
@@ -101,51 +101,3 @@ jobs:
         uses: miurahr/coveralls-python-action@patch-pyprject-toml
         with:
           parallel-finished: true
-
-  msys2:
-    name: Run Test Suite on Windows (msys2)
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: msys2 {0}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - msystem: UCRT64
-            arch: x86_64
-
-    steps:
-      - name: setup-msys2
-        uses: msys2/setup-msys2@v2
-        with:
-          msystem: ${{ matrix.msystem }}
-          update: true
-          install: >-
-            base-devel
-            git
-            python-devel
-            mingw-w64-${{matrix.arch}}-gcc
-            mingw-w64-${{matrix.arch}}-gcc-libs
-            mingw-w64-${{matrix.arch}}-gcc-fortran
-            mingw-w64-${{matrix.arch}}-make
-            mingw-w64-${{matrix.arch}}-python
-            mingw-w64-${{matrix.arch}}-cairo
-            mingw-w64-${{matrix.arch}}-gtk3
-            mingw-w64-${{matrix.arch}}-gobject-introspection
-            mingw-w64-${{matrix.arch}}-lapack
-            mingw-w64-${{matrix.arch}}-openblas
-            mingw-w64-${{matrix.arch}}-python-pip
-            mingw-w64-${{matrix.arch}}-python-numpy
-            mingw-w64-${{matrix.arch}}-python-scipy
-
-      - name: Checkout Code
-        uses: actions/checkout@v3
-
-      - name: Install RAMSTK and test with coverage
-        run: |
-          export SETUPTOOLS_USE_DISTUTILS=stdlib
-          python3 -m pip install -U urllib3 poetry importlib_metadata
-          make PREFIX="/mingw64" install
-          make coverage

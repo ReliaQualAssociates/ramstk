@@ -38,7 +38,7 @@ python = "^3.8,<4.0"
 lifelines = "^0.27.0"
 matplotlib = "^3.3.4"
 numpy = [
-	{ version  = "^1.23,<1.24", python = "^3.8", markers = "sys_platform =='linux'" }
+	{ version  = "^1.23,<1.24", python = "^3.8", markers = "platform_system =='linux'" }
 ]
 openpyxl = "^3.0.6"
 pandas = [
@@ -66,8 +66,10 @@ Babel = "^2.9.0"
 bandit = "^1.7.5"
 black = "^23.3.0"
 coveralls = "^3.0.0"
-coverage = {extras = ["toml"], version = "^6.4"}
-docformatter = "^1.6"
+coverage = { version = "^6.4", extras = ["toml"] }
+docformatter = { version = "^1.6", extras = ["tomli"] }
+flake8 = { version = "^6.0.0", python = ">=3.8.1,<4.0" }
+flake8-pyproject = "^1.2.3"
 isort = "^5.7.0"
 mccabe = "^0.7.0"
 mock = "^5.0.2"
