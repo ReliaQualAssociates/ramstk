@@ -42,7 +42,7 @@ jobs:
 
   upload_coveralls:
     name: Upload Dummy Results to Coveralls
-    needs: test_suite
+    needs: ubuntu
     runs-on: ubuntu-latest
     steps:
       - run: |
