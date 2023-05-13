@@ -20,8 +20,8 @@ from .baseview import RAMSTKBaseView
 class RAMSTKPoFView(RAMSTKBaseView):
     """Contain the attributes and methods of the Physics of Failure (PoF) view model.
 
-    This class manages the usage profile data from the RAMSTKMechanism,
-    RAMSTKOpLoad, RAMSTKOpStress, and RAMSKTTestMethod table models.
+    This class manages the usage profile data from the RAMSTKMechanism, RAMSTKOpLoad,
+    RAMSTKOpStress, and RAMSKTTestMethod table models.
     """
 
     # Define private dictionary class attributes.

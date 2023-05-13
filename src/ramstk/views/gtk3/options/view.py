@@ -18,12 +18,12 @@ from . import OptionsPanel
 class OptionsDialog(RAMSTKDialog):
     """Provide a GUI to set various RAMSTK configuration options.
 
-    RAMSTK options are stored in the RAMSTK Common database and the RAMSTK
-    Program database.  RAMSTK options are site-specific or program-specific and
-    apply to all users.  Options should not be confused with user-specific
-    configurations preferences which are stored in RAMSTK.conf in each user's
-    $HOME/.config/RAMSTK directory and are applicable only to that specific user.
-    Configuration preferences are edited with the Preferences assistant.
+    RAMSTK options are stored in the RAMSTK Common database and the RAMSTK Program
+    database.  RAMSTK options are site-specific or program-specific and apply to all
+    users.  Options should not be confused with user-specific configurations preferences
+    which are stored in RAMSTK.conf in each user's $HOME/.config/RAMSTK directory and
+    are applicable only to that specific user. Configuration preferences are edited with
+    the Preferences assistant.
 
     Attributes of the EditOptions are:
     """

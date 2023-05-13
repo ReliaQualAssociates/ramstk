@@ -342,11 +342,9 @@ class RAMSTKDesktop(Gtk.Window):
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
-    def _on_request_open(self, program_db: object, database: Dict[str, str]) -> None:
+    def _on_request_open(self, database: Dict[str, str]) -> None:
         """Set the status bar and update the progress bar.
 
-        :param program_db: the BaseDatabase used for the ProgramDB.  Unused in this
-            method, but required as it is part of the message payload.
         :param database: the dict containing the database connection information.
         :return: None
         :rtype: None

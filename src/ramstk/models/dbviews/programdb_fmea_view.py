@@ -20,8 +20,8 @@ from .baseview import RAMSTKBaseView
 class RAMSTKFMEAView(RAMSTKBaseView):
     """Contain the attributes and methods of the FMEA view model.
 
-    This class manages the usage profile data from the RAMSTKMode,
-    RAMSTKMechanism, RAMSTKCause, RAMSTKControl, and RAMSKTAction table models.
+    This class manages the usage profile data from the RAMSTKMode, RAMSTKMechanism,
+    RAMSTKCause, RAMSTKControl, and RAMSKTAction table models.
     """
 
     # Define private dictionary class attributes.

@@ -19,9 +19,9 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_op_load in the RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mechanism. This
-    table shares a One-to-Many relationship with ramstk_op_stress. This table
-    shares a One-to-Many relationship with ramstk_test_method.
+    This table shares a Many-to-One relationship with ramstk_mechanism. This table
+    shares a One-to-Many relationship with ramstk_op_stress. This table shares a One-to-
+    Many relationship with ramstk_test_method.
     """
 
     __defaults__ = {"description": "", "damage_model": 0, "priority_id": 0}

@@ -14,7 +14,6 @@ import tempfile
 # Third Party Imports
 import pytest
 from pubsub import pub
-from sqlalchemy import exc
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm.exc import UnmappedInstanceError
@@ -53,7 +52,7 @@ class TestConnectionMethods:
     def on_fail_connect_bad_db_name_type(self, logger_name, message):
         """Listen for do_log_error messages."""
         assert logger_name == "ERROR"
-        assert message == "Non-string value in database connection: 8675309."
+        assert "Non-string value in database connection: 8675309." in message
         print("\033[36m\n\tfail_connect_program_database topic was broadcast")
 
     def on_fail_connect_unknown_dialect(self, logger_name, message):
@@ -100,7 +99,8 @@ class TestConnectionMethods:
 
         test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = 8675309
         DUT = BaseDatabase()
-        DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+        with pytest.raises(DataAccessError):
+            DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         pub.unsubscribe(self.on_fail_connect_bad_db_name_type, "do_log_error_msg")
 
@@ -114,7 +114,7 @@ class TestConnectionMethods:
         ] = "/home/test/testdb.db"
         DUT = BaseDatabase()
 
-        with pytest.raises(DataAccessError) as _error:
+        with pytest.raises(DataAccessError):
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.integration
@@ -124,7 +124,8 @@ class TestConnectionMethods:
 
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "sqldoyle"
         DUT = BaseDatabase()
-        DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
+        with pytest.raises(DataAccessError):
+            DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         pub.unsubscribe(self.on_fail_connect_unknown_dialect, "do_log_error_msg")
 
@@ -135,7 +136,7 @@ class TestConnectionMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["host"] = "shibby-shibby-do"
         DUT = BaseDatabase()
 
-        with pytest.raises(DataAccessError) as _error:
+        with pytest.raises(DataAccessError):
             DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
     @pytest.mark.integration

@@ -20,9 +20,9 @@ from .baserecord import RAMSTKBaseRecord
 class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     """Class to represent table ramstk_mechanism in RAMSTK Program database.
 
-    This table shares a Many-to-One relationship with ramstk_mode. This table
-    shares a One-to-Many relationship with ramstk_cause. This table shares a One-
-    to-Many relationship with ramstk_op_load.
+    This table shares a Many-to-One relationship with ramstk_mode. This table shares a
+    One-to-Many relationship with ramstk_cause. This table shares a One- to-Many
+    relationship with ramstk_op_load.
     """
 
     __defaults__ = {

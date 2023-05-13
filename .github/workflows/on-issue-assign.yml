@@ -35,7 +35,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Add in progress label
-        uses: andymckay/labeler@master
+        uses: weibullguy/labeler@master
         with:
           add-labels: "status: inprogress"
           remove-labels: "status: backlog"
