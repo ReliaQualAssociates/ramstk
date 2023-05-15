@@ -695,14 +695,14 @@ files = [
 
 [[package]]
 name = "docformatter"
-version = "1.6.5"
+version = "1.7.0"
 description = "Formats docstrings to follow PEP 257"
 category = "dev"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "docformatter-1.6.5-py3-none-any.whl", hash = "sha256:da2cb1cead3844ba066c8d5a1ef8dd733e471415e31916632ef14f426f2a3984"},
-    {file = "docformatter-1.6.5.tar.gz", hash = "sha256:7a33fd292094e7008628e7b768df9c3ab4dd94ab2a62c46771738d929afd8532"},
+    {file = "docformatter-1.7.0-py3-none-any.whl", hash = "sha256:8099de46392970f63eacfc69143b23dd78f6d6511ff8e9f474aba70f80d2e312"},
+    {file = "docformatter-1.7.0.tar.gz", hash = "sha256:13bc8805b3bf4f8a0911fe87c3ea58c7bfc0d5739a2d86bb339efab3932ae49b"},
 ]
 
 [package.dependencies]
@@ -3530,4 +3530,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8,<4.0"
-content-hash = "ac374aa42c2d28d12c213d07551913d91ad229f27f47265ef0d3a48688dd1fc1"
+content-hash = "bf1fc9299c2c090e35e141f3e82fe3a04d780aecd58b2d8d85392a28008c620e"
