@@ -208,7 +208,6 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         :return: None
         """
         self._record_id = attributes[self._record_field]
-
         for _key_str, _value_obj in self.dic_attribute_widget_map.items():
             _new_text_str = attributes.get(_key_str, _value_obj[5])
             _value_obj[1].do_update(
@@ -844,6 +843,7 @@ class RAMSTKPlotPanel(RAMSTKPanel):
 
         :return: None
         """
+
     def do_set_properties(self, **kwargs: Any) -> None:
         """Set properties of the RAMSTKPanel() widgets.
 
@@ -1196,7 +1196,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
         }
         self.tvwTreeView.do_set_visible_columns()
 
-    def on_cell_change(
+    def on_cell_change(  # noqa: PLR0913
         self,
         cell: Gtk.CellRenderer,
         path: str,
@@ -1240,7 +1240,7 @@ class RAMSTKTreePanel(RAMSTKPanel):
                 ),
             )
 
-    def on_cell_edit(
+    def on_cell_edit(  # noqa: PLR0913
         self,
         cell: Gtk.CellRenderer,
         path: str,
