@@ -383,7 +383,7 @@ def test_get_temperature_rise_spec_id(test_attributes_inductor):
     )
 
     assert isinstance(test_attributes_inductor["temperature_rise"], float)
-    assert test_attributes_inductor["temperature_rise"] == 15.0
+    assert test_attributes_inductor["temperature_rise"] == 15.0  # noqa: PLR2004
 
 
 @pytest.mark.unit
@@ -419,7 +419,7 @@ def test_calculate_temperature_rise_power_loss_surface():
     )
 
     assert isinstance(_temperature_rise, float)
-    assert _temperature_rise == 3.87
+    assert _temperature_rise == 3.87  # noqa: PLR2004
 
 
 @pytest.mark.unit
@@ -499,7 +499,7 @@ def test_calculate_part_stress_inductor(test_attributes_inductor):
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(0.00046712295)
-    assert _attributes["piC"] == 2.0
+    assert _attributes["piC"] == 2.0  # noqa: PLR2004
     assert _attributes["hazard_rate_active"] == pytest.approx(0.00014013688)
 
 
@@ -513,7 +513,7 @@ def test_calculate_part_stress_xfmr_with_surface_area(test_attributes_inductor):
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(0.0026358035)
-    assert _attributes["piC"] == 1.0
+    assert _attributes["piC"] == 1.0  # noqa: PLR2004
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01976853)
 
 
@@ -532,7 +532,7 @@ def test_calculate_part_stress_xfmr_with_weight(test_attributes_inductor):
     assert isinstance(_attributes, dict)
     assert _attributes["temperature_rise"] == pytest.approx(2.39421196)
     assert _attributes["lambda_b"] == pytest.approx(0.0024684654)
-    assert _attributes["piC"] == 1.0
+    assert _attributes["piC"] == 1.0  # noqa: PLR2004
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01851349)
 
 
@@ -551,7 +551,7 @@ def test_calculate_part_stress_xfmr_with_input_power(test_attributes_inductor):
     assert isinstance(_attributes, dict)
     assert _attributes["temperature_rise"] == pytest.approx(0.0040553804)
     assert _attributes["lambda_b"] == pytest.approx(0.0024148713)
-    assert _attributes["piC"] == 1.0
+    assert _attributes["piC"] == 1.0  # noqa: PLR2004
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01811153)
 
 
@@ -568,50 +568,50 @@ def test_calculate_part_stress_xfmr_no_temperature_rise(test_attributes_inductor
     _attributes = inductor.calculate_part_stress(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["temperature_rise"] == 0.0
+    assert _attributes["temperature_rise"] == 0.0  # noqa: PLR2004
     assert _attributes["lambda_b"] == pytest.approx(0.0024147842)
-    assert _attributes["piC"] == 1.0
+    assert _attributes["piC"] == 1.0  # noqa: PLR2004
     assert _attributes["hazard_rate_active"] == pytest.approx(0.01811088)
 
 
 @pytest.mark.unit
 def test_set_default_max_rated_temperature():
     """Should return the default capacitance for the selected subcategory ID."""
-    assert inductor._set_default_max_rated_temperature(1) == 130.0
-    assert inductor._set_default_max_rated_temperature(2) == 125.0
+    assert inductor._set_default_max_rated_temperature(1) == 130.0  # noqa: PLR2004
+    assert inductor._set_default_max_rated_temperature(2) == 125.0  # noqa: PLR2004
 
 
 @pytest.mark.unit
 def test_set_default_temperature_rise():
     """Should return the default capacitance for the selected subcategory ID."""
-    assert inductor._set_default_temperature_rise(1, 1) == 10.0
-    assert inductor._set_default_temperature_rise(1, 3) == 30.0
-    assert inductor._set_default_temperature_rise(2, 1) == 10.0
+    assert inductor._set_default_temperature_rise(1, 1) == 10.0  # noqa: PLR2004
+    assert inductor._set_default_temperature_rise(1, 3) == 30.0  # noqa: PLR2004
+    assert inductor._set_default_temperature_rise(2, 1) == 10.0  # noqa: PLR2004
 
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_inductor")
 def test_set_default_values(test_attributes_inductor):
     """Should set default values for each parameter <= 0.0."""
-    test_attributes_inductor["rated_temperature_max"] = 0.0
+    test_attributes_inductor["temperature_rated_max"] = 0.0
     test_attributes_inductor["temperature_rise"] = 0.0
     test_attributes_inductor["subcategory_id"] = 1
     _attributes = inductor.set_default_values(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["rated_temperature_max"] == 130.0
-    assert _attributes["temperature_rise"] == 10.0
+    assert _attributes["temperature_rated_max"] == 130.0  # noqa: PLR2004
+    assert _attributes["temperature_rise"] == 10.0  # noqa: PLR2004
 
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_inductor")
 def test_set_default_values_none_needed(test_attributes_inductor):
     """Should not set default values for each parameter > 0.0."""
-    test_attributes_inductor["rated_temperature_max"] = 135.0
+    test_attributes_inductor["temperature_rated_max"] = 135.0
     test_attributes_inductor["temperature_rise"] = 5.0
     test_attributes_inductor["subcategory_id"] = 1
     _attributes = inductor.set_default_values(**test_attributes_inductor)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["rated_temperature_max"] == 135.0
-    assert _attributes["temperature_rise"] == 5.0
+    assert _attributes["temperature_rated_max"] == 135.0  # noqa: PLR2004
+    assert _attributes["temperature_rise"] == 5.0  # noqa: PLR2004

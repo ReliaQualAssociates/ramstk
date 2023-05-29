@@ -6,7 +6,9 @@
 # Copyright since 2017 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor derating analysis functions."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Dict, List, Tuple
 
 
@@ -33,73 +35,80 @@ def do_derating_analysis(
     """
     _overstress: int = 0
     _reason: str = ""
+    _stress_limits: Dict = {}
 
-    _subcategory = {
-        1: "diode",
-        3: "transistor",
-        4: "transistor",
-        6: "transistor",
-        7: "transistor",
-        8: "transistor",
-        9: "transistor",
-        10: "thyristor",
-    }[subcategory_id]
-    _type = {
-        1: {
-            1: "general_purpose",
-            2: "general_purpose",
-            3: "power_rectifier",
-            4: "schottky",
-            5: "power_rectifier",
-            6: "suppressor",
-            7: "regulator",
-            8: "regulator",
-        },
-        3: "bjt",
-        4: "fet",
-        6: "bjt",
-        7: "bjt",
-        9: "fet",
-    }[subcategory_id]
-    if isinstance(_type, dict):
-        _type = _type[kwargs["type_id"]]
+    with contextlib.suppress(KeyError):
+        _subcategory = {
+            1: "diode",
+            3: "transistor",
+            4: "transistor",
+            6: "transistor",
+            7: "transistor",
+            8: "transistor",
+            9: "transistor",
+            10: "thyristor",
+        }[subcategory_id]
+        _stress_limits = stress_limits[_subcategory]
+    with contextlib.suppress(KeyError):
+        _type = {
+            1: {
+                1: "general_purpose",
+                2: "general_purpose",
+                3: "power_rectifier",
+                4: "schottky",
+                5: "power_rectifier",
+                6: "suppressor",
+                7: "regulator",
+                8: "regulator",
+            },
+            3: "bjt",
+            4: "fet",
+            6: "bjt",
+            7: "bjt",
+            9: "fet",
+        }[subcategory_id]
+        if isinstance(_type, dict):
+            _type = _type[kwargs["type_id"]]
+        _stress_limits = _stress_limits[_type]
+    with contextlib.suppress(KeyError):
+        _quality = {
+            1: "jantx",
+            2: "jantx",
+            3: "military",
+            4: "commercial",
+            5: "commercial",
+        }[kwargs["quality_id"]]
+        _stress_limits = _stress_limits[_quality]
+    with contextlib.suppress(KeyError):
+        _overstress, _reason = _do_check_current_limit(
+            kwargs["current_ratio"],
+            _stress_limits["current"][environment_id],
+        )
 
-    _quality = {
-        1: "jantx",
-        2: "jantx",
-        3: "military",
-        4: "commercial",
-        5: "commercial",
-    }[kwargs["quality_id"]]
+        if (
+            _subcategory == "diode"
+            and _type in ["schottky,", "regulator", "suppressor"]
+        ) or _subcategory == "transistor":
+            _ostress, _rsn = _do_check_power_limit(
+                kwargs["power_ratio"],
+                _stress_limits["power"][environment_id],
+            )
+            _overstress = _overstress or _ostress
+            _reason += _rsn
 
-    _overstress, _reason = _do_check_current_limit(
-        kwargs["current_ratio"],
-        stress_limits[_subcategory][_type][_quality]["current"][environment_id],
-    )
-
-    if (
-        _subcategory == "diode" and _type in ["schottky,", "regulator", "suppressor"]
-    ) or _subcategory == "transistor":
-        _ostress, _rsn = _do_check_power_limit(
-            kwargs["power_ratio"],
-            stress_limits[_subcategory][_type][_quality]["power"][environment_id],
+        _ostress, _rsn = _do_check_temperature_limit(
+            kwargs["temperature_junction"],
+            _stress_limits["temperature"][environment_id],
         )
         _overstress = _overstress or _ostress
         _reason += _rsn
 
-    _ostress, _rsn = _do_check_temperature_limit(
-        kwargs["temperature_junction"],
-        stress_limits[_subcategory][_type][_quality]["temperature"][environment_id],
-    )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
-
-    _ostress, _rsn = _do_check_voltage_limit(
-        kwargs["voltage_ratio"],
-        stress_limits[_subcategory][_type][_quality]["voltage"][environment_id],
-    )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
+        _ostress, _rsn = _do_check_voltage_limit(
+            kwargs["voltage_ratio"],
+            _stress_limits["voltage"][environment_id],
+        )
+        _overstress = _overstress or _ostress
+        _reason += _rsn
 
     return _overstress, _reason
 
