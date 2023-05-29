@@ -156,7 +156,9 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
         )
 
 
-@pytest.mark.skip
+@pytest.mark.skip(
+    reason="Error is now handled by function.  Test to be removed in " "future."
+)
 def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
     """Should raise am KeyError when passed an unknown subcategory."""
     with pytest.raises(KeyError):
@@ -173,7 +175,9 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
         )
 
 
-@pytest.mark.skip
+@pytest.mark.skip(
+    reason="Error is now handled by function.  Test to be removed in " "future."
+)
 def test_do_derating_analysis_unknown_quality(test_stress_limits):
     """Should raise am KeyError when passed an unknown quality ID."""
     with pytest.raises(KeyError):
@@ -190,7 +194,9 @@ def test_do_derating_analysis_unknown_quality(test_stress_limits):
         )
 
 
-@pytest.mark.skip
+@pytest.mark.skip(
+    reason="Error is now handled by function.  Test to be removed in " "future."
+)
 def test_do_derating_analysis_unknown_type(test_stress_limits):
     """Should raise am KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
