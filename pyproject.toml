@@ -264,8 +264,8 @@ max-args = 6
 non-cap = [
 	"milhdbk217f",
 ]
-wrap-summaries = 88
-wrap-descriptions = 88
+black = true
+style = "sphinx"
 
 [tool.mypy]
 allow_subclassing_any = true
