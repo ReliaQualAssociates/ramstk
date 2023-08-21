@@ -3087,13 +3087,13 @@ files = [
 
 [[package]]
 name = "treelib"
-version = "1.6.4"
-description = "A Python 2/3 implementation of tree structure."
+version = "1.7.0"
+description = "A Python implementation of tree structure."
 optional = false
 python-versions = "*"
 files = [
-    {file = "treelib-1.6.4-py3-none-any.whl", hash = "sha256:4218f7dded2448dfa6a335888bf68a28430660163e7faf18c6128ec4477d34c0"},
-    {file = "treelib-1.6.4.tar.gz", hash = "sha256:1a2e838f6b99e2690bc3d992d5a1f04cdb4af6564bd7688883c23d17257bbb2a"},
+    {file = "treelib-1.7.0-py3-none-any.whl", hash = "sha256:c37795eaba19f73f3e1a905ef3f4f0cab660dc7617126e8ae99391e25c755416"},
+    {file = "treelib-1.7.0.tar.gz", hash = "sha256:9bff1af416b9e642a6cd0e0431d15edf26a24b8d0c8ae68afbd3801b5e30fb61"},
 ]
 
 [package.dependencies]
