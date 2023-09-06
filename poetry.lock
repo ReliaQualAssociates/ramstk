@@ -2213,13 +2213,13 @@ testing = ["fields", "hunter", "process-tests", "pytest-xdist", "six", "virtuale
 
 [[package]]
 name = "pytest-icdiff"
-version = "0.6"
+version = "0.7"
 description = "use icdiff for better error messages in pytest assertions"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "pytest-icdiff-0.6.tar.gz", hash = "sha256:e8f1ef4550a893b4f0a0ea7e7a8299b12ded72c086101d7811ddec0d85fd1bad"},
-    {file = "pytest_icdiff-0.6-py3-none-any.whl", hash = "sha256:93ba20b71e51db7abecf99abee8fd13abd9ba7934f8e6838d1c4f443b4fc56a7"},
+    {file = "pytest-icdiff-0.7.tar.gz", hash = "sha256:1cec1d7906ece36403223127e0f4bf8f7594ba86e4ce8a0828cdcf09551b1938"},
+    {file = "pytest_icdiff-0.7-py3-none-any.whl", hash = "sha256:583c50dc781627555e9533504f6620c23d149916a902755d3243a804392c4d96"},
 ]
 
 [package.dependencies]
@@ -3390,4 +3390,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8,<4.0"
-content-hash = "d6b2df179d72961ed167823de4b2112fc5947b7b7e93a9e5152c37ef15d7bc47"
+content-hash = "c6286c1d39a8906d13a19f842dee32a0b0703343316c885e96ffd9e5c63ca319"
