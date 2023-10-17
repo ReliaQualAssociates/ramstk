@@ -95,7 +95,7 @@ sphinxcontrib-issuetracker = "^0.11"
 sphinxcontrib-spelling = "^8.0.0"
 twine = "^4.0.0"
 pillow = [
-	{ version = "^9.0.0" , python = "^3.8" }
+	{ version = "^10.1.0" , python = "^3.8" }
 ]
 
 [tool.poetry.scripts]
