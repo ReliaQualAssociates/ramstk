@@ -64,7 +64,7 @@ xlwt = "^1.3.0"
 [tool.poetry.dev-dependencies]
 Babel = "^2.13.0"
 bandit = "^1.7.5"
-black = "^23.9.1"
+black = "^23.10.0"
 coveralls = "^3.0.0"
 coverage = { version = "^6.4", extras = ["toml"] }
 docformatter = { version = "^1.7", extras = ["tomli"] }
