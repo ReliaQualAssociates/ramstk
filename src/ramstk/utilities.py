@@ -38,7 +38,6 @@ def date_to_ordinal(date: str) -> int:
 
 def deprecated(func: Callable) -> Callable:
     """Decorate other functions as deprecated."""
-
     @functools.wraps(func)
     def new_func(*args, **kwargs):
         warnings.simplefilter("always", DeprecationWarning)  # turn off filter
