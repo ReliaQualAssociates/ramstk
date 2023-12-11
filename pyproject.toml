@@ -70,7 +70,7 @@ coverage = { version = "^6.4", extras = ["toml"] }
 docformatter = { version = "^1.7", extras = ["tomli"] }
 flake8 = { version = "^6.0.0", python = ">=3.8.1,<4.0" }
 flake8-pyproject = "^1.2.3"
-isort = "^5.7.0"
+isort = "^5.13.0"
 mccabe = "^0.7.0"
 mock = "^5.1.0"
 mypy = "^1.7.0"
