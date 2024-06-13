@@ -263,7 +263,10 @@ def do_load_configuration_list(
         _attributes = _record.get_attributes()
         _values = ()
         for _field in fields:
-            _values = _values + (_attributes[_field],)
+            if len(fields) == 1:
+                _values = _attributes[_field]
+            else:
+                _values = _values + (_attributes[_field],)
         config_list[_attributes[key_column]] = _values
 
 
@@ -689,6 +692,10 @@ def the_one_ring() -> None:
             "mild_maxt_limit",
         ],
     )
+    _program_db.dic_views[
+        "hardwarebom"
+    ]._dic_stress_limits = user_configuration.RAMSTK_STRESS_LIMITS
+
     do_load_configuration_list(
         user_configuration.RAMSTK_USERS,
         site_db,

@@ -8,7 +8,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """RAMSTKDesignElectric Record Model."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Dict, List, Union
 
 # Third Party Imports
@@ -443,41 +445,42 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         self.overstress = 0
         self.reason = ""
 
-        _category = {
-            1: "integrated_circuit",
-            2: "semiconductor",
-            3: "resistor",
-            4: "capacitor",
-            5: "inductor",
-            6: "relay",
-            7: "switch",
-            8: "connection",
-            10: "miscellaneous",
-        }[category_id]
+        with contextlib.suppress(KeyError):
+            _category = {
+                1: "integrated_circuit",
+                2: "semiconductor",
+                3: "resistor",
+                4: "capacitor",
+                5: "inductor",
+                6: "relay",
+                7: "switch",
+                8: "connection",
+                10: "miscellaneous",
+            }[category_id]
 
-        self.overstress, self.reason = derating.do_check_overstress(
-            _category,
-            self.environment_active_id,
-            subcategory_id,
-            stress_limits[_category],
-            application_id=self.application_id,
-            current_ratio=self.current_ratio,
-            family_id=self.family_id,
-            package_id=self.package_id,
-            power_rated=self.power_rated,
-            power_ratio=self.power_ratio,
-            quality_id=quality_id,
-            specification_id=self.specification_id,
-            technology_id=self.technology_id,
-            temperature_active=self.temperature_active,
-            temperature_case=self.temperature_case,
-            temperature_hot_spot=self.temperature_hot_spot,
-            temperature_junction=self.temperature_junction,
-            temperature_knee=self.temperature_knee,
-            temperature_rated_max=self.temperature_rated_max,
-            type_id=self.type_id,
-            voltage_ratio=self.voltage_ratio,
-        )
+            self.overstress, self.reason = derating.do_check_overstress(
+                _category,
+                self.environment_active_id,
+                subcategory_id,
+                stress_limits[_category],
+                application_id=self.application_id,
+                current_ratio=self.current_ratio,
+                family_id=self.family_id,
+                package_id=self.package_id,
+                power_rated=self.power_rated,
+                power_ratio=self.power_ratio,
+                quality_id=quality_id,
+                specification_id=self.specification_id,
+                technology_id=self.technology_id,
+                temperature_active=self.temperature_active,
+                temperature_case=self.temperature_case,
+                temperature_hot_spot=self.temperature_hot_spot,
+                temperature_junction=self.temperature_junction,
+                temperature_knee=self.temperature_knee,
+                temperature_rated_max=self.temperature_rated_max,
+                type_id=self.type_id,
+                voltage_ratio=self.voltage_ratio,
+            )
 
     def do_stress_analysis(self, category_id: int) -> None:
         """Perform a stress analysis.
@@ -489,8 +492,8 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         if category_id in {1, 2, 5, 6, 7, 8}:
             self.do_calculate_current_ratio()
 
-        if category_id == 3:
+        if category_id in {2, 3}:
             self.do_calculate_power_ratio()
 
-        if category_id in {4, 5, 8}:
+        if category_id in {2, 4, 5, 8}:
             self.do_calculate_voltage_ratio()

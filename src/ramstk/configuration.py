@@ -19,7 +19,7 @@ from distutils import dir_util, file_util
 # pylint: disable=deprecated-module
 from distutils.errors import DistutilsFileError
 from os import environ, makedirs
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Dict, List, Tuple, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
@@ -32,7 +32,7 @@ from ramstk.utilities import dir_exists, file_exists, get_install_prefix
 _ = gettext.gettext
 
 # Define global list constants.
-RAMSTK_ACTIVE_ENVIRONMENTS = [
+RAMSTK_ACTIVE_ENVIRONMENTS: List[List[str]] = [
     [_("Ground, Benign")],
     [_("Ground, Fixed")],
     [_("Ground, Mobile")],
@@ -47,14 +47,14 @@ RAMSTK_ACTIVE_ENVIRONMENTS = [
     [_("Missile, Flight")],
     [_("Missile, Launch")],
 ]
-RAMSTK_DORMANT_ENVIRONMENTS = [
+RAMSTK_DORMANT_ENVIRONMENTS: List[List[str]] = [
     [_("Airborne")],
     [_("Ground")],
     [_("Naval")],
     [_("Space")],
 ]
 
-RAMSTK_ALLOCATION_MODELS = [
+RAMSTK_ALLOCATION_MODELS: List[List[str]] = [
     ["Equal Apportionment"],
     ["ARINC Apportionment"],
     ["AGREE Apportionment"],
@@ -62,18 +62,18 @@ RAMSTK_ALLOCATION_MODELS = [
     ["Repairable Systems Apportionment"],
 ]
 
-RAMSTK_HR_TYPES = [
+RAMSTK_HR_TYPES: List[List[str]] = [
     [_("Assessed")],
     [_("Defined, Hazard Rate")],
     [_("Defined, MTBF")],
     [_("Defined, Distribution")],
 ]
-RAMSTK_HR_MODELS = [
+RAMSTK_HR_MODELS: List[List[str]] = [
     [_("MIL-HDBK-217F Parts Count")],
     [_("MIL-HDBK-217F Parts Stress")],
     [_("NSWC-11")],
 ]
-RAMSTK_HR_DISTRIBUTIONS = [
+RAMSTK_HR_DISTRIBUTIONS: List[List[str]] = [
     [_("1P Exponential")],
     [_("2P Exponential")],
     [_("Gaussian")],
@@ -82,11 +82,11 @@ RAMSTK_HR_DISTRIBUTIONS = [
     [_("3P Weibull")],
 ]
 
-RAMSTK_CONTROL_TYPES = [_("Prevention"), _("Detection")]
-RAMSTK_COST_TYPES = [[_("Defined")], [_("Calculated")]]
-RAMSTK_MTTR_TYPES = [[_("Defined")], [_("Calculated")]]
+RAMSTK_CONTROL_TYPES: List[List[str]] = [_("Prevention"), _("Detection")]
+RAMSTK_COST_TYPES: List[List[str]] = [[_("Defined")], [_("Calculated")]]
+RAMSTK_MTTR_TYPES: List[List[str]] = [[_("Defined")], [_("Calculated")]]
 
-RAMSTK_CRITICALITY = [
+RAMSTK_CRITICALITY: List[List[Any]] = [
     [
         _("Catastrophic"),
         _(
@@ -132,7 +132,7 @@ RAMSTK_CRITICALITY = [
         1,
     ],
 ]
-RAMSTK_FAILURE_PROBABILITY = [
+RAMSTK_FAILURE_PROBABILITY: List[List[Any]] = [
     [_("Level E - Extremely Unlikely"), 1],
     [_("Level D - Remote"), 2],
     [_("Level C - Occasional"), 3],
@@ -140,12 +140,12 @@ RAMSTK_FAILURE_PROBABILITY = [
     [_("Level A - Frequent"), 5],
 ]
 
-RAMSTK_SW_DEV_ENVIRONMENTS = [
+RAMSTK_SW_DEV_ENVIRONMENTS: List[List[Any]] = [
     [_("Organic"), 1.0, 0.76],
     [_("Semi-Detached"), 1.0, 1.0],
     [_("Embedded"), 1.0, 1.3],
 ]
-RAMSTK_SW_DEV_PHASES = [
+RAMSTK_SW_DEV_PHASES: List[List[str]] = [
     [_("Concept/Planning (PCP)")],
     [_("Requirements Analysis (SRA)")],
     [_("Preliminary Design Review (PDR)")],
@@ -153,12 +153,12 @@ RAMSTK_SW_DEV_PHASES = [
     [_("Test Readiness Review (TRR)")],
     [_("Released")],
 ]
-RAMSTK_SW_LEVELS = [
+RAMSTK_SW_LEVELS: List[List[Any]] = [
     [_("Software System"), 0],
     [_("Software Module"), 0],
     [_("Software Unit"), 0],
 ]
-RAMSTK_SW_APPLICATION = [
+RAMSTK_SW_APPLICATION: List[List[Any]] = [
     [_("Airborne"), 0.0128, 6.28],
     [_("Strategic"), 0.0092, 1.2],
     [_("Tactical"), 0.0078, 13.8],
@@ -166,7 +166,7 @@ RAMSTK_SW_APPLICATION = [
     [_("Production Center"), 0.0085, 23.0],
     [_("Developmental"), 0.0123, 132.6],
 ]
-RAMSTK_SW_TEST_METHODS = [
+RAMSTK_SW_TEST_METHODS: List[List[str]] = [
     [
         _("Code Reviews"),
         _(
@@ -196,7 +196,7 @@ RAMSTK_SW_TEST_METHODS = [
     ],
 ]
 
-RAMSTK_LIFECYCLE = [
+RAMSTK_LIFECYCLE: List[List[str]] = [
     [_("Design")],
     [_("Reliability Growth")],
     [_("Reliability Qualification")],
@@ -205,7 +205,7 @@ RAMSTK_LIFECYCLE = [
     [_("Operation")],
     [_("Disposal")],
 ]
-RAMSTK_S_DIST = [
+RAMSTK_S_DIST: List[List[str]] = [
     ["Constant Probability"],
     ["Exponential"],
     ["Gaussian"],
@@ -225,7 +225,7 @@ class RAMSTKSiteConfiguration:
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._INSTALL_PREFIX = get_install_prefix()
+        self._INSTALL_PREFIX: str = get_install_prefix()
 
         # Initialize public dictionary attributes.
         self.RAMSTK_COM_INFO: Dict[str, str] = {}
@@ -233,13 +233,13 @@ class RAMSTKSiteConfiguration:
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.RAMSTK_COM_BACKEND = ""
+        self.RAMSTK_COM_BACKEND: str = ""
         if sys.platform in ["linux", "linux2"]:
-            self.RAMSTK_SITE_DIR = f"{self._INSTALL_PREFIX}/share/RAMSTK"
+            self.RAMSTK_SITE_DIR: str = f"{self._INSTALL_PREFIX}/share/RAMSTK"
         elif sys.platform == "win32":
-            self.RAMSTK_SITE_DIR = f'{environ["PYTHONPATH"]}/RAMSTK'
+            self.RAMSTK_SITE_DIR: str = f'{environ["PYTHONPATH"]}/RAMSTK'
 
-        self.RAMSTK_SITE_CONF = f"{self.RAMSTK_SITE_DIR}/Site.toml"
+        self.RAMSTK_SITE_CONF: str = f"{self.RAMSTK_SITE_DIR}/Site.toml"
 
     def do_create_site_configuration(self) -> None:
         """Create the default site configuration file.
@@ -461,7 +461,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
     """
 
     # pylint: disable=too-many-statements
-    def __init__(self) -> None:
+    def __init__(self) -> None:  # noqa: PLR0915
         """Class for user-specific RAMSTK configuration settings."""
         # Initialize private dictionary attributes.
 
@@ -798,7 +798,7 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
             self.RAMSTK_TABPOS["workbook"] = _config["general"]["worktabpos"]
             self.RAMSTK_LOGLEVEL = _config["general"]["loglevel"]
 
-            if self.RAMSTK_LOG_DIR == "":
+            if not self.RAMSTK_LOG_DIR:
                 self.RAMSTK_USER_LOG = "./ramstk_run.log"
                 self.RAMSTK_IMPORT_LOG = "./ramstk_import.log"
             else:
