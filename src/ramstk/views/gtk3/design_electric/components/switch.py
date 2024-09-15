@@ -11,9 +11,6 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
