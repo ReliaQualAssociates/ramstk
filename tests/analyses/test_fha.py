@@ -200,6 +200,6 @@ def test_calculate_user_defined():
     _fha = fha.calculate_user_defined(_fha)
     assert _fha["res1"] == 26.52
     assert _fha["res2"] == 4.0
-    assert _fha["res3"] == 0.0
+    assert _fha["res3"] == 0
     assert _fha["res4"] == 26.52
     assert _fha["res5"] == pytest.approx(90.168)
