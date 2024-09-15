@@ -19,6 +19,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gdk, Gtk, _
 
 # RAMSTK Local Imports
@@ -172,17 +173,19 @@ class RAMSTKBaseView(Gtk.HBox):
             locale.setlocale(locale.LC_ALL, "")
             self.RAMSTK_LOGGER.do_log_exception(__name__, _error)
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_set_cursor_active, "request_set_cursor_active")
-        pub.subscribe(self.do_set_cursor_active, f"succeed_update_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active, f"succeed_calculate_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active, f"succeed_update_all_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_calculate_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_delete_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_insert_{self._tag}")
-        pub.subscribe(self.do_set_cursor_active_on_fail, f"fail_update_{self._tag}")
-
-        pub.subscribe(self.on_select_revision, "selected_revision")
+        do_subscribe_to_messages(
+            {
+                "request_set_cursor_active": self.do_set_cursor_active,
+                f"succeed_update_{self._tag}": self.do_set_cursor_active,
+                f"succeed_calculate_{self._tag}": self.do_set_cursor_active,
+                f"succeed_update_all_{self._tag}": self.do_set_cursor_active,
+                f"fail_calculate_{self._tag}": self.do_set_cursor_active_on_fail,
+                f"fail_delete_{self._tag}": self.do_set_cursor_active_on_fail,
+                f"fail_insert_{self._tag}": self.do_set_cursor_active_on_fail,
+                f"fail_update_{self._tag}": self.do_set_cursor_active_on_fail,
+                "selected_revision": self.on_select_revision,
+            }
+        )
 
     def do_embed_treeview_panel(self) -> None:
         """Embed a treeview RAMSTKPanel() into the layout.

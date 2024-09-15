@@ -16,6 +16,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKFrame, RAMSTKPlot, RAMSTKWorkView
 
@@ -109,9 +110,12 @@ class ProgramStatusWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_validation")
-
-        pub.subscribe(self._do_set_cursor_active, "succeed_calculate_verification_plan")
+        do_subscribe_to_messages(
+            {
+                "selected_validation": self._do_set_record_id,
+                "succeed_calculate_verification_plan": self._do_set_cursor_active,
+            }
+        )
 
     def _do_request_calculate_all(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate program cost and time.

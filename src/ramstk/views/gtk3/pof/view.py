@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import AddStressTestMethod
 from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
@@ -124,10 +125,11 @@ class PoFWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_record_id, f"selected_{self._tag}")
-
-        pub.subscribe(
-            self._on_get_hardware_attributes, "succeed_get_hardware_attributes"
+        do_subscribe_to_messages(
+            {
+                f"selected_{self._tag}": super().do_set_record_id,
+                "succeed_get_hardware_attributes": self._on_get_hardware_attributes,
+            }
         )
 
     def _do_request_insert_child(self, __button: Gtk.ToolButton) -> None:

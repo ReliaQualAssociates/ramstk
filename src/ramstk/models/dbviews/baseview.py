@@ -15,6 +15,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.models.db import BaseDatabase
+from ramstk.utilities import do_subscribe_to_messages
 
 
 class RAMSTKBaseView:
@@ -78,7 +79,11 @@ class RAMSTKBaseView:
         self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_get_tree, f"request_get_{self._tag}_tree")
+        do_subscribe_to_messages(
+            {
+                f"request_get_{self._tag}_tree": self.do_get_tree,
+            }
+        )
 
     def do_get_tree(self) -> None:
         """Retrieve the records tree.
