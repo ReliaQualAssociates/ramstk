@@ -23,6 +23,7 @@ from ramstk.configuration import (
     RAMSTKUserConfiguration,
 )
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.design_electric import (
     CapacitorDesignElectricInputPanel,
@@ -168,9 +169,10 @@ class HardwareModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_set_pkeys,
-            f"selected_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                f"selected_{self._tag}": self._do_set_pkeys,
+            }
         )
 
     def _do_request_calculate_hardware(self, __button: Gtk.ToolButton) -> None:
@@ -475,9 +477,10 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_set_pkeys,
-            f"selected_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                f"selected_{self._tag}": self._do_set_pkeys,
+            }
         )
 
     def _do_request_make_comp_ref_des(self, __button: Gtk.ToolButton) -> None:
@@ -650,26 +653,14 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_set_cursor_active,
-            "succeed_calculate_hardware",
-        )
-
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "selected_hardware",
-        )
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "succeed_get_hardware_attributes",
-        )
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "hardware_category_changed",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            f"selected_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_hardware": super().do_set_cursor_active,
+                "selected_hardware": self._do_pack_component_panel,
+                "succeed_get_hardware_attributes": self._do_pack_component_panel,
+                "hardware_category_changed": self._do_pack_component_panel,
+                f"selected_{self._tag}": self._do_set_pkeys,
+            }
         )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
@@ -884,21 +875,13 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "selected_hardware",
-        )
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "succeed_get_hardware_attributes",
-        )
-        pub.subscribe(
-            self._do_pack_component_panel,
-            "hardware_category_changed",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            f"selected_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                "selected_hardware": self._do_pack_component_panel,
+                "succeed_get_hardware_attributes": self._do_pack_component_panel,
+                "hardware_category_changed": self._do_pack_component_panel,
+                f"selected_{self._tag}": self._do_set_pkeys,
+            }
         )
 
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:

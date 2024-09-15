@@ -13,6 +13,7 @@ from typing import Any, Dict
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3.widgets import RAMSTKEntry, RAMSTKFixedPanel, RAMSTKLabel
 
 
@@ -76,13 +77,11 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         self.subcategory_id: int = 0
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_set_hardware_attributes,
-            "selected_hardware",
-        )
-        pub.subscribe(
-            self._do_set_reliability_attributes,
-            "succeed_get_reliability_attributes",
+        do_subscribe_to_messages(
+            {
+                "selected_hardware": self._do_set_hardware_attributes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
         )
 
     def do_load_entries(self, attributes: Dict[str, Any]) -> None:
@@ -99,18 +98,14 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         # Display the correct calculation model.
         self.__do_set_model_label()
 
-        self.txtLambdaB.do_update(
-            str(self.fmt.format(self._lambda_b or 0.0)),
-            signal="changed",
-        )
-        self.txtPiQ.do_update(
-            str(self.fmt.format(attributes["piQ"] or 1.0)),
-            signal="changed",
-        )
-        self.txtPiE.do_update(
-            str(self.fmt.format(attributes["piE"] or 1.0)),
-            signal="changed",
-        )
+        _entries = {
+            self.txtLambdaB: self._lambda_b or 0.0,
+            self.txtPiQ: attributes.get("piQ", 1.0),
+            self.txtPiE: attributes["piE"] or 1.0,
+        }
+
+        for _entry, _value in _entries.items():
+            _entry.do_update(str(self.fmt.format(_value)), signal="changed")
 
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
@@ -138,15 +133,11 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
+        _model_text = "No Model"
+
         if self._hazard_rate_method_id == 1:
-            self.lblModel.set_markup(
-                '<span foreground="blue">\u03BB<sub>p</sub> = '
-                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> "
-            )
+            _model_text = '<span foreground="blue">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> '
         elif self._hazard_rate_method_id == 2:
-            try:
-                self.lblModel.set_markup(self._dic_part_stress[self.subcategory_id])
-            except KeyError:
-                self.lblModel.set_markup("No Model")
-        else:
-            self.lblModel.set_markup("No Model")
+            _model_text = self._dic_part_stress.get(self.subcategory_id, "No Model")
+
+        self.lblModel.set_markup(_model_text)

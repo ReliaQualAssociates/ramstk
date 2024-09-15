@@ -15,6 +15,7 @@ from pubsub import pub  # type: ignore
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog,
@@ -99,7 +100,11 @@ class RevisionModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_revision")
+        do_subscribe_to_messages(
+            {
+                "selected_revision": self._do_set_record_id,
+            }
+        )
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRevision table.
@@ -142,7 +147,8 @@ class RevisionModuleView(RAMSTKModuleView):
         self._pnlPanel.tvwTreeView.dic_handler_id[
             "button-press"
         ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+            "button_press_event",
+            super().on_button_press,
         )
 
 
@@ -214,7 +220,11 @@ class RevisionWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_revision")
+        do_subscribe_to_messages(
+            {
+                "selected_revision": self._do_set_record_id,
+            }
+        )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Revision's record ID.

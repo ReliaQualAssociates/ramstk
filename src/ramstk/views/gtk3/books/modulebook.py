@@ -16,6 +16,7 @@ from treelib import Tree
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.function import FunctionModuleView
 from ramstk.views.gtk3.hardware import HardwareModuleView
@@ -71,13 +72,11 @@ class RAMSTKModuleBook(RAMSTKBaseBook):
         self.__set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._on_open,
-            "succeed_retrieve_all_revision",
-        )
-        pub.subscribe(
-            self._on_close,
-            "succeed_closed_program",
+        do_subscribe_to_messages(
+            {
+                "succeed_retrieve_all_revision": self._on_open,
+                "succeed_closed_program": self._on_close,
+            }
         )
 
     def _on_close(self) -> None:

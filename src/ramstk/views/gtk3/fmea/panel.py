@@ -14,6 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
@@ -132,9 +133,10 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
         _fixed.move(self.txtItemCriticality.scrollwindow, _x_pos, _y_pos)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_load_item_criticality,
-            "succeed_calculate_mode_criticality",
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_mode_criticality": self._do_load_item_criticality,
+            }
         )
 
     def _do_load_item_criticality(self, item_criticality: Dict[str, float]) -> None:
@@ -1246,31 +1248,15 @@ class FMEATreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_load_panel,
-            "succeed_retrieve_fmeca",
-        )
-        pub.subscribe(
-            super().do_load_panel,
-            "succeed_calculate_rpn",
-        )
-
-        pub.subscribe(
-            self._on_select_hardware,
-            "selected_hardware",
-        )
-
-        pub.subscribe(
-            self.__do_clear_modes_on_category_change,
-            "hardware_category_changed",
-        )
-        pub.subscribe(
-            self.__do_clear_modes_on_subcategory_change,
-            "changed_subcategory",
-        )
-        pub.subscribe(
-            self.__do_load_missions,
-            "succeed_retrieve_usage_profile",
+        do_subscribe_to_messages(
+            {
+                "succeed_retrieve_fmeca": super().do_load_panel,
+                "succeed_calculate_rpn": super().do_load_panel,
+                "selected_hardware": self._on_select_hardware,
+                "hardware_category_changed": self.__do_clear_modes_on_category_change,
+                "changed_subcategory": self.__do_clear_modes_on_subcategory_change,
+                "succeed_retrieve_usage_profile": self.__do_load_missions,
+            }
         )
 
     # pylint: disable=unused-argument

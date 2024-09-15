@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
@@ -224,13 +225,11 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_load_comboboxes,
-            "changed_subcategory",
-        )
-        pub.subscribe(
-            self._do_set_reliability_attributes,
-            "succeed_get_reliability_attributes",
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
         )
 
     def do_load_comboboxes(self, subcategory_id: int) -> None:

@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3.allocation import AllocationWorkView
 from ramstk.views.gtk3.failure_definition import FailureDefinitionWorkView
 from ramstk.views.gtk3.fmea import FMEAWorkView
@@ -99,7 +100,11 @@ class RAMSTKWorkBook(RAMSTKBaseBook):
         self._set_properties("workbook")
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_change, "mvwSwitchedPage")
+        do_subscribe_to_messages(
+            {
+                "mvwSwitchedPage": self._on_module_change,
+            }
+        )
 
     def _on_module_change(self, module: str = "") -> None:
         """Load Work Views for the RAMSTK module selected in the Module Book.
