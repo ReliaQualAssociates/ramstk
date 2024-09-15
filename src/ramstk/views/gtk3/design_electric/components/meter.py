@@ -15,6 +15,17 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel
 
+# Quality levels; key is the subcategory ID.
+METER_QUALITY_DICT = {
+    2: [["MIL-SPEC"], [_("Lower")]],
+    1: [["MIL-SPEC"], [_("Lower")]],
+}
+# Meter types; key is the subcategory ID.
+METER_TYPE_DICT = {
+    1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
+    2: [[_("Direct Current")], [_("Alternating Current")]],
+}
+
 
 class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Meter assessment input attribute data in the RAMSTK Work Book.
@@ -38,17 +49,8 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-
-    # Quality levels; key is the subcategory ID.
-    _dic_quality: Dict[int, List[List[str]]] = {
-        2: [["MIL-SPEC"], [_("Lower")]],
-        1: [["MIL-SPEC"], [_("Lower")]],
-    }
-    # Meter types; key is the subcategory ID.
-    _dic_types: Dict[int, List[List[str]]] = {
-        1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
-        2: [[_("Direct Current")], [_("Alternating Current")]],
-    }
+    _dic_quality: Dict[int, List[List[str]]] = METER_QUALITY_DICT
+    _dic_types: Dict[int, List[List[str]]] = METER_TYPE_DICT
 
     # Define private list class attributes.
 
@@ -82,47 +84,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
-            "quality_id": [
-                32,
-                self.cmbQuality,
-                "changed",
-                super().on_changed_combo,
-                "wvw_editing_reliability",
-                0,
-                {
-                    "tooltip": _("The quality level of the meter."),
-                },
-                _("Quality Level:"),
-                "gint",
-            ],
-            "type_id": [
-                48,
-                self.cmbType,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The type of meter."),
-                },
-                _("Meter Type:"),
-                "gint",
-            ],
-            "application_id": [
-                2,
-                self.cmbApplication,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The application of the panel meter."),
-                },
-                _("Meter Function:"),
-                "gint",
-            ],
-        }
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -174,6 +136,50 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self.cmbType.do_load_combo(_data, signal="changed")
 
         self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
+            "quality_id": [
+                32,
+                self.cmbQuality,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_reliability",
+                0,
+                {
+                    "tooltip": _("The quality level of the meter."),
+                },
+                _("Quality Level:"),
+                "gint",
+            ],
+            "type_id": [
+                48,
+                self.cmbType,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The type of meter."),
+                },
+                _("Meter Type:"),
+                "gint",
+            ],
+            "application_id": [
+                2,
+                self.cmbApplication,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The application of the panel meter."),
+                },
+                _("Meter Function:"),
+                "gint",
+            ],
+        }
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.

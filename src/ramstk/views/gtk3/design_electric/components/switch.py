@@ -16,6 +16,43 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+# Key is subcategory ID; index is application ID.
+SWITCH_APPLICATION_DICT = {
+    1: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    2: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    3: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    4: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
+    5: [
+        [_("Not Used as a Power On/Off Switch")],
+        [_("Also Used as a Power On/Off Switch")],
+    ],
+}
+# Key is subcategory ID; index is construction ID.
+SWITCH_CONSTRUCTION_DICT = {
+    1: [[_("Snap Action")], [_("Non-Snap Action")]],
+    2: [
+        [_("Actuation Differential > 0.002 inches")],
+        [_("Actuation Differential < 0.002 inches")],
+    ],
+    3: [[_("Ceramic RF Wafers")], [_("Medium Power Wafers")]],
+    5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]],
+}
+# Key is subcategory ID; index is contact form ID.
+SWITCH_CONTACT_FORM_DICT = {
+    1: [
+        ["SPST"],
+        ["DPST"],
+        ["SPDT"],
+        ["3PST"],
+        ["4PST"],
+        ["DPDT"],
+        ["3PDT"],
+        ["4PDT"],
+        ["6PDT"],
+    ],
+    5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]],
+}
+
 
 class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Switch assessment input attribute data in the RAMSTK Work Book.
@@ -39,42 +76,9 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    # Key is subcategory ID; index is application ID.
-    _dic_applications: Dict[int, List[List[str]]] = {
-        1: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
-        2: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
-        3: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
-        4: [[_("Resistive")], [_("Inductive")], [_("Lamp")]],
-        5: [
-            [_("Not Used as a Power On/Off Switch")],
-            [_("Also Used as a Power On/Off Switch")],
-        ],
-    }
-    # Key is subcategory ID; index is construction ID.
-    _dic_constructions: Dict[int, List[List[str]]] = {
-        1: [[_("Snap Action")], [_("Non-Snap Action")]],
-        2: [
-            [_("Actuation Differential > 0.002 inches")],
-            [_("Actuation Differential < 0.002 inches")],
-        ],
-        3: [[_("Ceramic RF Wafers")], [_("Medium Power Wafers")]],
-        5: [[_("Magnetic")], [_("Thermal")], [_("Thermal-Magnetic")]],
-    }
-    # Key is subcategory ID; index is contact form ID.
-    _dic_contact_forms: Dict[int, List[List[str]]] = {
-        1: [
-            ["SPST"],
-            ["DPST"],
-            ["SPDT"],
-            ["3PST"],
-            ["4PST"],
-            ["DPDT"],
-            ["3PDT"],
-            ["4PDT"],
-            ["6PDT"],
-        ],
-        5: [["SPST"], ["DPST"], ["3PST"], ["4PST"]],
-    }
+    _dic_applications: Dict[int, List[List[str]]] = SWITCH_APPLICATION_DICT
+    _dic_constructions: Dict[int, List[List[str]]] = SWITCH_CONSTRUCTION_DICT
+    _dic_contact_forms: Dict[int, List[List[str]]] = SWITCH_CONTACT_FORM_DICT
 
     # Define private list class attributes.
 
@@ -111,7 +115,67 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the switch RAMSTKComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected switch.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        # Load the quality level RAMSTKComboBox().
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
+
+        # Load the application RAMSTKComboBox().
+        try:
+            _data = self._dic_applications[self.subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbApplication.do_load_combo(_data, signal="changed")
+
+        # Load the construction RAMSTKComboBox().
+        try:
+            if self._hazard_rate_method_id == 1:
+                _data = [[_("Thermal")], [_("Magnetic")]]
+            else:
+                _data = self._dic_constructions[self.subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbConstruction.do_load_combo(_data, signal="changed")
+
+        # Load the contact form RAMSTKComboBox().
+        try:
+            _data = self._dic_contact_forms[self.subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbContactForm.do_load_combo(_data, signal="changed")
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -191,62 +255,6 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gint",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the switch RAMSTKComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected switch.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
-
-        # Load the application RAMSTKComboBox().
-        try:
-            _data = self._dic_applications[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
-
-        # Load the construction RAMSTKComboBox().
-        try:
-            if self._hazard_rate_method_id == 1:
-                _data = [[_("Thermal")], [_("Magnetic")]]
-            else:
-                _data = self._dic_constructions[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
-
-        # Load the contact form RAMSTKComboBox().
-        try:
-            _data = self._dic_contact_forms[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbContactForm.do_load_combo(_data, signal="changed")
-
-        self._do_set_sensitive()
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.

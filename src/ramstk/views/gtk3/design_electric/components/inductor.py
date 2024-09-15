@@ -15,6 +15,36 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+INDUCTOR_INSULATION_DICT = {
+    1: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class O")],
+        [_("Insulation Class Q")],
+        [_("Insulation Class R")],
+        [_("Insulation Class S")],
+        [_("Insulation Class T")],
+        [_("Insulation Class U")],
+        [_("Insulation Class V")],
+    ],
+    2: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class F")],
+        [_("Insulation Class O")],
+    ],
+}
+INDUCTOR_QUALITY_DICT = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
+}
+INDUCTOR_SPECIFICATION_DICT = {
+    1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
+    2: [["MIL-T-15305"], ["MIL-T-39010"]],
+}
+
 
 class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Displays Inductor assessment input attribute data.
@@ -46,35 +76,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_insulation: Dict[int, List[List[str]]] = {
-        1: [
-            [_("Insulation Class A")],
-            [_("Insulation Class B")],
-            [_("Insulation Class C")],
-            [_("Insulation Class O")],
-            [_("Insulation Class Q")],
-            [_("Insulation Class R")],
-            [_("Insulation Class S")],
-            [_("Insulation Class T")],
-            [_("Insulation Class U")],
-            [_("Insulation Class V")],
-        ],
-        2: [
-            [_("Insulation Class A")],
-            [_("Insulation Class B")],
-            [_("Insulation Class C")],
-            [_("Insulation Class F")],
-            [_("Insulation Class O")],
-        ],
-    }
-    _dic_quality: Dict[int, List[List[str]]] = {
-        1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
-    }
-    _dic_specifications: Dict[int, List[List[str]]] = {
-        1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
-        2: [["MIL-T-15305"], ["MIL-T-39010"]],
-    }
+    _dic_insulation: Dict[int, List[List[str]]] = INDUCTOR_INSULATION_DICT
+    _dic_quality: Dict[int, List[List[str]]] = INDUCTOR_QUALITY_DICT
+    _dic_specifications: Dict[int, List[List[str]]] = INDUCTOR_SPECIFICATION_DICT
 
     # Define private list class attributes.
 
@@ -112,7 +116,49 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the inductive device assessment input RAMSTKComboBox().
+
+        :param subcategory_id: the subcategory ID of the selected inductive device.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.__do_load_family_combobox()
+        self.__do_load_insulation_combobox()
+        self.__do_load_quality_combobox()
+        self.__do_load_specification_combobox()
+
+        self.cmbConstruction.do_load_combo(
+            [[_("Fixed")], [_("Variable")]], signal="changed"
+        )
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -210,44 +256,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gint",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the inductive device assessment input RAMSTKComboBox().
-
-        :param subcategory_id: the subcategory ID of the selected inductive device.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.__do_load_family_combobox()
-        self.__do_load_insulation_combobox()
-        self.__do_load_quality_combobox()
-        self.__do_load_specification_combobox()
-
-        self.cmbConstruction.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
-        )
-
-        self._do_set_sensitive()
 
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.

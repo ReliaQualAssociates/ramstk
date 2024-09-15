@@ -15,6 +15,136 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+# Key is subcategory ID; index is construction ID.
+RESISTOR_CONSTRUCTION_DICT = {
+    10: [
+        ["RR0900A2A9J103"],
+        ["RR0900A3A9J103"],
+        ["RR0900A4A9J103"],
+        ["RR0900A5A9J103"],
+    ],
+    12: [[_("Enclosed")], [_("Unenclosed")]],
+}
+RESISTOR_QUALITY_DICT = {
+    1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
+    2: [
+        ["S"],
+        ["R"],
+        ["P"],
+        ["M"],
+        ["MIL-R-10509"],
+        ["MIL-R-22684"],
+        [_("Lower")],
+    ],
+    3: [["MIL-SPEC"], [_("Lower")]],
+    4: [["MIL-SPEC"], [_("Lower")]],
+    5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
+    6: [["S"], ["R"], ["P"], ["M"], ["MIL-R-26"], [_("Lower")]],
+    7: [["S"], ["R"], ["P"], ["M"], ["MIL-R-18546"], [_("Lower")]],
+    8: [["MIL-SPEC"], [_("Lower")]],
+    9: [["S"], ["R"], ["P"], ["M"], ["MIL-R-27208"], [_("Lower")]],
+    10: [["MIL-SPEC"], [_("Lower")]],
+    11: [["MIL-SPEC"], [_("Lower")]],
+    12: [["MIL-SPEC"], [_("Lower")]],
+    13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_("Lower")]],
+    14: [["MIL-SPEC"], [_("Lower")]],
+    15: [["MIL-SPEC"], [_("Lower")]],
+}
+# Key is subcategory ID; index is specification ID.
+RESISTOR_SPECIFICATION_DICT = {
+    2: [
+        ["MIL-R-10509"],
+        ["MIL-R-22684"],
+        ["MIL-R-39017"],
+        ["MIL-R-55182"],
+    ],
+    6: [["MIL-R-26"], ["MIL-R-39007"]],
+    7: [["MIL-R-18546"], ["MIL-R-39009"]],
+    15: [["MIL-R-23285"], ["MIL-R-39023"]],
+}
+# First key is subcategory ID; second key is specification ID.  Index is style ID.
+RESISTOR_STYLE_DICT = {
+    6: {
+        1: [
+            ["RWR 71"],
+            ["RWR 74"],
+            ["RWR 78"],
+            ["RWR 80"],
+            ["RWR 81"],
+            ["RWR 82"],
+            ["RWR 84"],
+            ["RWR 89"],
+        ],
+        2: [
+            ["RW 10"],
+            ["RW 11"],
+            ["RW 12"],
+            ["RW 13"],
+            ["RW 14"],
+            ["RW 15"],
+            ["RW 16"],
+            ["RW 20"],
+            ["RW 21"],
+            ["RW 22"],
+            ["RW 23"],
+            ["RW 24"],
+            ["RW 29"],
+            ["RW 30"],
+            ["RW 31"],
+            ["RW 32"],
+            ["RW 33"],
+            ["RW 34"],
+            ["RW 35"],
+            ["RW 36"],
+            ["RW 37"],
+            ["RW 38"],
+            ["RW 39"],
+            ["RW 47"],
+            ["RW 55"],
+            ["RW 56"],
+            ["RW 67"],
+            ["RW 68"],
+            ["RW 69"],
+            ["RW 70"],
+            ["RW 74"],
+            ["RW 78"],
+            ["RW 79"],
+            ["RW 80"],
+            ["RW 81"],
+        ],
+    },
+    7: {
+        1: [
+            ["RE 60/RER 60"],
+            ["RE 65/RER 65"],
+            ["RE 70/RER 70"],
+            ["RE 75/RER 75"],
+            ["RE 77"],
+            ["RE 80"],
+        ],
+        2: [
+            ["RE 60/RER40"],
+            ["RE 65/RER 45"],
+            ["RE 70/ RER 50"],
+            ["RE 75/RER 55"],
+            ["RE 77"],
+            ["RE 80"],
+        ],
+    },
+}
+# Key is subcategory ID, index is type ID.
+RESISTOR_TYPE_DICT = {
+    1: [["RCR"], ["RC"]],
+    2: [["RLR"], ["RL"], ["RNR"], ["RN"]],
+    5: [["RBR"], ["RB"]],
+    6: [["RWR"], ["RW"]],
+    7: [["RER"], ["RE"]],
+    9: [["RTR"], ["RT"]],
+    11: [["RA"], ["RK"]],
+    13: [["RJR"], ["RJ"]],
+    15: [["RO"], ["RVC"]],
+}
+
 
 class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Resistor assessment input attribute data.
@@ -39,136 +169,11 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_quality: Dict[int, List[List[str]]] = {
-        1: [["S"], ["R"], ["P"], ["M"], ["MIL-R-11"], [_("Lower")]],
-        2: [
-            ["S"],
-            ["R"],
-            ["P"],
-            ["M"],
-            ["MIL-R-10509"],
-            ["MIL-R-22684"],
-            [_("Lower")],
-        ],
-        3: [["MIL-SPEC"], [_("Lower")]],
-        4: [["MIL-SPEC"], [_("Lower")]],
-        5: [["S"], ["R"], ["P"], ["M"], ["MIL-R-93"], [_("Lower")]],
-        6: [["S"], ["R"], ["P"], ["M"], ["MIL-R-26"], [_("Lower")]],
-        7: [["S"], ["R"], ["P"], ["M"], ["MIL-R-18546"], [_("Lower")]],
-        8: [["MIL-SPEC"], [_("Lower")]],
-        9: [["S"], ["R"], ["P"], ["M"], ["MIL-R-27208"], [_("Lower")]],
-        10: [["MIL-SPEC"], [_("Lower")]],
-        11: [["MIL-SPEC"], [_("Lower")]],
-        12: [["MIL-SPEC"], [_("Lower")]],
-        13: [["S"], ["R"], ["P"], ["M"], ["MIL-R-22097"], [_("Lower")]],
-        14: [["MIL-SPEC"], [_("Lower")]],
-        15: [["MIL-SPEC"], [_("Lower")]],
-    }
-    # Key is subcategory ID; index is specification ID.
-    _dic_specifications: Dict[int, List[List[str]]] = {
-        2: [
-            ["MIL-R-10509"],
-            ["MIL-R-22684"],
-            ["MIL-R-39017"],
-            ["MIL-R-55182"],
-        ],
-        6: [["MIL-R-26"], ["MIL-R-39007"]],
-        7: [["MIL-R-18546"], ["MIL-R-39009"]],
-        15: [["MIL-R-23285"], ["MIL-R-39023"]],
-    }
-    # Key is subcategory ID, index is type ID.
-    _dic_types: Dict[int, List[List[str]]] = {
-        1: [["RCR"], ["RC"]],
-        2: [["RLR"], ["RL"], ["RNR"], ["RN"]],
-        5: [["RBR"], ["RB"]],
-        6: [["RWR"], ["RW"]],
-        7: [["RER"], ["RE"]],
-        9: [["RTR"], ["RT"]],
-        11: [["RA"], ["RK"]],
-        13: [["RJR"], ["RJ"]],
-        15: [["RO"], ["RVC"]],
-    }
-    # First key is subcategory ID; second key is specification ID.
-    # Index is style ID.
-    _dic_styles: Dict[int, Dict[int, List[List[str]]]] = {
-        6: {
-            1: [
-                ["RWR 71"],
-                ["RWR 74"],
-                ["RWR 78"],
-                ["RWR 80"],
-                ["RWR 81"],
-                ["RWR 82"],
-                ["RWR 84"],
-                ["RWR 89"],
-            ],
-            2: [
-                ["RW 10"],
-                ["RW 11"],
-                ["RW 12"],
-                ["RW 13"],
-                ["RW 14"],
-                ["RW 15"],
-                ["RW 16"],
-                ["RW 20"],
-                ["RW 21"],
-                ["RW 22"],
-                ["RW 23"],
-                ["RW 24"],
-                ["RW 29"],
-                ["RW 30"],
-                ["RW 31"],
-                ["RW 32"],
-                ["RW 33"],
-                ["RW 34"],
-                ["RW 35"],
-                ["RW 36"],
-                ["RW 37"],
-                ["RW 38"],
-                ["RW 39"],
-                ["RW 47"],
-                ["RW 55"],
-                ["RW 56"],
-                ["RW 67"],
-                ["RW 68"],
-                ["RW 69"],
-                ["RW 70"],
-                ["RW 74"],
-                ["RW 78"],
-                ["RW 79"],
-                ["RW 80"],
-                ["RW 81"],
-            ],
-        },
-        7: {
-            1: [
-                ["RE 60/RER 60"],
-                ["RE 65/RER 65"],
-                ["RE 70/RER 70"],
-                ["RE 75/RER 75"],
-                ["RE 77"],
-                ["RE 80"],
-            ],
-            2: [
-                ["RE 60/RER40"],
-                ["RE 65/RER 45"],
-                ["RE 70/ RER 50"],
-                ["RE 75/RER 55"],
-                ["RE 77"],
-                ["RE 80"],
-            ],
-        },
-    }
-    # Key is subcategory ID; index is construction ID.
-    _dic_construction: Dict[int, List[List[str]]] = {
-        10: [
-            ["RR0900A2A9J103"],
-            ["RR0900A3A9J103"],
-            ["RR0900A4A9J103"],
-            ["RR0900A5A9J103"],
-        ],
-        12: [[_("Enclosed")], [_("Unenclosed")]],
-    }
+    _dic_quality: Dict[int, List[List[str]]] = RESISTOR_QUALITY_DICT
+    _dic_specifications: Dict[int, List[List[str]]] = RESISTOR_SPECIFICATION_DICT
+    _dic_types: Dict[int, List[List[str]]] = RESISTOR_TYPE_DICT
+    _dic_styles: Dict[int, Dict[int, List[List[str]]]] = RESISTOR_STYLE_DICT
+    _dic_construction: Dict[int, List[List[str]]] = RESISTOR_CONSTRUCTION_DICT
 
     # Define private list class attributes.
 
@@ -206,7 +211,48 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the Resistor RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected capacitor.
+            This is unused in this method but required because this method is a
+            PyPubSub listener.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.__do_load_quality_combo()
+        self.__do_load_specification_combo()
+        self.__do_load_type_combo()
+        self.__do_load_style_combo()
+        self.__do_load_construction_combo()
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -302,43 +348,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gint",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the Resistor RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.__do_load_quality_combo()
-        self.__do_load_specification_combo()
-        self.__do_load_type_combo()
-        self.__do_load_style_combo()
-        self.__do_load_construction_combo()
-
-        self._do_set_sensitive()
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.

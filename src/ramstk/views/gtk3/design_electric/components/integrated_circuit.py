@@ -18,6 +18,38 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+IC_TECHNOLOGY_DICT = {
+    1: [["MOS"], [_("Bipolar")]],
+    2: [
+        ["TTL"],
+        ["ASTTL"],
+        ["CML"],
+        ["HTTL"],
+        ["FTTL"],
+        ["DTL"],
+        ["ECL"],
+        ["ALSTTL"],
+        ["FLTTL"],
+        ["STTL"],
+        ["BiCMOS"],
+        ["LSTTL"],
+        ["III"],
+        ["IIIL"],
+        ["ISL"],
+    ],
+    3: [["MOS"], [_("Bipolar")]],
+    4: [["MOS"], [_("Bipolar")]],
+    5: [["MOS"], [_("Bipolar")]],
+    6: [["MOS"], [_("Bipolar")]],
+    7: [["MOS"], [_("Bipolar")]],
+    8: [["MOS"], [_("Bipolar")]],
+    9: [["MMIC"], [_("Digital")]],
+}
+IC_TYPE_DICT = {
+    9: [["MMIC"], [_("Digital")]],
+    10: [[_("Logic and Custom")], [_("Gate Array")]],
+}
+
 
 class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display IC assessment input attribute data in the RAMSTK Work Book.
@@ -64,37 +96,8 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_technology: Dict[int, List[List[str]]] = {
-        1: [["MOS"], [_("Bipolar")]],
-        2: [
-            ["TTL"],
-            ["ASTTL"],
-            ["CML"],
-            ["HTTL"],
-            ["FTTL"],
-            ["DTL"],
-            ["ECL"],
-            ["ALSTTL"],
-            ["FLTTL"],
-            ["STTL"],
-            ["BiCMOS"],
-            ["LSTTL"],
-            ["III"],
-            ["IIIL"],
-            ["ISL"],
-        ],
-        3: [["MOS"], [_("Bipolar")]],
-        4: [["MOS"], [_("Bipolar")]],
-        5: [["MOS"], [_("Bipolar")]],
-        6: [["MOS"], [_("Bipolar")]],
-        7: [["MOS"], [_("Bipolar")]],
-        8: [["MOS"], [_("Bipolar")]],
-        9: [["MMIC"], [_("Digital")]],
-    }
-    _dic_types: Dict[int, List[List[str]]] = {
-        9: [["MMIC"], [_("Digital")]],
-        10: [[_("Logic and Custom")], [_("Gate Array")]],
-    }
+    _dic_technology: Dict[int, List[List[str]]] = IC_TECHNOLOGY_DICT
+    _dic_types: Dict[int, List[List[str]]] = IC_TYPE_DICT
 
     # Define private list class attributes.
 
@@ -142,7 +145,104 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    # pylint: disable=unused-argument
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the integrated circuit RAMSTKComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected IC.  This is
+            unused in this method but required because this method is a
+            PyPubSub listener.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        # Load the quality level RAMSTKComboBox().
+        self.cmbQuality.do_load_combo(
+            [[_("Class S")], [_("Class B")], [_("Class B-1")]]
+        )
+
+        # Load the Construction RAMSTKComboBox().
+        self.cmbConstruction.do_load_combo(
+            [["FLOTOX"], [_("Textured Poly")]], signal="changed"
+        )
+
+        # Load the error correction code RAMSTKComboBox().
+        self.cmbECC.do_load_combo(
+            [
+                [_("No on-chip ECC")],
+                [_("On-chip Hamming code")],
+                [_("Two-Needs-One redundant cell approach")],
+            ],
+            signal="changed",
+        )
+
+        # Load the manufacturing process RAMSTKComboBox().
+        self.cmbManufacturing.do_load_combo(
+            [["QML or QPL"], ["Non-QML or non-QPL"]], signal="changed"
+        )
+
+        # Load the package RAMSTKComboBox().
+        self.cmbPackage.do_load_combo(
+            [
+                [_("Hermetic DIP w/ Solder or Weld Seal")],
+                [_("Hermetic Pin Grid Array (PGA)")],
+                [_("Hermetic SMT (Leaded and Nonleaded)")],
+                [_("DIP w/ Glass Seal")],
+                [_("Flatpacks w/ Axial Leads")],
+                ["Can"],
+                [_("Nonhermetic DIP")],
+                [_("Nonhermetic Pin Grid Array (PGA)")],
+                [_("Nonhermetic SMT")],
+            ],
+            signal="changed",
+        )
+
+        # Load the technology RAMSTKComboBox().
+        try:
+            if self._hazard_rate_method_id == 1:
+                if subcategory_id == 9:
+                    _data = [["MMIC"], [_("Digital")]]
+                else:
+                    _data = [["Bipolar"], ["MOS"]]
+            else:
+                _data = self._dic_technology[subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbTechnology.do_load_combo(_data, signal="changed")
+
+        # Load the device type RAMSTKComboBox().
+        try:
+            _data = self._dic_types[subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbType.do_load_combo(_data, signal="changed")
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -391,99 +491,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gfloat",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    # pylint: disable=unused-argument
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the integrated circuit RAMSTKComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected IC.  This is
-            unused in this method but required because this method is a
-            PyPubSub listener.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo(
-            [[_("Class S")], [_("Class B")], [_("Class B-1")]]
-        )
-
-        # Load the Construction RAMSTKComboBox().
-        self.cmbConstruction.do_load_combo(
-            [["FLOTOX"], [_("Textured Poly")]], signal="changed"
-        )
-
-        # Load the error correction code RAMSTKComboBox().
-        self.cmbECC.do_load_combo(
-            [
-                [_("No on-chip ECC")],
-                [_("On-chip Hamming code")],
-                [_("Two-Needs-One redundant cell approach")],
-            ],
-            signal="changed",
-        )
-
-        # Load the manufacturing process RAMSTKComboBox().
-        self.cmbManufacturing.do_load_combo(
-            [["QML or QPL"], ["Non-QML or non-QPL"]], signal="changed"
-        )
-
-        # Load the package RAMSTKComboBox().
-        self.cmbPackage.do_load_combo(
-            [
-                [_("Hermetic DIP w/ Solder or Weld Seal")],
-                [_("Hermetic Pin Grid Array (PGA)")],
-                [_("Hermetic SMT (Leaded and Nonleaded)")],
-                [_("DIP w/ Glass Seal")],
-                [_("Flatpacks w/ Axial Leads")],
-                ["Can"],
-                [_("Nonhermetic DIP")],
-                [_("Nonhermetic Pin Grid Array (PGA)")],
-                [_("Nonhermetic SMT")],
-            ],
-            signal="changed",
-        )
-
-        # Load the technology RAMSTKComboBox().
-        try:
-            if self._hazard_rate_method_id == 1:
-                if subcategory_id == 9:
-                    _data = [["MMIC"], [_("Digital")]]
-                else:
-                    _data = [["Bipolar"], ["MOS"]]
-            else:
-                _data = self._dic_technology[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbTechnology.do_load_combo(_data, signal="changed")
-
-        # Load the device type RAMSTKComboBox().
-        try:
-            _data = self._dic_types[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
-
-        self._do_set_sensitive()
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.

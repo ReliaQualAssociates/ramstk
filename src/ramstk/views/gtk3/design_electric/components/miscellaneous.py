@@ -8,7 +8,7 @@
 """Miscellaneous Devices Input Panel."""
 
 # Standard Library Imports
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
@@ -70,7 +70,71 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_hardware_attributes": self._do_set_hardware_attributes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the miscellaneous assessment input RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected miscellaneous device.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        # Load the quality level RAMSTKComboBox().
+        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
+
+        # Load the application RAMSTKComboBox().
+        self.cmbApplication.do_load_combo(
+            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
+            signal="changed",
+        )
+
+        # Load the type RAMSTKComboBox().
+        if self._hazard_rate_method_id == 1:
+            self.cmbType.do_load_combo(
+                [
+                    [_("Ceramic-Ferrite")],
+                    [_("Discrete LC Components")],
+                    [_("Discrete LC and Crystal Components")],
+                ],
+                signal="changed",
+            )
+        elif self._hazard_rate_method_id == 2:
+            self.cmbType.do_load_combo(
+                [
+                    [_("MIL-F-15733 Ceramic-Ferrite")],
+                    [_("MIL-F-15733 Discrete LC Components")],
+                    [_("MIL-F-18327 Discrete LC Components")],
+                    [_("MIL-F-18327 Discrete LC and Crystal Components")],
+                ],
+                signal="changed",
+            )
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -140,66 +204,6 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gfloat",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_hardware_attributes": self._do_set_hardware_attributes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the miscellaneous assessment input RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected miscellaneous device.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
-
-        # Load the application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo(
-            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
-            signal="changed",
-        )
-
-        # Load the type RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            self.cmbType.do_load_combo(
-                [
-                    [_("Ceramic-Ferrite")],
-                    [_("Discrete LC Components")],
-                    [_("Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
-        elif self._hazard_rate_method_id == 2:
-            self.cmbType.do_load_combo(
-                [
-                    [_("MIL-F-15733 Ceramic-Ferrite")],
-                    [_("MIL-F-15733 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
-
-        self._do_set_sensitive()
 
     def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the hardware attributes are retrieved.

@@ -15,6 +15,130 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+INSERT_A_LIST: List[List[str]] = [
+    [_("Vitreous Glass")],
+    [_("Alumina Ceramic")],
+    [_("Polyimide")],
+]
+INSERT_B_LIST: List[List[str]] = [
+    [_("Diallylphtalate")],
+    [_("Melamine")],
+    [_("Flourosilicone")],
+    [_("Silicone Rubber")],
+    [_("Polysulfone")],
+    [_("Epoxy Resin")],
+]
+INSERT_C_LIST: List[List[str]] = [
+    [_("Polytetraflourethylene (Teflon)")],
+    [_("Chlorotriflourethylene (Kel-f)")],
+]
+INSERT_D_LIST: List[List[str]] = [
+    [_("Polyamide (Nylon)")],
+    [_("Polychloroprene (Neoprene)")],
+    [_("Polyethylene")],
+]
+CONNECTION_INSERT_DICT = {
+    1: {
+        1: INSERT_B_LIST,
+        2: INSERT_B_LIST,
+        3: INSERT_A_LIST + INSERT_B_LIST,
+        4: INSERT_A_LIST + INSERT_B_LIST,
+        5: INSERT_A_LIST + INSERT_B_LIST,
+    },
+    2: {
+        1: INSERT_B_LIST + INSERT_D_LIST,
+        2: INSERT_A_LIST + INSERT_B_LIST + INSERT_D_LIST,
+        3: INSERT_A_LIST + INSERT_B_LIST,
+        4: INSERT_A_LIST + INSERT_B_LIST,
+        5: INSERT_B_LIST,
+        6: INSERT_B_LIST,
+    },
+    3: {
+        1: INSERT_B_LIST + INSERT_D_LIST,
+        2: INSERT_B_LIST + INSERT_D_LIST,
+    },
+    4: {
+        1: INSERT_C_LIST,
+        2: INSERT_C_LIST,
+        3: INSERT_C_LIST,
+        4: INSERT_C_LIST,
+        5: INSERT_C_LIST,
+        6: INSERT_C_LIST,
+        7: INSERT_C_LIST,
+        8: INSERT_B_LIST + INSERT_C_LIST,
+    },
+    5: {
+        1: INSERT_B_LIST + INSERT_C_LIST,
+    },
+}
+CONNECTION_QUALITY_DICT = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["MIL-SPEC"], [_("Lower")]],
+    4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
+    5: [
+        [_("Automated")],
+        [_("Manual, Upper")],
+        [_("Manual, Standard")],
+        [_("Manual, Lower")],
+    ],
+}
+CONNECTION_SPECIFICATION_DICT = {
+    1: [
+        [_("MIL-C-24308")],
+        [_("MIL-C-28748")],
+        [_("MIL-C-28804")],
+        [_("MIL-C-83513")],
+        [_("MIL-C-83733")],
+    ],
+    2: [
+        [_("MIL-C-5015")],
+        [_("MIL-C-26482")],
+        [_("MIL-C-28840")],
+        [_("MIL-C-38999")],
+        [_("MIL-C-81511")],
+        [_("MIL-C-83723")],
+    ],
+    3: [[_("MIL-C-3767")], [_("MIL-C-22992")]],
+    4: [
+        [_("MIL-C-3607")],
+        [_("MIL-C-3643")],
+        [_("MIL-C-3650")],
+        [_("MIL-C-3655")],
+        [_("MIL-C-25516")],
+        [_("MIL-C-39012")],
+        [_("MIL-C-55235")],
+        [_("MIL-C-55339")],
+    ],
+    5: [[_("MIL-C-49142")]],
+}
+CONNECTION_TYPE_DICT = {
+    1: [
+        [_("Rack and Panel")],
+        [_("Circular")],
+        [_("Power")],
+        [_("Coaxial")],
+        [_("Triaxial")],
+    ],
+    4: [
+        [_("PWA/PCB with PTHs")],
+        [
+            _(
+                "Discrete Wiring with Electroless Deposited PTH (<3 Levels "
+                "of Circuitry)"
+            )
+        ],
+    ],  # noqa
+    5: [
+        [_("Hand Solder w/o Wrapping")],
+        [_("Hand Solder w/ Wrapping")],
+        [_("Crimp")],
+        [_("Weld")],
+        [_("Solderless Wrap")],
+        [_("Clip Termination")],
+        [_("Reflow Solder")],
+    ],
+}
+
 
 class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     """Displays connection assessment input attribute data.
@@ -71,136 +195,10 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-
-    # Quality levels; key is the subcategory ID.
-    _dic_quality: Dict[int, List[List[str]]] = {
-        1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["MIL-SPEC"], [_("Lower")]],
-        4: [[_("MIL-SPEC or comparable IPC standards")], [_("Lower")]],
-        5: [
-            [_("Automated")],
-            [_("Manual, Upper")],
-            [_("Manual, Standard")],
-            [_("Manual, Lower")],
-        ],
-    }
-
-    # Connector types; key is the subcategory ID.
-    _dic_type: Dict[int, List[List[str]]] = {
-        1: [
-            [_("Rack and Panel")],
-            [_("Circular")],
-            [_("Power")],
-            [_("Coaxial")],
-            [_("Triaxial")],
-        ],
-        4: [
-            [_("PWA/PCB with PTHs")],
-            [
-                _(
-                    "Discrete Wiring with Electroless Deposited PTH (<3 Levels "
-                    "of Circuitry)"
-                )
-            ],
-        ],  # noqa
-        5: [
-            [_("Hand Solder w/o Wrapping")],
-            [_("Hand Solder w/ Wrapping")],
-            [_("Crimp")],
-            [_("Weld")],
-            [_("Solderless Wrap")],
-            [_("Clip Termination")],
-            [_("Reflow Solder")],
-        ],
-    }
-
-    # Specifications; key is the type ID.
-    _dic_specification: Dict[int, List[List[str]]] = {
-        1: [
-            [_("MIL-C-24308")],
-            [_("MIL-C-28748")],
-            [_("MIL-C-28804")],
-            [_("MIL-C-83513")],
-            [_("MIL-C-83733")],
-        ],
-        2: [
-            [_("MIL-C-5015")],
-            [_("MIL-C-26482")],
-            [_("MIL-C-28840")],
-            [_("MIL-C-38999")],
-            [_("MIL-C-81511")],
-            [_("MIL-C-83723")],
-        ],
-        3: [[_("MIL-C-3767")], [_("MIL-C-22992")]],
-        4: [
-            [_("MIL-C-3607")],
-            [_("MIL-C-3643")],
-            [_("MIL-C-3650")],
-            [_("MIL-C-3655")],
-            [_("MIL-C-25516")],
-            [_("MIL-C-39012")],
-            [_("MIL-C-55235")],
-            [_("MIL-C-55339")],
-        ],
-        5: [[_("MIL-C-49142")]],
-    }
-
-    _lst_insert_A: List[List[str]] = [
-        [_("Vitreous Glass")],
-        [_("Alumina Ceramic")],
-        [_("Polyimide")],
-    ]
-    _lst_insert_B: List[List[str]] = [
-        [_("Diallylphtalate")],
-        [_("Melamine")],
-        [_("Flourosilicone")],
-        [_("Silicone Rubber")],
-        [_("Polysulfone")],
-        [_("Epoxy Resin")],
-    ]
-    _lst_insert_C: List[List[str]] = [
-        [_("Polytetraflourethylene (Teflon)")],
-        [_("Chlorotriflourethylene (Kel-f)")],
-    ]
-    _lst_insert_D: List[List[str]] = [
-        [_("Polyamide (Nylon)")],
-        [_("Polychloroprene (Neoprene)")],
-        [_("Polyethylene")],
-    ]
-    # Connector insert material; first key is the type ID, second key is the
-    # specification ID.
-    _dic_insert: Dict[int, Dict[int, List[List[str]]]] = {
-        1: {
-            1: _lst_insert_B,
-            2: _lst_insert_B,
-            3: _lst_insert_A + _lst_insert_B,
-            4: _lst_insert_A + _lst_insert_B,
-            5: _lst_insert_A + _lst_insert_B,
-        },
-        2: {
-            1: _lst_insert_B + _lst_insert_D,
-            2: _lst_insert_A + _lst_insert_B + _lst_insert_D,
-            3: _lst_insert_A + _lst_insert_B,
-            4: _lst_insert_A + _lst_insert_B,
-            5: _lst_insert_B,
-            6: _lst_insert_B,
-        },
-        3: {
-            1: _lst_insert_B + _lst_insert_D,
-            2: _lst_insert_B + _lst_insert_D,
-        },
-        4: {
-            1: _lst_insert_C,
-            2: _lst_insert_C,
-            3: _lst_insert_C,
-            4: _lst_insert_C,
-            5: _lst_insert_C,
-            6: _lst_insert_C,
-            7: _lst_insert_C,
-            8: _lst_insert_B + _lst_insert_C,
-        },
-        5: {1: _lst_insert_B + _lst_insert_C},
-    }
+    _dic_insert: Dict[int, Dict[int, List[List[str]]]] = CONNECTION_INSERT_DICT
+    _dic_quality: Dict[int, List[List[str]]] = CONNECTION_QUALITY_DICT
+    _dic_specification: Dict[int, List[List[str]]] = CONNECTION_SPECIFICATION_DICT
+    _dic_type: Dict[int, List[List[str]]] = CONNECTION_TYPE_DICT
 
     # Define private list attributes.
 
@@ -242,7 +240,67 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.cmbSpecification.connect("changed", self._do_load_insert)
+        self.cmbType.connect("changed", self._do_load_specification)
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the connection RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected connection.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
+            _data = [["MIL-SPEC"], [_("Lower")]]
+        else:
+            try:
+                _data = self._dic_quality[self.subcategory_id]
+            except KeyError:
+                _data = []
+        self.cmbQuality.do_load_combo(_data, signal="changed")
+
+        # Load the connector type RAMSTKComboBox().
+        try:
+            _data = self._dic_type[self.subcategory_id]
+        except KeyError:
+            _data = []
+        self.cmbType.do_load_combo(_data, signal="changed")
+
+        # Clear the remaining ComboBox()s.  These are loaded dynamically
+        # based on the selection made in other ComboBox()s.
+        _model = self.cmbSpecification.get_model()
+        _model.clear()
+
+        _model = self.cmbInsert.get_model()
+        _model.clear()
+
+        self._do_set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -392,63 +450,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gint",
             ],
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        self.cmbSpecification.connect("changed", self._do_load_insert)
-        self.cmbType.connect("changed", self._do_load_specification)
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the connection RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected connection.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        # Load the quality level RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _data = [["MIL-SPEC"], [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-        # Load the connector type RAMSTKComboBox().
-        try:
-            _data = self._dic_type[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
-
-        # Clear the remaining ComboBox()s.  These are loaded dynamically
-        # based on the selection made in other ComboBox()s.
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
-        _model = self.cmbInsert.get_model()
-        _model.clear()
-
-        self._do_set_sensitive()
 
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
