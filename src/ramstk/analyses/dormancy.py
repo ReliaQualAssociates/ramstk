@@ -4,123 +4,84 @@
 #       ramstk.analyses.Dormancy.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright 2007 - 2024 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Dormancy Calculations Module."""
 
 # Standard Library Imports
 from typing import List, Union
 
-# Third Party Imports
-import numpy as np
+DORMANT_HR_MULTIPLIER = {
+    "ground": {
+        "ground": [0.08, [0.04, 0.05], 0.2, 0.1, 0.2, 0.2, 0.4, 0.005],
+    },
+    "airborne": {
+        "airborne": [0.06, [0.05, 0.06], 0.06, 0.1, 0.2, 0.2, 0.2, 0.005],
+        "ground": [0.04, [0.01, 0.02], 0.03, 0.03, 0.2, 0.04, 0.1, 0.003],
+    },
+    "naval": {
+        "naval": [0.06, [0.04, 0.05], 0.1, 0.1, 0.3, 0.3, 0.4, 0.008],
+        "ground": [0.05, [0.03, 0.03], 0.06, 0.04, 0.3, 0.08, 0.2, 0.003],
+    },
+    "space": {
+        "space": [0.1, [0.2, 0.2], 0.5, 0.2, 0.5, 0.4, 0.8, 0.02],
+        "ground": [0.3, [0.8, 1.0], 1.0, 0.4, 1.0, 0.9, 1.0, 0.03],
+    },
+}
+ENVIRONMENTS_ACTIVE = [
+    "ground",
+    "ground",
+    "ground",
+    "naval",
+    "naval",
+    "airborne",
+    "airborne",
+    "airborne",
+    "airborne",
+    "airborne",
+    "space",
+    "missile",
+    "missile",
+]
+ENVIRONMENTS_DORMANT = [
+    "ground",
+    "naval",
+    "airborne",
+    "space",
+]
 
-DORMANT_HR_MULT = np.array(
-    [
-        [
-            [0.0, 0.08, 0.0, 0.0],
-            [0.0, 0.08, 0.0, 0.0],
-            [0.0, 0.08, 0.0, 0.0],
-            [0.0, 0.05, 0.06, 0.0],
-            [0.0, 0.05, 0.06, 0.0],
-            [0.06, 0.04, 0.0, 0.0],
-            [0.06, 0.04, 0.0, 0.0],
-            [0.06, 0.04, 0.0, 0.0],
-            [0.06, 0.04, 0.0, 0.0],
-            [0.06, 0.04, 0.0, 0.0],
-            [0.0, 0.3, 0.0, 0.1],
-        ],
-        [
-            [[0.0, 0.0], [0.04, 0.05], [0.0, 0.0], [0.0, 0.0]],
-            [[0.0, 0.0], [0.04, 0.05], [0.0, 0.0], [0.0, 0.0]],
-            [[0.0, 0.0], [0.04, 0.05], [0.0, 0.0], [0.0, 0.0]],
-            [[0.0, 0.0], [0.03, 0.03], [0.04, 0.05], [0.0, 0.0]],
-            [[0.0, 0.0], [0.03, 0.03], [0.04, 0.05], [0.0, 0.0]],
-            [[0.05, 0.06], [0.01, 0.02], [0.0, 0.0], [0.0, 0.0]],
-            [[0.05, 0.06], [0.01, 0.02], [0.0, 0.0], [0.0, 0.0]],
-            [[0.05, 0.06], [0.01, 0.02], [0.0, 0.0], [0.0, 0.0]],
-            [[0.05, 0.06], [0.01, 0.02], [0.0, 0.0], [0.0, 0.0]],
-            [[0.05, 0.06], [0.01, 0.02], [0.0, 0.0], [0.0, 0.0]],
-            [[0.0, 0.0], [0.8, 1.0], [0.0, 0.0], [0.2, 0.2]],
-        ],
-        [
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.06, 0.1, 0.0],
-            [0.0, 0.06, 0.1, 0.0],
-            [0.06, 0.2, 0.0, 0.0],
-            [0.06, 0.2, 0.0, 0.0],
-            [0.06, 0.2, 0.0, 0.0],
-            [0.06, 0.2, 0.0, 0.0],
-            [0.06, 0.2, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.5],
-        ],
-        [
-            [0.0, 0.1, 0.0, 0.0],
-            [0.0, 0.1, 0.0, 0.0],
-            [0.0, 0.1, 0.0, 0.0],
-            [0.0, 0.04, 0.1, 0.0],
-            [0.0, 0.04, 0.1, 0.0],
-            [0.1, 0.03, 0.0, 0.0],
-            [0.1, 0.03, 0.0, 0.0],
-            [0.1, 0.03, 0.0, 0.0],
-            [0.1, 0.03, 0.0, 0.0],
-            [0.1, 0.03, 0.0, 0.0],
-            [0.0, 0.4, 0.0, 0.2],
-        ],
-        [
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.3, 0.3, 0.0],
-            [0.0, 0.3, 0.3, 0.0],
-            [0.2, 0.2, 0.0, 0.0],
-            [0.2, 0.2, 0.0, 0.0],
-            [0.2, 0.2, 0.0, 0.0],
-            [0.2, 0.2, 0.0, 0.0],
-            [0.2, 0.2, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.5],
-        ],
-        [
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.2, 0.0, 0.0],
-            [0.0, 0.08, 0.3, 0.0],
-            [0.0, 0.08, 0.3, 0.0],
-            [0.2, 0.04, 0.0, 0.0],
-            [0.2, 0.04, 0.0, 0.0],
-            [0.2, 0.04, 0.0, 0.0],
-            [0.2, 0.04, 0.0, 0.0],
-            [0.2, 0.04, 0.0, 0.0],
-            [0.0, 0.9, 0.0, 0.4],
-        ],
-        [
-            [0.0, 0.4, 0.0, 0.0],
-            [0.0, 0.4, 0.0, 0.0],
-            [0.0, 0.4, 0.0, 0.0],
-            [0.0, 0.2, 0.4, 0.0],
-            [0.0, 0.2, 0.4, 0.0],
-            [0.2, 0.1, 0.0, 0.0],
-            [0.2, 0.1, 0.0, 0.0],
-            [0.2, 0.1, 0.0, 0.0],
-            [0.2, 0.1, 0.0, 0.0],
-            [0.2, 0.1, 0.0, 0.0],
-            [0.0, 1.0, 0.0, 0.8],
-        ],
-        [
-            [0.0, 0.005, 0.0, 0.0],
-            [0.0, 0.005, 0.0, 0.0],
-            [0.0, 0.005, 0.0, 0.0],
-            [0.0, 0.003, 0.008, 0.0],
-            [0.0, 0.003, 0.008, 0.0],
-            [0.0005, 0.003, 0.0, 0.0],
-            [0.0005, 0.003, 0.0, 0.0],
-            [0.0005, 0.003, 0.0, 0.0],
-            [0.0005, 0.003, 0.0, 0.0],
-            [0.0005, 0.003, 0.0, 0.0],
-            [0.0, 0.03, 0.0, 0.02],
-        ],
-    ]
-)
+
+def get_environment_type(env_id: int, is_active: bool) -> str:
+    """Get the environment type based on the environment ID."""
+    _index = env_id - 1
+    if is_active:
+        if _index < len(ENVIRONMENTS_ACTIVE):
+            return ENVIRONMENTS_ACTIVE[_index]
+        raise IndexError("Active environment ID out of range.")
+    if _index < len(ENVIRONMENTS_DORMANT):
+        return ENVIRONMENTS_DORMANT[_index]
+    raise IndexError("Dormant environment ID out of range.")
+
+
+def get_dormant_hr_multiplier(
+    hw_info: List[Union[int, float]], env_active: str, env_dormant: str
+) -> float:
+    """Get the dormant hazard rate multiplier based on hardware and environment info."""
+    _category_id = hw_info[0] - 1
+    _subcategory_id = hw_info[1] - 1
+
+    if _category_id > 7:
+        return 0.0
+    try:
+        if _category_id == 1:  # Semiconductor
+            if _subcategory_id in [0, 1]:  # Diode or transistor
+                return DORMANT_HR_MULTIPLIER[env_active][env_dormant][_category_id][
+                    _subcategory_id
+                ]
+            else:
+                return 0.0
+        return DORMANT_HR_MULTIPLIER[env_active][env_dormant][_category_id]
+    except KeyError:
+        return 0.0
 
 
 def do_calculate_dormant_hazard_rate(
@@ -137,6 +98,18 @@ def do_calculate_dormant_hazard_rate(
 
     .. note:: All conversion factors come from Reliability Toolkit:
         Commercial Practices Edition, Section 6.3.4, Table 6.3.4-1.
+
+    Hardware categories are:
+    - 1 = integrated circuit
+    - 2 = semiconductor
+    - 3 = resistor
+    - 4 = capacitor
+    - 5 = inductor
+    - 6 = relay
+    - 7 = switch
+    - 8 = connection
+    - 9 = meter
+    - 10 = miscellaneous
 
     Environment indexes are:
 
@@ -179,20 +152,11 @@ def do_calculate_dormant_hazard_rate(
     :rtype: float
     :raise: IndexError if an indexing argument asks for a non-existent index.
     """
-    if hw_info[0] > 8:
-        _dormant_hr_mult = 1
-    elif hw_info[0] == 2:
-        if hw_info[1] in [1, 2]:
-            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
-                env_info[1] - 1
-            ][0]
-        else:
-            _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
-                env_info[1] - 1
-            ][1]
-    else:
-        _dormant_hr_mult = DORMANT_HR_MULT[hw_info[0] - 1][env_info[0] - 1][
-            env_info[1] - 1
-        ]
+    _env_active_id = get_environment_type(env_info[0], True)
+    _env_dormant_id = get_environment_type(env_info[1], False)
 
-    return _dormant_hr_mult * hw_info[2]
+    _dormant_hr_multiplier = get_dormant_hr_multiplier(
+        hw_info, _env_active_id, _env_dormant_id
+    )
+
+    return _dormant_hr_multiplier * hw_info[2]
