@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKMessageDialog,
@@ -104,8 +105,11 @@ class ValidationModuleView(RAMSTKModuleView):
 
         self.__make_ui()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
+        do_subscribe_to_messages(
+            {
+                f"selected_{self._tag}": self._do_set_record_id,
+            }
+        )
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKValidation table.
@@ -258,13 +262,12 @@ class ValidationGeneralDataView(RAMSTKWorkView):
 
         self.__make_ui()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_set_cursor_active_on_fail,
-            "fail_calculate_validation_task",
+        do_subscribe_to_messages(
+            {
+                "selected_validation": self._do_set_record_id,
+                "fail_calculate_validation_task": super().do_set_cursor_active_on_fail,
+            }
         )
-
-        pub.subscribe(self._do_set_record_id, "selected_validation")
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate the selected validation task.

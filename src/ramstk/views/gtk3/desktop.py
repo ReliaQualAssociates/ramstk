@@ -17,6 +17,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKSiteConfiguration, RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gdk, GdkPixbuf, GObject, Gtk, _
 from ramstk.views.gtk3.assistants import CreateProject, ImportProject, OpenProject
 from ramstk.views.gtk3.books import RAMSTKModuleBook, RAMSTKWorkBook
@@ -139,34 +140,16 @@ class RAMSTKDesktop(Gtk.Window):
         self.__make_ui()
         self.__set_callbacks()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._on_request_open,
-            "request_open_program",
-        )
-        pub.subscribe(
-            self._on_select,
-            "request_set_title",
-        )
-        pub.subscribe(
-            self._do_set_status,
-            "request_set_status",
-        )
-        pub.subscribe(
-            self._do_raise_message_dialog,
-            "do_log_critical_msg",
-        )
-        pub.subscribe(
-            self._do_raise_message_dialog,
-            "do_log_debug_msg",
-        )
-        pub.subscribe(
-            self._do_raise_message_dialog,
-            "do_log_error_msg",
-        )
-        pub.subscribe(
-            self._do_raise_message_dialog,
-            "do_log_warning_msg",
+        do_subscribe_to_messages(
+            {
+                "request_open_program": self._on_request_open,
+                "request_set_title": self._on_select,
+                "request_set_status": self._do_set_status,
+                "do_log_critical_msg": self._do_raise_message_dialog,
+                "do_log_debug_msg": self._do_raise_message_dialog,
+                "do_log_error_msg": self._do_raise_message_dialog,
+                "do_log_warning_msg": self._do_raise_message_dialog,
+            }
         )
 
     def _do_raise_message_dialog(self, logger_name: str, message: str) -> None:

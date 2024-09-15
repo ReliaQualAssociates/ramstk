@@ -14,6 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel
 
@@ -427,9 +428,12 @@ class PoFTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_retrieve_pof")
-
-        pub.subscribe(self._on_select_hardware, "selected_hardware")
+        do_subscribe_to_messages(
+            {
+                "succeed_retrieve_pof": super().do_load_panel,
+                "selected_hardware": self._on_select_hardware,
+            }
+        )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

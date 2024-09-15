@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
@@ -1129,9 +1130,10 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
         self.__do_nudge_widgets()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_load_entries_hardware,
-            "succeed_get_hardware_attributes",
+        do_subscribe_to_messages(
+            {
+                "succeed_get_hardware_attributes": self._do_load_entries_hardware,
+            }
         )
 
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:

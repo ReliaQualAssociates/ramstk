@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.assistants import EditFunction
 from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
@@ -110,8 +111,12 @@ class HazardsWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_hazard")
-        pub.subscribe(self._on_select_function, "selected_function")
+        do_subscribe_to_messages(
+            {
+                "selected_hazard": self._do_set_record_id,
+                "selected_function": self._on_select_function,
+            }
+        )
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:
         """Request to calculate the HazOps HRI.

@@ -64,7 +64,7 @@ class TestProgramManager:
             "'dbname': 'bad_database_url.ramstk'}"
         )
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast "
             "on bad URL."
         )
 
@@ -73,7 +73,7 @@ class TestProgramManager:
         assert isinstance(error_message, str)
         assert error_message == "Unknown dialect in database connection: doyleton."
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast "
             "on unknown "
             "dialect."
         )
@@ -83,7 +83,7 @@ class TestProgramManager:
         assert isinstance(error_message, str)
         assert error_message == "Non-string value in database connection: 8742.11."
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast on "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast on "
             "non-string URL."
         )
 
@@ -96,7 +96,7 @@ class TestProgramManager:
         assert error_message == (
             "Not currently connected to a database.  Nothing to close."
         )
-        print("\033[33m\n\tfail_disconnect_program_database topic was broadcast")
+        print("\033[35m\n\tfail_disconnect_program_database topic was broadcast")
 
     def on_request_update_revision(self):
         """Listen for request_update_all messages."""
@@ -153,7 +153,7 @@ class TestProgramManager:
         assert logger_name == "DEBUG"
         assert "doyle_program_db.sql could not be found." in message
         print(
-            "\033[33m\n\tfail_create_program_database topic was broadcast "
+            "\033[35m\n\tfail_create_program_database topic was broadcast "
             "when passed an unknown sql file."
         )
 

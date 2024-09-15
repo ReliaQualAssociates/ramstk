@@ -144,7 +144,7 @@ class SystemTestSelectMethods:
         """Listen for succeed_retrieve_all messages."""
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(self._select_id).data[self._tag], self._record)
-        print(f"\033[36m\n\tsucceed_retrieve_all_{self._tag} topic was broadcast.")
+        print(f"\033[32m\n\tsucceed_retrieve_all_{self._tag} topic was broadcast.")
 
     @pytest.mark.integration
     def test_do_select_all_populated_tree(self, test_attributes):
@@ -172,7 +172,7 @@ class SystemTestInsertMethods:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(self._next_id).data[self._tag], self._record)
         print(
-            f"\033[36m\n\tsucceed_insert_{self._tag} topic was broadcast on insert "
+            f"\033[32m\n\tsucceed_insert_{self._tag} topic was broadcast on insert "
             f"sibling."
         )
 
@@ -181,7 +181,7 @@ class SystemTestInsertMethods:
         assert isinstance(tree, Tree)
         assert isinstance(tree.get_node(self._next_id).data[self._tag], self._record)
         print(
-            f"\033[36m\n\tsucceed_insert_{self._tag} topic was broadcast on insert "
+            f"\033[32m\n\tsucceed_insert_{self._tag} topic was broadcast on insert "
             f"child."
         )
 
@@ -280,7 +280,7 @@ class SystemTestDeleteMethods:
         assert isinstance(tree, Tree)
         assert tree.get_node(self._delete_id) is None
         print(
-            f"\033[36m\n\tsucceed_delete_{self._tag} topic was broadcast on delete "
+            f"\033[32m\n\tsucceed_delete_{self._tag} topic was broadcast on delete "
             f"with no child."
         )
 
@@ -290,7 +290,7 @@ class SystemTestDeleteMethods:
         assert tree.get_node(1) is None
         assert tree.get_node(2) is None
         print(
-            f"\033[36m\n\tsucceed_delete_{self._tag} topic was broadcast on delete "
+            f"\033[32m\n\tsucceed_delete_{self._tag} topic was broadcast on delete "
             f"with child."
         )
 
@@ -376,12 +376,12 @@ class SystemTestUpdateMethods:
     def on_succeed_update(self, tree):
         """Listen for succeed_update messages."""
         assert isinstance(tree, Tree)
-        print(f"\033[36m\n\tsucceed_update_{self._tag} topic was broadcast.")
+        print(f"\033[32m\n\tsucceed_update_{self._tag} topic was broadcast.")
 
     def on_succeed_update_all(self):
         """Listen for succeed_update messages."""
         print(
-            f"\033[36m\n\tsucceed_update_all topic was broadcast on update all "
+            f"\033[32m\n\tsucceed_update_all topic was broadcast on update all "
             f"{self._tag}s"
         )
 

@@ -18,6 +18,7 @@ from pandas.plotting import register_matplotlib_converters
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKPlotPanel
 
@@ -70,8 +71,12 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
         super().do_make_panel()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "succeed_calculate_verification_plan")
-        pub.subscribe(self._do_load_actuals, "succeed_get_actual_status")
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_verification_plan": self._do_load_panel,
+                "succeed_get_actual_status": self._do_load_actuals,
+            }
+        )
 
     def _do_load_panel(self, attributes: Dict[str, pd.DataFrame]) -> None:
         """Load the burndown curve with the planned and actual status.

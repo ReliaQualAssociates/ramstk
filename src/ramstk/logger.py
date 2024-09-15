@@ -11,8 +11,8 @@ import logging
 import sys
 from typing import Dict
 
-# Third Party Imports
-from pubsub import pub
+# RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 
 LOGFORMAT = logging.Formatter("%(asctime)s - %(name)s - %(lineno)s : %(message)s")
 
@@ -42,11 +42,15 @@ class RAMSTKLogManager:
         self.log_file = log_file
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_log_debug, "do_log_debug_msg")
-        pub.subscribe(self.do_log_info, "do_log_info_msg")
-        pub.subscribe(self.do_log_warning, "do_log_warning_msg")
-        pub.subscribe(self.do_log_error, "do_log_error_msg")
-        pub.subscribe(self.do_log_critical, "do_log_critical_msg")
+        do_subscribe_to_messages(
+            {
+                "do_log_debug_msg": self.do_log_debug,
+                "do_log_info_msg": self.do_log_info,
+                "do_log_warning_msg": self.do_log_warning,
+                "do_log_error_msg": self.do_log_error,
+                "do_log_critical_msg": self.do_log_critical,
+            }
+        )
 
     def do_create_logger(
         self, logger_name: str, log_level: str, to_tty: bool = False

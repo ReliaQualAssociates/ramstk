@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKWorkView
 
@@ -105,8 +106,11 @@ class StakeholderWorkView(RAMSTKWorkView):
 
         self.__make_ui()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_stakeholder")
+        do_subscribe_to_messages(
+            {
+                "selected_stakeholder": self._do_set_record_id,
+            }
+        )
 
     def _do_add_to_affinity_group(self, new_text: str) -> None:
         """Add an entry to the RAMSTK_AFFINITY_GROUP dictionary.
