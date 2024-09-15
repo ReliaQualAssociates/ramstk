@@ -13,6 +13,7 @@ from typing import Any, Dict, List
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel
 
@@ -726,9 +727,12 @@ class HazardsTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, f"succeed_calculate_{self._tag}")
-
-        pub.subscribe(self._on_select_function, "selected_function")
+        do_subscribe_to_messages(
+            {
+                f"succeed_calculate_{self._tag}": super().do_load_panel,
+                "selected_function": self._on_select_function,
+            }
+        )
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal

@@ -14,6 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKTreePanel
 
@@ -332,9 +333,12 @@ class StakeholderTreePanel(RAMSTKTreePanel):
 
         self.tvwTreeView.set_tooltip_text(_("Displays the list of stakeholders."))
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_calculate_stakeholder")
-        pub.subscribe(self._do_load_requirements, "succeed_retrieve_all_requirement")
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_stakeholder": super().do_load_panel,
+                "succeed_retrieve_all_requirement": self._do_load_requirements,
+            }
+        )
 
     def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:
         """Load the affinity group list.
@@ -352,7 +356,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _cellmodel.append([""])
 
         # pylint: disable=unused-variable
-        for _key, _group in affinities.items():
+        for _group in affinities.values():
             _cellmodel.append([_group[0]])
 
     def do_load_stakeholders(self, stakeholders: Dict[int, str]) -> None:
@@ -369,7 +373,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
         _cellmodel.clear()
         _cellmodel.append([""])
 
-        for __, _group in stakeholders.items():
+        for _group in stakeholders.values():
             _cellmodel.append([_group[0]])
 
     def _do_load_requirements(self, tree: treelib.Tree) -> None:

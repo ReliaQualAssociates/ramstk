@@ -16,7 +16,7 @@ from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
-from ramstk.utilities import string_to_boolean
+from ramstk.utilities import do_subscribe_to_messages, string_to_boolean
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKComboBox,
@@ -281,7 +281,11 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
         super().do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "request_load_preferences")
+        do_subscribe_to_messages(
+            {
+                "request_load_preferences": self._do_load_panel,
+            }
+        )
 
     def _do_load_panel(self, configuration: RAMSTKUserConfiguration) -> None:
         """Load the current preference values.
@@ -601,7 +605,11 @@ class LookFeelPreferencesPanel(RAMSTKFixedPanel):
         self._do_set_callbacks()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "request_load_preferences")
+        do_subscribe_to_messages(
+            {
+                "request_load_preferences": self._do_load_panel,
+            }
+        )
 
     def _do_load_panel(self, configuration: RAMSTKUserConfiguration) -> None:
         """Load the current preference values.
@@ -767,7 +775,11 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_panel, "request_load_preferences")
+        do_subscribe_to_messages(
+            {
+                "request_load_preferences": self._do_load_panel,
+            }
+        )
 
     def _do_load_comboboxes(self) -> None:
         """Load the RAMSTKComboBoxes() with their data.

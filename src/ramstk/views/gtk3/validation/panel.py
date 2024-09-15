@@ -15,6 +15,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton,
@@ -541,19 +542,12 @@ class ValidationTreePanel(RAMSTKTreePanel):
             _("Displays the hierarchical list of validations.")
         )
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            super().do_load_panel,
-            "succeed_calculate_all_validation_tasks",
-        )
-
-        pub.subscribe(
-            self._on_module_switch,
-            "mvwSwitchedPage",
-        )
-        pub.subscribe(
-            self._on_workview_edit,
-            f"wvw_editing_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_all_validation_tasks": super().do_load_panel,
+                "mvwSwitchedPage": self._on_module_switch,
+                f"wvw_editing_{self._tag}": self._on_workview_edit,
+            }
         )
 
     def do_load_measurement_units(
@@ -1364,8 +1358,11 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
         self.__do_adjust_widgets()
         super().do_set_callbacks()
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_calculate_task, "succeed_calculate_validation_task")
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_validation_task": self._on_calculate_task,
+            }
+        )
 
     def do_load_validation_types(
         self, validation_type: Dict[int, Tuple[str, str]]

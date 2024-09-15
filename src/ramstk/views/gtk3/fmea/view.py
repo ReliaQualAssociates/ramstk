@@ -13,24 +13,16 @@ from typing import Any, Dict, List, Tuple
 from pubsub import pub
 
 # RAMSTK Package Imports
-# noinspection PyPackageRequirements
 from ramstk.configuration import (
     RAMSTK_CONTROL_TYPES,
     RAMSTK_CRITICALITY,
     RAMSTK_FAILURE_PROBABILITY,
     RAMSTKUserConfiguration,
 )
-
-# noinspection PyPackageRequirements
 from ramstk.logger import RAMSTKLogManager
-
-# noinspection PyPackageRequirements
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
-
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3.assistants import AddControlAction
-
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3.widgets import RAMSTKPanel, RAMSTKWorkView
 
 # RAMSTK Local Imports
@@ -160,29 +152,15 @@ class FMEAWorkView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_set_pkeys,
-            "selected_mode",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            "selected_mechanism",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            "selected_cause",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            "selected_control",
-        )
-        pub.subscribe(
-            self._do_set_pkeys,
-            "selected_action",
-        )
-        pub.subscribe(
-            self._on_select_hardware,
-            "selected_hardware",
+        do_subscribe_to_messages(
+            {
+                "selected_mode": self._do_set_pkeys,
+                "selected_mechanism": self._do_set_pkeys,
+                "selected_cause": self._do_set_pkeys,
+                "selected_control": self._do_set_pkeys,
+                "selected_action": self._do_set_pkeys,
+                "selected_hardware": self._on_select_hardware,
+            }
         )
 
     def _do_request_calculate(self, __button: Gtk.ToolButton) -> None:

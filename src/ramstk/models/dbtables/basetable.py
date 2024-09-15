@@ -18,6 +18,7 @@ from treelib.exceptions import NodeIDAbsentError
 # RAMSTK Package Imports
 from ramstk.exceptions import DataAccessError
 from ramstk.models.db import BaseDatabase
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 
 
@@ -108,23 +109,24 @@ class RAMSTKBaseTable:
         self.tree.create_node(tag=self._tag, identifier=self._root)
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self.do_connect, "succeed_connect_program_database")
-        pub.subscribe(self.do_delete, f"request_delete_{self._tag}")
-        pub.subscribe(self.do_get_attributes, f"request_get_{self._tag}_attributes")
-        pub.subscribe(self.do_get_tree, f"request_get_{self._tag}_tree")
-        pub.subscribe(self.do_insert, f"request_insert_{self._tag}")
-        pub.subscribe(self.do_select_all, self._select_msg)
-        pub.subscribe(self.do_set_attributes, f"request_set_{self._tag}_attributes")
-        pub.subscribe(self.do_set_attributes, f"mvw_editing_{self._tag}")
-        pub.subscribe(self.do_set_attributes, f"wvw_editing_{self._tag}")
-        pub.subscribe(
-            self.do_set_attributes_all,
-            f"request_set_all_{self._tag}_attributes",
+        do_subscribe_to_messages(
+            {
+                "succeed_connect_program_database": self.do_connect,
+                f"request_delete_{self._tag}": self.do_delete,
+                f"request_get_{self._tag}_attributes": self.do_get_attributes,
+                f"request_get_{self._tag}_tree": self.do_get_tree,
+                f"request_insert_{self._tag}": self.do_insert,
+                self._select_msg: self.do_select_all,
+                f"request_set_{self._tag}_attributes": self.do_set_attributes,
+                f"mvw_editing_{self._tag}": self.do_set_attributes,
+                f"wvw_editing_{self._tag}": self.do_set_attributes,
+                f"request_set_all_{self._tag}_attributes": self.do_set_attributes_all,
+                f"succeed_calculate_{self._tag}": self.do_set_tree,
+                f"request_update_{self._tag}": self.do_update,
+                f"request_update_all_{self._tag}": self.do_update_all,
+                "request_save_project": self.do_update_all,
+            }
         )
-        pub.subscribe(self.do_set_tree, f"succeed_calculate_{self._tag}")
-        pub.subscribe(self.do_update, f"request_update_{self._tag}")
-        pub.subscribe(self.do_update_all, f"request_update_all_{self._tag}")
-        pub.subscribe(self.do_update_all, "request_save_project")
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -461,3 +463,24 @@ class RAMSTKBaseTable:
             self.tree.remove_node(node_id)
         except NodeIDAbsentError:
             pass
+
+    def _do_subscribe_to_messages(self) -> None:
+        """Subscribe to PyPubSub messages."""
+        _messages = {
+            "succeed_connect_program_database": self.do_connect,
+            f"request_delete_{self._tag}": self.do_delete,
+            f"request_get_{self._tag}_attributes": self.do_get_attributes,
+            f"request_get_{self._tag}_tree": self.do_get_tree,
+            f"request_insert_{self._tag}": self.do_insert,
+            self._select_msg: self.do_select_all,
+            f"request_set_{self._tag}_attributes": self.do_set_attributes,
+            f"mvw_editing_{self._tag}": self.do_set_attributes,
+            f"wvw_editing_{self._tag}": self.do_set_attributes,
+            f"request_set_all_{self._tag}_attributes": self.do_set_attributes_all,
+            f"succeed_calculate_{self._tag}": self.do_set_tree,
+            f"request_update_{self._tag}": self.do_update,
+            f"request_update_all_{self._tag}": self.do_update_all,
+            "request_save_project": self.do_update_all,
+        }
+        for _message, _handler in _messages.items():
+            pub.subscribe(_handler, _message)
