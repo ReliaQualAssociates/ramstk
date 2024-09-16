@@ -285,12 +285,26 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         self.cmbPackage.do_load_combo(self._lst_packages)
-
-        self.__do_load_quality()
-        self.__do_load_application()
-        self.__do_load_construction()
-        self.__do_load_matching()
-        self.__do_load_type()
+        self.cmbApplication.do_load_combo(
+            self._get_application_list(),
+            signal="changed",
+        )
+        self.cmbConstruction.do_load_combo(
+            self._get_construction_list,
+            signal="changed",
+        )
+        self.cmbMatching.do_load_combo(
+            self._get_matching_list,
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_type_list,
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
@@ -464,90 +478,80 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.cmbPackage.set_sensitive(True)
             self.txtThetaJC.set_sensitive(True)
 
-    def __do_load_application(self) -> None:
-        """Load the application RAMSTKComboBox() with selections.
+    def _get_application_list(self) -> List[List[str]]:
+        """Return the list of semiconductor applications.
+
+        :return: list of semiconductor applications.
+        :rtype: list
+        """
+        return self._dic_applications.get(self.subcategory_id, [])
+
+    def _get_construction_list(self) -> List[List[str]]:
+        """Return the list of diode construction methods.
+
+        :return: list of construction methods.
+        :rtype: list
+        """
+        return [
+            [_("Metallurgically Bonded")],
+            [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
+        ]
+
+    def _get_matching_list(self) -> List[List[str]]:
+        """Return the list of semiconductor matching methods.
 
         :return: None
         :rtype: None
         """
-        try:
-            _data = self._dic_applications[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
+        return self._dic_matchings.get(self.subcategory_id, [])
 
-    def __do_load_construction(self) -> None:
-        """Load the construction RAMSTKComboBox() with selections.
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of semiconductor quality levels.
 
-        :return: None
-        :rtype: None
-        """
-        self.cmbConstruction.do_load_combo(
-            [
-                [_("Metallurgically Bonded")],
-                [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
-            ],
-            signal="changed",
-        )
-
-    def __do_load_matching(self) -> None:
-        """Load the matching RAMSTKComboBox() with selections.
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_matchings[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbMatching.do_load_combo(_data, signal="changed")
-
-    def __do_load_quality(self) -> None:
-        """Load the quality RAMSTKComboBox() with selections.
-
-        :return: None
-        :rtype: None
+        :return: list of semiconductor quality levels.
+        :rtype: list
         """
         if self._hazard_rate_method_id == 1:
-            if self.subcategory_id == 13:
-                _data = [
-                    [_("Hermetic Package")],
-                    [_("Nonhermetic with Facet Coating")],
-                    [_("Nonhermetic without Facet Coating")],
-                ]
-            else:
-                _data = [
-                    ["JANTXV"],
-                    ["JANTX"],
-                    ["JAN"],
-                    [_("Lower")],
-                    [_("Plastic")],
-                ]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+            return self._get_part_count_quality_list()
+        return self._dic_quality.get(self.subcategory_id, [])
 
-    def __do_load_type(self) -> None:
-        """Load the type RAMSTKComboBox() with selections.
+    def _get_part_count_quality_list(self) -> List[List[str]]:
+        """Return the quality list to load into the quality level RAMSTKComboBox().
+
+        :return: list of semiconductor quality levels.
+        :rtype: list
+        """
+        if self.subcategory_id == 13:
+            return [
+                [_("Hermetic Package")],
+                [_("Nonhermetic with Facet Coating")],
+                [_("Nonhermetic without Facet Coating")],
+            ]
+        else:
+            return [
+                ["JANTXV"],
+                ["JANTX"],
+                ["JAN"],
+                [_("Lower")],
+                [_("Plastic")],
+            ]
+
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the type list to load into the type RAMSTKComboBox().
 
         :return: None
         :rtype: None
         """
-        try:
-            if self._hazard_rate_method_id == 1 and self.subcategory_id == 11:
-                _data = [
-                    [_("Photodetector")],
-                    [_("Opto-Isolator")],
-                    [_("Emitter")],
-                ]
-            else:
-                _data = self._dic_types[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        _default_type_list = [
+            [_("Photodetector")],
+            [_("Opto-Isolator")],
+            [_("Emitter")],
+        ]
+        return (
+            _default_type_list
+            if self._hazard_rate_method_id == 1 and self.subcategory_id == 11
+            else self._dic_types.get(self.subcategory_id, [[""]])
+        )
 
     def __do_set_application_sensitive(self) -> None:
         """Set the application RAMSTKComboBox() sensitive or not.

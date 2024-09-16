@@ -454,7 +454,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dictionary class attributes.
-    _dic_quality: Dict[int, List[Any]] = CAPACITOR_QUALITY_DICT
+    _dic_quality: Dict[int, object] = CAPACITOR_QUALITY_DICT
     _dic_specifications: Dict[int, List[Any]] = CAPACITOR_SPECIFICATION_DICT
     _dic_styles: Dict[int, List[Any]] = CAPACITOR_STYLE_DICT
 
@@ -494,7 +494,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -524,21 +524,35 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.subcategory_id = subcategory_id
-        self.cmbQuality.do_load_combo(self._do_get_quality_list(), signal="changed")
-        self.cmbSpecification.do_load_combo(
-            self._get_specification_list(), signal="changed"
+
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
         )
-        self.cmbStyle.do_load_combo([], signal="changed")
+        self.cmbSpecification.do_load_combo(
+            self._get_specification_list(),
+            signal="changed",
+        )
+        self.cmbStyle.do_load_combo(
+            [],
+            signal="changed",
+        )
         self.cmbConfiguration.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
+            [[_("Fixed")], [_("Variable")]],
+            signal="changed",
         )
         self.cmbConstruction.do_load_combo(
-            self._get_construction_list(), signal="changed"
+            self._get_construction_list(),
+            signal="changed",
         )
         self._do_set_sensitive()
 
-    def _do_get_construction_list(self) -> List[Any]:
-        """Return the list of construction types."""
+    def _get_construction_list(self) -> List[List[str]]:
+        """Return the list of construction types.
+
+        :return: list of capacitor construction types.
+        :rtype: list
+        """
         return [
             [_("Slug, All Tantalum")],
             [_("Foil, Hermetic")],
@@ -547,18 +561,33 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             [_("Slug, Non-Hermetic")],
         ]
 
-    def _do_get_quality_list(self) -> List[Any]:
-        """Return the list of quality levels based on subcategory."""
-        if self._hazard_rate_method_id == 1:
-            return ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
-        return self._dic_quality.get(self.subcategory_id, [])
+    def _get_quality_list(self) -> List[Any]:
+        """Return the list of quality levels based on subcategory.
 
-    def _do_get_specification_list(self) -> List[Any]:
-        """Return the list of specifications based on subcategory."""
-        return self._dic_specifications.get(self.subcategory_id, [])
+        :return: list of capacitor quality levels.
+        :rtype: list
+        """
+        _default_quality_list = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_("Lower")]]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
 
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
-        """Initialize the attribute widget map."""
+    def _get_specification_list(self) -> List[List[str]]:
+        """Return the list of specifications based on subcategory.
+
+        :return: list of capacitor specifications.
+        :rtype: list
+        """
+        return self._dic_specifications.get(self.subcategory_id, [[""]])
+
+    def _initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
+        """Initialize the attribute widget map.
+
+        :return: the attributes dict for the Gtk widgets.
+        :rtype: dict
+        """
         return {
             "quality_id": [
                 32,

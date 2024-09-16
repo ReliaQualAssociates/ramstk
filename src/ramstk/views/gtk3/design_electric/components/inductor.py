@@ -145,13 +145,25 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        self.__do_load_family_combobox()
-        self.__do_load_insulation_combobox()
-        self.__do_load_quality_combobox()
-        self.__do_load_specification_combobox()
-
         self.cmbConstruction.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
+            [[_("Fixed")], [_("Variable")]],
+            signal="changed",
+        )
+        self.cmbFamily.do_load_combo(
+            self._get_family_list(),
+            signal="changed",
+        )
+        self.cmbInsulation.do_load_combo(
+            self._dic_insulation.get(self.subcategory_id, []),
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbSpecification.do_load_combo(
+            self._dic_specifications.get(self.subcategory_id, []),
+            signal="changed",
         )
 
         self._do_set_sensitive()
@@ -267,21 +279,31 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         super().do_load_common(attributes)
 
-        self.cmbFamily.do_update(attributes["family_id"], signal="changed")
+        self.cmbFamily.do_update(
+            attributes["family_id"],
+            signal="changed",
+        )
 
         if self._hazard_rate_method_id == 2:
             self.cmbSpecification.do_update(
-                attributes["specification_id"], signal="changed"
+                attributes["specification_id"],
+                signal="changed",
             )
-            self.cmbInsulation.do_update(attributes["insulation_id"], signal="changed")
+            self.cmbInsulation.do_update(
+                attributes["insulation_id"],
+                signal="changed",
+            )
             self.cmbConstruction.do_update(
-                attributes["construction_id"], signal="changed"
+                attributes["construction_id"],
+                signal="changed",
             )
             self.txtArea.do_update(
-                str(self.fmt.format(attributes["area"])), signal="changed"
+                str(self.fmt.format(attributes["area"])),
+                signal="changed",
             )
             self.txtWeight.do_update(
-                str(self.fmt.format(attributes["weight"])), signal="changed"
+                str(self.fmt.format(attributes["weight"])),
+                signal="changed",
             )  # noqa
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
@@ -329,73 +351,55 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             if self.subcategory_id == 2:
                 self.cmbConstruction.set_sensitive(True)
 
-    def __do_load_family_combobox(self) -> None:
-        """Load the family RAMSTKComboBox().
+    def _get_family_list(self) -> List[List[str]]:
+        """Return the transformer type list to load into the RAMSTKComboBox().
 
-        :return: None
-        :rtype: None
+        :return: list of transformer types.
+        :rtype: list
         """
-        if self._hazard_rate_method_id == 1:
-            if self.subcategory_id == 1:
-                _data = [
+        _transformer_types = {
+            1: {
+                1: [
                     [_("Low Power Pulse Transformer")],
                     [_("Audio Transformer")],
                     [_("High Power Pulse and Power Transformer, Filter")],
                     [_("RF Transformer")],
-                ]
-            else:
-                _data = [
+                ],
+                "default": [
                     [_("RF Coils, Fixed or Molded")],
                     [_("RF Coils, Variable")],
-                ]
-        else:
-            _data = [
+                ],
+            },
+            "default": [
                 [_("Pulse Transformer")],
                 [_("Audio Transformer")],
                 [_("Power Transformer or Filter")],
                 [_("RF Transformer")],
-            ]
-        self.cmbFamily.do_load_combo(_data, signal="changed")
+            ],
+        }
 
-    def __do_load_insulation_combobox(self) -> None:
-        """Load the insulation RAMSTKComboBox().
+        # Determine the correct data based on the hazard rate method and subcategory.
+        _xfmr_type = _transformer_types.get(
+            self._hazard_rate_method_id, _transformer_types["default"]
+        )
+        if isinstance(_xfmr_type, dict):
+            _xfmr_type = _xfmr_type.get(self.subcategory_id, _xfmr_type["default"])
 
-        :return: None
-        :rtype: None
+        return _xfmr_type
+
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the quality data to load into the RAMSTKComboBox().
+
+        :return: list of inductor quality levels.
+        :rtype: list
         """
-        try:
-            _data = self._dic_insulation[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbInsulation.do_load_combo(_data, signal="changed")
-
-    def __do_load_quality_combobox(self) -> None:
-        """Load the quality RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:
-            _data = [
-                [_("Established Reliability")],
-                ["MIL-SPEC"],
-                [_("Lower")],
-            ]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-    def __do_load_specification_combobox(self) -> None:
-        """Load the specification RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_specifications[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbSpecification.do_load_combo(_data, signal="changed")
+        _default_quality_list = [
+            [_("Established Reliability")],
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )

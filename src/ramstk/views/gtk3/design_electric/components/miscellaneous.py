@@ -8,7 +8,7 @@
 """Miscellaneous Devices Input Panel."""
 
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
@@ -100,35 +100,24 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
-
-        # Load the application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
-            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
+            [
+                [_("Incandescent, AC")],
+                [_("Incandescent, DC")],
+            ],
             signal="changed",
         )
-
-        # Load the type RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            self.cmbType.do_load_combo(
-                [
-                    [_("Ceramic-Ferrite")],
-                    [_("Discrete LC Components")],
-                    [_("Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
-        elif self._hazard_rate_method_id == 2:
-            self.cmbType.do_load_combo(
-                [
-                    [_("MIL-F-15733 Ceramic-Ferrite")],
-                    [_("MIL-F-15733 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
+        self.cmbQuality.do_load_combo(
+            [
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ],
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_type_list(),
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
@@ -244,15 +233,35 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self.txtFrequency.set_sensitive(False)
         self.txtUtilization.set_sensitive(False)
 
-        _dic_method = {
+        _sensitivity_methods = {
             1: self.__do_set_crystal_sensitive,
             2: self.__do_set_filter_sensitive,
             4: self.__do_set_lamp_sensitive,
         }
-        try:
-            _dic_method[self.subcategory_id]()
-        except KeyError:
-            pass
+        _sensitivity_method = _sensitivity_methods.get(self.subcategory_id)
+        if _sensitivity_method:
+            _sensitivity_method()
+
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the type list to load into the RAMSTKComboBox().
+
+        :return: list of types for electronic filters.
+        :rtype: list
+        """
+        _type_lists = {
+            1: [
+                [_("Ceramic-Ferrite")],
+                [_("Discrete LC Components")],
+                [_("Discrete LC and Crystal Components")],
+            ],
+            2: [
+                [_("MIL-F-15733 Ceramic-Ferrite")],
+                [_("MIL-F-15733 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC and Crystal Components")],
+            ],
+        }
+        return _type_lists.get(self._hazard_rate_method_id, [[""]])
 
     def __do_set_crystal_sensitive(self) -> None:
         """Set the widget sensitivity as needed for a Crystal.
@@ -278,6 +287,5 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         self.cmbApplication.set_sensitive(True)
-
         if self._hazard_rate_method_id == 2:
             self.txtUtilization.set_sensitive(True)

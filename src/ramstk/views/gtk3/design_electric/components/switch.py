@@ -115,7 +115,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -144,36 +144,26 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
-
-        # Load the application RAMSTKComboBox().
-        try:
-            _data = self._dic_applications[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
-
-        # Load the construction RAMSTKComboBox().
-        try:
-            if self._hazard_rate_method_id == 1:
-                _data = [[_("Thermal")], [_("Magnetic")]]
-            else:
-                _data = self._dic_constructions[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
-
-        # Load the contact form RAMSTKComboBox().
-        try:
-            _data = self._dic_contact_forms[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbContactForm.do_load_combo(_data, signal="changed")
+        self.cmbApplication.do_load_combo(
+            self._get_application_list(),
+            signal="changed",
+        )
+        self.cmbConstruction.do_load_combo(
+            self._get_construction_list(),
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            [["MIL-SPEC"], [_("Lower")]],
+            signal="changed",
+        )
+        self.cmbContactForm.do_load_combo(
+            self._get_contact_form_list(),
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+    def _initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
         return {
             "quality_id": [
@@ -295,6 +285,35 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             self.__do_set_contact_form_sensitive()
             self.__do_set_cycles_sensitive()
             self.__do_set_elements_sensitive()
+
+    def _get_application_list(self) -> List[List[str]]:
+        """Return the list of switch applications.
+
+        :return: list of switch applications.
+        :rtype: list
+        """
+        return self._dic_applications.get(self.subcategory_id, [])
+
+    def _get_construction_list(self) -> List[List[str]]:
+        """Return the list of switch construction methods.
+
+        :return: list of switch construction methods.
+        :rtype: list
+        """
+        _default_construction_list = [[_("Thermal")], [_("Magnetic")]]
+        return (
+            _default_construction_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_constructions.get(self.subcategory_id, [[""]])
+        )
+
+    def _get_contact_form_list(self) -> List[List[str]]:
+        """Return the list of sqitch contact forms.
+
+        :return: list of switch contact forms.
+        :rtype: list
+        """
+        return self._dic_contact_forms.get(self.subcategory_id, [[""]])
 
     def __do_set_construction_sensitive(self) -> None:
         """Set the construction RAMSTKCombo() sensitive.

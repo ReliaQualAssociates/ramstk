@@ -7,7 +7,9 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Input Panel."""
 
+
 # Standard Library Imports
+import contextlib
 from typing import Any, Dict, List
 
 # Third Party Imports
@@ -18,7 +20,7 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
-IC_TECHNOLOGY_DICT = {
+IC_TECHNOLOGY_DICT: Dict[int, List[List[str]]] = {
     1: [["MOS"], [_("Bipolar")]],
     2: [
         ["TTL"],
@@ -177,17 +179,14 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        # Load the quality level RAMSTKComboBox().
         self.cmbQuality.do_load_combo(
-            [[_("Class S")], [_("Class B")], [_("Class B-1")]]
+            [[_("Class S")], [_("Class B")], [_("Class B-1")]],
+            signal="changed",
         )
-
-        # Load the Construction RAMSTKComboBox().
         self.cmbConstruction.do_load_combo(
-            [["FLOTOX"], [_("Textured Poly")]], signal="changed"
+            [["FLOTOX"], [_("Textured Poly")]],
+            signal="changed",
         )
-
-        # Load the error correction code RAMSTKComboBox().
         self.cmbECC.do_load_combo(
             [
                 [_("No on-chip ECC")],
@@ -196,13 +195,9 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
             signal="changed",
         )
-
-        # Load the manufacturing process RAMSTKComboBox().
         self.cmbManufacturing.do_load_combo(
             [["QML or QPL"], ["Non-QML or non-QPL"]], signal="changed"
         )
-
-        # Load the package RAMSTKComboBox().
         self.cmbPackage.do_load_combo(
             [
                 [_("Hermetic DIP w/ Solder or Weld Seal")],
@@ -217,26 +212,14 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
             signal="changed",
         )
-
-        # Load the technology RAMSTKComboBox().
-        try:
-            if self._hazard_rate_method_id == 1:
-                if subcategory_id == 9:
-                    _data = [["MMIC"], [_("Digital")]]
-                else:
-                    _data = [["Bipolar"], ["MOS"]]
-            else:
-                _data = self._dic_technology[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbTechnology.do_load_combo(_data, signal="changed")
-
-        # Load the device type RAMSTKComboBox().
-        try:
-            _data = self._dic_types[subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbTechnology.do_load_combo(
+            self._get_technology_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_type_list(),
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
@@ -545,11 +528,8 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             9: self.__do_set_gaas_sensitive,
             10: self.__do_set_vhsic_vlsi_sensitive,
         }
-        try:
-            # noinspection PyArgumentList
+        with contextlib.suppress(KeyError):
             _dic_method[self.subcategory_id]()
-        except KeyError:
-            pass
 
         if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
             self.cmbPackage.set_sensitive(True)
@@ -577,21 +557,68 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
                 signal="changed",
             )
 
+    def _get_part_count_technology_list(self) -> List[List[str]]:
+        """Return technology list based on the subcategory for part count method.
+
+        :return: list of IC technologies.
+        :rtype: list
+        """
+        if self.subcategory_id == 9:
+            return [["MMIC"], [_("Digital")]]
+        return [["Bipolar"], ["MOS"]]
+
+    def _get_technology_list(self) -> List[List[str]]:
+        """Return the list of IC technologies.
+
+        :return: list of IC technologies.
+        :rtype: list
+        """
+        try:
+            if self._hazard_rate_method_id == 1:
+                return self._get_technology_list_for_method_1()
+            return self._dic_technology.get(self.subcategory_id, [])
+        except KeyError:
+            return []
+
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the list of IC types.
+
+        :return: list of IC types.
+        :rtype: list
+        """
+        return self._dic_types.get(self.subcategory_id, [])
+
     def __do_set_dram_sensitive(self) -> None:
         """Set the widgets that display DRAM information sensitive.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F, Parts Count
-            pub.sendMessage(
-                "wvw_editing_hardware",
-                node_id=self._record_id,
-                package={"technology_id": 2},
-            )
-            self.txtNElements.set_sensitive(True)
-        if self._hazard_rate_method_id == 2:  # MIL-HDBK-217F, Part Stress
-            self.cmbTechnology.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:
+            self.__set_dram_parts_count_sensitive()
+        elif self._hazard_rate_method_id == 2:
+            self.__set_dram_part_stress_sensitive()
+
+    def __set_dram_parts_count_sensitive(self) -> None:
+        """Set DRAM widget sensitivity when using parts count method.
+
+        :return: None
+        :rtype: None
+        """
+        pub.sendMessage(
+            "wvw_editing_hardware",
+            node_id=self._record_id,
+            package={"technology_id": 2},
+        )
+        self.txtNElements.set_sensitive(True)
+
+    def __set_dram_part_stress_sensitive(self) -> None:
+        """Set DRAM widget sensitivity when using part stress method.
+
+        :return:
+        :rtype:
+        """
+        self.cmbTechnology.set_sensitive(True)
 
     def __do_set_eeprom_sensitive(self) -> None:
         """Set the widgets that display EEPROM information sensitive.

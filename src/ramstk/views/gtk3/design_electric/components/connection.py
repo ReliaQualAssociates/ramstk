@@ -37,6 +37,10 @@ INSERT_D_LIST: List[List[str]] = [
     [_("Polychloroprene (Neoprene)")],
     [_("Polyethylene")],
 ]
+# CONNECTION_INSERT_DICT: Nested dictionary structure
+# Key 1: Connection type
+# Key 2: Insert type
+# Value: List of insert materials
 CONNECTION_INSERT_DICT = {
     1: {
         1: INSERT_B_LIST,
@@ -240,7 +244,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -272,21 +276,14 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        if self._hazard_rate_method_id == 1:  # MIL-HDBK-217F parts count.
-            _data = [["MIL-SPEC"], [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-        # Load the connector type RAMSTKComboBox().
-        try:
-            _data = self._dic_type[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_type.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
 
         # Clear the remaining ComboBox()s.  These are loaded dynamically
         # based on the selection made in other ComboBox()s.
@@ -298,7 +295,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
         self._do_set_sensitive()
 
-    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+    def _initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
         return {
             "quality_id": [
@@ -458,12 +455,9 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        try:
-            _type_id = int(self.cmbType.get_active())
-            _spec_id = int(combo.get_active())
-            _inserts = self._dic_insert[_type_id][_spec_id]
-        except KeyError:
-            _inserts = []
+        _type_id = int(self.cmbType.get_active())
+        _spec_id = int(combo.get_active())
+        _inserts = self._dic_insert.get(_type_id, {}).get(_spec_id, [])
         self.cmbInsert.do_load_combo(entries=_inserts, signal="changed")
 
     def _do_load_specification(self, combo: RAMSTKComboBox) -> None:
@@ -474,11 +468,8 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        try:
-            _type_id = int(combo.get_active())
-            _specifications = self._dic_specification[_type_id]
-        except KeyError:
-            _specifications = []
+        _type_id = int(combo.get_active())
+        _specifications = self._dic_specificationget(_type_id, [])
         self.cmbSpecification.do_load_combo(entries=_specifications, signal="changed")
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
@@ -524,6 +515,19 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             self.__do_set_ic_socket_sensitive()
             self.__do_set_pwa_edge_sensitive()
             self.__do_set_pth_sensitive()
+
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of quality levels based on subcategory.
+
+        :return: list of connection quality levels.
+        :rtype: list
+        """
+        _default_quality_list = [["MIL-SPEC"], [_("Lower")]]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
 
     def __do_set_circular_sensitive(self) -> None:
         """Set the widgets for circular connectors sensitive or not.

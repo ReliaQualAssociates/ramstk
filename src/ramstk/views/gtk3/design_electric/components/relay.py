@@ -259,12 +259,26 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        self.__do_load_quality_combo()
-        self.__do_load_type_combo()
-
-        self.cmbLoadType.do_load_combo(self._lst_technology, signal="changed")
-        self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
-        self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
+        self.cmbContactForm.do_load_combo(
+            self._lst_contact_form,
+            signal="changed",
+        )
+        self.cmbContactRating.do_load_combo(
+            self._lst_contact_rating,
+            signal="changed",
+        )
+        self.cmbLoadType.do_load_combo(
+            self._lst_technology,
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
@@ -417,8 +431,62 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             self.cmbConstruction.set_sensitive(True)
             self.txtCycles.set_sensitive(True)
 
-            self.__do_load_application_combo()
-            self.__do_load_construction_combo()
+            self.cmbApplication.do_load_combo(
+                self._get_application_list,
+                signal="changed",
+            )
+            self.cmbConstruction.do_load_combo(
+                self._get_construction_list,
+                signal="changed",
+            )
+
+    def _get_application_list(self) -> List[List[str]]:
+        """Return the list of selections to load into the Relay application
+        RAMSTKComboBox().
+
+        :return: list of relay applications.
+        :rtype: list
+        """
+        _contact_rating_id = int(self.cmbContactRating.get_active())
+        return self._dic_application.get(_contact_rating_id, [])
+
+    def _get_construction_list(self) -> List[List[str]]:
+        """Return the list of selections to load into the Relay construction
+        RAMSTKComboBox().
+
+        :return: list of relay construction types.
+        :rtype: list
+        """
+        _application_id = int(self.cmbApplication.get_active())
+        _contact_rating_id = int(self.cmbContactRating.get_active())
+        return self._dic_construction.get(_contact_rating_id, {}).get(
+            _application_id, []
+        )
+
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the quality list to load into the Relay quality RAMSTKComboBox().
+
+        :return: list of relay qualities.
+        :rtype: list
+        """
+        _default_quality_list = [
+            [_("Established Reliability")],
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
+
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the type list to load into the Relay type RAMSTKComboBox().
+
+        :return: list of relay types.
+        :rtype: list
+        """
+        return self._dic_types.get(self.subcategory_id, [[""]])
 
     def _on_combo_changed(self, __combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.
@@ -443,64 +511,12 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if index == 4:
-            self.__do_load_application_combo()
+            self.cmbApplication.do_load_combo(
+                self._get_application_list,
+                signal="changed",
+            )
         elif index == 5:
-            self.__do_load_construction_combo()
-
-    def __do_load_application_combo(self) -> None:
-        """Load the selections in the Relay application RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        _contact_rating_id = int(self.cmbContactRating.get_active())
-        try:
-            _data = self._dic_application[_contact_rating_id]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
-
-    def __do_load_construction_combo(self) -> None:
-        """Load the selections in the Relay construction RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        _application_id = int(self.cmbApplication.get_active())
-        _contact_rating_id = int(self.cmbContactRating.get_active())
-        try:
-            _data = self._dic_construction[_contact_rating_id][_application_id]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
-
-    def __do_load_quality_combo(self) -> None:
-        """Load the selections in the Relay quality RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:
-            _data = [
-                [_("Established Reliability")],
-                ["MIL-SPEC"],
-                [_("Lower")],
-            ]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-    def __do_load_type_combo(self) -> None:
-        """Load the selections in the Relay type RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_pc_types[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+            self.cmbConstruction.do_load_combo(
+                self._get_construction_list,
+                signal="changed",
+            )

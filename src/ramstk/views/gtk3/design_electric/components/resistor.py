@@ -242,7 +242,10 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        self.__do_load_quality_combo()
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
         self.__do_load_specification_combo()
         self.__do_load_type_combo()
         self.__do_load_style_combo()
@@ -406,29 +409,24 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def __do_load_quality_combo(self) -> None:
-        """Load the Resistor quality RAMSTKComboBox().
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of entries for the Resistor quality RAMSTKComboBox().
 
-        :return: None
-        :rtype: None
+        :return: list of resistor quality levels.
+        :rtype: list
         """
-        try:
-            if self._hazard_rate_method_id == 1:
-                _quality: List[List[str]] = [
-                    ["S"],
-                    ["R"],
-                    ["P"],
-                    ["M"],
-                    ["MIL-SPEC"],
-                    [_("Lower")],
-                ]
-            else:
-                _quality = self._dic_quality[self.subcategory_id]
-        except KeyError:
-            _quality = [[""]]
-        self.cmbQuality.do_load_combo(
-            entries=_quality,
-            signal="changed",
+        _default_quality_list: List[List[str]] = [
+            ["S"],
+            ["R"],
+            ["P"],
+            ["M"],
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
         )
 
     def __do_load_specification_combo(self) -> None:
@@ -437,12 +435,9 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        try:
-            _data = self._dic_specifications[self.subcategory_id]
-        except KeyError:
-            _data = []
+        _specification_list = self._dic_specifications.get(self.subcategory_id, [])
         self.cmbSpecification.do_load_combo(
-            _data,
+            _specification_list,
             signal="changed",
         )
 
@@ -453,14 +448,11 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         _specification_id = int(self.cmbSpecification.get_active())
-        try:
-            _styles: List[List[str]] = self._dic_styles[self.subcategory_id][
-                _specification_id
-            ]
-        except (KeyError, IndexError):
-            _styles = [[""]]
+        _styles_list = self._dic_styles.get(self.subcategory_id, {}).get(
+            _specification_id, [[""]]
+        )
         self.cmbStyle.do_load_combo(
-            entries=_styles,
+            entries=_styles_list,
             signal="changed",
         )
 
@@ -470,15 +462,14 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        try:
-            if self._hazard_rate_method_id == 1:
-                _types: List[Any] = self._dic_types[self.subcategory_id]
-            else:
-                _types = [[_("Bead")], [_("Disk")], [_("Rod")]]
-        except KeyError:
-            _types = []
+        _default_type_list = [[_("Bead")], [_("Disk")], [_("Rod")]]
+        _types_list = (
+            _default_type_list
+            if self._hazard_rate_method_id == 2
+            else self._dic_types.get(self.subcategory_id, [[""]])
+        )
         self.cmbType.do_load_combo(
-            entries=_types,
+            entries=_types_list,
             signal="changed",
         )
 
@@ -488,10 +479,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
-            10,
-            12,
-        ]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [10, 12]:
             self.cmbConstruction.set_sensitive(True)
 
     def __do_set_elements_entry_sensitive(self) -> None:
@@ -518,12 +506,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
-            2,
-            6,
-            7,
-            15,
-        ]:
+        if self._hazard_rate_method_id == 2 and self.subcategory_id in [2, 6, 7, 15]:
             self.cmbSpecification.set_sensitive(True)
 
     def __do_set_style_combo_sensitive(self) -> None:
@@ -543,17 +526,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         if (
             self._hazard_rate_method_id == 1
-            and self.subcategory_id
-            in [
-                1,
-                2,
-                5,
-                6,
-                7,
-                9,
-                11,
-                13,
-                15,
-            ]
+            and self.subcategory_id in [1, 2, 5, 6, 7, 9, 11, 13, 15]
         ) or (self._hazard_rate_method_id == 2 and self.subcategory_id == 8):
             self.cmbType.set_sensitive(True)

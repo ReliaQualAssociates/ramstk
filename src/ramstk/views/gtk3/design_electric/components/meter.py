@@ -114,26 +114,23 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self.subcategory_id = subcategory_id
 
         # Load the quality level RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            _data = [["MIL-SPEC"], [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
 
-        # Load the meter application RAMSTKComboBox().
         self.cmbApplication.do_load_combo(
-            [[_("Ammeter")], [_("Voltmeter")], [_("Other")]], signal="changed"
+            [
+                [_("Ammeter")],
+                [_("Voltmeter")],
+                [_("Other")],
+            ],
+            signal="changed",
         )
-
-        # Load the meter type RAMSTKComboBox().
-        try:
-            _data = self._dic_types[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_types.get(self.subcategory_id, []),
+            signal="changed",
+        )
 
         self._do_set_sensitive()
 
@@ -210,3 +207,20 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
 
         if self._hazard_rate_method_id == 2 and self.subcategory_id == 2:
             self.cmbApplication.set_sensitive(True)
+
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of quality levels to load into the RAMSTKComboBox().
+
+        :return: list of meter quality levels.
+        :rtype: list
+        """
+        _default_quality_list = [
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
