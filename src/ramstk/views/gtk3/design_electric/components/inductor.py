@@ -306,7 +306,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.txtWeight.do_update(
                 str(self.fmt.format(attributes["weight"])),
                 signal="changed",
-            )  # noqa
+            )
 
     def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.

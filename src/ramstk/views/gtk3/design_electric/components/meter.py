@@ -113,8 +113,6 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        # Load the quality level RAMSTKComboBox().
-
         self.cmbApplication.do_load_combo(
             [
                 [_("Ammeter")],
@@ -132,7 +130,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -194,19 +192,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected meter.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbType.set_sensitive(True)
-
-        if self._hazard_rate_method_id == 2 and self.subcategory_id == 2:
-            self.cmbApplication.set_sensitive(True)
+        self._set_sensitive()
 
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of quality levels to load into the RAMSTKComboBox().
@@ -224,3 +210,15 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             if self._hazard_rate_method_id == 1
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
+
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected meter.
+
+        :return: None
+        :rtype: None
+        """
+        self.cmbApplication.set_sensitive(False)
+        self.cmbType.set_sensitive(True)
+
+        if self._hazard_rate_method_id == 2 and self.subcategory_id == 2:
+            self.cmbApplication.set_sensitive(True)
