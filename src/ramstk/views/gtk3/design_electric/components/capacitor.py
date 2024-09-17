@@ -494,7 +494,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -515,6 +515,108 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
             }
         )
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
+        """Initialize the attribute widget map.
+
+        :return: the attributes dict for the Gtk widgets.
+        :rtype: dict
+        """
+        return {
+            "quality_id": [
+                32,
+                self.cmbQuality,
+                "changed",
+                super().on_changed_combo,
+                "wvw_editing_reliability",
+                0,
+                {
+                    "tooltip": _("The quality level of the capacitor."),
+                },
+                _("Quality Level:"),
+                "gint",
+            ],
+            "capacitance": [
+                4,
+                self.txtCapacitance,
+                "changed",
+                super().on_changed_entry,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _(
+                        "The capacitance rating (in farads) of the capacitor."
+                    ),
+                },
+                _("Capacitance (F):"),
+                "gfloat",
+            ],
+            "specification_id": [
+                36,
+                self.cmbSpecification,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The governing specification for the capacitor."),
+                },
+                _("Specification:"),
+                "gint",
+            ],
+            "type_id": [
+                48,
+                self.cmbStyle,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The style of the capacitor."),
+                },
+                _("Style:"),
+                "gint",
+            ],
+            "configuration_id": [
+                5,
+                self.cmbConfiguration,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The configuration of the capacitor."),
+                },
+                _("Configuration:"),
+                "gint",
+            ],
+            "construction_id": [
+                6,
+                self.cmbConstruction,
+                "changed",
+                super().on_changed_combo,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The method of construction of the capacitor."),
+                },
+                _("Construction:"),
+                "gint",
+            ],
+            "resistance": [
+                35,
+                self.txtESR,
+                "changed",
+                super().on_changed_entry,
+                f"wvw_editing_{self._tag}",
+                0,
+                {
+                    "tooltip": _("The equivalent series resistance of the capacitor."),
+                },
+                _("Equivalent Series Resistance (\u03A9):"),
+                "gfloat",
+            ],
+        }
 
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the capacitor assessment input RAMSTKComboBox()s.
@@ -644,108 +746,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             _styles = []
 
         return _styles
-
-    def _initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
-        """Initialize the attribute widget map.
-
-        :return: the attributes dict for the Gtk widgets.
-        :rtype: dict
-        """
-        return {
-            "quality_id": [
-                32,
-                self.cmbQuality,
-                "changed",
-                super().on_changed_combo,
-                "wvw_editing_reliability",
-                0,
-                {
-                    "tooltip": _("The quality level of the capacitor."),
-                },
-                _("Quality Level:"),
-                "gint",
-            ],
-            "capacitance": [
-                4,
-                self.txtCapacitance,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _(
-                        "The capacitance rating (in farads) of the capacitor."
-                    ),
-                },
-                _("Capacitance (F):"),
-                "gfloat",
-            ],
-            "specification_id": [
-                36,
-                self.cmbSpecification,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The governing specification for the capacitor."),
-                },
-                _("Specification:"),
-                "gint",
-            ],
-            "type_id": [
-                48,
-                self.cmbStyle,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The style of the capacitor."),
-                },
-                _("Style:"),
-                "gint",
-            ],
-            "configuration_id": [
-                5,
-                self.cmbConfiguration,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The configuration of the capacitor."),
-                },
-                _("Configuration:"),
-                "gint",
-            ],
-            "construction_id": [
-                6,
-                self.cmbConstruction,
-                "changed",
-                super().on_changed_combo,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The method of construction of the capacitor."),
-                },
-                _("Construction:"),
-                "gint",
-            ],
-            "resistance": [
-                35,
-                self.txtESR,
-                "changed",
-                super().on_changed_entry,
-                f"wvw_editing_{self._tag}",
-                0,
-                {
-                    "tooltip": _("The equivalent series resistance of the capacitor."),
-                },
-                _("Equivalent Series Resistance (\u03A9):"),
-                "gfloat",
-            ],
-        }
 
     def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.

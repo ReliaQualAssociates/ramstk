@@ -171,11 +171,11 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
 
     :ivar _hazard_rate_method_id: the ID of the method to use for estimating
         the Hardware item's hazard rate.
-    :ivar _subcategory_id: the ID of the Hardware item's subcategory.
     :ivar _title: the text to put on the RAMSTKFrame() holding the
         assessment input widgets.
 
     :ivar fmt: the formatting to use when displaying float values.
+    :ivar subcategory_id: the ID of the Hardware item's subcategory.
     :ivar cmbInsert: select and display the available insert materials for the
         connector.
     :ivar cmbSpecification: select and display the governing specification of
@@ -244,7 +244,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -267,35 +267,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             }
         )
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the connection RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected connection.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.cmbQuality.do_load_combo(
-            self._get_quality_list(),
-            signal="changed",
-        )
-        self.cmbType.do_load_combo(
-            self._dic_type.get(self.subcategory_id, [[""]]),
-            signal="changed",
-        )
-
-        # Clear the remaining ComboBox()s.  These are loaded dynamically
-        # based on the selection made in other ComboBox()s.
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
-        _model = self.cmbInsert.get_model()
-        _model.clear()
-
-        self._do_set_sensitive()
-
-    def _initialize_attribute_widget_map(self) -> Dict[str, Any]:
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
         return {
             "quality_id": [
@@ -448,6 +420,34 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the connection RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected connection.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_type.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
+
+        # Clear the remaining ComboBox()s.  These are loaded dynamically
+        # based on the selection made in other ComboBox()s.
+        _model = self.cmbSpecification.get_model()
+        _model.clear()
+
+        _model = self.cmbInsert.get_model()
+        _model.clear()
+
+        self._do_set_sensitive()
+
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
 
@@ -482,39 +482,12 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected connection.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbInsert.set_sensitive(False)
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-
-        self.txtActivePins.set_sensitive(False)
-        self.txtAmpsContact.set_sensitive(False)
-        self.txtContactGauge.set_sensitive(False)
-        self.txtMating.set_sensitive(False)
-        self.txtNHand.set_sensitive(False)
-        self.txtNPlanes.set_sensitive(False)
-        self.txtNWave.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 1:
-            self.cmbType.set_sensitive(True)
-        else:
-            self.__do_set_circular_sensitive()
-            self.__do_set_ic_socket_sensitive()
-            self.__do_set_pwa_edge_sensitive()
-            self.__do_set_pth_sensitive()
 
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of quality levels based on subcategory.
@@ -522,57 +495,70 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         :return: list of connection quality levels.
         :rtype: list
         """
-        _default_quality_list = [["MIL-SPEC"], [_("Lower")]]
+        _default_quality_list = [
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
         return (
             _default_quality_list
             if self._hazard_rate_method_id == 1
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
 
-    def __do_set_circular_sensitive(self) -> None:
-        """Set the widgets for circular connectors sensitive or not.
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected connection.
 
         :return: None
         :rtype: None
         """
-        if self.subcategory_id == 1:
-            self.cmbType.set_sensitive(True)
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbInsert.set_sensitive(True)
-            self.txtActivePins.set_sensitive(True)
-            self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbInsert,
+            self.cmbSpecification,
+            self.cmbType,
+            self.txtActivePins,
+            self.txtAmpsContact,
+            self.txtContactGauge,
+            self.txtMating,
+            self.txtNHand,
+            self.txtNPlanes,
+            self.txtNWave,
+        ]
 
-    def __do_set_ic_socket_sensitive(self) -> None:
-        """Set the widgets for IC socket connectors sensitive or not.
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
 
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 3:
-            self.cmbQuality.set_sensitive(False)
-            self.txtActivePins.set_sensitive(True)
+        _sensitivity_map = {
+            1: [
+                self.cmbType,
+                self.cmbSpecification,
+                self.cmbInsert,
+                self.txtActivePins,
+                self.txtAmpsContact,
+                self.txtContactGauge,
+                self.txtMating,
+            ],
+            2: [
+                self.txtAmpsContact,
+                self.txtContactGauge,
+                self.txtMating,
+                self.txtActivePins,
+            ],
+            3: [
+                self.cmbQuality,
+                self.txtActivePins,
+            ],
+            4: [
+                self.txtNWave,
+                self.txtNHand,
+                self.txtNPlanes,
+            ],
+        }
 
-    def __do_set_pwa_edge_sensitive(self) -> None:
-        """Set the widgets for PCB/PWA edge connectors sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 2:
-            self.txtAmpsContact.set_sensitive(True)
-            self.txtContactGauge.set_sensitive(True)
-            self.txtMating.set_sensitive(True)
-            self.txtActivePins.set_sensitive(True)
-
-    def __do_set_pth_sensitive(self) -> None:
-        """Set the widgets for PTH connections sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id == 4:
-            self.txtNWave.set_sensitive(True)
-            self.txtNHand.set_sensitive(True)
-            self.txtNPlanes.set_sensitive(True)
+        if self._hazard_rate_method_id == 1:
+            super().set_widget_sensitivity([self.cmbType])
+        else:
+            super.set_widget_sensitivity(_sensitivity_map.get(self.subcategory_id, []))
