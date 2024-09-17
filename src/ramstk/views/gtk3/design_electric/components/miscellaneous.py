@@ -119,7 +119,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -220,27 +220,39 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
-    def _do_set_sensitive(self) -> None:
+    def _set_sensitive(self) -> None:
         """Set widget sensitivity for the selected Miscellaneous item.
 
         :return: None
         :rtype: None
         """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-        self.txtFrequency.set_sensitive(False)
-        self.txtUtilization.set_sensitive(False)
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            [
+                self.cmbApplication,
+                self.cmbType,
+                self.txtFrequency,
+                self.txtUtilization,
+            ],
+            False,
+        )
 
-        _sensitivity_methods = {
-            1: self.__do_set_crystal_sensitive,
-            2: self.__do_set_filter_sensitive,
-            4: self.__do_set_lamp_sensitive,
+        # Define sensitivity map for each subcategory
+        _sensitivity_map = {
+            1: [self.txtFrequency],  # Crystal
+            2: [self.cmbType],  # Electronic filter
+            3: [self.cmbApplication],  # Lamp
         }
-        _sensitivity_method = _sensitivity_methods.get(self.subcategory_id)
-        if _sensitivity_method:
-            _sensitivity_method()
+
+        # Determine sensitivity list based on subcategory
+        _sensitivity_list = _sensitivity_map.get(self.subcategory_id, [])
+
+        # Set widget sensitivity based on hazard rate method
+        if self._hazard_rate_method_id == 2:
+            _sensitivity_list + [self.txtUtilization]
+        super().set_widget_sensitivity(_sensitivity_list)
 
     def _get_type_list(self) -> List[List[str]]:
         """Return the type list to load into the RAMSTKComboBox().
@@ -262,30 +274,3 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
         return _type_lists.get(self._hazard_rate_method_id, [[""]])
-
-    def __do_set_crystal_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for a Crystal.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2:
-            self.txtFrequency.set_sensitive(True)
-
-    def __do_set_filter_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for an electronic filter.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.set_sensitive(True)
-
-    def __do_set_lamp_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for a Lamp.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(True)
-        if self._hazard_rate_method_id == 2:
-            self.txtUtilization.set_sensitive(True)
