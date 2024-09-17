@@ -298,3 +298,6 @@ ignore = [
 [tool.ruff]
 select = ["PL",]
 exclude = ["*.pyi"]
+ignore = [
+	"PLR2004",	# Magic value used in comparison.
+]

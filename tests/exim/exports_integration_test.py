@@ -19,7 +19,6 @@ from pubsub import pub
 from ramstk.exim import Export
 from ramstk.models.dbtables import (
     RAMSTKFunctionTable,
-    RAMSTKHardwareTable,
     RAMSTKRequirementTable,
     RAMSTKValidationTable,
 )
@@ -98,7 +97,7 @@ class TestExport:
         _test_csv = test_export_dir + "test_export_function.csv"
         assert dut._do_export({"requirement": True}, _test_csv) is None
 
-    @pytest.mark.integration
+    @pytest.mark.skip("No engine for *.xls file type.")
     def test_do_export_to_xls(self, test_program_dao, test_export_dir):
         """Should return None when exporting to a legacy Excel file."""
         _requirement = RAMSTKRequirementTable()
