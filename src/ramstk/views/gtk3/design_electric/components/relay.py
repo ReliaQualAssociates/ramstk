@@ -280,7 +280,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -407,42 +407,10 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected relay.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.set_sensitive(True)
-        self.cmbLoadType.set_sensitive(False)
-        self.cmbContactForm.set_sensitive(False)
-        self.cmbContactRating.set_sensitive(False)
-        self.cmbApplication.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.txtCycles.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 2 and self.subcategory_id == 1:
-            self.cmbLoadType.set_sensitive(True)
-            self.cmbContactForm.set_sensitive(True)
-            self.cmbContactRating.set_sensitive(True)
-            self.cmbApplication.set_sensitive(True)
-            self.cmbConstruction.set_sensitive(True)
-            self.txtCycles.set_sensitive(True)
-
-            self.cmbApplication.do_load_combo(
-                self._get_application_list,
-                signal="changed",
-            )
-            self.cmbConstruction.do_load_combo(
-                self._get_construction_list,
-                signal="changed",
-            )
+        self._set_sensitive()
 
     def _get_application_list(self) -> List[List[str]]:
-        """Return the list of selections to load into the Relay application
-        RAMSTKComboBox().
+        """Return the list of relay applications.
 
         :return: list of relay applications.
         :rtype: list
@@ -451,10 +419,9 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         return self._dic_application.get(_contact_rating_id, [])
 
     def _get_construction_list(self) -> List[List[str]]:
-        """Return the list of selections to load into the Relay construction
-        RAMSTKComboBox().
+        """Return the list of relay construction methods.
 
-        :return: list of relay construction types.
+        :return: list of relay construction methods.
         :rtype: list
         """
         _application_id = int(self.cmbApplication.get_active())
@@ -464,7 +431,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         )
 
     def _get_quality_list(self) -> List[List[str]]:
-        """Return the quality list to load into the Relay quality RAMSTKComboBox().
+        """Return the list of relay qualities.
 
         :return: list of relay qualities.
         :rtype: list
@@ -516,6 +483,51 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 signal="changed",
             )
         elif index == 5:
+            self.cmbConstruction.do_load_combo(
+                self._get_construction_list,
+                signal="changed",
+            )
+
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected relay.
+
+        :return: None
+        :rtype: None
+        """
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbApplication,
+            self.cmbConstruction,
+            self.cmbContactForm,
+            self.cmbContactRating,
+            self.cmbLoadType,
+            self.cmbType,
+            self.txtCycles,
+        ]
+
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
+
+        super().set_widget_sensitivity([self.cmbType])
+
+        if self.subcategory_id == 1 and self._hazard_rate_method_id != 1:
+            _additional_widgets = [
+                self.cmbApplication,
+                self.cmbConstruction,
+                self.cmbContactForm,
+                self.cmbContactRating,
+                self.cmbLoadType,
+                self.txtCycles,
+            ]
+            super().set_widget_sensitivity(_additional_widgets)
+
+            self.cmbApplication.do_load_combo(
+                self._get_application_list,
+                signal="changed",
+            )
             self.cmbConstruction.do_load_combo(
                 self._get_construction_list,
                 signal="changed",
