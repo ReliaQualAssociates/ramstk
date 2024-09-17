@@ -538,16 +538,49 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbConfiguration.do_load_combo(
-            [[_("Fixed")], [_("Variable")]],
+            [
+                [_("Fixed")],
+                [_("Variable")],
+            ],
             signal="changed",
         )
         self.cmbConstruction.do_load_combo(
             self._get_construction_list(),
             signal="changed",
         )
-        self._do_set_sensitive()
+        self._set_sensitive()
 
-    def _get_construction_list(self) -> List[List[str]]:
+    def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
+        """Load the style RAMSTKComboBox() when the specification changes.
+
+        :param combo: the specification RAMSTKCombo() that called this method.
+        :return: None
+        :rtype: None
+        """
+        self.cmbStyle.do_load_combo(
+            self._get_style_list(combo),
+            signal="changed",
+        )
+
+    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
+
+    @staticmethod
+    def _get_construction_list() -> List[List[str]]:
         """Return the list of construction types.
 
         :return: list of capacitor construction types.
@@ -581,6 +614,36 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: list
         """
         return self._dic_specifications.get(self.subcategory_id, [[""]])
+
+    def _get_style_list(self, combo: RAMSTKComboBox) -> List[List[str]]:
+        """Return the list of styles based on the subcategory and specification.
+
+        :param combo: the specification RAMSTKComboBox() from which the active index is retrieved.
+        :return: the list of styles for the current subcategory and specification.
+        :rtype: List[List[str]]
+        """
+        # Determine the styles based on the subcategory and active specification index
+        try:
+            _subcategory_styles = self._dic_styles.get(self.subcategory_id, [])
+
+            if self.subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
+                # Get the active index from the combo box
+                _active_index = int(combo.get_active()) - 1
+                # Select styles based on the active index
+                _styles = (
+                    _subcategory_styles[_active_index]
+                    if 0 <= _active_index < len(_subcategory_styles)
+                    else []
+                )
+            else:
+                # Use default styles for the subcategory
+                _styles = _subcategory_styles
+
+        except (KeyError, ValueError, IndexError):
+            # Handle any errors that occur (e.g., invalid index)
+            _styles = []
+
+        return _styles
 
     def _initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
         """Initialize the attribute widget map.
@@ -684,80 +747,48 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
-        """Load the style RAMSTKComboBox() when the specification changes.
-
-        :param combo: the specification RAMSTKCombo() that called this method.
-        :return: None
-        :rtype: None
-        """
-        # If the capacitor specification changed, load the capacitor style
-        # RAMSTKComboBox().
-        try:
-            if self.subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
-                _idx = int(combo.get_active()) - 1
-                _styles = self._dic_styles[self.subcategory_id][_idx]
-            else:
-                _styles = self._dic_styles[self.subcategory_id]
-        except KeyError:
-            _styles = []
-        self.cmbStyle.do_load_combo(entries=_styles, signal="changed")
-
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
+    def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.
 
         :return: None
         :rtype: None
         """
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbConstruction,
+            self.cmbConfiguration,
+            self.cmbSpecification,
+            self.cmbStyle,
+            self.txtCapacitance,
+            self.txtESR,
+        ]
+
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
+
+        # Define default sensitivity list
+        _default_sensitivity_list = [
+            self.cmbSpecification,
+            self.cmbStyle,
+            self.txtCapacitance,
+        ]
+        # Define sensitivity map for each subcategory
+        _sensitivity_map = {
+            12: _default_sensitivity_list + [self.txtESR],
+            13: _default_sensitivity_list + [self.cmbConstruction],
+            19: _default_sensitivity_list + [self.cmbConfiguration],
+        }
+
+        # Determine sensitivity list based on subcategory
+        _sensitivity_list = _sensitivity_map.get(
+            self.subcategory_id, _default_sensitivity_list
+        )
+
+        # Set widget sensitivity based on hazard rate method
         if self._hazard_rate_method_id == 1:
-            self.__do_set_parts_count_sensitive()
+            super().set_widget_sensitivity([self.cmbSpecification])
         else:
-            self.__do_set_part_stress_sensitive()
-
-    def __do_set_all_sensitive(self, is_sensitive: bool) -> None:
-        """Set sensitivity of all widgets."""
-        self.cmbSpecification.set_sensitive(is_sensitive)
-        self.cmbStyle.set_sensitive(is_sensitive)
-        self.txtCapacitance.set_sensitive(is_sensitive)
-        self.txtESR.set_sensitive(is_sensitive)
-        self.cmbConstruction.set_sensitive(is_sensitive)
-        self.cmbConfiguration.set_sensitive(is_sensitive)
-
-    def __do_set_parts_count_sensitive(self) -> None:
-        """Set sensitivity for MIL-HDBK-217F, Parts Count."""
-        if self.subcategory_id == 1:
-            self.cmbSpecification.set_sensitive(True)
-        else:
-            self._set_all_sensitive(False)
-
-    def __do_set_part_stress_sensitive(self) -> None:
-        """Set widget sensitivity as needed for MIL-HDBK-217F, Part Stress.
-
-        :return: None
-        :rtype: None
-        """
-        self.__do_set_all_sensitive(True)
-        if self.subcategory_id == 12:
-            self.txtESR.set_sensitive(True)
-        if self.subcategory_id == 13:
-            self.cmbConstruction.set_sensitive(True)
-        if self.subcategory_id == 19:
-            self.cmbConfiguration.set_sensitive(True)
+            super().set_widget_sensitivity(_sensitivity_list)
