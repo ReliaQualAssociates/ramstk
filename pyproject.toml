@@ -68,7 +68,7 @@ black = "^24.8.0"
 coveralls = "^3.0.0"
 coverage = { version = "^6.4", extras = ["toml"] }
 docformatter = { version = "^1.7", extras = ["tomli"] }
-flake8 = { version = "^6.0.0", python = ">=3.8.1,<4.0" }
+flake8 = { version = "^7.0.0", python = ">=3.8.1,<4.0" }
 flake8-pyproject = "^1.2.3"
 isort = "^5.13.2"
 mccabe = "^0.7.0"
