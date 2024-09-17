@@ -115,7 +115,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map = self._initialize_attribute_widget_map()
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
 
         # Initialize public list attributes.
 
@@ -161,9 +161,9 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
-    def _initialize_attribute_widget_map(self) -> Dict[str, Any]:
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
         return {
             "quality_id": [
@@ -262,29 +262,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected switch.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.cmbContactForm.set_sensitive(False)
-        self.txtNCycles.set_sensitive(False)
-        self.txtNElements.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 1 and self.subcategory_id == 5:
-            self.cmbConstruction.set_sensitive(True)
-        elif self._hazard_rate_method_id == 2:
-            self.cmbApplication.set_sensitive(True)
-
-            self.__do_set_construction_sensitive()
-            self.__do_set_contact_form_sensitive()
-            self.__do_set_cycles_sensitive()
-            self.__do_set_elements_sensitive()
+        self._set_sensitive()
 
     def _get_application_list(self) -> List[List[str]]:
         """Return the list of switch applications.
@@ -315,55 +293,57 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         return self._dic_contact_forms.get(self.subcategory_id, [[""]])
 
-    def __do_set_construction_sensitive(self) -> None:
-        """Set the construction RAMSTKCombo() sensitive.
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected switch.
 
         :return: None
         :rtype: None
         """
-        if self.subcategory_id in [
-            1,
-            2,
-            3,
-            5,
-        ]:
-            self.cmbConstruction.set_sensitive(True)
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbApplication,
+            self.cmbConstruction,
+            self.cmbContactForm,
+            self.txtNCycles,
+            self.txtNElements,
+        ]
 
-    def __do_set_contact_form_sensitive(self) -> None:
-        """Set the contact form RAMSTKCombo() sensitive.
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
 
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id in [
-            1,
-            5,
-        ]:
-            self.cmbContactForm.set_sensitive(True)
+        # Set cmbApplication sensitive if hazard_rate_method_id is 2
+        if self._hazard_rate_method_id == 2:
+            self.cmbApplication.set_sensitive(True)
 
-    def __do_set_cycles_sensitive(self) -> None:
-        """Set the number of cycles RAMSTKEntry() sensitive.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id in [
-            1,
-            2,
-            3,
-            4,
-        ]:
-            self.txtNCycles.set_sensitive(True)
-
-    def __do_set_elements_sensitive(self) -> None:
-        """Set the number of active elements RAMSTKEntry() sensitive.
-
-        :return: None
-        :rtype: None
-        """
-        if self.subcategory_id in [
-            2,
-            3,
-            4,
-        ]:
-            self.txtNElements.set_sensitive(True)
+        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        _sensitivity_map = {
+            1: {5: [self.cmbConstruction]},
+            2: {
+                1: [
+                    self.cmbConstruction,
+                    self.cmbContactForm,
+                    self.txtNCycles,
+                ],
+                2: [
+                    self.cmbConstruction,
+                    self.txtNCycles,
+                    self.txtNElements,
+                ],
+                3: [
+                    self.cmbConstruction,
+                    self.txtNCycles,
+                    self.txtNElements,
+                ],
+                4: [
+                    self.txtNCycles,
+                    self.txtNElements,
+                ],
+                5: [
+                    self.cmbConstruction,
+                    self.cmbContactForm,
+                ],
+            },
+        }

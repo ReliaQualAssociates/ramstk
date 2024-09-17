@@ -552,11 +552,12 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             False,
         )
 
-        # Set txtResistance sensitive if hazard_rate_method_id is 2
+        # Set cmbPackage and txtThetaJC sensitive if hazard_rate_method_id is 2
         if self._hazard_rate_method_id == 2:
             self.cmbPackage.set_sensitive(True)
             self.txtThetaJC.set_sensitive(True)
 
+        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
         _sensitivity_map = {
             1: {
                 1: [self.cmbType],
