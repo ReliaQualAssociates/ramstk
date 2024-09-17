@@ -186,13 +186,12 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
-
-        self._set_sensitive()
 
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of quality levels to load into the RAMSTKComboBox().
