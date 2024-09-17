@@ -271,7 +271,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -284,17 +284,23 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        self.cmbPackage.do_load_combo(self._lst_packages)
         self.cmbApplication.do_load_combo(
-            self._get_application_list(),
+            self._dic_applications.get(self.subcategory_id, []),
             signal="changed",
         )
         self.cmbConstruction.do_load_combo(
-            self._get_construction_list,
+            [
+                [_("Metallurgically Bonded")],
+                [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
+            ],
             signal="changed",
         )
         self.cmbMatching.do_load_combo(
-            self._get_matching_list,
+            self._dic_matchings.get(self.subcategory_id, []),
+            signal="changed",
+        )
+        self.cmbPackage.do_load_combo(
+            self._lst_packages,
             signal="changed",
         )
         self.cmbQuality.do_load_combo(
@@ -434,52 +440,6 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-        self._set_sensitive()
-
-    def _get_application_list(self) -> List[List[str]]:
-        """Return the list of semiconductor applications.
-
-        :return: list of semiconductor applications.
-        :rtype: list
-        """
-        return self._dic_applications.get(self.subcategory_id, [])
-
-    @staticmethod
-    def _get_construction_list() -> List[List[str]]:
-        """Return the list of diode construction methods.
-
-        :return: list of construction methods.
-        :rtype: list
-        """
-        return [
-            [_("Metallurgically Bonded")],
-            [_("Non-Metallurgically Bonded and Spring Loaded Contacts")],
-        ]
-
-    def _get_matching_list(self) -> List[List[str]]:
-        """Return the list of semiconductor matching methods.
-
-        :return: None
-        :rtype: None
-        """
-        return self._dic_matchings.get(self.subcategory_id, [])
-
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of semiconductor quality levels.
 
@@ -526,6 +486,23 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _default_type_list
             if self._hazard_rate_method_id == 1 and self.subcategory_id == 11
             else self._dic_types.get(self.subcategory_id, [[""]])
+        )
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
         )
 
     def _set_sensitive(self) -> None:

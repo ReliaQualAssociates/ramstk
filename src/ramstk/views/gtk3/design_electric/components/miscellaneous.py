@@ -86,8 +86,8 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_hardware_attributes": self._do_set_hardware_attributes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_hardware_attributes": self._set_hardware_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -194,7 +194,28 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the type list to load into the RAMSTKComboBox().
+
+        :return: list of types for electronic filters.
+        :rtype: list
+        """
+        _type_lists = {
+            1: [
+                [_("Ceramic-Ferrite")],
+                [_("Discrete LC Components")],
+                [_("Discrete LC and Crystal Components")],
+            ],
+            2: [
+                [_("MIL-F-15733 Ceramic-Ferrite")],
+                [_("MIL-F-15733 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC and Crystal Components")],
+            ],
+        }
+        return _type_lists.get(self._hazard_rate_method_id, [[""]])
+
+    def _set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the hardware attributes are retrieved.
 
         :param attributes: the dict of hardware attributes.
@@ -204,7 +225,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         if attributes["hardware_id"] == self._record_id:
             self._duty_cycle = attributes["duty_cycle"]
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -214,13 +235,12 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
-
-        self._set_sensitive()
 
     def _set_sensitive(self) -> None:
         """Set widget sensitivity for the selected Miscellaneous item.
@@ -253,24 +273,3 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == 2:
             _sensitivity_list + [self.txtUtilization]
         super().set_widget_sensitivity(_sensitivity_list)
-
-    def _get_type_list(self) -> List[List[str]]:
-        """Return the type list to load into the RAMSTKComboBox().
-
-        :return: list of types for electronic filters.
-        :rtype: list
-        """
-        _type_lists = {
-            1: [
-                [_("Ceramic-Ferrite")],
-                [_("Discrete LC Components")],
-                [_("Discrete LC and Crystal Components")],
-            ],
-            2: [
-                [_("MIL-F-15733 Ceramic-Ferrite")],
-                [_("MIL-F-15733 Discrete LC Components")],
-                [_("MIL-F-18327 Discrete LC Components")],
-                [_("MIL-F-18327 Discrete LC and Crystal Components")],
-            ],
-        }
-        return _type_lists.get(self._hazard_rate_method_id, [[""]])

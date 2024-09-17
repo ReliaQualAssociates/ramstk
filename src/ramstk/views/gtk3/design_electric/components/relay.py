@@ -246,7 +246,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -276,7 +276,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbType.do_load_combo(
-            self._get_quality_list(),
+            self._dic_types.get(self.subcategory_id, [[""]]),
             signal="changed",
         )
 
@@ -391,24 +391,6 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-        self._set_sensitive()
-
     def _get_application_list(self) -> List[List[str]]:
         """Return the list of relay applications.
 
@@ -447,14 +429,6 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
 
-    def _get_type_list(self) -> List[List[str]]:
-        """Return the type list to load into the Relay type RAMSTKComboBox().
-
-        :return: list of relay types.
-        :rtype: list
-        """
-        return self._dic_types.get(self.subcategory_id, [[""]])
-
     def _on_combo_changed(self, __combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.
 
@@ -487,6 +461,23 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
                 self._get_construction_list,
                 signal="changed",
             )
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
     def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected relay.

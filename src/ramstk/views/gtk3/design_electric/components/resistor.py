@@ -227,7 +227,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -242,6 +242,10 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
+        self.cmbConstruction.do_load_combo(
+            self._dic_construction.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
         self.cmbQuality.do_load_combo(
             self._get_quality_list(),
             signal="changed",
@@ -250,16 +254,12 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._dic_specifications.get(self.subcategory_id, []),
             signal="changed",
         )
-        self.cmbType.do_load_combo(
-            self._get_type_list(),
-            signal="changed",
-        )
         self.cmbStyle.do_load_combo(
             self._get_style_list(),
             signal="changed",
         )
-        self.cmbConstruction.do_load_combo(
-            self._dic_construction.get(self.subcategory_id, [[""]]),
+        self.cmbType.do_load_combo(
+            self._get_type_list(),
             signal="changed",
         )
 
@@ -364,24 +364,6 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-        self._set_sensitive()
-
     def _get_quality_list(self) -> List[List[str]]:
         """Return the list of resistor quality levels.
 
@@ -424,6 +406,23 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             _default_type_list
             if self._hazard_rate_method_id == 2
             else self._dic_types.get(self.subcategory_id, [[""]])
+        )
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
         )
 
     def _set_sensitive(self) -> None:

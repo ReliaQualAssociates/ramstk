@@ -512,7 +512,7 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -525,18 +525,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         self.subcategory_id = subcategory_id
 
-        self.cmbQuality.do_load_combo(
-            self._get_quality_list(),
-            signal="changed",
-        )
-        self.cmbSpecification.do_load_combo(
-            self._get_specification_list(),
-            signal="changed",
-        )
-        self.cmbStyle.do_load_combo(
-            [],
-            signal="changed",
-        )
         self.cmbConfiguration.do_load_combo(
             [
                 [_("Fixed")],
@@ -545,9 +533,28 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbConstruction.do_load_combo(
-            self._get_construction_list(),
+            [
+                [_("Slug, All Tantalum")],
+                [_("Foil, Hermetic")],
+                [_("Slug, Hermetic")],
+                [_("Foil, Non-Hermetic")],
+                [_("Slug, Non-Hermetic")],
+            ],
             signal="changed",
         )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbSpecification.do_load_combo(
+            self._dic_specifications.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
+        self.cmbStyle.do_load_combo(
+            [],
+            signal="changed",
+        )
+
         self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
@@ -664,38 +671,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
-    @staticmethod
-    def _get_construction_list() -> List[List[str]]:
-        """Return the list of construction types.
-
-        :return: list of capacitor construction types.
-        :rtype: list
-        """
-        return [
-            [_("Slug, All Tantalum")],
-            [_("Foil, Hermetic")],
-            [_("Slug, Hermetic")],
-            [_("Foil, Non-Hermetic")],
-            [_("Slug, Non-Hermetic")],
-        ]
-
     def _get_quality_list(self) -> List[Any]:
         """Return the list of quality levels based on subcategory.
 
@@ -708,14 +683,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             if self._hazard_rate_method_id == 1
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
-
-    def _get_specification_list(self) -> List[List[str]]:
-        """Return the list of specifications based on subcategory.
-
-        :return: list of capacitor specifications.
-        :rtype: list
-        """
-        return self._dic_specifications.get(self.subcategory_id, [[""]])
 
     def _get_style_list(self, combo: RAMSTKComboBox) -> List[List[str]]:
         """Return the list of styles based on the subcategory and specification.
@@ -746,6 +713,23 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             _styles = []
 
         return _styles
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
     def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected capacitor type.

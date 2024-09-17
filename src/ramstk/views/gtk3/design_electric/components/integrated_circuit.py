@@ -159,7 +159,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -224,7 +224,7 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
         self.cmbType.do_load_combo(
-            self._get_type_list(),
+            self._dic_types.get(self.subcategory_id, []),
             signal="changed",
         )
 
@@ -482,23 +482,6 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
     def _do_load_application_combo(self, attributes: Dict[str, Any]) -> None:
         """Load the IC application RAMSTKComboBox().
 
@@ -557,13 +540,22 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
         except KeyError:
             return []
 
-    def _get_type_list(self) -> List[List[str]]:
-        """Return the list of IC types.
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
 
-        :return: list of IC types.
-        :rtype: list
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
         """
-        return self._dic_types.get(self.subcategory_id, [])
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
 
     def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected IC.

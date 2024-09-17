@@ -134,7 +134,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
             }
         )
 
@@ -308,23 +308,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
                 signal="changed",
             )
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
-        )
-
     def _get_family_list(self) -> List[List[str]]:
         """Return the transformer type list to load into the RAMSTKComboBox().
 
@@ -376,6 +359,23 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             _default_quality_list
             if self._hazard_rate_method_id == 1
             else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
         )
 
     def _set_sensitive(self) -> None:
