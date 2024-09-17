@@ -52,14 +52,16 @@ ENVIRONMENTS_DORMANT = [
 
 def get_environment_type(env_id: int, is_active: bool) -> str:
     """Get the environment type based on the environment ID."""
-    _index = env_id - 1
-    if is_active:
-        if _index < len(ENVIRONMENTS_ACTIVE):
-            return ENVIRONMENTS_ACTIVE[_index]
-        raise IndexError("Active environment ID out of range.")
-    if _index < len(ENVIRONMENTS_DORMANT):
-        return ENVIRONMENTS_DORMANT[_index]
-    raise IndexError("Dormant environment ID out of range.")
+    try:
+        _index = env_id - 1
+        if is_active:
+            if _index < len(ENVIRONMENTS_ACTIVE):
+                return ENVIRONMENTS_ACTIVE[_index]
+
+        if _index < len(ENVIRONMENTS_DORMANT):
+            return ENVIRONMENTS_DORMANT[_index]
+    except IndexError as e:
+        raise ValueError(f"Invalid environment ID: {env_id}") from e
 
 
 def get_dormant_hr_multiplier(

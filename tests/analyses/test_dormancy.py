@@ -221,9 +221,16 @@ def test_get_dormant_hr_multiplier_no_environment():
 
 @pytest.mark.unit
 @pytest.mark.calculation
-@pytest.mark.parametrize("category_id", [1, 2])
-@pytest.mark.parametrize("subcategory_id", [1, 3])
-def test_dormant_hazard_rate(category_id, subcategory_id):
+@pytest.mark.parametrize(
+    "category_id, subcategory_id, expected",
+    [
+        (1, 1, 0.00069138992),
+        (2, 1, 0.00034569496),
+        (1, 3, 0.00069138992),
+        (2, 3, 0.0),
+    ],
+)
+def test_dormant_hazard_rate(category_id, subcategory_id, expected):
     """do_calculate_dormant_hazard_rate() should return a float value for the dormant
     hazard rate on success."""
     _hr_dormant = do_calculate_dormant_hazard_rate(
@@ -231,11 +238,7 @@ def test_dormant_hazard_rate(category_id, subcategory_id):
     )
 
     assert isinstance(_hr_dormant, float)
-    assert _hr_dormant == pytest.approx(
-        {1: [0.00069138992, 0.00034569496], 3: [0.00069138992, 0.0]}[subcategory_id][
-            category_id - 1
-        ]
-    )
+    assert _hr_dormant == pytest.approx(expected)
 
 
 @pytest.mark.unit
