@@ -51,23 +51,35 @@ ENVIRONMENTS_DORMANT = [
 
 
 def get_environment_type(env_id: int, is_active: bool) -> str:
-    """Get the environment type based on the environment ID."""
-    try:
-        _index = env_id - 1
-        if is_active:
-            if _index < len(ENVIRONMENTS_ACTIVE):
-                return ENVIRONMENTS_ACTIVE[_index]
+    """Get the environment type based on the environment ID.
 
-        if _index < len(ENVIRONMENTS_DORMANT):
-            return ENVIRONMENTS_DORMANT[_index]
-    except IndexError as e:
-        raise ValueError(f"Invalid environment ID: {env_id}") from e
+    :param env_id: the index in the environment list.
+    :param is_active: indicates whether or not to use the ENVIRONMENTS_ACTIVE list.
+    :return: the name of the environment associated with the end_id.
+    :rtype: str
+    """
+    _index = env_id - 1
+    if is_active and _index < len(ENVIRONMENTS_ACTIVE):
+        return ENVIRONMENTS_ACTIVE[_index]
+
+    if _index < len(ENVIRONMENTS_DORMANT):
+        return ENVIRONMENTS_DORMANT[_index]
 
 
 def get_dormant_hr_multiplier(
     hw_info: List[Union[int, float]], env_active: str, env_dormant: str
 ) -> float:
-    """Get the dormant hazard rate multiplier based on hardware and environment info."""
+    """Get the dormant hazard rate multiplier based on hardware and environment info.
+
+    :param hw_info: the list of information relative to the hardware item
+           to calculate the dormant hazard rate.  Index 0 is the category ID,
+           index 1 is the subcategory ID, and index 3 is the predicted hazard
+           rate.
+    :param env_active: the name of the active environment.
+    :param env_dormant: the name of the dormant environment.
+    :return: the dormant hazard rate multiplier.
+    :rtype: float
+    """
     _category_id = hw_info[0] - 1
     _subcategory_id = hw_info[1] - 1
 
