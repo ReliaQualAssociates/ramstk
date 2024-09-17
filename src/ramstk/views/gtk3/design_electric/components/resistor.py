@@ -246,12 +246,24 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             self._get_quality_list(),
             signal="changed",
         )
-        self.__do_load_specification_combo()
-        self.__do_load_type_combo()
-        self.__do_load_style_combo()
-        self.__do_load_construction_combo()
+        self.cmbSpecification.do_load_combo(
+            self._dic_specifications.get(self.subcategory_id, []),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_type_list(),
+            signal="changed",
+        )
+        self.cmbStyle.do_load_combo(
+            self._get_style_list(),
+            signal="changed",
+        )
+        self.cmbConstruction.do_load_combo(
+            self._dic_construction.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -368,49 +380,10 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected resistor.
-
-        :param attributes: the dict of design electric attributes.
-        :return: None
-        :rtype: None
-        """
-        self.cmbConstruction.set_sensitive(False)
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbStyle.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-        self.txtNElements.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 2:
-            self.txtResistance.set_sensitive(True)
-        else:
-            self.txtResistance.set_sensitive(False)
-
-        self.__do_set_construction_combo_sensitive()
-        self.__do_set_elements_entry_sensitive()
-        self.__do_set_specification_combo_sensitive()
-        self.__do_set_style_combo_sensitive()
-        self.__do_set_type_combo_sensitive()
-
-    def __do_load_construction_combo(self) -> None:
-        """Load the Resistor construction RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_construction[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(
-            _data,
-            signal="changed",
-        )
+        self._set_sensitive()
 
     def _get_quality_list(self) -> List[List[str]]:
-        """Return the list of entries for the Resistor quality RAMSTKComboBox().
+        """Return the list of resistor quality levels.
 
         :return: list of resistor quality levels.
         :rtype: list
@@ -429,103 +402,101 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
 
-    def __do_load_specification_combo(self) -> None:
-        """Load the Resistor specification RAMSTKComboBox().
+    def _get_style_list(self) -> List[List[str]]:
+        """Return the list of resistor styles.
 
-        :return: None
-        :rtype: None
-        """
-        _specification_list = self._dic_specifications.get(self.subcategory_id, [])
-        self.cmbSpecification.do_load_combo(
-            _specification_list,
-            signal="changed",
-        )
-
-    def __do_load_style_combo(self) -> None:
-        """Load the Resistor style RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
+        :return: list of resistor styles.
+        :rtype: list
         """
         _specification_id = int(self.cmbSpecification.get_active())
-        _styles_list = self._dic_styles.get(self.subcategory_id, {}).get(
+        return self._dic_styles.get(self.subcategory_id, {}).get(
             _specification_id, [[""]]
         )
-        self.cmbStyle.do_load_combo(
-            entries=_styles_list,
-            signal="changed",
-        )
 
-    def __do_load_type_combo(self) -> None:
-        """Load the Resistor (thermistor) type RAMSTKComboBox().
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the list of resistor (thermistor) types.
 
-        :return: None
-        :rtype: None
+        :return: list of resistor types.
+        :rtype: list
         """
         _default_type_list = [[_("Bead")], [_("Disk")], [_("Rod")]]
-        _types_list = (
+        return (
             _default_type_list
             if self._hazard_rate_method_id == 2
             else self._dic_types.get(self.subcategory_id, [[""]])
         )
-        self.cmbType.do_load_combo(
-            entries=_types_list,
-            signal="changed",
+
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected resistor.
+
+        :return: None
+        :rtype: None
+        """
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbConstruction,
+            self.cmbSpecification,
+            self.cmbStyle,
+            self.cmbType,
+            self.txtNElements,
+            self.txtResistance,
+        ]
+
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
         )
 
-    def __do_set_construction_combo_sensitive(self) -> None:
-        """Set the Resistor construction RAMSTKComboBox() sensitive or not.
+        # Set txtResistance sensitive if hazard_rate_method_id is 2
+        if self._hazard_rate_method_id == 2:
+            self.txtResistance.set_sensitive(True)
 
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [10, 12]:
-            self.cmbConstruction.set_sensitive(True)
+        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        _sensitivity_map = {
+            1: {
+                1: [self.cmbType],
+                2: [self.cmbType],
+                5: [self.cmbType],
+                6: [self.cmbType],
+                7: [self.cmbType],
+                9: [self.cmbType],
+                11: [self.cmbType],
+                13: [self.cmbType],
+                15: [self.cmbType],
+            },
+            2: {
+                2: [self.cmbSpecification],
+                4: [self.txtNElements],
+                6: [
+                    self.cmbSpecification,
+                    self.cmbStyle,
+                ],
+                7: [
+                    self.cmbSpecification,
+                    self.cmbStyle,
+                ],
+                8: [self.cmbType],
+                9: [self.txtNElements],
+                10: [
+                    self.cmbConstruction.self.txtNElements,
+                ],
+                11: [self.txtNElements],
+                12: [
+                    self.cmbConstruction,
+                    self.txtNElements,
+                ],
+                13: [self.txtNElements],
+                14: [self.txtNElements],
+                15: [
+                    self.cmbSpecification,
+                    self.txtNElements,
+                ],
+            },
+        }
 
-    def __do_set_elements_entry_sensitive(self) -> None:
-        """Set Resistor number of elements RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
-            4,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-        ]:
-            self.txtNElements.set_sensitive(True)
-
-    def __do_set_specification_combo_sensitive(self) -> None:
-        """Set the Resistor specification RAMSTKComboBox() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [2, 6, 7, 15]:
-            self.cmbSpecification.set_sensitive(True)
-
-    def __do_set_style_combo_sensitive(self) -> None:
-        """Set the Resistor style RAMSTKComboBox() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [6, 7]:
-            self.cmbStyle.set_sensitive(True)
-
-    def __do_set_type_combo_sensitive(self) -> None:
-        """Set the Resistor type RAMSTKComboBox() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if (
-            self._hazard_rate_method_id == 1
-            and self.subcategory_id in [1, 2, 5, 6, 7, 9, 11, 13, 15]
-        ) or (self._hazard_rate_method_id == 2 and self.subcategory_id == 8):
-            self.cmbType.set_sensitive(True)
+        super().set_widget_sensitivity(
+            _sensitivity_map.get(self._hazard_rate_method_id, {}).get(
+                self.subcategory_id, []
+            )
+        )
