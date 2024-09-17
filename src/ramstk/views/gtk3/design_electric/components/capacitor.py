@@ -516,6 +516,40 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
             }
         )
 
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the capacitor assessment input RAMSTKComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected capacitor.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbSpecification.do_load_combo(
+            self._get_specification_list(),
+            signal="changed",
+        )
+        self.cmbStyle.do_load_combo(
+            [],
+            signal="changed",
+        )
+        self.cmbConfiguration.do_load_combo(
+            [
+                [_("Fixed")],
+                [_("Variable")],
+            ],
+            signal="changed",
+        )
+        self.cmbConstruction.do_load_combo(
+            self._get_construction_list(),
+            signal="changed",
+        )
+        self._set_sensitive()
+
     def _do_initialize_attribute_widget_map(self) -> Dict[str, List[Any]]:
         """Initialize the attribute widget map.
 
@@ -617,40 +651,6 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gfloat",
             ],
         }
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the capacitor assessment input RAMSTKComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.cmbQuality.do_load_combo(
-            self._get_quality_list(),
-            signal="changed",
-        )
-        self.cmbSpecification.do_load_combo(
-            self._get_specification_list(),
-            signal="changed",
-        )
-        self.cmbStyle.do_load_combo(
-            [],
-            signal="changed",
-        )
-        self.cmbConfiguration.do_load_combo(
-            [
-                [_("Fixed")],
-                [_("Variable")],
-            ],
-            signal="changed",
-        )
-        self.cmbConstruction.do_load_combo(
-            self._get_construction_list(),
-            signal="changed",
-        )
-        self._set_sensitive()
 
     def _do_load_styles(self, combo: RAMSTKComboBox) -> None:
         """Load the style RAMSTKComboBox() when the specification changes.

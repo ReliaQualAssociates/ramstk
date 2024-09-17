@@ -44,6 +44,8 @@ INDUCTOR_SPECIFICATION_DICT = {
     1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
     2: [["MIL-T-15305"], ["MIL-T-39010"]],
 }
+PART_COUNT = 1
+PART_STRESS = 2
 
 
 class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -166,7 +168,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -284,7 +286,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        if self._hazard_rate_method_id == 2:
+        if self._hazard_rate_method_id == PART_STRESS:
             self.cmbSpecification.do_update(
                 attributes["specification_id"],
                 signal="changed",
@@ -316,40 +318,12 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected inductor.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbInsulation.set_sensitive(False)
-        self.cmbFamily.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.txtArea.set_sensitive(False)
-        self.txtWeight.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 1:
-            self.cmbFamily.set_sensitive(True)
-        else:
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbInsulation.set_sensitive(True)
-            self.txtArea.set_sensitive(True)
-            self.txtWeight.set_sensitive(True)
-
-            if self.subcategory_id == 1:
-                self.cmbFamily.set_sensitive(True)
-
-            if self.subcategory_id == 2:
-                self.cmbConstruction.set_sensitive(True)
 
     def _get_family_list(self) -> List[List[str]]:
         """Return the transformer type list to load into the RAMSTKComboBox().
@@ -403,3 +377,49 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             if self._hazard_rate_method_id == 1
             else self._dic_quality.get(self.subcategory_id, [[""]])
         )
+
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected inductor.
+
+        :return: None
+        :rtype: None
+        """
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbSpecification,
+            self.cmbInsulation,
+            self.cmbFamily,
+            self.cmbConstruction,
+            self.txtArea,
+            self.txtWeight,
+        ]
+
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
+
+        # Define default sensitivity list
+        _default_sensitivity_list = [
+            self.cmbSpecification,
+            self.cmbInsulation,
+            self.txtArea,
+            self.txtWeight,
+        ]
+        # Define sensitivity map for each subcategory
+        _sensitivity_map = {
+            1: _default_sensitivity_list + [self.cmbFamily],
+            2: _default_sensitivity_list + [self.cmbConstruction],
+        }
+
+        # Determine sensitivity list based on subcategory
+        _sensitivity_list = _sensitivity_map.get(
+            self.subcategory_id, _default_sensitivity_list
+        )
+
+        # Set widget sensitivity based on hazard rate method
+        if self._hazard_rate_method_id == PART_COUNT:
+            super().set_widget_sensitivity([self.cmbFamily])
+        else:
+            super.set_widget_sensitivity(_sensitivity_list)

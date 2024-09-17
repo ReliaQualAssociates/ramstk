@@ -267,6 +267,34 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
             }
         )
 
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the connection RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected connection.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_type.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
+
+        # Clear the remaining ComboBox()s.  These are loaded dynamically
+        # based on the selection made in other ComboBox()s.
+        _model = self.cmbSpecification.get_model()
+        _model.clear()
+
+        _model = self.cmbInsert.get_model()
+        _model.clear()
+
+        self._do_set_sensitive()
+
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
         return {
@@ -419,34 +447,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
                 "gint",
             ],
         }
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the connection RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected connection.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.cmbQuality.do_load_combo(
-            self._get_quality_list(),
-            signal="changed",
-        )
-        self.cmbType.do_load_combo(
-            self._dic_type.get(self.subcategory_id, [[""]]),
-            signal="changed",
-        )
-
-        # Clear the remaining ComboBox()s.  These are loaded dynamically
-        # based on the selection made in other ComboBox()s.
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
-        _model = self.cmbInsert.get_model()
-        _model.clear()
-
-        self._do_set_sensitive()
 
     def _do_load_insert(self, combo: RAMSTKComboBox) -> None:
         """Load the insert RAMSTKComboBox() when the specification changes.
