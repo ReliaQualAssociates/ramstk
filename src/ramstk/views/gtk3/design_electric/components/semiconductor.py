@@ -306,7 +306,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
+        self._set_sensitive()
 
     def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
         """Initialize the attribute widget map."""
@@ -450,33 +450,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected semiconductor.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.cmbMatching.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-        self.cmbPackage.set_sensitive(False)
-        self.txtFrequencyOperating.set_sensitive(False)
-        self.txtNElements.set_sensitive(False)
-        self.txtThetaJC.set_sensitive(False)
-
-        self.__do_set_application_sensitive()
-        self.__do_set_construction_sensitive()
-        self.__do_set_elements_sensitive()
-        self.__do_set_matching_sensitive()
-        self.__do_set_op_freq_sensitive()
-        self.__do_set_type_sensitive()
-
-        if self._hazard_rate_method_id == 2:
-            self.cmbPackage.set_sensitive(True)
-            self.txtThetaJC.set_sensitive(True)
+        self._set_sensitive()
 
     def _get_application_list(self) -> List[List[str]]:
         """Return the list of semiconductor applications.
@@ -486,7 +460,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         return self._dic_applications.get(self.subcategory_id, [])
 
-    def _get_construction_list(self) -> List[List[str]]:
+    @staticmethod
+    def _get_construction_list() -> List[List[str]]:
         """Return the list of diode construction methods.
 
         :return: list of construction methods.
@@ -553,87 +528,86 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             else self._dic_types.get(self.subcategory_id, [[""]])
         )
 
-    def __do_set_application_sensitive(self) -> None:
-        """Set the application RAMSTKComboBox() sensitive or not.
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected semiconductor.
 
         :return: None
         :rtype: None
         """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [
-            2,
-            3,
-            4,
-            7,
-            8,
-            13,
-        ]:
-            self.cmbApplication.set_sensitive(True)
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbApplication,
+            self.cmbConstruction,
+            self.cmbMatching,
+            self.cmbPackage,
+            self.cmbType,
+            self.txtFrequencyOperating,
+            self.txtNElements,
+            self.txtThetaJC,
+        ]
 
-    def __do_set_construction_sensitive(self) -> None:
-        """Set the construction RAMSTKComboBox() sensitive or not.
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
 
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [1, 12]:
-            self.cmbConstruction.set_sensitive(True)
+        # Set txtResistance sensitive if hazard_rate_method_id is 2
+        if self._hazard_rate_method_id == 2:
+            self.cmbPackage.set_sensitive(True)
+            self.txtThetaJC.set_sensitive(True)
 
-    def __do_set_elements_sensitive(self) -> None:
-        """Set the number of elements RAMSTKEntry() sensitive or not.
+        _sensitivity_map = {
+            1: {
+                1: [self.cmbType],
+                2: [self.cmbType],
+                3: [self.cmbType],
+                8: [self.cmbType],
+                11: [self.cmbType],
+                13: [self.cmbType],
+            },
+            2: {
+                1: [
+                    self.cmbConstruction,
+                    self.cmbType,
+                ],
+                2: [
+                    self.cmbApplication,
+                    self.cmbType,
+                ],
+                3: [self.cmbApplication],
+                4: [
+                    self.cmbApplication,
+                    self.cmbType,
+                ],
+                7: [
+                    self.cmbApplication,
+                    self.cmbMatching,
+                    self.cmbType,
+                    self.txtNElements,
+                    self.txtFrequencyOperating,
+                ],
+                8: [
+                    self.cmbApplication,
+                    self.cmbMatching,
+                    self.txtNElements,
+                    self.txtFrequencyOperating,
+                ],
+                9: [self.cmbType],
+                11: [self.cmbType],
+                12: [
+                    self.cmbConstruction,
+                    self.cmbType,
+                ],
+                13: [
+                    self.cmbApplication,
+                    self.cmbType,
+                ],
+            },
+        }
 
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
-            self.txtNElements.set_sensitive(True)
-
-    def __do_set_matching_sensitive(self) -> None:
-        """Set the matching RAMSTKComboBox() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
-            self.cmbMatching.set_sensitive(True)
-
-    def __do_set_op_freq_sensitive(self) -> None:
-        """Set the operating frequency RAMSTKEntry() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 2 and self.subcategory_id in [7, 8]:
-            self.txtFrequencyOperating.set_sensitive(True)
-
-    def __do_set_type_sensitive(self) -> None:
-        """Set the type RAMSTKComboBox() sensitive or not.
-
-        :return: None
-        :rtype: None
-        """
-        if (
-            self._hazard_rate_method_id == 1
-            and self.subcategory_id
-            in [
-                1,
-                2,
-                3,
-                8,
-                11,
-                13,
-            ]
-        ) or (
-            self._hazard_rate_method_id == 2
-            and self.subcategory_id
-            in [
-                1,
-                2,
-                4,
-                7,
-                9,
-                11,
-                12,
-                13,
-            ]
-        ):
-            self.cmbType.set_sensitive(True)
+        super().set_widget_sensitivity(
+            _sensitivity_map.get(self._hazard_rate_method_id, {}).get(
+                self.subcategory_id, []
+            )
+        )
