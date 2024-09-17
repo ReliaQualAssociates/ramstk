@@ -8,7 +8,7 @@
 """The RAMSTK GTK3 frame Module."""
 
 # Standard Library Imports
-from typing import Any, Dict, Union
+from typing import Any, Dict, List, Union
 
 # RAMSTK Package Imports
 from ramstk.views.gtk3 import GObject, Gtk
@@ -36,3 +36,15 @@ class RAMSTKFrame(Gtk.Frame):
         self.set_label_widget(_label)
 
         self.set_shadow_type(_shadow)
+
+    @staticmethod
+    def set_widget_sensitivity(widgets: List[Any], sensitive: bool = True) -> None:
+        """Set the sensitivity for a list of widgets.
+
+        :param widgets: list of widget objects.
+        :param sensitive: whether to make the widgets sensitive or not.
+        :return: None
+        :rtype: None
+        """
+        for _widget in widgets:
+            _widget.set_sensitive(sensitive)

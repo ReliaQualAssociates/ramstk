@@ -31,7 +31,7 @@ repos:
       rev: 'v0.0.265'
       hooks:
         - id: ruff
-          args: [ --select, "PL", --select, "F" ]
+          args: [ --select, "PL", --select, "F", --config, ./pyproject.toml ]
     - repo: https://github.com/pycqa/pydocstyle
       rev: 6.3.0
       hooks:

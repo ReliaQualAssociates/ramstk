@@ -15,6 +15,17 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel
 
+# Quality levels; key is the subcategory ID.
+METER_QUALITY_DICT = {
+    2: [["MIL-SPEC"], [_("Lower")]],
+    1: [["MIL-SPEC"], [_("Lower")]],
+}
+# Meter types; key is the subcategory ID.
+METER_TYPE_DICT = {
+    1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
+    2: [[_("Direct Current")], [_("Alternating Current")]],
+}
+
 
 class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Meter assessment input attribute data in the RAMSTK Work Book.
@@ -38,17 +49,8 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-
-    # Quality levels; key is the subcategory ID.
-    _dic_quality: Dict[int, List[List[str]]] = {
-        2: [["MIL-SPEC"], [_("Lower")]],
-        1: [["MIL-SPEC"], [_("Lower")]],
-    }
-    # Meter types; key is the subcategory ID.
-    _dic_types: Dict[int, List[List[str]]] = {
-        1: [[_("AC")], [_("Inverter Driver")], [_("Commutator DC")]],
-        2: [[_("Direct Current")], [_("Alternating Current")]],
-    }
+    _dic_quality: Dict[int, List[List[str]]] = METER_QUALITY_DICT
+    _dic_types: Dict[int, List[List[str]]] = METER_TYPE_DICT
 
     # Define private list class attributes.
 
@@ -82,7 +84,57 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the meter assessment input RAMSTKComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected meter.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbApplication.do_load_combo(
+            [
+                [_("Ammeter")],
+                [_("Voltmeter")],
+                [_("Other")],
+            ],
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_types.get(self.subcategory_id, []),
+            signal="changed",
+        )
+
+        self._set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -124,58 +176,24 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-        # Initialize public list attributes.
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of quality levels to load into the RAMSTKComboBox().
 
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the meter assessment input RAMSTKComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected meter.
-        :return: None
-        :rtype: None
+        :return: list of meter quality levels.
+        :rtype: list
         """
-        self.subcategory_id = subcategory_id
+        _default_quality_list = [
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
 
-        # Load the quality level RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            _data = [["MIL-SPEC"], [_("Lower")]]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-        # Load the meter application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo(
-            [[_("Ammeter")], [_("Voltmeter")], [_("Other")]], signal="changed"
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
         )
 
-        # Load the meter type RAMSTKComboBox().
-        try:
-            _data = self._dic_types[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
-
-        self._do_set_sensitive()
-
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -185,15 +203,14 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
+    def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected meter.
 
         :return: None

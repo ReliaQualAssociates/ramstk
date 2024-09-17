@@ -15,6 +15,38 @@ from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
+INDUCTOR_INSULATION_DICT = {
+    1: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class O")],
+        [_("Insulation Class Q")],
+        [_("Insulation Class R")],
+        [_("Insulation Class S")],
+        [_("Insulation Class T")],
+        [_("Insulation Class U")],
+        [_("Insulation Class V")],
+    ],
+    2: [
+        [_("Insulation Class A")],
+        [_("Insulation Class B")],
+        [_("Insulation Class C")],
+        [_("Insulation Class F")],
+        [_("Insulation Class O")],
+    ],
+}
+INDUCTOR_QUALITY_DICT = {
+    1: [["MIL-SPEC"], [_("Lower")]],
+    2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
+}
+INDUCTOR_SPECIFICATION_DICT = {
+    1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
+    2: [["MIL-T-15305"], ["MIL-T-39010"]],
+}
+PART_COUNT = 1
+PART_STRESS = 2
+
 
 class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Displays Inductor assessment input attribute data.
@@ -46,35 +78,9 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_insulation: Dict[int, List[List[str]]] = {
-        1: [
-            [_("Insulation Class A")],
-            [_("Insulation Class B")],
-            [_("Insulation Class C")],
-            [_("Insulation Class O")],
-            [_("Insulation Class Q")],
-            [_("Insulation Class R")],
-            [_("Insulation Class S")],
-            [_("Insulation Class T")],
-            [_("Insulation Class U")],
-            [_("Insulation Class V")],
-        ],
-        2: [
-            [_("Insulation Class A")],
-            [_("Insulation Class B")],
-            [_("Insulation Class C")],
-            [_("Insulation Class F")],
-            [_("Insulation Class O")],
-        ],
-    }
-    _dic_quality: Dict[int, List[List[str]]] = {
-        1: [["MIL-SPEC"], [_("Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_("Lower")]],
-    }
-    _dic_specifications: Dict[int, List[List[str]]] = {
-        1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
-        2: [["MIL-T-15305"], ["MIL-T-39010"]],
-    }
+    _dic_insulation: Dict[int, List[List[str]]] = INDUCTOR_INSULATION_DICT
+    _dic_quality: Dict[int, List[List[str]]] = INDUCTOR_QUALITY_DICT
+    _dic_specifications: Dict[int, List[List[str]]] = INDUCTOR_SPECIFICATION_DICT
 
     # Define private list class attributes.
 
@@ -112,7 +118,61 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the inductive device assessment input RAMSTKComboBox().
+
+        :param subcategory_id: the subcategory ID of the selected inductive device.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbConstruction.do_load_combo(
+            [[_("Fixed")], [_("Variable")]],
+            signal="changed",
+        )
+        self.cmbFamily.do_load_combo(
+            self._get_family_list(),
+            signal="changed",
+        )
+        self.cmbInsulation.do_load_combo(
+            self._dic_insulation.get(self.subcategory_id, []),
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbSpecification.do_load_combo(
+            self._dic_specifications.get(self.subcategory_id, []),
+            signal="changed",
+        )
+
+        self._set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -211,44 +271,6 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "changed_subcategory": self.do_load_comboboxes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
-            }
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the inductive device assessment input RAMSTKComboBox().
-
-        :param subcategory_id: the subcategory ID of the selected inductive device.
-        :return: None
-        :rtype: None
-        """
-        self.subcategory_id = subcategory_id
-
-        self.__do_load_family_combobox()
-        self.__do_load_insulation_combobox()
-        self.__do_load_quality_combobox()
-        self.__do_load_specification_combobox()
-
-        self.cmbConstruction.do_load_combo(
-            [[_("Fixed")], [_("Variable")]], signal="changed"
-        )
-
-        self._do_set_sensitive()
-
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.
 
@@ -259,24 +281,87 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         """
         super().do_load_common(attributes)
 
-        self.cmbFamily.do_update(attributes["family_id"], signal="changed")
+        self.cmbFamily.do_update(
+            attributes["family_id"],
+            signal="changed",
+        )
 
-        if self._hazard_rate_method_id == 2:
+        if self._hazard_rate_method_id == PART_STRESS:
             self.cmbSpecification.do_update(
-                attributes["specification_id"], signal="changed"
+                attributes["specification_id"],
+                signal="changed",
             )
-            self.cmbInsulation.do_update(attributes["insulation_id"], signal="changed")
+            self.cmbInsulation.do_update(
+                attributes["insulation_id"],
+                signal="changed",
+            )
             self.cmbConstruction.do_update(
-                attributes["construction_id"], signal="changed"
+                attributes["construction_id"],
+                signal="changed",
             )
             self.txtArea.do_update(
-                str(self.fmt.format(attributes["area"])), signal="changed"
+                str(self.fmt.format(attributes["area"])),
+                signal="changed",
             )
             self.txtWeight.do_update(
-                str(self.fmt.format(attributes["weight"])), signal="changed"
-            )  # noqa
+                str(self.fmt.format(attributes["weight"])),
+                signal="changed",
+            )
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _get_family_list(self) -> List[List[str]]:
+        """Return the transformer type list to load into the RAMSTKComboBox().
+
+        :return: list of transformer types.
+        :rtype: list
+        """
+        _transformer_types = {
+            1: {
+                1: [
+                    [_("Low Power Pulse Transformer")],
+                    [_("Audio Transformer")],
+                    [_("High Power Pulse and Power Transformer, Filter")],
+                    [_("RF Transformer")],
+                ],
+                "default": [
+                    [_("RF Coils, Fixed or Molded")],
+                    [_("RF Coils, Variable")],
+                ],
+            },
+            "default": [
+                [_("Pulse Transformer")],
+                [_("Audio Transformer")],
+                [_("Power Transformer or Filter")],
+                [_("RF Transformer")],
+            ],
+        }
+
+        # Determine the correct data based on the hazard rate method and subcategory.
+        _xfmr_type = _transformer_types.get(
+            self._hazard_rate_method_id, _transformer_types["default"]
+        )
+        if isinstance(_xfmr_type, dict):
+            _xfmr_type = _xfmr_type.get(self.subcategory_id, _xfmr_type["default"])
+
+        return _xfmr_type
+
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the quality data to load into the RAMSTKComboBox().
+
+        :return: list of inductor quality levels.
+        :rtype: list
+        """
+        _default_quality_list = [
+            [_("Established Reliability")],
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
+        )
+
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -286,108 +371,55 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
+    def _set_sensitive(self) -> None:
         """Set widget sensitivity as needed for the selected inductor.
 
         :return: None
         :rtype: None
         """
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbInsulation.set_sensitive(False)
-        self.cmbFamily.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.txtArea.set_sensitive(False)
-        self.txtWeight.set_sensitive(False)
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbSpecification,
+            self.cmbInsulation,
+            self.cmbFamily,
+            self.cmbConstruction,
+            self.txtArea,
+            self.txtWeight,
+        ]
 
-        if self._hazard_rate_method_id == 1:
-            self.cmbFamily.set_sensitive(True)
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
+
+        # Define default sensitivity list
+        _default_sensitivity_list = [
+            self.cmbSpecification,
+            self.cmbInsulation,
+            self.txtArea,
+            self.txtWeight,
+        ]
+        # Define sensitivity map for each subcategory
+        _sensitivity_map = {
+            1: _default_sensitivity_list + [self.cmbFamily],
+            2: _default_sensitivity_list + [self.cmbConstruction],
+        }
+
+        # Determine sensitivity list based on subcategory
+        _sensitivity_list = _sensitivity_map.get(
+            self.subcategory_id, _default_sensitivity_list
+        )
+
+        # Set widget sensitivity based on hazard rate method
+        if self._hazard_rate_method_id == PART_COUNT:
+            super().set_widget_sensitivity([self.cmbFamily])
         else:
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbInsulation.set_sensitive(True)
-            self.txtArea.set_sensitive(True)
-            self.txtWeight.set_sensitive(True)
-
-            if self.subcategory_id == 1:
-                self.cmbFamily.set_sensitive(True)
-
-            if self.subcategory_id == 2:
-                self.cmbConstruction.set_sensitive(True)
-
-    def __do_load_family_combobox(self) -> None:
-        """Load the family RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:
-            if self.subcategory_id == 1:
-                _data = [
-                    [_("Low Power Pulse Transformer")],
-                    [_("Audio Transformer")],
-                    [_("High Power Pulse and Power Transformer, Filter")],
-                    [_("RF Transformer")],
-                ]
-            else:
-                _data = [
-                    [_("RF Coils, Fixed or Molded")],
-                    [_("RF Coils, Variable")],
-                ]
-        else:
-            _data = [
-                [_("Pulse Transformer")],
-                [_("Audio Transformer")],
-                [_("Power Transformer or Filter")],
-                [_("RF Transformer")],
-            ]
-        self.cmbFamily.do_load_combo(_data, signal="changed")
-
-    def __do_load_insulation_combobox(self) -> None:
-        """Load the insulation RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_insulation[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbInsulation.do_load_combo(_data, signal="changed")
-
-    def __do_load_quality_combobox(self) -> None:
-        """Load the quality RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:
-            _data = [
-                [_("Established Reliability")],
-                ["MIL-SPEC"],
-                [_("Lower")],
-            ]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
-
-    def __do_load_specification_combobox(self) -> None:
-        """Load the specification RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_specifications[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbSpecification.do_load_combo(_data, signal="changed")
+            super.set_widget_sensitivity(_sensitivity_list)

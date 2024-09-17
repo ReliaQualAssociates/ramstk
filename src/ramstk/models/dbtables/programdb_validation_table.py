@@ -114,7 +114,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
             # start date.  The earliest start date will be assigned the
             # total number of hours in the validation program.
             _start_date = min(
-                _start_date,
+                pd.Timestamp(_start_date),
                 pd.to_datetime(_node.data["validation"].date_start),
             )
             _time_ll += _node.data["validation"].time_ll
