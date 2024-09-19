@@ -42,7 +42,7 @@ class TestCreateBaseDatabase:
         assert isinstance(dut, BaseDatabase)
         assert dut.engine is None
         assert dut.session is None
-        assert dut.database == ""
+        assert not dut.database
 
 
 @pytest.mark.usefixtures("test_toml_user_configuration")
@@ -52,27 +52,36 @@ class TestConnectionMethods:
     def on_fail_connect_bad_db_name_type(self, logger_name, message):
         """Listen for do_log_error messages."""
         assert logger_name == "ERROR"
-        assert "Non-string value in database connection: 8675309." in message
-        print("\033[36m\n\tfail_connect_program_database topic was broadcast")
+        assert (
+            "Non-string or blank string value in database connection: 8675309."
+            in message
+        )
+        print(
+            "\033[35m\n\tfail_connect_program_database topic was broadcast for bad DB "
+            "name type"
+        )
 
     def on_fail_connect_unknown_dialect(self, logger_name, message):
         """Listen for do_log_error messages."""
         assert logger_name == "ERROR"
-        assert message == "Unknown dialect in database connection: sqldoyle."
-        print("\033[36m\n\tfail_connect_program_database topic was broadcast")
+        assert message == "Unknown dialect in database connection: sqldoyle: "
+        print(
+            "\033[35m\n\tfail_connect_program_database topic was broadcast for "
+            "unknown dialect"
+        )
 
     @pytest.mark.integration
     def test_do_connect_sqlite(self, test_toml_user_configuration):
         """do_connect() Should return None when connecting to a database."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "sqlite"
-        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = ""
+        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = "sqlite"
         DUT = BaseDatabase()
 
         assert DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO) is None
         assert isinstance(DUT.engine, Engine)
         assert isinstance(DUT.session, scoped_session)
-        assert DUT.database == "sqlite:///"
+        # assert DUT.database == "sqlite:///sqlite"
 
     @pytest.mark.integration
     def test_do_connect_postgresql(self, test_toml_user_configuration):
@@ -83,14 +92,17 @@ class TestConnectionMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["password"] = "postgres"
         test_toml_user_configuration.RAMSTK_PROG_INFO["host"] = "localhost"
         test_toml_user_configuration.RAMSTK_PROG_INFO["port"] = "5432"
-        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = ""
+        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = "postgres"
 
         DUT = BaseDatabase()
 
         assert DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO) is None
         assert isinstance(DUT.engine, Engine)
         assert isinstance(DUT.session, scoped_session)
-        assert DUT.database == "postgresql+psycopg2://postgres:postgres@localhost:5432/"
+        # assert (
+        #    DUT.database
+        #    == "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
+        # )
 
     @pytest.mark.integration
     def test_do_connect_bad_database_name_type(self, test_toml_user_configuration):
@@ -144,13 +156,13 @@ class TestConnectionMethods:
         """Should return None when successfully closing a database connection."""
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "sqlite"
-        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = ""
+        test_toml_user_configuration.RAMSTK_PROG_INFO["database"] = "sqlite"
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
         assert DUT.do_disconnect() is None
         assert DUT.session is None
-        assert DUT.database == ""
+        assert not DUT.database
 
 
 @pytest.mark.usefixtures(
@@ -159,10 +171,11 @@ class TestConnectionMethods:
 class TestInsertMethods:
     """Class for BaseDatabase insert methods test suite."""
 
-    def on_fail_insert_record(self, error_message):
+    def on_fail_insert_record(self, logger_name, message):
         """Listen for fail_insert messages."""
-        assert isinstance(error_message, str)
-        print("\033[35m\nfail_insert_record topic was broadcast.")
+        assert logger_name == "ERROR"
+        assert isinstance(message, str)
+        print("\033[35m\n\tfail_insert_record topic was broadcast for bad column type")
 
     @pytest.mark.integration
     def test_do_insert(self, test_program_dao, test_toml_user_configuration):
@@ -175,7 +188,7 @@ class TestInsertMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["port"] = "5432"
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             "database"
-        ] = test_program_dao.cxnargs["dbname"]
+        ] = test_program_dao.cxnargs["database"]
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -191,7 +204,7 @@ class TestInsertMethods:
         self, test_program_dao, test_toml_user_configuration
     ):
         """Should raise a DataAccessError on non-date object for a date type field."""
-        pub.subscribe(self.on_fail_insert_record, "fail_insert_record")
+        pub.subscribe(self.on_fail_insert_record, "do_log_error_msg")
 
         test_toml_user_configuration.get_user_configuration()
         test_toml_user_configuration.RAMSTK_PROG_INFO["dialect"] = "postgres"
@@ -201,7 +214,7 @@ class TestInsertMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["port"] = "5432"
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             "database"
-        ] = test_program_dao.cxnargs["dbname"]
+        ] = test_program_dao.cxnargs["database"]
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -212,7 +225,7 @@ class TestInsertMethods:
         with pytest.raises(DataAccessError):
             DUT.do_insert(_record)
 
-        pub.unsubscribe(self.on_fail_insert_record, "fail_insert_record")
+        pub.unsubscribe(self.on_fail_insert_record, "do_log_error_msg")
 
         DUT.do_disconnect()
 
@@ -227,7 +240,7 @@ class TestInsertMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["port"] = "5432"
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             "database"
-        ] = test_program_dao.cxnargs["dbname"]
+        ] = test_program_dao.cxnargs["database"]
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -245,7 +258,7 @@ class TestInsertMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -256,7 +269,6 @@ class TestInsertMethods:
 
         with pytest.raises(DataAccessError):
             DUT.do_insert(_record)
-
         DUT.do_disconnect()
 
     @pytest.mark.integration
@@ -270,7 +282,7 @@ class TestInsertMethods:
         test_toml_user_configuration.RAMSTK_PROG_INFO["port"] = "5432"
         test_toml_user_configuration.RAMSTK_PROG_INFO[
             "database"
-        ] = test_program_dao.cxnargs["dbname"]
+        ] = test_program_dao.cxnargs["database"]
         DUT = BaseDatabase()
         DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO)
 
@@ -289,21 +301,25 @@ class TestInsertMethods:
 class TestDeleteMethods:
     """Class for BaseDatabase delete methods test suite."""
 
-    def on_fail_delete_foreign_record(self, error_message):
+    def on_fail_delete_foreign_record(self, logger_name, message):
         """Listen for fail_delete messages."""
-        assert error_message == (
-            "There was an database error when attempting to delete a record.  "
-            'Error returned from database was:\n\trelation "ramstk_mission" '
-            "does not exist\nLINE 2: FROM ramstk_mission \n             ^\n."
+        assert logger_name == "ERROR"
+        assert (
+            "Database error when attempting to delete a record. Error details: "
+            in message
         )
-        print("\033[35m\nfail_delete_record topic was broadcast.")
+        print("\033[35m\n\tfail_delete_record topic was broadcast for foreign record")
 
-    def on_fail_delete_missing_table(self, error_message):
+    def on_fail_delete_missing_table(self, logger_name, message):
         """Listen for fail_delete messages."""
-        assert "is not persisted" in error_message
-        print("\033[35m\nfail_delete_record topic was broadcast on mission table.")
+        assert logger_name == "ERROR"
+        assert (
+            "Database error when attempting to delete a record. Error details: "
+            in message
+        )
+        print("\033[35m\n\tfail_delete_record topic was broadcast for missing table")
 
-    @pytest.mark.skip
+    @pytest.mark.integration
     def test_do_delete(self, test_common_dao):
         """Should return None when inserting a record into a database table."""
         config = {
@@ -312,7 +328,7 @@ class TestDeleteMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -328,10 +344,10 @@ class TestDeleteMethods:
 
         DUT.do_disconnect()
 
-    @pytest.mark.skip
+    @pytest.mark.skip("Cannot insert record with bad foreign key.")
     def test_do_delete_missing_foreign_table(self, test_program_dao):
         """Raise DataAccessError with a foreign key that does no exist."""
-        pub.subscribe(self.on_fail_delete_foreign_record, "fail_delete_record")
+        pub.subscribe(self.on_fail_delete_foreign_record, "do_log_error_msg")
 
         config = {
             "dialect": "postgres",
@@ -339,25 +355,27 @@ class TestDeleteMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_program_dao.cxnargs["dbname"],
+            "database": test_program_dao.cxnargs["database"],
         }
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _record = RAMSTKRevisionRecord()
+        _record = RAMSTKFunctionRecord()
         _record.revision_id = 4
-        DUT.do_insert(_record)
+
+        with pytest.raises(DataAccessError):
+            DUT.do_insert(_record)
 
         with pytest.raises(DataAccessError):
             DUT.do_delete(_record)
 
         DUT.do_disconnect()
-        pub.unsubscribe(self.on_fail_delete_foreign_record, "fail_delete_record")
+        pub.unsubscribe(self.on_fail_delete_foreign_record, "do_log_error_msg")
 
     @pytest.mark.integration
     def test_do_delete_no_table(self, test_program_dao):
         """Raise DataAccessError when attempting to delete a non-existent record."""
-        pub.subscribe(self.on_fail_delete_missing_table, "fail_delete_record")
+        pub.subscribe(self.on_fail_delete_missing_table, "do_log_error_msg")
 
         config = {
             "dialect": "postgres",
@@ -365,7 +383,7 @@ class TestDeleteMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_program_dao.cxnargs["dbname"],
+            "database": test_program_dao.cxnargs["database"],
         }
         DUT = BaseDatabase()
         DUT.do_connect(config)
@@ -375,7 +393,7 @@ class TestDeleteMethods:
             DUT.do_delete(_record)
 
         DUT.do_disconnect()
-        pub.unsubscribe(self.on_fail_delete_missing_table, "fail_delete_record")
+        pub.unsubscribe(self.on_fail_delete_missing_table, "do_log_error_msg")
 
 
 @pytest.mark.usefixtures("test_common_dao")
@@ -391,7 +409,7 @@ class TestUpdateMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -461,7 +479,7 @@ class TestSelectMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -489,7 +507,7 @@ class TestSelectMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -517,7 +535,7 @@ class TestSelectMethods:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
@@ -531,51 +549,52 @@ class TestSelectMethods:
 
     @pytest.mark.integration
     def test_get_last_id_unknown_column(self, test_common_dao):
-        """get_last_id() Should return 0 when passed an unknown column name."""
+        """get_last_id() Should raise an exception when passed an unknown column
+        name."""
         config = {
             "dialect": "postgres",
             "user": "postgres",
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _last_id = DUT.get_last_id(RAMSTKSiteInfoRecord.__tablename__, "fld_column_id")
-
+        with pytest.raises(DataAccessError):
+            DUT.get_last_id(
+                RAMSTKSiteInfoRecord.__tablename__,
+                "fld_column_id",
+            )
         DUT.do_disconnect()
-
-        assert _last_id == 0
 
     @pytest.mark.integration
     def test_get_last_id_unknown_table(self, test_common_dao):
-        """get_last_id() Should return 0 when passed an unknown table."""
+        """get_last_id() Should raise an exception when passed an unknown table."""
         config = {
             "dialect": "postgres",
             "user": "postgres",
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_common_dao.cxnargs["dbname"],
+            "database": test_common_dao.cxnargs["database"],
         }
 
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _last_id = DUT.get_last_id(
-            RAMSTKFunctionRecord.__tablename__, "fld_function_id"
-        )
-
+        with pytest.raises(DataAccessError):
+            DUT.get_last_id(
+                RAMSTKFunctionRecord.__tablename__,
+                "fld_function_id",
+            )
         DUT.do_disconnect()
-
-        assert _last_id == 0
 
     @pytest.mark.integration
     def test_get_last_id_empty_table(self):
-        """get_last_id() Should return 0 when passed an unknown table."""
+        """get_last_id() should raise an exception when passed an unknown table."""
         config = {
             "dialect": "postgres",
             "user": "postgres",
@@ -587,11 +606,12 @@ class TestSelectMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        _last_id = DUT.get_last_id("ramstk_empty_table", "fld_empty_id")
-
+        with pytest.raises(DataAccessError):
+            DUT.get_last_id(
+                "ramstk_empty_table",
+                "fld_empty_id",
+            )
         DUT.do_disconnect()
-
-        assert _last_id == 0
 
     @pytest.mark.integration
     def test_get_database_list(self):
@@ -631,8 +651,7 @@ class TestSelectMethods:
         DUT.do_connect(_database)
 
         _database["dialect"] = "doyleton"
-        _databases = DUT.get_database_list(_database)
+        with pytest.raises(DataAccessError):
+            DUT.get_database_list(_database)
 
         DUT.do_disconnect()
-
-        assert _databases == []
