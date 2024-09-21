@@ -16,7 +16,7 @@ import psycopg2  # type: ignore
 from psycopg2 import sql  # type: ignore
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import Select, create_engine, exc
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine  # type: ignore
 from sqlalchemy.exc import (
     InvalidRequestError,
@@ -41,7 +41,7 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
     :return: None
     """
 
-    def _connect_to_db(database: str) -> psycopg2.extensions.connection:
+    def _connect_to_db(database) -> psycopg2.extensions.connection:
         """Create a database connection.
 
         :param database: the name of the database to connect to.
@@ -51,14 +51,21 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
         """
         return psycopg2.connect(
             host=database["host"],
-            database=database,
+            database=database["database"],
             user=database["user"],
             password=database["password"],
         )
 
     try:
         # Step 1: Connect to the default 'postgres' database and create a new one.
-        conn = _connect_to_db("postgres")
+        conn = _connect_to_db(
+            {
+                "host": database["host"],
+                "user": database["user"],
+                "password": database["password"],
+                "database": "postgres",
+            }
+        )
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with conn.cursor() as cursor:
             cursor.execute(
@@ -74,7 +81,7 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
         conn.close()
 
         # Step 2: Connect to the newly created database and populate it.
-        conn = _connect_to_db(database["database"])
+        conn = _connect_to_db(database)
         conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with conn.cursor() as cursor:
             cursor.execute(sql_file.read())
@@ -300,22 +307,17 @@ class BaseDatabase:
         self.session = None  # type: ignore
         self.database = ""
 
-    # def do_execute_query(self, query_: Select) -> List[object]:
-    # """Execute an SQLAlchemy query.
+    def do_execute_query(
+        self, query: str, session: scoped_session = None
+    ) -> List[Tuple[Any, ...]]:
+        """Execute the given SQL query and return the results."""
+        if not session:
+            return self.session.scalars(query)
+        return session.execute(text(query)).fetchall()
 
-    #:param query_: the SQLAlchemy query to execute.
-    #:return: results; a list of dbrecord objects.
-    #:rtype: list
-    # """
-    # return self.session.scalars(query_)
-
-    def do_filter_system_databases(self, databases: List[tuple]) -> List[str]:
+    def do_filter_system_databases(self, databases: List[Tuple[Any, ...]]) -> List[str]:
         """Filter out system databases and return only those relevant to RAMSTK."""
         return [_db[0] for _db in databases if _db[0] not in self._system_databases]
-
-    def do_execute_query(self, session: scoped_session, query: str) -> List[tuple]:
-        """Execute the given SQL query and return the results."""
-        return session.execute(text(query)).fetchall()
 
     def do_handle_db_error(self, error, context_message) -> None:
         """Handle errors raised by other methods.
@@ -332,10 +334,6 @@ class BaseDatabase:
             self.session.rollback()
 
         _error_message = f"{context_message}: {error}"
-        pub.sendMessage(
-            "fail_db_operation",
-            error_message=_error_message,
-        )
         pub.sendMessage(
             "do_log_error_msg",
             logger_name="ERROR",
@@ -354,7 +352,6 @@ class BaseDatabase:
             self.session.add(record)
             self.session.commit()
         except (
-            AttributeError,
             FlushError,
             exc.DataError,
             exc.IntegrityError,
@@ -364,6 +361,12 @@ class BaseDatabase:
             _context_message = "Database error while adding a record. Error details: "
             self.do_handle_db_error(
                 _error.orig.pgerror.split(":")[2].strip(),
+                _context_message,
+            )
+        except AttributeError as _error:
+            _context_message = "Database error while adding a record. Error details: "
+            self.do_handle_db_error(
+                _error,
                 _context_message,
             )
 
@@ -458,7 +461,7 @@ class BaseDatabase:
             __, _session = self.get_database_session(database)
 
             # Fetch the list of databases and filter them.
-            _databases = self.do_execute_query(_session, _query)
+            _databases = self.do_execute_query(_query, _session)
             return self.do_filter_system_databases(_databases)
 
         raise DataAccessError(f"Unsupported dialect: {database['dialect']}")

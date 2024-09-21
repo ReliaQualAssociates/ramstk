@@ -20,7 +20,7 @@ class RAMSTKError(Exception):
         super().__init__(msg)
 
 
-class DataAccessError(Exception):
+class DataAccessError(RAMSTKError):
     """Exception raised when attempting to access non-existent data."""
 
     def __init__(self, msg: str = "") -> None:

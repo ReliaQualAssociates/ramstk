@@ -51,7 +51,8 @@ class TestInsertRevision(SystemTestInsertMethods):
         """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "dao.do_insert: No database connected when attempting to add a record."
+            "Database error while adding a record. Error details: : 'NoneType' object "
+            "has no attribute 'add'"
         )
         print(
             f"\033[35m\n\tfail_insert_{self._tag} topic was broadcast on no "

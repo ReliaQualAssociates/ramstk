@@ -79,7 +79,7 @@ class TestMain:
         test_common_dao,
     ):
         """do_connect_to_site_db() should return an instance of the RAMSTKCommonDB."""
-        test_common_dao.cxnargs["database"] = test_common_dao.cxnargs["dbname"]
+        test_common_dao.cxnargs["database"] = test_common_dao.cxnargs["database"]
         _site_db = __main__.do_connect_to_site_db(test_common_dao.cxnargs)
 
         assert isinstance(_site_db, RAMSTKCommonDB)

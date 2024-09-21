@@ -195,9 +195,7 @@ class SystemTestInsertMethods:
         """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            "do_insert: Database error when attempting to add a record.  Database "
-            "returned:\n\tKey (fld_revision_id)=(40) is not present in table "
-            '"ramstk_revision".'
+            'Database error while adding a record. Error details: : Key (fld_revision_id)=(40) is not present in table "ramstk_revision".'
         )
         print(
             f"\033[35m\n\tfail_insert_{self._tag} topic was broadcast on no "

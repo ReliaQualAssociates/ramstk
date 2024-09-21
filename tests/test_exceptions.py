@@ -28,7 +28,7 @@ def test_ramstk_base_exception_no_message():
     """Should return a base exception class with the default message."""
     dut = RAMSTKError()
 
-    assert dut.msg == "An error occured with RAMSTK."
+    assert dut.msg == "An error occurred with RAMSTK."
 
 
 @pytest.mark.unit
@@ -44,7 +44,7 @@ def test_data_access_exception_no_message():
     """Should return a DataAccessError exception class with the default message."""
     dut = DataAccessError("")
 
-    assert dut.msg == "An error occured with RAMSTK."
+    assert dut.msg == "An error occurred with RAMSTK."
 
 
 @pytest.mark.unit
@@ -60,4 +60,4 @@ def test_out_of_range_exception_no_message():
     """Should return a OutOfRangeError exception class with the default message."""
     dut = OutOfRangeError("")
 
-    assert dut.msg == "An error occured with RAMSTK."
+    assert dut.msg == "An error occurred with RAMSTK."
