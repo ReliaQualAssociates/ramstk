@@ -74,7 +74,7 @@ class TestProgramManager:
     def on_fail_open_program_unknown_dialect(self, error_message):
         """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
-        assert error_message == "Unknown dialect in database connection: doyleton: "
+        assert error_message == "Unknown dialect in database connection: doyleton"
         print(
             "\033[35m\n\tfail_connect_program_database topic was broadcast "
             "on unknown "
@@ -85,7 +85,7 @@ class TestProgramManager:
         """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
         assert error_message == (
-            "Non-string or blank string value in database connection: 8742.11.: "
+            "Non-string or blank string value in database connection: 8742.11."
         )
         print(
             "\033[35m\n\tfail_connect_program_database topic was broadcast on "

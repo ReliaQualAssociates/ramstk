@@ -52,9 +52,8 @@ class TestConnectionMethods:
     def on_fail_connect_bad_db_name_type(self, logger_name, message):
         """Listen for do_log_error messages."""
         assert logger_name == "ERROR"
-        assert (
+        assert message == (
             "Non-string or blank string value in database connection: 8675309."
-            in message
         )
         print(
             "\033[35m\n\tfail_connect_program_database topic was broadcast for bad DB "
@@ -64,7 +63,7 @@ class TestConnectionMethods:
     def on_fail_connect_unknown_dialect(self, logger_name, message):
         """Listen for do_log_error messages."""
         assert logger_name == "ERROR"
-        assert message == "Unknown dialect in database connection: sqldoyle: "
+        assert message == "Unknown dialect in database connection: sqldoyle"
         print(
             "\033[35m\n\tfail_connect_program_database topic was broadcast for "
             "unknown dialect"
@@ -81,7 +80,6 @@ class TestConnectionMethods:
         assert DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO) is None
         assert isinstance(DUT.engine, Engine)
         assert isinstance(DUT.session, scoped_session)
-        # assert DUT.database == "sqlite:///sqlite"
 
     @pytest.mark.integration
     def test_do_connect_postgresql(self, test_toml_user_configuration):
@@ -99,10 +97,6 @@ class TestConnectionMethods:
         assert DUT.do_connect(test_toml_user_configuration.RAMSTK_PROG_INFO) is None
         assert isinstance(DUT.engine, Engine)
         assert isinstance(DUT.session, scoped_session)
-        # assert (
-        #    DUT.database
-        #    == "postgresql+psycopg2://postgres:postgres@localhost:5432/postgres"
-        # )
 
     @pytest.mark.integration
     def test_do_connect_bad_database_name_type(self, test_toml_user_configuration):
@@ -174,7 +168,10 @@ class TestInsertMethods:
     def on_fail_insert_record(self, logger_name, message):
         """Listen for fail_insert messages."""
         assert logger_name == "ERROR"
-        assert isinstance(message, str)
+        assert (
+            message
+            == "Database error while adding a record. Error details: : INSERT INTO ramstk_site_info (fld_site_id, fld_site_name, fl...\n                    ^"
+        )
         print("\033[35m\n\tfail_insert_record topic was broadcast for bad column type")
 
     @pytest.mark.integration
@@ -343,34 +340,6 @@ class TestDeleteMethods:
         assert DUT.do_delete(_record) is None
 
         DUT.do_disconnect()
-
-    @pytest.mark.skip("Cannot insert record with bad foreign key.")
-    def test_do_delete_missing_foreign_table(self, test_program_dao):
-        """Raise DataAccessError with a foreign key that does no exist."""
-        pub.subscribe(self.on_fail_delete_foreign_record, "do_log_error_msg")
-
-        config = {
-            "dialect": "postgres",
-            "user": "postgres",
-            "password": "postgres",
-            "host": "localhost",
-            "port": "5432",
-            "database": test_program_dao.cxnargs["database"],
-        }
-        DUT = BaseDatabase()
-        DUT.do_connect(config)
-
-        _record = RAMSTKFunctionRecord()
-        _record.revision_id = 4
-
-        with pytest.raises(DataAccessError):
-            DUT.do_insert(_record)
-
-        with pytest.raises(DataAccessError):
-            DUT.do_delete(_record)
-
-        DUT.do_disconnect()
-        pub.unsubscribe(self.on_fail_delete_foreign_record, "do_log_error_msg")
 
     @pytest.mark.integration
     def test_do_delete_no_table(self, test_program_dao):
@@ -563,11 +532,13 @@ class TestSelectMethods:
         DUT = BaseDatabase()
         DUT.do_connect(config)
 
-        with pytest.raises(DataAccessError):
+        with pytest.raises(DataAccessError) as exc_info:
             DUT.get_last_id(
                 RAMSTKSiteInfoRecord.__tablename__,
                 "fld_column_id",
             )
+        assert "UndefinedColumn" in str(exc_info.value)
+
         DUT.do_disconnect()
 
     @pytest.mark.integration
