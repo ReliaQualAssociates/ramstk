@@ -58,7 +58,7 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
 
     try:
         # Step 1: Connect to the default 'postgres' database and create a new one.
-        conn = _connect_to_db(
+        _conn = _connect_to_db(
             {
                 "host": database["host"],
                 "user": database["user"],
@@ -66,31 +66,31 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
                 "database": "postgres",
             }
         )
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        with conn.cursor() as cursor:
-            cursor.execute(
+        _conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        with _conn.cursor() as _cursor:
+            _cursor.execute(
                 sql.SQL("DROP DATABASE IF EXISTS {}").format(
                     sql.Identifier(database["database"])
                 )
             )
-            cursor.execute(
+            _cursor.execute(
                 sql.SQL("CREATE DATABASE {}").format(
                     sql.Identifier(database["database"])
                 )
             )
-        conn.close()
+        _conn.close()
 
         # Step 2: Connect to the newly created database and populate it.
-        conn = _connect_to_db(database)
-        conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        with conn.cursor() as cursor:
-            cursor.execute(sql_file.read())
-        conn.close()
+        _conn = _connect_to_db(database)
+        _conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        with _conn.cursor() as _cursor:
+            _cursor.execute(sql_file.read())
+        _conn.close()
 
-    except psycopg2.Error as e:
-        print(f"Error occurred while creating or populating the database: {e}")
-        if conn:
-            conn.close()
+    except psycopg2.Error as _error:
+        print(f"Error occurred while creating or populating the database: {_error}")
+        if _conn:
+            _conn.close()
 
 
 def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
@@ -135,6 +135,7 @@ class BaseDatabase:
     # Define private class dictionary attributes.
 
     # Define private class list attributes.
+    _known_dialects = ["sqlite", "postgres"]
     _system_databases = ["postgres", "template0", "template1"]
 
     # Define private class scalar attributes.
@@ -187,26 +188,36 @@ class BaseDatabase:
         :return: URL string for connecting to the selected database.
         :rtype: str
         """
-        # Ensure the database name is a string
-        if not isinstance(database["database"], str) or not database["database"]:
-            _error_msg = (
-                f"Non-string or blank string value in database connection:"
-                f" {database['database']}."
+        _required_keys = [
+            "host",
+            "port",
+            "database",
+            "user",
+            "password",
+        ]
+        if any(_key not in database for _key in _required_keys):
+            self.do_handle_db_error(
+                "Missing required database configuration keys",
+                "",
             )
-            self.do_handle_db_error("", _error_msg)
-
+        if database["dialect"] not in self._known_dialects:
+            self.do_handle_db_error(
+                f"Unknown dialect in database connection:" f" {database['dialect']}",
+                "",
+            )
+        if not isinstance(database["database"], str) or not database["database"]:
+            self.do_handle_db_error(
+                f"Non-string or blank string value in database connection:"
+                f" {database['database']}.",
+                "",
+            )
         if database["dialect"] == "sqlite":
             return f"sqlite:///{database['database']}"
         if database["dialect"] == "postgres":
             return (
-                f"postgresql+psycopg2://{database['user']}:{database['password']}"
-                f"@{database['host']}:{database['port']}/{database['database']}"
+                f"postgresql://{database['user']}:{database['password']}@"
+                f"{database['host']}:{database['port']}/{database['database']}"
             )
-
-        _error_msg = (
-            f"Unknown dialect in database connection:" f" {database['dialect']}"
-        )
-        self.do_handle_db_error("", _error_msg)
 
     def do_build_postgres_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
@@ -333,13 +344,13 @@ class BaseDatabase:
         with contextlib.suppress(AttributeError):
             self.session.rollback()
 
-        _error_message = f"{context_message}: {error}"
+        _error_msg = f"{context_message}: {error}" if context_message else error
         pub.sendMessage(
             "do_log_error_msg",
             logger_name="ERROR",
-            message=_error_message,
+            message=_error_msg,
         )
-        raise DataAccessError(_error_message)
+        raise DataAccessError(_error_msg)
 
     def do_insert(self, record: object) -> None:
         """Add a new record to a database table.
@@ -388,8 +399,8 @@ class BaseDatabase:
         """
         _keys = kwargs.get("key", [])
         _values = kwargs.get("value", [])
-        _order = kwargs.get("order", None)
-        _all = kwargs.get("_all", True)
+        _order: Optional[str] = kwargs.get("order", None)
+        _all: bool = kwargs.get("_all", True)
 
         # Ensure keys and values are provided in pairs.
         if _keys and len(_keys) != len(_values):
@@ -434,7 +445,8 @@ class BaseDatabase:
             _context_message = (
                 f"Database error during record update. SQL statement:\n\t"
                 f"{getattr(_error, 'statement', 'No statement available')}.\n"
-                f"Parameters:\n\t{getattr(_error, 'params', 'No parameters available')}."
+                f"Parameters:"
+                f"\n\t{getattr(_error, 'params', 'No parameters available')}."
             )
             self.do_handle_db_error(
                 _error,

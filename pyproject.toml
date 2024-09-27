@@ -203,8 +203,8 @@ markers = [
 ignore-paths = [
 	'tests*'
 ]
-ignore_patterns = [
-	'*.pyi'
+ignore-patterns = [
+	'\S*.pyi'
 ]
 persistent = true
 extension-pkg-whitelist = [
