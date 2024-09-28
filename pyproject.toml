@@ -34,11 +34,11 @@ include = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8,<4.0"
+python = "^3.10,<4.0"
 lifelines = "^0.27.0"
 matplotlib = "^3.3.4"
 numpy = [
-	{ version  = ">=1.23,<2.0", python = "^3.8", markers = "platform_system =='linux'" }
+	{ version  = ">=1.26,<2.0", python = "^3.8", markers = "platform_system =='linux'" }
 ]
 openpyxl = "^3.0.6"
 pandas = [
@@ -52,7 +52,7 @@ scipy = [
 ]
 sortedcontainers = "^2.3.0"
 sqlalchemy-utils = ">=0.40,<0.42"
-sqlalchemy = ">=1.3,<3.0"
+sqlalchemy = ">=2.0,<3.0"
 statsmodels = ">=0.13.1,<0.15.0"
 sympy = "^1.8.0"
 toml = "^0.10.2"
@@ -68,6 +68,7 @@ black = "^24.8.0"
 coveralls = "^3.0.0"
 coverage = { version = "^6.4", extras = ["toml"] }
 docformatter = { version = "^1.7", extras = ["tomli"] }
+docutils = ">=0.21.2"
 flake8 = { version = "^7.0.0", python = ">=3.8.1,<4.0" }
 flake8-pyproject = "^1.2.3"
 isort = "^5.13.2"
