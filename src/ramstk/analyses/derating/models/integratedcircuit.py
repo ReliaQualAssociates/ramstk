@@ -19,12 +19,12 @@ def do_derating_analysis(
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for integrated circuits.
 
-    :param environment_id: the index for the environment the integrated circuit
-        is operating in; 0=protected, 1=normal, 2=severe.
+    :param environment_id: the index for the environment the integrated circuit is
+        operating in; 0=protected, 1=normal, 2=severe.
     :param subcategory_id: the subcategory ID of the integrated circuit to check
         derating.
-    :param stress_limits: the dict containing the stress derating limits for
-        integrated circuits.
+    :param stress_limits: the dict containing the stress derating limits for integrated
+        circuits.
     :return: _overstress, _reason
     :rtype: tuple
     :raise: IndexError if an unknown environment ID is passed.

@@ -20,18 +20,17 @@ def do_derating_analysis(
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for semiconductors.
 
-    :param environment_id: the index for the environment the semiconductor
-        is operating in; 0=protected, 1=normal, 2=severe.
-    :param subcategory_id: the subcategory ID of the semiconductor to check
-        derating.
+    :param environment_id: the index for the environment the semiconductor is operating
+        in; 0=protected, 1=normal, 2=severe.
+    :param subcategory_id: the subcategory ID of the semiconductor to check derating.
     :param stress_limits: the dict containing the stress derating limits for
         semiconductors.
     :return: _overstress, _reason
     :rtype: tuple
     :raise: IndexError if an unknown environment ID is passed.
     :raise: KeyError if an unknown subcategory ID, quality ID, or type ID are passed.
-    :raise: TypeError if a non-numeric value is passed for the current ratio,
-        power ratio, junction temperature, or voltage ratio.
+    :raise: TypeError if a non-numeric value is passed for the current ratio, power
+        ratio, junction temperature, or voltage ratio.
     """
     _overstress: int = 0
     _reason: str = ""
