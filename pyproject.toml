@@ -203,6 +203,9 @@ markers = [
 ignore-paths = [
 	'tests*'
 ]
+ignore-patterns = [
+	'\S*.pyi'
+]
 persistent = true
 extension-pkg-whitelist = [
 	'pango'

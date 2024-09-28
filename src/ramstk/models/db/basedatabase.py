@@ -7,24 +7,24 @@
 """RAMSTK Base Database Module."""
 
 # Standard Library Imports
+import contextlib
 import sqlite3
 from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 # Third Party Imports
 import psycopg2  # type: ignore
 from psycopg2 import sql  # type: ignore
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-
-# noinspection PyPackageRequirements
-from sqlalchemy import Select, create_engine, exc
-
-# noinspection PyPackageRequirements,PyProtectedMember
+from sqlalchemy import create_engine, exc
 from sqlalchemy.engine import Engine  # type: ignore
-
-# noinspection PyPackageRequirements
+from sqlalchemy.exc import (
+    InvalidRequestError,
+    OperationalError,
+    ProgrammingError,
+    SQLAlchemyError,
+)
 from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
-
-# noinspection PyPackageRequirements
 from sqlalchemy.orm.exc import FlushError  # type: ignore
 from sqlalchemy.sql import text
 
@@ -40,46 +40,57 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
         create the database.
     :return: None
     """
-    # Create the database.
-    conn = psycopg2.connect(
-        host=database["host"],
-        dbname="postgres",
-        user=database["user"],
-        # deepcode ignore NoHardcodedPasswords:
-        password=database["password"],
-    )
-    conn.isolation_level = 4
-    conn.autocommit = True  # type: ignore
 
-    cursor = conn.cursor()
-    cursor.execute(
-        sql.SQL("DROP DATABASE IF EXISTS {}").format(
-            sql.Identifier(database["database"])
+    def _connect_to_db(database) -> psycopg2.extensions.connection:
+        """Create a database connection.
+
+        :param database: the name of the database to connect to.
+        :type database: str
+        :return: a psycopg2 connection.
+        :rtype: psycopg2.extensions.connection
+        """
+        return psycopg2.connect(
+            host=database["host"],
+            database=database["database"],
+            user=database["user"],
+            password=database["password"],
         )
-    )
-    cursor.execute(
-        sql.SQL("CREATE DATABASE {}").format(sql.Identifier(database["database"]))
-    )
-    cursor.close()
-    conn.close()
 
-    # Populate the database.
-    conn = psycopg2.connect(
-        host=database["host"],
-        dbname=database["database"],
-        user=database["user"],
-        # deepcode ignore NoHardcodedPasswords:
-        password=database["password"],
-    )
-    conn.isolation_level = 4
-    conn.autocommit = True
-    conn.set_session(autocommit=True)
+    try:
+        # Step 1: Connect to the default 'postgres' database and create a new one.
+        _conn = _connect_to_db(
+            {
+                "host": database["host"],
+                "user": database["user"],
+                "password": database["password"],
+                "database": "postgres",
+            }
+        )
+        _conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        with _conn.cursor() as _cursor:
+            _cursor.execute(
+                sql.SQL("DROP DATABASE IF EXISTS {}").format(
+                    sql.Identifier(database["database"])
+                )
+            )
+            _cursor.execute(
+                sql.SQL("CREATE DATABASE {}").format(
+                    sql.Identifier(database["database"])
+                )
+            )
+        _conn.close()
 
-    cursor = conn.cursor()
-    cursor.execute(sql_file.read())
-    cursor.close()
+        # Step 2: Connect to the newly created database and populate it.
+        _conn = _connect_to_db(database)
+        _conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        with _conn.cursor() as _cursor:
+            _cursor.execute(sql_file.read())
+        _conn.close()
 
-    conn.close()
+    except psycopg2.Error as _error:
+        print(f"Error occurred while creating or populating the database: {_error}")
+        if _conn:
+            _conn.close()
 
 
 def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
@@ -99,12 +110,21 @@ def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
 def do_open_session(database: str) -> Tuple[Engine, scoped_session]:
     """Create a session to be used with an instance of the BaseDatabase."""
     engine: Engine = create_engine(database)
-    # deepcode ignore missing~close~connect: engines are disposed
-    engine.connect()
 
+    # Test the connection by attempting to connect
+    connection = engine.connect()
+    connection.close()
+
+    # Return the engine and a scoped session for handling database interactions
     return (
         engine,
-        scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine)),
+        scoped_session(
+            sessionmaker(
+                autocommit=False,
+                autoflush=False,
+                bind=engine,
+            )
+        ),
     )
 
 
@@ -115,6 +135,8 @@ class BaseDatabase:
     # Define private class dictionary attributes.
 
     # Define private class list attributes.
+    _known_dialects = ["sqlite", "postgres"]
+    _system_databases = ["postgres", "template0", "template1"]
 
     # Define private class scalar attributes.
 
@@ -144,7 +166,7 @@ class BaseDatabase:
             "password": "",
             "host": "",
             "port": "",
-            "dbname": "",
+            "database": "",
         }
 
         # Initialize public list instance attributes.
@@ -154,6 +176,56 @@ class BaseDatabase:
         self.session: scoped_session = None  # type: ignore
         self.database: str = ""
 
+    def do_build_databases_query(self) -> str:
+        """Build the SQL query to retrieve available databases."""
+        return self.sqlstatements["select"].format("datname") + self.sqlstatements[
+            "from"
+        ].format("pg_database;")
+
+    def do_build_database_url(self, database: Dict[str, str]) -> str:
+        """Build the URL for the database.
+
+        :return: URL string for connecting to the selected database.
+        :rtype: str
+        """
+        _required_keys = [
+            "host",
+            "port",
+            "database",
+            "user",
+            "password",
+        ]
+        if any(_key not in database for _key in _required_keys):
+            self.do_handle_db_error(
+                "Missing required database configuration keys",
+                "",
+            )
+        if database["dialect"] not in self._known_dialects:
+            self.do_handle_db_error(
+                f"Unknown dialect in database connection:" f" {database['dialect']}",
+                "",
+            )
+        if not isinstance(database["database"], str) or not database["database"]:
+            self.do_handle_db_error(
+                f"Non-string or blank string value in database connection:"
+                f" {database['database']}.",
+                "",
+            )
+        if database["dialect"] == "sqlite":
+            return f"sqlite:///{database['database']}"
+        if database["dialect"] == "postgres":
+            return (
+                f"postgresql://{database['user']}:{database['password']}@"
+                f"{database['host']}:{database['port']}/{database['database']}"
+            )
+
+    def do_build_postgres_databases_query(self) -> str:
+        """Build the SQL query to retrieve available databases."""
+        return "{0}{1}".format(
+            self.sqlstatements["select"].format("datname"),
+            self.sqlstatements["from"].format("pg_database;"),
+        )
+
     def do_connect(self, database: Dict) -> None:
         """Connect to the database.
 
@@ -162,69 +234,28 @@ class BaseDatabase:
         :rtype: None
         :raise: sqlalchemy.exc.OperationalError if passed an invalid database
             URL.
-        :raise: sqlalchemy.exc.ArgumentError if passed a database URL with
-            an unknown/unsupported SQL dialect.
+        :raise: ramstk.exceptions.DataAccessError if passes an unsupported database
+            SQL dialect.
         """
-        self.cxnargs["dialect"] = database["dialect"]
-        self.cxnargs["user"] = database["user"]
-        self.cxnargs["password"] = database["password"]
-        self.cxnargs["host"] = database["host"]
-        self.cxnargs["port"] = database["port"]
-        self.cxnargs["dbname"] = database["database"]
-
-        if self.cxnargs["dialect"] not in ["postgres", "sqlite"]:
-            pub.sendMessage(
-                "do_log_error_msg",
-                logger_name="ERROR",
-                message=(
-                    f"Unknown dialect in database connection: "
-                    f"{self.cxnargs['dialect']}."
-                ),
-            )
-            raise (
-                DataAccessError(
-                    f"Unknown dialect in database connection: "
-                    f"{self.cxnargs['dialect']}."
-                )
-            )
-
-        if not isinstance(self.cxnargs["dbname"], str):
-            pub.sendMessage(
-                "do_log_error_msg",
-                logger_name="ERROR",
-                message=(
-                    f"Non-string value in database connection: "
-                    f"{self.cxnargs['dbname']}."
-                ),
-            )
-            raise (
-                DataAccessError(
-                    f"Non-string value in database connection: "
-                    f"{self.cxnargs['dbname']}."
-                )
-            )
-
-        if self.cxnargs["dialect"] == "sqlite":
-            self.database = f"sqlite:///{self.cxnargs['dbname']}"
-
-        if self.cxnargs["dialect"] == "postgres":
-            self.database = (
-                f"postgresql+psycopg2://{self.cxnargs['user']}:"
-                f"{self.cxnargs['password']}@{self.cxnargs['host']}:"
-                f"{self.cxnargs['port']}/{self.cxnargs['dbname']}"
-            )
-
         try:
-            self.engine, self.session = do_open_session(self.database)
-        except exc.OperationalError as _error:
-            pub.sendMessage(
-                "do_log_error_msg",
-                logger_name="ERROR",
-                message=f"{str(_error.orig).capitalize()}: {self.cxnargs}",
+            # Set connection arguments from the provided database dictionary
+            self.cxnargs.update(
+                {
+                    "dialect": database.get("dialect"),
+                    "user": database.get("user"),
+                    "password": database.get("password"),
+                    "host": database.get("host"),
+                    "port": database.get("port"),
+                    "database": database.get("database"),
+                }
             )
-            raise DataAccessError(
-                f"{str(_error.orig).capitalize()}: {self.cxnargs}"
-            ) from _error
+
+            # Attempt to open the session using the constructed database connection
+            self.engine, self.session = self.get_database_session(self.cxnargs)
+
+        except OperationalError as _error:
+            _context_msg = f"{str(_error.orig).capitalize()}: {self.cxnargs}"
+            self.do_handle_db_error(_error, _context_msg)
 
     def do_create_database(
         self,
@@ -240,16 +271,17 @@ class BaseDatabase:
         :return: None
         :rtype: None
         """
-        with open(
-            sql_file,
-            "r",
-            encoding="utf-8",
-        ) as _sql_file:
-            if database["dialect"] == "postgres":
-                do_create_postgres_db(database, _sql_file)
-
-            if database["dialect"] == "sqlite":
-                do_create_sqlite3_db(database, _sql_file)
+        with open(sql_file, "r", encoding="utf-8") as _sql_file:
+            _dialect = database.get("dialect")
+            _dialect_actions = {
+                "postgres": do_create_postgres_db,
+                "sqlite": do_create_sqlite3_db,
+            }
+            _dialect_action = _dialect_actions.get(_dialect)
+            if _dialect_action:
+                _dialect_action(database, _sql_file)
+            else:
+                raise DataAccessError(f"Unknown dialect: {_dialect}")
 
             self.do_connect(database)
 
@@ -264,33 +296,15 @@ class BaseDatabase:
         try:
             self.session.delete(item)
             self.session.commit()
-        except exc.InvalidRequestError as _error:
-            # This exception generally corresponds to runtime state errors.
-            # These types of errors are unlikely to be user errors and will
-            # most likely be the result of a corrupted database.  Some
-            # situations that can raise this exception are:
-            #   1. Attempting to delete a record from a non-existent table.
-            self.session.rollback()
-            _error_message = (
-                f"There was an database error when attempting to delete a "
-                f"record.  Error returned from database was:\n\t{_error}."
+        except (
+            InvalidRequestError,
+            ProgrammingError,
+            SQLAlchemyError,
+        ) as _error:
+            _context_message = (
+                "Database error when attempting to delete a record. Error details: "
             )
-            pub.sendMessage("fail_delete_record", error_message=_error_message)
-            raise DataAccessError(_error_message) from _error
-        except exc.ProgrammingError as _error:
-            # This exception is raised when there is an error during
-            # execution of a SQL statement.  These types of errors are
-            # unlikely to be user errors and will most likely be the result of
-            # a corrupted database.  Some situations that can raise this
-            # exception are:
-            #   1. Foreign key exists, but foreign table does not.
-            self.session.rollback()
-            _error_message = (
-                f"There was an database error when attempting to delete a "
-                f"record.  Error returned from database was:\n\t{_error.orig}."
-            )
-            pub.sendMessage("fail_delete_record", error_message=_error_message)
-            raise DataAccessError(_error_message) from _error
+            self.do_handle_db_error(_error, _context_message)
 
     def do_disconnect(self) -> None:
         """Close the current session.
@@ -304,14 +318,39 @@ class BaseDatabase:
         self.session = None  # type: ignore
         self.database = ""
 
-    def do_execute_query(self, query_: Select) -> List[object]:
-        """Execute an SQLAlchemy query.
+    def do_execute_query(
+        self, query: str, session: scoped_session = None
+    ) -> List[Tuple[Any, ...]]:
+        """Execute the given SQL query and return the results."""
+        if not session:
+            return self.session.scalars(query)
+        return session.execute(text(query)).fetchall()
 
-        :param query_: the SQLAlchemy query to execute.
-        :return: results; a list of dbrecord objects.
-        :rtype: list
+    def do_filter_system_databases(self, databases: List[Tuple[Any, ...]]) -> List[str]:
+        """Filter out system databases and return only those relevant to RAMSTK."""
+        return [_db[0] for _db in databases if _db[0] not in self._system_databases]
+
+    def do_handle_db_error(self, error, context_message) -> None:
+        """Handle errors raised by other methods.
+
+        :param error:
+        :type error:
+        :param context_message:
+        :type context_message: str
+        :return: None
+        :rtype: None
+        :raises: DataAccessError
         """
-        return self.session.scalars(query_)
+        with contextlib.suppress(AttributeError):
+            self.session.rollback()
+
+        _error_msg = f"{context_message}: {error}" if context_message else error
+        pub.sendMessage(
+            "do_log_error_msg",
+            logger_name="ERROR",
+            message=_error_msg,
+        )
+        raise DataAccessError(_error_msg)
 
     def do_insert(self, record: object) -> None:
         """Add a new record to a database table.
@@ -323,61 +362,24 @@ class BaseDatabase:
         try:
             self.session.add(record)
             self.session.commit()
-        except AttributeError as _error:
-            # This exception is raised when there is no database connection.
-            _error_message = (
-                "dao.do_insert: No database connected when attempting to add a record."
-            )
-            pub.sendMessage(
-                "fail_insert_record",
-                error_message=_error_message,
-            )
-            raise DataAccessError(_error_message) from _error
-        except exc.InternalError as _error:
-            print(f"postgresql error: {_error.orig.pgcode}")
-            self.session.rollback()
         except (
+            FlushError,
             exc.DataError,
             exc.IntegrityError,
+            exc.InternalError,
             exc.StatementError,
         ) as _error:
-            # This exception is raised when there is an error during
-            # execution of a SQL statement.  These types of errors are
-            # unlikely to be user errors as the programmer should ensure
-            # everything is ready to insert.  Some situations that can raise
-            # this exception are:
-            #   1. Primary key violations.
-            #   2. Non-date data supplied to date type fields.
-            #   3. Foreign key violations.
-            #   4. np.nan data supplied to any field type.
-            #
-            # With psycopg2, _error will have attributes pgcode and pgerror.
-            # The first is a code associated with the error captured by
-            # psycopg2 and the second is the original error message from the
-            # database.  These should be used to generate the error message
-            # to send to the client.  Error codes are defined in the
-            # errorcodes.py file in the psycopg2 code base.
-            self.session.rollback()
-            _error_message = (
-                f"do_insert: Database error when attempting to add a record.  "
-                f"Database returned:\n\t{_error.orig.pgerror.split(':')[2].strip()}"
+            _context_message = "Database error while adding a record. Error details: "
+            self.do_handle_db_error(
+                _error.orig.pgerror.split(":")[2].strip(),
+                _context_message,
             )
-            pub.sendMessage(
-                "fail_insert_record",
-                error_message=_error_message,
+        except AttributeError as _error:
+            _context_message = "Database error while adding a record. Error details: "
+            self.do_handle_db_error(
+                _error,
+                _context_message,
             )
-            raise DataAccessError(_error_message) from _error
-        except FlushError as _error:
-            self.session.rollback()
-            _error_message = (
-                f"do_insert: Flush error when attempting to add records.  "
-                f"Database returned:\n\t{_error}"
-            )
-            pub.sendMessage(
-                "fail_insert_record",
-                error_message=_error_message,
-            )
-            raise DataAccessError(_error_message) from _error
 
     def do_insert_many(self, records: List[object]) -> None:
         """Add a group of new records to a database table.
@@ -395,24 +397,32 @@ class BaseDatabase:
         :param table: the database table object to select all from.
         :return: a list of table instances; one for each record.
         """
-        _keys: List[str] = kwargs.get("key")
-        _values: List[Any] = kwargs.get("value")
-        _order: Any = kwargs.get("order")
+        _keys = kwargs.get("key", [])
+        _values = kwargs.get("value", [])
+        _order: Optional[str] = kwargs.get("order", None)
         _all: bool = kwargs.get("_all", True)
 
-        _filters = {}
-        if _values[0] is not None:
-            for _idx, _key in enumerate(_keys):
-                _filters[_key] = _values[_idx]
+        # Ensure keys and values are provided in pairs.
+        if _keys and len(_keys) != len(_values):
+            raise ValueError("The number of keys and values must match.")
 
-        _results = self.session.query(table).filter_by(**_filters)
-        if isinstance(_order, list):
-            _results = _results.order_by(*_order)
-        else:
-            _results = _results.order_by(_order)
+        # Build the filter criteria dynamically if filters are provided.
+        _filters = (
+            {key: _values[idx] for idx, key in enumerate(_keys)} if _values else {}
+        )
 
-        _results = _results.all() if _all else _results.first()
-        return _results
+        # Start the query with filtering if applicable.
+        _query = self.session.query(table).filter_by(**_filters)
+
+        # Apply ordering if provided.
+        if _order:
+            if isinstance(_order, list):
+                _query = _query.order_by(*_order)
+            else:
+                _query = _query.order_by(_order)
+
+        # Return all results or just the first, based on the _all flag.
+        return _query.all() if _all else _query.first()
 
     def do_update(self, record: object = None) -> None:
         """Update the RAMSTK database with any pending changes.
@@ -432,14 +442,16 @@ class BaseDatabase:
             exc.InvalidRequestError,
             exc.ProgrammingError,
         ) as _error:
-            self.session.rollback()
-            _error_message = (
-                f"There was an database error when attempting to update a "
-                f"record.  Faulty SQL statement was:\n\t{_error.statement}.\n"
-                f"Parameters were:\n\t{_error.params}."
-            )  # type: ignore
-            pub.sendMessage("fail_update_record", error_message=_error_message)
-            raise DataAccessError(_error_message) from _error
+            _context_message = (
+                f"Database error during record update. SQL statement:\n\t"
+                f"{getattr(_error, 'statement', 'No statement available')}.\n"
+                f"Parameters:"
+                f"\n\t{getattr(_error, 'params', 'No parameters available')}."
+            )
+            self.do_handle_db_error(
+                _error,
+                _context_message,
+            )
 
     def get_database_list(self, database: Dict[str, str]) -> List:
         """Retrieve the list of program databases available to RAMSTK.
@@ -457,33 +469,19 @@ class BaseDatabase:
         _databases: List[str] = []
 
         if database["dialect"] == "postgres":
-            _query = self.sqlstatements["select"].format(
-                "datname"
-            ) + self.sqlstatements["from"].format("pg_database;")
-            _database: str = (
-                "postgresql+psycopg2://"
-                + database["user"]
-                + ":"
-                + database["password"]
-                + "@"
-                + database["host"]
-                + ":"
-                + database["port"]
-                + "/"
-                + database["database"]
-            )
-            # pylint: disable=unused-variable
-            __, _session = do_open_session(_database)
+            _query = self.do_build_databases_query()
+            __, _session = self.get_database_session(database)
 
-            # Make list of available databases, but only those associated with
-            # RAMSTK.
-            _databases.extend(
-                db[0]
-                for db in _session.execute(text(_query))
-                if db[0] not in ["postgres", "template0", "template1"]
-            )
+            # Fetch the list of databases and filter them.
+            _databases = self.do_execute_query(_query, _session)
+            return self.do_filter_system_databases(_databases)
 
-        return _databases
+        raise DataAccessError(f"Unsupported dialect: {database['dialect']}")
+
+    def get_database_session(self, database: Dict[str, str]) -> scoped_session:
+        """Create and return a session for interacting with the database."""
+        _connection_url = self.do_build_database_url(database)
+        return do_open_session(_connection_url)
 
     def get_last_id(self, table: str, id_column: str) -> Any:
         """Retrieve the last used value of the ID column.
@@ -498,11 +496,11 @@ class BaseDatabase:
         :raise: :class:`sqlalchemy.exc.OperationalError` if passed an unknown
             table or unknown column name.
         """
-        # This ensures the column name is prefixed with fld_ in case the
-        # table's attribute name was passed instead.
-        if id_column[:4] != "fld_":
+        # Ensure the ID column name starts with "fld_".
+        if not id_column.startswith("fld_"):
             id_column = f"fld_{id_column}"
 
+        # Construct the SQL statement to retrieve the last ID.
         _sql_statement = (
             self.sqlstatements["select"].format(id_column)
             + self.sqlstatements["from"].format(table)
@@ -510,8 +508,15 @@ class BaseDatabase:
         )
 
         try:
-            _last_id = self.session.execute(text(_sql_statement)).first()[0]
-        except (exc.ProgrammingError, TypeError):
-            _last_id = 0
-
-        return _last_id
+            # Execute the SQL query and get the first result.
+            _last_id = self.session.execute(text(_sql_statement)).first()
+            return _last_id[0] if _last_id else 0
+        except (
+            exc.ProgrammingError,
+            TypeError,
+        ) as _error:
+            _context_message = f"Error retrieving last ID from {table}: "
+            self.do_handle_db_error(
+                _error,
+                _context_message,
+            )

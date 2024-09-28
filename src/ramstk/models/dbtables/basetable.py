@@ -6,9 +6,11 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Metaclass for the database table models."""
 
+
 # Standard Library Imports
+import contextlib
 from datetime import date
-from typing import Any, Callable, Dict, List, Type, Union
+from typing import Any, Callable, Dict, List, Tuple, Type, Union
 
 # Third Party Imports
 import treelib
@@ -79,54 +81,14 @@ class RAMSTKBaseTable:
     # noinspection PyUnusedLocal
     def __init__(self, **kwargs: Dict[str, Union[float, int, str]]) -> None:
         """Initialize an RAMSTK table model instance."""
-        # Initialize private dictionary attributes.
+        # Initialize attributes
+        self._do_initialize_attributes()
 
-        # Initialize private list attributes.
-        self._lst_id_columns: List[str] = []
-
-        # Initialize private scalar attributes.
-        self._parent_id: int = 0
-        self._record: Type[object]
-        self._revision_id: int = 0
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.dao: BaseDatabase = BaseDatabase()
-        self.last_id: int = 0
-        self.pkey: str = ""
-        self.tree: treelib.Tree = treelib.Tree()
-        self.do_get_new_record: Callable[
-            [Dict[str, Union[date, float, int, str]]], object
-        ]
-
-        # Add the root to the Tree().  This is necessary to allow multiple
-        # entries at the top level as there can only be one root in a treelib
-        # Tree().  Manipulation and viewing of a RAMSTK module tree needs to
-        # ignore the root of the tree.
-        self.tree.create_node(tag=self._tag, identifier=self._root)
+        # Initialize the tree structure for the RAMSTK module.
+        self._do_initialize_tree()
 
         # Subscribe to PyPubSub messages.
-        do_subscribe_to_messages(
-            {
-                "succeed_connect_program_database": self.do_connect,
-                f"request_delete_{self._tag}": self.do_delete,
-                f"request_get_{self._tag}_attributes": self.do_get_attributes,
-                f"request_get_{self._tag}_tree": self.do_get_tree,
-                f"request_insert_{self._tag}": self.do_insert,
-                self._select_msg: self.do_select_all,
-                f"request_set_{self._tag}_attributes": self.do_set_attributes,
-                f"mvw_editing_{self._tag}": self.do_set_attributes,
-                f"wvw_editing_{self._tag}": self.do_set_attributes,
-                f"request_set_all_{self._tag}_attributes": self.do_set_attributes_all,
-                f"succeed_calculate_{self._tag}": self.do_set_tree,
-                f"request_update_{self._tag}": self.do_update,
-                f"request_update_all_{self._tag}": self.do_update_all,
-                "request_save_project": self.do_update_all,
-            }
-        )
+        self._do_subscribe_to_messages()
 
     def do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
@@ -145,8 +107,18 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         for _node in self.tree.all_nodes():
-            # noinspection PyUnresolvedReferences
-            self.do_create_code(_node.identifier, prefix)  # type: ignore
+            self.do_create_code_for_node(_node, prefix)
+
+    def do_create_code_for_node(self, node, prefix: str) -> None:
+        """Create a code for a single node.
+
+        :param node: The node from the tree structure.
+        :param prefix: The prefix to use for the code.
+        :return: None
+        :rtype: None
+        """
+        # Ensure identifier and prefix are passed to the code creation method.
+        self.do_create_code(node.identifier, prefix)
 
     def do_delete(self, node_id: int) -> None:  # sourcery skip: extract-method
         """Remove a record from the Program database and records tree.
@@ -156,11 +128,9 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         try:
-            self.dao.do_delete(self.do_select(node_id))
-            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
-
+            self._do_delete_database_record(node_id)
+            self._do_update_last_id()
             self._do_remove_tree_node(node_id)
-
             pub.sendMessage(
                 f"succeed_delete_{self._tag}",
                 tree=self.tree,
@@ -217,23 +187,9 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         try:
-            _record = self.do_get_new_record(attributes)
-            for _id in self._lst_id_columns:
-                attributes.pop(_id)
-
-            _record.set_attributes(attributes)  # type: ignore
-            _identifier = self.last_id + 1
-
-            self.dao.do_insert(_record)
-            self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
-
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_identifier,
-                parent=self._parent_id,
-                data={self._tag: _record},
-            )
-
+            _record = self._do_create_new_record(attributes)
+            self._do_insert_record_in_database(_record)
+            self._do_insert_record_in_tree(_record)
             pub.sendMessage(
                 f"succeed_insert_{self._tag}",
                 tree=self.tree,
@@ -287,33 +243,20 @@ class RAMSTKBaseTable:
         :rtype: None
         """
         self.tree = do_clear_tree(self.tree)
+        _keys, _values = self._do_extract_keys_and_values(attributes)
 
-        _keys = [_key for _key in self._lst_id_columns if _key in attributes]
-        _values = [
-            attributes[_key]  # type: ignore
-            for _key in self._lst_id_columns
-            if _key in attributes
-        ]
-
-        for _record in self.dao.do_select_all(
+        _records = self.dao.do_select_all(
             self._record,
             key=_keys,
             value=_values,
             order=self._db_id_colname,
-        ):
-            try:
-                self._parent_id = _record.get_attributes()["parent_id"]
-            except KeyError:
-                self._parent_id = 0
+        )
 
-            self.tree.create_node(
-                tag=self._tag,
-                identifier=_record.get_attributes()[self.pkey],
-                parent=self._parent_id,
-                data={self._tag: _record},
-            )
-        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+        for _record in _records:
+            _parent_id = self._do_get_parent_id(_record)
+            self._do_add_record_to_tree(_record, _parent_id)
 
+        self._do_update_last_id()
         pub.sendMessage(
             f"succeed_retrieve_all_{self._tag}",
             tree=self.tree,
@@ -330,33 +273,15 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
-        [[_key, _value]] = package.items()
+        _key, _value = self._do_extract_key_and_value(package)
 
-        try:
-            _attributes = self.do_select(node_id).get_attributes()
-        except (AttributeError, KeyError):
-            pub.sendMessage(
-                "do_log_debug_msg",
-                logger_name="DEBUG",
-                message=_(
-                    f"No data package for node ID {node_id} in module {self._tag}."
-                ),
-            )
-            _attributes = {}
-
-        for _field in self._lst_id_columns:
-            try:
-                _attributes.pop(_field)
-            except KeyError:
-                pass
+        _attributes = self._do_get_record_attributes(node_id)
 
         if _key in _attributes:
             _attributes[_key] = _value
+            self._do_update_record_attributes(node_id, _attributes)
 
-            self.do_select(node_id).set_attributes(_attributes)
-
-        # noinspection PyUnresolvedReferences
-        self.do_get_tree()  # type: ignore
+        self.do_get_tree()
 
     def do_set_attributes_all(
         self, attributes: Dict[str, Union[float, int, str]]
@@ -392,6 +317,9 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
+        if self._is_invalid_node_id(node_id):
+            return
+
         if node_id == 0:
             pub.sendMessage(
                 "do_log_debug_msg",
@@ -450,6 +378,112 @@ class RAMSTKBaseTable:
         pub.sendMessage("request_set_cursor_active")
         pub.sendMessage(f"succeed_update_all_{self._tag}")
 
+    def _do_add_record_to_tree(self, _record: object, _parent_id: int) -> None:
+        """Add a record to the tree."""
+        self.tree.create_node(
+            tag=self._tag,
+            identifier=_record.get_attributes()[self.pkey],
+            parent=_parent_id,
+            data={self._tag: _record},
+        )
+
+    def _do_create_new_record(
+        self, attributes: Dict[str, Union[date, float, int, str]]
+    ) -> object:
+        """Create a new record object."""
+        _record = self.do_get_new_record(attributes)
+        for _id in self._lst_id_columns:
+            attributes.pop(_id)
+        _record.set_attributes(attributes)  # type: ignore
+        return _record
+
+    def _do_extract_key_and_value(
+        self, package: Dict[str, Union[float, int, str]]
+    ) -> tuple[tuple[str, float | int | str], tuple[str, float | int | str]]:
+        """Extract the key and value from the package."""
+        [[_key, _value]] = package.items()
+        return _key, _value
+
+    def _do_extract_keys_and_values(
+        self, attributes: Dict[str, Union[float, int, str]]
+    ) -> Tuple[List[str], List[Union[float, int, str]]]:
+        """Extract keys and values from attributes."""
+        _keys = [_key for _key in self._lst_id_columns if _key in attributes]
+        _values = [
+            attributes[_key]  # type: ignore
+            for _key in self._lst_id_columns
+            if _key in attributes
+        ]
+        return _keys, _values
+
+    def _do_get_parent_id(self, _record: object) -> int:
+        """Get the parent ID from a record."""
+        try:
+            return _record.get_attributes()["parent_id"]
+        except KeyError:
+            return 0
+
+    def _do_get_record_attributes(
+        self, node_id: int
+    ) -> Dict[str, Union[float, int, str]]:
+        """Retrieve the record attributes for a given node ID."""
+        try:
+            return self.do_select(node_id).get_attributes()
+        except (AttributeError, KeyError):
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=_(
+                    f"No data package for node ID {node_id} in module {self._tag}."
+                ),
+            )
+            return {}
+
+    def _do_insert_record_in_database(self, _record: object) -> None:
+        """Insert a new record into the database."""
+        self.dao.do_insert(_record)
+        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+    def _do_insert_record_in_tree(self, record: object) -> None:
+        """Insert a new record into the tree structure."""
+        self.tree.create_node(
+            tag=self._tag,
+            identifier=self.last_id,
+            parent=self._parent_id,
+            data={self._tag: record},
+        )
+
+    def _do_delete_database_record(self, node_id: int) -> None:
+        """Delete a record from the database."""
+        self.dao.do_delete(self.do_select(node_id))
+
+    def _do_update_last_id(self) -> None:
+        """Update the last record ID."""
+        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+    def _do_initialize_attributes(self) -> None:
+        """Initialize the attributes of the RAMSTK table model."""
+        self._lst_id_columns: List[str] = []
+
+        self._parent_id: int = 0
+        self._record: Type[object]
+        self._revision_id: int = 0
+
+        self.dao: BaseDatabase = BaseDatabase()
+        self.last_id: int = 0
+        self.pkey: str = ""
+        self.tree: treelib.Tree = treelib.Tree()
+        self.do_get_new_record: Callable[
+            [Dict[str, Union[date, float, int, str]]], object
+        ]
+
+    def _do_initialize_tree(self) -> None:
+        """Initialize the tree structure for the RAMSTK module."""
+        # Add the root to the Tree(). This allows multiple entries at the top
+        # level, since only one root is allowed in a treelib Tree. Manipulation
+        # and viewing of a RAMSTK module tree should ignore the root of the tree.
+        self.tree.create_node(tag=self._tag, identifier=self._root)
+
     def _do_remove_tree_node(self, node_id: int) -> None:
         """Delete any child nodes and then the deleted node from the treelib Tree.
 
@@ -457,30 +491,53 @@ class RAMSTKBaseTable:
         :return: None
         :rtype: None
         """
-        try:
+        with contextlib.suppress(NodeIDAbsentError):
             for _node in self.tree.children(node_id):
                 self.dao.do_delete(self.do_select(_node.identifier))
             self.tree.remove_node(node_id)
-        except NodeIDAbsentError:
-            pass
 
     def _do_subscribe_to_messages(self) -> None:
         """Subscribe to PyPubSub messages."""
-        _messages = {
-            "succeed_connect_program_database": self.do_connect,
-            f"request_delete_{self._tag}": self.do_delete,
-            f"request_get_{self._tag}_attributes": self.do_get_attributes,
-            f"request_get_{self._tag}_tree": self.do_get_tree,
-            f"request_insert_{self._tag}": self.do_insert,
-            self._select_msg: self.do_select_all,
-            f"request_set_{self._tag}_attributes": self.do_set_attributes,
-            f"mvw_editing_{self._tag}": self.do_set_attributes,
-            f"wvw_editing_{self._tag}": self.do_set_attributes,
-            f"request_set_all_{self._tag}_attributes": self.do_set_attributes_all,
-            f"succeed_calculate_{self._tag}": self.do_set_tree,
-            f"request_update_{self._tag}": self.do_update,
-            f"request_update_all_{self._tag}": self.do_update_all,
-            "request_save_project": self.do_update_all,
-        }
-        for _message, _handler in _messages.items():
-            pub.subscribe(_handler, _message)
+        do_subscribe_to_messages(
+            {
+                "succeed_connect_program_database": self.do_connect,
+                f"request_delete_{self._tag}": self.do_delete,
+                f"request_get_{self._tag}_attributes": self.do_get_attributes,
+                f"request_get_{self._tag}_tree": self.do_get_tree,
+                f"request_insert_{self._tag}": self.do_insert,
+                self._select_msg: self.do_select_all,
+                f"request_set_{self._tag}_attributes": self.do_set_attributes,
+                f"mvw_editing_{self._tag}": self.do_set_attributes,
+                f"wvw_editing_{self._tag}": self.do_set_attributes,
+                f"request_set_all_{self._tag}_attributes": self.do_set_attributes_all,
+                f"succeed_calculate_{self._tag}": self.do_set_tree,
+                f"request_update_{self._tag}": self.do_update,
+                f"request_update_all_{self._tag}": self.do_update_all,
+                "request_save_project": self.do_update_all,
+            }
+        )
+
+    def _do_update_last_id(self) -> None:
+        """Update the last ID."""
+        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
+
+    def _do_update_record_attributes(
+        self, node_id: int, attributes: Dict[str, Union[float, int, str]]
+    ) -> None:
+        """Update the record attributes and remove ID columns."""
+        for _field in self._lst_id_columns:
+            with contextlib.suppress(KeyError):
+                attributes.pop(_field)
+
+        self.do_select(node_id).set_attributes(attributes)
+
+    def _is_invalid_node_id(self, node_id: int) -> bool:
+        """Check if the node ID is invalid (i.e., it's the root node)."""
+        if node_id == 0:
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=_(f"Attempting to update the root node {node_id}."),
+            )
+            return True
+        return False
