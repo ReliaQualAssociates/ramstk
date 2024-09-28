@@ -157,6 +157,9 @@ REF_TEMPS = {
     2: {1: 329.0, 2: 352.0, 3: 364.0, 4: 409.0},
 }
 
+ZERO = 0.0
+VARIABLE_IDX = 2
+
 
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
@@ -195,24 +198,27 @@ def calculate_part_stress(
     )
 
     _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
-    if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
+    if (
+        attributes["subcategory_id"] == VARIABLE_IDX
+        and attributes["specification_id"] == 2  # noqa: PLR2004
+    ):
         attributes["temperature_rise"] = get_temperature_rise_spec_sheet(
             int(attributes["page_number"])
         )
-    elif attributes["power_operating"] > 0.0 and attributes["area"] > 0.0:
+    elif attributes["power_operating"] > ZERO and attributes["area"] > ZERO:
         attributes["temperature_rise"] = calculate_temperature_rise_power_loss_surface(
             attributes["power_operating"], attributes["area"]
         )
-    elif attributes["power_operating"] > 0.0 and attributes["weight"] > 0.0:
+    elif attributes["power_operating"] > ZERO and attributes["weight"] > ZERO:
         attributes["temperature_rise"] = calculate_temperature_rise_power_loss_weight(
             attributes["power_operating"], attributes["weight"]
         )
-    elif _power_input > 0.0 and attributes["weight"] > 0.0:
+    elif _power_input > ZERO and attributes["weight"] > ZERO:
         attributes["temperature_rise"] = calculate_temperature_rise_input_power_weight(
             _power_input, attributes["weight"]
         )
     else:
-        attributes["temperature_rise"] = 0.0
+        attributes["temperature_rise"] = ZERO
     attributes["temperature_hot_spot"] = calculate_hot_spot_temperature(
         attributes["temperature_active"], attributes["temperature_rise"]
     )
@@ -225,7 +231,7 @@ def calculate_part_stress(
     attributes["hazard_rate_active"] = (
         attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
     )
-    if attributes["subcategory_id"] == 2:
+    if attributes["subcategory_id"] == VARIABLE_IDX:
         attributes["hazard_rate_active"] = (
             attributes["hazard_rate_active"] * attributes["piC"]
         )
@@ -439,12 +445,12 @@ def set_default_values(
     :return: attributes; the updated attribute dict.
     :rtype: dict
     """
-    if attributes["rated_temperature_max"] <= 0.0:
-        attributes["rated_temperature_max"] = _set_default_max_rated_temperature(
+    if attributes["temperature_rated_max"] <= ZERO:
+        attributes["temperature_rated_max"] = _set_default_max_rated_temperature(
             attributes["subcategory_id"]
         )
 
-    if attributes["temperature_rise"] <= 0.0:
+    if attributes["temperature_rise"] <= ZERO:
         attributes["temperature_rise"] = _set_default_temperature_rise(
             attributes["subcategory_id"],
             attributes["family_id"],
@@ -476,4 +482,4 @@ def _set_default_temperature_rise(
     :return: _temperature_rise
     :rtype: float
     """
-    return 30.0 if subcategory_id == 1 and family_id == 3 else 10.0
+    return 30.0 if subcategory_id == 1 and family_id == 3 else 10.0  # noqa: PLR2004

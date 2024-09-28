@@ -6,6 +6,7 @@ on:
 
 jobs:
   label_issue_closed:
+    name: Add Closed Label
     runs-on: ubuntu-latest
     steps:
       - name: Add in progress label

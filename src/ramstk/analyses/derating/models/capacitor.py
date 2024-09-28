@@ -9,6 +9,9 @@
 # Standard Library Imports
 from typing import Dict, List, Tuple
 
+VARIABLE_IDX = 16
+"""Subcategory index of first variable capacitor type."""
+
 
 def do_derating_analysis(
     environment_id: int,
@@ -64,15 +67,20 @@ def do_derating_analysis(
     if isinstance(_subcategory, dict):
         _subcategory = _subcategory[kwargs["specification_id"]]
 
+    if subcategory_id < VARIABLE_IDX:
+        _stress_limits = stress_limits["fixed"]
+    else:
+        _stress_limits = stress_limits["variable"]
+
     _overstress, _reason = _do_check_temperature_limit(
         kwargs["temperature_case"],
         kwargs["temperature_rated_max"],
-        stress_limits[_subcategory]["temperature"][environment_id],
+        _stress_limits[_subcategory]["temperature"][environment_id],
     )
 
     _ostress, _rsn = _do_check_voltage_limit(
         kwargs["voltage_ratio"],
-        stress_limits[_subcategory]["voltage"][environment_id],
+        _stress_limits[_subcategory]["voltage"][environment_id],
     )
     _overstress = _overstress or _ostress
     _reason += _rsn

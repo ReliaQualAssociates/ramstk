@@ -19,9 +19,10 @@ on:
 
 jobs:
   label_pr_closed:
+    name: Add closed label
     runs-on: ubuntu-latest
     steps:
-      - name: Add in progress label
+      - name: Add label
         uses: weibullguy/labeler@master
         with:
           add-labels: "status: closed"

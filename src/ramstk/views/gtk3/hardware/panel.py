@@ -1155,7 +1155,8 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         """
         self.cmbCategory.get_model().clear()
 
-        _categories = [[value[0]] for value in category.values()]
+        _categories = [[_value] for _value in category.values()]
+
         self.cmbCategory.do_load_combo(
             entries=_categories,
             signal="changed",
