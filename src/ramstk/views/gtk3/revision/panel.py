@@ -10,6 +10,7 @@
 from pubsub import pub  # type: ignore
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
@@ -498,7 +499,11 @@ class RevisionTreePanel(RAMSTKTreePanel):
         self.tvwTreeView.set_tooltip_text(_("Displays the list of revisions."))
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+        do_subscribe_to_messages(
+            {
+                "mvwSwitchedPage": self._on_module_switch,
+            }
+        )
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).

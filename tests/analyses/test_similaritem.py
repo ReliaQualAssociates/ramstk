@@ -151,8 +151,8 @@ def test_calculate_topic_633_environment_key_error():
 
 @pytest.mark.unit
 def test_calculate_topic_633_temperature_key_error():
-    """calculate_topic_633() should raise a KeyError when passed a temperature dict
-    that is missing a from or to key."""
+    """calculate_topic_633() should raise a KeyError when passed a temperature dict that
+    is missing a from or to key."""
     environment = {"from": 4, "to": 6}
     quality = {"from": 2, "to": 4}
     temperature = {"from": 38.0}
@@ -340,8 +340,8 @@ def test_set_user_defined_results_set_unused_none():
 
 @pytest.mark.unit
 def test_calculate_user_defined():
-    """calculate_user_defined() should return an updated similar item assessment dict
-    on success."""
+    """calculate_user_defined() should return an updated similar item assessment dict on
+    success."""
     _sia = similaritem.set_user_defined_change_factors(
         TEST_SIA, [1.2, 3.4, 5.6, 7.8, 9.10, 11.12, 13.14, 15.16, 17.18, 19.2]
     )
@@ -350,7 +350,7 @@ def test_calculate_user_defined():
 
     assert isinstance(_sia, dict)
     assert _sia["res1"] == pytest.approx(0.00530604)
-    assert _sia["res2"] == 10
+    assert _sia["res2"] == 10.0
     assert _sia["res3"] == 78.0
     assert _sia["res4"] == pytest.approx(0.00530604)
     assert _sia["res5"] == pytest.approx(0.00562275)

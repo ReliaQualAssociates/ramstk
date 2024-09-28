@@ -46,14 +46,16 @@ TEST_FHA = OrderedDict(
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_hri():
-    """calculate_hri() should return the product of probability and severity on success."""
+    """calculate_hri() should return the product of probability and severity on
+    success."""
     assert fha.calculate_hri("Level A - Frequent", "Medium") == 20
 
 
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_hri_unknown_probability():
-    """calculate_hri() should raise a KeyError when passed an unknown probability description."""
+    """calculate_hri() should raise a KeyError when passed an unknown probability
+    description."""
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("shibboly-biboly-boo", "Medium")
     assert e.value.args[0] == (
@@ -66,7 +68,8 @@ def test_calculate_hri_unknown_probability():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_hri_unknown_severity():
-    """calculate_hri() should raise a KeyError when passed an unknown probability description."""
+    """calculate_hri() should raise a KeyError when passed an unknown probability
+    description."""
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("Level A - Frequent", "shibboly-biboly-boo")
     assert e.value.args[0] == (
@@ -79,7 +82,8 @@ def test_calculate_hri_unknown_severity():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_floats():
-    """set_user_defined_floats() should return an updated similar item assessment dict on success."""
+    """set_user_defined_floats() should return an updated similar item assessment dict
+    on success."""
     _fha = fha.set_user_defined_floats(TEST_FHA, [3.4, 7.8, 11.12])
 
     assert isinstance(_fha, dict)
@@ -103,7 +107,8 @@ def test_set_user_defined_floats_set_unused_zero():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_ints():
-    """set_user_defined_ints() should return an updated similar item assessment dict on success."""
+    """set_user_defined_ints() should return an updated similar item assessment dict on
+    success."""
     _fha = fha.set_user_defined_ints(TEST_FHA, [4, 7, 11])
 
     assert isinstance(_fha, dict)
@@ -127,7 +132,8 @@ def test_set_user_defined_ints_set_unused_zero():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_functions():
-    """set_user_defined_functions() should return an updated functional hazzard assessment dict on success."""
+    """set_user_defined_functions() should return an updated functional hazzard
+    assessment dict on success."""
     _fha = fha.set_user_defined_functions(
         TEST_FHA, ["hr*pi1*pi2*uf1", "ui1+ui2", "res2*pi4", "res1-uf3", "hr*(pi3+pi5)"]
     )
@@ -157,7 +163,8 @@ def test_set_user_defined_functions_set_unused_empty():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_results():
-    """set_user_defined_results() should return an updated similar item assessment dict on success."""
+    """set_user_defined_results() should return an updated similar item assessment dict
+    on success."""
     _fha = fha.set_user_defined_results(TEST_FHA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_fha, dict)
@@ -185,14 +192,14 @@ def test_set_user_defined_results_set_unused_zero():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_calculate_user_defined():
-    """calculate() should return False when calculating user-defined risks."""
+    """Calculate() should return False when calculating user-defined risks."""
     _fha = fha.set_user_defined_functions(
         TEST_FHA, ["uf1*uf2", "ui1+ui2", "res2*uf3", "res1-uf3", "res1*(ui3+uf1)"]
     )
 
     _fha = fha.calculate_user_defined(_fha)
     assert _fha["res1"] == 26.52
-    assert _fha["res2"] == 4
-    assert _fha["res3"] == 0.0
+    assert _fha["res2"] == 4.0
+    assert _fha["res3"] == 0
     assert _fha["res4"] == 26.52
     assert _fha["res5"] == pytest.approx(90.168)

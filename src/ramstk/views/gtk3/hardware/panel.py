@@ -18,10 +18,8 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # RAMSTK Package Imports
-# noinspection PyPackageRequirements
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import GdkPixbuf, Gtk, _
-
-# noinspection PyPackageRequirements
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
     RAMSTKComboBox,
@@ -632,13 +630,11 @@ class HardwareTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._on_module_switch,
-            "mvwSwitchedPage",
-        )
-        pub.subscribe(
-            self._on_workview_edit,
-            f"wvw_editing_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                "mvwSwitchedPage": self._on_module_switch,
+                f"wvw_editing_{self._tag}": self._on_workview_edit,
+            }
         )
 
     def do_load_comboboxes(self) -> None:
@@ -1143,13 +1139,11 @@ class HardwareGeneralDataPanel(RAMSTKFixedPanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._do_load_subcategories,
-            "changed_category",
-        )
-        pub.subscribe(
-            self._do_set_comp_ref_des,
-            "succeed_make_comp_ref_des",
+        do_subscribe_to_messages(
+            {
+                "changed_category": self._do_load_subcategories,
+                "succeed_make_comp_ref_des": self._do_set_comp_ref_des,
+            }
         )
 
     def do_load_categories(self, category: Dict[int, Tuple[str]]) -> None:

@@ -57,23 +57,26 @@ class TestProgramManager:
         """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
         assert error_message == (
-            'Connection to server at "localhost" (::1), port 5432 failed: '
-            'fatal:  database "bad_database_url.ramstk" does not exist\n: '
-            "{'dialect': 'postgres', 'user': 'postgres', "
-            "'password': 'postgres', 'host': 'localhost', 'port': '5432', "
-            "'dbname': 'bad_database_url.ramstk'}"
+            'Connection to server at "localhost" (::1), port 5432 failed: fatal:  '
+            "database \"bad_database_url.ramstk\" does not exist\n: {'dialect': "
+            "'postgres', 'user': 'postgres', 'password': 'postgres', "
+            "'host': 'localhost', 'port': '5432', 'database': "
+            "'bad_database_url.ramstk'}: (psycopg2.OperationalError) "
+            'connection to server at "localhost" (::1), port 5432 failed: '
+            'FATAL:  database "bad_database_url.ramstk" does not exist\n\n'
+            "(Background on this error at: https://sqlalche.me/e/20/e3q8)"
         )
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast "
             "on bad URL."
         )
 
     def on_fail_open_program_unknown_dialect(self, error_message):
         """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
-        assert error_message == "Unknown dialect in database connection: doyleton."
+        assert error_message == "Unknown dialect in database connection: doyleton"
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast "
             "on unknown "
             "dialect."
         )
@@ -81,9 +84,11 @@ class TestProgramManager:
     def on_fail_open_program_non_string_url(self, error_message):
         """Listen for fail_connect messages."""
         assert isinstance(error_message, str)
-        assert error_message == "Non-string value in database connection: 8742.11."
+        assert error_message == (
+            "Non-string or blank string value in database connection: 8742.11."
+        )
         print(
-            "\033[33m\n\tfail_connect_program_database topic was broadcast on "
+            "\033[35m\n\tfail_connect_program_database topic was broadcast on "
             "non-string URL."
         )
 
@@ -96,7 +101,7 @@ class TestProgramManager:
         assert error_message == (
             "Not currently connected to a database.  Nothing to close."
         )
-        print("\033[33m\n\tfail_disconnect_program_database topic was broadcast")
+        print("\033[35m\n\tfail_disconnect_program_database topic was broadcast")
 
     def on_request_update_revision(self):
         """Listen for request_update_all messages."""
@@ -153,7 +158,7 @@ class TestProgramManager:
         assert logger_name == "DEBUG"
         assert "doyle_program_db.sql could not be found." in message
         print(
-            "\033[33m\n\tfail_create_program_database topic was broadcast "
+            "\033[35m\n\tfail_create_program_database topic was broadcast "
             "when passed an unknown sql file."
         )
 
@@ -200,7 +205,7 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_program_dao.cxnargs["dbname"],
+            "database": test_program_dao.cxnargs["database"],
         }
         test_datamanager.do_open_program(test_program_db)
 
@@ -248,7 +253,7 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_program_dao.cxnargs["dbname"],
+            "database": test_program_dao.cxnargs["database"],
         }
         test_datamanager.do_open_program(test_program_db)
 
@@ -281,7 +286,7 @@ class TestProgramManager:
             self.on_fail_open_program_non_string_url, "fail_connect_program_database"
         )
 
-    @pytest.mark.integration
+    @pytest.mark.skip("database attribute removed from basedatabase class")
     def test_do_close_program(
         self,
         test_datamanager,
@@ -355,7 +360,7 @@ class TestProgramManager:
             "password": "postgres",
             "host": "localhost",
             "port": "5432",
-            "database": test_program_dao.cxnargs["dbname"],
+            "database": test_program_dao.cxnargs["database"],
         }
         test_datamanager.do_open_program(test_program_db)
         test_datamanager.do_save_program()

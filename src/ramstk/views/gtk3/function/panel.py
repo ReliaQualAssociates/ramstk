@@ -10,6 +10,7 @@
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKCheckButton,
@@ -421,7 +422,11 @@ class FunctionTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._on_module_switch, "mvwSwitchedPage")
+        do_subscribe_to_messages(
+            {
+                "mvwSwitchedPage": self._on_module_switch,
+            }
+        )
 
     def _on_module_switch(self, module: str = "") -> None:
         """Respond to changes in selected Module View module (tab).

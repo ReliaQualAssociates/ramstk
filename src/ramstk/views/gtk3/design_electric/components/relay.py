@@ -10,12 +10,151 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
+
+# Key is contact rating ID.  Index is application ID.
+RELAY_APPLICATION_DICT = {
+    1: [[_("Dry Circuit")]],
+    2: [
+        [_("General Purpose")],
+        [_("Sensitive (0 - 100mW)")],
+        [_("Polarized")],
+        [_("Vibrating Reed")],
+        [_("High Speed")],
+        [_("Thermal Time Delay")],
+        [_("Electronic Time Delay, Non-Thermal")],
+        [_("Magnetic Latching")],
+    ],
+    3: [
+        [_("High Voltage")],
+        [_("Medium Power")],
+    ],
+    4: [[_("Contactors, High Current")]],
+}
+# First key is contact rating ID, second key is application ID.  Index is construction ID.
+RELAY_CONSTRUCTION_DICT = {
+    1: {
+        1: [
+            [_("Armature (Long)")],
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ]
+    },
+    2: {
+        1: [
+            [_("Armature (Long)")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ],
+        2: [
+            [_("Armature (Long and Short)")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Meter Movement")],
+            [_("Balanced Armature")],
+        ],
+        3: [
+            [_("Armature (Short)")],
+            [_("Meter Movement")],
+        ],
+        4: [
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+        ],
+        5: [
+            [_("Armature (Balanced and Short)")],
+            [_("Dry Reed")],
+        ],
+        6: [[_("Bimetal")]],
+        8: [
+            [_("Dry Reed")],
+            [_("Mercury Wetted")],
+            [_("Balanced Armature")],
+        ],
+    },
+    3: {
+        1: [
+            [_("Vacuum (Glass)")],
+            [_("Vacuum (Ceramic)")],
+        ],
+        2: [
+            [_("Armature (Long and Short)")],
+            [_("Mercury Wetted")],
+            [_("Magnetic Latching")],
+            [_("Mechanical Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ],
+    },
+    4: {
+        1: [
+            [_("Armature (Short)")],
+            [_("Magnetic Latching")],
+            [_("Balanced Armature")],
+            [_("Solenoid")],
+        ]
+    },
+}
+RELAY_QUALITY_DICT = {
+    1: [
+        ["S"],
+        ["R"],
+        ["P"],
+        ["M"],
+        ["MIL-C-15305"],
+        [_("Lower")],
+    ],
+    2: [
+        ["MIL-SPEC"],
+        [_("Lower")],
+    ],
+}
+# Key is subcategory ID.  Index is type ID.
+RELAY_TYPE_DICT = {
+    1: [
+        [_("General Purpose")],
+        [_("Contactor, High Current")],
+        [_("Latching")],
+        [_("Reed")],
+        [_("Thermal, Bi-Metal")],
+        [_("Meter Movement")],
+    ],
+    2: [
+        [_("Solid State")],
+        [_("Hybrid and Solid State Time Delay")],
+    ],
+}
+# Index is the contact form ID.
+RELAY_CONTACT_FORM_LIST = [
+    ["SPST"],
+    ["DPST"],
+    ["SPDT"],
+    ["3PST"],
+    ["4PST"],
+    ["DPDT"],
+    ["3PDT"],
+    ["4PDT"],
+    ["6PDT"],
+]
+# Index is contact rating ID.
+RELAY_CONTACT_RATING_LIST = [
+    [_("Signal Current (low mV and mA)")],
+    [_("0 - 5 Amp")],
+    [_("5 - 20 Amp")],
+    [_("20 - 600 Amp")],
+]
+# Index is the technology ID (load type).
+RELAY_TECHNOLOGY_LIST = [
+    [_("Resistive")],
+    [_("Inductive")],
+    [_("Lamp")],
+]
 
 
 class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
@@ -43,152 +182,15 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     """
 
     # Define private dict class attributes.
-    _dic_quality: Dict[int, List[List[str]]] = {
-        1: [
-            ["S"],
-            ["R"],
-            ["P"],
-            ["M"],
-            ["MIL-C-15305"],
-            [_("Lower")],
-        ],
-        2: [
-            ["MIL-SPEC"],
-            [_("Lower")],
-        ],
-    }
-    # Key is subcategory ID.  Index is type ID.
-    _dic_pc_types: Dict[int, List[List[str]]] = {
-        1: [
-            [_("General Purpose")],
-            [_("Contactor, High Current")],
-            [_("Latching")],
-            [_("Reed")],
-            [_("Thermal, Bi-Metal")],
-            [_("Meter Movement")],
-        ],
-        2: [
-            [_("Solid State")],
-            [_("Hybrid and Solid State Time Delay")],
-        ],
-    }
-    # Key is contact rating ID.  Index is application ID.
-    _dic_application: Dict[int, List[List[str]]] = {
-        1: [[_("Dry Circuit")]],
-        2: [
-            [_("General Purpose")],
-            [_("Sensitive (0 - 100mW)")],
-            [_("Polarized")],
-            [_("Vibrating Reed")],
-            [_("High Speed")],
-            [_("Thermal Time Delay")],
-            [_("Electronic Time Delay, Non-Thermal")],
-            [_("Magnetic Latching")],
-        ],
-        3: [
-            [_("High Voltage")],
-            [_("Medium Power")],
-        ],
-        4: [[_("Contactors, High Current")]],
-    }
-    # First key is contact rating ID, second key is application ID.  Index is
-    # construction ID.
-    _dic_construction: Dict[int, Dict[int, List[List[str]]]] = {
-        1: {
-            1: [
-                [_("Armature (Long)")],
-                [_("Dry Reed")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
-            ]
-        },
-        2: {
-            1: [
-                [_("Armature (Long)")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
-            ],
-            2: [
-                [_("Armature (Long and Short)")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Meter Movement")],
-                [_("Balanced Armature")],
-            ],
-            3: [
-                [_("Armature (Short)")],
-                [_("Meter Movement")],
-            ],
-            4: [
-                [_("Dry Reed")],
-                [_("Mercury Wetted")],
-            ],
-            5: [
-                [_("Armature (Balanced and Short)")],
-                [_("Dry Reed")],
-            ],
-            6: [[_("Bimetal")]],
-            8: [
-                [_("Dry Reed")],
-                [_("Mercury Wetted")],
-                [_("Balanced Armature")],
-            ],
-        },
-        3: {
-            1: [
-                [_("Vacuum (Glass)")],
-                [_("Vacuum (Ceramic)")],
-            ],
-            2: [
-                [_("Armature (Long and Short)")],
-                [_("Mercury Wetted")],
-                [_("Magnetic Latching")],
-                [_("Mechanical Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
-            ],
-        },
-        4: {
-            1: [
-                [_("Armature (Short)")],
-                [_("Magnetic Latching")],
-                [_("Balanced Armature")],
-                [_("Solenoid")],
-            ]
-        },
-    }
+    _dic_application: Dict[int, List[List[str]]] = RELAY_APPLICATION_DICT
+    _dic_construction: Dict[int, Dict[int, List[List[str]]]] = RELAY_CONSTRUCTION_DICT
+    _dic_quality: Dict[int, List[List[str]]] = RELAY_QUALITY_DICT
+    _dic_pc_types: Dict[int, List[List[str]]] = RELAY_TYPE_DICT
 
     # Define private list class attributes.
-
-    # Index is the technology ID (load type).
-    _lst_technology: List[List[str]] = [
-        [_("Resistive")],
-        [_("Inductive")],
-        [_("Lamp")],
-    ]
-
-    # Index is the contact form ID.
-    _lst_contact_form: List[List[str]] = [
-        ["SPST"],
-        ["DPST"],
-        ["SPDT"],
-        ["3PST"],
-        ["4PST"],
-        ["DPDT"],
-        ["3PDT"],
-        ["4PDT"],
-        ["6PDT"],
-    ]
-
-    # Index is contact rating ID.
-    _lst_contact_rating: List[List[str]] = [
-        [_("Signal Current (low mV and mA)")],
-        [_("0 - 5 Amp")],
-        [_("5 - 20 Amp")],
-        [_("20 - 600 Amp")],
-    ]
+    _lst_technology: List[List[str]] = RELAY_TECHNOLOGY_LIST
+    _lst_contact_form: List[List[str]] = RELAY_CONTACT_FORM_LIST
+    _lst_contact_rating: List[List[str]] = RELAY_CONTACT_RATING_LIST
 
     # Define private scalar class attributes.
     _record_field: str = "hardware_id"
@@ -225,7 +227,64 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        self.cmbContactRating.connect("changed", self._on_combo_changed, 4)
+        self.cmbApplication.connect("changed", self._on_combo_changed, 5)
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the Relay RAMSTKComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected relay.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbContactForm.do_load_combo(
+            self._lst_contact_form,
+            signal="changed",
+        )
+        self.cmbContactRating.do_load_combo(
+            self._lst_contact_rating,
+            signal="changed",
+        )
+        self.cmbLoadType.do_load_combo(
+            self._lst_technology,
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            self._get_quality_list(),
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._dic_types.get(self.subcategory_id, [[""]]),
+            signal="changed",
+        )
+
+        self._set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -332,89 +391,43 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-        # Initialize public list attributes.
+    def _get_application_list(self) -> List[List[str]]:
+        """Return the list of relay applications.
 
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
+        :return: list of relay applications.
+        :rtype: list
+        """
+        _contact_rating_id = int(self.cmbContactRating.get_active())
+        return self._dic_application.get(_contact_rating_id, [])
 
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
+    def _get_construction_list(self) -> List[List[str]]:
+        """Return the list of relay construction methods.
 
-        self.cmbContactRating.connect("changed", self._on_combo_changed, 4)
-        self.cmbApplication.connect("changed", self._on_combo_changed, 5)
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_load_comboboxes,
-            "changed_subcategory",
-        )
-        pub.subscribe(
-            self._do_set_reliability_attributes,
-            "succeed_get_reliability_attributes",
+        :return: list of relay construction methods.
+        :rtype: list
+        """
+        _application_id = int(self.cmbApplication.get_active())
+        _contact_rating_id = int(self.cmbContactRating.get_active())
+        return self._dic_construction.get(_contact_rating_id, {}).get(
+            _application_id, []
         )
 
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the Relay RAMSTKComboBox()s.
+    def _get_quality_list(self) -> List[List[str]]:
+        """Return the list of relay qualities.
 
-        :param subcategory_id: the subcategory ID of the selected relay.
-        :return: None
-        :rtype: None
+        :return: list of relay qualities.
+        :rtype: list
         """
-        self.subcategory_id = subcategory_id
-
-        self.__do_load_quality_combo()
-        self.__do_load_type_combo()
-
-        self.cmbLoadType.do_load_combo(self._lst_technology, signal="changed")
-        self.cmbContactForm.do_load_combo(self._lst_contact_form, signal="changed")
-        self.cmbContactRating.do_load_combo(self._lst_contact_rating, signal="changed")
-
-        self._do_set_sensitive()
-
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
-        """Set the attributes when the reliability attributes are retrieved.
-
-        :param attributes: the dict of reliability attributes.
-        :return: None
-        :rtype: None
-        """
-        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
-        self._quality_id = attributes["quality_id"]
-
-        self.cmbQuality.set_sensitive(True)
-        self.cmbQuality.do_update(
-            self._quality_id,
-            signal="changed",
+        _default_quality_list = [
+            [_("Established Reliability")],
+            ["MIL-SPEC"],
+            [_("Lower")],
+        ]
+        return (
+            _default_quality_list
+            if self._hazard_rate_method_id == 1
+            else self._dic_quality.get(self.subcategory_id, [[""]])
         )
-
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
-        """Set widget sensitivity as needed for the selected relay.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.set_sensitive(True)
-        self.cmbLoadType.set_sensitive(False)
-        self.cmbContactForm.set_sensitive(False)
-        self.cmbContactRating.set_sensitive(False)
-        self.cmbApplication.set_sensitive(False)
-        self.cmbConstruction.set_sensitive(False)
-        self.txtCycles.set_sensitive(False)
-
-        if self._hazard_rate_method_id == 2 and self.subcategory_id == 1:
-            self.cmbLoadType.set_sensitive(True)
-            self.cmbContactForm.set_sensitive(True)
-            self.cmbContactRating.set_sensitive(True)
-            self.cmbApplication.set_sensitive(True)
-            self.cmbConstruction.set_sensitive(True)
-            self.txtCycles.set_sensitive(True)
-
-            self.__do_load_application_combo()
-            self.__do_load_construction_combo()
 
     def _on_combo_changed(self, __combo: RAMSTKComboBox, index: int) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Relay attribute.
@@ -439,64 +452,74 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         if index == 4:
-            self.__do_load_application_combo()
+            self.cmbApplication.do_load_combo(
+                self._get_application_list,
+                signal="changed",
+            )
         elif index == 5:
-            self.__do_load_construction_combo()
+            self.cmbConstruction.do_load_combo(
+                self._get_construction_list,
+                signal="changed",
+            )
 
-    def __do_load_application_combo(self) -> None:
-        """Load the selections in the Relay application RAMSTKComboBox().
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+        """Set the attributes when the reliability attributes are retrieved.
+
+        :param attributes: the dict of reliability attributes.
+        :return: None
+        :rtype: None
+        """
+        self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
+        self._quality_id = attributes["quality_id"]
+
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
+        self.cmbQuality.do_update(
+            self._quality_id,
+            signal="changed",
+        )
+
+    def _set_sensitive(self) -> None:
+        """Set widget sensitivity as needed for the selected relay.
 
         :return: None
         :rtype: None
         """
-        _contact_rating_id = int(self.cmbContactRating.get_active())
-        try:
-            _data = self._dic_application[_contact_rating_id]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data, signal="changed")
+        # Define all widgets that could be sensitive
+        _all_widgets = [
+            self.cmbApplication,
+            self.cmbConstruction,
+            self.cmbContactForm,
+            self.cmbContactRating,
+            self.cmbLoadType,
+            self.cmbType,
+            self.txtCycles,
+        ]
 
-    def __do_load_construction_combo(self) -> None:
-        """Load the selections in the Relay construction RAMSTKComboBox().
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            _all_widgets,
+            False,
+        )
 
-        :return: None
-        :rtype: None
-        """
-        _application_id = int(self.cmbApplication.get_active())
-        _contact_rating_id = int(self.cmbContactRating.get_active())
-        try:
-            _data = self._dic_construction[_contact_rating_id][_application_id]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(_data, signal="changed")
+        super().set_widget_sensitivity([self.cmbType])
 
-    def __do_load_quality_combo(self) -> None:
-        """Load the selections in the Relay quality RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        if self._hazard_rate_method_id == 1:
-            _data = [
-                [_("Established Reliability")],
-                ["MIL-SPEC"],
-                [_("Lower")],
+        if self.subcategory_id == 1 and self._hazard_rate_method_id != 1:
+            _additional_widgets = [
+                self.cmbApplication,
+                self.cmbConstruction,
+                self.cmbContactForm,
+                self.cmbContactRating,
+                self.cmbLoadType,
+                self.txtCycles,
             ]
-        else:
-            try:
-                _data = self._dic_quality[self.subcategory_id]
-            except KeyError:
-                _data = []
-        self.cmbQuality.do_load_combo(_data, signal="changed")
+            super().set_widget_sensitivity(_additional_widgets)
 
-    def __do_load_type_combo(self) -> None:
-        """Load the selections in the Relay type RAMSTKComboBox().
-
-        :return: None
-        :rtype: None
-        """
-        try:
-            _data = self._dic_pc_types[self.subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbType.do_load_combo(_data, signal="changed")
+            self.cmbApplication.do_load_combo(
+                self._get_application_list,
+                signal="changed",
+            )
+            self.cmbConstruction.do_load_combo(
+                self._get_construction_list,
+                signal="changed",
+            )

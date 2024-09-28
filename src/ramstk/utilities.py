@@ -11,14 +11,15 @@ import functools
 import gettext
 import os
 import os.path
-import sys
+import site
 import warnings
 from datetime import datetime
-from typing import Any, Callable, List, Union
+from typing import Callable, List, Union
 
 # Third Party Imports
 # noinspection PyPackageRequirements
 from dateutil.parser import parse
+from pubsub import pub
 
 _ = gettext.gettext
 
@@ -61,6 +62,12 @@ def dir_exists(directory: str) -> bool:
     :rtype: bool
     """
     return os.path.isdir(directory)
+
+
+def do_subscribe_to_messages(messages) -> None:
+    """Subscribe to PyPubSub messages."""
+    for _message, _handler in messages.items():
+        pub.subscribe(_handler, _message)
 
 
 def file_exists(_file: str) -> bool:
@@ -167,29 +174,4 @@ def string_to_boolean(string: Union[bool, str]) -> bool:
 
 def get_install_prefix() -> str:
     """Return the prefix that this code was installed into."""
-    # Constants for this execution
-    _path = os.path.abspath(__file__)
-    _name = os.path.basename(os.path.dirname(_path))
-    _this = os.path.basename(_path)
-
-    # Rule set
-    _rules: List[Any] = [
-        # To match: /usr/lib[64]/pythonX.Y/site-packages/project/prefix.py
-        # Or: /usr/local/lib[64]/pythonX.Y/dist-packages/project/prefix.py
-        lambda x: x in ["lib64", "lib"],  # nosec
-        lambda x: x == f"python{sys.version_info[0]}.{sys.version_info[1]}",
-        lambda x: x in ["site-packages", "dist-packages"],
-        lambda x: x == _name,  # 'project'
-        lambda x: x == _this,  # 'prefix.py'
-    ]
-
-    # Matching engine
-    while _rules:
-        (_path, _token) = os.path.split(_path)
-        _rule = _rules.pop()
-        # To account for the possibility python is using lib instead of lib64
-        # on a 64-bit or multilib system.
-        if not _rule(_token) and _token != "lib64":  # nosec
-            _path = "/usr"
-
-    return _path
+    return site.getsitepackages()[0].split("/lib")[0]

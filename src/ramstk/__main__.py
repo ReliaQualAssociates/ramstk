@@ -302,7 +302,7 @@ def do_load_failure_modes(
 def do_read_site_configuration() -> RAMSTKSiteConfiguration:
     """Create a site configuration instance.
 
-    :return: _configuration; the RAMSTKSiteConfiguraion() instance to use for
+    :return: _configuration; the RAMSTKSiteConfiguration() instance to use for
         this run of RAMSTK.
     :rtype: :class:`ramstk.configuration.RAMSTKSiteConfiguration`
     """

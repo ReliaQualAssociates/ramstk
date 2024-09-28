@@ -739,7 +739,7 @@ def test_license_file():
     """Create a license key file for testing."""
     _cwd = os.getcwd()
     with open(f"{_cwd}/license.key", "w") as _license_file:
-        _license_file.write("0\n")
+        _license_file.write("100\n")
         _license_file.write("apowdigfb3rh9214839qu\n")
         _license_file.write("2019-08-07\n")
         _license_file.write("1\n")

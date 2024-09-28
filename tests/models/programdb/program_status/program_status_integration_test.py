@@ -20,7 +20,6 @@ from treelib import Tree
 
 # RAMSTK Package Imports
 from ramstk.models.dbrecords import RAMSTKProgramStatusRecord
-from ramstk.models.dbtables import RAMSTKProgramStatusTable
 from tests import (
     SystemTestDeleteMethods,
     SystemTestGetterSetterMethods,
@@ -55,9 +54,8 @@ class TestInsertProgramStatus(SystemTestInsertMethods):
         """Listen for do_log_debug messages."""
         assert logger_name == "DEBUG"
         assert message == (
-            f"do_insert: Database error when attempting to add a "
-            f"record.  Database returned:\n\tKey (fld_date_status)=({date.today()}) "
-            f"already exists."
+            f"Database error while adding a record. Error details: : Key ("
+            f"fld_date_status)=({date.today()}) already exists."
         )
 
         print(

@@ -16,14 +16,14 @@ class RAMSTKError(Exception):
         :param str msg: the message to display to the user when this
             exception is raised.
         """
-        self.msg = msg or "An error occured with RAMSTK."
+        self.msg = msg or "An error occurred with RAMSTK."
         super().__init__(msg)
 
 
 class DataAccessError(RAMSTKError):
     """Exception raised when attempting to access non-existent data."""
 
-    def __init__(self, msg: str) -> None:
+    def __init__(self, msg: str = "") -> None:
         """Initialize DataAccessError instance.
 
         This exception is intended for use for non-existent data in the data
@@ -33,7 +33,7 @@ class DataAccessError(RAMSTKError):
         :param msg: the message to display to the user when this
             exception is raised.
         """
-        super().__init__(msg=msg)
+        super().__init__(msg)
 
 
 class OutOfRangeError(RAMSTKError):

@@ -10,10 +10,8 @@
 # Standard Library Imports
 from typing import Any, Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKEntry, RAMSTKFixedPanel
 
@@ -72,7 +70,60 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id: int = 0
 
         # Initialize public dictionary attributes.
-        self.dic_attribute_widget_map: Dict[str, List[Any]] = {
+        self.dic_attribute_widget_map = self._do_initialize_attribute_widget_map()
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.category_id: int = 0
+        self.subcategory_id: int = 0
+
+        super().do_set_properties()
+        super().do_make_panel()
+        super().do_set_callbacks()
+
+        # Subscribe to PyPubSub messages.
+        do_subscribe_to_messages(
+            {
+                "changed_subcategory": self.do_load_comboboxes,
+                "succeed_get_hardware_attributes": self._set_hardware_attributes,
+                "succeed_get_reliability_attributes": self._set_reliability_attributes,
+            }
+        )
+
+    def do_load_comboboxes(self, subcategory_id: int) -> None:
+        """Load the miscellaneous assessment input RKTComboBox()s.
+
+        :param subcategory_id: the subcategory ID of the selected miscellaneous device.
+        :return: None
+        :rtype: None
+        """
+        self.subcategory_id = subcategory_id
+
+        self.cmbApplication.do_load_combo(
+            [
+                [_("Incandescent, AC")],
+                [_("Incandescent, DC")],
+            ],
+            signal="changed",
+        )
+        self.cmbQuality.do_load_combo(
+            [
+                ["MIL-SPEC"],
+                [_("Lower")],
+            ],
+            signal="changed",
+        )
+        self.cmbType.do_load_combo(
+            self._get_type_list(),
+            signal="changed",
+        )
+
+        self._set_sensitive()
+
+    def _do_initialize_attribute_widget_map(self) -> Dict[str, Any]:
+        """Initialize the attribute widget map."""
+        return {
             "quality_id": [
                 32,
                 self.cmbQuality,
@@ -143,72 +194,28 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
             ],
         }
 
-        # Initialize public list attributes.
+    def _get_type_list(self) -> List[List[str]]:
+        """Return the type list to load into the RAMSTKComboBox().
 
-        # Initialize public scalar attributes.
-        self.category_id: int = 0
-        self.subcategory_id: int = 0
-
-        super().do_set_properties()
-        super().do_make_panel()
-        super().do_set_callbacks()
-
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self.do_load_comboboxes,
-            "changed_subcategory",
-        )
-        pub.subscribe(
-            self._do_set_hardware_attributes,
-            "succeed_get_hardware_attributes",
-        )
-        pub.subscribe(
-            self._do_set_reliability_attributes,
-            "succeed_get_reliability_attributes",
-        )
-
-    def do_load_comboboxes(self, subcategory_id: int) -> None:
-        """Load the miscellaneous assessment input RKTComboBox()s.
-
-        :param subcategory_id: the subcategory ID of the selected miscellaneous device.
-        :return: None
-        :rtype: None
+        :return: list of types for electronic filters.
+        :rtype: list
         """
-        self.subcategory_id = subcategory_id
+        _type_lists = {
+            1: [
+                [_("Ceramic-Ferrite")],
+                [_("Discrete LC Components")],
+                [_("Discrete LC and Crystal Components")],
+            ],
+            2: [
+                [_("MIL-F-15733 Ceramic-Ferrite")],
+                [_("MIL-F-15733 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC Components")],
+                [_("MIL-F-18327 Discrete LC and Crystal Components")],
+            ],
+        }
+        return _type_lists.get(self._hazard_rate_method_id, [[""]])
 
-        # Load the quality level RAMSTKComboBox().
-        self.cmbQuality.do_load_combo([["MIL-SPEC"], [_("Lower")]], signal="changed")
-
-        # Load the application RAMSTKComboBox().
-        self.cmbApplication.do_load_combo(
-            [[_("Incandescent, AC")], [_("Incandescent, DC")]],
-            signal="changed",
-        )
-
-        # Load the type RAMSTKComboBox().
-        if self._hazard_rate_method_id == 1:
-            self.cmbType.do_load_combo(
-                [
-                    [_("Ceramic-Ferrite")],
-                    [_("Discrete LC Components")],
-                    [_("Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
-        elif self._hazard_rate_method_id == 2:
-            self.cmbType.do_load_combo(
-                [
-                    [_("MIL-F-15733 Ceramic-Ferrite")],
-                    [_("MIL-F-15733 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC Components")],
-                    [_("MIL-F-18327 Discrete LC and Crystal Components")],
-                ],
-                signal="changed",
-            )
-
-        self._do_set_sensitive()
-
-    def _do_set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _set_hardware_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the hardware attributes are retrieved.
 
         :param attributes: the dict of hardware attributes.
@@ -218,7 +225,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         if attributes["hardware_id"] == self._record_id:
             self._duty_cycle = attributes["duty_cycle"]
 
-    def _do_set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
+    def _set_reliability_attributes(self, attributes: Dict[str, Any]) -> None:
         """Set the attributes when the reliability attributes are retrieved.
 
         :param attributes: the dict of reliability attributes.
@@ -228,59 +235,41 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._hazard_rate_method_id = attributes["hazard_rate_method_id"]
         self._quality_id = attributes["quality_id"]
 
-        self.cmbQuality.set_sensitive(True)
+        self._set_sensitive()
+        super.set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
         )
 
-        self._do_set_sensitive()
-
-    def _do_set_sensitive(self) -> None:
+    def _set_sensitive(self) -> None:
         """Set widget sensitivity for the selected Miscellaneous item.
 
         :return: None
         :rtype: None
         """
-        self.cmbApplication.set_sensitive(False)
-        self.cmbType.set_sensitive(False)
-        self.txtFrequency.set_sensitive(False)
-        self.txtUtilization.set_sensitive(False)
+        # Reset all widgets to be insensitive.
+        super.set_widget_sensitivity(
+            [
+                self.cmbApplication,
+                self.cmbType,
+                self.txtFrequency,
+                self.txtUtilization,
+            ],
+            False,
+        )
 
-        _dic_method = {
-            1: self.__do_set_crystal_sensitive,
-            2: self.__do_set_filter_sensitive,
-            4: self.__do_set_lamp_sensitive,
+        # Define sensitivity map for each subcategory
+        _sensitivity_map = {
+            1: [self.txtFrequency],  # Crystal
+            2: [self.cmbType],  # Electronic filter
+            3: [self.cmbApplication],  # Lamp
         }
-        try:
-            _dic_method[self.subcategory_id]()
-        except KeyError:
-            pass
 
-    def __do_set_crystal_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for a Crystal.
+        # Determine sensitivity list based on subcategory
+        _sensitivity_list = _sensitivity_map.get(self.subcategory_id, [])
 
-        :return: None
-        :rtype: None
-        """
+        # Set widget sensitivity based on hazard rate method
         if self._hazard_rate_method_id == 2:
-            self.txtFrequency.set_sensitive(True)
-
-    def __do_set_filter_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for an electronic filter.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbType.set_sensitive(True)
-
-    def __do_set_lamp_sensitive(self) -> None:
-        """Set the widget sensitivity as needed for a Lamp.
-
-        :return: None
-        :rtype: None
-        """
-        self.cmbApplication.set_sensitive(True)
-
-        if self._hazard_rate_method_id == 2:
-            self.txtUtilization.set_sensitive(True)
+            _sensitivity_list + [self.txtUtilization]
+        super().set_widget_sensitivity(_sensitivity_list)

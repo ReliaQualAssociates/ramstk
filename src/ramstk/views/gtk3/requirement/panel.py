@@ -15,6 +15,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gdk, Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKButton,
@@ -846,13 +847,11 @@ class RequirementTreePanel(RAMSTKTreePanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(
-            self._on_module_switch,
-            "mvwSwitchedPage",
-        )
-        pub.subscribe(
-            self._on_workview_edit,
-            f"wvw_editing_{self._tag}",
+        do_subscribe_to_messages(
+            {
+                "mvwSwitchedPage": self._on_module_switch,
+                f"wvw_editing_{self._tag}": self._on_workview_edit,
+            }
         )
 
     def _on_module_switch(self, module: str = "") -> None:
@@ -1244,7 +1243,11 @@ class RequirementGeneralDataPanel(RAMSTKFixedPanel):
         )
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_load_code, "succeed_create_requirement_code")
+        do_subscribe_to_messages(
+            {
+                "succeed_create_requirement_code": self._do_load_code,
+            }
+        )
 
     def do_load_priorities(self) -> None:
         """Load the priority RAMSTKComboBox().

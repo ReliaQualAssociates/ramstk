@@ -15,6 +15,7 @@ from pubsub import pub
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import (
     RAMSTKEntry,
@@ -114,7 +115,11 @@ class RequirementModuleView(RAMSTKModuleView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, f"selected_{self._tag}")
+        do_subscribe_to_messages(
+            {
+                f"selected_{self._tag}": self._do_set_record_id,
+            }
+        )
 
     def do_request_delete(self, __button: Gtk.ToolButton) -> None:
         """Request to delete selected record from the RAMSTKRequirement table.
@@ -287,9 +292,12 @@ class RequirementGeneralDataView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_set_cursor_active, "succeed_create_code")
-
-        pub.subscribe(self._do_set_record_id, "selected_requirement")
+        do_subscribe_to_messages(
+            {
+                "succeed_create_code": super().do_set_cursor_active,
+                "selected_requirement": self._do_set_record_id,
+            }
+        )
 
     def _do_request_create_code(self, __button: Gtk.ToolButton) -> None:
         """Request that requirement codes be built.
@@ -421,7 +429,11 @@ class RequirementAnalysisView(RAMSTKWorkView):
         self.__make_ui()
 
         # Subscribe to PyPubSub messages.
-        pub.subscribe(self._do_set_record_id, "selected_requirement")
+        do_subscribe_to_messages(
+            {
+                "selected_requirement": self._do_set_record_id,
+            }
+        )
 
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the record and parent ID.

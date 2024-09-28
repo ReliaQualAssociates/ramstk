@@ -128,7 +128,7 @@ class TestCommonManager:
         test_datamanager.do_connect(test_common_db)
         _record = (
             test_datamanager.session.query(RAMSTKSiteInfoRecord)
-            .filter(RAMSTKSiteInfoRecord.site_id == 0)
+            .filter(RAMSTKSiteInfoRecord.site_id == 100)
             .first()
         )
         assert _record.product_key == "apowdigfb3rh9214839qu"

@@ -14,6 +14,7 @@ import treelib
 from pubsub import pub
 
 # RAMSTK Package Imports
+from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import Gtk, _
 from ramstk.views.gtk3.widgets import RAMSTKComboBox, RAMSTKFixedPanel, RAMSTKTreePanel
 
@@ -1267,14 +1268,15 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
             )
         )
 
-        # Subscribe to PyPubSub messages.
-        pub.subscribe(super().do_load_panel, "succeed_calculate_similar_item")
-        pub.subscribe(self._do_set_hardware_attributes, "succeed_get_hardware_tree")
-        pub.subscribe(
-            self._do_set_reliability_attributes, "succeed_get_reliability_tree"
+        do_subscribe_to_messages(
+            {
+                "succeed_calculate_similar_item": super().do_load_panel,
+                "succeed_get_hardware_tree": self._do_set_hardware_attributes,
+                "succeed_get_reliability_tree": self._do_set_reliability_attributes,
+                "succeed_change_similar_item_method": self._on_method_changed,
+                "selected_hardware": self._on_select_hardware,
+            }
         )
-        pub.subscribe(self._on_method_changed, "succeed_change_similar_item_method")
-        pub.subscribe(self._on_select_hardware, "selected_hardware")
 
     # pylint: disable=unused-argument
     # noinspection PyUnusedLocal
