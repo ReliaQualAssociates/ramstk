@@ -58,7 +58,7 @@ def on_fail_read_license(error_message):
     assert error_message == (
         "Unable to read license key file.  Defaulting to a 30-day demo license."
     )
-    print("\033[33m\n\tfail_read_license message was broadcast")
+    print("\033[35m\n\tfail_read_license message was broadcast")
 
 
 @pytest.mark.usefixtures(

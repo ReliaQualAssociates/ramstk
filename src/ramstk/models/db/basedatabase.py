@@ -9,21 +9,16 @@
 # Standard Library Imports
 import contextlib
 import sqlite3
-from typing import Any, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Dict, List, Optional, Sequence, TextIO, Tuple
 
 # Third Party Imports
 import psycopg2  # type: ignore
 from psycopg2 import sql  # type: ignore
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import create_engine, exc
+from sqlalchemy import Row, create_engine, exc
 from sqlalchemy.engine import Engine  # type: ignore
-from sqlalchemy.exc import (
-    InvalidRequestError,
-    OperationalError,
-    ProgrammingError,
-    SQLAlchemyError,
-)
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
 from sqlalchemy.orm.exc import FlushError  # type: ignore
 from sqlalchemy.sql import text
@@ -41,19 +36,19 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
     :return: None
     """
 
-    def _connect_to_db(database) -> psycopg2.extensions.connection:
+    def _connect_to_db(database_: Dict[str, str]) -> psycopg2.extensions.connection:
         """Create a database connection.
 
-        :param database: the name of the database to connect to.
-        :type database: str
+        :param database_: dictionary with database connection information.
+        :type database_: dict
         :return: a psycopg2 connection.
         :rtype: psycopg2.extensions.connection
         """
         return psycopg2.connect(
-            host=database["host"],
-            database=database["database"],
-            user=database["user"],
-            password=database["password"],
+            host=database_["host"],
+            database=database_["database"],
+            user=database_["user"],
+            password=database_["password"],
         )
 
     try:
@@ -88,9 +83,17 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
         _conn.close()
 
     except psycopg2.Error as _error:
-        print(f"Error occurred while creating or populating the database: {_error}")
         if _conn:
             _conn.close()
+        _error_msg = (
+            f"Error occurred while creating or populating the database: {_error}"
+        )
+        pub.sendMessage(
+            "do_log_error_msg",
+            logger_name="ERROR",
+            message=_error_msg,
+        )
+        raise DataAccessError(_error_msg)
 
 
 def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
@@ -202,7 +205,7 @@ class BaseDatabase:
             )
         if database["dialect"] not in self._known_dialects:
             self.do_handle_db_error(
-                f"Unknown dialect in database connection:" f" {database['dialect']}",
+                f"Unknown dialect in database connection: {database['dialect']}",
                 "",
             )
         if not isinstance(database["database"], str) or not database["database"]:
@@ -296,11 +299,7 @@ class BaseDatabase:
         try:
             self.session.delete(item)
             self.session.commit()
-        except (
-            InvalidRequestError,
-            ProgrammingError,
-            SQLAlchemyError,
-        ) as _error:
+        except SQLAlchemyError as _error:
             _context_message = (
                 "Database error when attempting to delete a record. Error details: "
             )
@@ -320,7 +319,7 @@ class BaseDatabase:
 
     def do_execute_query(
         self, query: str, session: scoped_session = None
-    ) -> List[Tuple[Any, ...]]:
+    ) -> Sequence[Row[tuple[Any, ...] | Any]] | Any:
         """Execute the given SQL query and return the results."""
         if not session:
             return self.session.scalars(query)
@@ -478,8 +477,16 @@ class BaseDatabase:
 
         raise DataAccessError(f"Unsupported dialect: {database['dialect']}")
 
-    def get_database_session(self, database: Dict[str, str]) -> scoped_session:
-        """Create and return a session for interacting with the database."""
+    def get_database_session(
+        self, database: Dict[str, str]
+    ) -> Tuple[Engine, scoped_session]:
+        """Create and return a session for interacting with the database.
+
+        :param database: dictionary with database connection parameters.
+        :type database: dict
+        :return: engine, scoped session
+        :rtype: tuple
+        """
         _connection_url = self.do_build_database_url(database)
         return do_open_session(_connection_url)
 

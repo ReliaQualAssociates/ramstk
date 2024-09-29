@@ -9,7 +9,7 @@
 # Standard Library Imports
 import gettext
 from datetime import date, datetime, timedelta
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 # Third Party Imports
 from pubsub import pub
@@ -34,20 +34,10 @@ class RAMSTKCommonDB(BaseDatabase):
         """Initialize an instance of the RAMSTK common database model."""
         super().__init__()
 
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
         # Initialize public dictionary attributes.
         self.tables: Dict[str, object] = {
             "options": object,
         }
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
 
         # Subscribe to PyPubSub messages.
         pub.subscribe(self._do_create_database, "request_create_common")
@@ -58,44 +48,34 @@ class RAMSTKCommonDB(BaseDatabase):
         _user.user_id = 0
         _user.user_group_id = 1
 
-        _user.user_lname = input(  # nosec
+        _user.user_lname = input(
             _("Enter the RAMSTK Administrator's last name (surname): ")
         )
-        _user.user_fname = input(  # nosec
+        _user.user_fname = input(
             _("Enter the RAMSTK Administrator's first name (given name): ")
         )
-        _user.user_email = input(  # nosec
-            _("Enter the RAMSTK Administrator's e-mail address: ")
-        )
-        _user.user_phone = input(  # nosec
-            _("Enter the RAMSTK Administrator's phone number: ")
-        )
+        _user.user_email = input(_("Enter the RAMSTK Administrator's e-mail address: "))
+        _user.user_phone = input(_("Enter the RAMSTK Administrator's phone number: "))
 
         self.session.add(_user)
         self.session.commit()
 
     def _do_create_database(
-        self,
-        database: Dict[str, str],
-        sql_file: str,
-        license_file: str,
+        self, database: Dict[str, str], sql_file: str, license_file: str
     ) -> None:
         """Create a new RAMSTK Common database.
 
-        :param database: a dict containing the database connection arguments.
-        :param sql_file: the file containing the SQL statements for creating
-            the database.
-        :param license_file: the absolute path to the license file.
+        :param database: Dictionary with database connection arguments.
+        :param sql_file: Path to the SQL file containing the SQL statements for creating the database.
+        :param license_file: Path to the license file.
         :return: None
-        :rtype: None
         """
-        self.do_create_database(
-            database,
-            sql_file,
-        )
+        self.do_create_database(database, sql_file)
         self._do_load_site_info(license_file)
 
-        _yn = input(_("Would you like to add a RAMSTK Administrator? ([y]/n): ")) or "y"
+        _yn: str = (
+            input(_("Would you like to add a RAMSTK Administrator? ([y]/n): ")) or "y"
+        )
         if _yn.lower() == "y":
             self._do_add_administrator()
 
@@ -110,9 +90,8 @@ class RAMSTKCommonDB(BaseDatabase):
     def _do_load_site_info(self, license_file: str) -> None:
         """Load the Site Information table.
 
-        :param license_file: the absolute path to the license file.
+        :param license_file: Path to the license file.
         :return: None
-        :rtype: None
         """
         _dic_site_info: Dict[str, Union[date, int, str]] = {
             "site_name": "DEMO",
@@ -139,12 +118,8 @@ class RAMSTKCommonDB(BaseDatabase):
         _site_id: int = -1
 
         try:
-            with open(
-                license_file,
-                "r",
-                encoding="UTF-8",
-            ) as _license_file:
-                _contents = _license_file.readlines()
+            with open(license_file, "r", encoding="UTF-8") as _license_file:
+                _contents: List[str] = _license_file.readlines()
                 _site_id = int(_contents[0].strip("\n"))
                 _dic_site_info["product_key"] = _contents[1].strip("\n")
                 _dic_site_info["expire_on"] = datetime.strptime(
@@ -169,7 +144,7 @@ class RAMSTKCommonDB(BaseDatabase):
                 _dic_site_info["fta_enabled"] = int(_contents[19].strip("\n"))
                 _dic_site_info["site_name"] = _contents[20].strip("\n")
         except IOError:
-            _error_msg = (
+            _error_msg: str = (
                 "Unable to read license key file.  Defaulting to a 30-day demo license."
             )
             pub.sendMessage("fail_read_license", error_message=_error_msg)
