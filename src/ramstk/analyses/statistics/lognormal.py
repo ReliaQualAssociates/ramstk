@@ -115,34 +115,34 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     if _floc is None:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = lognorm.fit(
+        _shape, _location, _scale = (
+            lognorm.fit(
                 data,
                 loc=_location,
                 scale=_scale,
                 method=_method,
             )
-        else:
-            _shape, _location, _scale = lognorm.fit(
+            if scipy.__version__ >= "1.7.1"
+            else lognorm.fit(
                 data,
                 loc=_location,
                 scale=_scale,
             )
+        )
+    elif scipy.__version__ >= "1.7.1":
+        _shape, _location, _scale = lognorm.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+            method=_method,
+        )
     else:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = lognorm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-                method=_method,
-            )
-        else:
-            _shape, _location, _scale = lognorm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-            )
+        _shape, _location, _scale = lognorm.fit(
+            data,
+            loc=_location,
+            scale=_scale,
+            floc=_floc,
+        )
 
     return _shape, _location, _scale
