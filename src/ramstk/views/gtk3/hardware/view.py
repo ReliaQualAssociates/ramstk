@@ -112,9 +112,9 @@ class HardwareModuleView(RAMSTKModuleView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons[
-            "tab"
-        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/hardware.png"
+        self._dic_icons["tab"] = (
+            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/hardware.png"
+        )
 
         # Initialize private list attributes.
         self._lst_callbacks[0] = self._do_request_insert_sibling
@@ -375,10 +375,10 @@ class HardwareModuleView(RAMSTKModuleView):
                 "year_of_manufacture",
             ],
         )
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )
 
 
@@ -433,9 +433,9 @@ class HardwareGeneralDataView(RAMSTKWorkView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons[
-            "comp_ref_des"
-        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/rollup.png"
+        self._dic_icons["comp_ref_des"] = (
+            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/rollup.png"
+        )
 
         # Initialize private list attributes.
 

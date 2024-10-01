@@ -81,10 +81,13 @@ def do_initialize_databases(
 ) -> Tuple[RAMSTKProgramDB, RAMSTKCommonDB]: ...
 def do_initialize_loggers(log_file: str, log_level: str) -> RAMSTKLogManager: ...
 def do_load_configuration_list(
-    config_list: List[str]
-    | Dict[
-        int, Tuple[float, float, float, float, float, float, float, float, float, float]
-    ],
+    config_list: (
+        List[str]
+        | Dict[
+            int,
+            Tuple[float, float, float, float, float, float, float, float, float, float],
+        ]
+    ),
     database: BaseDatabase,
     query: Select,
     key_column: str,

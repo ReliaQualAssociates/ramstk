@@ -234,10 +234,10 @@ class UsageProfileWorkView(RAMSTKWorkView):
         )
         self._pnlPanel.do_load_comboboxes()
 
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )
         for _element in ["mission", "mission_phase", "environment"]:
             self._pnlPanel.dic_icons[_element] = self._dic_icons[_element]

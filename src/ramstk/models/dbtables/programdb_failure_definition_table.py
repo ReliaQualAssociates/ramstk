@@ -49,9 +49,9 @@ class RAMSTKFailureDefinitionTable(RAMSTKBaseTable):
         ]
 
         # Initialize private scalar attributes.
-        self._record: Type[
+        self._record: Type[RAMSTKFailureDefinitionRecord] = (
             RAMSTKFailureDefinitionRecord
-        ] = RAMSTKFailureDefinitionRecord
+        )
 
         # Initialize public dictionary attributes.
 

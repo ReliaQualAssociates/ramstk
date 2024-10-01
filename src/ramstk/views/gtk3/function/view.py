@@ -122,10 +122,10 @@ class FunctionModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )
 
 

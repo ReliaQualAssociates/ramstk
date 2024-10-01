@@ -494,12 +494,12 @@ def the_one_ring() -> None:
         for _subcategory_id in user_configuration.RAMSTK_SUBCATEGORIES[
             _category_id
         ].keys():
-            user_configuration.RAMSTK_FAILURE_MODES[_category_id][
-                _subcategory_id
-            ] = do_load_failure_modes(
-                site_db,
-                _category_id,
-                _subcategory_id,
+            user_configuration.RAMSTK_FAILURE_MODES[_category_id][_subcategory_id] = (
+                do_load_failure_modes(
+                    site_db,
+                    _category_id,
+                    _subcategory_id,
+                )
             )
     do_load_configuration_list(
         user_configuration.RAMSTK_DAMAGE_MODELS,
