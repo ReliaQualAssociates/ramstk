@@ -25,8 +25,8 @@ class RAMSTKBaseView:
     RAMSTK work flow module.  This is the same for all     classes associated with the
     work flow module.
 
-    :ivar _dic_load_functions: a dict of functions to call for loading a row of data
-    in the view's RAMSTKTreeView. :ivar _dic_trees: a dict of treelib.Tree, one for each
+    :ivar _dic_load_functions: a dict of functions to call for loading a row of data in
+    the view's RAMSTKTreeView. :ivar _dic_trees: a dict of treelib.Tree, one for each
     database table the view is     comprised from. :ivar _lst_modules: the list of
     RAMSTK work flow modules that comprise the view. :ivar _revision_id: the ID of the
     Revision the view is associated with. :ivar dao: the instanace of the RAMSTK Program

@@ -1347,8 +1347,7 @@ class FMEATreePanel(RAMSTKTreePanel):
     ) -> None:
         """Load the mission phases whenever the mission combo is changed.
 
-        :param __combo: the mission list Gtk.CellRendererCombo(). Unused in this
-            method.
+        :param __combo: the mission list Gtk.CellRendererCombo(). Unused in this method.
         :param path: the path identifying the edited cell.
         :param new_text: the new text (mission description).
         :return: None
@@ -1877,8 +1876,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         """Load the mission and mission phase dicts.
 
         :param tree: the treelib usage profile treelib.Tree().
-        :param node_id: unused in this function. Required so this method compatible
-            with other listeners for the 'succeed_retrieve_usage_profile' message.
+        :param node_id: unused in this function. Required so this method compatible with
+            other listeners for the 'succeed_retrieve_usage_profile' message.
         :param row: unused in this function. Required so this method compatible with
             other listeners for the 'succeed_retrieve_usage_profile' message.
         :return: None

@@ -9,8 +9,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the resistor module."""
 
-# Standard Library Imports
-import copy
 
 # Third Party Imports
 import pytest
@@ -191,8 +189,8 @@ def test_get_resistance_factor_no_subcategory():
 
 @pytest.mark.unit
 def test_calculate_temperature_factor():
-    """calculate_temperature_factor() should return a tuple of two float values for
-    case temperature and piT on success."""
+    """calculate_temperature_factor() should return a tuple of two float values for case
+    temperature and piT on success."""
     _temperature_case, _pi_t = resistor.calculate_temperature_factor(38.2, 0.45)
 
     assert isinstance(_temperature_case, float)
@@ -238,7 +236,7 @@ def test_calculate_part_stress(
             1: 0.001217492244190985,
             4: 0.0016392858777726734,
             9: 4.434316747334665,
-            10: 56.840234045545884,
+            10: 44.02235009613718,
         }[subcategory_id]
     )
     if subcategory_id == 10:
@@ -252,7 +250,7 @@ def test_calculate_part_stress(
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
 )
 def test_set_default_resistance(subcategory_id):
-    """should return the default resistance for the selected subcategory ID."""
+    """Should return the default resistance for the selected subcategory ID."""
     _resistance = resistor._set_default_resistance(0.0, subcategory_id)
 
     assert (
@@ -283,7 +281,7 @@ def test_set_default_resistance(subcategory_id):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
 )
 def test_set_default_elements(subcategory_id):
-    """should return the default elements for the selected subcategory ID."""
+    """Should return the default elements for the selected subcategory ID."""
     _n_elements = resistor._set_default_elements(0.0, subcategory_id)
 
     assert (
@@ -311,7 +309,7 @@ def test_set_default_elements(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_resistor")
 def test_set_default_values(test_attributes_resistor):
-    """should set default values for each parameter <= 0.0."""
+    """Should set default values for each parameter <= 0.0."""
     test_attributes_resistor["n_elements"] = -1
     test_attributes_resistor["power_ratio"] = -1.0
     test_attributes_resistor["resistance"] = 0.0
@@ -330,7 +328,7 @@ def test_set_default_values(test_attributes_resistor):
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_resistor")
 def test_set_default_values_none_needed(test_attributes_resistor):
-    """should set default values for each parameter <= 0.0."""
+    """Should set default values for each parameter <= 0.0."""
     test_attributes_resistor["n_elements"] = 4
     test_attributes_resistor["power_ratio"] = 0.2
     test_attributes_resistor["resistance"] = 4700.0

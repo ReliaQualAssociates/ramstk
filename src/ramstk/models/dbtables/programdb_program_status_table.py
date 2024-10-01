@@ -23,8 +23,8 @@ from .basetable import RAMSTKBaseTable
 class RAMSTKProgramStatusTable(RAMSTKBaseTable):
     """Contain the attributes and methods of the Program Status data manager.
 
-    :ivar _dic_status: a dict with the last status date as the key and the status ID
-    as the value.  Used to select the correct status when updating.
+    :ivar _dic_status: a dict with the last status date as the key and the status ID as
+    the value.  Used to select the correct status when updating.
     """
 
     # Define private dictionary class attributes.

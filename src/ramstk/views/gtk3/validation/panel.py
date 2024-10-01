@@ -1026,9 +1026,9 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
         """Load the measurement units RAMSTKComboBox().
 
         :param measurement_unit: the list of measurement units to load. The key is an
-            integer representing the ID field in the database. The value is a tuple
-            with a unit abbreviation, unit name, and generic unit type. For example:
-            ('lbf', 'Pounds Force', 'unit')
+            integer representing the ID field in the database. The value is a tuple with
+            a unit abbreviation, unit name, and generic unit type. For example: ('lbf',
+            'Pounds Force', 'unit')
         :return: None
         :rtype: None
         """
