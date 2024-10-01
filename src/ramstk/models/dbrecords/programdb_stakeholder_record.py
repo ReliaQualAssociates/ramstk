@@ -95,10 +95,10 @@ class RAMSTKStakeholderRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of RAMSTKStakeholder data model attributes.
 
-        :return: {revision_id, stakeholder_id, customer_rank, description,
-                  group, improvement, overall_weight, planned_rank, priority,
-                  requirement_id, stakeholder, user_float_1, user_float_2,
-                  user_float_3, user_float_4, user_float_5} pairs.
+        :return: {revision_id, stakeholder_id, customer_rank, description, group,
+            improvement, overall_weight, planned_rank, priority, requirement_id,
+            stakeholder, user_float_1, user_float_2, user_float_3, user_float_4,
+            user_float_5} pairs.
         :rtype: tuple
         """
         return {

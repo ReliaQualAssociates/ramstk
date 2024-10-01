@@ -161,8 +161,8 @@ class MiscellaneousMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the miscellaneous devices assessment results page.
 
-        :param attributes: the attributes dictionary for the selected
-            Miscellaneous item.
+        :param attributes: the attributes dictionary for the selected Miscellaneous
+            item.
         :return: None
         :rtype: None
         """

@@ -73,10 +73,9 @@ class RAMSTKEntry(Gtk.Entry, RAMSTKWidget):
     def do_update(self, value: Any, signal: str = "") -> None:
         """Update the RAMSTK Entry with a new value.
 
-        :param value: the information to update the RAMSTKEntry() to
-            display.
-        :keyword signal: the name of the signal whose handler ID the
-            RAMSTKEntry() needs to block.
+        :param value: the information to update the RAMSTKEntry() to display. :keyword
+            signal: the name of the signal whose handler ID the RAMSTKEntry() needs to
+            block.
         :return: None
         :rtype: None
         """
@@ -110,8 +109,7 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
 
         Returns a Gtk.TextView() embedded in a Gtk.ScrolledWindow().
 
-        :param txvbuffer: the Gtk.TextBuffer() to associate with the
-            RAMSTKTextView().
+        :param txvbuffer: the Gtk.TextBuffer() to associate with the RAMSTKTextView().
         :return: None
         :rtype: None
         """
@@ -183,9 +181,8 @@ class RAMSTKTextView(Gtk.TextView, RAMSTKWidget):
     def do_update(self, value: str, signal: str = "") -> None:
         """Update the RAMSTK TextView with a new value.
 
-        :param value: the information to update the RAMSTKTextView() to
-            display.
-        :keyword str signal: the name of the signal whose handler ID the
+        :param value: the information to update the RAMSTKTextView() to display.
+            :keyword str signal: the name of the signal whose handler ID the
             RAMSTKTextView() needs to block.
         :return: None
         :rtype: None

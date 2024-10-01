@@ -691,8 +691,8 @@ REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -710,11 +710,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a resistor.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
+    :return: (attributes, _msg); the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
     :rtype: (dict, str)
     """
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
@@ -791,8 +790,8 @@ def calculate_part_stress_lambda_b(
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    method.
 
     :param subcategory_id: the subcategory ID for the resistor being calculated.
     :param specification_id: the specification ID for the resistor being calculated.
@@ -802,9 +801,8 @@ def calculate_part_stress_lambda_b(
     :param power_ratio: the opearting to rated power ratio for the resistor being
         calculated.
     :return _lambda_b: the calculated base hazard rate.
-    :rtype: float
-    :raise: IndexError if passed an unknown quality ID or application ID.
-    :raise: KeyError is passed an unknown construction ID.
+    :rtype: float :raise: IndexError if passed an unknown quality ID or application ID.
+        :raise: KeyError is passed an unknown construction ID.
     """
     if subcategory_id == 4:
         return 0.00006
@@ -826,12 +824,11 @@ def calculate_temperature_factor(
 ) -> Tuple[float, float]:
     """Calculate the temperature factor (piT).
 
-    :param temperature_active: the ambient operating temperature of the
-        resistor in C.
+    :param temperature_active: the ambient operating temperature of the resistor in C.
     :param power_ratio: the ratio of operating to rated power of the resistor being
         calculated.
-    :return: (temperature_case, _pi_c); the calculated surface temperature of
-        the resistor and it's resistance factor.
+    :return: (temperature_case, _pi_c); the calculated surface temperature of the
+        resistor and it's resistance factor.
     :rtype: tuple
     """
     _temperature_case: float = temperature_active + 55.0 * power_ratio
@@ -929,14 +926,12 @@ def get_resistance_factor(
     """Retrieve the resistance factor (piR).
 
     :param subcategory_id: the subcategory identifier.
-    :param specification_id: the resistor's governing specification
-        identifier.
+    :param specification_id: the resistor's governing specification identifier.
     :param family_id: the resistor family identifier.
     :param resistance: the resistance in ohms of the resistor.
     :return: _pi_r; the calculated resistance factor value.
-    :rtype: float
-    :raise: IndexError if passed an unknown specification ID or family ID.
-    :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float :raise: IndexError if passed an unknown specification ID or family ID.
+        :raise: KeyError if passed an unknown subcategory ID.
     """
     _pi_r = 0.0
 
@@ -993,11 +988,9 @@ def get_voltage_factor(
     """Retrieve the voltage factor (piV).
 
     :param subcategory_id: the subcategory identifier.
-    :param voltage_ratio: the ratio of voltages on each half of the
-        potentiometer.
+    :param voltage_ratio: the ratio of voltages on each half of the potentiometer.
     :return: _pi_v; the selected voltage factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
     """
     _index = -1
     _breaks = [0.0]

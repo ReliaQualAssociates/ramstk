@@ -68,8 +68,7 @@ class RAMSTKMissionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of the RAMSTKMission data model attributes.
 
-        :return: (revision_id, mission_id, description, mission_time,
-                  time_units)
+        :return: (revision_id, mission_id, description, mission_time, time_units)
         :rtype: tuple
         """
         return {

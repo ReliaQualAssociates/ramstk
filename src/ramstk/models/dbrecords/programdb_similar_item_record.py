@@ -256,22 +256,18 @@ class RAMSTKSimilarItemRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of RAMSTKSimilarItem data model attributes.
 
         :return: {hardware_id, change_description_1, change_description_2,
-                  change_description_3, change_description_4,
-                  change_description_5, change_description_6,
-                  change_description_7, change_description_8,
-                  change_description_9, change_description_10, change_factor_1,
-                  change_factor_2, change_factor_3, change_factor_4,
-                  change_factor_5, change_factor_6, change_factor_7,
-                  change_factor_8, change_factor_9, change_factor_10,
-                  environment_from_id, environment_to_id, function_1,
-                  function_2, function_3, function_4, function_5,
-                  similar_item_method_id, parent_id, quality_from_id,
-                  quality_to_id, result_1, result_2, result_3, result_4,
-                  result_5, temperature_from, temperature_to, user_blob_1,
-                  user_blob_2, user_blob_3, user_blob_4, user_blob_5,
-                  user_float_1, user_float_2, user_float_3, user_float_4,
-                  user_float_5, user_int_1, user_int_2, user_int_3, user_int_4,
-                  user_int_5}
+            change_description_3, change_description_4, change_description_5,
+            change_description_6, change_description_7, change_description_8,
+            change_description_9, change_description_10, change_factor_1,
+            change_factor_2, change_factor_3, change_factor_4, change_factor_5,
+            change_factor_6, change_factor_7, change_factor_8, change_factor_9,
+            change_factor_10, environment_from_id, environment_to_id, function_1,
+            function_2, function_3, function_4, function_5, similar_item_method_id,
+            parent_id, quality_from_id, quality_to_id, result_1, result_2, result_3,
+            result_4, result_5, temperature_from, temperature_to, user_blob_1,
+            user_blob_2, user_blob_3, user_blob_4, user_blob_5, user_float_1,
+            user_float_2, user_float_3, user_float_4, user_float_5, user_int_1,
+            user_int_2, user_int_3, user_int_4, user_int_5}
         :rtype: tuple
         """
         return {

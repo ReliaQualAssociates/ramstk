@@ -1287,8 +1287,7 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
 
         :param model: the filtered model for the Similar Item RAMSTKTreeView.
         :param row: the iter to check against condition(s).
-        :param data: unused in this method; required by Gtk.TreeModelFilter()
-            widget.
+        :param data: unused in this method; required by Gtk.TreeModelFilter() widget.
         :return: True if row should be visible, False else.
         :rtype: bool
         """
@@ -1320,9 +1319,9 @@ class SimilarItemTreePanel(RAMSTKTreePanel):
     def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
         """Refresh the Similar Item functions in the RAMSTKTreeView().
 
-        :param row: the row in the Similar Item RAMSTKTreeView() whose
-            functions need to be updated.  This is required to allow a recursive
-            calling function to load the same function in all rows.
+        :param row: the row in the Similar Item RAMSTKTreeView() whose functions need to
+            be updated. This is required to allow a recursive calling function to load
+            the same function in all rows.
         :param function: the list of user-defined Similar Item functions.
         :return: None
         """

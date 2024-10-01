@@ -161,8 +161,8 @@ REF_TEMPS = {
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -180,11 +180,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for an inductive device.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["piC"] = float(attributes["construction_id"])
@@ -252,17 +251,17 @@ def calculate_part_stress_lambda_b(
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    method.
 
     :param subcategory_id: the subcategory ID for the inductive device being calculated.
     :param insulation_id: the insulation class ID for the inductive device being
         calculated.
-    :param temperature_hot_spot: the hot spot temperature for the inductive device
-        being calculated.
+    :param temperature_hot_spot: the hot spot temperature for the inductive device being
+        calculated.
     :return: _lambda_b; the calculated parts stress lambda_b.
-    :rtype: float
-    :raise: KeyError when passed an unknown subcategory ID or insulation ID.
+    :rtype: float :raise: KeyError when passed an unknown subcategory ID or insulation
+        ID.
     """
     _dic_factors = {
         1: {
@@ -314,8 +313,7 @@ def calculate_temperature_rise_power_loss_surface(
     :param power_operating: the power loss in W.
     :param area: the radiating surface area of the case in sq. inches.
     :return: _temperature_rise; the calculated temperature rise in C.
-    :rtype: float
-    :raise: ZeroDivisionError if passed an area=0.0.
+    :rtype: float :raise: ZeroDivisionError if passed an area=0.0.
     """
     return 125.0 * power_operating / area
 
@@ -329,8 +327,7 @@ def calculate_temperature_rise_power_loss_weight(
     :param power_operating: the power loss in W.
     :param weight: the weight of the device in lbf.
     :return: _temperature_rise; the calculated temperature rise in C.
-    :rtype: float
-    :raise: ZeroDivisionError if passed a weight=0.0.
+    :rtype: float :raise: ZeroDivisionError if passed a weight=0.0.
     """
     return 11.5 * (power_operating / weight**0.6766)
 
@@ -392,9 +389,8 @@ def get_part_stress_quality_factor(
     :param quality_id: the quality level identifier.
     :param family_id: the device family identifier.
     :return: _pi_q; the selected quality factor
-    :rtype: float
-    :raise: IndexError if passed an unknown quality ID.
-    :raise: KeyError if passed an unknown subcategory ID or family ID.
+    :rtype: float :raise: IndexError if passed an unknown quality ID. :raise: KeyError
+        if passed an unknown subcategory ID or family ID.
     """
     return (
         PART_STRESS_PI_Q[subcategory_id][family_id][quality_id - 1]
@@ -406,11 +402,9 @@ def get_part_stress_quality_factor(
 def get_temperature_rise_spec_sheet(page_number: int) -> float:
     """Retrieve the temperature rise based on the spec sheet from MIL-C-39010.
 
-    :param page_number: the spec sheet to retrieve the temperature rise
-        for.
+    :param page_number: the spec sheet to retrieve the temperature rise for.
     :return: _temperature_rise; the spec sheet temperature rise.
-    :rtype: float
-    :raise: KeyError if an unknown spec sheet is passed.
+    :rtype: float :raise: KeyError if an unknown spec sheet is passed.
     """
     return {
         1: 15.0,

@@ -34,11 +34,10 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
         """Create RAMSTK ComboBox widgets.
 
         :keyword int index: the index in the RAMSTKComboBox Gtk.ListView() to
-            display.  Default is 0.
-        :keyword bool simple: indicates whether to make a simple (one item) or
-            complex (n_item) RAMSTKComboBox.  Default is True.
-        :keyword int n_items: the number of items (columns) to add for a
-            non-simple RAMSTKComboBox.
+        display.  Default is 0. :keyword bool simple: indicates whether to make a simple
+        (one item) or     complex (n_item) RAMSTKComboBox.  Default is True. :keyword
+        int n_items: the number of items (columns) to add for a     non-simple
+        RAMSTKComboBox.
         """
         RAMSTKWidget.__init__(self)
 
@@ -97,23 +96,20 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     ) -> None:
         """Load RAMSTK ComboBox widgets.
 
-        :param entries: the information to load into the Gtk.ComboBox().
-            This is always a list of lists where each internal list contains
-            the information to be displayed and there is one internal list for
-            each RAMSTKComboBox line.
-        :param signal: the name of the signal whose handler ID the
-            RAMSTKComboBox() needs to block.
-        :param simple: indicates whether this is a simple (one item) or
-            complex (three item) RAMSTKComboBox.  A simple (default)
-            RAMSTKComboBox contains and displays one field only.  A 'complex'
-            RAMSTKComboBox contains three str fields, but only displays the
-            first field.  The other two fields are hidden and used to store
-            information associated with the items displayed in the
-            RAMSTKComboBox.  For example, if the name of an item is displayed,
-            the other two fields might contain a code and an index.  These
-            could be extracted for use in the RAMSTK Views.
-        :return: None
-        :raise: TypeError if attempting to load other than string values.
+        :param entries: the information to load into the Gtk.ComboBox(). This is always
+            a list of lists where each internal list contains the information to be
+            displayed and there is one internal list for each RAMSTKComboBox line.
+        :param signal: the name of the signal whose handler ID the RAMSTKComboBox()
+            needs to block.
+        :param simple: indicates whether this is a simple (one item) or complex (three
+            item) RAMSTKComboBox. A simple (default) RAMSTKComboBox contains and
+            displays one field only. A 'complex' RAMSTKComboBox contains three str
+            fields, but only displays the first field. The other two fields are hidden
+            and used to store information associated with the items displayed in the
+            RAMSTKComboBox. For example, if the name of an item is displayed, the other
+            two fields might contain a code and an index. These could be extracted for
+            use in the RAMSTK Views.
+        :return: None :raise: TypeError if attempting to load other than string values.
         """
         _model = self.get_model()
         _model.clear()
@@ -140,10 +136,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     def do_update(self, value: int, signal: str = "") -> None:
         """Update the RAMSTK Combo with a new value.
 
-        :param value: the information to update the RAMSTKCombo() to
-            display.
-        :param str signal: the name of the signal whose handler ID the
-            RAMSTKComboBox() needs to block.
+        :param value: the information to update the RAMSTKCombo() to display.
+        :param str signal: the name of the signal whose handler ID the RAMSTKComboBox()
+            needs to block.
         :return: None
         :rtype: None
         """
@@ -158,9 +153,9 @@ class RAMSTKComboBox(Gtk.ComboBox, RAMSTKWidget):
     def get_value(self, index: int = 0) -> str:
         """Return value in the RAMSTKComboBox() model at the index position.
 
-        :keyword int index: the column in the RAMSTKComboBox() model whose
-            value is to be retrieved.  Defaults to zero which will always
-            read a 'simple' RAMSTKComboBox().
+        :keyword int index: the column in the RAMSTKComboBox() model whose     value is
+        to be retrieved.  Defaults to zero which will always     read a 'simple'
+        RAMSTKComboBox().
         :return: _value
         :rtype: str
         """

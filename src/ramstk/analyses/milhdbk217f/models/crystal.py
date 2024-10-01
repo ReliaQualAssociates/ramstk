@@ -49,8 +49,8 @@ PI_E = [
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the crystal being calculated.
     :return: _base_hr; the list of base hazard rates.
@@ -64,12 +64,11 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a crystal.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
     :param attributes: the attributes for the crystal being calculated.
-    :return: attributes; the keyword argument (hardware attribute)
-             dictionary with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["lambda_b"] = 0.013 * attributes["frequency_operating"] ** 0.23
@@ -85,10 +84,8 @@ def get_part_count_lambda_b(environment_active_id: int) -> float:
     """Retrieve the part count base hazard rate for a crystal.
 
     :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the part count base hazard rate for the active
-        environment.
-    :rtype: float
-    :raise: IndexError if passed an unknown active environment ID.
+    :return: _base_hr; the part count base hazard rate for the active environment.
+    :rtype: float :raise: IndexError if passed an unknown active environment ID.
     """
     return PART_COUNT_LAMBDA_B[environment_active_id - 1]
 

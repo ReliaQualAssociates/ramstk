@@ -249,12 +249,11 @@ class RAMSTKRevisionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of the RAMSTKRevision data model attributes.
 
         :return: {revision_id, availability, mission_availability, cost,
-                  cost_per_failure, cost_per_hour, active_hazard_rate,
-                  dormant_hazard_rate, mission_hazard_rate, hazard_rate,
-                  software_hazard_rate, mmt, mcmt, mpmt, mission_mtbf, mtbf,
-                  mttr, name, mission_reliability, reliability, remarks,
-                  n_parts, code, program_time, program_time_se, program_cost,
-                  program_cost_se} pairs.
+            cost_per_failure, cost_per_hour, active_hazard_rate, dormant_hazard_rate,
+            mission_hazard_rate, hazard_rate, software_hazard_rate, mmt, mcmt, mpmt,
+            mission_mtbf, mtbf, mttr, name, mission_reliability, reliability, remarks,
+            n_parts, code, program_time, program_time_se, program_cost, program_cost_se}
+            pairs.
         :rtype: dict
         """
         return {

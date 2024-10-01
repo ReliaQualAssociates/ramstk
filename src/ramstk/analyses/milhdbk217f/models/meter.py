@@ -139,8 +139,8 @@ PI_F = [1.0, 1.0, 2.8]
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -158,11 +158,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a meter.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["lambda_b"] = get_part_stress_lambda_b(
@@ -240,15 +239,14 @@ def get_part_stress_lambda_b(
 ) -> float:
     """Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    method.
 
     :param subcategory_id: the subcategory identifier.
     :param type_id: the meter type identifier.
     :return: _lambda_b; the part stress base hazard rate or 0.0 if an unknown
         subcategory ID is passed.
-    :rtype: float
-    :raise: IndexError when passed an unknown type ID.
+    :rtype: float :raise: IndexError when passed an unknown type ID.
     """
     if subcategory_id == 1:
         return PART_STRESS_LAMBDA_B[1][type_id - 1]
@@ -264,12 +262,10 @@ def get_temperature_stress_factor(
     """Retrieve the temperature stress factor (piT).
 
     :param temperature_active: the operating ambient temperature in C.
-    :param temperature_rated_max: the maxmimum rated operating
-        temperature in C.
+    :param temperature_rated_max: the maxmimum rated operating temperature in C.
     :return: _pi_t; the value of piT associated with the operating temperature.
-    :rtype: float
-    :raise: TypeError if passed a string for either temperature.
-    :raise: ZeroDivisionError if passed a rated maximum temperature = 0.0.
+    :rtype: float :raise: TypeError if passed a string for either temperature. :raise:
+        ZeroDivisionError if passed a rated maximum temperature = 0.0.
     """
     _pi_t = 0.0
     _temperature_ratio = temperature_active / temperature_rated_max
@@ -291,8 +287,8 @@ def set_default_values(
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 
-    MIL-HDBK-217F has no defaults for metere.  This function is needed as a
-    placeholder only.
+    MIL-HDBK-217F has no defaults for metere.  This function is needed as a placeholder
+    only.
 
     :param attributes: the attribute dict for the meter being calculated.
     :return: attributes; the updated attribute dict.

@@ -34,8 +34,8 @@ Tconfiguration = TypeVar(
 def destroy(__widget: Gtk.Widget, __event: Gdk.Event = None) -> None:
     """Quit the RAMSTK application.
 
-    This function quits the RAMSTK application when the X in the upper right
-    corner is pressed or if this function is called as a callback.
+    This function quits the RAMSTK application when the X in the upper right corner is
+    pressed or if this function is called as a callback.
 
     :param __widget: the Gtk.Widget() that called this method.
     :param __event: the Gdk.Event() that called this method.
@@ -80,8 +80,8 @@ class RAMSTKDesktop(Gtk.Window):
     def __init__(self, configuration: Tconfiguration, logger: RAMSTKLogManager) -> None:
         """Initialize an instance of the RAMSTK Book.
 
-        :param configuration: a list containing the RAMSTK user
-            configuration and RAMSTK site configuration class instances.
+        :param configuration: a list containing the RAMSTK user configuration and RAMSTK
+            site configuration class instances.
         :param logger: the RAMSTKLogManager class instance.
         """
         # pylint: disable=non-parent-init-called
@@ -155,9 +155,9 @@ class RAMSTKDesktop(Gtk.Window):
     def _do_raise_message_dialog(self, logger_name: str, message: str) -> None:
         """Raise a message dialog to alert the user to an issue.
 
-        :param logger_name: the name of the logger the message is indtended for.
-            The message will only be presented to the user if it's the same or higher
-            than the user selected log level.
+        :param logger_name: the name of the logger the message is indtended for. The
+            message will only be presented to the user if it's the same or higher than
+            the user selected log level.
         :param message: the info, debug, error, etc. message.
         :return: None
         :rtype: None
@@ -248,8 +248,8 @@ class RAMSTKDesktop(Gtk.Window):
     def _do_request_save_project(self, widget: Gtk.Widget, end: bool = False) -> None:
         """Request to save the open RAMSTK Program.
 
-        :param Gtk.Widget widget: the Gtk.Widget() that called this method.
-        :keyword bool end: indicates whether to quit RAMSTK after saving the project.
+        :param Gtk.Widget widget: the Gtk.Widget() that called this method. :keyword
+            bool end: indicates whether to quit RAMSTK after saving the project.
         :return: None
         :rtype: None
         """
@@ -498,8 +498,7 @@ class RAMSTKDesktop(Gtk.Window):
         """Make the toolbuttons for a toolbar.
 
         :param icons: the list of icons to display on the toolbutton.
-        :param tooltips: the list of tooltips to associate with each
-            toolbutton.
+        :param tooltips: the list of tooltips to associate with each toolbutton.
         :return: _buttons; the list of toolbuttons to display in the toolbar.
         """
         _buttons: List[Gtk.ToolButton] = []

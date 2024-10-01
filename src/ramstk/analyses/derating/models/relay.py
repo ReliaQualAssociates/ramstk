@@ -17,15 +17,13 @@ def do_derating_analysis(
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for relays.
 
-    :param environment_id: the index for the environment the relay
-        is operating in; 0=protected, 1=normal, 2=severe.
-    :param stress_limits: the dict containing the stress derating limits for
-        relays.
+    :param environment_id: the index for the environment the relay is operating in;
+        0=protected, 1=normal, 2=severe.
+    :param stress_limits: the dict containing the stress derating limits for relays.
     :return: _overstress, _reason
-    :rtype: tuple
-    :raise: IndexError if an unknown environment ID is passed.
-    :raise: KeyError if an unknown type ID is passed.
-    :raise: TypeError if a non-numeric value is passed for the current ratio.
+    :rtype: tuple :raise: IndexError if an unknown environment ID is passed. :raise:
+        KeyError if an unknown type ID is passed. :raise: TypeError if a non-numeric
+        value is passed for the current ratio.
     """
     _overstress: int = 0
     _reason: str = ""

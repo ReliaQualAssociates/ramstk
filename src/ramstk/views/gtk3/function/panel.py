@@ -446,8 +446,8 @@ class FunctionTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Function package Module View RAMSTKTreeView().
 
-        This method is called whenever a Function Module View RAMSTKTreeView()
-        row is activated/changed.
+        This method is called whenever a Function Module View RAMSTKTreeView() row is
+        activated/changed.
 
         :param selection: the Function class Gtk.TreeSelection().
         :return: None

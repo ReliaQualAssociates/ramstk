@@ -139,8 +139,7 @@ class ValidationModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task's record ID.
 
-        :param attributes: the attribute dict for the selected Verification
-            task.
+        :param attributes: the attribute dict for the selected Verification task.
         :return: None
         :rtype: None
         """

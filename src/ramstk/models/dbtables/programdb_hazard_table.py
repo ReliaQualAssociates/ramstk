@@ -72,8 +72,7 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     ) -> RAMSTKHazardRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -104,8 +103,8 @@ class RAMSTKHazardTable(RAMSTKBaseTable):
     def _do_calculate_hri(self, node_id: int) -> None:
         """Calculate the hazard risk index (HRI).
 
-        This method calculates the assembly and system level HRI for both
-        before and after mitigation actions.
+        This method calculates the assembly and system level HRI for both before and
+        after mitigation actions.
 
         :param node_id: the ID of the record to calculate.
         :return: None

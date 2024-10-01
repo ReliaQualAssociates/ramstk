@@ -1045,11 +1045,10 @@ PI_Q = [0.25, 1.0, 2.0]
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
-    :param attributes: the attributes for the integrated circuit being
-        calculated.
+    :param attributes: the attributes for the integrated circuit being calculated.
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
@@ -1066,11 +1065,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a integrated circuit.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["temperature_junction"] = calculate_junction_temperature(
@@ -1199,8 +1197,7 @@ def calculate_die_complexity_factor(
     :param area: the area of the die in sq. cm.
     :param feature_size: the size of the die features in microns.
     :return: _pi_cd; the die complexity factor.
-    :rtype: float
-    :raise: ZeroDivisionError if feature_size is zero.
+    :rtype: float :raise: ZeroDivisionError if feature_size is zero.
     """
     return ((area / 0.21) * (2.0 / feature_size) ** 2.0 * 0.64) + 0.36
 
@@ -1283,9 +1280,8 @@ def calculate_temperature_factor(
     :param type_id: the IC type identifier.
     :param temperature_junction: the junction temperature in C.
     :return: _pi_t; the calculated temperature factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID.
-    :raise: IndexError if passed an unknown family ID or type ID.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID. :raise:
+        IndexError if passed an unknown family ID or type ID.
     """
     if subcategory_id == 2:
         _ref_temp = 296.0
@@ -1329,9 +1325,8 @@ def calculate_package_factor(
     """Calculate the package factor (C2).
 
     :param package_id: the package type identifier.
-    :param n_active_pins: the number of active (current carying) pins in
-        the application.
-    :result: _c2; the calculated package factor.
+    :param n_active_pins: the number of active (current carying) pins in the
+        application. :result: _c2; the calculated package factor.
     :rtype: float
     """
     if package_id in {1, 2, 3}:
@@ -1360,9 +1355,8 @@ def get_application_factor(
     :param type_id: the IC type identifier.
     :param application_id: the IC application identifier.
     :return: _pi_a; the retrieved application factor.
-    :rtype: float
-    :raise: IndexError if passed an unknown application ID.
-    :raise: KeyError if passed an unknown type ID.
+    :rtype: float :raise: IndexError if passed an unknown application ID. :raise:
+        KeyError if passed an unknown type ID.
     """
     return PI_A[type_id][application_id - 1]
 
@@ -1378,14 +1372,11 @@ def get_die_complexity_factor(
     :param subcategory_id: the subcategory identifier.
     :param technology_id: the technology identifier.
     :param application_id: the application identifier.
-    :param n_elements: the number of elements (transistors/gates) in the
-        device.
+    :param n_elements: the number of elements (transistors/gates) in the device.
     :return: _c1; the selected die complexity factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID, technology ID, or
-        application ID.
-    :raise: ValueError if passed a number of elements not associated with the
-        breakpoints in MIL-HDBK-217F.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID, technology ID,
+        or application ID. :raise: ValueError if passed a number of elements not
+        associated with the breakpoints in MIL-HDBK-217F.
     """
     _dic_breakpoints = {
         1: [100, 300, 1000, 10000],
@@ -1438,8 +1429,7 @@ def get_error_correction_factor(type_id: int) -> float:
 
     :param type_id: the error correction type identifier.
     :return: _pi_ecc; the value of piECC.
-    :rtype: float
-    :raise: KeyError if passed an unknown type_id.
+    :rtype: float :raise: KeyError if passed an unknown type_id.
     """
     return {1: 1.0, 2: 0.72, 3: 0.68}[type_id]
 
@@ -1459,8 +1449,7 @@ def get_package_type_correction_factor(package_id: int) -> float:
 
     :param package_id: the package type identifier.
     :return: _pi_pt; the package type correction factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown package ID.
+    :rtype: float :raise: KeyError if passed an unknown package ID.
     """
     return PI_PT[package_id]
 
@@ -1596,10 +1585,10 @@ def _set_default_junction_temperature(
     """Set the default junction temperature for integrated circuits.
 
     :param temperature_junction: the current junction temperature.
-    :param temperature_case: the current case temperature of the integrated circuit
-        with missing defaults.
-    :param environment_active_id: the active operating environment ID of the
-        integrated circuit with missing defaults.
+    :param temperature_case: the current case temperature of the integrated circuit with
+        missing defaults.
+    :param environment_active_id: the active operating environment ID of the integrated
+        circuit with missing defaults.
     :return: _temperature_junction
     :rtype: float
     """

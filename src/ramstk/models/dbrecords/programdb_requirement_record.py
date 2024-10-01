@@ -216,19 +216,16 @@ class RAMSTKRequirementRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of the Requirement data model attributes.
 
-        :return: {revision_id, requirement_id, derived, description,
-                  figure_number, owner, page_number, parent_id, priority,
-                  requirement_code, specification, requirement_type, validated,
-                  validated_date, q_clarity_0, q_clarity_1, q_clarity_2,
-                  q_clarity_3, q_clarity_4, q_clarity_5, q_clarity_6,
-                  q_clarity_7, q_clarity_8, q_complete_0, q_complete_1,
-                  q_complete_2, q_complete_3, q_complete_4, q_complete_5,
-                  q_complete_6, q_complete_7, q_complete_8, q_complete_9,
-                  q_consistent_0, q_consistent_1, q_consistent_2,
-                  q_consistent_3, q_consistent_4, q_consistent_5,
-                  q_consistent_6, q_consistent_7, q_consistent_8,
-                  q_verifiable_0, q_verifiable_1, q_verifiable_2,
-                  q_verifiable_3, q_verifiable_4, q_verifiable_5} pairs.
+        :return: {revision_id, requirement_id, derived, description, figure_number,
+            owner, page_number, parent_id, priority, requirement_code, specification,
+            requirement_type, validated, validated_date, q_clarity_0, q_clarity_1,
+            q_clarity_2, q_clarity_3, q_clarity_4, q_clarity_5, q_clarity_6,
+            q_clarity_7, q_clarity_8, q_complete_0, q_complete_1, q_complete_2,
+            q_complete_3, q_complete_4, q_complete_5, q_complete_6, q_complete_7,
+            q_complete_8, q_complete_9, q_consistent_0, q_consistent_1, q_consistent_2,
+            q_consistent_3, q_consistent_4, q_consistent_5, q_consistent_6,
+            q_consistent_7, q_consistent_8, q_verifiable_0, q_verifiable_1,
+            q_verifiable_2, q_verifiable_3, q_verifiable_4, q_verifiable_5} pairs.
         :rtype: dict
         """
         return {

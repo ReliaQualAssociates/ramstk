@@ -356,19 +356,18 @@ class RAMSTKFixedPanel(RAMSTKPanel):
     ) -> Dict[Union[str, Any], Any]:
         """Retrieve changes made in RAMSTKComboBox() widgets.
 
-        This method publishes the PyPubSub message that it is passed.  This
-        is usually sufficient to ensure the attributes are updated by the
-        datamanager.  This method also return a dict with {_key: _new_text}
-        if this information is needed by the child class.
+        This method publishes the PyPubSub message that it is passed.  This is usually
+        sufficient to ensure the attributes are updated by the datamanager.  This method
+        also return a dict with {_key: _new_text} if this information is needed by the
+        child class.
 
         :param combo: the RAMSTKComboBox() that called the method.
-        :param key: the name in the class' Gtk.TreeModel() associated
-            with the attribute from the calling Gtk.Widget().
+        :param key: the name in the class' Gtk.TreeModel() associated with the attribute
+            from the calling Gtk.Widget().
         :param message: the PyPubSub message to publish.
-        :return: {_key: _new_text}; the work stream module's attribute name
-            and the new value from the RAMSTKComboBox().  The value {'': -1}
-            will be returned when a KeyError or ValueError is raised by this
-            method.
+        :return: {_key: _new_text}; the work stream module's attribute name and the new
+            value from the RAMSTKComboBox(). The value {'': -1} will be returned when a
+            KeyError or ValueError is raised by this method.
         """
         _key: str = ""
         _new_text: int = -1
@@ -548,12 +547,12 @@ class RAMSTKFixedPanel(RAMSTKPanel):
         """Retrieve changes made in RAMSTKCheckButton() widgets.
 
         :param checkbutton: the RAMSTKCheckButton() that was toggled.
-        :param key: the name in the class' Gtk.TreeModel() associated
-            with the data from the calling RAMSTKCheckButton().
+        :param key: the name in the class' Gtk.TreeModel() associated with the data from
+            the calling RAMSTKCheckButton().
         :param message: the PyPubSub message to broadcast.
-        :return: {_key: _new_text}; the child module attribute name and the
-            new value from the RAMSTKEntry() or RAMSTKTextView(). The value
-            {'': -1} will be returned when a KeyError is raised by this method.
+        :return: {_key: _new_text}; the child module attribute name and the new value
+            from the RAMSTKEntry() or RAMSTKTextView(). The value {'': -1} will be
+            returned when a KeyError is raised by this method.
         """
         _new_text: int = -1
 
@@ -586,8 +585,8 @@ class RAMSTKFixedPanel(RAMSTKPanel):
 
         :param entry: the RAMSTKEntry() or Gtk.TextBuffer() to read.
         :param key: the key for the entry to be read.
-        :return: {_key, _new_text}; a dict containing the attribute key and
-            the new value (text) for that key.
+        :return: {_key, _new_text}; a dict containing the attribute key and the new
+            value (text) for that key.
         """
         _new_text: Any = ""
 
@@ -1149,9 +1148,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
     def do_set_headings(self) -> None:
         """Set the treeview headings depending on the selected row.
 
-        It's used when the tree displays an aggregation of models such as
-        the FMEA or PoF.  This method applies the appropriate headings when
-        a row is selected.
+        It's used when the tree displays an aggregation of models such as the FMEA or
+        PoF.  This method applies the appropriate headings when a row is selected.
 
         :return: None
         :rtype: None
@@ -1208,11 +1206,11 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """Handle edits of a Gtk.CellRendererCombo() in the panel's RAMSTKTreeview().
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
-        :param new_text: the new Gtk.TreeIter() selected in the
-            Gtk.CellRendererCombo().  This is relative to the cell renderer's model,
-            not the RAMSTKTreeView() model.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            edited.
+        :param new_text: the new Gtk.TreeIter() selected in the Gtk.CellRendererCombo().
+            This is relative to the cell renderer's model, not the RAMSTKTreeView()
+            model.
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
@@ -1252,8 +1250,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """Handle edits of Gtk.CellRendererText() in the panel's RAMSTKTreeview().
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
@@ -1290,8 +1288,8 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """Handle edits of the FMEA Work View RAMSTKTreeview() toggle cells.
 
         :param cell: the Gtk.CellRenderer() that was toggled.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was toggled.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            toggled.
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
         :return: None
@@ -1344,10 +1342,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
         """Get the attributes for the newly selected row.
 
         :param selection: the Gtk.TreeSelection() for the new row.
-        :return: _attributes; the dict of attributes and value for the item
-            in the selected row.  The key is the attribute name, the value is
-            the attribute value.  Pulling them from the RAMSTKTreeView()
-            ensures uncommitted changes are always selected.
+        :return: _attributes; the dict of attributes and value for the item in the
+            selected row. The key is the attribute name, the value is the attribute
+            value. Pulling them from the RAMSTKTreeView() ensures uncommitted changes
+            are always selected.
         """
         selection.handler_block(self.tvwTreeView.dic_handler_id["changed"])
 
@@ -1371,11 +1369,10 @@ class RAMSTKTreePanel(RAMSTKPanel):
     def _do_set_attributes(self, node_id, package) -> None:
         """Set the attributes of the record associated with node ID.
 
-        This is a helper method to use with database view models.  Since database
-        view models are comprised of an aggregate of database tables, the selected
-        row in the RAMSTKTreeView will determine which table needs updating.  This
-        method susses that out and sends the correct message to cause the correct
-        table to be updated.
+        This is a helper method to use with database view models.  Since database view
+        models are comprised of an aggregate of database tables, the selected row in the
+        RAMSTKTreeView will determine which table needs updating.  This method susses
+        that out and sends the correct message to cause the correct table to be updated.
 
         :param node_id: the ID of the record in the RAMSTK Program database table whose
             attributes are to be set.

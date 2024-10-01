@@ -153,15 +153,13 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """Handle Gtk.CellRenderer() edits.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
-            was edited.
-        :param new_row: the new Gtk.TreeIter() selected in the
-            Gtk.CellRendererCombo().  This is relative to the cell renderer's model,
-            not the RAMSTKTreeView() model.
-        :param position: the column position of the edited
-            Gtk.CellRenderer().
-        :return: new_text; the value of the new text converted to the
-            correct data type for the attribute being edited.
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that was edited.
+        :param new_row: the new Gtk.TreeIter() selected in the Gtk.CellRendererCombo().
+            This is relative to the cell renderer's model, not the RAMSTKTreeView()
+            model.
+        :param position: the column position of the edited Gtk.CellRenderer().
+        :return: new_text; the value of the new text converted to the correct data type
+            for the attribute being edited.
         """
         _model = self.get_model()
         _cell_model = cell.get_property("model")
@@ -185,13 +183,11 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
         """Handle Gtk.CellRenderer() edits.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
-            was edited.
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that was edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
-        :param position: the column position of the edited
-            Gtk.CellRenderer().
-        :return: new_text; the value of the new text converted to the
-            correct data type for the attribute being edited.
+        :param position: the column position of the edited Gtk.CellRenderer().
+        :return: new_text; the value of the new text converted to the correct data type
+            for the attribute being edited.
         :rtype: Any
         """
         _model = self.get_model()
@@ -412,10 +408,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def get_aggregate_attributes(self, entity: object) -> List[Any]:
         """Get the attributes for aggregate work stream modules.
 
-        :param entity: the RAMSTK Program database table whose attributes
-            are to be returned.
-        :return: _attributes; a list of the attributes values in the order
-            they will be displayed.
+        :param entity: the RAMSTK Program database table whose attributes are to be
+            returned.
+        :return: _attributes; a list of the attributes values in the order they will be
+            displayed.
         :rtype: list
         """
         _attributes = []
@@ -458,10 +454,10 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     def get_simple_attributes(self, entity: object) -> List[Any]:
         """Get the attributes for simple work stream modules.
 
-        :param entity: the RAMSTK Program database table whose attributes
-            are to be returned.
-        :return: _attributes; a list of the attributes values in the order
-            they will be displayed.
+        :param entity: the RAMSTK Program database table whose attributes are to be
+            returned.
+        :return: _attributes; a list of the attributes values in the order they will be
+            displayed.
         :rtype: list
         """
         _attributes = []
@@ -544,8 +540,7 @@ class RAMSTKTreeView(Gtk.TreeView, RAMSTKWidget):
     ) -> None:
         """Dynamically set wrap-width property for a Gtk.CellRenderer().
 
-        This is called whenever the column width in the Gtk.TreeView() is
-        resized.
+        This is called whenever the column width in the Gtk.TreeView() is resized.
 
         :param column: the Gtk.TreeViewColumn() being resized.
         :param GParamInt __param: the triggering parameter.

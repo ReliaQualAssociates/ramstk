@@ -166,8 +166,7 @@ class RAMSTKDatabaseSelect(RAMSTKDialog):
     def _request_load_databases(self, __button: RAMSTKButton) -> None:
         """Re-load the database list.
 
-        :param __button: the RAMSTKButton() that called this method on
-            'clicked'.
+        :param __button: the RAMSTKButton() that called this method on 'clicked'.
         :return: None
         :rtype: None
         """
@@ -345,8 +344,7 @@ class RAMSTKDateSelect(Gtk.Dialog):
     def do_run(self) -> Any:
         """Run the RAMSTKDateSelect dialog.
 
-        :return: the selected date or the default date if the dialog is
-            cancelled.
+        :return: the selected date or the default date if the dialog is cancelled.
         :rtype: str
         """
         _date = "1970-01-01"
@@ -414,8 +412,8 @@ class RAMSTKFileChooser(Gtk.FileChooserDialog):
     def do_run(self) -> Tuple[Optional[Any], Optional[Any]]:
         """Run the RAMSTKFileChooser dialog.
 
-        :return: (_filename, _extension); the file name and file extension of
-                 the selected file.
+        :return: (_filename, _extension); the file name and file extension of the
+            selected file.
         :rtype: (str, str) or (None, None)
         """
         _filename = None
@@ -460,9 +458,8 @@ class RAMSTKMessageDialog(Gtk.MessageDialog):
     def do_set_message_type(self, message_type: str = "error") -> None:
         """Set RAMSTKMessageDialog message type.
 
-        :param message_type: the RAMSTKMessageDialog message type.
-            Options are error, warning, information, or question.  Default
-            is error.
+        :param message_type: the RAMSTKMessageDialog message type. Options are error,
+            warning, information, or question. Default is error.
         :return: None
         :rtype: None
         """

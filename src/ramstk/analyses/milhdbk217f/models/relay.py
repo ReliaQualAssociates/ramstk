@@ -245,8 +245,8 @@ PI_F = {
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -264,11 +264,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a relay.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
+    :return: (attributes, _msg); the keyword argument (hardware attribute) dictionary
+        with updated values and the error message, if any.
     :rtype: (dict, str)
     """
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
@@ -367,10 +366,9 @@ def calculate_part_stress_lambda_b(
 
     :param subcategory_id: the subcategory identifier.
     :param type_id: the relay type identifier.
-    :param temperature_active: the operating ambient temperature of the
-        relay in C.
-    :return: _lambda_b; the calculated part stress base hazard rate or 0.0 if
-        passed an unknown subcategory ID.
+    :param temperature_active: the operating ambient temperature of the relay in C.
+    :return: _lambda_b; the calculated part stress base hazard rate or 0.0 if passed an
+        unknown subcategory ID.
     :rtype: float
     """
     _dic_factors = {
@@ -403,9 +401,8 @@ def get_application_construction_factor(
     :param construction_id: the relay construction identifier.
     :param application_id: the relay application identifier.
     :return: _pi_f; the selected application factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown contact rating ID, construction ID,
-        or application ID.
+    :rtype: float :raise: KeyError if passed an unknown contact rating ID, construction
+        ID, or application ID.
     """
     _quality = 1 if quality_id in {1, 2, 3, 4, 5, 6} else 2
     return PI_F[contact_rating_id][application_id][construction_id][_quality - 1]
@@ -422,9 +419,8 @@ def get_environment_factor(
     :param quality_id: the quality level identifier.
     :param environment_active_id: the active environment identifier.
     :return: _pi_e; the selected environment factor.
-    :rtype: float
-    :raise: IndexError if passed an unknown active environment ID.
-    :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float :raise: IndexError if passed an unknown active environment ID. :raise:
+        KeyError if passed an unknown subcategory ID.
     """
     _quality = 1 if quality_id in {1, 2, 3, 4, 5, 6} else 2
     return (

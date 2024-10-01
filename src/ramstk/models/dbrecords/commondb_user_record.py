@@ -60,7 +60,7 @@ class RAMSTKUserRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve the current values of the RAMSTKUser data model attributes.
 
         :return: {user_id, user_lname, user_fname, user_email, user_phone,
-                  user_group_id} pairs.
+            user_group_id} pairs.
         :rtype: dict
         """
         return {

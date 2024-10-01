@@ -343,8 +343,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     def do_load_affinity_groups(self, affinities: Dict[int, Tuple[str, str]]) -> None:
         """Load the affinity group list.
 
-        :param affinities: the dict containing the affinity groups and the
-            group type (affinity in all cases).
+        :param affinities: the dict containing the affinity groups and the group type
+            (affinity in all cases).
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
@@ -379,8 +379,7 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     def _do_load_requirements(self, tree: treelib.Tree) -> None:
         """Load the requirement ID list when Requirements are retrieved.
 
-        :param tree: the treelib Tree() containing the Stakeholder data
-            records.
+        :param tree: the treelib Tree() containing the Stakeholder data records.
         :return: None
         """
         _cell = self.tvwTreeView.get_column(
@@ -398,9 +397,9 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     def _on_insert(self, tree: treelib.Tree) -> None:
         """Wrap the do_load_panel() method when an element is inserted.
 
-        The do_set_cursor_active() method responds to the same message,
-        but one less argument in it's call.  This results in a PyPubSub
-        error and is the reason this wrapper method is needed.
+        The do_set_cursor_active() method responds to the same message, but one less
+        argument in it's call.  This results in a PyPubSub error and is the reason this
+        wrapper method is needed.
 
         :param tree: the module's treelib Tree().
         :return: None
@@ -425,8 +424,8 @@ class StakeholderTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the List View RAMSTKTreeView().
 
-        This method is called whenever a Stakeholder List View
-        RAMSTKTreeView() row is activated/changed.
+        This method is called whenever a Stakeholder List View RAMSTKTreeView() row is
+        activated/changed.
 
         :param selection: the Stakeholder class Gtk.TreeSelection().
         :return: None

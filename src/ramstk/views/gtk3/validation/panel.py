@@ -578,8 +578,7 @@ class ValidationTreePanel(RAMSTKTreePanel):
     ) -> None:
         """Load the verification task type list.
 
-        :param verification_type: the dict containing the verification task
-            types.
+        :param verification_type: the dict containing the verification task types.
         :return: None
         """
         self._lst_verification_types = [""]
@@ -615,8 +614,8 @@ class ValidationTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Validation Module View RAMSTKTreeView().
 
-        This method is called whenever a Validation Module View
-        RAMSTKTreeView() row is activated/changed.
+        This method is called whenever a Validation Module View RAMSTKTreeView() row is
+        activated/changed.
 
         :param selection: the Validation class Gtk.TreeSelection().
         :return: None
@@ -649,9 +648,9 @@ class ValidationTreePanel(RAMSTKTreePanel):
     ) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
-        This is a wrapper for the metaclass method do_refresh_tree().  It is
-        necessary to handle RAMSTKComboBox() changes because the package value will
-        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+        This is a wrapper for the metaclass method do_refresh_tree().  It is necessary
+        to handle RAMSTKComboBox() changes because the package value will be an integer
+        and the Gtk.CellRendererCombo() needs a string input to update.
 
         :param node_id: the ID of the validation task being edited.
         :param package: the key:value for the data being updated.
@@ -1026,13 +1025,10 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
     ) -> None:
         """Load the measurement units RAMSTKComboBox().
 
-        :param measurement_unit: the list of measurement units to load.  The
-            key is an integer representing the ID field in the database.  The
-            value is a tuple with a unit abbreviation, unit name, and generic
-            unit type.  For example:
-
+        :param measurement_unit: the list of measurement units to load. The key is an
+            integer representing the ID field in the database. The value is a tuple
+            with a unit abbreviation, unit name, and generic unit type. For example:
             ('lbf', 'Pounds Force', 'unit')
-
         :return: None
         :rtype: None
         """
@@ -1075,10 +1071,10 @@ class ValidationTaskDescriptionPanel(RAMSTKFixedPanel):
     def _do_make_task_code(self, combo: RAMSTKComboBox) -> None:
         """Create the validation task code.
 
-        This method builds the task code based on the task type and the task
-        ID.  The code created has the form:
+        This method builds the task code based on the task type and the task ID.  The
+        code created has the form:
 
-            task type 3-letter abbreviation-task ID
+        task type 3-letter abbreviation-task ID
 
         :param combo: the RAMSTKComboBox() that called this method.
         :return: None
@@ -1397,10 +1393,10 @@ class ValidationTaskEffortPanel(RAMSTKFixedPanel):
     def _do_make_task_code(self, task_type: str) -> str:
         """Create the validation task code.
 
-        This method builds the task code based on the task type and the task
-        ID.  The code created has the form:
+        This method builds the task code based on the task type and the task ID.  The
+        code created has the form:
 
-            task type 3-letter abbreviation-task ID
+        task type 3-letter abbreviation-task ID
 
         :param task_type: the three letter abbreviation for the task type.
         :return: _code

@@ -134,8 +134,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the failure definition's record ID.
 
-        :param attributes: the attribute dict for the selected failure
-            definition.
+        :param attributes: the attribute dict for the selected failure definition.
         :return: None
         :rtype: None
         """

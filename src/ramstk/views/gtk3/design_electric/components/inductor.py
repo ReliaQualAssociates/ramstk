@@ -274,8 +274,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.
 
-        :param attributes: the attributes dictionary for the selected
-        Inductor.
+        :param attributes: the attributes dictionary for the selected Inductor.
         :return: None
         :rtype: None
         """

@@ -94,8 +94,7 @@ def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float:
 def _do_set_default_values(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Set default values for parameters <= 0.0.
 
-    :param attributes: the attribute dict for the component being
-        calculated.
+    :param attributes: the attribute dict for the component being calculated.
     :return: attributes; the attribute dict with updated values.
     :rtype: dict
     """
@@ -126,12 +125,10 @@ def _do_set_default_values(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
-    :param attributes: the attribute dict for the component being
-        calculated.
+    :param attributes: the attribute dict for the component being calculated.
     :return: attributes; the attribute dict with updated values.
-    :rtype: dict
-    :raise: IndexError if there is no entry for the active environment ID.
-    :raise: KeyError if there is no entry for category ID or subcategory ID.
+    :rtype: dict :raise: IndexError if there is no entry for the active environment ID.
+        :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _part_count = {
         1: integratedcircuit.calculate_part_count,
@@ -180,12 +177,10 @@ def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MIL-HDBK-217F parts stress active hazard rate.
 
-    :param attributes: the attribute dict for the component being
-        calculated.
+    :param attributes: the attribute dict for the component being calculated.
     :return: attributes; the attribute dict with updated values.
-    :rtype: dict
-    :raise: IndexError if there is no entry for the active environment ID.
-    :raise: KeyError if there is no entry for category ID or subcategory ID.
+    :rtype: dict :raise: IndexError if there is no entry for the active environment ID.
+        :raise: KeyError if there is no entry for category ID or subcategory ID.
     """
     _functions = {
         1: integratedcircuit.calculate_part_stress,
@@ -238,20 +233,17 @@ def _get_environment_factor(
 ) -> float:
     """Retrieve the MIL-HDBK-217F environment factor (piE) for the component.
 
-    Most component types have a single list of piE factors, but some require
-    additional indices to select the correct list of factors.
+    Most component types have a single list of piE factors, but some require additional
+    indices to select the correct list of factors.
 
     :param category_id: the category ID of the component.
-    :param environment_active_id: the active environment ID for the
-        component.
-    :keyword int subcategory_id: the subcategory ID of the component.
-    :keyword int quality_id: the quality level ID of the component.
+    :param environment_active_id: the active environment ID for the component. :keyword
+        int subcategory_id: the subcategory ID of the component. :keyword int
+        quality_id: the quality level ID of the component.
     :return: _pi_e; the selected piE value.
-    :rtype: float
-    :raise: IndexError if there is no list entry for the passed active
-        environment ID.
-    :raise: KeyError if there is no piE list for the passed category ID (or
-        subcategory ID, quality ID when appllicable).
+    :rtype: float :raise: IndexError if there is no list entry for the passed active
+        environment ID. :raise: KeyError if there is no piE list for the passed category
+        ID (or subcategory ID, quality ID when appllicable).
     """
     _pi_e_lists = {
         1: integratedcircuit.PI_E,

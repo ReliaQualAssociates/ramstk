@@ -76,8 +76,7 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
     ) -> RAMSTKMilHdbk217FRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -90,9 +89,9 @@ class RAMSTKMILHDBK217FTable(RAMSTKBaseTable):
     def _do_update_tree(self, tree: treelib.Tree) -> None:
         """Update the MIL-HDBK-217F tree for the newly added or removed Hardware.
 
-        MIL-HDBK-217F records are added by triggers in the database when a new
-        Hardware item is added.  This method simply adds a new node to the MIL-HDBK-217F
-        tree with a blank record.
+        MIL-HDBK-217F records are added by triggers in the database when a new Hardware
+        item is added.  This method simply adds a new node to the MIL-HDBK-217F tree
+        with a blank record.
 
         :param tree: the Hardware tree with the new node.
         :return: None

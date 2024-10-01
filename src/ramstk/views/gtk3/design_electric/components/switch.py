@@ -57,22 +57,22 @@ SWITCH_CONTACT_FORM_DICT = {
 class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Switch assessment input attribute data in the RAMSTK Work Book.
 
-    The Switch assessment input view displays all the assessment inputs for
-    the selected switch.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a switch assessment input view are:
+    The Switch assessment input view displays all the assessment inputs for the selected
+    switch.  This includes, currently, inputs for MIL-HDBK-217FN2.  The attributes of a
+    switch assessment input view are:
 
-    :cvar dict _dic_applications: dictionary of switch applications.  Key is
-        switch subcategory ID; values are lists of applications.
-    :cvar dict _dic_construction: dictionary of switch construction methods.
-        Key is switch subcategory ID; values are lists of construction methods.
-    :cvar dict _dic_contact_forms: dictionary of switch contact forms.  Key is
-        switch subcategory ID; values are lists of contact forms.
+    :cvar dict _dic_applications: dictionary of switch applications.  Key is     switch
+    subcategory ID; values are lists of applications. :cvar dict _dic_construction:
+    dictionary of switch construction methods.     Key is switch subcategory ID; values
+    are lists of construction methods. :cvar dict _dic_contact_forms: dictionary of
+    switch contact forms.  Key is     switch subcategory ID; values are lists of contact
+    forms.
 
-    :ivar cmbApplication: select and display the switch application.
-    :ivar cmbConstruction: select and display the switch construction method.
-    :ivar cmbContactForm: select and display the switch contact form.
-    :ivar txtNCycles: enter and display the number of switch cycles/hour.
-    :ivar txtNElements: enter and display the number of switch wafers.
+    :ivar cmbApplication: select and display the switch application. :ivar
+    cmbConstruction: select and display the switch construction method. :ivar
+    cmbContactForm: select and display the switch contact form. :ivar txtNCycles: enter
+    and display the number of switch cycles/hour. :ivar txtNElements: enter and display
+    the number of switch wafers.
     """
 
     # Define private dict class attributes.

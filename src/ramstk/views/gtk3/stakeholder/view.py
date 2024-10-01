@@ -115,8 +115,8 @@ class StakeholderWorkView(RAMSTKWorkView):
     def _do_add_to_affinity_group(self, new_text: str) -> None:
         """Add an entry to the RAMSTK_AFFINITY_GROUP dictionary.
 
-        :param new_text: the name of the new group to add to the
-            RAMSTK_AFFINITY_GROUP dictionary.
+        :param new_text: the name of the new group to add to the RAMSTK_AFFINITY_GROUP
+            dictionary.
         :return: None
         """
         try:
@@ -182,8 +182,7 @@ class StakeholderWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
 
-        :param attributes: the attribute dict for the selected stakeholder
-            input.
+        :param attributes: the attribute dict for the selected stakeholder input.
         :return: None
         :rtype: None
         """

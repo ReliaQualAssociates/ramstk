@@ -213,24 +213,21 @@ class RequirementModuleView(RAMSTKModuleView):
 class RequirementGeneralDataView(RAMSTKWorkView):
     """Display general Requirement attribute data in the RAMSTK Work Book.
 
-    The Requirement Work View displays all the general data attributes for the
-    selected Requirement.  The attributes of a requirement Work View are:
+    The Requirement Work View displays all the general data attributes for the selected
+    Requirement.  The attributes of a requirement Work View are:
 
-    :cvar str _tag: the name of the module.
-    :cvar str _tablabel: the text to display on the tab's label.
-    :cvar str _tabtooltip: the text to display as the tab's tooltip.
+    :cvar str _tag: the name of the module. :cvar str _tablabel: the text to display on
+    the tab's label. :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
-    :ivar list _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
-        menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
-        toolbar buttons and pop-up menu.  The tooltips are listed in the
-        order they appear on the toolbar or pop-up menu.
+    :ivar list _lst_callbacks: the list of callback methods for the view's     toolbar
+    buttons and pop-up menu.  The methods are listed in the order     they appear on the
+    toolbar and pop-up menu. :ivar list _lst_icons: the list of icons for the view's
+    toolbar buttons     and pop-up menu.  The icons are listed in the order they appear
+    on the     toolbar and pop-up menu. :ivar list _lst_mnu_labels: the list of labels
+    for the view's pop-up     menu.  The labels are listed in the order they appear in
+    the menu. :ivar list _lst_tooltips: the list of tooltips for the view's     toolbar
+    buttons and pop-up menu.  The tooltips are listed in the     order they appear on
+    the toolbar or pop-up menu.
     """
 
     # Define private dict class attributes.

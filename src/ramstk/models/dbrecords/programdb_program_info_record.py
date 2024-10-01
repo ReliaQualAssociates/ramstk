@@ -121,11 +121,10 @@ class RAMSTKProgramInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of RAMSTKProgramInfo data model attributes.
 
-        :return: {revision_id, function_active, requirement_active,
-                  hardware_active, software_active, vandv_active,
-                  testing_active, fraca_active, survival_active, rcm_active,
-                  rbd_active, fta_active, created_on, created_by, last_saved,
-                  last_saved_by, method} pairs.
+        :return: {revision_id, function_active, requirement_active, hardware_active,
+            software_active, vandv_active, testing_active, fraca_active,
+            survival_active, rcm_active, rbd_active, fta_active, created_on, created_by,
+            last_saved, last_saved_by, method} pairs.
         :rtype: dict
         """
         return {

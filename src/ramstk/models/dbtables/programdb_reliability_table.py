@@ -76,8 +76,7 @@ class RAMSTKReliabilityTable(RAMSTKBaseTable):
     ) -> RAMSTKReliabilityRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """

@@ -331,8 +331,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set certain widgets sensitive or insensitive.
 
-        This method will set the sensitivity of various widgets depending on
-        the hazard rate assessment type selected.
+        This method will set the sensitivity of various widgets depending on the hazard
+        rate assessment type selected.
 
         :return: None
         :rtype: None
@@ -788,8 +788,8 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None
@@ -1136,8 +1136,8 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None
@@ -1162,8 +1162,8 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries_hardware(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None

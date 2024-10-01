@@ -338,8 +338,8 @@ class ICMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the integrated circuit assessment results page.
 
-        :param attributes: the attributes dictionary for the selected
-            Integrated Circuit.
+        :param attributes: the attributes dictionary for the selected Integrated
+            Circuit.
         :return: None
         :rtype: None
         """

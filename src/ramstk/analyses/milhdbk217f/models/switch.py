@@ -216,8 +216,8 @@ PI_E = {
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -235,8 +235,7 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a switch.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
     :param attributes: the attributes of the switch being calculated.
     :return attributes: the updated attributes of the switch being calculated.
@@ -300,8 +299,8 @@ def calculate_load_stress_factor(
     """Calculate the load stress factor (piL).
 
     :param application_id: the application ID of the switch being calculated.
-    :param current_ratio: the ratio of operating to rated current for the switch
-        being calculated.
+    :param current_ratio: the ratio of operating to rated current for the switch being
+        calculated.
     :return _pi_l: the calculated load factor.
     :rtype: float
     """
@@ -326,8 +325,8 @@ def calculate_part_stress_lambda_b(
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    method.
 
     :param subcategory_id: the subcategory ID of the switch being calculated.
     :param quality_id: the quality ID of the switch being calculated.
@@ -335,9 +334,8 @@ def calculate_part_stress_lambda_b(
     :param application_id: the application ID of the switch being calculated.
     :param n_elements: the number of contacts for the switch being calculated.
     :return _lambda_b: the calculated base hazard rate.
-    :rtype: float
-    :raise: IndexError if passed an unknown quality ID or application ID.
-    :raise: KeyError is passed an unknown construction ID.
+    :rtype: float :raise: IndexError if passed an unknown quality ID or application ID.
+        :raise: KeyError is passed an unknown construction ID.
     """
     _dic_factors: Dict[int, List[List[float]]] = {
         2: [[0.1, 0.00045, 0.0009], [0.1, 0.23, 0.63]],

@@ -218,16 +218,12 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_make_layout(self) -> None:
         """Create a view with the following layout.
 
-        +-----+---------------------------------------+
-        |  B  |                WIDGETS                |
-        |  U  |                                       |
-        |  T  |                                       |
-        |  T  |                                       |
-        |  O  |                                       |
-        |  N  |                                       |
-        |  S  |                                       |
-        +-----+---------------------------------------+
-        self.make_toolbuttons -------> self
+        +-----+---------------------------------------+ |  B  |                WIDGETS
+        | |  U  |                                       | |  T  |
+        | |  T  |                                       | |  O  |
+        | |  N  |                                       | |  S  |
+        | +-----+---------------------------------------+ self.make_toolbuttons ------->
+        self
 
         :return: None
         :rtype: None
@@ -271,22 +267,17 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_make_layout_lrr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
         """Create a view with the following layout.
 
-        +-----+-------------------+-------------------+
-        |  B  |      L. SIDE      |      R. TOP       |
-        |  U  |                   |                   |
-        |  T  |                   |                   |
-        |  T  |                   +-------------------+
-        |  O  |                   |     R. BOTTOM     |
-        |  N  |                   |                   |
-        |  S  |                   |                   |
-        +-----+-------------------+-------------------+
+        +-----+-------------------+-------------------+ |  B  |      L. SIDE      |
+        R. TOP       | |  U  |                   |                   | |  T  |
+        |                   | |  T  |                   +-------------------+ |  O  |
+        |     R. BOTTOM     | |  N  |                   |                   | |  S  |
+        |                   | +-----+-------------------+-------------------+
 
-        self.make_toolbuttons  --------+--> self
-                                       |
+        self.make_toolbuttons  --------+--> self                                |
         _vpaned_right -----> _hpaned --+
 
-        :return: (_hpaned, _vpaned_right); the Gtk.HPaned() and Gtk.Vpaned()
-            that create the left and right sections for further population.
+        :return: (_hpaned, _vpaned_right); the Gtk.HPaned() and Gtk.Vpaned() that create
+            the left and right sections for further population.
         :rtype: tuple
         """
         self.do_make_layout()
@@ -303,22 +294,18 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_make_layout_llr(self) -> Tuple[Gtk.HPaned, Gtk.VPaned]:
         """Create a view with the following layout.
 
-        +-----+-------------------+-------------------+
-        |  B  |       L. TOP      |     R. SIDE       |
-        |  U  |                   |                   |
-        |  T  |                   |                   |
-        |  T  +-------------------+                   |
-        |  O  |     L. BOTTOM     |                   |
-        |  N  |                   |                   |
-        |  S  |                   |                   |
+        +-----+-------------------+-------------------+ |  B  |       L. TOP      |
+        R. SIDE       | |  U  |                   |                   | |  T  |
+        |                   | |  T  +-------------------+                   | |  O  |
+        L. BOTTOM     |                   | |  N  |                   |
+        | |  S  |                   |                   |
         +-----+-------------------+-------------------+
 
-        self.make_toolbuttons  --------+--> self
-                                       |
+        self.make_toolbuttons  --------+--> self                                |
         _vpaned_left -----> _hpaned ---+
 
-        :return: (_hpaned, _vpaned_left); the Gtk.HPaned() and Gtk.Vpaned()
-            that create the left and right sections for further population.
+        :return: (_hpaned, _vpaned_left); the Gtk.HPaned() and Gtk.Vpaned() that create
+            the left and right sections for further population.
         :rtype: tuple
         """
         self.do_make_layout()
@@ -335,24 +322,18 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_make_layout_llrr(self) -> Tuple[Gtk.VPaned, Gtk.VPaned]:
         """Create a view with the following layout.
 
-        +-----+-------------------+-------------------+
-        |  B  |       L. TOP      |      R. TOP       |
-        |  U  |                   |                   |
-        |  T  |                   |                   |
-        |  T  +-------------------+-------------------+
-        |  O  |     L. BOTTOM     |     R. BOTTOM     |
-        |  N  |                   |                   |
-        |  S  |                   |                   |
+        +-----+-------------------+-------------------+ |  B  |       L. TOP      |
+        R. TOP       | |  U  |                   |                   | |  T  |
+        |                   | |  T  +-------------------+-------------------+ |  O  |
+        L. BOTTOM     |     R. BOTTOM     | |  N  |                   |
+        | |  S  |                   |                   |
         +-----+-------------------+-------------------+
 
-        self.make_toolbuttons  --------+--> self
-                                       |
-        _vpaned_left ---+--> _hpaned --+
-                        |
-        _vpaned_right --+
+        self.make_toolbuttons  --------+--> self                                |
+        _vpaned_left ---+--> _hpaned --+                 | _vpaned_right --+
 
-        :return: (_vpaned_left, _vpaned_right); the two Gtk.Vpaned()
-            that create the left and right sections for further population.
+        :return: (_vpaned_left, _vpaned_right); the two Gtk.Vpaned() that create the
+            left and right sections for further population.
         :rtype: tuple
         """
         self.do_make_layout()
@@ -521,8 +502,8 @@ class RAMSTKBaseView(Gtk.HBox):
     def do_set_cursor_active(self, tree: treelib.Tree = "") -> None:
         """Set active cursor for the Module, List, and Work Book Gdk.Window().
 
-        :param tree: the treelib Tree() passed in the PyPubSub message.  Only
-            needed when this method is a PyPubSub subscriber.
+        :param tree: the treelib Tree() passed in the PyPubSub message. Only needed
+            when this method is a PyPubSub subscriber.
         :return: None
         """
         self.do_set_cursor(Gdk.CursorType.LEFT_PTR)
@@ -533,8 +514,8 @@ class RAMSTKBaseView(Gtk.HBox):
         This method will also write the error message to the RAMSTK debug_log to (
         hopefully) assist in troubleshooting.
 
-        :param error_message: the error message broadcast with the
-        'fail' message.  Only needed when this method is a PyPubSub subscriber.
+        :param error_message: the error message broadcast with the 'fail' message. Only
+            needed when this method is a PyPubSub subscriber.
         :return: None
         :rtype: None
         """

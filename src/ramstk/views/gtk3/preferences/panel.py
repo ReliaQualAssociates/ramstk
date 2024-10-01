@@ -351,10 +351,8 @@ class GeneralPreferencesPanel(RAMSTKFixedPanel):
         """Select the path from the file chooser.
 
         :param button: the Gtk.FileChooserButton() that called this method.
-        :param index: the index of the Gtk.FileChooserButton() that called
-            this method.
-        :return: None
-        :rtyp: None
+        :param index: the index of the Gtk.FileChooserButton() that called this method.
+        :return: None :rtyp: None
         """
         if index == 0:
             self._configuration.RAMSTK_CONF_DIR = button.get_current_folder()
@@ -848,8 +846,8 @@ class TreeLayoutPreferencesPanel(RAMSTKTreePanel):
     def _do_load_format(self, module: str) -> None:
         """Load the selected Module View format file for editing.
 
-        :param module: the name of the RAMSTK workstream module whose
-            Module View layout is to be edited.
+        :param module: the name of the RAMSTK workstream module whose Module View layout
+            is to be edited.
         :return: None
         :rtype: None
         """

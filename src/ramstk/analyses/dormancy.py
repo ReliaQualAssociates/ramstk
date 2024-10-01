@@ -71,10 +71,9 @@ def get_dormant_hr_multiplier(
 ) -> float:
     """Get the dormant hazard rate multiplier based on hardware and environment info.
 
-    :param hw_info: the list of information relative to the hardware item
-           to calculate the dormant hazard rate.  Index 0 is the category ID,
-           index 1 is the subcategory ID, and index 3 is the predicted hazard
-           rate.
+    :param hw_info: the list of information relative to the hardware item to calculate
+        the dormant hazard rate. Index 0 is the category ID, index 1 is the subcategory
+        ID, and index 3 is the predicted hazard rate.
     :param env_active: the name of the active environment.
     :param env_dormant: the name of the dormant environment.
     :return: the dormant hazard rate multiplier.

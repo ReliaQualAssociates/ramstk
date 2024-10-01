@@ -666,8 +666,8 @@ class HardwareAssessmentInputView(RAMSTKWorkView):
     def _do_pack_component_panel(self, attributes: Dict[str, Any]) -> None:
         """Pack panel used to display component-specific input attributes.
 
-        :param attributes: dict containing the attributes of the hardware
-            item being loaded.
+        :param attributes: dict containing the attributes of the hardware item being
+            loaded.
         :return: None
         :rtype: None
         """
@@ -940,8 +940,7 @@ class HardwareAssessmentResultsView(RAMSTKWorkView):
     def _do_set_pkeys(self, attributes: Dict[str, Any]) -> None:
         """Set the work stream module's primary key values.
 
-        :param attributes: the attribute dict for the selected work stream
-            module item.
+        :param attributes: the attribute dict for the selected work stream module item.
         :return: None
         :rtype: None
         """

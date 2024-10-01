@@ -463,8 +463,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     def _do_load_specification(self, combo: RAMSTKComboBox) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Connection attribute.
 
-        :param combo: the connection type RAMSTKCombo() that called this
-            method.
+        :param combo: the connection type RAMSTKCombo() that called this method.
         :return: None
         :rtype: None
         """

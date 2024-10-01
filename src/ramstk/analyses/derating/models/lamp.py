@@ -18,17 +18,14 @@ def do_derating_analysis(
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for lamps.
 
-    :param environment_id: the index for the environment the lamp
-        is operating in; 0=protected, 1=normal, 2=severe.
-    :param subcategory_id: the subcategory ID of the lamp to check
-        derating.
-    :param stress_limits: the dict containing the stress derating limits for
-        lamps.
+    :param environment_id: the index for the environment the lamp is operating in;
+        0=protected, 1=normal, 2=severe.
+    :param subcategory_id: the subcategory ID of the lamp to check derating.
+    :param stress_limits: the dict containing the stress derating limits for lamps.
     :return: _overstress, _reason
-    :rtype: tuple
-    :raise: IndexError if an unknown environment ID is passed.
-    :raise: KeyError if an unknown subcategory ID is passed.
-    :raise: TypeError if a non-numeric value is passed for the current ratio.
+    :rtype: tuple :raise: IndexError if an unknown environment ID is passed. :raise:
+        KeyError if an unknown subcategory ID is passed. :raise: TypeError if a non-
+        numeric value is passed for the current ratio.
     """
     _subcategory = {
         4: "lamp",

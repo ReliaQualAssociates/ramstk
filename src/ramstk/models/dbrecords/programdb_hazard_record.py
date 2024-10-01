@@ -210,17 +210,15 @@ class RAMSTKHazardRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of RAMSTKHazardAnalysis model attributes.
 
         :return: {revision_id, hardware_id, hazard_id, potential_hazard,
-                  potential_cause, assembly_effect, assembly_severity_id,
-                  assembly_probability_id, assembly_hri, assembly_mitigation,
-                  assembly_severity_id_f, assembly_probability_id_f,
-                  assembly_hri_f, system_effect, system_severity_id,
-                  system_probability_id, system_hri, system_mitigation,
-                  system_severity_id_f, system_probability_id_f,
-                  system_hri_f, remarks, function_1, function_2, function_3,
-                  function_4, function_5, result_1, result_2, result_3,
-                  result_4, result_5, user_blob_1, user_blob_2, user_blob_3,
-                  user_float_1, user_float_2, user_float_3, user_int_1,
-                  user_int_2, user_int_3} pairs
+            potential_cause, assembly_effect, assembly_severity_id,
+            assembly_probability_id, assembly_hri, assembly_mitigation,
+            assembly_severity_id_f, assembly_probability_id_f, assembly_hri_f,
+            system_effect, system_severity_id, system_probability_id, system_hri,
+            system_mitigation, system_severity_id_f, system_probability_id_f,
+            system_hri_f, remarks, function_1, function_2, function_3, function_4,
+            function_5, result_1, result_2, result_3, result_4, result_5, user_blob_1,
+            user_blob_2, user_blob_3, user_float_1, user_float_2, user_float_3,
+            user_int_1, user_int_2, user_int_3} pairs
         :rtype: dict
         """
         return {

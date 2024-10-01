@@ -76,8 +76,8 @@ class RAMSTKMatrixView(Gtk.Grid):
 
         :param column_name_lst: a list of tuples with the name and description of the
             items to use as the column headings and the tooltips.
-        :param row_name_lst: a list of tuples with the name and description of the
-            items to use as the row headings and the tooltips.
+        :param row_name_lst: a list of tuples with the name and description of the items
+            to use as the row headings and the tooltips.
         :return: None
         :rtype: None
         """
@@ -94,8 +94,7 @@ class RAMSTKMatrixView(Gtk.Grid):
     ) -> Gtk.Widget:
         """Get the interactive widget at column/row.
 
-        :param column_idx: the index of the column in the matrix to retrieve the
-            widget.
+        :param column_idx: the index of the column in the matrix to retrieve the widget.
         :param row_idx: the index of the row in the matrix to retrieve the widget.
         :return: _widget_obj, the widget at the column/row intersection in the matrix.
         :rtype: object
@@ -129,10 +128,10 @@ class RAMSTKMatrixView(Gtk.Grid):
         """Load the RAMSTKMatrixView() column headings for each column.
 
         The tuples in the list passed to this method should contain a code, a
-        description for the row element, and a database ID for the element displayed
-        in the row.  For example, a requirement might be:
+        description for the row element, and a database ID for the element displayed in
+        the row.  For example, a requirement might be:
 
-            ("RELI-0001", "The widget shall have an MTBF >= 1000 hours.", 5)
+        ("RELI-0001", "The widget shall have an MTBF >= 1000 hours.", 5)
 
         The code (position 0) is the displayed value and the description (position 1)
         becomes the tooltip.
@@ -157,21 +156,21 @@ class RAMSTKMatrixView(Gtk.Grid):
     ) -> None:
         """Load the RAMSTKMatrixView() row headings for each row.
 
-        A row of data in a matrix is a list or tuple with the first entry being the
-        row heading.  The remaining entries will be a 0, 1, or 2 and there will be
-        one entry for each column in the matrix.
+        A row of data in a matrix is a list or tuple with the first entry being the row
+        heading.  The remaining entries will be a 0, 1, or 2 and there will be one entry
+        for each column in the matrix.
 
         The tuples in the list passed to this method should contain a code, a
-        description for the row element, and a database ID for the element displayed
-        in the row.  For example, a verification task might be:
+        description for the row element, and a database ID for the element displayed in
+        the row.  For example, a verification task might be:
 
-            ("RELI-0001", "Perform reliability prediction for PDR.", 14)
+        ("RELI-0001", "Perform reliability prediction for PDR.", 14)
 
         The code (position 0) is the displayed value and the description (position 1)
         becomes the tooltip.
 
-        :param row_name_lst: a list of tuples with the name and description of the
-            items to use as the row heading and the tooltip.
+        :param row_name_lst: a list of tuples with the name and description of the items
+            to use as the row heading and the tooltip.
         :return: None
         :rtype: None
         """
@@ -192,8 +191,8 @@ class RAMSTKMatrixView(Gtk.Grid):
     ) -> None:
         """Add either a column or row label to the RAMSTKMatrixView().
 
-        :param position_tpl: the column number and row number to attach the left
-            side and top side respectively of new widgets to.
+        :param position_tpl: the column number and row number to attach the left side
+            and top side respectively of new widgets to.
         :param heading_str: the text to display as the heading for the new column/row.
         :param tooltip_str: the tooltip for the new column's/row's header widget.
         :return: None

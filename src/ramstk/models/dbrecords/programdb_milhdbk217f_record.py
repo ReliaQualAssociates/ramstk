@@ -117,10 +117,10 @@ class RAMSTKMilHdbk217FRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve the current values of RAMSTKMilHdbkF data model attributes.
 
-        :return: {hardware_id, A2, A2, B1, B2, C1, C2, lambdaBD, lambdaBP,
-                  lambdaCYC, lambdaEOS, piA, piC, piCD, piCF, piCR, piCV,
-                  piCYC, piE, piF, piI, piK, piL, piM, piMFG, piN, piNR, piP,
-                  piPT, piQ, piR, piS, piT, piTAPS, piU, piV} pairs.
+        :return: {hardware_id, A2, A2, B1, B2, C1, C2, lambdaBD, lambdaBP, lambdaCYC,
+            lambdaEOS, piA, piC, piCD, piCF, piCR, piCV, piCYC, piE, piF, piI, piK, piL,
+            piM, piMFG, piN, piNR, piP, piPT, piQ, piR, piS, piT, piTAPS, piU, piV}
+            pairs.
         :rtype: dict
         """
         return {

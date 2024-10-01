@@ -114,11 +114,10 @@ class RAMSTKCategoryRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of the RAMSTKCategory data model attributes.
 
-        :return: {category_id, name, description, category_type, value,
-                  harsh_ir_limit, mild_ir_limit, harsh_pr_limit,
-                  mild_pr_limit, harsh_vr_limit, mild_vr_limit,
-                  harsh_deltat_limit, mild_deltat_limit, harsh_maxt_limit,
-                  mild_maxt_limit} pairs
+        :return: {category_id, name, description, category_type, value, harsh_ir_limit,
+            mild_ir_limit, harsh_pr_limit, mild_pr_limit, harsh_vr_limit, mild_vr_limit,
+            harsh_deltat_limit, mild_deltat_limit, harsh_maxt_limit, mild_maxt_limit}
+            pairs
         :rtype: dict
         """
         return {

@@ -31,8 +31,8 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
     """Create a postgres database.
 
     :param dict database: the database connection information.
-    :param TextIO sql_file: the file containing the SQL statements used to
-        create the database.
+    :param TextIO sql_file: the file containing the SQL statements used to create the
+        database.
     :return: None
     """
 
@@ -100,8 +100,8 @@ def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
     """Create a SQLite3 database.
 
     :param dict database: the database connection information.
-    :param TextIO sql_file: the file containing the SQL statements used to
-        create the database.
+    :param TextIO sql_file: the file containing the SQL statements used to create the
+        database.
     :return: None
     """
     conn = sqlite3.connect(database["database"])
@@ -259,11 +259,9 @@ class BaseDatabase:
 
         :param database: the connection information for the database to connect to.
         :return: None
-        :rtype: None
-        :raise: sqlalchemy.exc.OperationalError if passed an invalid database
-            URL.
-        :raise: ramstk.exceptions.DataAccessError if passes an unsupported database
-            SQL dialect.
+        :rtype: None :raise: sqlalchemy.exc.OperationalError if passed an invalid
+            database URL. :raise: ramstk.exceptions.DataAccessError if passes an
+            unsupported database SQL dialect.
         """
         try:
             # Set connection arguments from the provided database dictionary
@@ -292,10 +290,10 @@ class BaseDatabase:
     ) -> None:
         """Create a database from the passed parameters.
 
-        :param dict database: the dictionary containing the parameters for
-            connecting to the database server.
-        :param str sql_file: the file containing the SQL statements used
-        to create the database.
+        :param dict database: the dictionary containing the parameters for connecting to
+            the database server.
+        :param str sql_file: the file containing the SQL statements used to create the
+            database.
         :return: None
         :rtype: None
         """
@@ -489,14 +487,12 @@ class BaseDatabase:
     def get_database_list(self, database: Dict[str, str]) -> List:
         """Retrieve the list of program databases available to RAMSTK.
 
-        This method is used to create a user-selectable list of databases when
-        using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses
-        an open file dialog.
+        This method is used to create a user-selectable list of databases when using the
+        postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses an open file dialog.
 
-        :param database: the connection information for the dialect's
-            administrative database.
-        :return: the list of databases available to RAMSTK for the selected
-            dialect.
+        :param database: the connection information for the dialect's administrative
+            database.
+        :return: the list of databases available to RAMSTK for the selected dialect.
         :rtype: list
         """
         _databases: List[str] = []

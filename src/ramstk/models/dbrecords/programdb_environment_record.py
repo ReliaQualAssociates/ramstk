@@ -88,9 +88,8 @@ class RAMSTKEnvironmentRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of RAMSTKEnvironment data model attributes.
 
-        :return: {mission_phase_id, environment_id, name, units, minimum,
-                  maximum, mean, variance, ramp_rate, low_dwell_time,
-                  high_dwell_time} pairs.
+        :return: {mission_phase_id, environment_id, name, units, minimum, maximum, mean,
+            variance, ramp_rate, low_dwell_time, high_dwell_time} pairs.
         :rtype: dict
         """
         return {

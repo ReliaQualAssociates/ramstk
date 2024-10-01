@@ -50,8 +50,8 @@ PI_E = [1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0]
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -68,8 +68,7 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a lamp.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
     :param attributes: the attribute dict for the lamp being calculated.
     :return: attributes; the keyword argument (hardware attribute)dictionary with
@@ -105,15 +104,13 @@ def get_part_count_lambda_b(
 ) -> float:
     """Retrieve the part count hazard rate for a lamp.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
+    This function calculates the MIL-HDBK-217F hazard rate using the parts count method.
 
     :param application_id: the lamp application identifier.
     :param environment_active_id: the operating environment identifier.
     :return: _base_hr; the base part count hazard rate.
-    :rtype: float
-    :raise: IndexError if passed an unknown active environment ID.
-    :raise: KeyError if passed an unknown application ID.
+    :rtype: float :raise: IndexError if passed an unknown active environment ID. :raise:
+        KeyError if passed an unknown application ID.
     """
     return PART_COUNT_LAMBDA_B[application_id][environment_active_id - 1]
 

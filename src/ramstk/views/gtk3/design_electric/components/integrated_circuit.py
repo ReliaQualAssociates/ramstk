@@ -167,9 +167,8 @@ class ICDesignElectricInputPanel(RAMSTKFixedPanel):
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the integrated circuit RAMSTKComboBox()s.
 
-        :param subcategory_id: the subcategory ID of the selected IC.  This is
-            unused in this method but required because this method is a
-            PyPubSub listener.
+        :param subcategory_id: the subcategory ID of the selected IC. This is unused in
+            this method but required because this method is a PyPubSub listener.
         :return: None
         :rtype: None
         """

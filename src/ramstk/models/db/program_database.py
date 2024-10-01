@@ -99,10 +99,9 @@ class RAMSTKProgramDB(BaseDatabase):
     ) -> None:
         """Create a new RAMSTK Program database.
 
-        :param dict database: a dict containing the database connection
-            arguments.
-        :param str sql_file: the file containing the SQL statements for
-            creating the database.
+        :param dict database: a dict containing the database connection arguments.
+        :param str sql_file: the file containing the SQL statements for creating the
+            database.
         :return: None
         :rtype: None
         """

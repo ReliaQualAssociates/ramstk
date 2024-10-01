@@ -186,14 +186,13 @@ class RAMSTKModeRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve the current values of the RAMSTKMode data model attributes.
 
-        :return: {revision_id, hardware_id, mode_id, critical_item,
-                  description, design_provisions, detection_method,
-                  effect_end, effect_local, effect_next, effect_probability,
-                  hazard_rate_source, isolation_method, mission, mission_phase,
-                  mode_criticality, mode_hazard_rate, mode_op_time,
-                  mode_probability, mode_ratio, operator_actions,
-                  other_indications, remarks, rpn_severity, rpn_severity_new,
-                  severity_class, single_point, type_id} pairs.
+        :return: {revision_id, hardware_id, mode_id, critical_item, description,
+            design_provisions, detection_method, effect_end, effect_local, effect_next,
+            effect_probability, hazard_rate_source, isolation_method, mission,
+            mission_phase, mode_criticality, mode_hazard_rate, mode_op_time,
+            mode_probability, mode_ratio, operator_actions, other_indications, remarks,
+            rpn_severity, rpn_severity_new, severity_class, single_point, type_id}
+            pairs.
         :rtype: dict
         """
         return {

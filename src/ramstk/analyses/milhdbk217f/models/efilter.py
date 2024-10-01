@@ -83,8 +83,8 @@ PI_Q = [1.0, 2.9]
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the filter being calculated.
     :return: _base_hr; the parts count base hazard rate.
@@ -101,10 +101,9 @@ def calculate_part_stress(
     """Calculate the part stress active hazard rate for a filter.
 
     :param attributes: the attributes for the filter being calculated.
-    :return: attributes; the keyword argument (hardware attribute)
-             dictionary with updated values.
-    :rtype: dict
-    :raise: KeyError if an unknown type ID is passed.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
+    :rtype: dict :raise: KeyError if an unknown type ID is passed.
     """
     attributes["lambda_b"] = PART_STRESS_LAMBDA_B[attributes["type_id"]]
 
@@ -123,11 +122,9 @@ def get_part_count_lambda_b(
 
     :param type_id: the filter type identifer.
     :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the part count base hazard rate for the active
-        environment.
-    :rtype: float
-    :raise: IndexError if an unknown active environment ID is passed.
-    :raise: KeyError if an unknown type ID is passed.
+    :return: _base_hr; the part count base hazard rate for the active environment.
+    :rtype: float :raise: IndexError if an unknown active environment ID is passed.
+        :raise: KeyError if an unknown type ID is passed.
     """
     return PART_COUNT_LAMBDA_B[type_id][environment_active_id - 1]
 
