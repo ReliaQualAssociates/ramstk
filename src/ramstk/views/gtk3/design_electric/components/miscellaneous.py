@@ -236,7 +236,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -249,7 +249,7 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
         :rtype: None
         """
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             [
                 self.cmbApplication,
                 self.cmbType,
@@ -271,5 +271,5 @@ class MiscDesignElectricInputPanel(RAMSTKFixedPanel):
 
         # Set widget sensitivity based on hazard rate method
         if self._hazard_rate_method_id == 2:
-            _sensitivity_list + [self.txtUtilization]
+            _sensitivity_list += [self.txtUtilization]
         super().set_widget_sensitivity(_sensitivity_list)

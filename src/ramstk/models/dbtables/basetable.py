@@ -457,10 +457,6 @@ class RAMSTKBaseTable:
         """Delete a record from the database."""
         self.dao.do_delete(self.do_select(node_id))
 
-    def _do_update_last_id(self) -> None:
-        """Update the last record ID."""
-        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
-
     def _do_initialize_attributes(self) -> None:
         """Initialize the attributes of the RAMSTK table model."""
         self._lst_id_columns: List[str] = []

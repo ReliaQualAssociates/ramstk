@@ -93,7 +93,7 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
             logger_name="ERROR",
             message=_error_msg,
         )
-        raise DataAccessError(_error_msg)
+        raise DataAccessError(_error_msg) from _error
 
 
 def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
@@ -249,9 +249,9 @@ class BaseDatabase:
 
     def do_build_postgres_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
-        return "{0}{1}".format(
-            self.sqlstatements["select"].format("datname"),
-            self.sqlstatements["from"].format("pg_database;"),
+        return (
+            f"{self.sqlstatements['select'].format('datname')}"
+            f"{self.sqlstatements['from'].format('pg_database;')}"
         )
 
     def do_connect(self, database: Dict) -> None:
@@ -352,12 +352,12 @@ class BaseDatabase:
         self.database = ""
 
     def do_execute_query(
-        self, query: str, session: scoped_session = None
+        self, query_: str, session: scoped_session = None
     ) -> Sequence[Row[tuple[Any, ...] | Any]] | Any:
         """Execute the given SQL query and return the results."""
         if not session:
-            return self.session.scalars(query)
-        return session.execute(text(query)).fetchall()
+            return self.session.scalars(query_)
+        return session.execute(text(query_)).fetchall()
 
     def do_filter_system_databases(self, databases: List[Tuple[Any, ...]]) -> List[str]:
         """Filter out system databases and return only those relevant to RAMSTK."""

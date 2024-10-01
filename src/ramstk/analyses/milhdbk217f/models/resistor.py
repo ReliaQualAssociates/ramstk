@@ -806,59 +806,18 @@ def calculate_part_stress_lambda_b(
     :raise: IndexError if passed an unknown quality ID or application ID.
     :raise: KeyError is passed an unknown construction ID.
     """
-    _dic_factors: Dict[int, List[float]] = {
-        1: [4.5e-9, 12.0, 1.0, 0.6, 1.0, 1.0],
-        3: [7.33e-3, 0.202, 2.6, 1.45, 0.89, 1.3],
-        5: [0.0031, 1.0, 10.0, 1.0, 1.0, 1.5],
-        6: [0.00148, 1.0, 2.0, 0.5, 1.0, 1.0],
-        7: [0.00015, 2.64, 1.0, 0.466, 1.0, 1.0],
-        8: [0.021, 0.065, 0.105, 0.0, 0.0, 0.0],
-        9: [0.0062, 1.0, 5.0, 1.0, 1.0, 1.0],
-        10: [0.0735, 1.03, 4.45, 2.74, 3.51, 1.0],
-        11: [0.0398, 0.514, 5.28, 1.44, 4.46, 1.0],
-        12: [0.0481, 0.334, 4.66, 1.47, 2.83, 1.0],
-        13: [0.019, 0.445, 7.3, 2.69, 2.46, 1.0],
-        14: [0.0246, 0.459, 9.3, 2.32, 5.3, 1.0],
-        15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0],
-    }
-    _dic_factors_film: Dict[int, List[float]] = {
-        1: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
-        2: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
-        3: [5.0e-5, 3.5, 1.0, 1.0, 1.0, 1.0],
-        4: [5.0e-5, 3.5, 1.0, 1.0, 1.0, 1.0],
-    }
-
-    if subcategory_id == 2:
-        _ref_temp = REF_TEMPS_FILM[specification_id]
-        _f0 = _dic_factors_film[specification_id][0]
-        _f1 = _dic_factors_film[specification_id][1]
-        _f2 = _dic_factors_film[specification_id][2]
-        _f3 = _dic_factors_film[specification_id][3]
-        _f4 = _dic_factors_film[specification_id][4]
-        _f5 = _dic_factors_film[specification_id][5]
-    elif subcategory_id not in [4, 8]:
-        _ref_temp = REF_TEMPS[subcategory_id]
-        _f0 = _dic_factors[subcategory_id][0]
-        _f1 = _dic_factors[subcategory_id][1]
-        _f2 = _dic_factors[subcategory_id][2]
-        _f3 = _dic_factors[subcategory_id][3]
-        _f4 = _dic_factors[subcategory_id][4]
-        _f5 = _dic_factors[subcategory_id][5]
-
     if subcategory_id == 4:
         return 0.00006
-    elif subcategory_id == 8:
-        return _dic_factors[subcategory_id][type_id - 1]
-    return (
-        _f0
-        * exp(
-            _f1 * ((temperature_active + 273.0) / _ref_temp),
-        )
-        ** _f2
-        * exp(
-            ((power_ratio / _f3) * ((temperature_active + 273.0) / 273.0) ** _f4) ** _f5
-        )
-    )
+
+    if subcategory_id == 8:
+        return _get_type_factor(type_id)
+
+    if subcategory_id == 2:
+        factors, ref_temp = _get_film_factors_and_temp(specification_id)
+    else:
+        factors, ref_temp = _get_factors_and_temp(subcategory_id)
+
+    return _do_calculate_lambda_b(factors, ref_temp, temperature_active, power_ratio)
 
 
 def calculate_temperature_factor(
@@ -1084,6 +1043,60 @@ def set_default_values(
         attributes["temperature_case"] = attributes["temperature_active"] + 28.0
 
     return attributes
+
+
+def _do_calculate_lambda_b(
+    factors: List[float],
+    ref_temp: float,
+    temperature_active: float,
+    power_ratio: float,
+) -> float:
+    """Calculate the base hazard rate using the part stress method."""
+    f0, f1, f2, f3, f4, f5 = factors
+    return (
+        f0
+        * exp(f1 * ((temperature_active + 273.0) / ref_temp)) ** f2
+        * exp(((power_ratio / f3) * ((temperature_active + 273.0) / 273.0)) ** f4) ** f5
+    )
+
+
+def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
+    """Retrieve factors and reference temperature for non-film resistors."""
+    _dic_factors: Dict[int, List[float]] = {
+        1: [4.5e-9, 12.0, 1.0, 0.6, 1.0, 1.0],
+        3: [7.33e-3, 0.202, 2.6, 1.45, 0.89, 1.3],
+        5: [0.0031, 1.0, 10.0, 1.0, 1.0, 1.5],
+        6: [0.00148, 1.0, 2.0, 0.5, 1.0, 1.0],
+        7: [0.00015, 2.64, 1.0, 0.466, 1.0, 1.0],
+        8: [0.021, 0.065, 0.105, 0.0, 0.0, 0.0],
+        9: [0.0062, 1.0, 5.0, 1.0, 1.0, 1.0],
+        10: [0.0735, 1.03, 4.45, 2.74, 3.51, 1.0],
+        11: [0.0398, 0.514, 5.28, 1.44, 4.46, 1.0],
+        12: [0.0481, 0.334, 4.66, 1.47, 2.83, 1.0],
+        13: [0.019, 0.445, 7.3, 2.69, 2.46, 1.0],
+        14: [0.0246, 0.459, 9.3, 2.32, 5.3, 1.0],
+        15: [0.018, 1.0, 7.4, 2.55, 3.6, 1.0],
+    }
+
+    ref_temp = REF_TEMPS[subcategory_id]
+    return _dic_factors[subcategory_id], ref_temp
+
+
+def _get_film_factors_and_temp(specification_id: int) -> Tuple[List[float], float]:
+    """Retrieve factors and reference temperature for film resistors."""
+    _dic_factors_film: Dict[int, List[float]] = {
+        1: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
+        2: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
+        3: [5.0e-5, 3.5, 1.0, 1.0, 1.0, 1.0],
+        4: [5.0e-5, 3.5, 1.0, 1.0, 1.0, 1.0],
+    }
+    ref_temp = REF_TEMPS_FILM[specification_id]
+    return _dic_factors_film[specification_id], ref_temp
+
+
+def _get_type_factor(type_id: int) -> float:
+    """Retrieve the type factor for subcategory 8."""
+    return [0.021, 0.065, 0.105][type_id - 1]
 
 
 def _set_default_resistance(resistance: float, subcategory_id: int) -> float:

@@ -82,3 +82,5 @@ class RAMSTKBaseTable:
         pass
     def _do_extract_key_and_value(self, package):
         pass
+    def do_create_code(self, identifier, prefix):
+        pass

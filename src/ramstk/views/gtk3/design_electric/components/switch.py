@@ -270,7 +270,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -292,7 +292,7 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )

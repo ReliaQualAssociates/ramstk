@@ -10,9 +10,6 @@
 import locale
 from typing import Any, Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
@@ -915,7 +912,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
-            if _widget.get_text() != "":
+            if _widget.get_text():
                 _lst_labels.append(_widget)
                 _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1
@@ -1209,7 +1206,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
-            if _widget.get_text() != "":
+            if _widget.get_text():
                 _lst_labels.append(_widget)
                 _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1

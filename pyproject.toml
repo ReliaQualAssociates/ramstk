@@ -225,6 +225,8 @@ disable = [
 	'no-member',
 	'no-else-return',
 	'cyclic-import',
+	'inconsistent-return-statements',
+	'attribute-defined-outside-init',
 ]
 
 [tool.pylint.reports]
@@ -263,6 +265,7 @@ ignored-classes = [
 
 [tool.pylint.design]
 max-args = 6
+max-positional-arguments = 6
 
 [tool.docformatter]
 non-cap = [

@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
