@@ -44,21 +44,17 @@ class RAMSTKCommonDB(BaseDatabase):
 
     def _do_add_administrator(self) -> None:
         """Add a new administrator to the RAMSTK pool."""
-        _user = RAMSTKUserRecord()
-        _user.user_id = 0
-        _user.user_group_id = 1
-
-        _user.user_lname = input(
-            _("Enter the RAMSTK Administrator's last name (surname): ")
+        _user_info = self._get_user_input(
+            {
+                "lname": _("Enter the RAMSTK Administrator's last name (surname): "),
+                "fname": _(
+                    "Enter the RAMSTK Administrator's first name (given name): "
+                ),
+                "email": _("Enter the RAMSTK Administrator's e-mail address: "),
+                "phone": _("Enter the RAMSTK Administrator's phone number: "),
+            }
         )
-        _user.user_fname = input(
-            _("Enter the RAMSTK Administrator's first name (given name): ")
-        )
-        _user.user_email = input(_("Enter the RAMSTK Administrator's e-mail address: "))
-        _user.user_phone = input(_("Enter the RAMSTK Administrator's phone number: "))
-
-        self.session.add(_user)
-        self.session.commit()
+        self.do_add_user(RAMSTKUserRecord, _user_info)
 
     def _do_create_database(
         self, database: Dict[str, str], sql_file: str, license_file: str
@@ -66,26 +62,21 @@ class RAMSTKCommonDB(BaseDatabase):
         """Create a new RAMSTK Common database.
 
         :param database: Dictionary with database connection arguments.
-        :param sql_file: Path to the SQL file containing the SQL statements for creating the database.
+        :param sql_file: Path to the SQL file containing the SQL statements for creating
+            the database.
         :param license_file: Path to the license file.
         :return: None
         """
         self.do_create_database(database, sql_file)
         self._do_load_site_info(license_file)
 
-        _yn: str = (
+        _add_admin: str = (
             input(_("Would you like to add a RAMSTK Administrator? ([y]/n): ")) or "y"
         )
-        if _yn.lower() == "y":
+        if _add_admin.lower() == "y":
             self._do_add_administrator()
 
         self.do_disconnect()
-
-        pub.sendMessage(
-            "succeed_create_common_database",
-            common_db=self,
-            database=database,
-        )
 
     def _do_load_site_info(self, license_file: str) -> None:
         """Load the Site Information table.

@@ -34,7 +34,8 @@ RELAY_APPLICATION_DICT = {
     ],
     4: [[_("Contactors, High Current")]],
 }
-# First key is contact rating ID, second key is application ID.  Index is construction ID.
+# First key is contact rating ID, second key is application ID.
+# Index is construction ID.
 RELAY_CONSTRUCTION_DICT = {
     1: {
         1: [

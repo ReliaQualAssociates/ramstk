@@ -301,7 +301,8 @@ class SwitchDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == 2:
             self.cmbApplication.set_sensitive(True)
 
-        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        # Define a sensitivity map for different widgets based on hazard rate method
+        # and subcategory
         _sensitivity_map = {
             1: {5: [self.cmbConstruction]},
             2: {

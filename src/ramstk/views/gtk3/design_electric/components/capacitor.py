@@ -687,7 +687,8 @@ class CapacitorDesignElectricInputPanel(RAMSTKFixedPanel):
     def _get_style_list(self, combo: RAMSTKComboBox) -> List[List[str]]:
         """Return the list of styles based on the subcategory and specification.
 
-        :param combo: the specification RAMSTKComboBox() from which the active index is retrieved.
+        :param combo: the specification RAMSTKComboBox() from which the active index is
+            retrieved.
         :return: the list of styles for the current subcategory and specification.
         :rtype: List[List[str]]
         """

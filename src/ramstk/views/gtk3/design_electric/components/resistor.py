@@ -451,7 +451,8 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == 2:
             self.txtResistance.set_sensitive(True)
 
-        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        # Define a sensitivity map for different widgets based on hazard rate method
+        # and subcategory
         _sensitivity_map = {
             1: {
                 1: [self.cmbType],

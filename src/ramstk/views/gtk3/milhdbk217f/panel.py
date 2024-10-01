@@ -77,7 +77,7 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         do_subscribe_to_messages(
             {
                 "selected_hardware": self._do_set_hardware_attributes,
-                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,
+                "succeed_get_reliability_attributes": self._do_set_reliability_attributes,  # noqa
             }
         )
 
@@ -133,7 +133,10 @@ class MilHdbk217FResultPanel(RAMSTKFixedPanel):
         _model_text = "No Model"
 
         if self._hazard_rate_method_id == 1:
-            _model_text = '<span foreground="blue">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span> '
+            _model_text = (
+                '<span foreground="blue">\u03BB<sub>p</sub> = '
+                "\u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
+            )
         elif self._hazard_rate_method_id == 2:
             _model_text = self._dic_part_stress.get(self.subcategory_id, "No Model")
 

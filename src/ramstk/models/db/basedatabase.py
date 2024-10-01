@@ -179,6 +179,31 @@ class BaseDatabase:
         self.session: scoped_session = None  # type: ignore
         self.database: str = ""
 
+    def do_add_user(
+        self,
+        user_class: object,
+        user_info: Dict[str, str],
+        user_id: int = 0,
+        user_group_id: int = 1,
+    ) -> None:
+        """Add a generic user to the database.
+
+        :param user_class: the class representing the user record.
+        :param user_info: a dictionary containing user details.
+        :param user_id: the user ID (default is 0 for admin).
+        :param user_group_id: the user group ID (default is 1 for admin).
+        """
+        _user = user_class()
+        _user.user_id = user_id
+        _user.user_group_id = user_group_id
+        _user.user_lname = user_info["lname"]
+        _user.user_fname = user_info["fname"]
+        _user.user_email = user_info["email"]
+        _user.user_phone = user_info["phone"]
+
+        self.session.add(_user)
+        self.session.commit()
+
     def do_build_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
         return self.sqlstatements["select"].format("datname") + self.sqlstatements[
@@ -274,19 +299,28 @@ class BaseDatabase:
         :return: None
         :rtype: None
         """
-        with open(sql_file, "r", encoding="utf-8") as _sql_file:
-            _dialect = database.get("dialect")
-            _dialect_actions = {
-                "postgres": do_create_postgres_db,
-                "sqlite": do_create_sqlite3_db,
-            }
-            _dialect_action = _dialect_actions.get(_dialect)
-            if _dialect_action:
-                _dialect_action(database, _sql_file)
-            else:
-                raise DataAccessError(f"Unknown dialect: {_dialect}")
+        try:
+            with open(sql_file, "r", encoding="utf-8") as _sql_file:
+                _dialect = database.get("dialect")
+                _dialect_actions = {
+                    "postgres": do_create_postgres_db,
+                    "sqlite": do_create_sqlite3_db,
+                }
+                _dialect_action = _dialect_actions.get(_dialect)
+                if _dialect_action:
+                    _dialect_action(database, _sql_file)
+                else:
+                    raise DataAccessError(f"Unknown dialect: {_dialect}")
 
-            self.do_connect(database)
+                self.do_connect(database)
+
+            pub.sendMessage("succeed_create_database", database=database)
+        except FileNotFoundError:
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=f"SQL file {sql_file} could not be found.",
+            )
 
     def do_delete(self, item: object) -> None:
         """Delete a record from the RAMSTK Program database.
@@ -527,3 +561,12 @@ class BaseDatabase:
                 _error,
                 _context_message,
             )
+
+    @staticmethod
+    def _get_user_input(fields: Dict[str, str]) -> Dict[str, str]:
+        """Get user input for any user record.
+
+        :param fields: a dict of field names and prompts.
+        :return: a dict of user input for the fields.
+        """
+        return {key: input(prompt) for key, prompt in fields.items()}
