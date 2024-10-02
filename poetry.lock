@@ -1346,13 +1346,13 @@ files = [
 
 [[package]]
 name = "lifelines"
-version = "0.27.8"
+version = "0.29.0"
 description = "Survival analysis in Python, including Kaplan Meier, Nelson Aalen and regression"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.9"
 files = [
-    {file = "lifelines-0.27.8-py3-none-any.whl", hash = "sha256:77851d860eec0bb168bf29bd1ff235de13fdccfdc0f07ddbd3c007ce42af40d3"},
-    {file = "lifelines-0.27.8.tar.gz", hash = "sha256:125548ab4c30842531737e5c6392efb2876d3f229e220447c878df400e7b6e26"},
+    {file = "lifelines-0.29.0-py3-none-any.whl", hash = "sha256:879e39cdb38f0072d37650d56656a658f1be7b142915133422ccf0447968a8e6"},
+    {file = "lifelines-0.29.0.tar.gz", hash = "sha256:a82315a5daf2ad29eabefff38b8422364a8a721721136a501c30ff861cac8759"},
 ]
 
 [package.dependencies]
@@ -1361,8 +1361,8 @@ autograd-gamma = ">=0.3"
 formulaic = ">=0.2.2"
 matplotlib = ">=3.0"
 numpy = ">=1.14.0,<2.0"
-pandas = ">=1.0.0"
-scipy = ">=1.2.0"
+pandas = ">=2.1"
+scipy = ">=1.7.0"
 
 [[package]]
 name = "mando"
@@ -3681,4 +3681,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10,<4.0"
-content-hash = "d318da000dec7d81c0bc6ac22233fa07431bb9d6208183ccd96c701ef0d256d4"
+content-hash = "97e78a4cc8e2ad7614b0c2efa2ee69a9454d03a944e08600fb51185aa26a361f"
