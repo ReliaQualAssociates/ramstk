@@ -21,19 +21,17 @@ from ramstk.utilities import do_subscribe_to_messages
 class RAMSTKBaseView:
     """Metaclass for all RAMSTK View models.
 
-    :cvar _root: the Node ID number for the treelib.Tree.
-    :cvar _tag: the name of the RAMSTK work flow module.  This is the same for all
-        classes associated with the work flow module.
+    :cvar _root: the Node ID number for the treelib.Tree. :cvar _tag: the name of the
+    RAMSTK work flow module.  This is the same for all     classes associated with the
+    work flow module.
 
-    :ivar _dic_load_functions: a dict of functions to call for loading a row of data
-        in the view's RAMSTKTreeView.
-    :ivar _dic_trees: a dict of treelib.Tree, one for each database table the view is
-        comprised from.
-    :ivar _lst_modules: the list of RAMSTK work flow modules that comprise the view.
-    :ivar _revision_id: the ID of the Revision the view is associated with.
-    :ivar dao: the instanace of the RAMSTK Program database model.
-    :ivar tree: the view's treelib.Tree.  This is a conblomerate of the trees in
-        _dic_trees.
+    :ivar _dic_load_functions: a dict of functions to call for loading a row of data in
+    the view's RAMSTKTreeView. :ivar _dic_trees: a dict of treelib.Tree, one for each
+    database table the view is     comprised from. :ivar _lst_modules: the list of
+    RAMSTK work flow modules that comprise the view. :ivar _revision_id: the ID of the
+    Revision the view is associated with. :ivar dao: the instanace of the RAMSTK Program
+    database model. :ivar tree: the view's treelib.Tree.  This is a conblomerate of the
+    trees in     _dic_trees.
     """
 
     # Define private dictionary class attributes.
@@ -109,8 +107,8 @@ class RAMSTKBaseView:
     def on_select_all(self) -> None:
         """Build the usage profile treelib Tree().
 
-        This method builds the hierarchical treelib Tree() from the individual
-        module trees.
+        This method builds the hierarchical treelib Tree() from the individual module
+        trees.
 
         :return: None
         :rtype: None

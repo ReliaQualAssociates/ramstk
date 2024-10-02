@@ -21,8 +21,8 @@ def calculate_improvement(
     :param planned_rank: the rank the design team plans.
     :param customer_rank: the rank the customer places on the input.
     :param priority: the design team's priority.
-    :return: (_improvement, _weight); the improvement factor and overall
-        weighting of the stakeholder input.
+    :return: (_improvement, _weight); the improvement factor and overall weighting of
+        the stakeholder input.
     :rtype: tuple
     """
     _user_float_1 = kwargs.get("user_float_1", 1.0)

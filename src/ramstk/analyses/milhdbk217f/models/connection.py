@@ -340,8 +340,8 @@ REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
 def calculate_part_count(**attributes: Dict[str, int]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the connection being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -359,12 +359,11 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a connection.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
     :param attributes: the attributes for the connection being calculated.
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["temperature_rise"] = calculate_insert_temperature(
@@ -529,11 +528,9 @@ def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     """Retrieve the reference temperature key for the connection.
 
     :param type_id: the connection type identifier.
-    :param specification_id: the connection governing specification
-        identifier.
+    :param specification_id: the connection governing specification identifier.
     :param insert_id: the insert material identifier.
-    :return: _key; the key to use to select the reference temperature and other
-        factors.
+    :return: _key; the key to use to select the reference temperature and other factors.
     :rtype: int
     """
     # Reference temperature is used to calculate base hazard rate for
@@ -576,8 +573,8 @@ def get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
 def get_mate_unmate_factor(n_cycles: float) -> float:
     """Retrieve the mating/unmating factor (piK).
 
-    :param n_cycles: the average number of mate/unmate cycles expected
-        per hour of operation.
+    :param n_cycles: the average number of mate/unmate cycles expected per hour of
+        operation.
     :return: _pi_k; the mate_unmate_factor.
     :rtype: float
     """

@@ -133,11 +133,9 @@ class RAMSTKActionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of the RAMSTKAction data model attributes.
 
-        :return: {cause_id, action_id, description,
-                  action_category, action_owner, action_due_date,
-                  action_status, action_taken, action_approved,
-                  action_approved_date, action_closed,
-                  action_closed_date} pairs.
+        :return: {cause_id, action_id, description, action_category, action_owner,
+            action_due_date, action_status, action_taken, action_approved,
+            action_approved_date, action_closed, action_closed_date} pairs.
         :rtype: dict
         """
         return {

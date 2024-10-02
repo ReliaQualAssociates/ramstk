@@ -277,23 +277,19 @@ class RAMSTKDesignElectricRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve current values of RAMSTKDesignElectric model attributes.
 
-        :return: {hardware_id, application_id, area, capacitance,
-                  configuration_id, construction_id, contact_form_id,
-                  contact_gauge, contact_rating_id, current_operating,
-                  current_rated, current_ratio, environment_active_id,
-                  environment_dormant_id, family_id, feature_size,
-                  frequency_operating, insert_id, insulation_id,
-                  manufacturing_id, matching_id, n_active_pins,
-                  n_circuit_planes, n_cycles, n_elements, n_hand_soldered,
-                  n_wave_soldered, operating_life, overstress, package_id,
-                  power_operating, power_rated, power_ratio, reason,
-                  resistance, specification_id, technology_id,
-                  temperature_active, temperature_case, temperature_dormant,
-                  temperature_hot_spot, temperature_junction, temperature_knee,
-                  temperature_rated_max, temperature_rated_min,
-                  temperature_rise, theta_jc, type_id, voltage_ac_operating,
-                  voltage_dc_operating, voltage_esd, voltage_rated,
-                  voltage_ratio, weight, years_in_production} pairs.
+        :return: {hardware_id, application_id, area, capacitance, configuration_id,
+            construction_id, contact_form_id, contact_gauge, contact_rating_id,
+            current_operating, current_rated, current_ratio, environment_active_id,
+            environment_dormant_id, family_id, feature_size, frequency_operating,
+            insert_id, insulation_id, manufacturing_id, matching_id, n_active_pins,
+            n_circuit_planes, n_cycles, n_elements, n_hand_soldered, n_wave_soldered,
+            operating_life, overstress, package_id, power_operating, power_rated,
+            power_ratio, reason, resistance, specification_id, technology_id,
+            temperature_active, temperature_case, temperature_dormant,
+            temperature_hot_spot, temperature_junction, temperature_knee,
+            temperature_rated_max, temperature_rated_min, temperature_rise, theta_jc,
+            type_id, voltage_ac_operating, voltage_dc_operating, voltage_esd,
+            voltage_rated, voltage_ratio, weight, years_in_production} pairs.
         :rtype: dict
         """
         return {

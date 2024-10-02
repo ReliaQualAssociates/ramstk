@@ -9,9 +9,6 @@
 # Standard Library Imports
 from typing import Any, Dict
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.configuration import RAMSTKUserConfiguration
 from ramstk.logger import RAMSTKLogManager
@@ -125,34 +122,31 @@ class FunctionModuleView(RAMSTKModuleView):
         """
         super().make_ui()
 
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )
 
 
 class FunctionWorkView(RAMSTKWorkView):
     """Display general Function attribute data in the RAMSTK Work Book.
 
-    The Function Work View displays all the general data attributes for the
-    selected Function. The attributes of a Function General Data Work View are:
+    The Function Work View displays all the general data attributes for the selected
+    Function. The attributes of a Function General Data Work View are:
 
-    :cvar str _tag: the name of the module.
-    :cvar str _tablabel: the text to display on the tab's label.
-    :cvar str _tabtooltip: the text to display as the tab's tooltip.
+    :cvar str _tag: the name of the module. :cvar str _tablabel: the text to display on
+    the tab's label. :cvar str _tabtooltip: the text to display as the tab's tooltip.
 
-    :ivar list _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar list _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar list _lst_mnu_labels: the list of labels for the view's pop-up
-        menu.  The labels are listed in the order they appear in the menu.
-    :ivar list _lst_tooltips: the list of tooltips for the view's
-        toolbar buttons and pop-up menu.  The tooltips are listed in the
-        order they appear on the toolbar or pop-up menu.
+    :ivar list _lst_callbacks: the list of callback methods for the view's     toolbar
+    buttons and pop-up menu.  The methods are listed in the order     they appear on the
+    toolbar and pop-up menu. :ivar list _lst_icons: the list of icons for the view's
+    toolbar buttons     and pop-up menu.  The icons are listed in the order they appear
+    on the     toolbar and pop-up menu. :ivar list _lst_mnu_labels: the list of labels
+    for the view's pop-up     menu.  The labels are listed in the order they appear in
+    the menu. :ivar list _lst_tooltips: the list of tooltips for the view's     toolbar
+    buttons and pop-up menu.  The tooltips are listed in the     order they appear on
+    the toolbar or pop-up menu.
     """
 
     # Define private dict class attributes.
@@ -213,8 +207,7 @@ class FunctionWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the stakeholder input's record ID.
 
-        :param attributes: the attributes dict for the selected stakeholder
-            input.
+        :param attributes: the attributes dict for the selected stakeholder input.
         :return: None
         :rtype: None
         """

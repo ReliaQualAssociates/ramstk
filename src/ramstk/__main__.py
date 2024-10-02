@@ -158,8 +158,8 @@ def do_initialize_databases(
 
     :param configuration: the instance of the user configuration object to associate
         with this database model.
-    :param site_db: the instance of the site data access object to associate with
-        this database model.
+    :param site_db: the instance of the site data access object to associate with this
+        database model.
     :return: _program_db, _site_db
     :rtype: RAMSTKProgramDB, RAMSTKCommonDB
     """
@@ -252,8 +252,7 @@ def do_load_configuration_list(
     """Load the configuration list with the contents from the database.
 
     :param config_list: the configuration list to load with results.
-    :param query: the SELECT query for retrieving the configuration list
-    results.
+    :param query: the SELECT query for retrieving the configuration list results.
     :param database: the database containing the table to query.
     :param key_column: the column to use as the record key.
     :param fields: the record fields to load into the configuration list.
@@ -275,8 +274,7 @@ def do_load_failure_modes(
     :param database: the Common Database manager.
     :param category_id: the category ID for the failure modes to load.
     :param subcategory_id: the subcategory ID for the failure modes to load.
-    :return: the dict of failures modes for the passed category ID, subcategory
-        ID pair.
+    :return: the dict of failures modes for the passed category ID, subcategory ID pair.
     :rtype: dict
     """
     return {
@@ -494,12 +492,12 @@ def the_one_ring() -> None:
         for _subcategory_id in user_configuration.RAMSTK_SUBCATEGORIES[
             _category_id
         ].keys():
-            user_configuration.RAMSTK_FAILURE_MODES[_category_id][
-                _subcategory_id
-            ] = do_load_failure_modes(
-                site_db,
-                _category_id,
-                _subcategory_id,
+            user_configuration.RAMSTK_FAILURE_MODES[_category_id][_subcategory_id] = (
+                do_load_failure_modes(
+                    site_db,
+                    _category_id,
+                    _subcategory_id,
+                )
             )
     do_load_configuration_list(
         user_configuration.RAMSTK_DAMAGE_MODELS,

@@ -33,8 +33,7 @@ class ImportProject(Gtk.Assistant):
     ):
         """Initialize an instance of the Import Assistant.
 
-        :param __button: the Gtk.ToolButton() that launched an instance of this
-            class.
+        :param __button: the Gtk.ToolButton() that launched an instance of this class.
         :param configuration: the RAMSTKUserConfiguration class instance.
         :param parent: the parent window to associate this dialog with.
         """
@@ -78,8 +77,7 @@ class ImportProject(Gtk.Assistant):
         """Handle Gtk.CellRenderer() edits.
 
         :param __cell: the Gtk.CellRenderer() that was edited.
-        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that
-                         was edited.
+        :param path: the Gtk.TreeView() path of the Gtk.CellRenderer() that was edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param model: the Gtk.TreeModel() the Gtk.CellRenderer() belongs to.
         :return: None
@@ -115,8 +113,7 @@ class ImportProject(Gtk.Assistant):
     def _do_load_import_fields(self, import_fields: List[str]) -> None:
         """Load the Rosetta stone with the import file field names.
 
-        :param list import_fields: the list of field names found in the
-            import file.
+        :param list import_fields: the list of field names found in the import file.
         :return: None
         :rtype: None
         """

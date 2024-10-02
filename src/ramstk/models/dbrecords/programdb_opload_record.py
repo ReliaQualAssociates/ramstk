@@ -97,8 +97,7 @@ class RAMSTKOpLoadRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of the RAMSTKOpLoad data model attributes.
 
-        :return: {mechanism_id, opload_id, description, damage_model,
-                  priority_id} pairs
+        :return: {mechanism_id, opload_id, description, damage_model, priority_id} pairs
         :rtype: dict
         """
         return {

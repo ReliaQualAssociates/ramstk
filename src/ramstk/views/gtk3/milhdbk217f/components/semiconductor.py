@@ -273,8 +273,7 @@ class SemiconductorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the semiconductor assessment results page.
 
-        :param attributes: the attributes dictionary for the selected
-            Semiconductor.
+        :param attributes: the attributes dictionary for the selected Semiconductor.
         :return: None
         :rtype: None
         """

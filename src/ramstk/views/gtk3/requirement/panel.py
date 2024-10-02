@@ -874,8 +874,8 @@ class RequirementTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Requirement ModuleView RAMSTKTreeView().
 
-        This method is called whenever a Requirement Module View
-        RAMSTKTreeView() row is activated/changed.
+        This method is called whenever a Requirement Module View RAMSTKTreeView() row is
+        activated/changed.
 
         :param selection: the Requirement class Gtk.TreeSelection().
         :return: None
@@ -901,9 +901,9 @@ class RequirementTreePanel(RAMSTKTreePanel):
     def _on_workview_edit(self, node_id: int, package: Dict[str, Any]) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
-        This is a wrapper for the metaclass method do_refresh_tree().  It is
-        necessary to handle RAMSTKComboBox() changes because the package value will
-        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+        This is a wrapper for the metaclass method do_refresh_tree().  It is necessary
+        to handle RAMSTKComboBox() changes because the package value will be an integer
+        and the Gtk.CellRendererCombo() needs a string input to update.
 
         :param node_id: the ID of the requirement being edited.
         :param package: the key:value for the data being updated.

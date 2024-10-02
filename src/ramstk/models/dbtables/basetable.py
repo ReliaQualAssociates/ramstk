@@ -40,24 +40,21 @@ def do_clear_tree(tree: treelib.Tree) -> treelib.Tree:
 class RAMSTKBaseTable:
     """Metaclass for all RAMSTK Table Models.
 
-    :cvar _db_id_colname: the name of the primary key column in the database.
-    :cvar _db_tablename: the name of the database table.
-    :cvar _root: the root node in the Treelib.tree; nominally 0.
-    :cvar _select_msg: the message to listen for to call the do_select_all() method.
-    :cvar _tag: the name of the RAMSTK work flow module.  This is the same for all
-        classes associated with the work flow module.
+    :cvar _db_id_colname: the name of the primary key column in the database. :cvar
+    _db_tablename: the name of the database table. :cvar _root: the root node in the
+    Treelib.tree; nominally 0. :cvar _select_msg: the message to listen for to call the
+    do_select_all() method. :cvar _tag: the name of the RAMSTK work flow module.  This
+    is the same for all     classes associated with the work flow module.
 
     :ivar _lst_id_columns: the list of column names in the database table that
-        contain an ID value.  These are generally primary and/or foreign key columns.
-    :ivar _parent_id: the ID of the parent object in a hierarchical structure such as a
-        hardware BoM.
-    :ivar _record: the database record model object associated with the table model.
-    :ivar _revision_id: the ID of the revision that is currently selected.
-    :ivar dao: the instanace of the RAMSTK Program database model.
-    :ivar last_id: the last ID number used in the database table.
-    :ivar pkey: the name of the primary key column for the database table.
-    :ivar tree: the treelib Tree()that will contain the structure of the RAMSTK
-        module being modeled.
+    contain an ID value.  These are generally primary and/or foreign key columns. :ivar
+    _parent_id: the ID of the parent object in a hierarchical structure such as a
+    hardware BoM. :ivar _record: the database record model object associated with the
+    table model. :ivar _revision_id: the ID of the revision that is currently selected.
+    :ivar dao: the instanace of the RAMSTK Program database model. :ivar last_id: the
+    last ID number used in the database table. :ivar pkey: the name of the primary key
+    column for the database table. :ivar tree: the treelib Tree()that will contain the
+    structure of the RAMSTK     module being modeled.
     """
 
     # Define private dictionary class attributes.
@@ -211,10 +208,9 @@ class RAMSTKBaseTable:
         """Retrieve the RAMSTK data table record for the Node ID passed.
 
         :param node_id: the Node ID of the data package to retrieve.
-        :return: the instance of the RAMSTK<MODULE> data table that was
-            requested or None if the requested Node ID does not exist.
-        :raise: KeyError if passed the name of a table that isn't managed by
-            this manager.
+        :return: the instance of the RAMSTK<MODULE> data table that was requested or
+            None if the requested Node ID does not exist. :raise: KeyError if passed the
+            name of a table that isn't managed by this manager.
         """
         try:
             _entity = self.tree.get_node(node_id).data[self._tag]
@@ -267,8 +263,8 @@ class RAMSTKBaseTable:
     ) -> None:
         """Set the attributes of the record associated with node ID.
 
-        :param node_id: the ID of the record in the RAMSTK Program database
-            table whose attributes are to be set.
+        :param node_id: the ID of the record in the RAMSTK Program database table whose
+            attributes are to be set.
         :param package: the key:value pair of the attribute to set.
         :return: None
         :rtype: None
@@ -456,10 +452,6 @@ class RAMSTKBaseTable:
     def _do_delete_database_record(self, node_id: int) -> None:
         """Delete a record from the database."""
         self.dao.do_delete(self.do_select(node_id))
-
-    def _do_update_last_id(self) -> None:
-        """Update the last record ID."""
-        self.last_id = self.dao.get_last_id(self._db_tablename, self._db_id_colname)
 
     def _do_initialize_attributes(self) -> None:
         """Initialize the attributes of the RAMSTK table model."""

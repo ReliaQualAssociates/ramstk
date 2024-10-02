@@ -149,23 +149,21 @@ RESISTOR_TYPE_DICT = {
 class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Resistor assessment input attribute data.
 
-    The Resistor assessment input view displays all the assessment inputs for
-    the selected resistor.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a Resistor assessment input view are:
+    The Resistor assessment input view displays all the assessment inputs for the
+    selected resistor.  This includes, currently, inputs for MIL-HDBK-217FN2.  The
+    attributes of a Resistor assessment input view are:
 
     :cvar dict _dic_specifications: dictionary of resistor MIL-SPECs.  Key is
-        resistor subcategory ID; values are lists of specifications.
-    :cvar dict _dic_styles: dictionary of resistor styles defined in the
-        MIL-SPECs.  Key is resistor subcategory ID; values are lists of styles.
+    resistor subcategory ID; values are lists of specifications. :cvar dict _dic_styles:
+    dictionary of resistor styles defined in the     MIL-SPECs.  Key is resistor
+    subcategory ID; values are lists of styles.
 
-    :ivar cmbSpecification: select and display the governing specification of
-        the resistor.
-    :ivar cmbType: select and display the type of thermistor.
-    :ivar cmbConstruction: select and display the method of construction of the
-        resistor.
-    :ivar txtResistance: enter and display the resistance of the resistor.
-    :ivar txtNElements: enter and display the number of active resistors in a
-        resistor network or the number of potentiometers taps.
+    :ivar cmbSpecification: select and display the governing specification of     the
+    resistor. :ivar cmbType: select and display the type of thermistor. :ivar
+    cmbConstruction: select and display the method of construction of the     resistor.
+    :ivar txtResistance: enter and display the resistance of the resistor. :ivar
+    txtNElements: enter and display the number of active resistors in a     resistor
+    network or the number of potentiometers taps.
     """
 
     # Define private dict class attributes.
@@ -234,9 +232,9 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
     def do_load_comboboxes(self, subcategory_id: int) -> None:
         """Load the Resistor RKTComboBox()s.
 
-        :param subcategory_id: the subcategory ID of the selected capacitor.
-            This is unused in this method but required because this method is a
-            PyPubSub listener.
+        :param subcategory_id: the subcategory ID of the selected capacitor. This is
+            unused in this method but required because this method is a PyPubSub
+            listener.
         :return: None
         :rtype: None
         """
@@ -419,7 +417,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -442,7 +440,7 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )
@@ -451,7 +449,8 @@ class ResistorDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == 2:
             self.txtResistance.set_sensitive(True)
 
-        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        # Define a sensitivity map for different widgets based on hazard rate method
+        # and subcategory
         _sensitivity_map = {
             1: {
                 1: [self.cmbType],

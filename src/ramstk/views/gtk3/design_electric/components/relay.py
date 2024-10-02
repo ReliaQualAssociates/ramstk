@@ -34,7 +34,8 @@ RELAY_APPLICATION_DICT = {
     ],
     4: [[_("Contactors, High Current")]],
 }
-# First key is contact rating ID, second key is application ID.  Index is construction ID.
+# First key is contact rating ID, second key is application ID.
+# Index is construction ID.
 RELAY_CONSTRUCTION_DICT = {
     1: {
         1: [
@@ -160,25 +161,22 @@ RELAY_TECHNOLOGY_LIST = [
 class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Relay assessment input attribute data in the RAMSTK Work Book.
 
-    The Relay assessment input view displays all the assessment inputs for
-    the selected relay.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a Relay assessment input view are:
+    The Relay assessment input view displays all the assessment inputs for the selected
+    relay.  This includes, currently, inputs for MIL-HDBK-217FN2.  The attributes of a
+    Relay assessment input view are:
 
-    :cvar dict _dic_specifications: dictionary of relay MIL-SPECs.  Key is
-        relay subcategory ID; values are lists of specifications.
-    :cvar dict _dic_styles: dictionary of relay styles defined in the
-        MIL-SPECs.  Key is relay subcategory ID; values are lists of styles.
+    :cvar dict _dic_specifications: dictionary of relay MIL-SPECs.  Key is     relay
+    subcategory ID; values are lists of specifications. :cvar dict _dic_styles:
+    dictionary of relay styles defined in the     MIL-SPECs.  Key is relay subcategory
+    ID; values are lists of styles.
 
-    :ivar cmbType: select and display the type of relay.
-    :ivar cmbLoadType: select and display the type of load the relay is
-        switching.
-    :ivar cmbContactForm: select and display the form of the relay contacts.
-    :ivar cmbContactRating: select and display the rating of the relay
-        contacts.
-    :ivar cmbApplication: select and display the relay application.
-    :ivar cmbConstruction: select and display the relay's method of
-        construction.
-    :ivar txtCycles: enter and display the number of relay cycles per hour.
+    :ivar cmbType: select and display the type of relay. :ivar cmbLoadType: select and
+    display the type of load the relay is     switching. :ivar cmbContactForm: select
+    and display the form of the relay contacts. :ivar cmbContactRating: select and
+    display the rating of the relay     contacts. :ivar cmbApplication: select and
+    display the relay application. :ivar cmbConstruction: select and display the relay's
+    method of     construction. :ivar txtCycles: enter and display the number of relay
+    cycles per hour.
     """
 
     # Define private dict class attributes.
@@ -473,7 +471,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -497,7 +495,7 @@ class RelayDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )

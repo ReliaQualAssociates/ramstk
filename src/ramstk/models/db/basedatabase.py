@@ -9,21 +9,16 @@
 # Standard Library Imports
 import contextlib
 import sqlite3
-from typing import Any, Dict, List, Optional, TextIO, Tuple
+from typing import Any, Dict, List, Optional, Sequence, TextIO, Tuple
 
 # Third Party Imports
 import psycopg2  # type: ignore
 from psycopg2 import sql  # type: ignore
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from pubsub import pub
-from sqlalchemy import create_engine, exc
+from sqlalchemy import Row, create_engine, exc
 from sqlalchemy.engine import Engine  # type: ignore
-from sqlalchemy.exc import (
-    InvalidRequestError,
-    OperationalError,
-    ProgrammingError,
-    SQLAlchemyError,
-)
+from sqlalchemy.exc import OperationalError, SQLAlchemyError
 from sqlalchemy.orm import query, scoped_session, sessionmaker  # type: ignore
 from sqlalchemy.orm.exc import FlushError  # type: ignore
 from sqlalchemy.sql import text
@@ -36,24 +31,24 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
     """Create a postgres database.
 
     :param dict database: the database connection information.
-    :param TextIO sql_file: the file containing the SQL statements used to
-        create the database.
+    :param TextIO sql_file: the file containing the SQL statements used to create the
+        database.
     :return: None
     """
 
-    def _connect_to_db(database) -> psycopg2.extensions.connection:
+    def _connect_to_db(database_: Dict[str, str]) -> psycopg2.extensions.connection:
         """Create a database connection.
 
-        :param database: the name of the database to connect to.
-        :type database: str
+        :param database_: dictionary with database connection information.
+        :type database_: dict
         :return: a psycopg2 connection.
         :rtype: psycopg2.extensions.connection
         """
         return psycopg2.connect(
-            host=database["host"],
-            database=database["database"],
-            user=database["user"],
-            password=database["password"],
+            host=database_["host"],
+            database=database_["database"],
+            user=database_["user"],
+            password=database_["password"],
         )
 
     try:
@@ -88,17 +83,25 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
         _conn.close()
 
     except psycopg2.Error as _error:
-        print(f"Error occurred while creating or populating the database: {_error}")
         if _conn:
             _conn.close()
+        _error_msg = (
+            f"Error occurred while creating or populating the database: {_error}"
+        )
+        pub.sendMessage(
+            "do_log_error_msg",
+            logger_name="ERROR",
+            message=_error_msg,
+        )
+        raise DataAccessError(_error_msg) from _error
 
 
 def do_create_sqlite3_db(database: Dict[str, str], sql_file: TextIO) -> None:
     """Create a SQLite3 database.
 
     :param dict database: the database connection information.
-    :param TextIO sql_file: the file containing the SQL statements used to
-        create the database.
+    :param TextIO sql_file: the file containing the SQL statements used to create the
+        database.
     :return: None
     """
     conn = sqlite3.connect(database["database"])
@@ -176,6 +179,31 @@ class BaseDatabase:
         self.session: scoped_session = None  # type: ignore
         self.database: str = ""
 
+    def do_add_user(
+        self,
+        user_class: object,
+        user_info: Dict[str, str],
+        user_id: int = 0,
+        user_group_id: int = 1,
+    ) -> None:
+        """Add a generic user to the database.
+
+        :param user_class: the class representing the user record.
+        :param user_info: a dictionary containing user details.
+        :param user_id: the user ID (default is 0 for admin).
+        :param user_group_id: the user group ID (default is 1 for admin).
+        """
+        _user = user_class()
+        _user.user_id = user_id
+        _user.user_group_id = user_group_id
+        _user.user_lname = user_info["lname"]
+        _user.user_fname = user_info["fname"]
+        _user.user_email = user_info["email"]
+        _user.user_phone = user_info["phone"]
+
+        self.session.add(_user)
+        self.session.commit()
+
     def do_build_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
         return self.sqlstatements["select"].format("datname") + self.sqlstatements[
@@ -202,7 +230,7 @@ class BaseDatabase:
             )
         if database["dialect"] not in self._known_dialects:
             self.do_handle_db_error(
-                f"Unknown dialect in database connection:" f" {database['dialect']}",
+                f"Unknown dialect in database connection: {database['dialect']}",
                 "",
             )
         if not isinstance(database["database"], str) or not database["database"]:
@@ -221,9 +249,9 @@ class BaseDatabase:
 
     def do_build_postgres_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
-        return "{0}{1}".format(
-            self.sqlstatements["select"].format("datname"),
-            self.sqlstatements["from"].format("pg_database;"),
+        return (
+            f"{self.sqlstatements['select'].format('datname')}"
+            f"{self.sqlstatements['from'].format('pg_database;')}"
         )
 
     def do_connect(self, database: Dict) -> None:
@@ -231,11 +259,9 @@ class BaseDatabase:
 
         :param database: the connection information for the database to connect to.
         :return: None
-        :rtype: None
-        :raise: sqlalchemy.exc.OperationalError if passed an invalid database
-            URL.
-        :raise: ramstk.exceptions.DataAccessError if passes an unsupported database
-            SQL dialect.
+        :rtype: None :raise: sqlalchemy.exc.OperationalError if passed an invalid
+            database URL. :raise: ramstk.exceptions.DataAccessError if passes an
+            unsupported database SQL dialect.
         """
         try:
             # Set connection arguments from the provided database dictionary
@@ -264,26 +290,35 @@ class BaseDatabase:
     ) -> None:
         """Create a database from the passed parameters.
 
-        :param dict database: the dictionary containing the parameters for
-            connecting to the database server.
-        :param str sql_file: the file containing the SQL statements used
-        to create the database.
+        :param dict database: the dictionary containing the parameters for connecting to
+            the database server.
+        :param str sql_file: the file containing the SQL statements used to create the
+            database.
         :return: None
         :rtype: None
         """
-        with open(sql_file, "r", encoding="utf-8") as _sql_file:
-            _dialect = database.get("dialect")
-            _dialect_actions = {
-                "postgres": do_create_postgres_db,
-                "sqlite": do_create_sqlite3_db,
-            }
-            _dialect_action = _dialect_actions.get(_dialect)
-            if _dialect_action:
-                _dialect_action(database, _sql_file)
-            else:
-                raise DataAccessError(f"Unknown dialect: {_dialect}")
+        try:
+            with open(sql_file, "r", encoding="utf-8") as _sql_file:
+                _dialect = database.get("dialect")
+                _dialect_actions = {
+                    "postgres": do_create_postgres_db,
+                    "sqlite": do_create_sqlite3_db,
+                }
+                _dialect_action = _dialect_actions.get(_dialect)
+                if _dialect_action:
+                    _dialect_action(database, _sql_file)
+                else:
+                    raise DataAccessError(f"Unknown dialect: {_dialect}")
 
-            self.do_connect(database)
+                self.do_connect(database)
+
+            pub.sendMessage("succeed_create_database", database=database)
+        except FileNotFoundError:
+            pub.sendMessage(
+                "do_log_debug_msg",
+                logger_name="DEBUG",
+                message=f"SQL file {sql_file} could not be found.",
+            )
 
     def do_delete(self, item: object) -> None:
         """Delete a record from the RAMSTK Program database.
@@ -296,11 +331,7 @@ class BaseDatabase:
         try:
             self.session.delete(item)
             self.session.commit()
-        except (
-            InvalidRequestError,
-            ProgrammingError,
-            SQLAlchemyError,
-        ) as _error:
+        except SQLAlchemyError as _error:
             _context_message = (
                 "Database error when attempting to delete a record. Error details: "
             )
@@ -319,12 +350,12 @@ class BaseDatabase:
         self.database = ""
 
     def do_execute_query(
-        self, query: str, session: scoped_session = None
-    ) -> List[Tuple[Any, ...]]:
+        self, query_: str, session: scoped_session = None
+    ) -> Sequence[Row[tuple[Any, ...] | Any]] | Any:
         """Execute the given SQL query and return the results."""
         if not session:
-            return self.session.scalars(query)
-        return session.execute(text(query)).fetchall()
+            return self.session.scalars(query_)
+        return session.execute(text(query_)).fetchall()
 
     def do_filter_system_databases(self, databases: List[Tuple[Any, ...]]) -> List[str]:
         """Filter out system databases and return only those relevant to RAMSTK."""
@@ -456,14 +487,12 @@ class BaseDatabase:
     def get_database_list(self, database: Dict[str, str]) -> List:
         """Retrieve the list of program databases available to RAMSTK.
 
-        This method is used to create a user-selectable list of databases when
-        using the postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses
-        an open file dialog.
+        This method is used to create a user-selectable list of databases when using the
+        postgresql or MariaDB (MySQL) backend.  SQLite3 simply uses an open file dialog.
 
-        :param database: the connection information for the dialect's
-            administrative database.
-        :return: the list of databases available to RAMSTK for the selected
-            dialect.
+        :param database: the connection information for the dialect's administrative
+            database.
+        :return: the list of databases available to RAMSTK for the selected dialect.
         :rtype: list
         """
         _databases: List[str] = []
@@ -478,8 +507,16 @@ class BaseDatabase:
 
         raise DataAccessError(f"Unsupported dialect: {database['dialect']}")
 
-    def get_database_session(self, database: Dict[str, str]) -> scoped_session:
-        """Create and return a session for interacting with the database."""
+    def get_database_session(
+        self, database: Dict[str, str]
+    ) -> Tuple[Engine, scoped_session]:
+        """Create and return a session for interacting with the database.
+
+        :param database: dictionary with database connection parameters.
+        :type database: dict
+        :return: engine, scoped session
+        :rtype: tuple
+        """
         _connection_url = self.do_build_database_url(database)
         return do_open_session(_connection_url)
 
@@ -520,3 +557,12 @@ class BaseDatabase:
                 _error,
                 _context_message,
             )
+
+    @staticmethod
+    def _get_user_input(fields: Dict[str, str]) -> Dict[str, str]:
+        """Get user input for any user record.
+
+        :param fields: a dict of field names and prompts.
+        :return: a dict of user input for the fields.
+        """
+        return {key: input(prompt) for key, prompt in fields.items()}

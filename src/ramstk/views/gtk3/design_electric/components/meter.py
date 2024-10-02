@@ -30,22 +30,20 @@ METER_TYPE_DICT = {
 class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
     """Display Meter assessment input attribute data in the RAMSTK Work Book.
 
-    The Meter assessment input view displays all the assessment inputs for
-    the selected Meter item.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a Meter assessment input view are:
+    The Meter assessment input view displays all the assessment inputs for the selected
+    Meter item.  This includes, currently, inputs for MIL-HDBK-217FN2.  The attributes
+    of a Meter assessment input view are:
 
-    :cvar dict _dic_quality: dictionary of meter quality levels.  Key is
-        meter subcategory ID; values are lists of quality levels.
-    :cvar dict _dic_type: dictionary of meter types.  Key is meter
-        subcategory ID; values are lists of types.
-    :cvar dict _dic_specification: dictionary of meter MIL-SPECs.  Key is
-        meter tye ID; values are lists of specifications.
-    :cvar dict _dic_insert: dictionary of meter insert materials.  First
-        key is meter type ID, second key is meter specification ID; values are
-        lists of insert materials.
+    :cvar dict _dic_quality: dictionary of meter quality levels.  Key is     meter
+    subcategory ID; values are lists of quality levels. :cvar dict _dic_type: dictionary
+    of meter types.  Key is meter     subcategory ID; values are lists of types. :cvar
+    dict _dic_specification: dictionary of meter MIL-SPECs.  Key is     meter tye ID;
+    values are lists of specifications. :cvar dict _dic_insert: dictionary of meter
+    insert materials.  First     key is meter type ID, second key is meter specification
+    ID; values are     lists of insert materials.
 
-    :ivar cmbApplication: select and display the application of the meter.
-    :ivar cmbType: select and display the type of meter.
+    :ivar cmbApplication: select and display the application of the meter. :ivar
+    cmbType: select and display the type of meter.
     """
 
     # Define private dict class attributes.
@@ -204,7 +202,7 @@ class MeterDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",

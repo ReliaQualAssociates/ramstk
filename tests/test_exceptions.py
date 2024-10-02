@@ -42,9 +42,9 @@ def test_data_access_exception():
 @pytest.mark.unit
 def test_data_access_exception_no_message():
     """Should return a DataAccessError exception class with the default message."""
-    dut = DataAccessError("")
+    dut = DataAccessError()
 
-    assert dut.msg == "An error occurred with RAMSTK."
+    assert dut.msg == "Data access error."
 
 
 @pytest.mark.unit
@@ -58,6 +58,6 @@ def test_out_of_range_exception():
 @pytest.mark.unit
 def test_out_of_range_exception_no_message():
     """Should return a OutOfRangeError exception class with the default message."""
-    dut = OutOfRangeError("")
+    dut = OutOfRangeError()
 
-    assert dut.msg == "An error occurred with RAMSTK."
+    assert dut.msg == "Input value is out of the allowed range."

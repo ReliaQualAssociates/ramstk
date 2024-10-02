@@ -10,9 +10,6 @@
 import locale
 from typing import Any, Dict, List
 
-# Third Party Imports
-from pubsub import pub
-
 # RAMSTK Package Imports
 from ramstk.utilities import do_subscribe_to_messages
 from ramstk.views.gtk3 import _
@@ -334,8 +331,8 @@ class ReliabilityInputPanel(RAMSTKFixedPanel):
     def _do_set_sensitive(self, attributes: Dict[str, Any]) -> None:
         """Set certain widgets sensitive or insensitive.
 
-        This method will set the sensitivity of various widgets depending on
-        the hazard rate assessment type selected.
+        This method will set the sensitivity of various widgets depending on the hazard
+        rate assessment type selected.
 
         :return: None
         :rtype: None
@@ -791,8 +788,8 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None
@@ -915,7 +912,7 @@ class ReliabilityResultsPanel(RAMSTKFixedPanel):
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
-            if _widget.get_text() != "":
+            if _widget.get_text():
                 _lst_labels.append(_widget)
                 _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1
@@ -1139,8 +1136,8 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None
@@ -1165,8 +1162,8 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
     def _do_load_entries_hardware(self, attributes: Dict[str, Any]) -> None:
         """Load contents of the RAMSTKEntry() widgets.
 
-        This method ensures results RAMSTKEntry() widgets are set insensitive and
-        loads the contents.  The PyPubSub subscriber is in the metaclass.
+        This method ensures results RAMSTKEntry() widgets are set insensitive and loads
+        the contents.  The PyPubSub subscriber is in the metaclass.
 
         :return: None
         :rtype: None
@@ -1209,7 +1206,7 @@ class AvailabilityResultsPanel(RAMSTKFixedPanel):
 
         for _widget in _widgets[::2]:
             _y_pos.append(_fixed.child_get_property(_widget, "y"))
-            if _widget.get_text() != "":
+            if _widget.get_text():
                 _lst_labels.append(_widget)
                 _x_pos[0] = max(_x_pos[0], _widget.get_preferred_size()[0].width)
                 _n_rows += 1

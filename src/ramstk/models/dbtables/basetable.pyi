@@ -52,33 +52,51 @@ class RAMSTKBaseTable:
     def do_update_all(self) -> None: ...
     def _do_initialize_tree(self):
         pass
+
     def _do_initialize_attributes(self):
         pass
+
     def do_create_code_for_node(self, _node, prefix):
         pass
+
     def _do_delete_database_record(self, node_id):
         pass
+
     def _do_update_last_id(self):
         pass
+
     def _do_remove_tree_node(self, node_id):
         pass
+
     def _do_create_new_record(self, attributes):
         pass
+
     def _do_insert_record_in_database(self, _record):
         pass
+
     def _do_insert_record_in_tree(self, _identifier, _record):
         pass
+
     def _do_extract_keys_and_values(self, attributes):
         pass
+
     def _do_get_parent_id(self, _record):
         pass
+
     def _do_add_record_to_tree(self, _record, _parent_id):
         pass
+
     def _do_get_record_attributes(self, node_id):
         pass
+
     def _do_update_record_attributes(self, node_id, _attributes):
         pass
+
     def _do_subscribe_to_messages(self):
         pass
+
     def _do_extract_key_and_value(self, package):
+        pass
+
+    def do_create_code(self, identifier, prefix):
         pass

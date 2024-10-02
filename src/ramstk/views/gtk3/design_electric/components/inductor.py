@@ -274,8 +274,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
     def _do_load_panel(self, attributes: Dict[str, Any]) -> None:
         """Load the Inductor assessment input widgets.
 
-        :param attributes: the attributes dictionary for the selected
-        Inductor.
+        :param attributes: the attributes dictionary for the selected Inductor.
         :return: None
         :rtype: None
         """
@@ -372,7 +371,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -395,7 +394,7 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )
@@ -422,4 +421,4 @@ class InductorDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == PART_COUNT:
             super().set_widget_sensitivity([self.cmbFamily])
         else:
-            super.set_widget_sensitivity(_sensitivity_list)
+            super().set_widget_sensitivity(_sensitivity_list)

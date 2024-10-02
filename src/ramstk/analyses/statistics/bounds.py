@@ -27,8 +27,8 @@ def do_calculate_beta_bounds(
     :param likely: most likely value.
     :param maximum: the maximum expected value.
     :param alpha: the desired confidence level.
-    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
-                                           standard error.
+    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and standard
+        error.
     :rtype: tuple of floats
     """
     if alpha > 1.0:

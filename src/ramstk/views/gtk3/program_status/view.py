@@ -29,23 +29,21 @@ register_matplotlib_converters()
 class ProgramStatusWorkView(RAMSTKWorkView):
     """Display Verification task burn down curve in the RAMSTK Work Book.
 
-    The Verification burn down Curve displays the planned burn down curve (
-    solid line) for all tasks in the V&V plan as well as the actual progress
-    (points).  The attributes of a Verification burn down curve view are:
+    The Verification burn down Curve displays the planned burn down curve ( solid line)
+    for all tasks in the V&V plan as well as the actual progress (points).  The
+    attributes of a Verification burn down curve view are:
 
     :cvar _tag: the name of the module.
 
-    :ivar _lst_callbacks: the list of callback methods for the view's
-        toolbar buttons and pop-up menu.  The methods are listed in the order
-        they appear on the toolbar and pop-up menu.
-    :ivar _lst_icons: the list of icons for the view's toolbar buttons
-        and pop-up menu.  The icons are listed in the order they appear on the
-        toolbar and pop-up menu.
-    :ivar _lst_mnu_labels: the list of labels for the view's pop-up
-        menu.  The labels are listed in the order they appear in the menu.
-    :ivar _lst_tooltips: the list of tooltips for the view's
-        toolbar buttons and pop-up menu.  The tooltips are listed in the
-        order they appear on the toolbar or pop-up menu.
+    :ivar _lst_callbacks: the list of callback methods for the view's     toolbar
+    buttons and pop-up menu.  The methods are listed in the order     they appear on the
+    toolbar and pop-up menu. :ivar _lst_icons: the list of icons for the view's toolbar
+    buttons     and pop-up menu.  The icons are listed in the order they appear on the
+    toolbar and pop-up menu. :ivar _lst_mnu_labels: the list of labels for the view's
+    pop-up     menu.  The labels are listed in the order they appear in the menu. :ivar
+    _lst_tooltips: the list of tooltips for the view's     toolbar buttons and pop-up
+    menu.  The tooltips are listed in the     order they appear on the toolbar or pop-up
+    menu.
     """
 
     # Define private dictionary class attributes.
@@ -134,14 +132,12 @@ class ProgramStatusWorkView(RAMSTKWorkView):
     def _do_set_cursor_active(self, attributes: Dict[str, Any]) -> None:
         """Wrap do_set_cursor_active() of the meta-class.
 
-        This method is called whenever the verification plan is calculated
-        successfully.  That PyPubSub MDS includes an attributes data package
-        (which is a dict containing the data to plot).  This method is
-        needed since the meta-class do_set_cursor_active() method is
-        expecting a treelib.Tree() in the MDS.
+        This method is called whenever the verification plan is calculated successfully.
+        That PyPubSub MDS includes an attributes data package (which is a dict
+        containing the data to plot).  This method is needed since the meta-class
+        do_set_cursor_active() method is expecting a treelib.Tree() in the MDS.
 
-        :param attributes: the attributes dict for the selected Validation
-            task.
+        :param attributes: the attributes dict for the selected Validation task.
         :return: None
         :rtype: None
         """
@@ -150,8 +146,7 @@ class ProgramStatusWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task record ID.
 
-        :param attributes: the attributes dict for the selected Validation
-            task.
+        :param attributes: the attributes dict for the selected Validation task.
         :return: None
         :rtype: None
         """

@@ -119,9 +119,8 @@ class RAMSTKMechanismRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve the current values of the Mechanism data model attributes.
 
-        :return: {mode_id, mechanism_id, description, pof_include, rpn,
-                  rpn_detection, rpn_detection_new, rpn_new, rpn_occurrence,
-                  rpn_occurrence_new} pairs
+        :return: {mode_id, mechanism_id, description, pof_include, rpn, rpn_detection,
+            rpn_detection_new, rpn_new, rpn_occurrence, rpn_occurrence_new} pairs
         :rtype: dict
         """
         return {

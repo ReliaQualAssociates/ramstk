@@ -142,8 +142,7 @@ class FMEAMethodPanel(RAMSTKFixedPanel):
     def _do_load_item_criticality(self, item_criticality: Dict[str, float]) -> None:
         """Update the item criticality RAMSTKTextView() with the results.
 
-        :param item_criticality: the item criticality for the selected
-            hardware item.
+        :param item_criticality: the item criticality for the selected hardware item.
         :return: None
         :rtype: None
         """
@@ -1328,8 +1327,8 @@ class FMEATreePanel(RAMSTKTreePanel):
         """Handle edits of description column to ensure proper level is updated.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
@@ -1348,8 +1347,7 @@ class FMEATreePanel(RAMSTKTreePanel):
     ) -> None:
         """Load the mission phases whenever the mission combo is changed.
 
-        :param __combo: the mission list Gtk.CellRendererCombo().  Unused in
-            this method.
+        :param __combo: the mission list Gtk.CellRendererCombo(). Unused in this method.
         :param path: the path identifying the edited cell.
         :param new_text: the new text (mission description).
         :return: None
@@ -1878,12 +1876,10 @@ class FMEATreePanel(RAMSTKTreePanel):
         """Load the mission and mission phase dicts.
 
         :param tree: the treelib usage profile treelib.Tree().
-        :param node_id: unused in this function.  Required so this method
-            compatible with other listeners for the
-            'succeed_retrieve_usage_profile' message.
-        :param row: unused in this function.  Required so this method
-            compatible with other listeners for the
-            'succeed_retrieve_usage_profile' message.
+        :param node_id: unused in this function. Required so this method compatible with
+            other listeners for the 'succeed_retrieve_usage_profile' message.
+        :param row: unused in this function. Required so this method compatible with
+            other listeners for the 'succeed_retrieve_usage_profile' message.
         :return: None
         :rtype: None
         """

@@ -127,11 +127,10 @@ class RAMSTKAllocationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of RAMSTKAllocation data model attributes.
 
         :return: {revision_id, hardware_id, availability_alloc, env_factor,
-                  goal_measure_id, hazard_rate_alloc, hazard_rate_goal,
-                  included, int_factor, method_id, mtbf_alloc, mtbf_goal,
-                  n_sub_systems, n_sub_elements, parent_id, percent_wt_factor,
-                  reliability_alloc, reliability_goal, op_time_factor,
-                  soa_factor, weight_factor} pairs.
+            goal_measure_id, hazard_rate_alloc, hazard_rate_goal, included, int_factor,
+            method_id, mtbf_alloc, mtbf_goal, n_sub_systems, n_sub_elements, parent_id,
+            percent_wt_factor, reliability_alloc, reliability_goal, op_time_factor,
+            soa_factor, weight_factor} pairs.
         :rtype: dict
         """
         return {

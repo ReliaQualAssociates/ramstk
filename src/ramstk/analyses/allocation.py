@@ -75,11 +75,9 @@ def _calculate_arinc_apportionment(
 ) -> Dict[str, Any]:
     """Perform an ARINC apportionment of the reliability requirement.
 
-    :param parent_goal: the reliability goal of the parent hardware
-        item.
+    :param parent_goal: the reliability goal of the parent hardware item.
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     """
     _mission_time: Any = float(attributes["mission_time"])
     _weight_factor: Any = float(attributes["weight_factor"])
@@ -112,11 +110,9 @@ def _calculate_equal_apportionment(
 ) -> Dict[str, Any]:
     """Perform an equal apportionment of the reliability goal.
 
-    :param parent_goal: the reliability goal of the parent hardware
-        item.
+    :param parent_goal: the reliability goal of the parent hardware item.
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     """
     _mission_time: Any = float(attributes["mission_time"])
     _weight_factor: Any = float(attributes["weight_factor"])
@@ -171,11 +167,9 @@ def _calculate_foo_apportionment(
     """Perform a feasibility of objectives (FOO) apportionment.
 
     :param parent_goal: the failure rate requirement to allocate.
-    :param cum_weight: the cumulative weight factor for all subordinate
-        assemblies.
+    :param cum_weight: the cumulative weight factor for all subordinate assemblies.
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
     _intricacy: Any = int(attributes["int_factor"])
@@ -221,8 +215,7 @@ def _from_hazard_rate_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MTBF and reliability goals given the hazard rate goal.
 
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
     _mission_time: Any = float(attributes["mission_time"])
@@ -252,8 +245,7 @@ def _from_mtbf_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the hazard rate and reliability goals given the MTBF goal.
 
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
     _mission_time: Any = float(attributes["mission_time"])
@@ -283,8 +275,7 @@ def _from_reliability_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Calculate the MTBF and hazard rate goals given the reliability goal.
 
     :param attributes: the Allocation attributes dict.
-    :return: attributes; the Allocation attributes dict with updated
-        values.
+    :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
     _mission_time: Any = float(attributes["mission_time"])
@@ -316,8 +307,8 @@ def do_allocate_reliability(
     """Calculate the reliability allocation.
 
     :param parent_goal: the parent assembly's reliability goal.
-    :param cumulative_weight: the cumulative weighting of all child assemblies.
-        Used for feasibility of objectives method only.
+    :param cumulative_weight: the cumulative weighting of all child assemblies. Used for
+        feasibility of objectives method only.
     :param attributes: the Allocation attributes dict.
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
@@ -374,13 +365,12 @@ def do_calculate_goals(**attributes: Dict[str, Any]) -> Dict[str, Any]:
 def get_allocation_goal(**attributes: Dict[str, Any]) -> Dict[str, Any]:
     """Retrieve the reliability goal for the hardware item.
 
-    Used to select the goal for the parent hardware item prior to calling
-    the do_allocate_reliability() method.
+    Used to select the goal for the parent hardware item prior to calling the
+    do_allocate_reliability() method.
 
     :param attributes: the selected item's Allocation attributes dict.
     :return: _goal
-    :rtype: float
-    :raise: KeyError if the passed attributes dict doesn't contain the
+    :rtype: float :raise: KeyError if the passed attributes dict doesn't contain the
         allocation_method_id, hazard_rate_goal, and/or reliability_goal key.
     """
     return (

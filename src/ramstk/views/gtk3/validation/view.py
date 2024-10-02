@@ -139,8 +139,7 @@ class ValidationModuleView(RAMSTKModuleView):
     def _do_set_record_id(self, attributes: Dict[str, Any]) -> None:
         """Set the Verification task's record ID.
 
-        :param attributes: the attribute dict for the selected Verification
-            task.
+        :param attributes: the attribute dict for the selected Verification task.
         :return: None
         :rtype: None
         """
@@ -162,10 +161,10 @@ class ValidationModuleView(RAMSTKModuleView):
             self.RAMSTK_USER_CONFIGURATION.RAMSTK_VALIDATION_TYPE
         )
 
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )
 
 

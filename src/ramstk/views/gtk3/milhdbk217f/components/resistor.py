@@ -240,8 +240,7 @@ class ResistorMilHdbk217FResultPanel(MilHdbk217FResultPanel):
     def _do_load_entries(self, attributes: Dict[str, Any]) -> None:
         """Load the Resistor assessment results page.
 
-        :param attributes: the attributes dictionary for the selected
-            Resistor.
+        :param attributes: the attributes dictionary for the selected Resistor.
         :return: None
         :rtype: None
         """

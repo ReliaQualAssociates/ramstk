@@ -10,7 +10,6 @@
 
 # Third Party Imports
 import pytest
-from pubsub import pub
 
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import milhdbk217f
@@ -150,8 +149,8 @@ def test_do_calculate_part_count_semiconductor(subcategory_id, test_attributes):
     "subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
 def test_do_calculate_part_count_resistor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Resistor attribute dict with
-    updated values on success."""
+    """_do_calculate_part_count() should return the Resistor attribute dict with updated
+    values on success."""
     test_attributes["category_id"] = 3
     test_attributes["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
@@ -223,8 +222,8 @@ def test_do_calculate_part_count_capacitor(subcategory_id, test_attributes):
 @pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
 def test_do_calculate_part_count_inductor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Inductor attribute dict with
-    updated values on success."""
+    """_do_calculate_part_count() should return the Inductor attribute dict with updated
+    values on success."""
     test_attributes["category_id"] = 5
     test_attributes["subcategory_id"] = subcategory_id
     attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
@@ -545,19 +544,19 @@ def test_do_calculate_part_stress_resistor(subcategory_id, test_attributes):
         {
             1: 0.0011214964,
             2: 0.011448407,
-            3: 0.019880339,
+            3: 0.0271525,
             4: 6e-05,
-            5: 18.22977643,
+            5: 29.4960372,
             6: 0.059569839,
             7: 0.013394233,
             8: 0.021,
             9: 1.14863509,
-            10: 6.5446862,
-            11: 1.57184534,
-            12: 0.51086149,
-            13: 0.48906678,
-            14: 2.46176874,
-            15: 27.067582787,
+            10: 4.3626779,
+            11: 0.6693008,
+            12: 0.2991167,
+            13: 0.3569577,
+            14: 1.2913242,
+            15: 17.4152588,
         }[subcategory_id]
     )
 

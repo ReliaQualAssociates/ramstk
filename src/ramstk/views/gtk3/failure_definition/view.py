@@ -134,8 +134,7 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
     def _do_set_record_id(self, attributes: Dict[str, Union[float, int, str]]) -> None:
         """Set the failure definition's record ID.
 
-        :param attributes: the attribute dict for the selected failure
-            definition.
+        :param attributes: the attribute dict for the selected failure definition.
         :return: None
         :rtype: None
         """
@@ -165,8 +164,8 @@ class FailureDefinitionWorkView(RAMSTKWorkView):
         super().do_make_layout()
         super().do_embed_treeview_panel()
 
-        self._pnlPanel.tvwTreeView.dic_handler_id[
-            "button-press"
-        ] = self._pnlPanel.tvwTreeView.connect(
-            "button_press_event", super().on_button_press
+        self._pnlPanel.tvwTreeView.dic_handler_id["button-press"] = (
+            self._pnlPanel.tvwTreeView.connect(
+                "button_press_event", super().on_button_press
+            )
         )

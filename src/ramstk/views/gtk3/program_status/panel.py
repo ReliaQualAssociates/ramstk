@@ -81,8 +81,8 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
     def _do_load_panel(self, attributes: Dict[str, pd.DataFrame]) -> None:
         """Load the burndown curve with the planned and actual status.
 
-        :param attributes: a dict containing a pandas DataFrames() for each of
-            planned burndown and assessment dates/targets.
+        :param attributes: a dict containing a pandas DataFrames() for each of planned
+            burndown and assessment dates/targets.
         :return: None
         """
         self._do_load_plan(attributes["plan"])
@@ -112,10 +112,9 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
     ) -> None:
         """Add the reliability assessment milestones to the plot.
 
-        This method will add a vertical line at all the dates identified as
-        dates when a reliability assessment is due.  Annotated along side
-        these markers are the reliability targets (lower, mean, upper) for that
-        assessment date.
+        This method will add a vertical line at all the dates identified as dates when a
+        reliability assessment is due.  Annotated along side these markers are the
+        reliability targets (lower, mean, upper) for that assessment date.
 
         :return: None
         :rtype: None
@@ -163,8 +162,8 @@ class ProgramStatusPlotPanel(RAMSTKPlotPanel):
     def _do_load_plan(self, plan: pd.DataFrame) -> None:
         """Load the verification plan burndown curve.
 
-        :param plan: the pandas DataFrame() containing the planned task end
-            dates and remaining hours of work (lower, mean, upper).
+        :param plan: the pandas DataFrame() containing the planned task end dates and
+            remaining hours of work (lower, mean, upper).
         :return: None
         :rtype: None
         """

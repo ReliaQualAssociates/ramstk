@@ -47,8 +47,7 @@ def _do_replace_nan(value: Any, default: Any) -> Any:
 
     :param value: the value to check for NaN.
     :param default: the default value to replace NaN.
-    :return: _value; the passed value or the default if the passed value
-        was NaN.
+    :return: _value; the passed value or the default if the passed value was NaN.
     """
     _value = value
 
@@ -73,10 +72,8 @@ def _get_input_value(
     """Retrieve the input value for a field from the Pandas dataframe.
 
     :param mapper: the field mapping dict to use as the Rosetta stone.
-    :param df_row: the row from the pandas DataFrame containing the input
-        data.
-    :param field: the name of the RAMSTK database field to retrieve the
-        data for.
+    :param df_row: the row from the pandas DataFrame containing the input data.
+    :param field: the name of the RAMSTK database field to retrieve the data for.
     :param default: the default value to assign to the field.
     :return: _value
     :rtype: the value of the requested input field or the default.
@@ -355,8 +352,8 @@ class Import:
     def _do_connect(self, dao: BaseDatabase) -> None:
         """Connect data manager to a database.
 
-        :param dao: the BaseDatabase() instance (data access object)
-            representing the connected RAMSTK Program database.
+        :param dao: the BaseDatabase() instance (data access object) representing the
+            connected RAMSTK Program database.
         """
         self._dao = dao
 
@@ -904,10 +901,9 @@ class Import:
         """Map the external column to the RAMSTK database table field.
 
         :param module: the RAMSTK module to map header fields for.
-        :param import_field: the string used for the column header in the
-            import file.
-        :param format_field: the string used for default titles in the
-            RAMSTK layout file.
+        :param import_field: the string used for the column header in the import file.
+        :param format_field: the string used for default titles in the RAMSTK layout
+            file.
         :return: None
         :rtype: None
         """
@@ -916,8 +912,8 @@ class Import:
     def _do_read_db_fields(self, module: str) -> None:
         """Return the database field names in a list.
 
-        :param module: the name of the work stream module to return
-            database field names for.
+        :param module: the name of the work stream module to return database field names
+            for.
         :return: None
         :rtype: None
         """

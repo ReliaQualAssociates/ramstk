@@ -17,14 +17,13 @@ def do_derating_analysis(
 ) -> Tuple[int, str]:
     """Check actual stresses against derating criteria for connections.
 
-    :param environment_id: the index for the environment the connection
-        is operating in; 0=protected, 1=normal, 2=severe.
+    :param environment_id: the index for the environment the connection is operating in;
+        0=protected, 1=normal, 2=severe.
     :param stress_limits: the dict containing the stress derating limits for
         connections.
     :return: _overstress, _reason
-    :rtype: tuple
-    :raise: IndexError if an unknown environment ID is passed.
-    :raise: TypeError if a non-numeric value is passed for the current ratio.
+    :rtype: tuple :raise: IndexError if an unknown environment ID is passed. :raise:
+        TypeError if a non-numeric value is passed for the current ratio.
     """
     return _do_check_current_limit(
         kwargs["current_ratio"],

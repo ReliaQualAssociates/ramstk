@@ -500,8 +500,8 @@ class PoFTreePanel(RAMSTKTreePanel):
         """Handle edits of description column to ensure proper level is updated.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
@@ -520,8 +520,8 @@ class PoFTreePanel(RAMSTKTreePanel):
 
         This method is called whenever a RAMSTKTreeView() row is activated.
 
-        :param selection: the TreeSelection() of the currently
-            selected row in the PoF RAMSTKTreeView().
+        :param selection: the TreeSelection() of the currently selected row in the PoF
+            RAMSTKTreeView().
         :return: None
         """
         _attributes = super().on_row_change(selection)

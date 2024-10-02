@@ -273,22 +273,18 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve RAMSTKReliability attributes from RAMSTK Program database.
 
         :return: {hardware_id, add_adj_factor, availability_logistics,
-                  availability_mission, avail_log_variance, avail_mis_variance,
-                  failure_distribution_id, hazard_rate_active,
-                  hazard_rate_dormant, hazard_rate_logistics,
-                  hazard_rate_method_id, hazard_rate_mission,
-                  hazard_rate_model, hazard_rate_percent, hazard_rate_software,
-                  hazard_rate_specified, hazard_rate_type_id,
-                  hr_active_variance, hr_dormant_variance,
-                  hr_logistics_variance, hr_mission_variance,
-                  hr_specified_variance, location_parameter, mtbf_logistics,
-                  mtbf_mission, mtbf_specified, mtbf_log_variance,
-                  mtbf_miss_variance, mtbf_spec_variance, mult_adj_factor,
-                  quality_id, reliability_goal, reliability_goal_measure_id,
-                  reliability_logistics, reliability_mission,
-                  reliability_log_variance, reliability_miss_variance,
-                  scale_parameter, shape_parameter, survival_analysis_id,
-                  lambda_b} pairs.
+            availability_mission, avail_log_variance, avail_mis_variance,
+            failure_distribution_id, hazard_rate_active, hazard_rate_dormant,
+            hazard_rate_logistics, hazard_rate_method_id, hazard_rate_mission,
+            hazard_rate_model, hazard_rate_percent, hazard_rate_software,
+            hazard_rate_specified, hazard_rate_type_id, hr_active_variance,
+            hr_dormant_variance, hr_logistics_variance, hr_mission_variance,
+            hr_specified_variance, location_parameter, mtbf_logistics, mtbf_mission,
+            mtbf_specified, mtbf_log_variance, mtbf_miss_variance, mtbf_spec_variance,
+            mult_adj_factor, quality_id, reliability_goal, reliability_goal_measure_id,
+            reliability_logistics, reliability_mission, reliability_log_variance,
+            reliability_miss_variance, scale_parameter, shape_parameter,
+            survival_analysis_id, lambda_b} pairs.
         :rtype: dict
         """
         return {
@@ -499,8 +495,8 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     ) -> float:
         """Perform the hazard rate prediction.
 
-        :param attributes: the aggregate attribute dict for the Hardware ID
-            associated with the record.
+        :param attributes: the aggregate attribute dict for the Hardware ID associated
+            with the record.
         :return: None
         :rtype: None
         """

@@ -57,8 +57,8 @@ class CreateProject:
     def _do_confirm_overwrite(self, database: str) -> None:
         """Raise dialog to confirm overwriting existing RAMSTK database.
 
-        :param database: the name of the existing database that is to be
-            confirmed for overwrite.
+        :param database: the name of the existing database that is to be confirmed for
+            overwrite.
         :return: None
         :rtype: None
         """
@@ -141,8 +141,7 @@ class OpenProject:
     ) -> None:
         """Initialize an instance of the Create Project Assistant.
 
-        :param __button: the Gtk.ToolButton() that launched an instance of this
-            class.
+        :param __button: the Gtk.ToolButton() that launched an instance of this class.
         :param configuration: the RAMSTKUserConfiguration class instance.
         """
         # Initialize private dictionary attributes.

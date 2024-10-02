@@ -76,8 +76,7 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     ) -> RAMSTKValidationRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -91,13 +90,12 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     def do_calculate_plan(self) -> None:
         """Calculate the planned burndown of the overall validation effort.
 
-        This method will calculate three values for each scheduled end date
-        in the validation plan, the lower bound, average, and upper bound
-        for the tasks planned to still be open on each of the scheduled end
-        dates in the plan.
+        This method will calculate three values for each scheduled end date in the
+        validation plan, the lower bound, average, and upper bound for the tasks planned
+        to still be open on each of the scheduled end dates in the plan.
 
-        :return: _planned; the pandas DataFrame() containing the planned
-            burndown hours for the entire validation effort.
+        :return: _planned; the pandas DataFrame() containing the planned burndown hours
+            for the entire validation effort.
         """
         _dic_planned = {}  # type: ignore
         _time_ll = 0.0
@@ -173,9 +171,9 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     def _do_calculate_all_tasks(self) -> None:
         """Calculate mean, standard error, and bounds on all task's time/cost.
 
-        These values are calculated assuming a beta distribution (typical
-        project management assumption).  This method also calculates the
-        remaining average time and cost of the overall validation plan.
+        These values are calculated assuming a beta distribution (typical project
+        management assumption).  This method also calculates the remaining average time
+        and cost of the overall validation plan.
 
         :return: None
         :rtype: None
@@ -206,8 +204,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     def _do_calculate_task(self, node_id: int) -> None:
         """Calculate mean, standard error, and bounds on task time and cost.
 
-        These values are calculated assuming a beta distribution (typical
-        project management assumption).
+        These values are calculated assuming a beta distribution (typical project
+        management assumption).
 
         :param node_id: the ID of the node (task) to calculate.
         :return: None
@@ -231,8 +229,8 @@ class RAMSTKValidationTable(RAMSTKBaseTable):
     def _do_select_assessment_targets(self) -> pd.DataFrame:
         """Select the targets for all tasks of Reliability Assessment type.
 
-        :return: _assessed; a pandas DataFrame() containing the assessment
-            dates as the index and associated targets.
+        :return: _assessed; a pandas DataFrame() containing the assessment dates as the
+            index and associated targets.
         """
         _dic_assessed = {
             pd.to_datetime(_node.data["validation"].date_end): [

@@ -100,7 +100,7 @@ class RAMSTKOpStressRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve the current values of the Op Stress data model attributes.
 
         :return: {opload_id, opstress_id, description, load_history,
-                  measurable_parameter, remarks} pairs
+            measurable_parameter, remarks} pairs
         :rtype: tuple
         """
         return {

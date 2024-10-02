@@ -463,8 +463,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
     def _do_load_specification(self, combo: RAMSTKComboBox) -> None:
         """Retrieve RAMSTKCombo() changes and assign to Connection attribute.
 
-        :param combo: the connection type RAMSTKCombo() that called this
-            method.
+        :param combo: the connection type RAMSTKCombo() that called this method.
         :return: None
         :rtype: None
         """
@@ -499,7 +498,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -526,7 +525,7 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )
@@ -561,4 +560,6 @@ class ConnectionDesignElectricInputPanel(RAMSTKFixedPanel):
         if self._hazard_rate_method_id == 1:
             super().set_widget_sensitivity([self.cmbType])
         else:
-            super.set_widget_sensitivity(_sensitivity_map.get(self.subcategory_id, []))
+            super().set_widget_sensitivity(
+                _sensitivity_map.get(self.subcategory_id, [])
+            )

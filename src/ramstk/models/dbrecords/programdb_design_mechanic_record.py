@@ -234,19 +234,16 @@ class RAMSTKDesignMechanicRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of RAMSTKDesignMechanic model attributes.
 
         :return: {hardware_id, altitude_operating, application_id, balance_id,
-                  clearance, casing_id, contact_pressure, deflection,
-                  diameter_coil, diameter_inner, diameter_outer, diameter_wire,
-                  filter_size, flow_design, flow_operating,
-                  frequency_operating, friction, impact_id, leakage_allowable,
-                  length, length_compressed, length_relaxed, load_design,
-                  load_id, load_operating, lubrication_id, manufacturing_id,
-                  material_id, meyer_hardness, misalignment_angle, n_ten,
-                  n_cycles, n_elements, offset, particle_size,
-                  pressure_contact, pressure_delta, pressure_downstream,
-                  pressure_rated, pressure_upstream, rpm_design, rpm_operating,
-                  service_id, spring_index, surface_finish, technology_id,
-                  thickness, torque_id, type_id, viscosity_design,
-                  viscosity_dynamic, water_per_cent, width_minimum} pairs.
+            clearance, casing_id, contact_pressure, deflection, diameter_coil,
+            diameter_inner, diameter_outer, diameter_wire, filter_size, flow_design,
+            flow_operating, frequency_operating, friction, impact_id, leakage_allowable,
+            length, length_compressed, length_relaxed, load_design, load_id,
+            load_operating, lubrication_id, manufacturing_id, material_id,
+            meyer_hardness, misalignment_angle, n_ten, n_cycles, n_elements, offset,
+            particle_size, pressure_contact, pressure_delta, pressure_downstream,
+            pressure_rated, pressure_upstream, rpm_design, rpm_operating, service_id,
+            spring_index, surface_finish, technology_id, thickness, torque_id, type_id,
+            viscosity_design, viscosity_dynamic, water_per_cent, width_minimum} pairs.
         :rtype: dict
         """
         return {

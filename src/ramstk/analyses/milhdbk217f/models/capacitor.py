@@ -391,13 +391,13 @@ REF_TEMPS = {
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b_list function.
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the capacitor being calculated.
     :return: _base_hr; the base hazard rate.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID or specification ID.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID or specification
+        ID.
     """
     return get_part_count_lambda_b(
         attributes["subcategory_id"],
@@ -412,10 +412,9 @@ def calculate_part_stress(
     """Calculate the part stress active hazard rate for a capacitor.
 
     :param attributes: the attributes for the capacitor being calculated.
-    :return: attributes; the keyword argument (hardware attribute)
-        dictionary with updated values.
-    :rtype: dict
-    :raise: KeyError if the attribute dict is missing one or more keys.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
+    :rtype: dict :raise: KeyError if the attribute dict is missing one or more keys.
     """
     attributes["lambda_b"] = calculate_part_stress_lambda_b(
         attributes["subcategory_id"],
@@ -465,8 +464,7 @@ def calculate_capacitance_factor(
     :param subcategory_id: the capacitor subcategory identifier.
     :param capacitance: the capacitance value in Farads.
     :return: _pi_cv; the calculated capacitance factor.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
     """
     _dic_factors = {
         1: [1.2, 0.095],
@@ -503,15 +501,11 @@ def calculate_part_stress_lambda_b(
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     :param subcategory_id: the capacitor subcategory identifier.
-    :param temperature_rated_max: the maximum rated temperature of the
-        capacitor.
-    :param temperature_active: the operating ambient temperature of the
-        capacitor.
-    :param voltage_ratio: the ratio of operating to rated voltage for the
-        capacitor.
+    :param temperature_rated_max: the maximum rated temperature of the capacitor.
+    :param temperature_active: the operating ambient temperature of the capacitor.
+    :param voltage_ratio: the ratio of operating to rated voltage for the capacitor.
     :return: _base_hr; the calculates base hazard rate.
-    :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
     """
     _dic_factors = {
         1: [0.00086, 0.4, 5.0, 2.5, 1.8],
@@ -562,13 +556,11 @@ def calculate_series_resistance_factor(
 
     :param resistance: the equivalent series resistance of the capacitor.
     :param voltage_dc_operating: the operating DC voltage.
-    :param voltage_ac_operating: the operating ac voltage (ripple
-        voltage).
-    :return: _pi_sr, _error_msg; the series resistance factor and any error
-        message raised by this function.
-    :rtype: tuple
-    :raise: TypeError if passed a non-numerical input.
-    :raise: ZeroDivisionError if passed both ac and DC voltages = 0.0.
+    :param voltage_ac_operating: the operating ac voltage (ripple voltage).
+    :return: _pi_sr, _error_msg; the series resistance factor and any error message
+        raised by this function.
+    :rtype: tuple :raise: TypeError if passed a non-numerical input. :raise:
+        ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
     _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
 
@@ -591,8 +583,7 @@ def get_configuration_factor(configuration_id: int) -> float:
 
     :param configuration_id: the capacitor configuration identifier.
     :return: _pi_cf; the configuration factor value.
-    :rtype: float
-    :raise: KeyError if passed an unknown configuration ID.
+    :rtype: float :raise: KeyError if passed an unknown configuration ID.
     """
     return PI_CF[configuration_id]
 
@@ -602,8 +593,7 @@ def get_construction_factor(construction_id: int) -> float:
 
     :param construction_id: the capacitor construction identifier.
     :return: _pi_c; the construction factor value.
-    :rtype: float
-    :raise: KeyError if passed an unknown construction ID.
+    :rtype: float :raise: KeyError if passed an unknown construction ID.
     """
     return PI_C[construction_id]
 
@@ -741,8 +731,8 @@ def _set_default_capacitance(
     :return: _capacitance
     :rtype: float
     :raises: KeyError if passed a subcategory ID outside the bounds.
-    :raises: IndexError if passed a style ID outside the bounds when subcategory ID
-        is equal to three.
+    :raises: IndexError if passed a style ID outside the bounds when subcategory ID is
+        equal to three.
     """
     _capacitance = {
         1: 0.15e-6,

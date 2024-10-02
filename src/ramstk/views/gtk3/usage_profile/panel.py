@@ -398,8 +398,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
         """Handle edits of description column to ensure proper level is updated.
 
         :param cell: the Gtk.CellRenderer() that was edited.
-        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer()
-            that was edited.
+        :param path: the RAMSTKTreeView() path of the Gtk.CellRenderer() that was
+            edited.
         :param new_text: the new text in the edited Gtk.CellRenderer().
         :param key: the column key of the edited Gtk.CellRenderer().
         :param message: the PyPubSub message to publish.
@@ -416,8 +416,8 @@ class UsageProfileTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle row changes for the Usage Profile package List View.
 
-        This method is called whenever a Usage Profile List View
-        RAMSTKTreeView() row is activated or changed.
+        This method is called whenever a Usage Profile List View RAMSTKTreeView() row is
+        activated or changed.
 
         :param selection: the Usage Profile class Gtk.TreeSelection().
         :return: None

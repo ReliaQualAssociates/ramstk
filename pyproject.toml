@@ -38,17 +38,17 @@ python = "^3.10,<4.0"
 lifelines = "^0.27.0"
 matplotlib = "^3.3.4"
 numpy = [
-	{ version  = ">=1.26,<2.0", python = "^3.8", markers = "platform_system =='linux'" }
+	{ version  = ">=1.26,<2.0", python = "^3.10", markers = "platform_system=='linux'" }
 ]
 openpyxl = "^3.0.6"
 pandas = [
-	{ version = ">=1.3,<3.0", python = ">=3.8,<4.0" }]
+	{ version = ">=1.3,<3.0", python = ">=3.10,<4.0" }]
 psycopg2 = "^2.8.6"
 pycairo = "^1.20.0"
 pygobject = "^3.38"
 pypubsub = "^4.0.3"
 scipy = [
-	{ version = "^1.7.2", python = ">=3.8,<3.11" }
+	{ version = "^1.14.0", python = ">=3.10,<3.11" }
 ]
 sortedcontainers = "^2.3.0"
 sqlalchemy-utils = ">=0.40,<0.42"
@@ -96,7 +96,7 @@ sphinxcontrib-issuetracker = "^0.11"
 sphinxcontrib-spelling = "^8.0.0"
 twine = "^5.1.1"
 pillow = [
-	{ version = "^10.1.0" , python = "^3.8" }
+	{ version = "^10.1.0" , python = "^3.10" }
 ]
 
 [tool.poetry.scripts]
@@ -225,6 +225,8 @@ disable = [
 	'no-member',
 	'no-else-return',
 	'cyclic-import',
+	'inconsistent-return-statements',
+	'attribute-defined-outside-init',
 ]
 
 [tool.pylint.reports]
@@ -263,6 +265,7 @@ ignored-classes = [
 
 [tool.pylint.design]
 max-args = 6
+max-positional-arguments = 6
 
 [tool.docformatter]
 non-cap = [
@@ -300,8 +303,10 @@ ignore = [
 ]
 
 [tool.ruff]
-select = ["PL",]
 exclude = ["*.pyi"]
+
+[tool.ruff.lint]
+select = ["PL",]
 ignore = [
 	"PLR2004",	# Magic value used in comparison.
 ]

@@ -91,8 +91,7 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
     ) -> RAMSTKSimilarItemRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -140,8 +139,8 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
     def do_roll_up_change_descriptions(self, node_id: int) -> None:
         """Concatenate child change descriptions for the node ID similar item.
 
-        :param node_id: the record ID of the parent to which the rolled-up
-            descriptions are assigned.
+        :param node_id: the record ID of the parent to which the rolled-up descriptions
+            are assigned.
         :return: None
         :rtype: None
         """
@@ -418,8 +417,8 @@ class RAMSTKSimilarItemTable(RAMSTKBaseTable):
         """Update the Similar Item tree for the newly added or removed Hardware.
 
         Similar Item records are added by triggers in the database when a new Hardware
-        item is added.  This method simply adds a new node to the Similar Item tree
-        with a blank record.
+        item is added.  This method simply adds a new node to the Similar Item tree with
+        a blank record.
 
         :param tree: the Hardware tree with the new node.
         :return: None

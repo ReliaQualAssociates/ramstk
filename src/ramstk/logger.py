@@ -25,8 +25,7 @@ class RAMSTKLogManager:
     def __init__(self, log_file: str) -> None:
         """Initialize an instance of the LogManager.
 
-        :param log_file: the absolute path to the log file to use with this
-            log manager.
+        :param log_file: the absolute path to the log file to use with this log manager.
         """
         # Initialize private dictionary attributes.
 
@@ -59,8 +58,8 @@ class RAMSTKLogManager:
 
         :param logger_name: the name of the logger used in the application.
         :param log_level: the level of messages to log.
-        :param to_tty: boolean indicating whether this logger will
-            also dump messages to the terminal.
+        :param to_tty: boolean indicating whether this logger will also dump messages to
+            the terminal.
         :return: None
         :rtype: None
         """

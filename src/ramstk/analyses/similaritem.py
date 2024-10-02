@@ -388,8 +388,7 @@ def set_user_defined_change_factors(
     """Set the change factors for the user-defined calculations.
 
     :param sia: the similar item assessment dict.
-    :param list factors: the list of change factors; the list items are float
-        or int.
+    :param list factors: the list of change factors; the list items are float or int.
     :return: sia; the similar item assessment dict with updated factor values.
     :rtype: dict
     """
@@ -467,9 +466,8 @@ def set_user_defined_results(
 ) -> Dict[str, float]:
     """Set the user-defined results for the user-defined calculations.
 
-    This allows the use of the results fields to be manually set to float
-    values by the user essentially creating five more user-defined float
-    values.
+    This allows the use of the results fields to be manually set to float values by the
+    user essentially creating five more user-defined float values.
 
     :param sia: the similar item assessment dict.
     :param list results: the list of results.

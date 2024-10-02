@@ -57,8 +57,7 @@ def deprecated(func: Callable) -> Callable:
 def dir_exists(directory: str) -> bool:
     """Check if a directory exists.
 
-    :param directory: a string representing the directory path to check
-                          for.
+    :param directory: a string representing the directory path to check for.
     :return: False if the directory does not exist, True otherwise.
     :rtype: bool
     """
@@ -88,8 +87,7 @@ def none_to_default(
 
     :param field: the original value that may be None.
     :param default: the new, default, value.
-    :return: field; the new value if field is None, the old value
-        otherwise.
+    :return: field; the new value if field is None, the old value otherwise.
     :rtype: any
     """
     return default if field is None else field
@@ -128,8 +126,7 @@ def ordinal_to_date(ordinal: int) -> str:
 def split_string(string: str) -> List[str]:
     """Split a colon-delimited string into its constituent parts.
 
-    :param string: the colon delimited string that needs to be split into
-        a list.
+    :param string: the colon delimited string that needs to be split into a list.
     :return: _strlist
     :rtype: list of strings
     """
@@ -149,13 +146,11 @@ def boolean_to_integer(boolean: bool) -> int:
 def integer_to_boolean(integer: int) -> bool:
     """Convert an integer to boolean value.
 
-    Any value greater than zero is returned as True, all others are returned as
-    False.
+    Any value greater than zero is returned as True, all others are returned as False.
 
     :param integer: the integer to convert.
     :return: _result
-    :rtype: bool
-    :raise: TypeError if passed a string.
+    :rtype: bool :raise: TypeError if passed a string.
     """
     return integer > 0
 

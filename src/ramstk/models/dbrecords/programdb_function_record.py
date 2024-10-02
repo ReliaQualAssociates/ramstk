@@ -129,11 +129,10 @@ class RAMSTKFunctionRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of the RAMSTKFunction data model attributes.
 
         :return: {revision_id, function_id, availability_logistics,
-                  availability_mission, cost, function_code,
-                  hazard_rate_logistics, hazard_rate_mission, level, mmt, mcmt,
-                  mpmt, mtbf_logistics, mtbf_mission, mttr, name, parent_id,
-                  remarks, safety_critical, total_mode_count, total_part_count,
-                  type_id} pairs.
+            availability_mission, cost, function_code, hazard_rate_logistics,
+            hazard_rate_mission, level, mmt, mcmt, mpmt, mtbf_logistics, mtbf_mission,
+            mttr, name, parent_id, remarks, safety_critical, total_mode_count,
+            total_part_count, type_id} pairs.
         :rtype: tuple
         """
         return {

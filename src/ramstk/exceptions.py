@@ -8,41 +8,44 @@
 
 
 class RAMSTKError(Exception):
-    """Basic exception for errors raised by RAMSTK."""
+    """Base exception class for RAMSTK errors.
 
-    def __init__(self, msg: str = "") -> None:
-        """Initialize the basic RAMSTK exception.
+    :param msg: Custom error message.
+    :type msg: str
+    """
 
-        :param str msg: the message to display to the user when this
-            exception is raised.
-        """
-        self.msg = msg or "An error occurred with RAMSTK."
+    def __init__(self, msg: str = "An error occurred with RAMSTK.") -> None:
+        """Initialize the basic RAMSTK exception."""
         super().__init__(msg)
+        self.msg = msg
+
+    def __str__(self) -> str:
+        """Return the error message."""
+        return self.msg
 
 
 class DataAccessError(RAMSTKError):
-    """Exception raised when attempting to access non-existent data."""
+    """Exception raised when attempting to access non-existent data.
 
-    def __init__(self, msg: str = "") -> None:
-        """Initialize DataAccessError instance.
+    This exception is used when accessing data in the data access object (DAO) or the
+    `treelib` Tree() where the data does not exist.
 
-        This exception is intended for use for non-existent data in the data
-        access object and the treelib Tree()'s.  Use it to override the
-        native exceptions.
+    :param msg: Custom error message (optional).
+    :type msg: str
+    """
 
-        :param msg: the message to display to the user when this
-            exception is raised.
-        """
+    def __init__(self, msg: str = "Data access error.") -> None:
+        """Initialize DataAccessError instance."""
         super().__init__(msg)
 
 
 class OutOfRangeError(RAMSTKError):
-    """Exception raised when an input value is outside legal limits."""
+    """Exception raised when an input value is outside legal limits.
 
-    def __init__(self, msg: str) -> None:
-        """Initialize OutOfRangeError instance.
+    :param msg: Custom error message indicating the out-of-range value.
+    :type msg: str
+    """
 
-        :param msg: the message to display to the user when this
-            exception is raised.
-        """
-        super().__init__(msg=msg)
+    def __init__(self, msg: str = "Input value is out of the allowed range.") -> None:
+        """Initialize the OutOfRangeError with an optional message."""
+        super().__init__(msg)

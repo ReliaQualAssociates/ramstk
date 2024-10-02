@@ -785,9 +785,9 @@ class HazardsTreePanel(RAMSTKTreePanel):
     def do_refresh_functions(self, row: Gtk.TreeIter, function: List[str]) -> None:
         """Refresh the Similar Item functions in the RAMSTKTreeView().
 
-        :param row: the row in the Similar Item RAMSTKTreeView() whose
-            functions need to be updated.  This is required to allow a recursive
-            calling function to load the same function in all rows.
+        :param row: the row in the Similar Item RAMSTKTreeView() whose functions need to
+            be updated. This is required to allow a recursive calling function to load
+            the same function in all rows.
         :param function: the list of user-defined Similar Item functions.
         :return: None
         """

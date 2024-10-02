@@ -99,28 +99,13 @@ class RAMSTKProgramDB(BaseDatabase):
     ) -> None:
         """Create a new RAMSTK Program database.
 
-        :param dict database: a dict containing the database connection
-            arguments.
-        :param str sql_file: the file containing the SQL statements for
-            creating the database.
+        :param dict database: a dict containing the database connection arguments.
+        :param str sql_file: the file containing the SQL statements for creating the
+            database.
         :return: None
         :rtype: None
         """
-        try:
-            self.do_create_database(
-                database,
-                sql_file,
-            )
-            pub.sendMessage(
-                "succeed_create_program_database",
-                database=database,
-            )
-        except FileNotFoundError:
-            pub.sendMessage(
-                "do_log_debug_msg",
-                logger_name="DEBUG",
-                message=(f"SQL file {sql_file} could not be found."),
-            )
+        self.do_create_database(database, sql_file)
 
     def do_open_program(self, database: Dict[str, str]) -> None:
         """Open an RAMSTK Program database for analyses.
@@ -133,7 +118,8 @@ class RAMSTKProgramDB(BaseDatabase):
             self.do_connect(database)
             pub.sendMessage("succeed_connect_program_database", dao=self)
             pub.sendMessage(
-                "request_retrieve_revisions", attributes={"revision_id": None}
+                "request_retrieve_revisions",
+                attributes={"revision_id": None},
             )
         except DataAccessError as _error:
             pub.sendMessage("fail_connect_program_database", error_message=_error.msg)
@@ -149,9 +135,11 @@ class RAMSTKProgramDB(BaseDatabase):
             self.do_disconnect()
             pub.sendMessage("succeed_disconnect_program_database")
         except AttributeError:
-            _error_msg = "Not currently connected to a database.  Nothing to close."
             pub.sendMessage(
-                "fail_disconnect_program_database", error_message=_error_msg
+                "fail_disconnect_program_database",
+                error_message=(
+                    "Not currently connected to a database.  Nothing to close."
+                ),
             )
 
     @staticmethod

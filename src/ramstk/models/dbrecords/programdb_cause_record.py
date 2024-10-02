@@ -118,8 +118,7 @@ class RAMSTKCauseRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of the RAMSTKCause data model attributes.
 
         :return: {mode_id, mechanism_id, cause_id, description, rpn_occurrence,
-                  rpn_detection, rpn, rpn_occurrence_new, rpn_detection_new,
-                  rpn_new}
+            rpn_detection, rpn, rpn_occurrence_new, rpn_detection_new, rpn_new}
         :rtype: tuple
         """
         return {

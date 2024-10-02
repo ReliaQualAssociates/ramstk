@@ -146,13 +146,12 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of RAMSTKValidation data model attributes.
 
-        :return: {revision_id, validation_id, acceptable_maximum,
-                  acceptable_mean, acceptable_minimum, acceptable_variance,
-                  confidence, cost_average, cost_ll. cost_maximum, cost_mean,
-                  cost_minimum, cost_l, cost_variance, date_end, date_start,
-                  description, measurement_unit_id, status_id, task_type_id,
-                  task_specification, time_average, time_ll, time_maximum,
-                  time_mean, time_minimum, time_ul, time_variance} pairs.
+        :return: {revision_id, validation_id, acceptable_maximum, acceptable_mean,
+            acceptable_minimum, acceptable_variance, confidence, cost_average, cost_ll.
+            cost_maximum, cost_mean, cost_minimum, cost_l, cost_variance, date_end,
+            date_start, description, measurement_unit_id, status_id, task_type_id,
+            task_specification, time_average, time_ll, time_maximum, time_mean,
+            time_minimum, time_ul, time_variance} pairs.
         :rtype: dict
         """
         return {
@@ -190,8 +189,8 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def calculate_task_time(self):
         """Calculate the mean, standard error, and bounds on the task time.
 
-        These values are calculated assuming a beta distribution (typical
-        project management assumption).
+        These values are calculated assuming a beta distribution (typical project
+        management assumption).
 
         :return: None
         :rtype: None
@@ -213,8 +212,8 @@ class RAMSTKValidationRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def calculate_task_cost(self):
         """Calculate the mean, standard error, and bounds on the task cost.
 
-        These values are calculated assuming a beta distribution (typical
-        project management assumption).
+        These values are calculated assuming a beta distribution (typical project
+        management assumption).
 
         :return: None
         :rtype: None

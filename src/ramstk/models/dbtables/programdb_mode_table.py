@@ -75,8 +75,7 @@ class RAMSTKModeTable(RAMSTKBaseTable):
     ) -> RAMSTKModeRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -90,8 +89,8 @@ class RAMSTKModeTable(RAMSTKBaseTable):
     def do_calculate_criticality(self, item_hr: float) -> None:
         """Calculate MIL-STD-1629A, Task 102 criticality of a hardware item.
 
-        :param item_hr: the hazard rate of the hardware item the criticality is
-            being calculated for.
+        :param item_hr: the hazard rate of the hardware item the criticality is being
+            calculated for.
         :return: None
         :rtype: None
         """

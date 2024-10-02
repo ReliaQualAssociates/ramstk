@@ -47,8 +47,8 @@ PI_E = [
 def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
     """Wrap get_part_count_lambda_b().
 
-    This wrapper allows us to pass an attribute dict from a generic parts
-    count function.
+    This wrapper allows us to pass an attribute dict from a generic parts count
+    function.
 
     :param attributes: the attributes for the fuse being calculated.
     :return: _base_hr; the parts count base hazard rates.
@@ -62,11 +62,10 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a fuse.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: attributes; the keyword argument (hardware attribute) dictionary
-        with updated values.
+    :return: attributes; the keyword argument (hardware attribute) dictionary with
+        updated values.
     :rtype: dict
     """
     attributes["hazard_rate_active"] = 0.010 * attributes["piE"]
@@ -79,8 +78,7 @@ def get_part_count_lambda_b(environment_active_id: int) -> float:
 
     :param environment_active_id: the active environment identifer.
     :return: _base_hr; the part count base hazard rate.
-    :rtype: float
-    :raise: IndexError when passed an unkown active environment ID.
+    :rtype: float :raise: IndexError when passed an unkown active environment ID.
     """
     return PART_COUNT_LAMBDA_B[environment_active_id - 1]
 

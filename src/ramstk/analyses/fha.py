@@ -164,8 +164,7 @@ def set_user_defined_floats(fha: Dict[str, Any], floats: List[float]) -> Dict[st
 
     :param fha: the functional hazard assessment dict.
     :param list floats: the list of float values.
-    :return: fha; the functional hazard assessment dict with updated float
-        values.
+    :return: fha; the functional hazard assessment dict with updated float values.
     :rtype: dict
     """
     _key = ""
@@ -184,8 +183,7 @@ def set_user_defined_ints(fha: Dict[str, Any], ints: List[int]) -> Dict[str, Any
 
     :param fha: the functional hazard assessment dict.
     :param list ints: the list of integer values.
-    :return: fha; the functional hazard assessment dict with updated integer
-        values.
+    :return: fha; the functional hazard assessment dict with updated integer values.
     :rtype: dict
     """
     _key = ""
@@ -230,9 +228,8 @@ def set_user_defined_results(
 ) -> Dict[str, Any]:
     """Set the user-defined results for the user-defined calculations.
 
-    This allows the use of the results fields to be manually set to float
-    values by the user essentially creating five more user-defined float
-    values.
+    This allows the use of the results fields to be manually set to float values by the
+    user essentially creating five more user-defined float values.
 
     :param fha: the functional hazard assessment dict.
     :param list results: the list of results.

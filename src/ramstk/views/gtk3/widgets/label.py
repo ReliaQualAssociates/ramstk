@@ -92,8 +92,8 @@ class RAMSTKLabel(Gtk.Label, RAMSTKWidget):
         """Update the text displayed by the label.
 
         :param text: the information to update the RAMSTKLabel() to display.
-        :param signal: the name of the signal whose handler ID the RAMSTKLabel()
-            needs to block.  Unused in this method, but required for compatibility.
+        :param signal: the name of the signal whose handler ID the RAMSTKLabel() needs
+            to block. Unused in this method, but required for compatibility.
         :return: None
         :rtype: None
         """
@@ -105,17 +105,15 @@ def do_make_label_group(
 ) -> Tuple[int, List[RAMSTKLabel]]:
     """Make and place a group of labels.
 
-    The width of each label is set using a natural request.  This ensures the
-    label doesn't cut off letters.  The maximum size of the labels is
-    determined and used to set the left position of widget displaying the data
-    described by the label.  This ensures everything lines up.  It also returns
-    a list of y-coordinates indicating the placement of each label that is used
-    to place the corresponding widget.
+    The width of each label is set using a natural request.  This ensures the label
+    doesn't cut off letters.  The maximum size of the labels is determined and used to
+    set the left position of widget displaying the data described by the label.  This
+    ensures everything lines up.  It also returns a list of y-coordinates indicating the
+    placement of each label that is used to place the corresponding widget.
 
     :param text: a list containing the text for each label.
-    :return: (_max_x, _lst_labels)
-        the width of the label with the longest text and a list of the
-        RAMSTKLabel() instances.
+    :return: (_max_x, _lst_labels) the width of the label with the longest text and a
+        list of the RAMSTKLabel() instances.
     :rtype: tuple of (integer, list of RAMSTKLabel())
     """
     _bold = kwargs.get("bold", True)

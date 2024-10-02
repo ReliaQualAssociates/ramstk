@@ -499,7 +499,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         self._quality_id = attributes["quality_id"]
 
         self._set_sensitive()
-        super.set_widget_sensitivity([self.cmbQuality])
+        super().set_widget_sensitivity([self.cmbQuality])
         self.cmbQuality.do_update(
             self._quality_id,
             signal="changed",
@@ -524,7 +524,7 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
         ]
 
         # Reset all widgets to be insensitive.
-        super.set_widget_sensitivity(
+        super().set_widget_sensitivity(
             _all_widgets,
             False,
         )
@@ -534,7 +534,8 @@ class SemiconductorDesignElectricInputPanel(RAMSTKFixedPanel):
             self.cmbPackage.set_sensitive(True)
             self.txtThetaJC.set_sensitive(True)
 
-        # Define a sensitivity map for different widgets based on hazard rate method and subcategory
+        # Define a sensitivity map for different widgets based on hazard rate method
+        # and subcategory
         _sensitivity_map = {
             1: {
                 1: [self.cmbType],

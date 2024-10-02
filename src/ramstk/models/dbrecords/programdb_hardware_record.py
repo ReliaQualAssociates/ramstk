@@ -221,14 +221,13 @@ class RAMSTKHardwareRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self) -> Dict[str, Union[float, int, str]]:
         """Retrieve the current values of RAMSTKHardware data model attributes.
 
-        :return: {revision_id, hardware_id, alt_part_number, attachments,
-                  cage_code, category_id, comp_ref_des, cost, cost_failure,
-                  cost_hour, cost_type_id, description, duty_cycle,
-                  figure_number, lcn, level, manufacturer_id, mission_time,
-                  name, nsn, page_number, parent_id, part, part_number,
-                  quantity, ref_des, remarks, repairable, specification_number,
-                  subcategory_id, tagged_part, total_cost, total_part_count,
-                  total_power_dissipation, year_of_manufacture} pairs.
+        :return: {revision_id, hardware_id, alt_part_number, attachments, cage_code,
+            category_id, comp_ref_des, cost, cost_failure, cost_hour, cost_type_id,
+            description, duty_cycle, figure_number, lcn, level, manufacturer_id,
+            mission_time, name, nsn, page_number, parent_id, part, part_number,
+            quantity, ref_des, remarks, repairable, specification_number,
+            subcategory_id, tagged_part, total_cost, total_part_count,
+            total_power_dissipation, year_of_manufacture} pairs.
         :rtype: dict
         """
         return {

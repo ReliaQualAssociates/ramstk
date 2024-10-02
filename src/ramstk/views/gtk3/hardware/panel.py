@@ -668,8 +668,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
     ) -> None:
         """Load the subcategories whenever the category combo is changed.
 
-        :param __combo: the category list Gtk.CellRendererCombo().  Unused in
-            this method.
+        :param __combo: the category list Gtk.CellRendererCombo(). Unused in this
+            method.
         :param path: the path identifying the edited cell.
         :param new_text: the new text (category description).
         :return: None
@@ -703,8 +703,8 @@ class HardwareTreePanel(RAMSTKTreePanel):
     def _on_row_change(self, selection: Gtk.TreeSelection) -> None:
         """Handle events for the Hardware package Module View RAMSTKTreeView().
 
-        This method is called whenever a Hardware Module View RAMSTKTreeView()
-        row is activated/changed.
+        This method is called whenever a Hardware Module View RAMSTKTreeView() row is
+        activated/changed.
 
         :param selection: the Hardware class Gtk.TreeSelection().
         :return: None
@@ -760,9 +760,9 @@ class HardwareTreePanel(RAMSTKTreePanel):
     def _on_workview_edit(self, node_id: int, package: Dict[str, Any]) -> None:
         """Update the module view RAMSTKTreeView() with attribute changes.
 
-        This is a wrapper for the metaclass method do_refresh_tree().  It is
-        necessary to handle RAMSTKComboBox() changes because the package value will
-        be an integer and the Gtk.CellRendererCombo() needs a string input to update.
+        This is a wrapper for the metaclass method do_refresh_tree().  It is necessary
+        to handle RAMSTKComboBox() changes because the package value will be an integer
+        and the Gtk.CellRendererCombo() needs a string input to update.
 
         :param node_id: the ID of the hardware item being edited.
         :param package: the key:value for the data being updated.

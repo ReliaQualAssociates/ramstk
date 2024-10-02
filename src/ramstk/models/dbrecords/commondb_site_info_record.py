@@ -133,7 +133,7 @@ class RAMSTKSiteInfoRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         """Retrieve current values of the RAMSTKSiteInfo data model attributes.
 
         :return: {site_id, product_key, expire_on, function_enabled,
-                  requirement_enabled, vandv_enabled, fmea_enabled} pairs.
+            requirement_enabled, vandv_enabled, fmea_enabled} pairs.
         :rtype: dict
         """
         return {

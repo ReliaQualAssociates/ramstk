@@ -64,8 +64,8 @@ class Export:
         """Export selected RAMSTK module data to external file.
 
         :param modules: dict of RAMSTK modules to export.
-        :param file_name: the name, with full path, of the file to export
-            the RAMSTK Program database data to.
+        :param file_name: the name, with full path, of the file to export the RAMSTK
+            Program database data to.
         :return: None
         :rtype: None
         """
@@ -178,8 +178,8 @@ class Export:
         """Request RAMSTK module data trees.
 
         :param modules: dict of RAMSTK modules to export.
-        :param file_name: the name, with full path, of the file to export
-            the RAMSTK Program database data to.
+        :param file_name: the name, with full path, of the file to export the RAMSTK
+            Program database data to.
         :return: None
         :rtype: None
         """

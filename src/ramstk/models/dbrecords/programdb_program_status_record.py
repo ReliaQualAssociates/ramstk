@@ -56,8 +56,7 @@ class RAMSTKProgramStatusRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
     def get_attributes(self):
         """Retrieve current values of RAMSTKProgramStatus model attributes.
 
-        :return: {revision_id, cost_remaining, date_status, time_remaining}
-            pairs.
+        :return: {revision_id, cost_remaining, date_status, time_remaining} pairs.
         :rtype: dict
         """
         return {

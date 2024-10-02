@@ -107,8 +107,7 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
     ) -> RAMSTKAllocationRecord:
         """Get a new record instance with attributes set.
 
-        :param attributes: the dict of attribute values to assign to the new
-            record.
+        :param attributes: the dict of attribute values to assign to the new record.
         :return: None
         :rtype: None
         """
@@ -318,8 +317,8 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         """Calculate the total number of elements for the AGREE method.
 
         :param node_id: the record ID whose allocation is to be calculated.
-        :return: _n_sub_elements, _n_sub_systems; the number of
-            sub-elements and subsystems comprising the selected node.
+        :return: _n_sub_elements, _n_sub_systems; the number of sub-elements and
+            subsystems comprising the selected node.
         :rtype: tuple
         """
         _n_sub_elements = 0
@@ -334,10 +333,10 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
     def _do_calculate_foo_cumulative_weight(self, node_id: int) -> int:
         """Calculate the cumulative weight for the FOO method.
 
-        :param node_id: the node (allocation) ID of the allocation item whose
-            goal is to be allocated.
-        :return: _cum_weight; the cumulative weighting factor for the
-            allocation item to be allocated.
+        :param node_id: the node (allocation) ID of the allocation item whose goal is to
+            be allocated.
+        :return: _cum_weight; the cumulative weighting factor for the allocation item to
+            be allocated.
         """
         _cum_weight = 0
 
@@ -362,8 +361,8 @@ class RAMSTKAllocationTable(RAMSTKBaseTable):
         """Update the Allocation tree for the newly added or removed Hardware.
 
         Allocation records are added by triggers in the database when a new Hardware
-        item is added.  This method simply adds a new node to the Allocation tree
-        with a blank record.
+        item is added.  This method simply adds a new node to the Allocation tree with a
+        blank record.
 
         :param tree: the updated Hardware tree with the new node or missing the node
             just deleted.

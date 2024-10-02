@@ -114,13 +114,12 @@ class RAMSTKPlot:
         """Load the RAMSTKPlot.
 
         :param x_values: list of the x-values to plot.
-        :param y_values: list of the y-values to plot or list of bin edges if
-            plotting a histogram.
-        :param color: the color of the line to add to the plot.  Black is the
-            default.  See matplotlib documentation for options.
-        :param marker: the marker to use on the plot. Default is '^' or an
-            upward pointing triangle.  See matplotlib documentation for other
-            options.
+        :param y_values: list of the y-values to plot or list of bin edges if plotting a
+            histogram.
+        :param color: the color of the line to add to the plot. Black is the default.
+            See matplotlib documentation for options.
+        :param marker: the marker to use on the plot. Default is '^' or an upward
+            pointing triangle. See matplotlib documentation for other options.
         :return: None
         :rtype: None
         """
@@ -316,8 +315,8 @@ class RAMSTKPlot:
     ) -> None:
         """Make a date plot.
 
-        Use the keyword marker to set the type and color of marker to use
-        for the plot.  Default is 'g-' or a solid green line.
+        Use the keyword marker to set the type and color of marker to use for the plot.
+        Default is 'g-' or a solid green line.
 
         :param x_values: the list of x-values (dates) for the plot.
         :param y_values: the list of y-values for the plot.
@@ -339,13 +338,12 @@ class RAMSTKPlot:
     ) -> None:
         """Make a histogram.
 
-        Use the keyword marker to set the color of the bars used for the plot.
-        Default is 'g' or green.
+        Use the keyword marker to set the color of the bars used for the plot. Default
+        is 'g' or green.
 
         :param list x_values: the list of x-values for the plot.
-        :param list y_values: the list of bin edges for the plot.
-        :keyword str marker: the color of bars to use for the histogram.
-            Default is green.
+        :param list y_values: the list of bin edges for the plot. :keyword str marker:
+            the color of bars to use for the histogram. Default is green.
         :return: None
         :rtype: None
         """
@@ -366,8 +364,8 @@ class RAMSTKPlot:
     ) -> None:
         """Make a scatter plot.
 
-        Use the keyword marker to set the type and color of marker to use
-        for the plot.  Default is 'go' or open green circles.
+        Use the keyword marker to set the type and color of marker to use for the plot.
+        Default is 'go' or open green circles.
 
         :param x_values: the list of x-values for the plot.
         :param y_values: the list of y-values for the plot.
@@ -390,8 +388,8 @@ class RAMSTKPlot:
     ) -> None:
         """Make a step plot.
 
-        Use the keyword marker to set the type and color of marker to use
-        for the plot.  Default is 'g-' or a solid green line.
+        Use the keyword marker to set the type and color of marker to use for the plot.
+        Default is 'g-' or a solid green line.
 
         :param list x_values: the list of x-values for the plot.
         :param list y_values: the list of y-values for the plot.
@@ -409,11 +407,9 @@ class RAMSTKPlot:
     def _get_minimax_ordinates(self) -> Tuple[float, float]:
         """Get minimum and maximum y-values to set the axis bounds.
 
-        If the maximum value is infinity, use the next largest value and so
-        forth.
+        If the maximum value is infinity, use the next largest value and so forth.
 
-        :return: _min, _max; tuple containing the minimum and maximum ordinate
-            values.
+        :return: _min, _max; tuple containing the minimum and maximum ordinate values.
         """
         _min: float = min(self._lst_min)
         _max: float = max(1.0, self._lst_max[0])
