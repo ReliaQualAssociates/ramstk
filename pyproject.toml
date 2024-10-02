@@ -303,8 +303,10 @@ ignore = [
 ]
 
 [tool.ruff]
-select = ["PL",]
 exclude = ["*.pyi"]
+
+[tool.ruff.lint]
+select = ["PL",]
 ignore = [
 	"PLR2004",	# Magic value used in comparison.
 ]

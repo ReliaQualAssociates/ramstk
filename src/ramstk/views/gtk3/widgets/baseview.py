@@ -219,8 +219,8 @@ class RAMSTKBaseView(Gtk.HBox):
         """Create a view with the following layout.
 
         +-----+---------------------------------------+ |  B  |                WIDGETS |
-        |  U  |                                       | |  T  | | |  T  |
-        | |  O  | | |  N  |                                       | |  S  | |
+        |  U  |                                       | |  T  | | |  T  | | |  O  | | |
+        N  |                                       | |  S  | |
         +-----+---------------------------------------+ self.make_toolbuttons ------->
         self
 
@@ -267,10 +267,9 @@ class RAMSTKBaseView(Gtk.HBox):
         """Create a view with the following layout.
 
         +-----+-------------------+-------------------+ |  B  |      L. SIDE      | R.
-        TOP       | |  U  |                   |                   | |  T  | |
-        | |  T  |                   +-------------------+ |  O  | |     R. BOTTOM     |
-        |  N  |                   |                   | |  S  | |                   |
-        +-----+-------------------+-------------------+
+        TOP       | |  U  |                   |                   | |  T  | | | |  T  |
+        +-------------------+ |  O  | |     R. BOTTOM     | |  N  |                   |
+        | |  S  | |                   | +-----+-------------------+-------------------+
 
         self.make_toolbuttons  --------+--> self                                |
         _vpaned_right -----> _hpaned --+
@@ -294,9 +293,9 @@ class RAMSTKBaseView(Gtk.HBox):
         """Create a view with the following layout.
 
         +-----+-------------------+-------------------+ |  B  |       L. TOP      | R.
-        SIDE       | |  U  |                   |                   | |  T  | |
-        | |  T  +-------------------+                   | |  O  | L. BOTTOM     |
-        | |  N  |                   | | |  S  |                   |                   |
+        SIDE       | |  U  |                   |                   | |  T  | | | |  T
+        +-------------------+                   | |  O  | L. BOTTOM     | | |  N  | | |
+        |  S  |                   |                   |
         +-----+-------------------+-------------------+
 
         self.make_toolbuttons  --------+--> self                                |
@@ -321,10 +320,10 @@ class RAMSTKBaseView(Gtk.HBox):
         """Create a view with the following layout.
 
         +-----+-------------------+-------------------+ |  B  |       L. TOP      | R.
-        TOP       | |  U  |                   |                   | |  T  | |
-        | |  T  +-------------------+-------------------+ |  O  | L. BOTTOM     |     R.
-        BOTTOM     | |  N  |                   | | |  S  |                   |
-        | +-----+-------------------+-------------------+
+        TOP       | |  U  |                   |                   | |  T  | | | |  T
+        +-------------------+-------------------+ |  O  | L. BOTTOM     |     R. BOTTOM
+        | |  N  |                   | | |  S  |                   | |
+        +-----+-------------------+-------------------+
 
         self.make_toolbuttons  --------+--> self                                |
         _vpaned_left ---+--> _hpaned --+                 | _vpaned_right --+
@@ -694,9 +693,9 @@ class RAMSTKModuleView(RAMSTKBaseView):
         super().__init__(configuration, logger)
 
         # Initialize private dictionary attributes.
-        self._dic_icons[
-            "insert_part"
-        ] = f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/insert_part.png"
+        self._dic_icons["insert_part"] = (
+            f"{self.RAMSTK_USER_CONFIGURATION.RAMSTK_ICON_DIR}/32x32/insert_part.png"
+        )
 
         # Initialize private list attributes.
         self._lst_callbacks.insert(0, super().do_request_insert_sibling)
