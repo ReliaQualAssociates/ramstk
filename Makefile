@@ -11,12 +11,9 @@ TOKEN		= $(shell echo $(GITHUB_TOKEN))
 REPO		= ramstk
 
 SRCFILE		= src/ramstk/
-TESTFILE	= tests/
-TESTOPTS	= -s -x -c ./pyproject.toml --cache-clear
 VIRTBASE	= $(shell echo $(HOME))/.venvs
 ROOT 		= $(shell git rev-parse --show-toplevel)
 WORKBRANCH  = $(shell git rev-parse --abbrev-ref HEAD)
-COVDIR		= .reports/coverage/html
 
 # Shell commands:
 PYTHON		= $(shell which python)
@@ -58,27 +55,11 @@ PYDOCSTYLE_ARGS	= --count --config=./pyproject.toml
 PYLINT_ARGS	= -j0 --rcfile=./pyproject.toml
 RUFF_ARGS =
 
-PYVERS		= 3.7 3.8 3.9 3.10
+PYVERS		= 3.10 3.11 3.12
 
 help:
 	@echo "You can use \`make <target>' where <target> is one of:"
 	@echo ""
-	@echo "Targets related to managing RAMSTK dependencies:"
-	@echo "	requirements				create/update the poetry.lock file."
-	@echo "	depends					install the packages found in the poetry.lock file into the current (virtual) environment."
-	@echo "	upgrade					update the poetry.lock file with the latest package versions available."
-	@echo ""
-	@echo "Targets related to testing RAMSTK:"
-	@echo "	test.unit				run the unit tests without coverage."
-	@echo "	test.integration			run the integration tests without coverage."
-	@echo "	test					run the complete RAMSTK test suite without coverage."
-	@echo "	test.all				run the complete RAMSTK test suite using Python version(s) $(PYVERS)."
-	@echo "	coverage.unit				run the unit tests with coverage."
-	@echo "	coverage.integration			run integration unit tests with coverage."
-	@echo "	coverage				run the complete RAMSTK test suite with coverage."
-	@echo "	coverage.all				run the complete RAMSTK test suite with coverage using Python version(s) $(PYVERS)."
-	@echo "	coverage.report				create an html report of files with less than 100% coverage."
-	@echo "	"
 	@echo "Targets related to static code checking tools (good for IDE integration):"
 	@echo "	format SRCFILE=<file>			format using black, isort, and docformatter.  Helpful to keymap in IDE or editor."
 	@echo "	stylecheck SRCFILE=<file>		check using pycodestyle and pydocstyle.  Helpful to keymap in IDE or editor."
@@ -102,13 +83,10 @@ help:
 	@echo ""
 	@echo "The following variables are recognized by this Makefile.  They can be changed in this file or passed on the command line."
 	@echo ""
-	@echo "	COVDIR					set the output directory for the html coverage report.  Defaults to $(COVDIR)."
 	@echo "	GITHUB_USER				set the name of the Github user.  Defaults to $(GITHUB_USER)"
 	@echo "	PYVERS					set the list of Python versions to test with in test.all.  Defaults to $(PYVERS)"
 	@echo "	REPO					set the name of the GitHub repository to generate the change log from.  Defaults to $(REPO)"
 	@echo "	SRCFILE					set the file or directory to static code check.  Defaults to $(SRCFILE)"
-	@echo "	TESTFILE				set the file or directory to test.  Defaults to $(TESTFILE)"
-	@echo "	TESTOPTS				set additional options to pass to py.test/pytest.  Defaults to $(TESTOPTS)"
 	@echo "	TOKEN					set the Github API token to use.  Defaults to environment variable GITHUB_TOKEN"
 	@echo "	VIRTBASE				set the name of the base directory for virtual environments.  Defaults to $(VIRTBASE)."
 
@@ -137,19 +115,6 @@ clean-test:	clean-pyc	## remove test and coverage artifacts
 	rm -f .coverage
 	rm -fr .reports/coverage
 	rm -fr .pytest_cache
-
-# Targets for managing RAMSTK dependencies.
-requirements:
-	$(POETRY) lock
-
-depends:
-	$(PYTHON) -m pip install -U pip wheel
-	$(POETRY) install --no-root
-
-upgrade:
-	$(PYTHON) -m pip install -U pip wheel
-	$(POETRY) update
-	$(POETRY) install
 
 # Targets to install and uninstall RAMSTK.
 install: clean-build clean-pyc
@@ -192,70 +157,6 @@ uninstall:
 	${RMDIR} "$(PREFIX)/share/RAMSTK/"
 	${RM} "$(PREFIX)/share/pixmaps/RAMSTK.png"
 	${RM} "$(PREFIX)/share/applications/RAMSTK.desktop"
-
-# Targets for testing.
-test.unit:
-	@echo -e "\n\t\033[1;33mRunning RAMSTK unit tests without coverage ...\033[0m\n"
-	py.test $(TESTOPTS) -m unit --no-cov $(TESTFILE)
-
-test.integration:
-	@echo -e "\n\t\033[1;33mRunning RAMSTK integration tests without coverage ...\033[0m\n"
-	py.test $(TESTOPTS) -m integration --no-cov $(TESTFILE)
-
-test:
-	@echo -e "\n\t\033[1;33mRunning full RAMSTK test suite without coverage ...\033[0m\n"
-	$(MAKE) test.unit
-	$(MAKE) test.integration
-
-test.all:
-	for env in $(PYVERS); do \
-		python$$env -mvenv "$(VIRTBASE)/ramstk-py$$env"; \
-		source "$(VIRTBASE)/ramstk-py$$env/bin/activate"; \
-		pip install -U pip poetry; \
-		poetry install --no-root; \
-		$(MAKE) PREFIX="$(VIRTBASE)/ramstk-py$$env" install; \
-		$(MAKE) test; \
-		deactivate; \
-  	done
-
-coverage.unit:
-	@echo -e "\n\t\033[1;32mRunning RAMSTK unit tests with coverage ...\033[0m\n"
-	COVERAGE_FILE=".coverage.unit" py.test $(TESTOPTS) -m unit \
-		--cov-config=pyproject.toml --cov=ramstk --cov-branch \
-		--cov-report=term $(TESTFILE)
-
-coverage.integration:
-	@echo -e "\n\t\033[1;32mRunning RAMSTK integration tests with coverage ...\033[0m\n"
-	COVERAGE_FILE=".coverage.integration" py.test $(TESTOPTS) -m integration \
-		--cov-config=pyproject.toml --cov=ramstk --cov-branch \
-		--cov-report=term $(TESTFILE)
-
-coverage.report:
-	@echo -e "\n\t\033[1;36mGenerating html coverage report ...\033[0m\n"
-	coverage html --rcfile=pyproject.toml --skip-covered
-
-coverage.all:
-	for env in $(PYVERS); do \
-		python$$env -mvenv "$(VIRTBASE)/ramstk-py$$env"; \
-		source "$(VIRTBASE)/ramstk-py$$env/bin/activate"; \
-		pip install -U pip poetry; \
-		poetry install --no-root; \
-		$(MAKE) PREFIX="$(VIRTBASE)/ramstk-py$$env" install; \
-		$(MAKE) coverage; \
-		${MV} ".coverage" ".coverage.py$$env"; \
-		deactivate; \
-  	done
-	touch .coverage
-	for env in $(PYVERS); do \
-  		coverage combine .coverage ".coverage.py$$env"; \
-	done
-
-coverage: clean-test
-	@echo -e "\n\t\033[1;32mRunning full RAMSTK test suite with coverage ...\033[0m\n"
-	$(MAKE) coverage.unit
-	$(MAKE) coverage.integration
-	coverage combine .coverage.unit .coverage.integration
-	coverage xml --rcfile=pyproject.toml
 
 # This target is for use with IDE integration.
 format:

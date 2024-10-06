@@ -1,17 +1,27 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "ramstk"
 version = "0.19.0"
 description = "A tool to manage RAMS data and analyses."
-authors = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
-maintainers = ["Doyle 'weibullguy' Rowland <doyle.rowland@reliaqual.com>"]
-license = "BSD-3-Clause"
 readme = "README.md"
-homepage = "https://github.com/ReliaQualAssociates/ramstk"
-repository = "https://github.com/ReliaQualAssociates/ramstk"
-documentation = "https://ramstk.readthedocs.io/en/latest/"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
 keywords = [
     "reliability", "availability", "maintainability", "safety", "RAMS",
     "engineering", "quality"
+]
+authors = [
+  { name = "Doyle 'weibullguy' Rowland", email = "doyle.rowland@reliaqual.com" },
+]
+maintainers = [
+	{ name = "Doyle 'weibullguy' Rowland", email = "doyle.rowland@reliaqual.com" },
+]
+packages = [{include = "ramstk", from = "src"}]
+include = [
+	"LICENSE",
 ]
 classifiers = [
     'Development Status :: 4 - Beta',
@@ -22,93 +32,187 @@ classifiers = [
 	'Natural Language :: English',
 	'Operating System :: POSIX',
     'Programming Language :: Python :: 3',
-	'Programming Language :: Python :: 3.7',
-	'Programming Language :: Python :: 3.8',
-	'Programming Language :: Python :: 3.9',
 	'Programming Language :: Python :: 3.10',
+	'Programming Language :: Python :: 3.11',
     'Topic :: Scientific/Engineering',
 ]
-packages = [{include = "ramstk", from = "src"}]
-include = [
-	"LICENSE",
-]
 
-[tool.poetry.dependencies]
-python = "^3.10,<4.0"
-lifelines = ">=0.27,<0.30"
-matplotlib = "^3.3.4"
-numpy = [
-	{ version  = ">=1.26,<2.0", python = "^3.10", markers = "platform_system=='linux'" }
-]
-openpyxl = "^3.0.6"
-pandas = [
-	{ version = ">=1.3,<3.0", python = ">=3.10,<4.0" }]
-psycopg2 = "^2.8.6"
-pycairo = "^1.20.0"
-pygobject = "^3.38"
-pypubsub = "^4.0.3"
-scipy = [
-	{ version = "^1.14.0", python = ">=3.10,<3.11" }
-]
-sortedcontainers = "^2.3.0"
-sqlalchemy-utils = ">=0.40,<0.42"
-sqlalchemy = ">=2.0,<3.0"
-statsmodels = ">=0.13.1,<0.15.0"
-sympy = "^1.8.0"
-toml = "^0.10.2"
-treelib = "^1.5.3"
-xlrd = "^2.0.1"
-XlsxWriter = "^3.0.1"
-xlwt = ">=1.3,<3.0.0"
+[project.urls]
+Documentation = "https://ramstk.readthedocs.io/en/latest/"
+Issues = "https://github.com/ReliaQualAssociates/ramstk/issues"
+Source = "https://github.com/ReliaQualAssociates/ramstk"
 
-[tool.poetry.dev-dependencies]
-Babel = "^2.13.1"
-bandit = "^1.7.5"
-black = "^24.8.0"
-coveralls = "^3.0.0"
-coverage = { version = "^6.4", extras = ["toml"] }
-docformatter = { version = "^1.7", extras = ["tomli"] }
-docutils = ">=0.21.2"
-flake8 = { version = "^7.0.0", python = ">=3.8.1,<4.0" }
-flake8-pyproject = "^1.2.3"
-isort = "^5.13.2"
-mccabe = "^0.7.0"
-mock = "^5.1.0"
-mypy = "^1.7.0"
-pep8 = "^1.7.1"
-pre-commit = "^3.5.0"
-pre-commit-hooks = "^4.5.0"
-pycodestyle = "^2.11.1"
-pydocstyle = "^6.3.0"
-pylint = "^3.0.2"
-pyroma = "^4.0"
-pytest = "<9.0.0"
-pytest-cov = "^5.0.0"
-pytest-icdiff = "^0.9"
-pytest-sugar = "^1.0.0"
-radon = "^6.0.1"
-recommonmark = "^0.7.1"
-rstcheck = "^6.2.0"
-seed-isort-config = "^2.2.0"
-Sphinx = "^8.0.2"
-sphinx_py3doc_enhanced_theme = "^2.4.0"
-sphinxcontrib-issuetracker = "^0.11"
-sphinxcontrib-spelling = "^8.0.0"
-twine = "^5.1.1"
-pillow = [
-	{ version = "^10.1.0" , python = "^3.10" }
-]
-
-[tool.poetry.scripts]
+[project.scripts]
 ramstk = "ramstk.__main__:the_one_ring"
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.hatch.envs.default]
+dependencies = [
+	"lifelines>=0.27,<0.30",
+	"matplotlib>=3.3.4",
+	"numpy>=1.26,<2.0",
+	"openpyxl>=3.0.6",
+	"pandas>=1.3,<3.0",
+	"psycopg2>=2.8.6",
+	"pycairo>=1.20.0",
+	"pygobject>=3.38",
+	"pypubsub>=4.0.3",
+	"scipy>=1.14.0",
+	"sortedcontainers>=2.3.0",
+	"sqlalchemy-utils>=0.40,<0.42",
+	"sqlalchemy>=2.0,<3.0",
+	"statsmodels>=0.13.1,<0.15.0",
+	"sympy>=1.8.0",
+	"toml>=0.10.2",
+	"treelib>=1.5.3",
+	"xlrd>=2.0.1",
+	"XlsxWriter>=3.0.1",
+	"xlwt>=1.3,<3.0.0",
+]
+[tool.hatch.envs.default.scripts]
+install = "make PREFIX={args} install"
+
+[[tool.hatch.envs.test.matrix]]
+python = ["3.10", "3.11", "3.12"]
+
+[tool.hatch.envs.test]
+dependencies = [
+	"coveralls",
+	"coverage[toml]",
+	"matplotlib",
+	"mock",
+	"openpyxl",
+	"pandas",
+	"psycopg2",
+	"pygobject",
+	"pypubsub",
+	"python-dateutil",
+	"pytest<9.0.0",
+	"pytest-cov",
+	"pytest-icdiff",
+	"pytest-sugar",
+	"scipy",
+	"sortedcontainers",
+	"sqlalchemy>=2.0,<3.0",
+	"sympy",
+	"toml",
+	"treelib",
+	"xlrd",
+	"xlwt",
+]
+
+[tool.hatch.envs.test.scripts]
+install = "make PREFIX=$VIRTUAL_ENV install"
+clean-test = "rm -f .coverage* cobertura.xml && rm -fr .pytest_cache"
+run-unit = "pytest -m unit --no-cov --cache-clear tests"
+run-integration = "pytest -m integration --no-cov --cache-clear tests"
+run-cov-unit = "COVERAGE_FILE='.coverage.unit' pytest -m unit --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
+run-cov-integration = "COVERAGE_FILE='.coverage.integration' pytest -m integration --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
+cov-combine = "coverage combine .coverage.unit .coverage.integration"
+cov-report = "coverage xml --rcfile=pyproject.toml"
+test-unit = [
+	"install",
+	"run-unit",
+]
+test-integration = [
+	"install",
+	"run-integration",
+]
+cov-unit = [
+	"install",
+	"run-cov-unit",
+]
+cov-integration = [
+	"install",
+	"run-cov-integration",
+]
+test = [
+	"clean-test",
+	"install",
+	"run-unit",
+	"run-integration",
+]
+cov = ["clean-test",
+	"install",
+	"run-cov-unit",
+	"run-cov-integration",
+	"cov-combine",
+	"cov-report",
+]
+
+[tool.hatch.envs.lint]
+dependencies = [
+	"bandit>=1.7.5",
+	"black>=24.8.0",
+	"docformatter[tomli]>=1.7",
+	"flake8>=7.0.0",
+	"flake8-pyproject>=1.2.3",
+	"isort>=5.13.2",
+	"mccabe>=0.7.0",
+	"mypy>=1.7.0",
+	"pep8>=1.7.1",
+	"pycodestyle>=2.11.1",
+	"pydocstyle>=6.3.0",
+	"pylint>=3.0.2",
+	"radon>=6.0.1",
+	"ruff",
+	"seed-isort-config>=2.2.0",
+]
+
+[tool.hatch.envs.lint.scripts]
+run-black = "black --fast {args}"
+run-docformatter = "docformatter --in-place --config ./pyproject.toml {args}"
+run-isort = "isort --settings-file ./pyproject.toml --atomic {args}"
+run-pycodestyle = "pycodestyle --count --config=./setup.cfg {args}"
+run-pydocstyle = "pydocstyle --count --config=./pyproject.toml {args}"
+run-mccabe = "python -m mccabe -m 10 {args}"
+run-radon-hal = "radon hal {args}"
+run-radon-cc = "radon cc -s {args}"
+run-radon-mi = "radon mi -s {args}"
+format = [
+	"run-black",
+	"run-docformatter",
+	"run-isort",
+]
+lint = "ruff check {args}"
+maintain = [
+	"run-mccabe",
+	"run-radon-hal",
+	"run-radon-cc",
+	"run-radon-mi",
+]
+security = "bandit --ini .bandit -c .bandit.conf -b .bandit.baseline -r {args}"
+stylecheck = [
+	"run-pycodestyle",
+	"run-pydocstyle",
+]
+typecheck = "mypy --config-file ./pyproject.toml {args}"
+
+[tool.hatch.envs.docs]
+dependencies = [
+	"Babel>=2.13.1",
+	"docutils>=0.21.2",
+	"pyroma>=4.0",
+	"recommonmark>=0.7.1",
+	"rstcheck>=6.2.0",
+	"Sphinx>=8.0.2",
+	"sphinx_py3doc_enhanced_theme>=2.4.0",
+	"sphinxcontrib-issuetracker>=0.11",
+	"sphinxcontrib-spelling>=8.0.0",
+]
+
+[tool.hatch.envs.docs.scripts]
+clean-docs = "cd docs && rm -fr _build/html/*"
+lint-docs = "rstcheck --config ./pyproject.toml -r docs/api docs/user"
+api-docs = "sphinx-apidoc -f -o docs/api src/ramstk"
+make-docs = "cd docs && make html -e"
+docs = [
+	"clean-docs",
+	"make-docs",
+]
 
 [tool.black]
 line-length = 88
-target-version = ['py37', 'py38', 'py39', 'py310']
+target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
 exclude = '''
 /(
@@ -127,7 +231,28 @@ exclude = '''
 
 [tool.isort]
 known_first_party = 'ramstk'
-known_third_party = ['dateutil','gi','lifelines','matplotlib','numpy','openpyxl','pandas','psycopg2','pubsub','pytest','scipy','setuptools','sortedcontainers','sql','sqlalchemy','sympy','toml','treelib','xlwt','ISOLATION_LEVEL_AUTOCOMMIT']
+known_third_party = [
+	'dateutil',
+	'gi',
+	'lifelines',
+	'matplotlib',
+	'numpy',
+	'openpyxl',
+	'pandas',
+	'psycopg2',
+	'pubsub',
+	'pytest',
+	'scipy',
+	'setuptools',
+	'sortedcontainers',
+	'sql',
+	'sqlalchemy',
+	'sympy',
+	'toml',
+	'treelib',
+	'xlwt',
+	'ISOLATION_LEVEL_AUTOCOMMIT',
+]
 import_heading_firstparty = 'RAMSTK Package Imports'
 import_heading_localfolder = 'RAMSTK Local Imports'
 import_heading_stdlib = 'Standard Library Imports'

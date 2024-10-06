@@ -12,13 +12,11 @@ import glob
 import sys
 
 # pylint: disable=no-name-in-module
-# pylint: disable=deprecated-module
-from distutils import dir_util, file_util
+from os import environ, makedirs
+from os.path import basename
 
 # pylint: disable=no-name-in-module
-# pylint: disable=deprecated-module
-from distutils.errors import DistutilsFileError
-from os import environ, makedirs
+from shutil import copyfile, copytree
 from typing import Any, Dict, Tuple, Union
 
 # Third Party Imports
@@ -642,17 +640,18 @@ class RAMSTKUserConfiguration:  # pylint: disable=too-many-instance-attributes
         # Copy format files from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_CONF_DIR.
         for _file in glob.glob(f"{self._INSTALL_PREFIX}/share/RAMSTK/layouts/*.toml"):
-            file_util.copy_file(_file, self.RAMSTK_DATA_DIR)
+            copyfile(_file, f"{self.RAMSTK_DATA_DIR}/{basename(_file)}")
 
         # Copy the icons from RAMSTK_SITE_DIR (system) to the user's
         # RAMSTK_ICON_DIR.
         try:
-            dir_util.copy_tree(
+            copytree(
                 f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/",
                 self.RAMSTK_ICON_DIR,
+                dirs_exist_ok=True,
             )
 
-        except DistutilsFileError:
+        except (FileExistsError, FileNotFoundError):
             _error_msg = (
                 f"Attempt to copy RAMSTK icons from site-wide icon directory "
                 f"{self._INSTALL_PREFIX}/share/RAMSTK/icons/ to user's icon "
