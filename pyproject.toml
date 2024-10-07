@@ -107,8 +107,8 @@ run-unit = "pytest -m unit --no-cov --cache-clear tests"
 run-integration = "pytest -m integration --no-cov --cache-clear tests"
 run-cov-unit = "COVERAGE_FILE='.coverage.unit' pytest -m unit --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
 run-cov-integration = "COVERAGE_FILE='.coverage.integration' pytest -m integration --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
-cov-combine = "coverage combine .coverage.unit .coverage.integration"
-cov-report = "coverage xml --rcfile=pyproject.toml"
+run-cov-combine = "coverage combine .coverage.unit .coverage.integration"
+run-cov-report = "coverage xml --rcfile=pyproject.toml"
 test-unit = [
 	"install",
 	"run-unit",
@@ -131,12 +131,15 @@ test = [
 	"run-unit",
 	"run-integration",
 ]
-cov = ["clean-test",
+cov = [
+	"clean-test",
 	"install",
 	"run-cov-unit",
 	"run-cov-integration",
-	"cov-combine",
-	"cov-report",
+]
+cov-report = [
+	"run-cov-combine",
+	"run-cov-report",
 ]
 
 [tool.hatch.envs.lint]
