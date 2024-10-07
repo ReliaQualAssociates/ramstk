@@ -109,6 +109,7 @@ run-cov-unit = "COVERAGE_FILE='.coverage.unit' pytest -m unit --cov-config=pypro
 run-cov-integration = "COVERAGE_FILE='.coverage.integration' pytest -m integration --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
 run-cov-combine = "coverage combine .coverage.unit .coverage.integration"
 run-cov-report = "coverage xml --rcfile=pyproject.toml"
+run-ls = "ls -l ."
 test-unit = [
 	"install",
 	"run-unit",
@@ -137,8 +138,7 @@ cov = [
 	"run-cov-integration",
 ]
 cov-report = [
-	"run-cov-combine",
-	"run-cov-report",
+	"run-ls",
 ]
 
 [tool.hatch.envs.lint]
