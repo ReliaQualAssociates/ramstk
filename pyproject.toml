@@ -132,7 +132,6 @@ test = [
 	"run-integration",
 ]
 cov = [
-	"clean-test",
 	"install",
 	"run-cov-unit",
 	"run-cov-integration",
