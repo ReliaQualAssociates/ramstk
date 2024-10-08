@@ -105,8 +105,8 @@ install = "make PREFIX=$VIRTUAL_ENV install"
 clean-test = "rm -f .coverage* cobertura.xml && rm -fr .pytest_cache"
 run-unit = "pytest -m unit --no-cov --cache-clear tests"
 run-integration = "pytest -m integration --no-cov --cache-clear tests"
-run-cov-unit = "COVERAGE_FILE='.coverage.unit' pytest -m unit --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
-run-cov-integration = "COVERAGE_FILE='.coverage.integration' pytest -m integration --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term --cache-clear tests"
+run-cov-unit = "COVERAGE_FILE='.coverage.unit' pytest -m unit --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term tests"
+run-cov-integration = "COVERAGE_FILE='.coverage.integration' pytest -m integration --cov-config=pyproject.toml --cov=ramstk --cov-branch --cov-report=term tests"
 run-cov-combine = "coverage combine .coverage.unit .coverage.integration"
 run-cov-report = "coverage xml --rcfile=pyproject.toml"
 run-ls = "ls -al ."
@@ -138,7 +138,8 @@ cov = [
 	"run-cov-integration",
 ]
 cov-report = [
-	"run-ls",
+	"run-cov-combine",
+	"run-cov-report",
 ]
 
 [tool.hatch.envs.lint]
