@@ -15,13 +15,12 @@ import glob
 import os
 import platform
 import random
-import shutil
 import string
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
-from distutils import dir_util
 from pathlib import Path
+from shutil import copyfile, copytree, rmtree
 
 # Third Party Imports
 import psycopg2
@@ -398,14 +397,22 @@ def setup_test_directory(test_dir) -> None:
 
 def populate_test_directory(test_dir) -> None:
     """Create test icon and layout directory."""
-    dir_util.copy_tree(f"{os.getcwd()}/data/icons/", f"{test_dir}/icons/")
-    dir_util.copy_tree(f"{os.getcwd()}/data/layouts/", f"{test_dir}/layouts/")
+    copytree(
+        f"{os.getcwd()}/data/icons/",
+        f"{test_dir}/icons/",
+        dirs_exist_ok=True,
+    )
+    copytree(
+        f"{os.getcwd()}/data/layouts/",
+        f"{test_dir}/layouts/",
+        dirs_exist_ok=True,
+    )
 
 
 def teardown_test_directory(test_dir) -> None:
     """Remove test configuration directory."""
     if os.path.exists(test_dir):
-        shutil.rmtree(test_dir)
+        rmtree(test_dir)
 
 
 def setup_test_db(db_config) -> None:
@@ -480,7 +487,7 @@ def teardown_test_db(db_config) -> None:
 def make_shibboly():
     """Create a read-only directory."""
     if os.path.exists("/tmp/shibboly"):
-        shutil.rmtree("/tmp/shibboly")
+        rmtree("/tmp/shibboly")
 
     os.mkdir("/tmp/shibboly", 0o0444)
 
@@ -550,18 +557,24 @@ def make_home_config_dir():
     _analyses_dir = f"{VIRTUAL_ENV}/tmp/analyses/ramstk"
     setup_test_directory(_analyses_dir)
 
-    shutil.copyfile(
-        "./data/sqlite_program_db.sql", f"{_config_dir}/sqlite_program_db.sql"
-    )
-    shutil.copyfile(
+    copyfile("./data/sqlite_program_db.sql", f"{_config_dir}/sqlite_program_db.sql")
+    copyfile(
         "./data/postgres_program_db.sql",
         f"{_config_dir}/postgres_program_db.sql",
     )
     if str(sys.version_info[0]) + "." + str(sys.version_info[1]) == "3.7":
-        shutil.copytree("./data/icons", f"{_config_dir}/icons/")
+        copytree(
+            "./data/icons",
+            f"{_config_dir}/icons/",
+            dirs_exist_ok=True,
+        )
     else:
         setup_test_directory(f"{_config_dir}/icons")
-        shutil.copytree("./data/icons", f"{_config_dir}/icons/", dirs_exist_ok=True)
+        copytree(
+            "./data/icons",
+            f"{_config_dir}/icons/",
+            dirs_exist_ok=True,
+        )
 
     yield _config_dir
 

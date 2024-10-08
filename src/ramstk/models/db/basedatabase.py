@@ -61,6 +61,7 @@ def do_create_postgres_db(database: Dict[str, str], sql_file: TextIO) -> None:
                 "database": "postgres",
             }
         )
+
         _conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         with _conn.cursor() as _cursor:
             _cursor.execute(
@@ -247,6 +248,8 @@ class BaseDatabase:
                 f"{database['host']}:{database['port']}/{database['database']}"
             )
 
+        return ""
+
     def do_build_postgres_databases_query(self) -> str:
         """Build the SQL query to retrieve available databases."""
         return (
@@ -254,7 +257,7 @@ class BaseDatabase:
             f"{self.sqlstatements['from'].format('pg_database;')}"
         )
 
-    def do_connect(self, database: Dict) -> None:
+    def do_connect(self, database: Dict[str, str]) -> None:
         """Connect to the database.
 
         :param database: the connection information for the database to connect to.
