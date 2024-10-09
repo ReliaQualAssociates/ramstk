@@ -8,8 +8,6 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for the reliability allocation module."""
 
-# Standard Library Imports
-import copy
 
 # Third Party Imports
 import pytest
@@ -29,11 +27,8 @@ def test_calculate_agree_apportionment_zero_sub_elements(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the AGREE "
-            "method; one or more inputs had a value of 0.0.  "
-            "Subsystem mission time=100.0, weight "
-            "factor=1.0, # of subsystems=4, # of "
-            "subelements=0."
+            "Failed to apportion reliability using the AGREE method: float division "
+            "by zero."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -58,10 +53,7 @@ def test_calculate_agree_apportionment_negative_parent_goal(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the AGREE "
-            "method; zero or negative value passed for "
-            "parent hardware item's goal.  Parent goal is "
-            "-0.999."
+            "Failed to apportion reliability using the AGREE method: math domain error."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -86,10 +78,8 @@ def test_calculate_arinc_apportionment_zero_weight_factor(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the ARINC "
-            "method; one or more inputs had a value of 0.0. "
-            "Weight factor=0.0 and parent "
-            "goal=4.82e-05."
+            "Failed to apportion reliability using the ARINC method; weight factor or "
+            "parent goal is zero."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -112,10 +102,8 @@ def test_calculate_arinc_apportionment_zero_parent_goal(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the ARINC "
-            "method; one or more inputs had a value of 0.0. "
-            "Weight factor=0.025730994152 and parent "
-            "goal=0.0."
+            "Failed to apportion reliability using the ARINC method; weight factor or "
+            "parent goal is zero."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -138,10 +126,8 @@ def test_calculate_equal_zero_weight_factor(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the equal "
-            "method; one or more inputs had a value of 0.0. "
-            "Mission time=100.0 and weight "
-            "factor=0.0."
+            "Failed to apportion reliability using the equal method: float division "
+            "by zero."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -164,10 +150,8 @@ def test_calculate_equal_zero_mission_time(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the equal "
-            "method; one or more inputs had a value of 0.0. "
-            "Mission time=0.0 and weight "
-            "factor=0.3333333333333333."
+            "Failed to apportion reliability using the equal method: float division "
+            "by zero."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -190,10 +174,7 @@ def test_calculate_equal_zero_goal(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the equal "
-            "method; a negative or zero value passed for "
-            "parent hardware item's goal.  Parent goal is "
-            "0.0."
+            "Failed to apportion reliability using the equal method: math domain error."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -216,10 +197,8 @@ def test_calculate_equal_negative_goal(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the equal "
-            "method; a negative or zero value passed for "
-            "parent hardware item's goal.  Parent goal is "
-            "-0.99995."
+            "Failed to apportion reliability using the equal method: must be real "
+            "number, not complex."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -242,12 +221,7 @@ def test_calculate_foo_zero_cum_weight(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the "
-            "Feasibility of Objectives method; one or more "
-            "inputs had a value of 0.0. Intricacy "
-            "factor=4, state of the art factor=6, operating "
-            "time factor=9, environment factor=2, "
-            "cumulative weight=0, parent goal=4.82e-05."
+            "Failed to apportion reliability using the FOO method due to zero inputs."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -275,12 +249,7 @@ def test_calculate_foo_zero_factor(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the "
-            "Feasibility of Objectives method; one or more "
-            "inputs had a value of 0.0. Intricacy "
-            "factor=4, state of the art factor=0, operating "
-            "time factor=9, environment factor=2, "
-            "cumulative weight=3528, parent goal=4.82e-05."
+            "Failed to apportion reliability using the FOO method due to zero inputs."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -308,12 +277,7 @@ def test_calculate_foo_zero_goal(
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to apportion reliability using the "
-            "Feasibility of Objectives method; one or more "
-            "inputs had a value of 0.0. Intricacy "
-            "factor=4, state of the art factor=6, operating "
-            "time factor=9, environment factor=2, "
-            "cumulative weight=3528, parent goal=0.0."
+            "Failed to apportion reliability using the FOO method due to zero inputs."
         )
 
     pub.subscribe(on_message, "fail_allocate_reliability")
@@ -433,8 +397,7 @@ def test_calculate_goals_negative_reliability(
 def test_calculate_goals_zero_reliability_goal(
     test_attributes_allocation,
 ):
-    """calulate_goals() should raise a ValueError when passed a reliability
-    goal=0.0."""
+    """calulate_goals() should raise a ValueError when passed a reliability goal=0.0."""
     test_attributes_allocation["goal_measure_id"] = 1
     test_attributes_allocation["reliability_goal"] = 0.0
 
@@ -481,8 +444,7 @@ def test_calculate_goals_zero_hazard_rate_goal(
 def test_calculate_goals_zero_mtbf_goal(
     test_attributes_allocation,
 ):
-    """calulate_goals() should raise a ZeroDivisionError when passed a mtbf
-    goal=0.0."""
+    """calulate_goals() should raise a ZeroDivisionError when passed a mtbf goal=0.0."""
     test_attributes_allocation["goal_measure_id"] = 3
     test_attributes_allocation["mtbf_goal"] = 0.0
 
@@ -498,3 +460,46 @@ def test_calculate_goals_zero_mtbf_goal(
     allocation.do_calculate_goals(
         **test_attributes_allocation,
     )
+
+
+# ----- ChatGPT recommended tests. -----#
+@pytest.mark.integration
+@pytest.mark.usefixtures("test_attributes_allocation")
+def test_calculate_goals_valid_case(
+    test_attributes_allocation,
+):
+    """do_calculate_goals() should return valid goals for valid inputs."""
+    test_attributes_allocation["goal_measure_id"] = 1
+    test_attributes_allocation["reliability_goal"] = 0.99975
+
+    def on_message(attributes):
+        assert isinstance(attributes, dict)
+        assert attributes["mtbf_goal"] > 0
+        assert attributes["hazard_rate_goal"] > 0
+
+    pub.subscribe(on_message, "succeed_calculate_allocation_goals")
+
+    allocation.do_calculate_goals(**test_attributes_allocation)
+
+
+@pytest.mark.integration
+@pytest.mark.usefixtures("test_attributes_allocation")
+def test_do_allocate_reliability_success(
+    test_attributes_allocation,
+):
+    """do_allocate_reliability() should return correct allocation for valid inputs."""
+    test_attributes_allocation["allocation_method_id"] = 1
+    test_attributes_allocation["weight_factor"] = 1 / 3
+    test_attributes_allocation["mission_time"] = 100.0
+    test_attributes_allocation["n_sub_systems"] = 3
+    test_attributes_allocation["n_sub_elements"] = 5
+
+    def on_message(attributes):
+        assert isinstance(attributes, dict)
+        assert attributes["mtbf_alloc"] > 0
+        assert attributes["hazard_rate_alloc"] > 0
+        assert attributes["reliability_alloc"] > 0
+
+    pub.subscribe(on_message, "succeed_allocate_reliability")
+
+    allocation.do_allocate_reliability(0.999, 3528, **test_attributes_allocation)
