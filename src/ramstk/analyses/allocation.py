@@ -28,43 +28,31 @@ def _calculate_agree_apportionment(
     values.
     :rtype: dict
     """
-    _time_i: Any = (
-        float(attributes["mission_time"]) * float(attributes["duty_cycle"]) / 100.0
-    )
-    _weight_factor: Any = float(attributes["weight_factor"])
-    _n_sub_systems: Any = int(attributes["n_sub_systems"])
-    _n_sub_elements: Any = int(attributes["n_sub_elements"])
-    try:
-        _mtbf_alloc: Any = (_n_sub_systems * _weight_factor * _time_i) / (
-            _n_sub_elements * (-log(float(parent_goal)))
-        )
-        _hazard_rate_alloc: Any = 1.0 / _mtbf_alloc
-        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _time_i)
+    _values = _calculate_common_values(attributes)
+    _time_i = _values["time_i"]
 
-        attributes["mtbf_alloc"] = _mtbf_alloc
-        attributes["hazard_rate_alloc"] = _hazard_rate_alloc
-        attributes["reliability_alloc"] = _reliability_alloc
-    except ValueError:
-        pub.sendMessage(
-            "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using the "
-                f"AGREE method; zero or negative value "
-                f"passed for parent hardware item's goal.  "
-                f"Parent goal is {parent_goal}."
-            ),
+    try:
+        _weight_factor = float(attributes["weight_factor"])
+        _n_sub_systems = int(attributes["n_sub_systems"])
+        _n_sub_elements = int(attributes["n_sub_elements"])
+
+        _mtbf_alloc = (_n_sub_systems * _weight_factor * _time_i) / (
+            _n_sub_elements * (-log(parent_goal))
         )
-    except ZeroDivisionError:
-        pub.sendMessage(
+        _hazard_rate_alloc = 1.0 / _mtbf_alloc
+        _reliability_alloc = exp(-_hazard_rate_alloc * _time_i)
+
+        attributes.update(
+            {
+                "mtbf_alloc": _mtbf_alloc,
+                "hazard_rate_alloc": _hazard_rate_alloc,
+                "reliability_alloc": _reliability_alloc,
+            }
+        )
+    except (ValueError, ZeroDivisionError) as err:
+        _send_pubsub_message(
             "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using "
-                f"the AGREE method; one or more inputs "
-                f"had a value of 0.0.  Subsystem "
-                f"mission time={_time_i}, weight "
-                f"factor={_weight_factor}, # of subsystems={_n_sub_systems}, "
-                f"# of subelements={_n_sub_elements}."
-            ),
+            f"Failed to apportion reliability using the AGREE method: {str(err)}.",
         )
 
     return attributes
@@ -79,30 +67,43 @@ def _calculate_arinc_apportionment(
     :param attributes: the Allocation attributes dict.
     :return: attributes; the Allocation attributes dict with updated values.
     """
-    _mission_time: Any = float(attributes["mission_time"])
-    _weight_factor: Any = float(attributes["weight_factor"])
+    _mission_time = float(attributes["mission_time"])
     try:
-        _hazard_rate_alloc: Any = _weight_factor * float(parent_goal)
-        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
-        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _mission_time)
+        _weight_factor = float(attributes["weight_factor"])
+        _hazard_rate_alloc = _weight_factor * parent_goal
+        _mtbf_alloc = 1.0 / _hazard_rate_alloc
+        _reliability_alloc = exp(-_hazard_rate_alloc * _mission_time)
+
+        attributes.update(
+            {
+                "mtbf_alloc": _mtbf_alloc,
+                "hazard_rate_alloc": _hazard_rate_alloc,
+                "reliability_alloc": _reliability_alloc,
+            }
+        )
     except ZeroDivisionError:
-        _mtbf_alloc = _hazard_rate_alloc = _reliability_alloc = 0.0
-        pub.sendMessage(
+        _send_pubsub_message(
             "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using "
-                f"the ARINC method; one or more inputs "
-                f"had a value of 0.0. Weight "
-                f"factor={_weight_factor} and parent "
-                f"goal={parent_goal}."
-            ),
+            "Failed to apportion reliability using the ARINC method; weight "
+            "factor or parent goal is zero.",
         )
 
-    attributes["mtbf_alloc"] = _mtbf_alloc
-    attributes["hazard_rate_alloc"] = _hazard_rate_alloc
-    attributes["reliability_alloc"] = _reliability_alloc
-
     return attributes
+
+
+def _calculate_common_values(attributes: Dict[str, Any]) -> Dict[str, float]:
+    """Extract common values from attributes and calculate time_i.
+
+    :param attributes: The allocation attributes dictionary.
+    :type attributes: dict
+    :return: A dictionary with common calculation values such as time_i and
+        mission_time.
+    :rtype: dict
+    """
+    mission_time = float(attributes["mission_time"])
+    duty_cycle = float(attributes.get("duty_cycle", 100.0))
+    time_i = mission_time * duty_cycle / 100.0
+    return {"mission_time": mission_time, "time_i": time_i}
 
 
 def _calculate_equal_apportionment(
@@ -114,48 +115,24 @@ def _calculate_equal_apportionment(
     :param attributes: the Allocation attributes dict.
     :return: attributes; the Allocation attributes dict with updated values.
     """
-    _mission_time: Any = float(attributes["mission_time"])
-    _weight_factor: Any = float(attributes["weight_factor"])
+    _mission_time = float(attributes["mission_time"])
     try:
-        _reliability_alloc: Any = float(parent_goal) ** _weight_factor
-        _hazard_rate_alloc: Any = -1.0 * log(_reliability_alloc) / _mission_time
-        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
+        _weight_factor = float(attributes["weight_factor"])
+        _reliability_alloc = parent_goal**_weight_factor
+        _hazard_rate_alloc = -log(_reliability_alloc) / _mission_time
+        _mtbf_alloc = 1.0 / _hazard_rate_alloc
 
-        attributes["hazard_rate_alloc"] = _hazard_rate_alloc
-        attributes["mtbf_alloc"] = _mtbf_alloc
-        attributes["reliability_alloc"] = _reliability_alloc
-    except TypeError:
-        if parent_goal < 0.0:
-            pub.sendMessage(
-                "fail_allocate_reliability",
-                error_message=(
-                    f"Failed to apportion reliability using the "
-                    f"equal method; a negative or zero value passed for "
-                    f"parent hardware item's goal.  Parent goal is "
-                    f"{parent_goal}."
-                ),
-            )
-        else:
-            raise
-    except ValueError:
-        pub.sendMessage(
-            "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using the "
-                f"equal method; a negative or zero value passed for "
-                f"parent hardware item's goal.  Parent goal is "
-                f"{parent_goal}."
-            ),
+        attributes.update(
+            {
+                "hazard_rate_alloc": _hazard_rate_alloc,
+                "mtbf_alloc": _mtbf_alloc,
+                "reliability_alloc": _reliability_alloc,
+            }
         )
-    except ZeroDivisionError:
-        pub.sendMessage(
+    except (TypeError, ValueError, ZeroDivisionError) as err:
+        _send_pubsub_message(
             "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using the "
-                f"equal method; one or more inputs had a "
-                f"value of 0.0. Mission time={_mission_time} and "
-                f"weight factor={_weight_factor}."
-            ),
+            f"Failed to apportion reliability using the equal " f"method: {str(err)}.",
         )
 
     return attributes
@@ -172,40 +149,35 @@ def _calculate_foo_apportionment(
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
-    _intricacy: Any = int(attributes["int_factor"])
-    _state_of_art: Any = int(attributes["soa_factor"])
-    _operating_time: Any = int(attributes["op_time_factor"])
-    _environment: Any = int(attributes["env_factor"])
-    _mission_time: Any = float(attributes["mission_time"])
-
     try:
-        _weight_factor: Any = (
-            _intricacy * _state_of_art * _operating_time * _environment
+        _intricacy = int(attributes["int_factor"])
+        _state_of_art = int(attributes["soa_factor"])
+        _operating_time = int(attributes["op_time_factor"])
+        _environment = int(attributes["env_factor"])
+
+        _weight_factor = _intricacy * _state_of_art * _operating_time * _environment
+        _percent_weight_factor = _weight_factor / cum_weight
+
+        _hazard_rate_alloc = _percent_weight_factor * parent_goal
+        _mtbf_alloc = 1.0 / _hazard_rate_alloc
+        _reliability_alloc = exp(
+            -_hazard_rate_alloc * float(attributes["mission_time"])
         )
-        _percent_weight_factor: Any = _weight_factor / int(cum_weight)
 
-        _hazard_rate_alloc: Any = _percent_weight_factor * parent_goal
-        _mtbf_alloc: Any = 1.0 / _hazard_rate_alloc
-        _reliability_alloc: Any = exp(-1.0 * _hazard_rate_alloc * _mission_time)
-
-        attributes["weight_factor"] = _weight_factor
-        attributes["percent_weight_factor"] = _percent_weight_factor
-        attributes["hazard_rate_alloc"] = _hazard_rate_alloc
-        attributes["mtbf_alloc"] = _mtbf_alloc
-        attributes["reliability_alloc"] = _reliability_alloc
+        attributes.update(
+            {
+                "weight_factor": _weight_factor,
+                "percent_weight_factor": _percent_weight_factor,
+                "hazard_rate_alloc": _hazard_rate_alloc,
+                "mtbf_alloc": _mtbf_alloc,
+                "reliability_alloc": _reliability_alloc,
+            }
+        )
     except ZeroDivisionError:
-        pub.sendMessage(
+        _send_pubsub_message(
             "fail_allocate_reliability",
-            error_message=(
-                f"Failed to apportion reliability using the "
-                f"Feasibility of Objectives method; one or "
-                f"more inputs had a value of 0.0. "
-                f"Intricacy factor={_intricacy}, state of the art "
-                f"factor={_state_of_art}, operating time "
-                f"factor={_operating_time}, environment factor={_environment}, "
-                f"cumulative weight={cum_weight}, parent "
-                f"goal={parent_goal}."
-            ),
+            "Failed to apportion reliability using the FOO method due to "
+            "zero inputs.",
         )
 
     return attributes
@@ -301,6 +273,18 @@ def _from_reliability_goal(attributes: Dict[str, Any]) -> Dict[str, Any]:
     return attributes
 
 
+def _send_pubsub_message(message_type: str, message: str) -> None:
+    """Send a failure message via pubsub.
+
+    :param message_type: The type of message to send.
+    :type message_type: str
+    :param error_message: The error message to be sent.
+    :type error_message: str
+    :return: None
+    """
+    pub.sendMessage(message_type, error_message=message)
+
+
 def do_allocate_reliability(
     parent_goal: float, cumulative_weight: int, **attributes: Dict[str, Any]
 ) -> Dict[str, Any]:
@@ -313,23 +297,24 @@ def do_allocate_reliability(
     :return: attributes; the Allocation attributes dict with updated values.
     :rtype: dict
     """
-    if attributes["allocation_method_id"] == 1:
-        attributes = _calculate_equal_apportionment(parent_goal, attributes)
-    elif attributes["allocation_method_id"] == 2:
-        attributes = _calculate_agree_apportionment(parent_goal, attributes)
-    elif attributes["allocation_method_id"] == 3:
-        attributes = _calculate_arinc_apportionment(parent_goal, attributes)
-    elif attributes["allocation_method_id"] == 4:
+    _method_id: int = attributes["allocation_method_id"]
+
+    _allocation_methods = {
+        1: _calculate_equal_apportionment,
+        2: _calculate_agree_apportionment,
+        3: _calculate_arinc_apportionment,
+    }
+
+    if _method_id in _allocation_methods:
+        attributes = _allocation_methods[_method_id](parent_goal, attributes)
+    elif _method_id == 4:
         attributes = _calculate_foo_apportionment(
             parent_goal, cumulative_weight, attributes
         )
     else:
-        _hazard_rate_alloc: Any = 0.0
-        _mtbf_alloc: Any = 0.0
-        _reliability_alloc: Any = 1.0
-        attributes["hazard_rate_alloc"] = _hazard_rate_alloc
-        attributes["mtbf_alloc"] = _mtbf_alloc
-        attributes["reliability_alloc"] = _reliability_alloc
+        attributes.update(
+            {"hazard_rate_alloc": 0.0, "mtbf_alloc": 0.0, "reliability_alloc": 1.0}
+        )
 
     pub.sendMessage("succeed_allocate_reliability", attributes=attributes)
 
