@@ -59,9 +59,7 @@ def test_calculate_hri_unknown_probability():
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("shibboly-biboly-boo", "Medium")
     assert e.value.args[0] == (
-        "calculate_hri() was passed an unknown hazard "
-        "probability (shibboly-biboly-boo) or severity "
-        "(Medium) description."
+        "Unknown hazard probability (shibboly-biboly-boo) or severity (Medium)."
     )
 
 
@@ -73,9 +71,7 @@ def test_calculate_hri_unknown_severity():
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("Level A - Frequent", "shibboly-biboly-boo")
     assert e.value.args[0] == (
-        "calculate_hri() was passed an unknown hazard "
-        "probability (Level A - Frequent) or severity "
-        "(shibboly-biboly-boo) description."
+        "Unknown hazard probability (Level A - Frequent) or severity (shibboly-biboly-boo)."
     )
 
 
@@ -87,9 +83,9 @@ def test_set_user_defined_floats():
     _fha = fha.set_user_defined_floats(TEST_FHA, [3.4, 7.8, 11.12])
 
     assert isinstance(_fha, dict)
-    assert _fha["uf1"] == 3.4
-    assert _fha["uf2"] == 7.8
-    assert _fha["uf3"] == 11.12
+    assert _fha["uf1"] == pytest.approx(3.4)
+    assert _fha["uf2"] == pytest.approx(7.8)
+    assert _fha["uf3"] == pytest.approx(11.12)
 
 
 @pytest.mark.unit
@@ -99,9 +95,9 @@ def test_set_user_defined_floats_set_unused_zero():
     _fha = fha.set_user_defined_floats(TEST_FHA, [3.4, 7.8])
 
     assert isinstance(_fha, dict)
-    assert _fha["uf1"] == 3.4
-    assert _fha["uf2"] == 7.8
-    assert _fha["uf3"] == 0.0
+    assert _fha["uf1"] == pytest.approx(3.4)
+    assert _fha["uf2"] == pytest.approx(7.8)
+    assert _fha["uf3"] == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -168,11 +164,11 @@ def test_set_user_defined_results():
     _fha = fha.set_user_defined_results(TEST_FHA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_fha, dict)
-    assert _fha["res1"] == 3.4
-    assert _fha["res2"] == 7.8
-    assert _fha["res3"] == 11.12
-    assert _fha["res4"] == 15.16
-    assert _fha["res5"] == 19.2
+    assert _fha["res1"] == pytest.approx(3.4)
+    assert _fha["res2"] == pytest.approx(7.8)
+    assert _fha["res3"] == pytest.approx(11.12)
+    assert _fha["res4"] == pytest.approx(15.16)
+    assert _fha["res5"] == pytest.approx(19.2)
 
 
 @pytest.mark.unit
@@ -182,11 +178,11 @@ def test_set_user_defined_results_set_unused_zero():
     _fha = fha.set_user_defined_results(TEST_FHA, [3.4, 7.8, 11.12, 15.16])
 
     assert isinstance(_fha, dict)
-    assert _fha["res1"] == 3.4
-    assert _fha["res2"] == 7.8
-    assert _fha["res3"] == 11.12
-    assert _fha["res4"] == 15.16
-    assert _fha["res5"] == 0.0
+    assert _fha["res1"] == pytest.approx(3.4)
+    assert _fha["res2"] == pytest.approx(7.8)
+    assert _fha["res3"] == pytest.approx(11.12)
+    assert _fha["res4"] == pytest.approx(15.16)
+    assert _fha["res5"] == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -198,8 +194,78 @@ def test_calculate_user_defined():
     )
 
     _fha = fha.calculate_user_defined(_fha)
-    assert _fha["res1"] == 26.52
-    assert _fha["res2"] == 4.0
+    assert _fha["res1"] == pytest.approx(26.52)
+    assert _fha["res2"] == pytest.approx(4.0)
     assert _fha["res3"] == 0
-    assert _fha["res4"] == 26.52
+    assert _fha["res4"] == pytest.approx(26.52)
     assert _fha["res5"] == pytest.approx(90.168)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_user_defined_empty_equations():
+    """calculate_user_defined() should default empty equations to '0.0'."""
+    _fha = fha.set_user_defined_functions(TEST_FHA, ["uf1*uf2", "", "", "res1-uf3", ""])
+
+    _fha = fha.calculate_user_defined(_fha)
+    assert _fha["res1"] == pytest.approx(26.52)
+    assert _fha["res2"] == pytest.approx(0.0)  # Empty equation defaults to 0.0
+    assert _fha["res3"] == pytest.approx(0.0)  # Empty equation defaults to 0.0
+    assert _fha["res4"] == pytest.approx(26.52)
+    assert _fha["res5"] == pytest.approx(0.0)  # Empty equation defaults to 0.0
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_set_user_defined_floats_empty():
+    """set_user_defined_floats() should set all floats to zero if an empty list is
+    passed."""
+    _fha = fha.set_user_defined_floats(TEST_FHA, [])
+
+    assert _fha["uf1"] == pytest.approx(0.0)
+    assert _fha["uf2"] == pytest.approx(0.0)
+    assert _fha["uf3"] == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_calculate_hri_non_string_input():
+    """calculate_hri() should raise OutOfRangeError when non-string inputs are
+    passed."""
+    with pytest.raises(OutOfRangeError):
+        fha.calculate_hri(3, "High")
+
+    with pytest.raises(OutOfRangeError):
+        fha.calculate_hri("Level B - Reasonably Probable", 2)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_set_user_defined_function_invalid_equation():
+    """calculate_user_defined() should raise a SympifyError for invalid equations."""
+    with pytest.raises(ValueError):
+        _fha = fha.set_user_defined_functions(TEST_FHA, ["uf1+uf2", "invalid_equation"])
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_set_user_defined_floats_single_value():
+    """set_user_defined_floats() should correctly set the first float when only one
+    value is passed."""
+    _fha = fha.set_user_defined_floats(TEST_FHA, [5.6])
+
+    assert _fha["uf1"] == pytest.approx(5.6)
+    assert _fha["uf2"] == pytest.approx(0.0)
+    assert _fha["uf3"] == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+@pytest.mark.calculation
+def test_set_user_defined_integers_single_value():
+    """set_user_defined_floats() should correctly set the first float when only one
+    value is passed."""
+    _fha = fha.set_user_defined_ints(TEST_FHA, [6])
+
+    assert _fha["ui1"] == 6
+    assert _fha["ui2"] == 0
+    assert _fha["ui3"] == 0
