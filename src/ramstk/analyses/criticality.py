@@ -6,11 +6,14 @@
 # Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """FMEA Criticality Analysis Module."""
 
+# Standard Library Imports
+from typing import Dict, Union
+
 # RAMSTK Package Imports
 from ramstk.exceptions import OutOfRangeError
 
 
-def calculate_rpn(sod):
+def calculate_rpn(sod: Dict[str, int]) -> int:
     """Calculate the Risk Priority Number (RPN).
 
         RPN = S * O * D
@@ -33,12 +36,9 @@ def calculate_rpn(sod):
     :raise: OutOfRangeError if one of the inputs falls outside the range
         [1, 10].
     """
-    if not 0 < sod["rpn_severity"] < 11:
-        raise OutOfRangeError(("RPN severity is outside the range [1, 10]."))
-    if not 0 < sod["rpn_occurrence"] < 11:
-        raise OutOfRangeError(("RPN occurrence is outside the range [1, 10]."))
-    if not 0 < sod["rpn_detection"] < 11:
-        raise OutOfRangeError(("RPN detection is outside the range [1, 10]."))
+    _do_validate_range(sod["rpn_severity"], 1, 10, "RPN severity")
+    _do_validate_range(sod["rpn_occurrence"], 1, 10, "RPN occurrence")
+    _do_validate_range(sod["rpn_detection"], 1, 10, "RPN detection")
 
     return (
         int(sod["rpn_severity"])
@@ -47,7 +47,7 @@ def calculate_rpn(sod):
     )
 
 
-def calculate_mode_hazard_rate(item_hr, mode_ratio):
+def calculate_mode_hazard_rate(item_hr: float, mode_ratio: float) -> float:
     """Calculate the failure mode hazard rate.
 
         >>> item_hr=0.000617
@@ -63,26 +63,15 @@ def calculate_mode_hazard_rate(item_hr, mode_ratio):
     :raise: OutOfRangeError if passed a negative item hazard rate or a mode
         ratio outside [0.0, 1.0].
     """
-    if item_hr < 0.0:
-        raise OutOfRangeError(
-            (
-                "calculate_mode_hazard_rate() was passed a "
-                "negative value for the item hazard rate."
-            )
-        )
-    if not 0.0 <= mode_ratio <= 1.0:
-        raise OutOfRangeError(
-            (
-                "calculate_mode_hazard_rate() was passed a "
-                "failure mode ratio outside the range of "
-                "[0.0, 1.0]."
-            )
-        )
+    _do_validate_range(item_hr, 0.0, float("inf"), "Item hazard rate")
+    _do_validate_range(mode_ratio, 0.0, 1.0, "Mode ratio")
 
     return item_hr * mode_ratio
 
 
-def calculate_mode_criticality(mode_hr, mode_op_time, eff_prob):
+def calculate_mode_criticality(
+    mode_hr: float, mode_op_time: float, eff_prob: float
+) -> float:
     """Calculate the MIL-HDBK-1629A, Task 102 criticality.
 
         >>> mode_hr=0.00021595
@@ -99,21 +88,26 @@ def calculate_mode_criticality(mode_hr, mode_op_time, eff_prob):
     :raise: OutOfRangeError if passed a negative mode operating time or an
         effect probability outside [0.0, 1.0].
     """
-    if mode_op_time < 0.0:
-        raise OutOfRangeError(
-            (
-                "calculate_mode_criticality() was passed a "
-                "negative value for failure mode operating "
-                "time."
-            )
-        )
-    if not 0.0 <= eff_prob <= 1.0:
-        raise OutOfRangeError(
-            (
-                "calculate_mode_criticality() was passed a "
-                "failure effect probability outside the range "
-                "of [0.0, 1.0]."
-            )
-        )
+    _do_validate_range(mode_op_time, 0.0, float("inf"), "Mode operating time")
+    _do_validate_range(eff_prob, 0.0, 1.0, "Effect probability")
 
     return mode_hr * mode_op_time * eff_prob
+
+
+def _do_validate_range(
+    value: Union[int, float], min_val: float, max_val: float, name: str
+) -> None:
+    """Validate that a value is within a specified range.
+
+    :param value: The value to validate.
+    :type value: int or float
+    :param min_val: The minimum allowable value (inclusive).
+    :type min_val: float
+    :param max_val: The maximum allowable value (inclusive).
+    :type max_val: float
+    :param name: The name of the value being validated (for error messages).
+    :type name: str
+    :raises OutOfRangeError: If the value is outside the specified range.
+    """
+    if not min_val <= value <= max_val:
+        raise OutOfRangeError(f"{name} is outside the range [{min_val}, {max_val}].")
