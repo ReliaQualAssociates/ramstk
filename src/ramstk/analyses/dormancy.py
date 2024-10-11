@@ -4,11 +4,11 @@
 #       ramstk.analyses.Dormancy.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2024 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Dormancy Calculations Module."""
 
 # Standard Library Imports
-from typing import List, Union
+from typing import List, Optional, Union
 
 DORMANT_HR_MULTIPLIER = {
     "ground": {
@@ -50,7 +50,7 @@ ENVIRONMENTS_DORMANT = [
 ]
 
 
-def get_environment_type(env_id: int, is_active: bool) -> str:
+def get_environment_type(env_id: int, is_active: bool) -> Optional[str]:
     """Get the environment type based on the environment ID.
 
     :param env_id: the index in the environment list.
@@ -59,11 +59,12 @@ def get_environment_type(env_id: int, is_active: bool) -> str:
     :rtype: str
     """
     _index = env_id - 1
-    if is_active and _index < len(ENVIRONMENTS_ACTIVE):
-        return ENVIRONMENTS_ACTIVE[_index]
-
-    if _index < len(ENVIRONMENTS_DORMANT):
+    if is_active:
+        if _index < len(ENVIRONMENTS_ACTIVE):
+            return ENVIRONMENTS_ACTIVE[_index]
+    elif _index < len(ENVIRONMENTS_DORMANT):
         return ENVIRONMENTS_DORMANT[_index]
+    return None
 
 
 def get_dormant_hr_multiplier(
@@ -165,11 +166,14 @@ def do_calculate_dormant_hazard_rate(
     :rtype: float
     :raise: IndexError if an indexing argument asks for a non-existent index.
     """
-    _env_active_id = get_environment_type(env_info[0], True)
-    _env_dormant_id = get_environment_type(env_info[1], False)
+    _env_active = get_environment_type(env_info[0], True)
+    _env_dormant = get_environment_type(env_info[1], False)
+
+    if _env_active is None or _env_dormant is None:
+        return 0.0
 
     _dormant_hr_multiplier = get_dormant_hr_multiplier(
-        hw_info, _env_active_id, _env_dormant_id
+        hw_info, _env_active, _env_dormant
     )
 
     return _dormant_hr_multiplier * hw_info[2]
