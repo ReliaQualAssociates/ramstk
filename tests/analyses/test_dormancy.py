@@ -67,6 +67,14 @@ def test_get_environment_type_dormant(dormant_env):
 
 
 @pytest.mark.unit
+@pytest.mark.parametrize("env_id", [-1, 0, 14])
+def test_get_environment_type_invalid(env_id):
+    """get_environment_type() should return None for invalid environment IDs."""
+    assert get_environment_type(env_id, True) is None
+    assert get_environment_type(env_id, False) is None
+
+
+@pytest.mark.unit
 @pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 6, 7, 8])
 def test_get_dormant_hr_multiplier_ground(category_id):
     """get_dormant_hr_multiplier() should return a float value for the multiplier with
@@ -208,15 +216,21 @@ def test_get_dormant_hr_multiplier_space(category_id):
 def test_get_dormant_hr_multiplier_no_category():
     """get_dormant_hr_multiplier() should return 0.0 if the category ID is not in
     1-8."""
-    assert get_dormant_hr_multiplier([10, 1, 0.0], "ground", "ground") == 0.0
+    assert get_dormant_hr_multiplier([10, 1, 0.0], "ground", "ground") == pytest.approx(
+        0.0
+    )
 
 
 @pytest.mark.unit
 def test_get_dormant_hr_multiplier_no_environment():
     """get_dormant_hr_multiplier() should return 0.0 if the active/dormant environments
     combination is not valid."""
-    assert get_dormant_hr_multiplier([1, 1, 0.0], "missile", "ground") == 0.0
-    assert get_dormant_hr_multiplier([1, 1, 0.0], "ground", "airborne") == 0.0
+    assert get_dormant_hr_multiplier([1, 1, 0.0], "missile", "ground") == pytest.approx(
+        0.0
+    )
+    assert get_dormant_hr_multiplier(
+        [1, 1, 0.0], "ground", "airborne"
+    ) == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -242,11 +256,54 @@ def test_dormant_hazard_rate(category_id, subcategory_id, expected):
 
 
 @pytest.mark.unit
+def test_get_dormant_hr_multiplier_invalid_subcategory():
+    """get_dormant_hr_multiplier() should return 0.0 if the subcategory is out of range
+    for semiconductors."""
+    # Test with invalid subcategory for semiconductors.
+    assert get_dormant_hr_multiplier([2, 5, 0.0], "ground", "ground") == pytest.approx(
+        0.0
+    )
+
+
+@pytest.mark.unit
 @pytest.mark.calculation
 def test_dormant_hazard_rate_bad_index():
     """do_calculate_dormant_hazard_rate() should raise an IndexError when a bad index
     value is passed."""
-    # with pytest.raises(ValueError):
     _hr_dormant = do_calculate_dormant_hazard_rate(
         hw_info=[4, 5, 0.008642374], env_info=[3, 12]
     )
+
+
+@pytest.mark.unit
+def test_dormant_hazard_rate_invalid_environment():
+    """do_calculate_dormant_hazard_rate() should return 0.0 when an invalid environment
+    is passed."""
+    _hr_dormant = do_calculate_dormant_hazard_rate(
+        hw_info=[1, 1, 0.008642374], env_info=[14, 1]
+    )
+    assert _hr_dormant == pytest.approx(0.0)
+
+    _hr_dormant = do_calculate_dormant_hazard_rate(
+        hw_info=[1, 1, 0.008642374], env_info=[3, 5]
+    )
+    assert _hr_dormant == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+def test_dormant_hazard_rate_zero_hazard_rate():
+    """do_calculate_dormant_hazard_rate() should return 0.0 when the hazard rate is
+    0."""
+    _hr_dormant = do_calculate_dormant_hazard_rate(hw_info=[1, 1, 0.0], env_info=[3, 1])
+    assert _hr_dormant == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
+def test_dormant_hazard_rate_category_1(subcategory_id):
+    """do_calculate_dormant_hazard_rate() should handle different subcategories of
+    category 1."""
+    _hr_dormant = do_calculate_dormant_hazard_rate(
+        hw_info=[1, subcategory_id, 0.008642374], env_info=[3, 1]
+    )
+    assert isinstance(_hr_dormant, float)

@@ -58,6 +58,9 @@ def get_environment_type(env_id: int, is_active: bool) -> Optional[str]:
     :return: the name of the environment associated with the end_id.
     :rtype: str
     """
+    if env_id <= 0:
+        return None  # Invalid env_id, must be positive
+
     _index = env_id - 1
     if is_active:
         if _index < len(ENVIRONMENTS_ACTIVE):
