@@ -36,8 +36,8 @@ TEST_PROBS = {
 class TestCreateHazardModels:
     """Class for unit testing Hazard model __init__() methods.
 
-    Because each table model contains unique attributes, these methods must be
-    local to the module being tested.
+    Because each table model contains unique attributes, these methods must be local to
+    the module being tested.
     """
 
     __test__ = True
@@ -66,11 +66,11 @@ class TestCreateHazardModels:
         assert test_record_model.potential_cause == ""
         assert test_record_model.potential_hazard == ""
         assert test_record_model.remarks == ""
-        assert test_record_model.result_1 == 0.0
-        assert test_record_model.result_2 == 0.0
-        assert test_record_model.result_3 == 0.0
-        assert test_record_model.result_4 == 0.0
-        assert test_record_model.result_5 == 0.0
+        assert test_record_model.result_1 == pytest.approx(0.0)
+        assert test_record_model.result_2 == pytest.approx(0.0)
+        assert test_record_model.result_3 == pytest.approx(0.0)
+        assert test_record_model.result_4 == pytest.approx(0.0)
+        assert test_record_model.result_5 == pytest.approx(0.0)
         assert test_record_model.system_effect == ""
         assert test_record_model.system_hri == 20
         assert test_record_model.system_hri_f == 20
@@ -82,9 +82,9 @@ class TestCreateHazardModels:
         assert test_record_model.user_blob_1 == ""
         assert test_record_model.user_blob_2 == ""
         assert test_record_model.user_blob_3 == ""
-        assert test_record_model.user_float_1 == 1.5
-        assert test_record_model.user_float_2 == 0.8
-        assert test_record_model.user_float_3 == 0.0
+        assert test_record_model.user_float_1 == pytest.approx(1.5)
+        assert test_record_model.user_float_2 == pytest.approx(0.8)
+        assert test_record_model.user_float_3 == pytest.approx(0.0)
         assert test_record_model.user_int_1 == 2
         assert test_record_model.user_int_2 == 0
         assert test_record_model.user_int_3 == 0
@@ -193,8 +193,8 @@ class TestGetterSetterHazard(UnitTestGetterSetterMethods):
     def test_get_record_model_attributes(self, test_record_model):
         """Should return a dict of attribute key:value pairs.
 
-        This method must be local because the attributes are different for each
-        database record model.
+        This method must be local because the attributes are different for each database
+        record model.
         """
         _attributes = test_record_model.get_attributes()
 
@@ -215,11 +215,11 @@ class TestGetterSetterHazard(UnitTestGetterSetterMethods):
         assert _attributes["function_4"] == ""
         assert _attributes["function_5"] == ""
         assert _attributes["remarks"] == ""
-        assert _attributes["result_1"] == 0.0
-        assert _attributes["result_2"] == 0.0
-        assert _attributes["result_3"] == 0.0
-        assert _attributes["result_4"] == 0.0
-        assert _attributes["result_5"] == 0.0
+        assert _attributes["result_1"] == pytest.approx(0.0)
+        assert _attributes["result_2"] == pytest.approx(0.0)
+        assert _attributes["result_3"] == pytest.approx(0.0)
+        assert _attributes["result_4"] == pytest.approx(0.0)
+        assert _attributes["result_5"] == pytest.approx(0.0)
         assert _attributes["system_effect"] == ""
         assert _attributes["system_severity"] == "Medium"
         assert _attributes["system_probability"] == TEST_PROBS["A"]
@@ -231,9 +231,9 @@ class TestGetterSetterHazard(UnitTestGetterSetterMethods):
         assert _attributes["user_blob_1"] == ""
         assert _attributes["user_blob_2"] == ""
         assert _attributes["user_blob_3"] == ""
-        assert _attributes["user_float_1"] == 1.5
-        assert _attributes["user_float_2"] == 0.8
-        assert _attributes["user_float_3"] == 0.0
+        assert _attributes["user_float_1"] == pytest.approx(1.5)
+        assert _attributes["user_float_2"] == pytest.approx(0.8)
+        assert _attributes["user_float_3"] == pytest.approx(0.0)
         assert _attributes["user_int_1"] == 2
         assert _attributes["user_int_2"] == 0
         assert _attributes["user_int_3"] == 0
