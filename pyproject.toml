@@ -176,7 +176,7 @@ format = [
 	"run-docformatter",
 	"run-isort",
 ]
-lint = "ruff check {args}"
+lint = "pylint -j0 --rcfile=./pyproject.toml {args}"
 maintain = [
 	"run-mccabe",
 	"run-radon-hal",

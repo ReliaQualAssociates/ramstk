@@ -74,6 +74,7 @@ def calculate_hri(probability: str, severity: str) -> int:
 
 
 def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
+    # pylint: disable=too-many-locals
     """Calculate the user-defined hazards analysis.
 
     :param fha: the user-defined functional hazards assessment dict.  The
