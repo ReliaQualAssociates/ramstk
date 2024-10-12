@@ -123,8 +123,8 @@ def calculate_user_defined(fha: Dict[str, Any]) -> Dict[str, Any]:
                     res5: fha["res5"],
                 }
             )
-        except SympifyError:
-            raise ValueError(f"Invalid syntax in equation{_idx}: {_equation}")
+        except SympifyError as exc:
+            raise ValueError(f"Invalid syntax in equation{_idx}: {_equation}") from exc
 
     return fha
 
@@ -184,7 +184,8 @@ def set_user_defined_functions(
                 fha[_key] = _equation
 
         except IndexError:
-            # If functions list doesn't contain enough elements, set the remaining to "0.0".
+            # If functions list doesn't contain enough elements, set the remaining
+            # to "0.0".
             fha[_key] = "0.0"
 
     return fha
