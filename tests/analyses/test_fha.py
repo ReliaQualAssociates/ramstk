@@ -59,7 +59,8 @@ def test_calculate_hri_unknown_probability():
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("shibboly-biboly-boo", "Medium")
     assert e.value.args[0] == (
-        "Unknown hazard probability (shibboly-biboly-boo) or severity (Medium)."
+        "Invalid hazard input: probability (shibboly-biboly-boo) or severity (Medium) "
+        "not recognized.  Expected ranges: probability 1-5, severity I-IV."
     )
 
 
@@ -71,7 +72,9 @@ def test_calculate_hri_unknown_severity():
     with pytest.raises(OutOfRangeError) as e:
         fha.calculate_hri("Level A - Frequent", "shibboly-biboly-boo")
     assert e.value.args[0] == (
-        "Unknown hazard probability (Level A - Frequent) or severity (shibboly-biboly-boo)."
+        "Invalid hazard input: probability (Level A - Frequent) or severity "
+        "(shibboly-biboly-boo) not recognized.  Expected ranges: probability 1-5, "
+        "severity I-IV."
     )
 
 
@@ -242,9 +245,9 @@ def test_calculate_hri_non_string_input():
 @pytest.mark.unit
 @pytest.mark.calculation
 def test_set_user_defined_function_invalid_equation():
-    """calculate_user_defined() should raise a SympifyError for invalid equations."""
+    """calculate_user_defined() should raise a ValueError for invalid equations."""
     with pytest.raises(ValueError):
-        _fha = fha.set_user_defined_functions(TEST_FHA, ["uf1+uf2", "invalid_equation"])
+        fha.set_user_defined_functions(TEST_FHA, ["uf1+uf2", "invalid_equation"])
 
 
 @pytest.mark.unit

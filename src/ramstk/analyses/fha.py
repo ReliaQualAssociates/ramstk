@@ -69,7 +69,11 @@ def calculate_hri(probability: str, severity: str) -> int:
         return PROBABILITY[probability] * SEVERITY[severity]
     except KeyError as _error:
         raise OutOfRangeError(
-            (f"Unknown hazard probability ({probability}) or severity ({severity}).")
+            (
+                f"Invalid hazard input: probability ({probability}) or severity "
+                f"({severity}) not recognized.  Expected ranges: probability 1-5, "
+                f"severity I-IV."
+            )
         ) from _error
 
 

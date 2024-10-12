@@ -102,6 +102,8 @@ dependencies = [
 
 [tool.hatch.envs.test.scripts]
 install = "make PREFIX=$VIRTUAL_ENV install"
+devinstall = "pip install -U pip && pip install -e ."
+dotest = "pytest {args}"
 clean-test = "rm -f .coverage* cobertura.xml && rm -fr .pytest_cache"
 run-unit = "pytest -m unit --no-cov --cache-clear tests"
 run-integration = "pytest -m integration --no-cov --cache-clear tests"
