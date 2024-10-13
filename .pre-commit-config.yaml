@@ -32,7 +32,7 @@ repos:
       rev: 'v0.6.8'
       hooks:
         - id: ruff
-          args: [ --select, "PL", --select, "F", --config, ./pyproject.toml ]
+          args: [ --select, "PL", --select, "F", --ignore, "PLR2004", --config, ./pyproject.toml ]
     - repo: https://github.com/pycqa/pydocstyle
       rev: 6.3.0
       hooks:

@@ -81,9 +81,9 @@ def test_calculate_topic_633():
         _change_factor_3,
         _result_1,
     ) = similaritem.calculate_topic_633(environment, quality, temperature, 0.000003335)
-    assert _change_factor_1 == 0.6
-    assert _change_factor_2 == 3.3
-    assert _change_factor_3 == 1.1
+    assert _change_factor_1 == pytest.approx(0.6)
+    assert _change_factor_2 == pytest.approx(3.3)
+    assert _change_factor_3 == pytest.approx(1.1)
     assert _result_1 == pytest.approx(1.5312213e-06)
 
 
@@ -196,16 +196,16 @@ def test_set_user_defined_change_factors():
     )
 
     assert isinstance(_sia, dict)
-    assert _sia["pi1"] == 1.2
-    assert _sia["pi2"] == 3.4
-    assert _sia["pi3"] == 5.6
-    assert _sia["pi4"] == 7.8
-    assert _sia["pi5"] == 9.10
-    assert _sia["pi6"] == 11.12
-    assert _sia["pi7"] == 13.14
-    assert _sia["pi8"] == 15.16
-    assert _sia["pi9"] == 17.18
-    assert _sia["pi10"] == 19.20
+    assert _sia["pi1"] == pytest.approx(1.2)
+    assert _sia["pi2"] == pytest.approx(3.4)
+    assert _sia["pi3"] == pytest.approx(5.6)
+    assert _sia["pi4"] == pytest.approx(7.8)
+    assert _sia["pi5"] == pytest.approx(9.10)
+    assert _sia["pi6"] == pytest.approx(11.12)
+    assert _sia["pi7"] == pytest.approx(13.14)
+    assert _sia["pi8"] == pytest.approx(15.16)
+    assert _sia["pi9"] == pytest.approx(17.18)
+    assert _sia["pi10"] == pytest.approx(19.20)
 
 
 @pytest.mark.unit
@@ -216,16 +216,16 @@ def test_set_user_defined_change_factors_set_unused_none():
     )
 
     assert isinstance(_sia, dict)
-    assert _sia["pi1"] == 1.2
-    assert _sia["pi2"] == 3.4
-    assert _sia["pi3"] == 5.6
-    assert _sia["pi4"] == 7.8
-    assert _sia["pi5"] == 9.10
-    assert _sia["pi6"] == 0.0
-    assert _sia["pi7"] == 0.0
-    assert _sia["pi8"] == 0.0
-    assert _sia["pi9"] == 0.0
-    assert _sia["pi10"] == 0.0
+    assert _sia["pi1"] == pytest.approx(1.2)
+    assert _sia["pi2"] == pytest.approx(3.4)
+    assert _sia["pi3"] == pytest.approx(5.6)
+    assert _sia["pi4"] == pytest.approx(7.8)
+    assert _sia["pi5"] == pytest.approx(9.10)
+    assert _sia["pi6"] == pytest.approx(0.0)
+    assert _sia["pi7"] == pytest.approx(0.0)
+    assert _sia["pi8"] == pytest.approx(0.0)
+    assert _sia["pi9"] == pytest.approx(0.0)
+    assert _sia["pi10"] == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -235,11 +235,11 @@ def test_set_user_defined_floats():
     _sia = similaritem.set_user_defined_floats(TEST_SIA, [3.4, 7.8, 11.12, 15.16, 19.2])
 
     assert isinstance(_sia, dict)
-    assert _sia["uf1"] == 3.4
-    assert _sia["uf2"] == 7.8
-    assert _sia["uf3"] == 11.12
-    assert _sia["uf4"] == 15.16
-    assert _sia["uf5"] == 19.2
+    assert _sia["uf1"] == pytest.approx(3.4)
+    assert _sia["uf2"] == pytest.approx(7.8)
+    assert _sia["uf3"] == pytest.approx(11.12)
+    assert _sia["uf4"] == pytest.approx(15.16)
+    assert _sia["uf5"] == pytest.approx(19.2)
 
 
 @pytest.mark.unit
@@ -248,11 +248,11 @@ def test_set_user_defined_floats_set_unused_none():
     _sia = similaritem.set_user_defined_floats(TEST_SIA, [3.4, 7.8])
 
     assert isinstance(_sia, dict)
-    assert _sia["uf1"] == 3.4
-    assert _sia["uf2"] == 7.8
-    assert _sia["uf3"] == 0.0
-    assert _sia["uf4"] == 0.0
-    assert _sia["uf5"] == 0.0
+    assert _sia["uf1"] == pytest.approx(3.4)
+    assert _sia["uf2"] == pytest.approx(7.8)
+    assert _sia["uf3"] == pytest.approx(0.0)
+    assert _sia["uf4"] == pytest.approx(0.0)
+    assert _sia["uf5"] == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -318,11 +318,11 @@ def test_set_user_defined_results():
     )
 
     assert isinstance(_sia, dict)
-    assert _sia["res1"] == 3.4
-    assert _sia["res2"] == 7.8
-    assert _sia["res3"] == 11.12
-    assert _sia["res4"] == 15.16
-    assert _sia["res5"] == 19.2
+    assert _sia["res1"] == pytest.approx(3.4)
+    assert _sia["res2"] == pytest.approx(7.8)
+    assert _sia["res3"] == pytest.approx(11.12)
+    assert _sia["res4"] == pytest.approx(15.16)
+    assert _sia["res5"] == pytest.approx(19.2)
 
 
 @pytest.mark.unit
@@ -331,11 +331,11 @@ def test_set_user_defined_results_set_unused_none():
     _sia = similaritem.set_user_defined_results(TEST_SIA, [3.4, 7.8, 11.12, 15.16])
 
     assert isinstance(_sia, dict)
-    assert _sia["res1"] == 3.4
-    assert _sia["res2"] == 7.8
-    assert _sia["res3"] == 11.12
-    assert _sia["res4"] == 15.16
-    assert _sia["res5"] == 0.0
+    assert _sia["res1"] == pytest.approx(3.4)
+    assert _sia["res2"] == pytest.approx(7.8)
+    assert _sia["res3"] == pytest.approx(11.12)
+    assert _sia["res4"] == pytest.approx(15.16)
+    assert _sia["res5"] == pytest.approx(0.0)
 
 
 @pytest.mark.unit
@@ -350,7 +350,27 @@ def test_calculate_user_defined():
 
     assert isinstance(_sia, dict)
     assert _sia["res1"] == pytest.approx(0.00530604)
-    assert _sia["res2"] == 10.0
-    assert _sia["res3"] == 78.0
+    assert _sia["res2"] == pytest.approx(10.0)
+    assert _sia["res3"] == pytest.approx(78.0)
     assert _sia["res4"] == pytest.approx(0.00530604)
     assert _sia["res5"] == pytest.approx(0.00562275)
+
+
+@pytest.mark.unit
+def test_calculate_topic_633_invalid_temperature():
+    with pytest.raises(TypeError):
+        similaritem.calculate_topic_633(
+            environment={"from": 1, "to": 2},
+            quality={"from": 1, "to": 2},
+            temperature={"from": "hot", "to": 30},  # Invalid string value
+            hazard_rate=0.01,
+        )
+
+
+@pytest.mark.unit
+def test_calculate_user_defined_empty_equation():
+    TEST_SIA["equation1"] = ""
+    TEST_SIA["equation2"] = "pi1 + pi2"
+
+    updated_sia = similaritem.calculate_user_defined(TEST_SIA)
+    assert updated_sia["equation1"] == "0.0"
