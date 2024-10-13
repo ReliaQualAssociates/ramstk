@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.SimilarItem.py is part of the RAMSTK Project
+#       ramstk.analyses.similaritem.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2019 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Reliability Similar Item Assessment Module."""
 
 # Standard Library Imports
 from typing import Dict, List, Tuple
 
 # Third Party Imports
-# noinspection PyPackageRequirements
-from sympy import symbols, sympify  # type: ignore
+from sympy import symbols, sympify
 
 ENVIRONMENT_FROM_TO: Dict[Tuple[int, int], float] = {
     (0, 0): 1.0,
@@ -152,8 +151,8 @@ def calculate_topic_633(
     :raise: TypeError if passed a string value for either temperature.
     """
     # Convert user-supplied temperatures to whole values used in Topic 633.
-    temperature["from"] = round(temperature["from"] / 10.0) * 10.0
-    temperature["to"] = round(temperature["to"] / 10.0) * 10.0
+    temperature["from"] = _do_validate_temperature(temperature["from"])
+    temperature["to"] = _do_validate_temperature(temperature["to"])
 
     _change_factor_1 = QUALITY_FROM_TO[
         (quality["from"], quality["to"])  # type: ignore
@@ -171,7 +170,7 @@ def calculate_topic_633(
 
 
 # pylint: disable=too-many-locals
-def calculate_user_defined(sia: Dict[str, float]):
+def calculate_user_defined(sia: Dict[str, int | float | str]):
     """Calculate the user-defined similar item analysis.
 
     :param sia: the user-defined similar item assessment dict.  The
@@ -222,6 +221,14 @@ def calculate_user_defined(sia: Dict[str, float]):
         "hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 "
         "ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5"
     )
+    print(sia)
+    for _idx in range(1, 6):
+        _equation_key = f"equation{_idx}"
+        _equation = str(sia.get(_equation_key, "0.0"))
+
+        # Validate the equation.
+        sia[_equation_key] = _do_validate_equation(_equation)
+        print(sia)
 
     # The subs argument needs to be passed as a dict of sia values just like
     # it is below.  This will result in duplicate code warnings, but passing
@@ -392,14 +399,7 @@ def set_user_defined_change_factors(
     :return: sia; the similar item assessment dict with updated factor values.
     :rtype: dict
     """
-    # Get the change factor values.
-    for _idx in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]:
-        _key = list(sia.keys())[_idx]
-        try:
-            sia[_key] = factors[_idx - 1]
-        except IndexError:
-            sia[_key] = 0.0
-
+    _do_update_sia_values(sia, factors, 1, 10, 0.0, float)
     return sia
 
 
@@ -413,13 +413,7 @@ def set_user_defined_floats(
     :return: sia; the similar item assessment dict with updated float values.
     :rtype: dict
     """
-    for _idx in [11, 12, 13, 14, 15]:
-        _key = list(sia.keys())[_idx]
-        try:
-            sia[_key] = float(floats[_idx - 11])
-        except IndexError:
-            sia[_key] = 0.0
-
+    _do_update_sia_values(sia, floats, 11, 15, 0.0, float)
     return sia
 
 
@@ -431,13 +425,7 @@ def set_user_defined_ints(sia: Dict[str, int], ints: List[int]) -> Dict[str, int
     :return: sia; the similar item assessment dict with updated integer values.
     :rtype: dict
     """
-    for _idx in [16, 17, 18, 19, 20]:
-        _key = list(sia.keys())[_idx]
-        try:
-            sia[_key] = int(ints[_idx - 16])
-        except IndexError:
-            sia[_key] = 0
-
+    _do_update_sia_values(sia, ints, 16, 20, 0, int)
     return sia
 
 
@@ -451,13 +439,7 @@ def set_user_defined_functions(
     :return: sia; the similar item assessment dict with updated functions.
     :rtype: dict
     """
-    for _idx in [21, 22, 23, 24, 25]:
-        _key = list(sia.keys())[_idx]
-        try:
-            sia[_key] = str(functions[_idx - 21])
-        except IndexError:
-            sia[_key] = ""
-
+    _do_update_sia_values(sia, functions, 21, 25, "", str)
     return sia
 
 
@@ -474,11 +456,49 @@ def set_user_defined_results(
     :return: sia; the similar item assessment dict with updated results.
     :rtype: dict
     """
-    for _idx in [26, 27, 28, 29, 30]:
+    _do_update_sia_values(sia, results, 26, 30, 0.0, float)
+    return sia
+
+
+# Standard Library Imports
+from typing import Any, Dict, List, Type
+
+
+# ruff: noqa: PLR0913
+def _do_update_sia_values(
+    sia: Dict[str, Any],
+    values: List[Any],
+    start_idx: int,
+    end_idx: int,
+    default_value: Any,
+    value_type: Type,
+) -> None:
+    """Update the SIA dictionary with values from a list.
+
+    Functions also converts them to the specified type.
+
+    :param sia: the similar item assessment dict.
+    :param values: the list of values to insert into `sia`.
+    :param start_idx: the start index in the SIA dictionary.
+    :param end_idx: the end index in the SIA dictionary.
+    :param default_value: the default value to use when the value list runs out of items.
+    :param value_type: the type to which the values should be converted (int or float).
+    """
+    for _idx in range(start_idx, end_idx + 1):
         _key = list(sia.keys())[_idx]
         try:
-            sia[_key] = results[_idx - 26]
-        except IndexError:
-            sia[_key] = 0.0
+            sia[_key] = value_type(values[_idx - start_idx])
+        except (IndexError, ValueError, TypeError):
+            sia[_key] = value_type(default_value)
 
-    return sia
+
+def _do_validate_equation(equation: str) -> str:
+    """Validate and return the equation or a default value."""
+    return equation if equation.strip() else "0.0"
+
+
+def _do_validate_temperature(temp: float) -> float:
+    """Ensure the temperature is a valid number; round to the nearest multiple of 10."""
+    if not isinstance(temp, (int, float)):
+        raise TypeError(f"Temperature must be a number, got {type(temp)}")
+    return round(temp / 10.0) * 10.0
