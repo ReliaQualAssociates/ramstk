@@ -7,7 +7,7 @@
 """Reliability Similar Item Assessment Module."""
 
 # Standard Library Imports
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Tuple, Type
 
 # Third Party Imports
 from sympy import symbols, sympify
@@ -314,10 +314,6 @@ def set_user_defined_results(
     """
     _do_update_sia_values(sia, results, 26, 30, 0.0, float)
     return sia
-
-
-# Standard Library Imports
-from typing import Any, Dict, List, Type
 
 
 # ruff: noqa: PLR0913
