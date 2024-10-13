@@ -14,7 +14,7 @@
 
 
 ## Any other pertinent information
-<!-- Provide any other information that is import to this PR such as
+<!-- Provide any other information that is important to this PR such as
 screenshots if this impacts the GUI. -->
 
 

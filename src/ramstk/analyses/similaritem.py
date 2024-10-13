@@ -333,7 +333,8 @@ def _do_update_sia_values(
     :param values: the list of values to insert into `sia`.
     :param start_idx: the start index in the SIA dictionary.
     :param end_idx: the end index in the SIA dictionary.
-    :param default_value: the default value to use when the value list runs out of items.
+    :param default_value: the default value to use when the value list runs out of
+        items.
     :param value_type: the type to which the values should be converted (int or float).
     """
     for _idx in range(start_idx, end_idx + 1):
