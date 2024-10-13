@@ -190,201 +190,57 @@ def calculate_user_defined(sia: Dict[str, int | float | str]):
     :return: sia; the similar item assessment dict with updated results.
     :rtype: dict
     """
-    (
-        hr,
-        pi1,
-        pi2,
-        pi3,
-        pi4,
-        pi5,
-        pi6,
-        pi7,
-        pi8,
-        pi9,
-        pi10,
-        uf1,
-        uf2,
-        uf3,
-        uf4,
-        uf5,
-        ui1,
-        ui2,
-        ui3,
-        ui4,
-        ui5,
-        res1,
-        res2,
-        res3,
-        res4,
-        res5,
-    ) = symbols(
-        "hr pi1 pi2 pi3 pi4 pi5 pi6 pi7 pi8 pi9 pi10 uf1 uf2 uf3 uf4 uf5 ui1 "
-        "ui2 ui3 ui4 ui5 res1 res2 res3 res4 res5"
-    )
-    print(sia)
+    _symbol_list = [
+        "hr",
+        "pi1",
+        "pi2",
+        "pi3",
+        "pi4",
+        "pi5",
+        "pi6",
+        "pi7",
+        "pi8",
+        "pi9",
+        "pi10",
+        "uf1",
+        "uf2",
+        "uf3",
+        "uf4",
+        "uf5",
+        "ui1",
+        "ui2",
+        "ui3",
+        "ui4",
+        "ui5",
+        "res1",
+        "res2",
+        "res3",
+        "res4",
+        "res5",
+    ]
+    _symbols_dict = symbols(" ".join(_symbol_list))
+
     for _idx in range(1, 6):
         _equation_key = f"equation{_idx}"
         _equation = str(sia.get(_equation_key, "0.0"))
 
         # Validate the equation.
         sia[_equation_key] = _do_validate_equation(_equation)
-        print(sia)
 
-    # The subs argument needs to be passed as a dict of sia values just like
-    # it is below.  This will result in duplicate code warnings, but passing
-    # it like this is required to allow the use of the results in subsequent
-    # calculations.
-    # pylint: disable=eval-used
-    sia["res1"] = sympify(sia["equation1"]).evalf(
-        subs={
-            hr: sia["hr"],
-            pi1: sia["pi1"],
-            pi2: sia["pi2"],
-            pi3: sia["pi3"],
-            pi4: sia["pi4"],
-            pi5: sia["pi5"],
-            pi6: sia["pi6"],
-            pi7: sia["pi7"],
-            pi8: sia["pi8"],
-            pi9: sia["pi9"],
-            pi10: sia["pi10"],
-            uf1: sia["uf1"],
-            uf2: sia["uf2"],
-            uf3: sia["uf3"],
-            uf4: sia["uf4"],
-            uf5: sia["uf5"],
-            ui1: sia["ui1"],
-            ui2: sia["ui2"],
-            ui3: sia["ui3"],
-            ui4: sia["ui4"],
-            ui5: sia["ui5"],
-            res1: sia["res1"],
-            res2: sia["res2"],
-            res3: sia["res3"],
-            res4: sia["res4"],
-            res5: sia["res5"],
-        }
-    )
-    sia["res2"] = sympify(sia["equation2"]).evalf(
-        subs={
-            hr: sia["hr"],
-            pi1: sia["pi1"],
-            pi2: sia["pi2"],
-            pi3: sia["pi3"],
-            pi4: sia["pi4"],
-            pi5: sia["pi5"],
-            pi6: sia["pi6"],
-            pi7: sia["pi7"],
-            pi8: sia["pi8"],
-            pi9: sia["pi9"],
-            pi10: sia["pi10"],
-            uf1: sia["uf1"],
-            uf2: sia["uf2"],
-            uf3: sia["uf3"],
-            uf4: sia["uf4"],
-            uf5: sia["uf5"],
-            ui1: sia["ui1"],
-            ui2: sia["ui2"],
-            ui3: sia["ui3"],
-            ui4: sia["ui4"],
-            ui5: sia["ui5"],
-            res1: sia["res1"],
-            res2: sia["res2"],
-            res3: sia["res3"],
-            res4: sia["res4"],
-            res5: sia["res5"],
-        }
-    )
-    sia["res3"] = sympify(sia["equation3"]).evalf(
-        subs={
-            hr: sia["hr"],
-            pi1: sia["pi1"],
-            pi2: sia["pi2"],
-            pi3: sia["pi3"],
-            pi4: sia["pi4"],
-            pi5: sia["pi5"],
-            pi6: sia["pi6"],
-            pi7: sia["pi7"],
-            pi8: sia["pi8"],
-            pi9: sia["pi9"],
-            pi10: sia["pi10"],
-            uf1: sia["uf1"],
-            uf2: sia["uf2"],
-            uf3: sia["uf3"],
-            uf4: sia["uf4"],
-            uf5: sia["uf5"],
-            ui1: sia["ui1"],
-            ui2: sia["ui2"],
-            ui3: sia["ui3"],
-            ui4: sia["ui4"],
-            ui5: sia["ui5"],
-            res1: sia["res1"],
-            res2: sia["res2"],
-            res3: sia["res3"],
-            res4: sia["res4"],
-            res5: sia["res5"],
-        }
-    )
-    sia["res4"] = sympify(sia["equation4"]).evalf(
-        subs={
-            hr: sia["hr"],
-            pi1: sia["pi1"],
-            pi2: sia["pi2"],
-            pi3: sia["pi3"],
-            pi4: sia["pi4"],
-            pi5: sia["pi5"],
-            pi6: sia["pi6"],
-            pi7: sia["pi7"],
-            pi8: sia["pi8"],
-            pi9: sia["pi9"],
-            pi10: sia["pi10"],
-            uf1: sia["uf1"],
-            uf2: sia["uf2"],
-            uf3: sia["uf3"],
-            uf4: sia["uf4"],
-            uf5: sia["uf5"],
-            ui1: sia["ui1"],
-            ui2: sia["ui2"],
-            ui3: sia["ui3"],
-            ui4: sia["ui4"],
-            ui5: sia["ui5"],
-            res1: sia["res1"],
-            res2: sia["res2"],
-            res3: sia["res3"],
-            res4: sia["res4"],
-            res5: sia["res5"],
-        }
-    )
-    sia["res5"] = sympify(sia["equation5"]).evalf(
-        subs={
-            hr: sia["hr"],
-            pi1: sia["pi1"],
-            pi2: sia["pi2"],
-            pi3: sia["pi3"],
-            pi4: sia["pi4"],
-            pi5: sia["pi5"],
-            pi6: sia["pi6"],
-            pi7: sia["pi7"],
-            pi8: sia["pi8"],
-            pi9: sia["pi9"],
-            pi10: sia["pi10"],
-            uf1: sia["uf1"],
-            uf2: sia["uf2"],
-            uf3: sia["uf3"],
-            uf4: sia["uf4"],
-            uf5: sia["uf5"],
-            ui1: sia["ui1"],
-            ui2: sia["ui2"],
-            ui3: sia["ui3"],
-            ui4: sia["ui4"],
-            ui5: sia["ui5"],
-            res1: sia["res1"],
-            res2: sia["res2"],
-            res3: sia["res3"],
-            res4: sia["res4"],
-            res5: sia["res5"],
-        }
-    )
+        # Loop through each result field (res1, res2, ..., res5)
+        _result_key = f"res{_idx}"
+
+        if (
+            _equation_key in sia and sia[_equation_key]
+        ):  # Check if equation exists and is not empty
+            sia[_result_key] = sympify(sia[_equation_key]).evalf(
+                subs={
+                    _symbols_dict[j]: sia[_symbol_list[j]]
+                    for j in range(len(_symbol_list))
+                }
+            )
+        else:
+            sia[_result_key] = 0.0  # Default to 0.0 if equation is empty
 
     return sia
 
