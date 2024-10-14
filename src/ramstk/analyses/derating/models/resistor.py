@@ -87,7 +87,7 @@ def do_derating_analysis(
         do_check_temperature_limit(
             kwargs["temperature_case"],
             _max_temperature,
-            _temperature_limit,
+            0.0,
         ),
     )
 

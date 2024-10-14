@@ -1988,7 +1988,10 @@ def test_stress_limits():
                 "temperature": [10.0, 10.0, 10.0],
                 "voltage": [0.55, 0.55, 0.55],
             },
-            "mica": {"temperature": [25.0, 25.0, 25.0], "voltage": [0.7, 0.7, 0.7]},
+            "mica": {
+                "temperature": [25.0, 25.0, 25.0],
+                "voltage": [0.7, 0.7, 0.7],
+            },
             "mica_button": {
                 "temperature": [10.0, 10.0, 10.0],
                 "voltage": [0.55, 0.55, 0.55],

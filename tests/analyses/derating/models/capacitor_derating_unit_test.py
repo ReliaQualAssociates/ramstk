@@ -18,7 +18,7 @@ from ramstk.analyses.derating import capacitor
 
 @pytest.mark.unit
 def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the capacitor is not execeeding any limit."""
+    """Should determine the capacitor is not execeeding any limit."""
     _overstress, _reason = capacitor.do_derating_analysis(
         1,
         11,
@@ -35,7 +35,7 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_case_temperature(test_stress_limits):
-    """should determine the capacitor is exceeding the case temperature limit."""
+    """Should determine the capacitor is exceeding the case temperature limit."""
     _overstress, _reason = capacitor.do_derating_analysis(
         1,
         11,
@@ -48,14 +48,14 @@ def test_do_derating_analysis_case_temperature(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Case temperature of 79.3C exceeds the derated maximum temperature "
+        _reason == "Temperature of 79.3C exceeds the derated maximum temperature "
         "of 10.0C less than maximum rated temperature of 85.0C.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_voltage(test_stress_limits):
-    """should determine the capacitor is execeeding the voltage limit."""
+    """Should determine the capacitor is execeeding the voltage limit."""
     _overstress, _reason = capacitor.do_derating_analysis(
         1,
         11,
@@ -72,7 +72,7 @@ def test_do_derating_analysis_voltage(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """should determine the capacitor is execeeding both limits."""
+    """Should determine the capacitor is execeeding both limits."""
     _overstress, _reason = capacitor.do_derating_analysis(
         1,
         11,
@@ -85,7 +85,7 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Case temperature of 79.3C exceeds the derated maximum temperature "
+        _reason == "Temperature of 79.3C exceeds the derated maximum temperature "
         "of 10.0C less than maximum rated temperature of 85.0C.\nVoltage ratio of 0.95 "
         "exceeds the allowable limit of 0.6.\n"
     )
@@ -93,7 +93,7 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
+    """Should raise am IndexError when passed an unknown environment."""
     with pytest.raises(IndexError):
         capacitor.do_derating_analysis(
             5,
@@ -108,7 +108,7 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """should raise am KeyError when passed an unknown subcategory."""
+    """Should raise am KeyError when passed an unknown subcategory."""
     with pytest.raises(KeyError):
         capacitor.do_derating_analysis(
             1,
@@ -123,7 +123,7 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_specification(test_stress_limits):
-    """should raise am KeyError when passed an unknown type ID."""
+    """Should raise am KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
         capacitor.do_derating_analysis(
             1,
@@ -142,7 +142,7 @@ def test_do_derating_analysis_non_numeric_temperature(
     case_temperature,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric case temperature."""
+    """Should raise am TypeError when passed a non-numeric case temperature."""
     with pytest.raises(TypeError):
         capacitor.do_derating_analysis(
             1,
@@ -161,7 +161,7 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
     voltage_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric voltage ratio."""
+    """Should raise am TypeError when passed a non-numeric voltage ratio."""
     with pytest.raises(TypeError):
         capacitor.do_derating_analysis(
             1,
@@ -171,4 +171,87 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
             temperature_case=46.3,
             temperature_rated_max=70.0,
             voltage_ratio=voltage_ratio,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_temperature(test_stress_limits):
+    """Should determine the capacitor is not exceeding the case temperature limit on the
+    boundary."""
+    _overstress, _reason = capacitor.do_derating_analysis(
+        1,
+        11,
+        test_stress_limits["capacitor"],
+        specification_id=2,
+        temperature_case=60.0,  # Exactly at the boundary
+        temperature_rated_max=70.0,
+        voltage_ratio=0.5,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_voltage(test_stress_limits):
+    """Should determine the capacitor is not exceeding the voltage limit on the
+    boundary."""
+    _overstress, _reason = capacitor.do_derating_analysis(
+        1,
+        11,
+        test_stress_limits["capacitor"],
+        specification_id=2,
+        temperature_case=46.3,
+        temperature_rated_max=70.0,
+        voltage_ratio=0.6,  # Exactly at the voltage limit
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_nominal_values(test_stress_limits):
+    """Should not report overstress when all values are within limits."""
+    _overstress, _reason = capacitor.do_derating_analysis(
+        1,
+        11,
+        test_stress_limits["capacitor"],
+        specification_id=2,
+        temperature_case=45.0,
+        temperature_rated_max=70.0,
+        voltage_ratio=0.4,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_string_specification_id(test_stress_limits):
+    """Should raise a KeyError when passed a str for specification ID."""
+    with pytest.raises(KeyError):
+        capacitor.do_derating_analysis(
+            1,
+            11,
+            test_stress_limits["capacitor"],
+            specification_id="1",
+            temperature_case=46.3,
+            temperature_rated_max=70.0,
+            voltage_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_none_specification_id(test_stress_limits):
+    """Should raise a TypeError when passed None for specification ID."""
+    with pytest.raises(TypeError):
+        capacitor.do_derating_analysis(
+            1,
+            11,
+            test_stress_limits["capacitor"],
+            specification_id=None,
+            temperature_case=46.3,
+            temperature_rated_max=70.0,
+            voltage_ratio=0.2,
         )

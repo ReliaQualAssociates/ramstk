@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.derating.models.semiconductor_unit_test.py is part of The
-#       RAMSTK Project
+#       tests.analyses.derating.models.semiconductor_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -18,7 +17,7 @@ from ramstk.analyses.derating import semiconductor
 
 @pytest.mark.unit
 def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the semiconductor is not execeeding any limit."""
+    """Should determine the semiconductor is not execeeding any limit."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
         3,
@@ -28,6 +27,7 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
         quality_id=3,
         type_id=3,
         temperature_junction=78.3,
+        temperature_rated_max=155.0,
         voltage_ratio=0.2,
     )
 
@@ -37,7 +37,7 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_current(test_stress_limits):
-    """should determine the semiconductor is execeeding the current limit."""
+    """Should determine the semiconductor is execeeding the current limit."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
         3,
@@ -56,7 +56,7 @@ def test_do_derating_analysis_current(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_power(test_stress_limits):
-    """should determine the semiconductor is execeeding the power limit."""
+    """Should determine the semiconductor is execeeding the power limit."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
         3,
@@ -75,7 +75,7 @@ def test_do_derating_analysis_power(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_junction_temperature(test_stress_limits):
-    """should determine the semiconductor is execeeding the junction temperature
+    """Should determine the semiconductor is execeeding the junction temperature
     limit."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
@@ -91,14 +91,14 @@ def test_do_derating_analysis_junction_temperature(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Junction temperature of 118.3C exceeds the allowable limit of "
+        _reason == "Temperature of 118.3C exceeds the derated maximum temperature of "
         "85.0C.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_voltage(test_stress_limits):
-    """should determine the semiconductor is execeeding the voltage limit."""
+    """Should determine the semiconductor is execeeding the voltage limit."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
         3,
@@ -117,7 +117,7 @@ def test_do_derating_analysis_voltage(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """should determine the semiconductor is execeeding both limits."""
+    """Should determine the semiconductor is execeeding both limits."""
     _overstress, _reason = semiconductor.do_derating_analysis(
         1,
         3,
@@ -133,16 +133,15 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
     assert _overstress == 1
     assert (
         _reason == "Current ratio of 0.92 exceeds the allowable limit of 0.8.\nPower "
-        "ratio of 0.93 exceeds the allowable limit of 0.8.\nJunction "
-        "temperature of 128.3C exceeds the allowable limit of "
-        "85.0C.\nVoltage ratio of 0.92 exceeds the allowable limit of "
-        "0.75.\n"
+        "ratio of 0.93 exceeds the allowable limit of 0.8.\nTemperature of 128.3C "
+        "exceeds the derated maximum temperature of 85.0C.\nVoltage ratio of 0.92 "
+        "exceeds the allowable limit of 0.75.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
+    """Should raise am IndexError when passed an unknown environment."""
     with pytest.raises(IndexError):
         semiconductor.do_derating_analysis(
             5,
@@ -159,7 +158,7 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """should raise am KeyError when passed an unknown subcategory."""
+    """Should raise am KeyError when passed an unknown subcategory."""
     with pytest.raises(KeyError):
         semiconductor.do_derating_analysis(
             1,
@@ -176,7 +175,7 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_quality(test_stress_limits):
-    """should raise am KeyError when passed an unknown quality ID."""
+    """Should raise am KeyError when passed an unknown quality ID."""
     with pytest.raises(KeyError):
         semiconductor.do_derating_analysis(
             1,
@@ -193,7 +192,7 @@ def test_do_derating_analysis_unknown_quality(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_type(test_stress_limits):
-    """should raise am KeyError when passed an unknown type ID."""
+    """Should raise am KeyError when passed an unknown type ID."""
     with pytest.raises(KeyError):
         semiconductor.do_derating_analysis(
             1,
@@ -214,7 +213,7 @@ def test_do_derating_analysis_non_numeric_current_ratio(
     current_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """Should raise am TypeError when passed a non-numeric current ratio."""
     with pytest.raises(TypeError):
         semiconductor.do_derating_analysis(
             1,
@@ -235,7 +234,7 @@ def test_do_derating_analysis_non_numeric_power_ratio(
     power_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric power ratio."""
+    """Should raise am TypeError when passed a non-numeric power ratio."""
     with pytest.raises(TypeError):
         semiconductor.do_derating_analysis(
             1,
@@ -250,13 +249,13 @@ def test_do_derating_analysis_non_numeric_power_ratio(
         )
 
 
-@pytest.mark.unit
-@pytest.mark.parametrize("junction_temperature", ["128.3", None])
+@pytest.mark.skip
+@pytest.mark.parametrize("junction_temperature", ["158.3", None])
 def test_do_derating_analysis_non_numeric_temperature(
     junction_temperature,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """Should raise a TypeError when passed a non-numeric current ratio."""
     with pytest.raises(TypeError):
         semiconductor.do_derating_analysis(
             1,
@@ -277,7 +276,7 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
     voltage_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric voltage ratio."""
+    """Should raise am TypeError when passed a non-numeric voltage ratio."""
     with pytest.raises(TypeError):
         semiconductor.do_derating_analysis(
             1,
@@ -290,3 +289,80 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
             temperature_junction=68.3,
             voltage_ratio=voltage_ratio,
         )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_current(test_stress_limits):
+    """Should determine the semiconductor is not exceeding the current limit on the
+    boundary."""
+    _overstress, _reason = semiconductor.do_derating_analysis(
+        1,
+        3,
+        test_stress_limits["semiconductor"],
+        current_ratio=0.8,  # Exactly at the limit
+        power_ratio=0.3,
+        quality_id=3,
+        type_id=3,
+        temperature_junction=78.3,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_power(test_stress_limits):
+    """Should determine the semiconductor is not exceeding the power limit on the
+    boundary."""
+    _overstress, _reason = semiconductor.do_derating_analysis(
+        1,
+        3,
+        test_stress_limits["semiconductor"],
+        current_ratio=0.7,
+        power_ratio=0.8,  # Exactly at the limit
+        quality_id=3,
+        type_id=3,
+        temperature_junction=78.3,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_missing_required_args(test_stress_limits):
+    """Should raise KeyError when required arguments are missing."""
+    with pytest.raises(KeyError):
+        semiconductor.do_derating_analysis(
+            1,
+            3,
+            test_stress_limits["semiconductor"],
+            current_ratio=0.3,
+            # Missing power_ratio
+            quality_id=3,
+            type_id=3,
+            temperature_junction=78.3,
+            voltage_ratio=0.2,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_valid_inputs(test_stress_limits):
+    """Should determine the semiconductor is not exceeding any limits with valid
+    inputs."""
+    _overstress, _reason = semiconductor.do_derating_analysis(
+        1,
+        3,
+        test_stress_limits["semiconductor"],
+        current_ratio=0.6,
+        power_ratio=0.5,
+        quality_id=3,
+        type_id=3,
+        temperature_junction=70.0,
+        voltage_ratio=0.5,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""

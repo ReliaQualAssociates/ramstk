@@ -18,7 +18,7 @@ from ramstk.analyses.derating import integratedcircuit
 
 @pytest.mark.unit
 def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the integrated circuit is not execeeding any limit."""
+    """Should determine the integrated circuit is not execeeding any limit."""
     _overstress, _reason = integratedcircuit.do_derating_analysis(
         1,
         1,
@@ -35,7 +35,7 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_current(test_stress_limits):
-    """should determine the integrated circuit is execeeding the current limit."""
+    """Should determine the integrated circuit is execeeding the current limit."""
     _overstress, _reason = integratedcircuit.do_derating_analysis(
         1,
         1,
@@ -52,7 +52,7 @@ def test_do_derating_analysis_current(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_junction_temperature(test_stress_limits):
-    """should determine the integrated circuit is execeeding the junction temperature
+    """Should determine the integrated circuit is execeeding the junction temperature
     limit."""
     _overstress, _reason = integratedcircuit.do_derating_analysis(
         1,
@@ -66,14 +66,14 @@ def test_do_derating_analysis_junction_temperature(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Junction temperature of 118.3C exceeds the allowable limit of "
-        "110.0C.\n"
+        _reason == "Temperature of 118.3C exceeds the derated maximum temperature "
+        "of 110.0C.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """should determine the integrated circuit is execeeding both limits."""
+    """Should determine the integrated circuit is execeeding both limits."""
     _overstress, _reason = integratedcircuit.do_derating_analysis(
         1,
         1,
@@ -87,14 +87,14 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
     assert _overstress == 1
     assert (
         _reason == "Current ratio of 0.9 exceeds the allowable limit of "
-        "0.85.\nJunction temperature of 128.3C exceeds the allowable limit "
-        "of 110.0C.\n"
+        "0.85.\nTemperature of 128.3C exceeds the derated maximum "
+        "temperature of 110.0C.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
+    """Should raise am IndexError when passed an unknown environment."""
     with pytest.raises(IndexError):
         integratedcircuit.do_derating_analysis(
             5,
@@ -109,7 +109,7 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """should raise am KeyError when passed an unknown subcategory."""
+    """Should raise am KeyError when passed an unknown subcategory."""
     with pytest.raises(KeyError):
         integratedcircuit.do_derating_analysis(
             1,
@@ -124,7 +124,7 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_package(test_stress_limits):
-    """should raise am KeyError when passed an unknown package ID."""
+    """Should raise am KeyError when passed an unknown package ID."""
     with pytest.raises(KeyError):
         integratedcircuit.do_derating_analysis(
             1,
@@ -139,7 +139,7 @@ def test_do_derating_analysis_unknown_package(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_technology(test_stress_limits):
-    """should raise am KeyError when passed an unknown technology ID."""
+    """Should raise am KeyError when passed an unknown technology ID."""
     with pytest.raises(KeyError):
         integratedcircuit.do_derating_analysis(
             1,
@@ -158,7 +158,7 @@ def test_do_derating_analysis_non_numeric_current_ratio(
     current_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """Should raise am TypeError when passed a non-numeric current ratio."""
     with pytest.raises(TypeError):
         integratedcircuit.do_derating_analysis(
             1,
@@ -177,7 +177,7 @@ def test_do_derating_analysis_non_numeric_temperature(
     junction_temperature,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """Should raise am TypeError when passed a non-numeric current ratio."""
     with pytest.raises(TypeError):
         integratedcircuit.do_derating_analysis(
             1,
@@ -187,4 +187,88 @@ def test_do_derating_analysis_non_numeric_temperature(
             package_id=3,
             technology_id=2,
             temperature_junction=junction_temperature,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_current(test_stress_limits):
+    """Should determine the integrated circuit is not exceeding the current limit on the
+    boundary."""
+    _overstress, _reason = integratedcircuit.do_derating_analysis(
+        1,
+        1,
+        test_stress_limits["integrated_circuit"],
+        current_ratio=0.85,  # Exactly at the current limit
+        package_id=3,
+        technology_id=2,
+        temperature_junction=78.3,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_junction_temperature(test_stress_limits):
+    """Should determine the integrated circuit is not exceeding the junction temperature
+    limit on the boundary."""
+    _overstress, _reason = integratedcircuit.do_derating_analysis(
+        1,
+        1,
+        test_stress_limits["integrated_circuit"],
+        current_ratio=0.8,
+        package_id=3,
+        technology_id=2,
+        temperature_junction=110.0,  # Exactly at the temperature limit
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_all_valid_limits(test_stress_limits):
+    """Should not report overstress when all values are within limits."""
+    _overstress, _reason = integratedcircuit.do_derating_analysis(
+        1,
+        1,
+        test_stress_limits["integrated_circuit"],
+        current_ratio=0.6,
+        package_id=3,
+        technology_id=2,
+        temperature_junction=90.0,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_missing_required_args(test_stress_limits):
+    """Should raise a KeyError when required arguments are missing."""
+    with pytest.raises(KeyError):
+        integratedcircuit.do_derating_analysis(
+            1,
+            1,
+            test_stress_limits["integrated_circuit"],
+            package_id=3,
+            technology_id=2,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_invalid_package_technology_combination(
+    test_stress_limits,
+):
+    """Should raise KeyError when passed an invalid combination of package and
+    technology."""
+    with pytest.raises(KeyError):
+        integratedcircuit.do_derating_analysis(
+            1,
+            1,
+            test_stress_limits["integrated_circuit"],
+            current_ratio=0.8,
+            package_id=31,  # Invalid package ID
+            technology_id=21,  # Invalid technology ID
+            temperature_junction=90.0,
         )
