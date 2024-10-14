@@ -10,6 +10,13 @@
 # Standard Library Imports
 from typing import Dict, List, Tuple
 
+# RAMSTK Package Imports
+from ramstk.analyses.derating.derating_utils import (
+    do_check_current_limit,
+    do_check_temperature_limit,
+    do_update_overstress_status,
+)
+
 
 def do_derating_analysis(
     environment_id: int,
@@ -34,6 +41,7 @@ def do_derating_analysis(
     _overstress: int = 0
     _reason: str = ""
 
+    # Map subcategory, technology, and package IDs.
     _subcategory = {
         1: "digital",
         2: "linear",
@@ -56,60 +64,21 @@ def do_derating_analysis(
         9: "plastic2",
     }[kwargs["package_id"]]
 
-    _overstress, _reason = _do_check_current_limit(
+    _overstress, _reason = do_check_current_limit(
         kwargs["current_ratio"],
         stress_limits[_subcategory][_technology][_package]["current"][environment_id],
     )
 
-    _ostress, _rsn = _do_check_temperature_limit(
-        kwargs["temperature_junction"],
-        stress_limits[_subcategory][_technology][_package]["temperature"][
-            environment_id
-        ],
+    _overstress, _reason = do_update_overstress_status(
+        _overstress,
+        _reason,
+        do_check_temperature_limit(
+            kwargs["temperature_junction"],
+            stress_limits[_subcategory][_technology][_package]["temperature"][
+                environment_id
+            ],
+            0.0,  # No delta for temperature check
+        ),
     )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
 
     return _overstress, _reason
-
-
-def _do_check_current_limit(
-    current_ratio: float,
-    current_limit: float,
-) -> Tuple[int, str]:
-    """Check if the current ratio exceeds the limit.
-
-    :param current_ratio:
-    :param current_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if current_ratio <= current_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Current ratio of {current_ratio} exceeds the allowable limit of "
-        f"{current_limit}.\n",
-    )
-
-
-def _do_check_temperature_limit(
-    junction_temperature: float,
-    temperature_limit: float,
-) -> Tuple[int, str]:
-    """Check if the junction temperature exceeds the limit.
-
-    :param junction_temperature:
-    :param temperature_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if junction_temperature <= temperature_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Junction temperature of {junction_temperature}C exceeds the allowable "
-        f"limit of {temperature_limit}C.\n",
-    )
