@@ -31,8 +31,8 @@ from tests import (
 class TestCreateDesignElectricModels:
     """Class for unit testing Design Electric model __init__() methods.
 
-    Because each table model contains unique attributes, these methods must be
-    local to the module being tested.
+    Because each table model contains unique attributes, these methods must be local to
+    the module being tested.
     """
 
     @pytest.mark.unit
@@ -207,8 +207,8 @@ class TestGetterSetterDesignElectric(UnitTestGetterSetterMethods):
     def test_get_record_model_attributes(self, test_record_model):
         """Should return a dict of attribute key:value pairs.
 
-        This method must be local because the attributes are different for each
-        database record model.
+        This method must be local because the attributes are different for each database
+        record model.
         """
         _attributes = test_record_model.get_attributes()
 
@@ -352,7 +352,7 @@ class TestDesignElectricAnalysisMethods:
         )
         assert _design_electric.overstress == 1
         assert (
-            _design_electric.reason == "Case temperature of 78.2C exceeds the derated "
+            _design_electric.reason == "Temperature of 78.2C exceeds the derated "
             "maximum temperature of 15.0C less than maximum rated temperature of "
             "85.0C.\n"
         )

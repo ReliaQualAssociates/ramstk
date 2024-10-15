@@ -13,3 +13,6 @@ def _do_check_temperature_limit(
 def _do_check_voltage_limit(
     voltage_ratio: float, voltage_limit: float
 ) -> Tuple[int, str]: ...
+def _do_resolve_subcategory(
+    subcategory_id: int, specification_id: Optional[int]
+) -> str: ...

@@ -3,11 +3,20 @@
 #       ramstk.analyses.derating.models.semiconductor.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright since 2017 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Semiconductor derating analysis functions."""
 
 # Standard Library Imports
 from typing import Dict, List, Tuple
+
+# RAMSTK Package Imports
+from ramstk.analyses.derating.derating_utils import (
+    do_check_current_limit,
+    do_check_power_limit,
+    do_check_temperature_limit,
+    do_check_voltage_limit,
+    do_update_overstress_status,
+)
 
 
 def do_derating_analysis(
@@ -32,7 +41,64 @@ def do_derating_analysis(
     _overstress: int = 0
     _reason: str = ""
 
-    _subcategory = {
+    _subcategory = _get_semiconductor_subcategory(subcategory_id)
+    _type = _get_semiconductor_type(subcategory_id, kwargs.get("type_id", 0))
+    _quality = _get_semiconductor_quality(kwargs.get("quality_id", 1))
+
+    # Check current limit.
+    _overstress, _reason = do_update_overstress_status(
+        _overstress,
+        _reason,
+        do_check_current_limit(
+            kwargs["current_ratio"],
+            stress_limits[_subcategory][_type][_quality]["current"][environment_id],
+        ),
+    )
+
+    # Check power limit for specific subcategories and types.
+    if (
+        _subcategory == "diode"
+        and _type in ["schottky", "regulator", "suppressor"]
+        or _subcategory == "transistor"
+    ):
+        _overstress, _reason = do_update_overstress_status(
+            _overstress,
+            _reason,
+            do_check_power_limit(
+                kwargs["power_ratio"],
+                stress_limits[_subcategory][_type][_quality]["power"][environment_id],
+            ),
+        )
+
+        # Check junction temperature limit.
+        _overstress, _reason = do_update_overstress_status(
+            _overstress,
+            _reason,
+            do_check_temperature_limit(
+                kwargs["temperature_junction"],
+                stress_limits[_subcategory][_type][_quality]["temperature"][
+                    environment_id
+                ],
+                0.0,
+            ),
+        )
+
+        # Check voltage limit.
+        _overstress, _reason = do_update_overstress_status(
+            _overstress,
+            _reason,
+            do_check_voltage_limit(
+                kwargs["voltage_ratio"],
+                stress_limits[_subcategory][_type][_quality]["voltage"][environment_id],
+            ),
+        )
+
+    return _overstress, _reason
+
+
+def _get_semiconductor_subcategory(subcategory_id: int) -> str:
+    """Return the semiconductor subcategory based on the subcategory ID."""
+    _subcategories = {
         1: "diode",
         3: "transistor",
         4: "transistor",
@@ -41,8 +107,19 @@ def do_derating_analysis(
         8: "transistor",
         9: "transistor",
         10: "thyristor",
-    }[subcategory_id]
-    _type = {
+    }
+
+    _subcategory = _subcategories.get(subcategory_id)
+
+    if _subcategory is None:
+        raise KeyError(f"Unknown subcategory_id: {subcategory_id}")
+
+    return _subcategory
+
+
+def _get_semiconductor_type(subcategory_id: int, type_id: int) -> str:
+    """Return the semiconductor type based on the subcategory ID and type ID."""
+    _type_mapping = {
         1: {
             1: "general_purpose",
             2: "general_purpose",
@@ -58,129 +135,17 @@ def do_derating_analysis(
         6: "bjt",
         7: "bjt",
         9: "fet",
-    }[subcategory_id]
-    if isinstance(_type, dict):
-        _type = _type[kwargs["type_id"]]
+    }
+    _type = _type_mapping.get(subcategory_id, "")
+    return _type.get(type_id, "") if isinstance(_type, dict) else _type
 
-    _quality = {
+
+def _get_semiconductor_quality(quality_id: int) -> str:
+    """Return the semiconductor quality based on the quality ID."""
+    return {
         1: "jantx",
         2: "jantx",
         3: "military",
         4: "commercial",
         5: "commercial",
-    }[kwargs["quality_id"]]
-
-    _overstress, _reason = _do_check_current_limit(
-        kwargs["current_ratio"],
-        stress_limits[_subcategory][_type][_quality]["current"][environment_id],
-    )
-
-    if (
-        _subcategory == "diode" and _type in ["schottky,", "regulator", "suppressor"]
-    ) or _subcategory == "transistor":
-        _ostress, _rsn = _do_check_power_limit(
-            kwargs["power_ratio"],
-            stress_limits[_subcategory][_type][_quality]["power"][environment_id],
-        )
-        _overstress = _overstress or _ostress
-        _reason += _rsn
-
-    _ostress, _rsn = _do_check_temperature_limit(
-        kwargs["temperature_junction"],
-        stress_limits[_subcategory][_type][_quality]["temperature"][environment_id],
-    )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
-
-    _ostress, _rsn = _do_check_voltage_limit(
-        kwargs["voltage_ratio"],
-        stress_limits[_subcategory][_type][_quality]["voltage"][environment_id],
-    )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
-
-    return _overstress, _reason
-
-
-def _do_check_current_limit(
-    current_ratio: float,
-    current_limit: float,
-) -> Tuple[int, str]:
-    """Check if the current ratio exceeds the limit.
-
-    :param current_ratio:
-    :param current_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if current_ratio <= current_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Current ratio of {current_ratio} exceeds the allowable limit of "
-        f"{current_limit}.\n",
-    )
-
-
-def _do_check_power_limit(
-    power_ratio: float,
-    power_limit: float,
-) -> Tuple[int, str]:
-    """Check if the power ratio exceeds the limit.
-
-    :param power_ratio:
-    :param power_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if power_ratio <= power_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Power ratio of {power_ratio} exceeds the allowable limit of "
-        f"{power_limit}.\n",
-    )
-
-
-def _do_check_temperature_limit(
-    junction_temperature: float,
-    temperature_limit: float,
-) -> Tuple[int, str]:
-    """Check if the junction temperature exceeds the limit.
-
-    :param junction_temperature:
-    :param temperature_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if junction_temperature <= temperature_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Junction temperature of {junction_temperature}C exceeds the allowable "
-        f"limit of {temperature_limit}C.\n",
-    )
-
-
-def _do_check_voltage_limit(
-    voltage_ratio: float,
-    voltage_limit: float,
-) -> Tuple[int, str]:
-    """Check if the voltage ratio exceeds the limit.
-
-    :param voltage_ratio:
-    :param voltage_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if voltage_ratio <= voltage_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
-        f"{voltage_limit}.\n",
-    )
+    }[quality_id]

@@ -2,8 +2,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       tests.analyses.derating.models.resistor_unit_test.py is part of The
-#       RAMSTK Project
+#       tests.analyses.derating.models.resistor_unit_test.py is part of The RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -18,7 +17,7 @@ from ramstk.analyses.derating import resistor
 
 @pytest.mark.unit
 def test_do_derating_analysis_no_stresses(test_stress_limits):
-    """should determine the resistor is not execeeding any limit."""
+    """Should determine the resistor is not execeeding any limit."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
         2,
@@ -38,7 +37,7 @@ def test_do_derating_analysis_no_stresses(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_power(test_stress_limits):
-    """should determine the resistor is execeeding the power limit."""
+    """Should determine the resistor is execeeding the power limit."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
         2,
@@ -58,7 +57,7 @@ def test_do_derating_analysis_power(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_case_temperature(test_stress_limits):
-    """should determine the resistor is exceeding the case temperature limit."""
+    """Should determine the resistor is exceeding the case temperature limit."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
         2,
@@ -74,14 +73,14 @@ def test_do_derating_analysis_case_temperature(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Case temperature of 126.3C exceeds the derated maximum temperature "
-        "of 122.0C.\n"
+        _reason
+        == "Temperature of 126.3C exceeds the derated maximum temperature of 122.0C.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_voltage(test_stress_limits):
-    """should determine the resistor is execeeding the voltage limit."""
+    """Should determine the resistor is execeeding the voltage limit."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
         2,
@@ -101,7 +100,7 @@ def test_do_derating_analysis_voltage(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_all_stresses(test_stress_limits):
-    """should determine the resistor is execeeding both limits."""
+    """Should determine the resistor is execeeding both limits."""
     _overstress, _reason = resistor.do_derating_analysis(
         1,
         6,
@@ -117,15 +116,15 @@ def test_do_derating_analysis_all_stresses(test_stress_limits):
 
     assert _overstress == 1
     assert (
-        _reason == "Power ratio of 0.75 exceeds the allowable limit of 0.6.\nCase "
-        "temperature of 128.4C exceeds the derated maximum temperature of "
-        "118.0C.\nVoltage ratio of 0.8 exceeds the allowable limit of 0.7.\n"
+        _reason
+        == "Power ratio of 0.75 exceeds the allowable limit of 0.6.\nTemperature of 128.4C exceeds the "
+        "derated maximum temperature of 118.0C.\nVoltage ratio of 0.8 exceeds the allowable limit of 0.7.\n"
     )
 
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_environment(test_stress_limits):
-    """should raise am IndexError when passed an unknown environment."""
+    """Should raise am IndexError when passed an unknown environment."""
     with pytest.raises(IndexError):
         resistor.do_derating_analysis(
             5,
@@ -143,7 +142,7 @@ def test_do_derating_analysis_unknown_environment(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
-    """should raise am KeyError when passed an unknown subcategory."""
+    """Should raise am KeyError when passed an unknown subcategory."""
     with pytest.raises(KeyError):
         resistor.do_derating_analysis(
             1,
@@ -165,7 +164,7 @@ def test_do_derating_analysis_non_numeric_power_ratio(
     power_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric voltage ratio."""
+    """Should raise am TypeError when passed a non-numeric voltage ratio."""
     with pytest.raises(TypeError):
         resistor.do_derating_analysis(
             1,
@@ -187,7 +186,7 @@ def test_do_derating_analysis_non_numeric_temperature(
     case_temperature,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric current ratio."""
+    """Should raise am TypeError when passed a non-numeric current ratio."""
     with pytest.raises(TypeError):
         resistor.do_derating_analysis(
             1,
@@ -209,7 +208,7 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
     voltage_ratio,
     test_stress_limits,
 ):
-    """should raise am TypeError when passed a non-numeric voltage ratio."""
+    """Should raise am TypeError when passed a non-numeric voltage ratio."""
     with pytest.raises(TypeError):
         resistor.do_derating_analysis(
             1,
@@ -223,3 +222,83 @@ def test_do_derating_analysis_non_numeric_voltage_ratio(
             temperature_rated_max=150.0,
             voltage_ratio=voltage_ratio,
         )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_power(test_stress_limits):
+    """Should determine the resistor is not exceeding the power limit on the
+    boundary."""
+    _overstress, _reason = resistor.do_derating_analysis(
+        1,
+        2,
+        test_stress_limits["resistor"],
+        power_rated=0.125,
+        power_ratio=0.65,  # Exactly at the power limit
+        specification_id=2,
+        temperature_case=46.3,
+        temperature_knee=70.0,
+        temperature_rated_max=150.0,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_borderline_temperature(test_stress_limits):
+    """Should determine the resistor is not exceeding the temperature limit on the
+    boundary."""
+    _overstress, _reason = resistor.do_derating_analysis(
+        1,
+        2,
+        test_stress_limits["resistor"],
+        power_rated=0.125,
+        power_ratio=0.25,
+        specification_id=2,
+        temperature_case=122.0,  # Exactly at the temperature limit
+        temperature_knee=70.0,
+        temperature_rated_max=150.0,
+        voltage_ratio=0.2,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_missing_required_args(test_stress_limits):
+    """Should raise KeyError when missing required arguments."""
+    with pytest.raises(KeyError):
+        resistor.do_derating_analysis(
+            1,
+            2,
+            test_stress_limits["resistor"],
+            power_rated=0.125,  # Missing power_ratio
+            specification_id=2,
+            temperature_case=68.4,
+            temperature_knee=70.0,
+            temperature_rated_max=150.0,
+            voltage_ratio=0.28,
+        )
+
+
+@pytest.mark.unit
+def test_do_derating_analysis_valid_inputs(test_stress_limits):
+    """Should determine the resistor is not exceeding any limit under valid
+    conditions."""
+    _overstress, _reason = resistor.do_derating_analysis(
+        1,
+        2,
+        test_stress_limits["resistor"],
+        power_rated=0.125,
+        power_ratio=0.4,
+        specification_id=2,
+        temperature_case=55.0,
+        temperature_knee=70.0,
+        temperature_rated_max=150.0,
+        voltage_ratio=0.5,
+    )
+
+    assert _overstress == 0
+    assert _reason == ""

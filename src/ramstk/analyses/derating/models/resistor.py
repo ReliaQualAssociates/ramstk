@@ -3,11 +3,19 @@
 #       ramstk.analyses.derating.models.resistor.py is part of the RAMSTK Project
 #
 # All rights reserved.
-# Copyright since 2017 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Capacitor derating analysis functions."""
 
 # Standard Library Imports
 from typing import Dict, List, Tuple
+
+# RAMSTK Package Imports
+from ramstk.analyses.derating.derating_utils import (
+    do_check_power_limit,
+    do_check_temperature_limit,
+    do_check_voltage_limit,
+    do_update_overstress_status,
+)
 
 
 def do_derating_analysis(
@@ -49,189 +57,88 @@ def do_derating_analysis(
         15: "variable_film",
     }[subcategory_id]
 
-    _power_limit = _do_get_power_limit(
+    # Check power limits.
+    _power_limit = _do_get_stress_limit(
+        _subcategory, environment_id, kwargs["power_rated"], stress_limits, "power"
+    )
+    _overstress, _reason = do_update_overstress_status(
+        _overstress,
+        _reason,
+        do_check_power_limit(
+            kwargs["power_ratio"],
+            _power_limit,
+        ),
+    )
+
+    # Check temperature limits.
+    _temperature_limit = _do_get_stress_limit(
         _subcategory,
         environment_id,
         kwargs["power_rated"],
         stress_limits,
+        "temperature",
     )
-    _overstress, _reason = _do_check_power_limit(
-        kwargs["power_ratio"],
-        _power_limit,
+    _max_temperature = kwargs["temperature_knee"] + _temperature_limit * (
+        kwargs["temperature_rated_max"] - kwargs["temperature_knee"]
+    )
+    _overstress, _reason = do_update_overstress_status(
+        _overstress,
+        _reason,
+        do_check_temperature_limit(
+            kwargs["temperature_case"],
+            _max_temperature,
+            0.0,
+        ),
     )
 
-    _temperature_limit = _do_get_temperature_limit(
-        _subcategory,
-        environment_id,
-        kwargs["power_rated"],
-        stress_limits,
-    )
-    _ostress, _rsn = _do_check_temperature_limit(
-        kwargs["temperature_case"],
-        kwargs["temperature_knee"],
-        kwargs["temperature_rated_max"],
-        _temperature_limit,
-    )
-    _overstress = _overstress or _ostress
-    _reason += _rsn
-
+    # Check voltage limits for specific subcategories.
     if subcategory_id in {2, 4, 5, 6, 7}:
-        _voltage_limit = _do_get_voltage_limit(
+        _voltage_limit = _do_get_stress_limit(
             _subcategory,
             environment_id,
             kwargs["power_rated"],
             stress_limits,
+            "voltage",
         )
-        _ostress, _rsn = _do_check_voltage_limit(
-            kwargs["voltage_ratio"],
-            _voltage_limit,
+        _overstress, _reason = do_update_overstress_status(
+            _overstress,
+            _reason,
+            do_check_voltage_limit(
+                kwargs["voltage_ratio"],
+                _voltage_limit,
+            ),
         )
-        _overstress = _overstress or _ostress
-        _reason += _rsn
 
     return _overstress, _reason
 
 
-def _do_check_power_limit(
-    power_ratio: float,
-    power_limit: float,
-) -> Tuple[int, str]:
-    """Check if the power ratio exceeds the limit.
-
-    :param power_ratio:
-    :param power_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if power_ratio <= power_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Power ratio of {power_ratio} exceeds the allowable limit of "
-        f"{power_limit}.\n",
-    )
-
-
-def _do_check_temperature_limit(
-    case_temperature: float,
-    knee_temperature: float,
-    max_rated_temperature: float,
-    temperature_limit: float,
-) -> Tuple[int, str]:
-    """Check if the case temperature exceeds the limit.
-
-    :param case_temperature:
-    :param max_rated_temperature:
-    :param temperature_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    _max_temperature: float = knee_temperature + temperature_limit * (
-        max_rated_temperature - knee_temperature
-    )
-
-    if case_temperature <= _max_temperature:
-        return 0, ""
-
-    return (
-        1,
-        f"Case temperature of {case_temperature}C exceeds the derated maximum "
-        f"temperature of {_max_temperature}C.\n",
-    )
-
-
-def _do_check_voltage_limit(
-    voltage_ratio: float,
-    voltage_limit: float,
-) -> Tuple[int, str]:
-    """Check if the voltage ratio exceeds the limit.
-
-    :param voltage_ratio:
-    :param voltage_limit:
-    :return: _overstress, _reason
-    :rtype: tuple
-    """
-    if voltage_ratio <= voltage_limit:
-        return 0, ""
-
-    return (
-        1,
-        f"Voltage ratio of {voltage_ratio} exceeds the allowable limit of "
-        f"{voltage_limit}.\n",
-    )
-
-
-def _do_get_power_limit(
+def _do_get_stress_limit(
     subcategory: str,
     environment_id: int,
     rated_power: float,
     stress_limits: Dict[str, Dict[str, Dict[str, List[float]]]],
+    limit_type: str,
 ) -> float:
-    """Retrieve the power limits.
+    """Retrieve power, temperature, or voltage limit.
 
-    :param subcategory:
-    :param environment_id:
-    :param rated_power:
-    :param stress_limits:
-    :return: _power_limit
-    :rtype: float
+    :param subcategory: The subcategory of the resistor.
+    :param environment_id: The environment index.
+    :param rated_power: The rated power of the resistor.
+    :param stress_limits: The stress limit dictionary.
+    :param limit_type: The type of limit to retrieve ('power', 'temperature',
+        'voltage').
+    :return: The retrieved limit value.
     """
-    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
+    if subcategory in {
+        "fixed_chip",
+        "fixed_composition",
+        "fixed_film",
+        "fixed_wirewound",
+    }:
         return (
-            stress_limits[subcategory]["high_power"]["power"][environment_id]
+            stress_limits[subcategory]["high_power"][limit_type][environment_id]
             if rated_power >= 0.5
-            else stress_limits[subcategory]["low_power"]["power"][environment_id]
+            else stress_limits[subcategory]["low_power"][limit_type][environment_id]
         )
-
-    return stress_limits[subcategory]["power"][environment_id]
-
-
-def _do_get_temperature_limit(
-    subcategory: str,
-    environment_id: int,
-    rated_power: float,
-    stress_limits: Dict[str, Dict[str, Dict[str, List[float]]]],
-) -> float:
-    """Retrieve the power limits.
-
-    :param subcategory:
-    :param environment_id:
-    :param rated_power:
-    :param stress_limits:
-    :return: _temperature_limit
-    :rtype: float
-    """
-    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
-        return (
-            stress_limits[subcategory]["high_power"]["temperature"][environment_id]
-            if rated_power >= 0.5
-            else stress_limits[subcategory]["low_power"]["temperature"][environment_id]
-        )
-
-    return stress_limits[subcategory]["temperature"][environment_id]
-
-
-def _do_get_voltage_limit(
-    subcategory: str,
-    environment_id: int,
-    rated_power: float,
-    stress_limits: Dict[str, Dict[str, Dict[str, List[float]]]],
-) -> float:
-    """Retrieve the power limits.
-
-    :param subcategory:
-    :param environment_id:
-    :param rated_power:
-    :param stress_limits:
-    :return: _voltage_limit
-    :rtype: float
-    """
-    if subcategory in {"fixed_composition", "fixed_film", "fixed_wirewound"}:
-        return (
-            stress_limits[subcategory]["high_power"]["voltage"][environment_id]
-            if rated_power >= 0.5
-            else stress_limits[subcategory]["low_power"]["voltage"][environment_id]
-        )
-
-    return stress_limits[subcategory]["voltage"][environment_id]
+    else:
+        return stress_limits[subcategory][limit_type][environment_id]
