@@ -123,8 +123,8 @@ def test_do_derating_analysis_unknown_subcategory(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_unknown_specification(test_stress_limits):
-    """Should raise am KeyError when passed an unknown type ID."""
-    with pytest.raises(KeyError):
+    """Should raise am ValueError when passed an unknown type ID."""
+    with pytest.raises(ValueError):
         capacitor.do_derating_analysis(
             1,
             11,
@@ -229,8 +229,8 @@ def test_do_derating_analysis_nominal_values(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_string_specification_id(test_stress_limits):
-    """Should raise a KeyError when passed a str for specification ID."""
-    with pytest.raises(KeyError):
+    """Should raise a ValueError when passed a str for specification ID."""
+    with pytest.raises(ValueError):
         capacitor.do_derating_analysis(
             1,
             11,
@@ -244,8 +244,8 @@ def test_do_derating_analysis_string_specification_id(test_stress_limits):
 
 @pytest.mark.unit
 def test_do_derating_analysis_none_specification_id(test_stress_limits):
-    """Should raise a TypeError when passed None for specification ID."""
-    with pytest.raises(TypeError):
+    """Should raise a ValueError when passed None for specification ID."""
+    with pytest.raises(ValueError):
         capacitor.do_derating_analysis(
             1,
             11,
@@ -255,3 +255,31 @@ def test_do_derating_analysis_none_specification_id(test_stress_limits):
             temperature_rated_max=70.0,
             voltage_ratio=0.2,
         )
+
+
+def test_resolve_subcategory_success():
+    """Test resolving subcategory successfully."""
+    assert capacitor._do_resolve_subcategory(11, 1) == "temp_comp_ceramic"
+    assert capacitor._do_resolve_subcategory(11, 2) == "ceramic_chip"
+    assert capacitor._do_resolve_subcategory(1, None) == "paper"
+
+
+@pytest.mark.unit
+def test_resolve_subcategory_invalid_subcategory():
+    """Test _do_resolve_subcategory with invalid subcategory_id."""
+    with pytest.raises(KeyError):
+        capacitor._do_resolve_subcategory(99, None)
+
+
+@pytest.mark.unit
+def test_resolve_subcategory_missing_specification():
+    """Test _do_resolve_subcategory when specification_id is required but missing."""
+    with pytest.raises(ValueError):
+        capacitor._do_resolve_subcategory(11, None)
+
+
+@pytest.mark.unit
+def test_resolve_subcategory_invalid_specification():
+    """Test _do_resolve_subcategory with invalid specification_id."""
+    with pytest.raises(ValueError):
+        capacitor._do_resolve_subcategory(11, 99)

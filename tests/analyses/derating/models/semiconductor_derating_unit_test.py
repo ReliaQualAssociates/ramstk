@@ -366,3 +366,9 @@ def test_do_derating_analysis_valid_inputs(test_stress_limits):
 
     assert _overstress == 0
     assert _reason == ""
+
+
+def test_get_semiconductor_subcategory_invalid():
+    """Test _get_semiconductor_subcategory with invalid subcategory_id."""
+    with pytest.raises(KeyError):
+        semiconductor._get_semiconductor_subcategory(99)
