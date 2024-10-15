@@ -92,9 +92,27 @@ def _do_resolve_subcategory(
         17: "piston",
         18: "trimmer",
         19: "vacuum",
-    }[subcategory_id]
+    }
 
-    if isinstance(_subcategory, dict) and specification_id:
-        return _subcategory[specification_id]
+    # Explicit check for subcategory_id to make sure it's in the dictionary.
+    if subcategory_id not in _subcategory:
+        raise KeyError(f"Unknown subcategory_id: {subcategory_id}")
 
-    return _subcategory
+    # Fetch the subcategory (can be a string or a dict).
+    _resolved_subcategory = _subcategory[subcategory_id]
+
+    # If the subcategory is a nested dictionary, resolve using specification_id.
+    if isinstance(_resolved_subcategory, dict):
+        if specification_id is None:
+            raise ValueError(
+                f"Missing specification_id for subcategory_id {subcategory_id}"
+            )
+        if specification_id not in _resolved_subcategory:
+            raise ValueError(
+                f"Unknown specification_id {specification_id} for subcategory_id"
+                f" {subcategory_id}"
+            )
+        return _resolved_subcategory[specification_id]
+
+    # Return the resolved subcategory for non-nested cases.
+    return _resolved_subcategory

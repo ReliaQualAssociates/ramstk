@@ -98,7 +98,7 @@ def do_derating_analysis(
 
 def _get_semiconductor_subcategory(subcategory_id: int) -> str:
     """Return the semiconductor subcategory based on the subcategory ID."""
-    return {
+    _subcategories = {
         1: "diode",
         3: "transistor",
         4: "transistor",
@@ -107,7 +107,14 @@ def _get_semiconductor_subcategory(subcategory_id: int) -> str:
         8: "transistor",
         9: "transistor",
         10: "thyristor",
-    }[subcategory_id]
+    }
+
+    _subcategory = _subcategories.get(subcategory_id)
+
+    if _subcategory is None:
+        raise KeyError(f"Unknown subcategory_id: {subcategory_id}")
+
+    return _subcategory
 
 
 def _get_semiconductor_type(subcategory_id: int, type_id: int) -> str:

@@ -62,7 +62,13 @@ def do_check_power_limit(
 def do_check_temperature_limit(
     actual_temperature: float, max_rated_temperature: float, limit: float
 ) -> Tuple[int, str]:
-    """Generalized temperature limit check."""
+    """Check if actual temperature exceeds the specified limit of rated temperature.
+
+    :param actual_temperature: Current temperature in degrees Celsius
+    :param max_rated_temperature: Maximum rated temperature in degrees Celsius
+    :param limit: Percentage of max rated temperature allowed (0.0 to 1.0)
+    :return: Tuple of (1 if limit exceeded, 0 otherwise) and status message
+    """
     if actual_temperature <= (max_rated_temperature - limit):
         return 0, ""
 
