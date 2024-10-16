@@ -131,13 +131,15 @@ def test_data():
 
 @pytest.mark.unit
 def test_get_hazard_rate_defaults():
-    """should calculate the (EXP) hazard rate when using default confidence level."""
-    assert exponential.get_hazard_rate(1000.0) == 0.001
+    """Should calculate the (EXP) hazard rate when using default confidence level."""
+    assert np.isclose(
+        exponential.get_hazard_rate(1000.0), 0.001, rtol=1e-09, atol=1e-09
+    )
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_specified_location():
-    """should calculate the (EXP) hazard rate when specifying the location."""
+    """Should calculate the (EXP) hazard rate when specifying the location."""
     assert exponential.get_hazard_rate(1000.0, location=100.0) == pytest.approx(
         0.0009090909
     )
@@ -145,37 +147,37 @@ def test_get_hazard_rate_specified_location():
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(exponential.get_hazard_rate(0.0))
 
 
 @pytest.mark.unit
 def test_get_mtbf_defaults():
-    """should calculate the EXP MTBF when using default confidence level."""
+    """Should calculate the EXP MTBF when using default confidence level."""
     assert exponential.get_mtbf(0.000362) == pytest.approx(2762.4309392)
 
 
 @pytest.mark.unit
 def test_get_mtbf_specified_location():
-    """should calculate the EXP MTBF when specifying the location."""
+    """Should calculate the EXP MTBF when specifying the location."""
     assert exponential.get_mtbf(0.0001, location=0.005) == pytest.approx(10000.005)
 
 
 @pytest.mark.unit
 def test_get_mtbf_zero_rate():
-    """should return 0.0 when passed a rate=0.0."""
+    """Should return 0.0 when passed a rate=0.0."""
     assert exponential.get_mtbf(0.0) == 0.0
 
 
 @pytest.mark.unit
 def test_get_survival_defaults():
-    """should calculate the value of the survival function at time T."""
+    """Should calculate the value of the survival function at time T."""
     assert exponential.get_survival(10000.0, 4.0) == pytest.approx(0.9996001)
 
 
 @pytest.mark.unit
 def test_get_survival_specified_location():
-    """should calculate the value of the survival when specifying the location."""
+    """Should calculate the value of the survival when specifying the location."""
     assert exponential.get_survival(10000.0, 4.0, location=1.0) == pytest.approx(
         0.9997000
     )
@@ -183,13 +185,13 @@ def test_get_survival_specified_location():
 
 @pytest.mark.unit
 def test_get_survival_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(exponential.get_survival(0.0, 4.0))
 
 
 @pytest.mark.unit
 def test_fit_defaults(test_data):
-    """should estimate the scale parameter for the data using default input values."""
+    """Should estimate the scale parameter for the data using default input values."""
     _location, _scale = exponential.do_fit(test_data)
 
     assert _location == 1.585
@@ -198,7 +200,7 @@ def test_fit_defaults(test_data):
 
 @pytest.mark.unit
 def test_fit_no_floc(test_data):
-    """should estimate the scale and location parameter for the data."""
+    """Should estimate the scale and location parameter for the data."""
     _location, _scale = exponential.do_fit(test_data, floc=0.0)
 
     assert _location == 0.0
@@ -208,7 +210,7 @@ def test_fit_no_floc(test_data):
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_fit_mm_method(test_data):
-    """should estimate the scale parameter using the MM method."""
+    """Should estimate the scale parameter using the MM method."""
     _location, _scale = exponential.do_fit(test_data, method="MM")
 
     assert _location == pytest.approx(7.1563288)
@@ -218,8 +220,36 @@ def test_fit_mm_method(test_data):
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_fit_mm_method_no_floc(test_data):
-    """should estimate the scale parameter using the MM method."""
+    """Should estimate the scale parameter using the MM method."""
     _location, _scale = exponential.do_fit(test_data, method="MM", floc=0.0)
 
-    assert _location == 0.0
+    assert np.isclose(_location, 0.0, rtol=1e-09, atol=1e-09)
     assert _scale == pytest.approx(94.1309375)
+
+
+@pytest.mark.unit
+def test_get_survival_negative_time():
+    """Should return 1.0 when passed a negative time, assuming survival is full."""
+    assert np.isclose(
+        exponential.get_survival(10000.0, -5.0), 1.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_fit_empty_data():
+    """Should return default values or raise an appropriate error when passed empty
+    data."""
+    with pytest.raises(ValueError):
+        exponential.do_fit([])
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_large_scale():
+    """Should handle large scale values without overflow."""
+    assert exponential.get_hazard_rate(1e9) == pytest.approx(1e-9)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_small_scale():
+    """Should handle very small scale values."""
+    assert np.isclose(exponential.get_hazard_rate(1e-9), 1e9, rtol=1e-09, atol=1e-09)
