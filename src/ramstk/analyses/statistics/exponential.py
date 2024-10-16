@@ -12,7 +12,6 @@ from typing import Tuple
 
 # Third Party Imports
 import scipy
-from scipy.stats import expon
 
 
 def get_hazard_rate(scale: float, location: float = 0.0) -> float:
@@ -32,7 +31,7 @@ def get_hazard_rate(scale: float, location: float = 0.0) -> float:
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return 1.0 / expon.mean(
+    return 1.0 / scipy.stats.expon.mean(
         loc=location,
         scale=scale,
     )
@@ -53,14 +52,12 @@ def get_mtbf(rate: float, location: float = 0.0) -> float:
     :rtype: float
     """
     try:
-        _mtbf = expon.mean(
+        return scipy.stats.expon.mean(
             loc=location,
             scale=1.0 / rate,
         )
     except ZeroDivisionError:
-        _mtbf = 0.0
-
-    return _mtbf
+        return 0.0
 
 
 def get_survival(scale: float, time: float, location: float = 0.0) -> float:
@@ -81,7 +78,7 @@ def get_survival(scale: float, time: float, location: float = 0.0) -> float:
     :return: _surv; the value of the survival function at time.
     :rtype: float
     """
-    return expon.sf(time, loc=location, scale=scale)
+    return scipy.stats.expon.sf(time, loc=location, scale=scale)
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float]:
@@ -97,35 +94,12 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
     # method is not an argument to fit() until scipy-1.7.1.
-    if _floc is None:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                method=_method,
-            )
-        else:
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-            )
+    if scipy.__version__ >= "1.7.1":
+        _fit_args = {"loc": _location, "scale": _scale, "method": _method}
     else:
-        if scipy.__version__ >= "1.7.1":
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-                method=_method,
-            )
-        else:
-            _location, _scale = expon.fit(
-                data,
-                loc=_location,
-                floc=_floc,
-                scale=_scale,
-            )
+        _fit_args = {"loc": _location, "scale": _scale}
 
-    return _location, _scale
+    if _floc is not None:
+        _fit_args["floc"] = _floc
+
+    return scipy.stats.expon.fit(data, **_fit_args)

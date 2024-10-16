@@ -3,7 +3,7 @@
 #       ramstk.analyses.statistics.bounds.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Functions for performing calculations associated with statistical bounds."""
 
 # Standard Library Imports
