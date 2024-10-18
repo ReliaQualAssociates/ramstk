@@ -12,7 +12,9 @@ from typing import Tuple
 
 # Third Party Imports
 import scipy
-from scipy.stats import weibull_min
+
+# RAMSTK Local Imports
+from .distributions import calculate_hazard_rate, calculate_mtbf, calculate_survival
 
 
 def get_hazard_rate(
@@ -50,11 +52,12 @@ def get_hazard_rate(
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return (
-        0.0
-        if time <= 0.0
-        else weibull_min.pdf(time, shape, loc=location, scale=scale)
-        / weibull_min.cdf(time, shape, loc=location, scale=scale)
+    return calculate_hazard_rate(
+        time=time,
+        location=location,
+        scale=scale,
+        shape=shape,
+        dist_type="weibull",
     )
 
 
@@ -79,10 +82,11 @@ def get_mtbf(shape: float, scale: float, location: float = 0.0) -> float:
     :return: _mtbf; the MTBF.
     :rtype: float
     """
-    return weibull_min.mean(
-        shape,
-        loc=location,
+    return calculate_mtbf(
+        shape=shape,
+        location=location,
         scale=scale,
+        dist_type="weibull",
     )
 
 
@@ -109,7 +113,13 @@ def get_survival(
     :return: _surv; the value of the survival function at time.
     :rtype: float
     """
-    return weibull_min.sf(time, shape, loc=location, scale=scale)
+    return calculate_survival(
+        time=time,
+        shape=shape,
+        location=location,
+        scale=scale,
+        dist_type="weibull",
+    )
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float, float]:
@@ -124,35 +134,16 @@ def do_fit(data, **kwargs) -> Tuple[float, float, float]:
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
-    if _floc is None:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                method=_method,
-            )
-        else:
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-            )
+    # method is not an argument to fit() until scipy-1.7.1.
+    if scipy.__version__ >= "1.7.1":
+        _fit_args = {"loc": _location, "scale": _scale, "method": _method}
     else:
-        if scipy.__version__ >= "1.7.1":
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-                method=_method,
-            )
-        else:
-            _shape, _location, _scale = weibull_min.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                floc=_floc,
-            )
+        _fit_args = {"loc": _location, "scale": _scale}
 
-    return _shape, _location, _scale
+    if _floc is not None:
+        _fit_args["floc"] = _floc
+
+    return scipy.stats.weibull_min.fit(
+        data,
+        **_fit_args,
+    )

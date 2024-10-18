@@ -13,6 +13,9 @@ from typing import Tuple
 # Third Party Imports
 import scipy
 
+# RAMSTK Local Imports
+from .distributions import calculate_hazard_rate, calculate_mtbf, calculate_survival
+
 
 def get_hazard_rate(scale: float, location: float = 0.0) -> float:
     """Calculate the hazard rate given a scale and location parameter.
@@ -31,8 +34,9 @@ def get_hazard_rate(scale: float, location: float = 0.0) -> float:
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return 1.0 / scipy.stats.expon.mean(
-        loc=location,
+    return calculate_hazard_rate(
+        1.0,
+        location=location,
         scale=scale,
     )
 
@@ -52,8 +56,8 @@ def get_mtbf(rate: float, location: float = 0.0) -> float:
     :rtype: float
     """
     try:
-        return scipy.stats.expon.mean(
-            loc=location,
+        return calculate_mtbf(
+            location=location,
             scale=1.0 / rate,
         )
     except ZeroDivisionError:
@@ -78,7 +82,11 @@ def get_survival(scale: float, time: float, location: float = 0.0) -> float:
     :return: _surv; the value of the survival function at time.
     :rtype: float
     """
-    return scipy.stats.expon.sf(time, loc=location, scale=scale)
+    return calculate_survival(
+        time=time,
+        location=location,
+        scale=scale,
+    )
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float]:

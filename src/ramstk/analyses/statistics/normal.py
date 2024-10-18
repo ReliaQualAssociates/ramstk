@@ -12,7 +12,9 @@ from typing import Tuple
 
 # Third Party Imports
 import scipy
-from scipy.stats import norm
+
+# RAMSTK Local Imports
+from .distributions import calculate_hazard_rate, calculate_mtbf, calculate_survival
 
 
 def get_hazard_rate(location: float, scale: float, time: float) -> float:
@@ -36,14 +38,11 @@ def get_hazard_rate(location: float, scale: float, time: float) -> float:
     :return: _hazard_rate; the hazard rate.
     :rtype: float
     """
-    return norm.pdf(
+    return calculate_hazard_rate(
         time,
-        loc=location,
+        location=location,
         scale=scale,
-    ) / norm.sf(
-        time,
-        loc=location,
-        scale=scale,
+        dist_type="normal",
     )
 
 
@@ -64,9 +63,10 @@ def get_mtbf(location: float, scale: float) -> float:
     :return: _mtbf; the MTBF.
     :rtype: float
     """
-    return norm.mean(
-        loc=location,
+    return calculate_mtbf(
+        location=location,
         scale=scale,
+        dist_type="normal",
     )
 
 
@@ -92,7 +92,12 @@ def get_survival(
     :return: _surv; the value of the survival function at time.
     :rtype: float
     """
-    return norm.sf(time, location, scale)
+    return calculate_survival(
+        time=time,
+        location=location,
+        scale=scale,
+        dist_type="normal",
+    )
 
 
 def do_fit(data, **kwargs) -> Tuple[float, float]:
@@ -107,35 +112,13 @@ def do_fit(data, **kwargs) -> Tuple[float, float]:
     _scale = kwargs.get("scale", 0.0)  # Initial guess for scale.
     _method = kwargs.get("method", "MLE")  # One of MLE or MM.
 
-    if _floc is None:
-        _location, _scale = (
-            norm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-                method=_method,
-            )
-            if scipy.__version__ >= "1.7.1"
-            else norm.fit(
-                data,
-                loc=_location,
-                scale=_scale,
-            )
-        )
-    elif scipy.__version__ >= "1.7.1":
-        _location, _scale = norm.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            floc=_floc,
-            method=_method,
-        )
+    # method is not an argument to fit() until scipy-1.7.1.
+    if scipy.__version__ >= "1.7.1":
+        _fit_args = {"loc": _location, "scale": _scale, "method": _method}
     else:
-        _location, _scale = norm.fit(
-            data,
-            loc=_location,
-            scale=_scale,
-            floc=_floc,
-        )
+        _fit_args = {"loc": _location, "scale": _scale}
 
-    return _location, _scale
+    if _floc is not None:
+        _fit_args["floc"] = _floc
+
+    return scipy.stats.norm.fit(data, **_fit_args)
