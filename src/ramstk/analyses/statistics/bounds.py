@@ -97,11 +97,15 @@ def do_calculate_fisher_information(
     # Calculate the derivatives for each parameter
     for i, _param_name in enumerate(_param_labels):
         for j, _record in enumerate(data):
-            # Define a lambda function to evaluate the model at the current parameter
-            _D[i, j] = misc.derivative(
-                lambda p: model(_record, **{**_param_dict, _param_name: p}),
-                _param_dict[_param_name],
-                dx=1.0e-6,
-            )
+            _D[i, j] = _partial_derivative(_record, model, _param_dict, _param_name)
 
     return 1.0 / noise**2 * np.dot(_D, _D.T)
+
+
+def _partial_derivative(record, model, param_dict, param_name):
+    """Calculate the partial derivative."""
+    return misc.derivative(
+        lambda p: model(record, **{**param_dict, param_name: p}),
+        param_dict[param_name],
+        dx=1.0e-6,
+    )

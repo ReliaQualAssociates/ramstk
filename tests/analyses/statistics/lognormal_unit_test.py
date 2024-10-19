@@ -166,10 +166,10 @@ def test_do_fit_mm_method_no_floc(test_data):
 
 
 @pytest.mark.unit
-def test_do_fit_empty_data_lognormal():
+def test_do_fit_empty_data():
     """Should raise a ValueError when passed empty data for lognormal fit."""
     with pytest.raises(ValueError):
-        lognormal.do_fit([])
+        lognormal.do_fit(np.empty(0))
 
 
 @pytest.mark.unit

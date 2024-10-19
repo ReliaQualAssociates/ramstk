@@ -238,7 +238,7 @@ def test_fit_empty_data():
     """Should return default values or raise an appropriate error when passed empty
     data."""
     with pytest.raises(ValueError):
-        exponential.do_fit([])
+        exponential.do_fit(np.empty(0))
 
 
 @pytest.mark.unit
@@ -251,10 +251,3 @@ def test_get_hazard_rate_large_scale():
 def test_get_hazard_rate_small_scale():
     """Should handle very small scale values."""
     assert np.isclose(exponential.get_hazard_rate(1e-9), 1e9, rtol=1e-09, atol=1e-09)
-
-
-@pytest.mark.unit
-def test_do_fit_empty_data_exponential():
-    """Should raise a ValueError when passed empty data for exponential fit."""
-    with pytest.raises(ValueError):
-        exponential.do_fit([])
