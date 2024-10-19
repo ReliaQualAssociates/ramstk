@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Dict, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 def do_derating_analysis(
     environment_id: int,

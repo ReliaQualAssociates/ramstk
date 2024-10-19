@@ -3,7 +3,7 @@
 #       ramstk.analyses.statistics.bounds.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Functions for performing calculations associated with statistical bounds."""
 
 # Standard Library Imports
@@ -12,8 +12,7 @@ from typing import Callable, List, Tuple
 
 # Third Party Imports
 import numpy as np
-from scipy import misc
-from scipy.stats import norm
+from scipy import misc, stats
 
 
 def do_calculate_beta_bounds(
@@ -23,26 +22,32 @@ def do_calculate_beta_bounds(
 
     These are the project management estimators, not exact calculations.
 
-    :param minimum: the minimum expected value.
-    :param likely: most likely value.
-    :param maximum: the maximum expected value.
-    :param alpha: the desired confidence level.
-    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and standard
-        error.
-    :rtype: tuple of floats
+    :param minimum: The minimum expected value.
+    :param likely: The most likely value.
+    :param maximum: The maximum expected value.
+    :param alpha: The desired confidence level (0 < alpha < 1).
+    :return: A tuple containing the lower mean bound, mean, upper mean bound, and
+        standard deviation.
+    :rtype: Tuple[float, float, float, float]
     """
-    if alpha > 1.0:
-        _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
-    else:
-        _z_norm = norm.ppf(1.0 - ((1.0 - alpha) / 2.0))
+    if alpha < 0.0 or alpha > 100.0:
+        raise ValueError(
+            f"Confidence level (alpha) must be between 0 and 100.  alpha: {alpha}"
+        )
+
+    _z_norm = (
+        stats.norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
+        if alpha > 1.0
+        else 1.0 - ((1.0 - alpha) / 2.0)
+    )
 
     _mean = (minimum + 4.0 * likely + maximum) / 6.0
     _sd = (maximum - minimum) / 6.0
 
-    _meanll = _mean - _z_norm * _sd
-    _meanul = _mean + _z_norm * _sd
+    _mean_lower_bound = _mean - _z_norm * _sd
+    _mean_upper_bound = _mean + _z_norm * _sd
 
-    return _meanll, _mean, _meanul, _sd
+    return _mean_lower_bound, _mean, _mean_upper_bound, _sd
 
 
 def do_calculate_fisher_information(
@@ -64,31 +69,43 @@ def do_calculate_fisher_information(
         array([[8.67337390e+05, 9.89376513e+01],
                [9.89376513e+01, 1.12858721e-02]])
 
-    :param model: the model function, f(x, ...). This function must take the
-        data set as the first argument.  The remaining arguments of the
-        function should be the scale, shape, and location parameters.
-    :param p0: point in parameter space where Fisher information matrix is
-        evaluated.  Passed as a list in the same order as the parameter
-        arguments to the model.  See the example above.
-    :param data: the data set to use for calculating the information matrix.
-    :param noise: squared variance of the noise in data.
-    :returns: _fisher; the Fisher information matrix.
-    :rtype: ndarray
+    :param model: The model function f(x, ...), which takes the data set
+                  as the first argument. Remaining arguments should be the
+                  scale, shape, and location parameters.
+    :param p0: The point in parameter space where the Fisher information
+                matrix is evaluated. Passed as a list in the same order
+                as the model's parameter arguments.
+    :param data: The data set used for calculating the information matrix.
+    :param noise: The squared variance of the noise in data (default is 1.0).
+    :return: The Fisher information matrix.
+    :rtype: np.ndarray
     """
-    _labels = inspect.getfullargspec(model)[0][1:]
-    _p0dict = dict(zip(_labels, p0))
+    if not isinstance(data, np.ndarray):
+        raise TypeError(
+            f"Expected data to be of type numpy.ndarray, got {type(data)} instead."
+        )
 
-    _D = np.zeros((len(p0), data.size))
+    # Get the parameter names from the model's signature
+    _param_labels = inspect.getfullargspec(model)[0][1:]  # Skip the first arg (data)
+    _param_dict = dict(zip(_param_labels, p0))  # Create a dictionary of parameters
 
-    for i, argname in enumerate(_labels):
-        # pylint: disable=cell-var-from-loop
-        _D[i, :] = [
-            misc.derivative(
-                lambda p: model(_record, **dict(_p0dict, **{argname: p})),
-                _p0dict[argname],
-                dx=1.0e-6,
-            )
-            for _record in data
-        ]
+    # Initialize the derivative matrix
+    _num_params = len(p0)
+    _num_data_points = data.shape[0]
+    _D = np.zeros((_num_params, _num_data_points))
 
-    return 1.0 / noise**2 * np.einsum("mk, nk", _D, _D)
+    # Calculate the derivatives for each parameter
+    for i, _param_name in enumerate(_param_labels):
+        for j, _record in enumerate(data):
+            _D[i, j] = _partial_derivative(_record, model, _param_dict, _param_name)
+
+    return 1.0 / noise**2 * np.dot(_D, _D.T)
+
+
+def _partial_derivative(record, model, param_dict, param_name):
+    """Calculate the partial derivative."""
+    return misc.derivative(
+        lambda p: model(record, **{**param_dict, param_name: p}),
+        param_dict[param_name],
+        dx=1.0e-6,
+    )

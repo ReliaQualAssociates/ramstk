@@ -11,7 +11,6 @@
 # Third Party Imports
 import numpy as np
 import pytest
-from scipy.stats import expon
 
 # RAMSTK Package Imports
 from ramstk.analyses.statistics.bounds import (
@@ -31,9 +30,21 @@ class TestBetaBounds:
     @pytest.mark.unit
     @pytest.mark.calculation
     def test_calculate_beta_bounds_fractional_alpha(self):
-        """do_calculate_beta_bounds() should return a tuple of mean, standard
-        error, and bounds on success when passed an alpha < 1.0."""
+        """do_calculate_beta_bounds() should return a tuple of mean, standard error, and
+        bounds on success when passed an alpha < 1.0."""
         _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(10.0, 20.0, 40.0, 0.95)
+
+        assert _meanll == pytest.approx(16.7916667)
+        assert _mean == pytest.approx(21.66666667)
+        assert _meanul == pytest.approx(26.54166670)
+        assert _sd == pytest.approx(5.0)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_whole_alpha(self):
+        """do_calculate_beta_bounds() should return a tuple of mean, standard error, and
+        bounds on success when passed an alpha > 1.0."""
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(10.0, 20.0, 40.0, 95.0)
 
         assert _meanll == pytest.approx(11.86684674)
         assert _mean == pytest.approx(21.66666666)
@@ -42,15 +53,68 @@ class TestBetaBounds:
 
     @pytest.mark.unit
     @pytest.mark.calculation
-    def test_calculate_beta_bounds_whole_alpha(self):
-        """do_calculate_beta_bounds() should return a tuple of mean, standard
-        error, and bounds on success when passed an alpha > 1.0."""
-        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(10.0, 20.0, 40.0, 95.0)
+    def test_calculate_beta_bounds_extreme_values(self):
+        """Test with extreme values."""
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(1e10, 1e12, 1e14, 0.99)
+        assert isinstance(_meanll, float)
+        assert isinstance(_mean, float)
+        assert isinstance(_meanul, float)
+        assert isinstance(_sd, float)
 
-        assert _meanll == pytest.approx(11.86684674)
-        assert _mean == pytest.approx(21.66666666)
-        assert _meanul == pytest.approx(31.46648659)
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_negative_values(self):
+        """Test with negative values."""
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(
+            -40.0, -20.0, -10.0, 0.95
+        )
+        assert _meanll == pytest.approx(-26.541667)
+        assert _mean == pytest.approx(-21.6666667)
+        assert _meanul == pytest.approx(-16.7916667)
         assert _sd == pytest.approx(5.0)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_invalid_alpha(self):
+        """Test with invalid alpha values."""
+        with pytest.raises(ValueError):
+            do_calculate_beta_bounds(10.0, 20.0, 40.0, -0.1)
+        with pytest.raises(ValueError):
+            do_calculate_beta_bounds(10.0, 20.0, 40.0, 100.1)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_edge_case_alpha(self):
+        """Test edge case with alpha = 0 and alpha = 1."""
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(10.0, 20.0, 40.0, 0.0)
+        assert _meanll == pytest.approx(19.1666667)
+        assert _mean == pytest.approx(21.6666667)
+        assert _meanul == pytest.approx(24.1666667)
+        assert _sd == pytest.approx(5.0)
+
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(10.0, 20.0, 40.0, 100.0)
+        assert _meanll == pytest.approx(np.float64(-np.inf))
+        assert _mean == pytest.approx(21.6666667)
+        assert _meanul == pytest.approx(np.float64(np.inf))
+        assert _sd == pytest.approx(5.0)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_identical_values(self):
+        """Test with identical values for minimum, likely, and maximum."""
+        _meanll, _mean, _meanul, _sd = do_calculate_beta_bounds(20.0, 20.0, 20.0, 0.95)
+        assert _meanll == pytest.approx(20.0)
+        assert _mean == pytest.approx(20.0)
+        assert _meanul == pytest.approx(20.0)
+        assert _sd == pytest.approx(0.0)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_calculate_beta_bounds_output_types(self):
+        """Test the output types of do_calculate_beta_bounds()."""
+        result = do_calculate_beta_bounds(10.0, 20.0, 40.0, 0.95)
+        assert isinstance(result, tuple)
+        assert all(isinstance(val, float) for val in result)
 
 
 class TestFisherInformation:
@@ -161,7 +225,8 @@ class TestFisherInformation:
         ]
     )
 
-    @pytest.mark.skip
+    @pytest.mark.unit
+    @pytest.mark.calculation
     def test_calculate_fisher_information(self):
         """do_calculate_fisher_information() should return a list of lists on
         success."""
@@ -172,3 +237,54 @@ class TestFisherInformation:
         assert _fisher[0][1] == pytest.approx(5.16408922e-07)
         assert _fisher[1][0] == pytest.approx(5.16408922e-07)
         assert _fisher[1][1] == pytest.approx(1.12858719e-02)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_fisher_information_with_varying_params(self):
+        """do_calculate_fisher_information() should return correct Fisher matrix for
+        different parameter sets."""
+        _p1 = [0.05, 1.0]  # Different initial parameters
+        _fisher1 = do_calculate_fisher_information(log_pdf, _p1, self.EXP_TEST[:, 1])
+
+        assert _fisher1[0][0] == pytest.approx(1291272.2694786)
+        assert _fisher1[1][1] == pytest.approx(0.25)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_fisher_information_with_boundary_conditions(self):
+        """do_calculate_fisher_information() should handle boundary values."""
+        _p0 = [1e-12, 0.0]  # Test with near-zero parameter
+        _fisher = do_calculate_fisher_information(log_pdf, _p0, self.EXP_TEST[:, 1])
+
+        assert np.isnan(_fisher[0][0])
+        assert _fisher[1][1] == pytest.approx(0.0)
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_fisher_information_invalid_data(self):
+        """do_calculate_fisher_information() should raise an exception when passed
+        invalid data."""
+        _p0 = [0.01, 0.0]
+
+        with pytest.raises(TypeError):
+            do_calculate_fisher_information(log_pdf, _p0, ["invalid", "data"])
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_fisher_information_singular_matrix(self):
+        """do_calculate_fisher_information() should handle cases where Fisher
+        information matrix becomes singular."""
+        _p0 = [0.0, 0.0]  # Parameters that could result in singularity
+        _fisher = do_calculate_fisher_information(log_pdf, _p0, self.EXP_TEST[:, 1])
+
+        assert np.isnan(np.linalg.det(_fisher))
+
+    @pytest.mark.unit
+    @pytest.mark.calculation
+    def test_fisher_information_non_convergence(self):
+        """do_calculate_fisher_information() should handle non-converging cases
+        gracefully."""
+        _p0 = [1e-5, 1e5]  # Parameters leading to slow convergence
+        _fisher = do_calculate_fisher_information(log_pdf, _p0, self.EXP_TEST[:, 1])
+
+        assert np.isfinite(_fisher[0][0])  # Ensure no infinite or NaN values

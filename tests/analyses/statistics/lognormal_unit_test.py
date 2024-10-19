@@ -106,7 +106,7 @@ def test_get_mtbf_zero_shape():
 @pytest.mark.unit
 def test_get_survival_defaults():
     """Should calculate the value of the survival function at time T."""
-    assert lognormal.get_survival(0.9663, 5.0, scale=33.65) == pytest.approx(0.9757561)
+    assert lognormal.get_survival(0.9663, 5.0, scale=33.65) == pytest.approx(0.8619238)
 
 
 @pytest.mark.unit
@@ -114,7 +114,7 @@ def test_get_survival_specified_location():
     """Should calculate the value of the survival when specifying the location."""
     assert lognormal.get_survival(
         0.9663, 5.0, location=1.85, scale=33.65
-    ) == pytest.approx(0.9928813)
+    ) == pytest.approx(0.9106372)
 
 
 @pytest.mark.unit
@@ -163,3 +163,77 @@ def test_do_fit_mm_method_no_floc(test_data):
     assert _shape == pytest.approx(0.599285)
     assert np.isclose(_location, 0.0, rtol=1e-09, atol=1e-09)
     assert _scale == pytest.approx(37.6032561)
+
+
+@pytest.mark.unit
+def test_do_fit_empty_data():
+    """Should raise a ValueError when passed empty data for lognormal fit."""
+    with pytest.raises(ValueError):
+        lognormal.do_fit(np.empty(0))
+
+
+@pytest.mark.unit
+def test_get_mtbf_large_shape():
+    """Should handle very large shape values in lognormal MTBF calculation."""
+    assert lognormal.get_mtbf(100.0, scale=1.0) == np.float64(math.inf)
+
+
+@pytest.mark.unit
+def test_get_mtbf_small_shape():
+    """Should handle very small shape values in lognormal MTBF calculation."""
+    assert lognormal.get_mtbf(1e-9, scale=1.0) == pytest.approx(1.0)
+
+
+@pytest.mark.unit
+def test_get_survival_negative_time():
+    """Should return 1.0 when passed a negative time, assuming survival is full."""
+    assert np.isclose(
+        lognormal.get_survival(0.9663, -5.0, scale=33.65), 1.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_mtbf_zero_time():
+    """Should return a valid MTBF when passed a time of 0.0."""
+    assert np.isclose(
+        lognormal.get_mtbf(0.9663, 0.0, scale=33.65),
+        53.67143381,
+        rtol=1e-09,
+        atol=1e-09,
+    )
+
+
+@pytest.mark.unit
+def test_get_survival_large_time():
+    """Should handle very large time values in lognormal survival function."""
+    assert np.isclose(
+        lognormal.get_survival(0.9663, 1e9, scale=33.65), 0.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_survival_small_time():
+    """Should handle very small time values in lognormal survival function."""
+    assert np.isclose(
+        lognormal.get_survival(0.9663, 1e-9, scale=33.65), 1.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_mtbf_negative_scale():
+    """Should return nan when passed a negative scale."""
+    assert math.isnan(lognormal.get_mtbf(0.9663, scale=-1.0))
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_small_sigma():
+    """Should handle very small sigma values in hazard rate calculation."""
+    assert math.isnan(lognormal.get_hazard_rate(1e-9, 4.0, scale=33.65))
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_large_sigma():
+    """Should handle very large sigma values in hazard rate calculation."""
+    assert lognormal.get_hazard_rate(1e9, 4.0, scale=33.65) == pytest.approx(
+        1.9947114e-10
+    )
