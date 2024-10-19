@@ -24,8 +24,8 @@ from ramstk.analyses.statistics import weibull
 def test_data():
     """Data set of Weibull distributed points.
 
-    Data is the same as that used in the ReliaSoft wiki examples.
-    The table can be found at the following URL, for example.
+    Data is the same as that used in the ReliaSoft wiki examples. The table can be found
+    at the following URL, for example.
     http://reliawiki.org/index.php/The_Weibull_Distribution#Rank_Regression_on_Y
 
     eta = 76.318 and beta = 1.4301 when fit to the WEI.
@@ -44,7 +44,7 @@ def test_data():
 
 @pytest.mark.unit
 def test_get_hazard_rate_defaults():
-    """should calculate the (WEI) hazard rate when using default confidence level."""
+    """Should calculate the (WEI) hazard rate when using default confidence level."""
     assert weibull.get_hazard_rate(0.8, 525.0, 105.0) == pytest.approx(0.006616111)
     assert weibull.get_hazard_rate(1.0, 525.0, 105.0) == pytest.approx(0.008603153)
     assert weibull.get_hazard_rate(2.5, 525.0, 105.0) == pytest.approx(0.0235972)
@@ -52,7 +52,7 @@ def test_get_hazard_rate_defaults():
 
 @pytest.mark.unit
 def test_get_hazard_rate_specified_location():
-    """should calculate the (WEI) hazard rate when specifying the location."""
+    """Should calculate the (WEI) hazard rate when specifying the location."""
     assert weibull.get_hazard_rate(0.8, 525.0, 105.0, location=18.5) == pytest.approx(
         0.008198783
     )
@@ -66,55 +66,55 @@ def test_get_hazard_rate_specified_location():
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_shape():
-    """should return nan when passed a shape=0.0."""
+    """Should return nan when passed a shape=0.0."""
     assert math.isnan(weibull.get_hazard_rate(0.0, 525.0, 105.0))
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(weibull.get_hazard_rate(2.5, 0.0, 105.0))
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_time():
-    """should return zero when passed a time=0.0."""
+    """Should return zero when passed a time=0.0."""
     assert weibull.get_hazard_rate(2.5, 525.0, 0.0) == 0.0
 
 
 @pytest.mark.unit
 def test_get_mtbf_defaults():
-    """should calculate the WEI MTBF when using default confidence level."""
+    """Should calculate the WEI MTBF when using default confidence level."""
     assert weibull.get_mtbf(2.5, 525.0) == pytest.approx(465.8135042)
 
 
 @pytest.mark.unit
 def test_get_mtbf_specified_location():
-    """should calculate the WEI MTBF when specifying the location."""
+    """Should calculate the WEI MTBF when specifying the location."""
     assert weibull.get_mtbf(2.5, 525.0, location=18.5) == pytest.approx(484.3135042)
 
 
 @pytest.mark.unit
 def test_get_mtbf_zero_shape():
-    """should return nan when passed a shape=0.0."""
+    """Should return nan when passed a shape=0.0."""
     assert math.isnan(weibull.get_mtbf(0.0, 525.0))
 
 
 @pytest.mark.unit
 def test_get_mtbf_zero_scale():
-    """should return nan when passed a shape=0.0."""
+    """Should return nan when passed a shape=0.0."""
     assert math.isnan(weibull.get_mtbf(2.5, 0.0))
 
 
 @pytest.mark.unit
 def test_get_survival_defaults():
-    """should calculate the value of the survival function at time T."""
+    """Should calculate the value of the survival function at time T."""
     assert weibull.get_survival(2.5, 525.0, 105.0) == pytest.approx(0.9822705)
 
 
 @pytest.mark.unit
 def test_get_survival_specified_location():
-    """should calculate the value of the survival when specifying the location."""
+    """Should calculate the value of the survival when specifying the location."""
     assert weibull.get_survival(2.5, 525.0, 105.0, location=18.5) == pytest.approx(
         0.9890415
     )
@@ -122,19 +122,19 @@ def test_get_survival_specified_location():
 
 @pytest.mark.unit
 def test_get_survival_zero_shape():
-    """should return 1.0 when passed a shape=0.0."""
+    """Should return 1.0 when passed a shape=0.0."""
     assert math.isnan(weibull.get_survival(0.0, 525.0, 105.0))
 
 
 @pytest.mark.unit
 def test_get_survival_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(weibull.get_survival(2.5, 0.0, 105.0))
 
 
 @pytest.mark.unit
 def test_get_survival_zero_time():
-    """should return nan when passed a time=0.0."""
+    """Should return nan when passed a time=0.0."""
     assert weibull.get_survival(2.5, 525.0, 0.0) == 1.0
 
 
@@ -161,8 +161,7 @@ def test_do_fit_no_floc(test_data):
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method(test_data):
-    """should estimate the scale, shape, and location parameters using the MM
-    method."""
+    """Should estimate the scale, shape, and location parameters using the MM method."""
     _shape, _location, _scale = weibull.do_fit(test_data, method="MM")
 
     assert _shape == pytest.approx(0.1891056)
@@ -173,9 +172,61 @@ def test_do_fit_mm_method(test_data):
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method_no_floc(test_data):
-    """should estimate the scale and shape parameters using the MM method."""
+    """Should estimate the scale and shape parameters using the MM method."""
     _shape, _location, _scale = weibull.do_fit(test_data, method="MM", floc=0.0)
 
     assert _shape == pytest.approx(0.166558)
-    assert _location == 0.0
+    assert _location == pytest.approx(0.0)
     assert _scale == pytest.approx(0.00337509)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_large_time():
+    """Should calculate the hazard rate for a large time value."""
+    assert weibull.get_hazard_rate(2.5, 525.0, 10000.0) == pytest.approx(0.0712246)
+
+
+@pytest.mark.unit
+def test_get_survival_large_time():
+    """Should calculate the survival for a large time value."""
+    assert weibull.get_survival(2.5, 525.0, 10000.0) == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_negative_scale():
+    """Should return nan when passed a negative scale."""
+    assert math.isnan(weibull.get_hazard_rate(2.5, -525.0, 105.0))
+
+
+@pytest.mark.unit
+def test_get_survival_negative_time():
+    """Should return nan when passed a negative time."""
+    assert math.isnan(weibull.get_survival(2.5, 525.0, -105.0))
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_small_shape():
+    """Should return a small hazard rate for very small shape parameter."""
+    assert weibull.get_hazard_rate(1e-5, 525.0, 105.0) == pytest.approx(0.0)
+
+
+@pytest.mark.unit
+def test_get_survival_small_scale():
+    """Should return nan for very small scale parameter."""
+    assert math.isnan(weibull.get_survival(2.5, 1e-5, 105.0))
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_large_location():
+    """Should calculate hazard rate with a very large location."""
+    assert weibull.get_hazard_rate(2.5, 525.0, 105.0, location=1000.0) == pytest.approx(
+        0.0
+    )
+
+
+@pytest.mark.unit
+def test_get_survival_large_location():
+    """Should calculate survival function with a very large location."""
+    assert weibull.get_survival(2.5, 525.0, 105.0, location=1000.0) == pytest.approx(
+        1.0
+    )

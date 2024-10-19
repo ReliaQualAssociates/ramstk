@@ -431,6 +431,7 @@ ignore = [
 	'D204',
 	'D213',
 ]
+match='.*(?<!_test)\.py'
 
 [tool.ruff]
 exclude = ["*.pyi"]

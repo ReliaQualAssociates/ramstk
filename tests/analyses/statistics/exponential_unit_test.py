@@ -132,9 +132,7 @@ def test_data():
 @pytest.mark.unit
 def test_get_hazard_rate_defaults():
     """Should calculate the (EXP) hazard rate when using default confidence level."""
-    assert np.isclose(
-        exponential.get_hazard_rate(1000.0), 0.001, rtol=1e-09, atol=1e-09
-    )
+    assert exponential.get_hazard_rate(1000.0) == pytest.approx(0.001)
 
 
 @pytest.mark.unit
@@ -253,3 +251,10 @@ def test_get_hazard_rate_large_scale():
 def test_get_hazard_rate_small_scale():
     """Should handle very small scale values."""
     assert np.isclose(exponential.get_hazard_rate(1e-9), 1e9, rtol=1e-09, atol=1e-09)
+
+
+@pytest.mark.unit
+def test_do_fit_empty_data_exponential():
+    """Should raise a ValueError when passed empty data for exponential fit."""
+    with pytest.raises(ValueError):
+        exponential.do_fit([])

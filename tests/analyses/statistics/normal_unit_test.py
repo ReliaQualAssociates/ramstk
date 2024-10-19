@@ -131,67 +131,67 @@ def test_data():
 
 @pytest.mark.unit
 def test_get_hazard_rate_defaults():
-    """should calculate the (NORM) hazard rate when using default confidence level."""
+    """Should calculate the (NORM) hazard rate when using default confidence level."""
     assert normal.get_hazard_rate(100.0, 10.0, 85.0) == pytest.approx(0.01387898)
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_location():
-    """should return nan when passed a location=0.0."""
+    """Should return nan when passed a location=0.0."""
     assert normal.get_hazard_rate(0.0, 10.0, 85.0) == pytest.approx(0.8614595)
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(normal.get_hazard_rate(100.0, 0.0, 85.0))
 
 
 @pytest.mark.unit
 def test_get_hazard_rate_zero_time():
-    """should return zero when passed a time=0.0."""
+    """Should return zero when passed a time=0.0."""
     assert normal.get_hazard_rate(100.0, 10.0, 0.0) == pytest.approx(0.0)
 
 
 @pytest.mark.unit
 def test_get_mtbf_defaults():
-    """should calculate the NORM MTBF when using default confidence level."""
-    assert normal.get_mtbf(100.0, 10.0) == 100.0
+    """Should calculate the NORM MTBF when using default confidence level."""
+    assert normal.get_mtbf(100.0, 10.0) == pytest.approx(100.0)
 
 
 @pytest.mark.unit
 def test_get_mtbf_zero_location():
-    """should calculate the NORM MTBF when passed location=0.0."""
-    assert normal.get_mtbf(0.0, 10.0) == 0.0
+    """Should calculate the NORM MTBF when passed location=0.0."""
+    assert normal.get_mtbf(0.0, 10.0) == pytest.approx(0.0)
 
 
 @pytest.mark.unit
 def test_get_mtbf_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(normal.get_mtbf(100.0, 0.0))
 
 
 @pytest.mark.unit
 def test_get_survival_defaults():
-    """should calculate the value of the survival function at time T."""
+    """Should calculate the value of the survival function at time T."""
     assert normal.get_survival(100.0, 10.0, 85.0) == pytest.approx(0.9331928)
 
 
 @pytest.mark.unit
 def test_get_survival_zero_location():
-    """should calculate the value of the survival function when passed location=0.0."""
+    """Should calculate the value of the survival function when passed location=0.0."""
     assert normal.get_survival(0.0, 10.0, 85.0) == pytest.approx(9.4795348e-18)
 
 
 @pytest.mark.unit
 def test_get_survival_zero_scale():
-    """should return nan when passed a scale=0.0."""
+    """Should return nan when passed a scale=0.0."""
     assert math.isnan(normal.get_survival(100.0, 0.0, 85.0))
 
 
 @pytest.mark.unit
 def test_do_fit_defaults(test_data):
-    """should estimate the scale, shape, and location parameters for the data."""
+    """Should estimate the scale, shape, and location parameters for the data."""
     _location, _scale = normal.do_fit(test_data)
 
     assert _location == pytest.approx(100.5283533)
@@ -200,18 +200,17 @@ def test_do_fit_defaults(test_data):
 
 @pytest.mark.unit
 def test_do_fit_no_floc(test_data):
-    """should estimate the scale and shape parameters for the data."""
+    """Should estimate the scale and shape parameters for the data."""
     _location, _scale = normal.do_fit(test_data, floc=0.0)
 
-    assert _location == 0.0
+    assert _location == pytest.approx(0.0)
     assert _scale == pytest.approx(101.0798213)
 
 
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method(test_data):
-    """should estimate the scale, shape, and location parameters using the MM
-    method."""
+    """Should estimate the scale, shape, and location parameters using the MM method."""
     _location, _scale = normal.do_fit(test_data, method="MM")
 
     assert _location == pytest.approx(100.528356)
@@ -221,8 +220,74 @@ def test_do_fit_mm_method(test_data):
 @pytest.mark.unit
 @pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
 def test_do_fit_mm_method_no_floc(test_data):
-    """should estimate the scale and shape parameters using the MM method."""
+    """Should estimate the scale and shape parameters using the MM method."""
     _location, _scale = normal.do_fit(test_data, method="MM", floc=0.0)
 
-    assert _location == 0.0
-    assert _scale == 0.00025
+    assert _location == pytest.approx(0.0)
+    assert _scale == pytest.approx(0.00025)
+
+
+@pytest.mark.unit
+def test_get_survival_negative_time():
+    """Should return 1.0 for negative time in survival function, assuming full
+    survival."""
+    assert np.isclose(
+        normal.get_survival(100.0, 10.0, -85.0), 1.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_survival_large_time():
+    """Should handle very large time values in normal survival function."""
+    assert np.isclose(
+        normal.get_survival(100.0, 10.0, 1e9), 0.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_survival_small_time():
+    """Should handle very small time values in normal survival function."""
+    assert np.isclose(
+        normal.get_survival(100.0, 10.0, 1e-9), 1.0, rtol=1e-09, atol=1e-09
+    )
+
+
+@pytest.mark.unit
+def test_get_hazard_rate_negative_scale():
+    """Should return nan or raise an error for a negative scale."""
+    assert math.isnan(normal.get_hazard_rate(100.0, -10.0, 85.0))
+
+
+@pytest.mark.unit
+def test_get_mtbf_negative_location():
+    """Should calculate the MTBF for a negative location."""
+    assert np.isclose(normal.get_mtbf(-100.0, 10.0), -100.0, rtol=1e-09, atol=1e-09)
+
+
+@pytest.mark.unit
+def test_do_fit_empty_data():
+    """Should raise ValueError when fitting an empty dataset."""
+    with pytest.raises(ValueError):
+        normal.do_fit(np.empty(0))
+
+
+@pytest.mark.unit
+def test_get_mtbf_large_scale():
+    """Should handle very large scale values in MTBF calculation."""
+    assert normal.get_mtbf(100.0, 1e9) == pytest.approx(100.0)
+
+
+@pytest.mark.unit
+def test_get_mtbf_small_scale():
+    """Should handle very small scale values in MTBF calculation."""
+    assert normal.get_mtbf(100.0, 1e-9) == pytest.approx(100.0)
+
+
+@pytest.mark.unit
+@pytest.mark.skipif(scipy.__version__ < "1.7.1", reason="requires scipy>=1.7.1")
+def test_do_fit_max_likelihood_method(test_data):
+    """Should estimate parameters using the maximum likelihood method."""
+    _location, _scale = normal.do_fit(test_data, method="MLE")
+
+    assert _location == pytest.approx(100.528356)
+    assert _scale == pytest.approx(10.5441855)
