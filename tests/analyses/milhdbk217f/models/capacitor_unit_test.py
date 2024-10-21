@@ -193,8 +193,8 @@ def test_calculate_series_resistance_factor(resistance):
 
 @pytest.mark.unit
 def test_calculate_series_resistance_factor_zero_voltage():
-    """calculate_series_resistance_factor() should raise a ZeroDivisionError passed
-    zreo voltage."""
+    """calculate_series_resistance_factor() should raise a ZeroDivisionError passed zreo
+    voltage."""
     with pytest.raises(ZeroDivisionError):
         capacitor.calculate_series_resistance_factor(
             1.0,
@@ -266,22 +266,22 @@ def test_calculate_part_stress(subcategory_id, test_attributes_capacitor):
     if subcategory_id == 1:
         assert _attributes["lambda_b"] == pytest.approx(0.029446888)
         assert _attributes["piCV"] == pytest.approx(0.36177626)
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.010653185)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.6711507)
     elif subcategory_id == 12:
         assert _attributes["lambda_b"] == pytest.approx(0.022463773)
         assert _attributes["piCV"] == pytest.approx(0.2198982)
-        assert _attributes["piSR"] == 0.33
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.0016301152)
+        assert _attributes["piSR"] == pytest.approx(0.33)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0001467104)
     elif subcategory_id == 13:
         assert _attributes["lambda_b"] == pytest.approx(0.0098840599)
-        assert _attributes["piC"] == 0.3
+        assert _attributes["piC"] == pytest.approx(0.3)
         assert _attributes["piCV"] == pytest.approx(0.3564805)
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.0010570424)
+        assert _attributes["hazard_rate_active"] == pytest.approx(0.0009513381)
     elif subcategory_id == 19:
         assert _attributes["lambda_b"] == pytest.approx(0.48854794)
-        assert _attributes["piCF"] == 0.1
-        assert _attributes["piCV"] == 1.0
-        assert _attributes["hazard_rate_active"] == pytest.approx(0.048854794)
+        assert _attributes["piCF"] == pytest.approx(0.1)
+        assert _attributes["piCV"] == pytest.approx(1.0)
+        assert _attributes["hazard_rate_active"] == pytest.approx(8.7938628)
 
 
 @pytest.mark.unit
@@ -300,7 +300,7 @@ def test_calculate_part_stress_missing_attribute_key(test_attributes_capacitor):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
 def test_set_default_capacitance(subcategory_id):
-    """should return the default capacitance for the selected subcategory ID."""
+    """Should return the default capacitance for the selected subcategory ID."""
     _capacitance = capacitor._set_default_capacitance(subcategory_id, 2)
 
     assert (
@@ -332,7 +332,7 @@ def test_set_default_capacitance(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 14, 15, 16])
 def test_set_default_picv(subcategory_id):
-    """should return the default piCV for the selected subcategory ID."""
+    """Should return the default piCV for the selected subcategory ID."""
     _pi_cv = capacitor._set_default_picv(subcategory_id)
 
     assert _pi_cv == {1: 1.0, 14: 1.3, 15: 1.3, 16: 0.0}[subcategory_id]
@@ -344,7 +344,7 @@ def test_set_default_picv(subcategory_id):
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
 def test_set_default_rated_temperature(subcategory_id):
-    """should return the default capacitance for the selected subcategory ID."""
+    """Should return the default capacitance for the selected subcategory ID."""
     _temp_rated = capacitor._set_default_rated_temperature(subcategory_id, 2)
 
     assert (
@@ -376,7 +376,7 @@ def test_set_default_rated_temperature(subcategory_id):
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_capacitor")
 def test_set_default_values(test_attributes_capacitor):
-    """should set default values for each parameter <= 0.0."""
+    """Should set default values for each parameter <= 0.0."""
     test_attributes_capacitor["capacitance"] = 0.0
     test_attributes_capacitor["piCV"] = -1.0
     test_attributes_capacitor["style_id"] = 1
@@ -386,16 +386,16 @@ def test_set_default_values(test_attributes_capacitor):
     _attributes = capacitor.set_default_values(**test_attributes_capacitor)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["capacitance"] == 0.027e-6
-    assert _attributes["piCV"] == 1.0
-    assert _attributes["temperature_rated_max"] == 125.0
-    assert _attributes["voltage_ratio"] == 0.5
+    assert _attributes["capacitance"] == pytest.approx(0.027e-6)
+    assert _attributes["piCV"] == pytest.approx(1.0)
+    assert _attributes["temperature_rated_max"] == pytest.approx(125.0)
+    assert _attributes["voltage_ratio"] == pytest.approx(0.5)
 
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_capacitor")
 def test_set_default_values_none_needed(test_attributes_capacitor):
-    """should not set default values for each parameter > 0.0."""
+    """Should not set default values for each parameter > 0.0."""
     test_attributes_capacitor["capacitance"] = 0.047e-6
     test_attributes_capacitor["piCV"] = 1.3
     test_attributes_capacitor["style_id"] = 1
@@ -405,7 +405,53 @@ def test_set_default_values_none_needed(test_attributes_capacitor):
     _attributes = capacitor.set_default_values(**test_attributes_capacitor)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["capacitance"] == 0.047e-6
-    assert _attributes["piCV"] == 1.3
-    assert _attributes["temperature_rated_max"] == 85.0
-    assert _attributes["voltage_ratio"] == 0.35
+    assert _attributes["capacitance"] == pytest.approx(0.047e-6)
+    assert _attributes["piCV"] == pytest.approx(1.3)
+    assert _attributes["temperature_rated_max"] == pytest.approx(85.0)
+    assert _attributes["voltage_ratio"] == pytest.approx(0.35)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("resistance, voltage", [(1e-6, 10.0), (1e6, 1.0)])
+def test_calculate_series_resistance_factor_extremes(resistance, voltage):
+    """Test calculate_series_resistance_factor() with extreme resistance values."""
+    _pi_sr = capacitor.calculate_series_resistance_factor(resistance, voltage, 0.1)
+
+    assert isinstance(_pi_sr, float)
+    assert _pi_sr > 0
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "subcategory_id, ref_temp, voltage",
+    [(1, "105", 45.0), (1, 105.0, "45.0")],
+)
+def test_calculate_part_stress_lambda_b_invalid_inputs(
+    subcategory_id, ref_temp, voltage
+):
+    """Test calculate_part_stress_lambda_b() should raise a TypeError for invalid
+    inputs."""
+    with pytest.raises(TypeError):
+        capacitor.calculate_part_stress_lambda_b(
+            subcategory_id, ref_temp, voltage, 0.65
+        )
+
+
+@pytest.mark.unit
+def test_set_default_capacitance_unknown_subcategory():
+    """Test _set_default_capacitance() should raise a KeyError for unknown subcategory
+    IDs."""
+    with pytest.raises(KeyError):
+        capacitor._set_default_capacitance(100, 2)
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize(
+    "capacitance",
+    [0.0, 1e-12, 1e-2],  # Test boundary capacitance values
+)
+def test_calculate_capacitance_factor_boundary_values(capacitance):
+    """Test calculate_capacitance_factor() for boundary capacitance values."""
+    _pi_cv = capacitor.calculate_capacitance_factor(1, capacitance)
+    assert isinstance(_pi_cv, float)
+    assert _pi_cv >= 0

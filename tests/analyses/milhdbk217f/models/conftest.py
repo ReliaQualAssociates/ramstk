@@ -24,6 +24,8 @@ def test_attributes_capacitor():
         "piCV": 0.0,
         "piSR": 0.0,
         "hazard_rate_active": 0.0,
+        "quality_id": 1,
+        "environment_id": 3,
     }
 
 
