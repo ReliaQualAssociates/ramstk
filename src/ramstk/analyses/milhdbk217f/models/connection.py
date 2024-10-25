@@ -36,15 +36,15 @@ def calculate_part_count(**attributes: Dict[str, int]) -> float:
     :return: _base_hr; the parts count base hazard rates.
     :rtype: float
     """
-    _subcategory_id = attributes["subcategory_id"]
-    _environment_active_id = attributes["environment_active_id"]
-    _type_id = attributes["type_id"]
-    _quality_id = attributes["quality_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+    _environment_active_id: int = attributes["environment_active_id"]
+    _type_id: int = attributes["type_id"]
+    _quality_id: int = attributes["quality_id"]
 
-    _part_count_lambda_b = _get_part_count_lambda_b(
+    _part_count_lambda_b: float = _get_part_count_lambda_b(
         _subcategory_id, _environment_active_id, _type_id
     )
-    _pi_q = PART_COUNT_PI_Q[_quality_id]
+    _pi_q: float = PART_COUNT_PI_Q[_quality_id]
 
     return _part_count_lambda_b * _pi_q
 
@@ -62,7 +62,8 @@ def calculate_part_stress(
     :rtype: dict
     """
     attributes["temperature_rise"] = _calculate_insert_temperature(
-        attributes["contact_gauge"], attributes["current_operating"]
+        attributes["contact_gauge"],
+        attributes["current_operating"],
     )
     attributes["piC"] = _calculate_complexity_factor(attributes["n_circuit_planes"])
     attributes["piP"] = _calculate_active_pins_factor(attributes["n_active_pins"])
