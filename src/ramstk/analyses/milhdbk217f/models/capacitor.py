@@ -12,7 +12,7 @@ from math import exp
 from typing import Dict, Union
 
 # RAMSTK Package Imports
-from ramstk.constants.capacitor.constants import (
+from ramstk.constants.capacitor import (
     CAPACITANCE_FACTORS,
     DEFAULT_CAPACITANCE,
     LAMBDA_B_FACTORS,

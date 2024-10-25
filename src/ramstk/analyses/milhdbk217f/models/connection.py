@@ -12,7 +12,7 @@ from math import exp
 from typing import Dict, Union
 
 # RAMSTK Package Imports
-from ramstk.constants.connection.constants import (
+from ramstk.constants.connection import (
     FACTOR_KEYS,
     INSERT_TEMP_FACTORS,
     LAMBDA_B_FACTORS,
