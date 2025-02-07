@@ -67,6 +67,8 @@ def test_attributes_crystal():
         "frequency_operating": 10.0,
         "piE": 1.0,
         "piQ": 1.0,
+        "quality_id": 1,
+        "environment_id": 3,
     }
 
 

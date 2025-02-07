@@ -175,15 +175,17 @@ def get_construction_factor(construction_id: int) -> float:
     return PI_C.get(construction_id, 1.0)
 
 
-def get_environment_factor(environment_id: int) -> float:
+def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the MIL-HDBK-217F environment factor (pi E).
 
-    :param environment_id: the index in the list of environment factors.
+    :param attributes: the dict of capacitor attributes.
     :return: _pi_e; the environment factor.
     :rtype: float
     :raises: IndexError when passed an unknown environment ID.
     """
-    return PI_E[environment_id - 1]
+    _environment_id = attributes["environment_active_id"]
+
+    return PI_E[_environment_id - 1]
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -258,7 +260,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param attributes: the attributes for the capacitor being calculated.
+    :param attributes: the dict of capacitor attributes.
     :return: _lambda_b; the MIL-HDBK-217F part count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
@@ -276,27 +278,31 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     )
 
 
-def get_part_count_pi_q(quality_id: int) -> float:
+def get_part_count_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the part count quality factor.
 
-    :param quality_id: the ID of the capacitor quality level.
+    :param attributes: the dict of capacitor attributes.
     :return: _pi_q: the quality factor.
     :rtype: float
     :raises: IndexError if passed an unknown quality ID.
     """
-    return PART_COUNT_PI_Q[quality_id - 1]
+    _quality_id = attributes["quality_id"]
+
+    return PART_COUNT_PI_Q[_quality_id - 1]
 
 
-def get_part_stress_pi_q(subcategory_id: int, quality_id: int) -> float:
+def get_part_stress_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the quality factor for the given quality ID.
 
-    :param subcategory_id: the ID of the capacitor subcategory.
-    :param quality_id: the ID of the capacitor quality level.
+    :param attributes: the dict of capacitor attributes.
     :return: _pi_q: the quality factor.
     :rtype: float
     :raises: IndexError if passed an unknown subcategory ID or unknown quality ID.
     """
-    return PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
+    _subcategory_id = attributes["subcategory_id"]
+    _quality_id = attributes["quality_id"]
+
+    return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
 
 
 def set_default_values(
