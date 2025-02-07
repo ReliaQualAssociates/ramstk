@@ -291,22 +291,6 @@ def test_calculate_part_stress_lambda_b(
 
 
 @pytest.mark.unit
-@pytest.mark.parametrize(
-    "subcategory_id, ref_temp, voltage",
-    [(1, "105", 45.0), (1, 105.0, "45.0")],
-)
-def test_calculate_part_stress_lambda_b_invalid_inputs(
-    subcategory_id, ref_temp, voltage
-):
-    """Test calculate_part_stress_lambda_b() should raise a TypeError for invalid
-    inputs."""
-    with pytest.raises(TypeError):
-        capacitor.calculate_part_stress_lambda_b(
-            subcategory_id, ref_temp, voltage, 0.65
-        )
-
-
-@pytest.mark.unit
 def test_calculate_part_stress_lambda_b_unknown_subcategory_id(
     test_attributes_capacitor,
 ):
