@@ -26,78 +26,52 @@ from ramstk.constants.capacitor import (
 )
 
 
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b_list function.
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: _base_hr; the base hazard rate.
-    :rtype: float :raise: KeyError if passed an unknown subcategory ID or specification
-        ID.
-    """
-    return (
-        get_part_count_lambda_b(
-            attributes["subcategory_id"],
-            attributes["environment_active_id"],
-            attributes["specification_id"],
-        )
-        * PART_COUNT_PI_Q[attributes["quality_id"]]
-    )
-
-
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a capacitor.
 
     :param attributes: the attributes for the capacitor being calculated.
     :return: attributes; the keyword argument (hardware attribute) dictionary with
         updated values.
-    :rtype: dict :raise: KeyError if the attribute dict is missing one or more keys.
+    :rtype: dict
+    :raises: KeyError if the attribute dict is missing one or more keys.
     """
-    attributes["lambda_b"] = calculate_part_stress_lambda_b(
-        attributes["subcategory_id"],
-        attributes["temperature_rated_max"],
-        attributes["temperature_active"],
-        attributes["voltage_ratio"],
-    )
-    attributes["piQ"] = PART_STRESS_PI_Q[attributes["subcategory_id"]][
-        attributes["quality_id"]
-    ]
-    attributes["piE"] = PI_E[attributes["environment_id"]]
-    attributes["piCV"] = calculate_capacitance_factor(
-        attributes["subcategory_id"], attributes["capacitance"]
-    )
-
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"]
-        * attributes["piQ"]
-        * attributes["piE"]
-        * attributes["piCV"]
-    )
-    if attributes["subcategory_id"] == 12:
-        attributes["piSR"] = calculate_series_resistance_factor(
-            attributes["resistance"],
-            attributes["voltage_dc_operating"],
-            attributes["voltage_ac_operating"],
-        )
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piSR"]
-        )
-    elif attributes["subcategory_id"] == 13:
-        attributes["piC"] = get_construction_factor(attributes["construction_id"])
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piC"]
-        )
-    elif attributes["subcategory_id"] == 19:
-        attributes["piCF"] = get_configuration_factor(attributes["configuration_id"])
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piCF"] / attributes["piCV"]
+    try:
+        attributes["piCV"] = calculate_capacitance_factor(
+            attributes["subcategory_id"], attributes["capacitance"]
         )
 
-    return attributes
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piCV"]
+        )
+        if attributes["subcategory_id"] == 12:
+            attributes["piSR"] = calculate_series_resistance_factor(
+                attributes["resistance"],
+                attributes["voltage_dc_operating"],
+                attributes["voltage_ac_operating"],
+            )
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"] * attributes["piSR"]
+            )
+        elif attributes["subcategory_id"] == 13:
+            attributes["piC"] = get_construction_factor(attributes["construction_id"])
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"] * attributes["piC"]
+            )
+        elif attributes["subcategory_id"] == 19:
+            attributes["piCF"] = get_configuration_factor(
+                attributes["configuration_id"]
+            )
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piCF"]
+                / attributes["piCV"]
+            )
+
+        return attributes
+    except KeyError as err:
+        raise KeyError(f"Missing required attribute: {err}")
 
 
 def calculate_capacitance_factor(
@@ -111,42 +85,37 @@ def calculate_capacitance_factor(
     :return: _pi_cv; the calculated capacitance factor.
     :rtype: float :raise: KeyError if passed an unknown subcategory ID.
     """
-    _f0 = CAPACITANCE_FACTORS[subcategory_id][0]
-    _f1 = CAPACITANCE_FACTORS[subcategory_id][1]
-    return _f0 * capacitance**_f1
+    try:
+        _f0, _f1 = CAPACITANCE_FACTORS[subcategory_id]
+        return _f0 * capacitance**_f1
+    except KeyError:
+        raise KeyError(f"Invalid subcategory ID: {subcategory_id}")
 
 
 def calculate_part_stress_lambda_b(
-    subcategory_id: int,
-    temperature_rated_max: float,
-    temperature_active: float,
-    voltage_ratio: float,
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
-    :param subcategory_id: the capacitor subcategory identifier.
-    :param temperature_rated_max: the maximum rated temperature of the capacitor.
-    :param temperature_active: the operating ambient temperature of the capacitor.
-    :param voltage_ratio: the ratio of operating to rated voltage for the capacitor.
-    :return: _base_hr; the calculates base hazard rate.
+    :param attributes: the attributes dict for the component being calculated.
+    :return: _lambda_b; the calculated base hazard rate.
     :rtype: float :raise: KeyError if passed an unknown subcategory ID.
     """
-    # This will retrieve the reference temperature for the maximum rated
-    # temperature closest (round up) to one of the keys in the REF_TEMPS dict.
-    _ref_temp = REF_TEMPS.get(
-        temperature_rated_max,
-        REF_TEMPS[min(REF_TEMPS.keys(), key=lambda k: abs(k - temperature_rated_max))],
-    )
-    _f0 = LAMBDA_B_FACTORS[subcategory_id][0]
-    _f1 = LAMBDA_B_FACTORS[subcategory_id][1]
-    _f2 = LAMBDA_B_FACTORS[subcategory_id][2]
-    _f3 = LAMBDA_B_FACTORS[subcategory_id][3]
-    _f4 = LAMBDA_B_FACTORS[subcategory_id][4]
-    return (
-        _f0
-        * ((voltage_ratio / _f1) ** _f2 + 1.0)
-        * exp(_f3 * ((temperature_active + 273.0) / _ref_temp) ** _f4)
-    )
+    try:
+        _subcategory_id = attributes["subcategory_id"]
+        _temperature_active = attributes["temperature_active"]
+        _temperature_rated_max = attributes["temperature_rated_max"]
+        _voltage_ratio = attributes["voltage_ratio"]
+
+        _ref_temp = REF_TEMPS.get(_temperature_rated_max, min(REF_TEMPS.values()))
+        _f0, _f1, _f2, _f3, _f4 = LAMBDA_B_FACTORS[_subcategory_id]
+        return (
+            _f0
+            * ((_voltage_ratio / _f1) ** _f2 + 1.0)
+            * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
+        )
+    except KeyError:
+        raise KeyError(f"Invalid subcategory ID: {_subcategory_id}")
 
 
 def calculate_series_resistance_factor(
@@ -164,14 +133,16 @@ def calculate_series_resistance_factor(
     :rtype: tuple :raise: TypeError if passed a non-numerical input. :raise:
         ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
-    _thresholds = [
-        (0.1, 0.33),
-        (0.2, 0.27),
-        (0.4, 0.20),
-        (0.6, 0.13),
-        (0.8, 0.10),
-    ]
+    if not all(
+        isinstance(x, (int, float)) and x >= 0
+        for x in [resistance, voltage_dc_operating, voltage_ac_operating]
+    ):
+        raise TypeError("Resistance and voltage values must be non-negative numbers.")
 
+    if voltage_dc_operating == 0 and voltage_ac_operating == 0:
+        raise ZeroDivisionError("Both AC and DC voltages cannot be zero.")
+
+    _thresholds = [(0.1, 0.33), (0.2, 0.27), (0.4, 0.20), (0.6, 0.13), (0.8, 0.10)]
     _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
 
     return next(
@@ -191,7 +162,7 @@ def get_configuration_factor(configuration_id: int) -> float:
     :return: _pi_cf; the configuration factor value.
     :rtype: float :raise: KeyError if passed an unknown configuration ID.
     """
-    return PI_CF[configuration_id]
+    return PI_CF.get(configuration_id, 1.0)
 
 
 def get_construction_factor(construction_id: int) -> float:
@@ -201,14 +172,21 @@ def get_construction_factor(construction_id: int) -> float:
     :return: _pi_c; the construction factor value.
     :rtype: float :raise: KeyError if passed an unknown construction ID.
     """
-    return PI_C[construction_id]
+    return PI_C.get(construction_id, 1.0)
 
 
-def get_part_count_lambda_b(
-    subcategory_id: int,
-    environment_active_id: int,
-    specification_id: int = -1,
-) -> float:
+def get_environment_factor(environment_id: int) -> float:
+    """Retrieve the MIL-HDBK-217F environment factor (pi E).
+
+    :param environment_id: the index in the list of environment factors.
+    :return: _pi_e; the environment factor.
+    :rtype: float
+    :raises: IndexError when passed an unknown environment ID.
+    """
+    return PI_E[environment_id - 1]
+
+
+def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the MIL-HDBK-217F parts count base hazard rate (lambda b).
 
     The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217F parts count
@@ -280,24 +258,49 @@ def get_part_count_lambda_b(
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param subcategory_id: the capacitor subcategory identifier.
-    :param environment_active_id: the ID of the active (operating)
-        environment.
-    :param specification_id: the capacitor specification identifier.
-        Default is -1.
-    :return: _base_hr; the MIL-HDBK-217F part count base hazard rate.
+    :param attributes: the attributes for the capacitor being calculated.
+    :return: _lambda_b; the MIL-HDBK-217F part count base hazard rate.
     :rtype: float
     :raise: KeyError if passed an unknown subcategory ID or specification ID.
     """
+    _environment_active_id: int = attributes["environment_active_id"]
+    _specification_id: int = attributes["specification_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
     return (
-        PART_COUNT_LAMBDA_B[subcategory_id][specification_id][environment_active_id - 1]
-        if subcategory_id == 1
-        else PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
+        PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
+            _environment_active_id - 1
+        ]
+        if _subcategory_id == 1
+        else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
     )
 
 
+def get_part_count_pi_q(quality_id: int) -> float:
+    """Retrieve the part count quality factor.
+
+    :param quality_id: the ID of the capacitor quality level.
+    :return: _pi_q: the quality factor.
+    :rtype: float
+    :raises: IndexError if passed an unknown quality ID.
+    """
+    return PART_COUNT_PI_Q[quality_id - 1]
+
+
+def get_part_stress_pi_q(subcategory_id: int, quality_id: int) -> float:
+    """Retrieve the quality factor for the given quality ID.
+
+    :param subcategory_id: the ID of the capacitor subcategory.
+    :param quality_id: the ID of the capacitor quality level.
+    :return: _pi_q: the quality factor.
+    :rtype: float
+    :raises: IndexError if passed an unknown subcategory ID or unknown quality ID.
+    """
+    return PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
+
+
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]],
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 
@@ -305,22 +308,20 @@ def set_default_values(
     :return: attributes; the updated attribute dict.
     :rtype: dict
     """
-    if attributes["capacitance"] <= 0.0:
+    if attributes.get("capacitance", 0) <= 0.0:
         attributes["capacitance"] = _set_default_capacitance(
-            attributes["subcategory_id"],
-            attributes["style_id"],
+            attributes.get("subcategory_id", 1), attributes.get("style_id", 1)
         )
 
-    if attributes["piCV"] <= 0.0:
-        attributes["piCV"] = _set_default_picv(attributes["subcategory_id"])
+    if attributes.get("piCV", 0) <= 0.0:
+        attributes["piCV"] = _set_default_picv(attributes.get("subcategory_id", 1))
 
-    if attributes["temperature_rated_max"] <= 0.0:
+    if attributes.get("temperature_rated_max", 0) <= 0.0:
         attributes["temperature_rated_max"] = _set_default_rated_temperature(
-            attributes["subcategory_id"],
-            attributes["style_id"],
+            attributes.get("subcategory_id", 1), attributes.get("style_id", 1)
         )
 
-    if attributes["voltage_ratio"] <= 0.0:
+    if attributes.get("voltage_ratio", 0) <= 0.0:
         attributes["voltage_ratio"] = 0.5
 
     return attributes
@@ -340,10 +341,11 @@ def _set_default_capacitance(
     :raises: IndexError if passed a style ID outside the bounds when subcategory ID is
         equal to three.
     """
-    if subcategory_id == 3:
-        return DEFAULT_CAPACITANCE[subcategory_id][style_id - 1]
-
-    return DEFAULT_CAPACITANCE[subcategory_id]
+    return (
+        DEFAULT_CAPACITANCE.get(subcategory_id, [1.0])[style_id - 1]
+        if subcategory_id == 3
+        else DEFAULT_CAPACITANCE.get(subcategory_id, 1.0)
+    )
 
 
 def _set_default_picv(subcategory_id: int) -> float:
@@ -353,19 +355,15 @@ def _set_default_picv(subcategory_id: int) -> float:
     :return: _pi_cv
     :rtype: float
     """
-    if subcategory_id in {14, 15}:
-        return 1.3
-    elif subcategory_id > 15:
-        return 0.0
-    return 1.0
+    return 1.3 if subcategory_id in {14, 15} else 0.0 if subcategory_id > 15 else 1.0
 
 
 def _set_default_rated_temperature(
     subcategory_id: int,
     style_id: int,
 ) -> float:
-    if subcategory_id == 1:
-        return [125.0, 85.0][style_id - 1]
-    elif subcategory_id in {15, 16, 18, 19}:
-        return 85.0
-    return 125.0
+    return (
+        [125.0, 85.0][style_id - 1]
+        if subcategory_id == 1
+        else 85.0 if subcategory_id in {15, 16, 18, 19} else 125.0
+    )

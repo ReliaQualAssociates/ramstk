@@ -1,7 +1,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.constants.capacitor.constants.py is part of the RAMSTK Project
+#       ramstk.constants.capacitor.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
