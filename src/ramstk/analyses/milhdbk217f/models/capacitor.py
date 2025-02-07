@@ -83,13 +83,14 @@ def calculate_capacitance_factor(
     :param subcategory_id: the capacitor subcategory identifier.
     :param capacitance: the capacitance value in Farads.
     :return: _pi_cv; the calculated capacitance factor.
-    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float
+    :raises: KeyError if passed an unknown subcategory ID.
     """
     try:
         _f0, _f1 = CAPACITANCE_FACTORS[subcategory_id]
         return _f0 * capacitance**_f1
     except KeyError:
-        raise KeyError(f"Invalid subcategory ID: {subcategory_id}")
+        raise KeyError(f"Invalid capacitor subcategory ID: {subcategory_id}")
 
 
 def calculate_part_stress_lambda_b(
@@ -99,23 +100,21 @@ def calculate_part_stress_lambda_b(
 
     :param attributes: the attributes dict for the component being calculated.
     :return: _lambda_b; the calculated base hazard rate.
-    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float
+    :raises: KeyError if passed an unknown subcategory ID.
     """
-    try:
-        _subcategory_id = attributes["subcategory_id"]
-        _temperature_active = attributes["temperature_active"]
-        _temperature_rated_max = attributes["temperature_rated_max"]
-        _voltage_ratio = attributes["voltage_ratio"]
+    _subcategory_id = attributes["subcategory_id"]
+    _temperature_active = attributes["temperature_active"]
+    _temperature_rated_max = attributes["temperature_rated_max"]
+    _voltage_ratio = attributes["voltage_ratio"]
 
-        _ref_temp = REF_TEMPS.get(_temperature_rated_max, min(REF_TEMPS.values()))
-        _f0, _f1, _f2, _f3, _f4 = LAMBDA_B_FACTORS[_subcategory_id]
-        return (
-            _f0
-            * ((_voltage_ratio / _f1) ** _f2 + 1.0)
-            * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
-        )
-    except KeyError:
-        raise KeyError(f"Invalid subcategory ID: {_subcategory_id}")
+    _ref_temp = REF_TEMPS.get(_temperature_rated_max, min(REF_TEMPS.values()))
+    _f0, _f1, _f2, _f3, _f4 = LAMBDA_B_FACTORS[_subcategory_id]
+    return (
+        _f0
+        * ((_voltage_ratio / _f1) ** _f2 + 1.0)
+        * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
+    )
 
 
 def calculate_series_resistance_factor(
