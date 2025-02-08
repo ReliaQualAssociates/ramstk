@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Capacitor Constants Module."""
+"""Capacitor MIL-HDBK-217F Constants Module."""
 
 PART_COUNT_LAMBDA_B = {
     1: {

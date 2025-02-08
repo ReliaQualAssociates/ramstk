@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Connection MIL-HDBK-217F Constants and Calculations Module."""
+"""Connection MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
 from math import exp
@@ -193,7 +193,9 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         )
 
 
-def get_part_count_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_quality_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> float:
     """Retrieve the part count quality factor.
 
     :param attributes: the dict of connection attributes.
@@ -207,11 +209,13 @@ def get_part_count_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float:
         return PART_COUNT_PI_Q[_quality_id - 1]
     except IndexError:
         raise IndexError(
-            f"get_part_count_pi_q: Invalid connection quality ID {_quality_id}."
+            f"get_part_count_quality_factor: Invalid connection quality ID {_quality_id}."
         )
 
 
-def get_part_stress_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_stress_quality_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> float:
     """Retrieve the part stress quality factor.
 
     :param attributes: the dict of connection attributes.
@@ -229,7 +233,7 @@ def get_part_stress_pi_q(attributes: Dict[str, Union[float, int, str]]) -> float
             return 1.0
     except IndexError:
         raise IndexError(
-            f"get_part_stress_pi_q: Invalid connection quality ID {_quality_id}."
+            f"get_part_stress_quality_factor: Invalid connection quality ID {_quality_id}."
         )
 
 

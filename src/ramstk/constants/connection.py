@@ -1,11 +1,11 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.constants.connection.constants.py is part of the RAMSTK Project
+#       ramstk.constants.connection.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Connection Constants Module."""
+"""Connection MIL-HDBK-217F Constants Module."""
 
 PART_COUNT_LAMBDA_B = {
     1: {
