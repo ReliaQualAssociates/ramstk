@@ -21,7 +21,9 @@ from ramstk.analyses.milhdbk217f import capacitor
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-def test_set_default_capacitance(subcategory_id):
+def test_set_default_capacitance(
+    subcategory_id,
+):
     """Should return the default capacitance for the selected subcategory ID."""
     _capacitance = capacitor._set_default_capacitance(subcategory_id, 2)
 
@@ -65,7 +67,9 @@ def test_set_default_capacitance_unknown_subcategory():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [10, 14, 15, 16])
-def test_set_default_picv(subcategory_id):
+def test_set_default_picv(
+    subcategory_id,
+):
     """Should return the default piCV for the selected subcategory ID."""
     _pi_cv = capacitor._set_default_picv(subcategory_id)
 
@@ -77,7 +81,9 @@ def test_set_default_picv(subcategory_id):
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-def test_set_default_rated_temperature(subcategory_id):
+def test_set_default_rated_temperature(
+    subcategory_id,
+):
     """Should return the default capacitance for the selected subcategory ID."""
     _temp_rated = capacitor._set_default_rated_temperature(subcategory_id, 2)
 
@@ -115,7 +121,9 @@ def test_set_default_rated_temperature_with_style():
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_capacitor")
-def test_set_default_values(test_attributes_capacitor):
+def test_set_default_values(
+    test_attributes_capacitor,
+):
     """Should set default values for each parameter <= 0.0."""
     test_attributes_capacitor["capacitance"] = 0.0
     test_attributes_capacitor["piCV"] = -1.0
@@ -134,7 +142,9 @@ def test_set_default_values(test_attributes_capacitor):
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_capacitor")
-def test_set_default_values_none_needed(test_attributes_capacitor):
+def test_set_default_values_none_needed(
+    test_attributes_capacitor,
+):
     """Should not set default values for each parameter > 0.0."""
     test_attributes_capacitor["capacitance"] = 0.047e-6
     test_attributes_capacitor["piCV"] = 1.3
@@ -202,7 +212,9 @@ def test_get_part_count_lambda_b(
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_no_subcategory(test_attributes_capacitor):
+def test_get_part_count_lambda_b_no_subcategory(
+    test_attributes_capacitor,
+):
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown
     subcategory ID."""
     test_attributes_capacitor["environment_active_id"] = 2
@@ -212,7 +224,9 @@ def test_get_part_count_lambda_b_no_subcategory(test_attributes_capacitor):
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_no_environment(test_attributes_capacitor):
+def test_get_part_count_lambda_b_invalid_environment_id(
+    test_attributes_capacitor,
+):
     """get_part_count_lambda_b_list() should raise an IndexError when passed an unknown
     active environment ID."""
     test_attributes_capacitor["environment_active_id"] = 22
@@ -223,7 +237,9 @@ def test_get_part_count_lambda_b_no_environment(test_attributes_capacitor):
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_no_specification(test_attributes_capacitor):
+def test_get_part_count_lambda_b_invalid_specification_id(
+    test_attributes_capacitor,
+):
     """get_part_count_lambda_b() should raise a KeyError when passed an unknown type
     ID."""
     test_attributes_capacitor["environment_active_id"] = 2
@@ -239,9 +255,12 @@ def test_get_part_count_lambda_b_no_specification(test_attributes_capacitor):
     "quality_id",
     [1, 2, 3, 4, 5, 6, 7],
 )
-def test_get_part_count_pi_q(quality_id, test_attributes_capacitor):
+def test_get_part_count_quality_factor(
+    quality_id,
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["quality_id"] = quality_id
-    _pi_q = capacitor.get_part_count_pi_q(test_attributes_capacitor)
+    _pi_q = capacitor.get_part_count_quality_factor(test_attributes_capacitor)
 
     assert (
         _pi_q
@@ -250,10 +269,12 @@ def test_get_part_count_pi_q(quality_id, test_attributes_capacitor):
 
 
 @pytest.mark.unit
-def test_get_part_count_pi_q_unknown_id(test_attributes_capacitor):
+def test_get_part_count_quality_factor_invalid_quality_id(
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["quality_id"] = 22
     with pytest.raises(IndexError):
-        capacitor.get_part_count_pi_q(test_attributes_capacitor)
+        capacitor.get_part_count_quality_factor(test_attributes_capacitor)
 
 
 @pytest.mark.unit
@@ -266,7 +287,9 @@ def test_get_part_count_pi_q_unknown_id(test_attributes_capacitor):
     [65.0, 70.0, 85.0, 105.0, 125.0, 150.0, 170.0, 175.0, 200.0],
 )
 def test_calculate_part_stress_lambda_b(
-    subcategory_id, ref_temp, test_attributes_capacitor
+    subcategory_id,
+    ref_temp,
+    test_attributes_capacitor,
 ):
     """calculate_part_stress_lambda_b() should return a float value for the base hazard
     rate on success."""
@@ -306,7 +329,9 @@ def test_calculate_part_stress_lambda_b_unknown_subcategory_id(
 
 
 @pytest.mark.unit
-def test_calculate_part_stress_lambda_b_unknown_ref_temp(test_attributes_capacitor):
+def test_calculate_part_stress_lambda_b_unknown_ref_temp(
+    test_attributes_capacitor,
+):
     """calculate_part_stress_lambda_b() should use the nearest reference temperature
     when an unknown reference temperature is passed."""
     test_attributes_capacitor["subcategory_id"] = 1
@@ -326,7 +351,10 @@ def test_calculate_part_stress_lambda_b_unknown_ref_temp(test_attributes_capacit
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
-def test_get_pi_e(environment_active_id, test_attributes_capacitor):
+def test_get_environment_factor(
+    environment_active_id,
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["environment_active_id"] = environment_active_id
     _pi_e = capacitor.get_environment_factor(test_attributes_capacitor)
 
@@ -352,41 +380,49 @@ def test_get_pi_e(environment_active_id, test_attributes_capacitor):
 
 
 @pytest.mark.unit
-def test_get_pi_e_unknown_id(test_attributes_capacitor):
+def test_get_pi_e_unknown_id(
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["environment_active_id"] = 22
     with pytest.raises(IndexError):
         capacitor.get_environment_factor(test_attributes_capacitor)
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q(test_attributes_capacitor):
+def test_get_part_stress_quality_factor(
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["subcategory_id"] = 1
     test_attributes_capacitor["quality_id"] = 1
-    assert capacitor.get_part_stress_pi_q(test_attributes_capacitor) == 3.0
+    assert capacitor.get_part_stress_quality_factor(test_attributes_capacitor) == 3.0
 
     test_attributes_capacitor["quality_id"] = 2
-    assert capacitor.get_part_stress_pi_q(test_attributes_capacitor) == 7.0
+    assert capacitor.get_part_stress_quality_factor(test_attributes_capacitor) == 7.0
 
     test_attributes_capacitor["subcategory_id"] = 12
     test_attributes_capacitor["quality_id"] = 1
-    assert capacitor.get_part_stress_pi_q(test_attributes_capacitor) == 0.001
+    assert capacitor.get_part_stress_quality_factor(test_attributes_capacitor) == 0.001
 
     test_attributes_capacitor["quality_id"] = 4
-    assert capacitor.get_part_stress_pi_q(test_attributes_capacitor) == 0.03
+    assert capacitor.get_part_stress_quality_factor(test_attributes_capacitor) == 0.03
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q_unknown_subcategory_id(test_attributes_capacitor):
+def test_get_part_stress_quality_factor_invalid_subcategory_id(
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["subcategory_id"] = 22
     with pytest.raises(KeyError):
-        capacitor.get_part_stress_pi_q(test_attributes_capacitor)
+        capacitor.get_part_stress_quality_factor(test_attributes_capacitor)
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q_unknown_quality_id(test_attributes_capacitor):
+def test_get_part_stress_quality_factor_invalid_quality_id(
+    test_attributes_capacitor,
+):
     test_attributes_capacitor["quality_id"] = 22
     with pytest.raises(IndexError):
-        capacitor.get_part_stress_pi_q(test_attributes_capacitor)
+        capacitor.get_part_stress_quality_factor(test_attributes_capacitor)
 
 
 @pytest.mark.unit
@@ -394,7 +430,9 @@ def test_get_part_stress_pi_q_unknown_quality_id(test_attributes_capacitor):
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-def test_calculate_capacitance_factor(subcategory_id):
+def test_calculate_capacitance_factor(
+    subcategory_id,
+):
     """calculate_part_stress_lambda_b() should return a float value for piCV on
     success."""
     _results = {
@@ -429,7 +467,9 @@ def test_calculate_capacitance_factor(subcategory_id):
     "capacitance",
     [0.0, 1e-12, 1e-2],  # Test boundary capacitance values
 )
-def test_calculate_capacitance_factor_boundary_values(capacitance):
+def test_calculate_capacitance_factor_boundary_values(
+    capacitance,
+):
     """Test calculate_capacitance_factor() for boundary capacitance values."""
     _pi_cv = capacitor.calculate_capacitance_factor(1, capacitance)
     assert isinstance(_pi_cv, float)
@@ -446,7 +486,9 @@ def test_calculate_capacitance_factor_unknown_subcategory_id():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("resistance", [1.0, 2.0, 3.0, 5.0, 7.0, 9.0])
-def test_calculate_series_resistance_factor(resistance):
+def test_calculate_series_resistance_factor(
+    resistance,
+):
     """calculate_series_resistance_factor() should return a float value for piSR on
     success and an empty error message."""
     _results = {
@@ -493,7 +535,10 @@ def test_calculate_series_resistance_factor_string_input():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("resistance, voltage", [(1e-6, 10.0), (1e6, 1.0)])
-def test_calculate_series_resistance_factor_extremes(resistance, voltage):
+def test_calculate_series_resistance_factor_extremes(
+    resistance,
+    voltage,
+):
     """Test calculate_series_resistance_factor() with extreme resistance values."""
     _pi_sr = capacitor.calculate_series_resistance_factor(resistance, voltage, 0.1)
 
@@ -503,7 +548,9 @@ def test_calculate_series_resistance_factor_extremes(resistance, voltage):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("construction_id", [1, 2, 3, 4, 5])
-def test_get_construction_factor(construction_id):
+def test_get_construction_factor(
+    construction_id,
+):
     """get_construction_factor() should return a float value for piC on success."""
     _results = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
     _pi_c = capacitor.get_construction_factor(construction_id)
@@ -513,7 +560,7 @@ def test_get_construction_factor(construction_id):
 
 
 @pytest.mark.unit
-def test_get_construction_factor_unknown_construction():
+def test_get_construction_factor_invalid_construction_id():
     """get_construction_factor() should return 1.0 when passed an unknown construction
     ID."""
     assert capacitor.get_construction_factor(12) == 1.0
@@ -521,7 +568,9 @@ def test_get_construction_factor_unknown_construction():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("configuration_id", [1, 2])
-def test_get_configuration_factor(configuration_id):
+def test_get_configuration_factor(
+    configuration_id,
+):
     """get_configuration_factor() should return a float value for piCF on success."""
     _results = {1: 0.1, 2: 1.0}
     _pi_cf = capacitor.get_configuration_factor(configuration_id)
@@ -540,7 +589,10 @@ def test_get_configuration_factor_unknown_configuration():
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 12, 13, 19])
 @pytest.mark.usefixtures("test_attributes_capacitor")
-def test_calculate_part_stress(subcategory_id, test_attributes_capacitor):
+def test_calculate_part_stress(
+    subcategory_id,
+    test_attributes_capacitor,
+):
     """calculate_part_stress() should return a dict of updated attributes and an empty
     error message on success."""
     test_attributes_capacitor["environment_active_id"] = 1
@@ -573,7 +625,9 @@ def test_calculate_part_stress(subcategory_id, test_attributes_capacitor):
 
 @pytest.mark.unit
 @pytest.mark.usefixtures("test_attributes_capacitor")
-def test_calculate_part_stress_missing_attribute_key(test_attributes_capacitor):
+def test_calculate_part_stress_missing_attribute_key(
+    test_attributes_capacitor,
+):
     """calculate_part_stress() should raise a KeyError when a required attribute is
     missing."""
     test_attributes_capacitor.pop("capacitance")

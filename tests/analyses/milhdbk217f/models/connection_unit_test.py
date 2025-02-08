@@ -38,7 +38,9 @@ def test_set_default_temperature_rise():
 
 
 @pytest.mark.unit
-def test_set_default_values(test_attributes_connection):
+def test_set_default_values(
+    test_attributes_connection,
+):
     """Should set default values for each parameter <= 0.0."""
     test_attributes_connection["temperature_rise"] = -50.0
     test_attributes_connection["n_cycles"] = -5.0
@@ -54,7 +56,9 @@ def test_set_default_values(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_set_default_values_none_needed(test_attributes_connection):
+def test_set_default_values_none_needed(
+    test_attributes_connection,
+):
     """Should not set default values for each parameter > 0.0."""
     test_attributes_connection["temperature_rise"] = 10.6
     test_attributes_connection["n_cycles"] = 0.5
@@ -70,7 +74,9 @@ def test_set_default_values_none_needed(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_set_default_values_partial_needed(test_attributes_connection):
+def test_set_default_values_partial_needed(
+    test_attributes_connection,
+):
     """Test that set_default_values() only sets default values for parameters <= 0."""
     test_attributes_connection["temperature_rise"] = -0.05
     test_attributes_connection["n_cycles"] = 3.0
@@ -94,7 +100,10 @@ def test_set_default_values_partial_needed(test_attributes_connection):
 )
 @pytest.mark.parametrize("type_id", [1, 2])
 def test_get_part_count_lambda_b(
-    subcategory_id, environment_active_id, type_id, test_attributes_connection
+    subcategory_id,
+    environment_active_id,
+    type_id,
+    test_attributes_connection,
 ):
     """get_part_count_lambda_b() should return a float value for the base hazard rates
     on success."""
@@ -123,7 +132,9 @@ def test_get_part_count_lambda_b(
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_unknown_subcategory_id(test_attributes_connection):
+def test_get_part_count_lambda_b_unknown_subcategory_id(
+    test_attributes_connection,
+):
     """Test that _get_part_count_lambda_b() raises KeyError when passed invalid
     types."""
     test_attributes_connection["subcategory_id"] = 34
@@ -136,7 +147,9 @@ def test_get_part_count_lambda_b_unknown_subcategory_id(test_attributes_connecti
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_unknown_type_id(test_attributes_connection):
+def test_get_part_count_lambda_b_unknown_type_id(
+    test_attributes_connection,
+):
     """Test that _get_part_count_lambda_b() raises KeyError when passed invalid
     types."""
     test_attributes_connection["subcategory_id"] = 1
@@ -149,7 +162,9 @@ def test_get_part_count_lambda_b_unknown_type_id(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_get_part_count_lambda_b_unknown_environment_id(test_attributes_connection):
+def test_get_part_count_lambda_b_unknown_environment_id(
+    test_attributes_connection,
+):
     """Test that _get_part_count_lambda_b() raises IndexError when passed invalid
     environments."""
     test_attributes_connection["subcategory_id"] = 1
@@ -167,25 +182,33 @@ def test_get_part_count_lambda_b_unknown_environment_id(test_attributes_connecti
     "quality_id",
     [1, 2],
 )
-def test_get_part_count_pi_q(quality_id, test_attributes_connection):
+def test_get_part_count_quality_factor(
+    quality_id,
+    test_attributes_connection,
+):
     test_attributes_connection["quality_id"] = quality_id
-    _pi_q = connection.get_part_count_pi_q(test_attributes_connection)
+    _pi_q = connection.get_part_count_quality_factor(test_attributes_connection)
 
     assert _pi_q == {1: 1.0, 2: 2.0}[quality_id]
 
 
 @pytest.mark.unit
-def test_get_part_count_pi_q_unknown_quality_id(test_attributes_connection):
+def test_get_part_count_quality_factor_unknown_quality_id(
+    test_attributes_connection,
+):
     test_attributes_connection["quality_id"] = 22
     with pytest.raises(
-        IndexError, match=r"get_part_count_pi_q: Invalid connection quality ID 22."
+        IndexError,
+        match=r"get_part_count_quality_factor: Invalid connection quality ID 22.",
     ):
-        connection.get_part_count_pi_q(test_attributes_connection)
+        connection.get_part_count_quality_factor(test_attributes_connection)
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize("contact_gauge", [12, 16, 20, 22, 26])
-def test_calculate_insert_temperature(contact_gauge):
+def test_calculate_insert_temperature(
+    contact_gauge,
+):
     """_calculate_insert_temperature() should return a float value for the temperature
     rise on success."""
     _dic_factors = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
@@ -220,7 +243,9 @@ def test_calculate_insert_temperature_string_current():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5])
-def test_get_factor_key(type_id):
+def test_get_factor_key(
+    type_id,
+):
     _factor_key = connection._get_factor_key(type_id, 1, 2)
 
     assert _factor_key == {1: 2, 2: 2, 3: 2, 4: 3, 5: 3}[type_id]
@@ -254,7 +279,10 @@ def test_get_factor_key_unknown_insert_id():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 3, 5])
-def test_calculate_part_stress_lambda_b(subcategory_id, test_attributes_connection):
+def test_calculate_part_stress_lambda_b(
+    subcategory_id,
+    test_attributes_connection,
+):
     """calculate_part_stress_lamba_b() should return a float value for the part stress
     base hazard rate on success."""
     test_attributes_connection["subcategory_id"] = subcategory_id
@@ -275,7 +303,9 @@ def test_calculate_part_stress_lambda_b(subcategory_id, test_attributes_connecti
 
 
 @pytest.mark.unit
-def test_calculate_part_stress_lambda_b_unknown_type_id(test_attributes_connection):
+def test_calculate_part_stress_lambda_b_unknown_type_id(
+    test_attributes_connection,
+):
     """calculate_part_stress_lamba_b() should raise a KeyError when passed an unknown
     type ID."""
     test_attributes_connection["subcategory_id"] = 4
@@ -283,7 +313,8 @@ def test_calculate_part_stress_lambda_b_unknown_type_id(test_attributes_connecti
     test_attributes_connection["contact_gauge"] = 22
     test_attributes_connection["current_operating"] = 0.05
     with pytest.raises(
-        KeyError, match=r"Invalid connection specification ID 1 or type ID 26."
+        KeyError,
+        match=r"_get_factor_key: Invalid connection specification ID 1 or type ID 26.",
     ):
         connection.calculate_part_stress_lambda_b(test_attributes_connection)
 
@@ -293,7 +324,10 @@ def test_calculate_part_stress_lambda_b_unknown_type_id(test_attributes_connecti
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
-def test_get_pi_e(environment_active_id, test_attributes_connection):
+def test_get_environment_factor(
+    environment_active_id,
+    test_attributes_connection,
+):
     test_attributes_connection["category_id"] = 2
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = environment_active_id
@@ -321,7 +355,9 @@ def test_get_pi_e(environment_active_id, test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_get_pi_e_unknown_category_id(test_attributes_connection):
+def test_get_environment_factor_invalid_category_id(
+    test_attributes_connection,
+):
     test_attributes_connection["category_id"] = 22
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = 2
@@ -332,7 +368,9 @@ def test_get_pi_e_unknown_category_id(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_get_pi_e_unknown_subcategory_id(test_attributes_connection):
+def test_get_environment_factor_invalid_subcategory_id(
+    test_attributes_connection,
+):
     test_attributes_connection["category_id"] = 2
     test_attributes_connection["subcategory_id"] = 22
     test_attributes_connection["environment_active_id"] = 2
@@ -343,7 +381,9 @@ def test_get_pi_e_unknown_subcategory_id(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_get_pi_e_unknown_environment_id(test_attributes_connection):
+def test_get_environment_factor_invalid_environment_id(
+    test_attributes_connection,
+):
     test_attributes_connection["category_id"] = 2
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = 22
@@ -354,50 +394,59 @@ def test_get_pi_e_unknown_environment_id(test_attributes_connection):
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q(test_attributes_connection):
+def test_get_part_stress_quality_factor(
+    test_attributes_connection,
+):
     test_attributes_connection["subcategory_id"] = 1
     test_attributes_connection["quality_id"] = 1
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 1.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 1.0
 
     test_attributes_connection["subcategory_id"] = 4
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 1.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 1.0
 
     test_attributes_connection["quality_id"] = 2
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 2.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 2.0
 
     test_attributes_connection["subcategory_id"] = 5
     test_attributes_connection["quality_id"] = 1
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 1.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 1.0
 
     test_attributes_connection["quality_id"] = 2
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 1.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 1.0
 
     test_attributes_connection["quality_id"] = 3
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 2.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 2.0
 
     test_attributes_connection["quality_id"] = 4
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 20.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 20.0
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q_unknown_subcategory_id(test_attributes_connection):
+def test_get_part_stress_quality_factor_invalid_subcategory_id(
+    test_attributes_connection,
+):
     test_attributes_connection["subcategory_id"] = 22
-    assert connection.get_part_stress_pi_q(test_attributes_connection) == 1.0
+    assert connection.get_part_stress_quality_factor(test_attributes_connection) == 1.0
 
 
 @pytest.mark.unit
-def test_get_part_stress_pi_q_unknown_quality_id(test_attributes_connection):
+def test_get_part_stress_quality_factor_invalid_quality_id(
+    test_attributes_connection,
+):
     test_attributes_connection["subcategory_id"] = 4
     test_attributes_connection["quality_id"] = 22
     with pytest.raises(
-        IndexError, match=r"get_part_stress_pi_q: Invalid connection quality ID 22."
+        IndexError,
+        match=r"get_part_stress_quality_factor: Invalid connection quality ID 22.",
     ):
-        connection.get_part_stress_pi_q(test_attributes_connection)
+        connection.get_part_stress_quality_factor(test_attributes_connection)
 
 
 @pytest.mark.unit
 @pytest.mark.parametrize("n_cycles", [0.01, 0.1, 1, 10, 100])
-def test_get_mate_unmate_factor(n_cycles):
+def test_get_mate_unmate_factor(
+    n_cycles,
+):
     """get_mate_unmate_factor() should return a float value for piK on success."""
     _pi_k = connection._get_mate_unmate_factor(n_cycles)
 
@@ -425,7 +474,9 @@ def test_calculate_active_pins_factor():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("n_circuit_planes", [1, 2, 4])
-def test_calculate_complexity_factor(n_circuit_planes):
+def test_calculate_complexity_factor(
+    n_circuit_planes,
+):
     """calculate_complexity_factor() should return 1.0 for piC when there are less than
     three planes in the PCB/PWA."""
     _pi_c = connection._calculate_complexity_factor(n_circuit_planes)
@@ -439,7 +490,10 @@ def test_calculate_complexity_factor(n_circuit_planes):
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 3, 4, 5])
-def test_calculate_part_stress(subcategory_id, test_attributes_connection):
+def test_calculate_part_stress(
+    subcategory_id,
+    test_attributes_connection,
+):
     """calculate_part_stress() should return a dict of updated attributes on success."""
     test_attributes_connection["subcategory_id"] = subcategory_id
     test_attributes_connection["hazard_rate_active"] = 0.00073120394
