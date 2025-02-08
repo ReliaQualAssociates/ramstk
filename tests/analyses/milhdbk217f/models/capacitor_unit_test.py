@@ -67,11 +67,11 @@ def test_set_default_capacitance_unknown_subcategory():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [10, 14, 15, 16])
-def test_set_default_picv(
+def test_set_default_capacitance_factor(
     subcategory_id,
 ):
     """Should return the default piCV for the selected subcategory ID."""
-    _pi_cv = capacitor._set_default_picv(subcategory_id)
+    _pi_cv = capacitor._set_default_capacitance_factor(subcategory_id)
 
     assert _pi_cv == {10: 1.0, 14: 1.3, 15: 1.3, 16: 0.0}[subcategory_id]
 
@@ -380,11 +380,14 @@ def test_get_environment_factor(
 
 
 @pytest.mark.unit
-def test_get_pi_e_unknown_id(
+def test_get_environment_factor_invalid_environment_id(
     test_attributes_capacitor,
 ):
     test_attributes_capacitor["environment_active_id"] = 22
-    with pytest.raises(IndexError):
+    with pytest.raises(
+        IndexError,
+        match=r"get_environment_factor: Invalid capacitor environment ID 22.",
+    ):
         capacitor.get_environment_factor(test_attributes_capacitor)
 
 
@@ -412,7 +415,10 @@ def test_get_part_stress_quality_factor_invalid_subcategory_id(
     test_attributes_capacitor,
 ):
     test_attributes_capacitor["subcategory_id"] = 22
-    with pytest.raises(KeyError):
+    with pytest.raises(
+        KeyError,
+        match=r"get_part_stress_quality_factor: Invalid capacitor subcategory ID 22.",
+    ):
         capacitor.get_part_stress_quality_factor(test_attributes_capacitor)
 
 
@@ -421,7 +427,10 @@ def test_get_part_stress_quality_factor_invalid_quality_id(
     test_attributes_capacitor,
 ):
     test_attributes_capacitor["quality_id"] = 22
-    with pytest.raises(IndexError):
+    with pytest.raises(
+        IndexError,
+        match=r"get_part_stress_quality_factor: Invalid capacitor quality ID 22.",
+    ):
         capacitor.get_part_stress_quality_factor(test_attributes_capacitor)
 
 
@@ -433,8 +442,7 @@ def test_get_part_stress_quality_factor_invalid_quality_id(
 def test_calculate_capacitance_factor(
     subcategory_id,
 ):
-    """calculate_part_stress_lambda_b() should return a float value for piCV on
-    success."""
+    """Return a float value for piCV on success."""
     _results = {
         1: 0.36177626,
         2: 0.30785748,
@@ -472,15 +480,18 @@ def test_calculate_capacitance_factor_boundary_values(
 ):
     """Test calculate_capacitance_factor() for boundary capacitance values."""
     _pi_cv = capacitor.calculate_capacitance_factor(1, capacitance)
+
     assert isinstance(_pi_cv, float)
     assert _pi_cv >= 0
 
 
 @pytest.mark.unit
-def test_calculate_capacitance_factor_unknown_subcategory_id():
-    """calculate_capacitance_factor() should raise a KeyError when an unknown
-    subcategory ID is passed."""
-    with pytest.raises(KeyError):
+def test_calculate_capacitance_factor_invalid_subcategory_id():
+    """Raise a KeyError when an invalid subcategory ID is passed."""
+    with pytest.raises(
+        KeyError,
+        match=r"calculate_capacitance_factor: Invalid capacitor subcategory ID: 200.",
+    ):
         capacitor.calculate_capacitance_factor(200, 0.0000033)
 
 
@@ -511,9 +522,12 @@ def test_calculate_series_resistance_factor(
 
 @pytest.mark.unit
 def test_calculate_series_resistance_factor_zero_voltage():
-    """calculate_series_resistance_factor() should raise a ZeroDivisionError passed zreo
-    voltage."""
-    with pytest.raises(ZeroDivisionError):
+    """Raise a ZeroDivisionError when passed zero ac and DC voltage."""
+    with pytest.raises(
+        ZeroDivisionError,
+        match=r"calculate_series_resistance_factor: Capacitor ac voltage and DC "
+        r"voltage cannot both be zero.",
+    ):
         capacitor.calculate_series_resistance_factor(
             1.0,
             0.0,
@@ -523,12 +537,15 @@ def test_calculate_series_resistance_factor_zero_voltage():
 
 @pytest.mark.unit
 def test_calculate_series_resistance_factor_string_input():
-    """calculate_series_resistance_factor() should raise a TypeError if passed a string
-    input."""
-    with pytest.raises(TypeError):
+    """Raise a TypeError if passed a string input."""
+    with pytest.raises(
+        TypeError,
+        match=r"calculate_series_resistance_factor: Capacitor resistance \(1.0\) and "
+        r"voltage \(0.1, -10.0\) values must be non-negative numbers.",
+    ):
         capacitor.calculate_series_resistance_factor(
             1.0,
-            "10.0",
+            -10.0,
             0.1,
         )
 
@@ -561,9 +578,12 @@ def test_get_construction_factor(
 
 @pytest.mark.unit
 def test_get_construction_factor_invalid_construction_id():
-    """get_construction_factor() should return 1.0 when passed an unknown construction
-    ID."""
-    assert capacitor.get_construction_factor(12) == 1.0
+    """Raises a KeyError when passed an invalid construction ID."""
+    with pytest.raises(
+        KeyError,
+        match=r"get_construction_factor: Invalid capacitor construction ID 12.",
+    ):
+        capacitor.get_construction_factor(12)
 
 
 @pytest.mark.unit
@@ -581,9 +601,12 @@ def test_get_configuration_factor(
 
 @pytest.mark.unit
 def test_get_configuration_factor_unknown_configuration():
-    """get_configuration_factor() should return 1.0 when passed an unknown configuration
-    ID."""
-    assert capacitor.get_configuration_factor(12) == 1.0
+    """Raises a KeyError when passed an invalid configuration ID."""
+    with pytest.raises(
+        KeyError,
+        match=r"get_configuration_factor: Invalid capacitor configuration ID 12.",
+    ):
+        capacitor.get_configuration_factor(12)
 
 
 @pytest.mark.unit
@@ -632,6 +655,8 @@ def test_calculate_part_stress_missing_attribute_key(
     missing."""
     test_attributes_capacitor.pop("capacitance")
     with pytest.raises(
-        KeyError, match=r"Missing " r"required attribute: 'capacitance'"
+        KeyError,
+        match=r"calculate_part_stress: Missing required capacitor attribute: "
+        r"'capacitance'.",
     ):
         capacitor.calculate_part_stress(test_attributes_capacitor)
