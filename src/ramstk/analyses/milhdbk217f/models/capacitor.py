@@ -71,7 +71,9 @@ def calculate_part_stress(
 
         return attributes
     except KeyError as err:
-        raise KeyError(f"Missing required attribute: {err}")
+        raise KeyError(
+            f"calculate_part_stress: Missing required capacitor attribute: {err}."
+        )
 
 
 def calculate_capacitance_factor(
@@ -84,13 +86,16 @@ def calculate_capacitance_factor(
     :param capacitance: the capacitance value in Farads.
     :return: _pi_cv; the calculated capacitance factor.
     :rtype: float
-    :raises: KeyError if passed an unknown subcategory ID.
+    :raises: KeyError if passed an invalid subcategory ID.
     """
     try:
         _f0, _f1 = CAPACITANCE_FACTORS[subcategory_id]
         return _f0 * capacitance**_f1
     except KeyError:
-        raise KeyError(f"Invalid capacitor subcategory ID: {subcategory_id}")
+        raise KeyError(
+            f"calculate_capacitance_factor: Invalid capacitor subcategory "
+            f"ID: {subcategory_id}."
+        )
 
 
 def calculate_part_stress_lambda_b(
@@ -101,20 +106,26 @@ def calculate_part_stress_lambda_b(
     :param attributes: the attributes dict for the component being calculated.
     :return: _lambda_b; the calculated base hazard rate.
     :rtype: float
-    :raises: KeyError if passed an unknown subcategory ID.
+    :raises: KeyError if passed an invalid subcategory ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _temperature_active = attributes["temperature_active"]
     _temperature_rated_max = attributes["temperature_rated_max"]
     _voltage_ratio = attributes["voltage_ratio"]
 
-    _ref_temp = REF_TEMPS.get(_temperature_rated_max, min(REF_TEMPS.values()))
-    _f0, _f1, _f2, _f3, _f4 = LAMBDA_B_FACTORS[_subcategory_id]
-    return (
-        _f0
-        * ((_voltage_ratio / _f1) ** _f2 + 1.0)
-        * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
-    )
+    try:
+        _ref_temp = REF_TEMPS.get(_temperature_rated_max, min(REF_TEMPS.values()))
+        _f0, _f1, _f2, _f3, _f4 = LAMBDA_B_FACTORS[_subcategory_id]
+        return (
+            _f0
+            * ((_voltage_ratio / _f1) ** _f2 + 1.0)
+            * exp(_f3 * ((_temperature_active + 273.0) / _ref_temp) ** _f4)
+        )
+    except KeyError:
+        raise KeyError(
+            f"calculate_part_stress_lambda_b: Invalid capacitor subcategory "
+            f"ID  {_subcategory_id}."
+        )
 
 
 def calculate_series_resistance_factor(
@@ -129,17 +140,25 @@ def calculate_series_resistance_factor(
     :param voltage_ac_operating: the operating ac voltage (ripple voltage).
     :return: _pi_sr, _error_msg; the series resistance factor and any error message
         raised by this function.
-    :rtype: tuple :raise: TypeError if passed a non-numerical input. :raise:
-        ZeroDivisionError if passed both ac and DC voltages = 0.0.
+    :rtype: tuple
+    :raises: TypeError if passed a non-numerical input.
+    :raises: ZeroDivisionError if passed both ac and DC voltages = 0.0.
     """
     if not all(
         isinstance(x, (int, float)) and x >= 0
         for x in [resistance, voltage_dc_operating, voltage_ac_operating]
     ):
-        raise TypeError("Resistance and voltage values must be non-negative numbers.")
+        raise TypeError(
+            f"calculate_series_resistance_factor: Capacitor resistance "
+            f"({resistance}) and voltage ({voltage_ac_operating}, "
+            f"{voltage_dc_operating}) values must be non-negative numbers."
+        )
 
     if voltage_dc_operating == 0 and voltage_ac_operating == 0:
-        raise ZeroDivisionError("Both AC and DC voltages cannot be zero.")
+        raise ZeroDivisionError(
+            "calculate_series_resistance_factor: Capacitor ac voltage and DC voltage "
+            "cannot both be zero."
+        )
 
     _thresholds = [(0.1, 0.33), (0.2, 0.27), (0.4, 0.20), (0.6, 0.13), (0.8, 0.10)]
     _ckt_resistance = resistance / (voltage_dc_operating + voltage_ac_operating)
@@ -159,9 +178,16 @@ def get_configuration_factor(configuration_id: int) -> float:
 
     :param configuration_id: the capacitor configuration identifier.
     :return: _pi_cf; the configuration factor value.
-    :rtype: float :raise: KeyError if passed an unknown configuration ID.
+    :rtype: float
+    :raises: KeyError if passed an unknown configuration ID.
     """
-    return PI_CF.get(configuration_id, 1.0)
+    try:
+        return PI_CF[configuration_id]
+    except KeyError:
+        raise KeyError(
+            f"get_configuration_factor: Invalid capacitor configuration "
+            f"ID {configuration_id}."
+        )
 
 
 def get_construction_factor(construction_id: int) -> float:
@@ -169,9 +195,16 @@ def get_construction_factor(construction_id: int) -> float:
 
     :param construction_id: the capacitor construction identifier.
     :return: _pi_c; the construction factor value.
-    :rtype: float :raise: KeyError if passed an unknown construction ID.
+    :rtype: float
+    :raises: KeyError if passed an unknown construction ID.
     """
-    return PI_C.get(construction_id, 1.0)
+    try:
+        return PI_C[construction_id]
+    except KeyError:
+        raise KeyError(
+            f"get_construction_factor: Invalid capacitor construction ID "
+            f"{construction_id}."
+        )
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -184,7 +217,13 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """
     _environment_id = attributes["environment_active_id"]
 
-    return PI_E[_environment_id - 1]
+    try:
+        return PI_E[_environment_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_environment_factor: Invalid capacitor environment "
+            f"ID {_environment_id}."
+        )
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
@@ -268,13 +307,19 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     _specification_id: int = attributes["specification_id"]
     _subcategory_id: int = attributes["subcategory_id"]
 
-    return (
-        PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
-            _environment_active_id - 1
-        ]
-        if _subcategory_id == 1
-        else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-    )
+    try:
+        return (
+            PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
+                _environment_active_id - 1
+            ]
+            if _subcategory_id == 1
+            else PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid capacitor subcategory "
+            f"ID {_subcategory_id} or specification ID {_specification_id}."
+        )
 
 
 def get_part_count_quality_factor(
@@ -289,7 +334,13 @@ def get_part_count_quality_factor(
     """
     _quality_id = attributes["quality_id"]
 
-    return PART_COUNT_PI_Q[_quality_id - 1]
+    try:
+        return PART_COUNT_PI_Q[_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_quality_factor: Invalid capacitor quality "
+            f"ID {_quality_id}."
+        )
 
 
 def get_part_stress_quality_factor(
@@ -300,12 +351,24 @@ def get_part_stress_quality_factor(
     :param attributes: the dict of capacitor attributes.
     :return: _pi_q: the quality factor.
     :rtype: float
-    :raises: IndexError if passed an unknown subcategory ID or unknown quality ID.
+    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: IndexError if passed an invalid quality ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _quality_id = attributes["quality_id"]
 
-    return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
+    try:
+        return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_stress_quality_factor: Invalid capacitor quality "
+            f"ID {_quality_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_stress_quality_factor: Invalid capacitor subcategory "
+            f"ID {_subcategory_id}."
+        )
 
 
 def set_default_values(
@@ -323,7 +386,9 @@ def set_default_values(
         )
 
     if attributes.get("piCV", 0) <= 0.0:
-        attributes["piCV"] = _set_default_picv(attributes.get("subcategory_id", 1))
+        attributes["piCV"] = _set_default_capacitance_factor(
+            attributes.get("subcategory_id", 1)
+        )
 
     if attributes.get("temperature_rated_max", 0) <= 0.0:
         attributes["temperature_rated_max"] = _set_default_rated_temperature(
@@ -346,19 +411,28 @@ def _set_default_capacitance(
     :param style_id:
     :return: _capacitance
     :rtype: float
-    :raises: KeyError if passed a subcategory ID outside the bounds.
-    :raises: IndexError if passed a style ID outside the bounds when subcategory ID is
-        equal to three.
+    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: IndexError if passed an invalid style ID.
     """
-    return (
-        DEFAULT_CAPACITANCE.get(subcategory_id, [1.0])[style_id - 1]
-        if subcategory_id == 3
-        else DEFAULT_CAPACITANCE.get(subcategory_id, 1.0)
-    )
+    try:
+        return (
+            DEFAULT_CAPACITANCE.get(subcategory_id, [1.0])[style_id - 1]
+            if subcategory_id == 3
+            else DEFAULT_CAPACITANCE.get(subcategory_id, 1.0)
+        )
+    except IndexError:
+        raise IndexError(
+            f"_set_default_capacitance: Invalid capacitor style ID {style_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"_set_default_capacitance: Invalid capacitor subcategory "
+            f"ID {subcategory_id}."
+        )
 
 
-def _set_default_picv(subcategory_id: int) -> float:
-    """Set the default piCV value.
+def _set_default_capacitance_factor(subcategory_id: int) -> float:
+    """Set the default capacitance factor (piCV) value.
 
     :param subcategory_id: the subcategory ID of the capacitor with missing defaults.
     :return: _pi_cv
@@ -371,8 +445,21 @@ def _set_default_rated_temperature(
     subcategory_id: int,
     style_id: int,
 ) -> float:
-    return (
-        [125.0, 85.0][style_id - 1]
-        if subcategory_id == 1
-        else 85.0 if subcategory_id in {15, 16, 18, 19} else 125.0
-    )
+    """Set the default capacitor rated temperature.
+
+    :param subcategory_id: the capacitor subcategory ID.
+    :param style_id: the capacitor style ID.
+    :return: the default rated temperature for the capacitor.
+    :rtype: float
+    :raises: IndexError if passed an invalid style ID.
+    """
+    try:
+        return (
+            [125.0, 85.0][style_id - 1]
+            if subcategory_id == 1
+            else 85.0 if subcategory_id in {15, 16, 18, 19} else 125.0
+        )
+    except IndexError:
+        raise IndexError(
+            f"_set_default_rated_temperature: Invalid capacitor style ID {style_id}."
+        )
