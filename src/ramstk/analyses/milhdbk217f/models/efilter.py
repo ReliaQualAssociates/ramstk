@@ -10,123 +10,116 @@
 # Standard Library Imports
 from typing import Dict, Union
 
-PART_COUNT_LAMBDA_B = {
-    1: [
-        0.022,
-        0.044,
-        0.13,
-        0.088,
-        0.20,
-        0.15,
-        0.20,
-        0.24,
-        0.29,
-        0.24,
-        0.018,
-        0.15,
-        0.33,
-        2.6,
-    ],
-    2: [
-        0.12,
-        0.24,
-        0.72,
-        0.48,
-        1.1,
-        0.84,
-        1.1,
-        1.3,
-        1.6,
-        1.3,
-        0.096,
-        0.84,
-        1.8,
-        1.4,
-    ],
-    3: [
-        0.27,
-        0.54,
-        1.6,
-        1.1,
-        2.4,
-        1.9,
-        2.4,
-        3.0,
-        3.5,
-        3.0,
-        0.22,
-        1.9,
-        4.1,
-        32.0,
-    ],
-}
-PART_STRESS_LAMBDA_B = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
-PI_E = [
-    1.0,
-    2.0,
-    6.0,
-    4.0,
-    9.0,
-    7.0,
-    9.0,
-    11.0,
-    13.0,
-    11.0,
-    0.8,
-    7.0,
-    15.0,
-    120.0,
-]
-PI_Q = [1.0, 2.9]
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the filter being calculated.
-    :return: _base_hr; the parts count base hazard rate.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(
-        attributes["type_id"], attributes["environment_active_id"]
-    )
+# RAMSTK Package Imports
+from ramstk.constants.efilter import (
+    PART_COUNT_LAMBDA_B,
+    PART_STRESS_LAMBDA_B,
+    PI_E,
+    PI_Q,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a filter.
 
     :param attributes: the attributes for the filter being calculated.
     :return: attributes; the keyword argument (hardware attribute) dictionary with
         updated values.
-    :rtype: dict :raise: KeyError if an unknown type ID is passed.
+    :rtype: dict
     """
-    attributes["lambda_b"] = PART_STRESS_LAMBDA_B[attributes["type_id"]]
+    try:
+        attributes["hazard_rate_active"] = (
+            attributes["hazard_rate_active"] * attributes["piQ"] * attributes["piE"]
+        )
 
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
-    )
+        return attributes
+    except KeyError as err:
+        raise KeyError(
+            f"calculate_part_stress: Missing required electronic filter attribute:"
+            f" {err}."
+        )
 
-    return attributes
 
+def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the electronic filter environment factor (piE).
 
-def get_part_count_lambda_b(
-    type_id: int,
-    environment_active_id: int,
-) -> float:
-    """Retrievee the part count base hazard rate for a filter.
-
-    :param type_id: the filter type identifer.
-    :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the part count base hazard rate for the active environment.
-    :rtype: float :raise: IndexError if an unknown active environment ID is passed.
-        :raise: KeyError if an unknown type ID is passed.
+    :param attributes: the attributes for the filter being calculated.
+    :return: the environment factor for the selected environment ID.
+    :rtype: float
+    :raises: IndexError if passed an invalid environment ID.
     """
-    return PART_COUNT_LAMBDA_B[type_id][environment_active_id - 1]
+    _environment_id = attributes["environment_active_id"]
+
+    try:
+        return PI_E[_environment_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_environment_factor: Invalid electronic filter environment "
+            f"ID {_environment_id}."
+        )
+
+
+def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the electronic filter quality factor (piQ).
+
+    :param attributes: the attributes for the filter being calculated.
+    :return: the quality factor for the selected quality ID.
+    :rtype: float
+    :raises: IndexError if passed an invalid quality ID.
+    """
+    _quality_id = attributes["quality_id"]
+
+    try:
+        return PI_Q[_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_quality_factor: Invalid electronic filter quality ID {_quality_id}."
+        )
+
+
+def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the part count base hazard rate for a filter.
+
+    :param attributes: the attributes for the filter being calculated.
+    :return: the part count base hazard rate for the active environment.
+    :rtype: float
+    :raises: IndexError if passed an invalid environment ID.
+    :raises: KeyError if passed an invalid type ID.
+    """
+    _environment_id = attributes["environment_active_id"]
+    _type_id = attributes["type_id"]
+
+    try:
+        return PART_COUNT_LAMBDA_B[_type_id][_environment_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid electronic filter environment "
+            f"ID {_environment_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid electronic filter type ID {_type_id}."
+        )
+
+
+def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the base hazard rate for part stress calculations.
+
+    :param attributes: the attributes for the filter being calculated.
+    :return: the base hazard rate for the filter.
+    :rtype: float
+    :raises: KeyError if passed an invalid type ID.
+    """
+    _type_id = attributes["type_id"]
+
+    try:
+        return PART_STRESS_LAMBDA_B[_type_id]
+    except KeyError:
+        raise KeyError(
+            f"get_part_stress_lambda_b: Invalid electronic filter type ID {_type_id}."
+        )
 
 
 def set_default_values(
@@ -138,7 +131,7 @@ def set_default_values(
     :return: attributes; the updated attribute dict.
     :rtype: dict
     """
-    if attributes["quality_id"] <= 0:
+    if attributes.get("quality_id", 0) <= 0:
         attributes["quality_id"] = 1
 
     return attributes
