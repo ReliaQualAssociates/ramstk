@@ -11,187 +11,28 @@
 from math import exp
 from typing import Dict, Union
 
-PART_COUNT_LAMBDA_B = {
-    1: {
-        1: [
-            0.0035,
-            0.023,
-            0.049,
-            0.019,
-            0.065,
-            0.027,
-            0.037,
-            0.041,
-            0.052,
-            0.11,
-            0.0018,
-            0.053,
-            0.16,
-            2.3,
-        ],
-        2: [
-            0.0071,
-            0.046,
-            0.097,
-            0.038,
-            0.13,
-            0.055,
-            0.073,
-            0.081,
-            0.10,
-            0.22,
-            0.035,
-            0.11,
-            0.31,
-            4.7,
-        ],
-        3: [
-            0.023,
-            0.16,
-            0.35,
-            0.13,
-            0.45,
-            0.21,
-            0.27,
-            0.35,
-            0.45,
-            0.82,
-            0.011,
-            0.37,
-            1.2,
-            16.0,
-        ],
-        4: [
-            0.028,
-            0.18,
-            0.39,
-            0.15,
-            0.52,
-            0.22,
-            0.29,
-            0.33,
-            0.42,
-            0.88,
-            0.015,
-            0.42,
-            1.2,
-            19.0,
-        ],
-    },
-    2: {
-        1: [
-            0.0017,
-            0.0073,
-            0.023,
-            0.0091,
-            0.031,
-            0.011,
-            0.015,
-            0.016,
-            0.022,
-            0.052,
-            0.00083,
-            0.25,
-            0.073,
-            1.1,
-        ],
-        2: [
-            0.0033,
-            0.015,
-            0.046,
-            0.018,
-            0.061,
-            0.022,
-            0.03,
-            0.033,
-            0.044,
-            0.10,
-            0.0017,
-            0.05,
-            0.15,
-            2.2,
-        ],
-    },
-}
-PART_COUNT_PI_Q = [0.25, 1.0, 10.0]
-PART_STRESS_PI_Q = {
-    1: {1: [1.5, 5.0], 2: [3.0, 7.5], 3: [8.0, 30.0], 4: [12.0, 30.0]},
-    2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
-}
-PI_E = {
-    1: [
-        1.0,
-        6.0,
-        12.0,
-        5.0,
-        16.0,
-        6.0,
-        8.0,
-        7.0,
-        9.0,
-        24.0,
-        0.5,
-        13.0,
-        34.0,
-        610.0,
-    ],
-    2: [
-        1.0,
-        4.0,
-        12.0,
-        5.0,
-        16.0,
-        5.0,
-        7.0,
-        6.0,
-        8.0,
-        24.0,
-        0.5,
-        13.0,
-        34.0,
-        610.0,
-    ],
-}
-REF_TEMPS = {
-    1: {1: 329.0, 2: 352.0, 3: 364.0, 4: 400.0, 5: 398.0, 6: 477.0},
-    2: {1: 329.0, 2: 352.0, 3: 364.0, 4: 409.0},
-}
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the connection being calculated.
-    :return: _base_hr; the parts count base hazard rates.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(
-        attributes["subcategory_id"],
-        attributes["environment_active_id"],
-        attributes["family_id"],
-    )
+# RAMSTK Package Imports
+from ramstk.constants.inductor import (
+    PART_COUNT_LAMBDA_B,
+    PART_COUNT_PI_Q,
+    PART_STRESS_PI_Q,
+    PI_E,
+    REF_TEMPS,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for an inductive device.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    :param attributes: the dict containing the inductive device hardware attributes.
+    :return: attributes; the hardware attribute dict with updated values.
     :rtype: dict
     """
     attributes["piC"] = float(attributes["construction_id"])
-    attributes["piQ"] = get_part_stress_quality_factor(
-        attributes["subcategory_id"],
-        attributes["quality_id"],
-        attributes["family_id"],
-    )
 
     _power_input = attributes["voltage_dc_operating"] * attributes["current_operating"]
     if attributes["subcategory_id"] == 2 and attributes["specification_id"] == 2:
@@ -215,11 +56,8 @@ def calculate_part_stress(
     attributes["temperature_hot_spot"] = calculate_hot_spot_temperature(
         attributes["temperature_active"], attributes["temperature_rise"]
     )
-    attributes["lambda_b"] = calculate_part_stress_lambda_b(
-        attributes["subcategory_id"],
-        attributes["insulation_id"],
-        attributes["temperature_hot_spot"],
-    )
+
+    attributes["lambda_b"] = calculate_part_stress_lambda_b(attributes)
 
     attributes["hazard_rate_active"] = (
         attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
@@ -245,24 +83,22 @@ def calculate_hot_spot_temperature(
 
 
 def calculate_part_stress_lambda_b(
-    subcategory_id: int,
-    insulation_id: int,
-    temperature_hot_spot: float,
+    attributes: Dict[str, Union[float, int, str]]
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts stress
     method.
 
-    :param subcategory_id: the subcategory ID for the inductive device being calculated.
-    :param insulation_id: the insulation class ID for the inductive device being
-        calculated.
-    :param temperature_hot_spot: the hot spot temperature for the inductive device being
-        calculated.
+    :param attributes: the dict containing the inductive device hardware attributes.
     :return: _lambda_b; the calculated parts stress lambda_b.
-    :rtype: float :raise: KeyError when passed an unknown subcategory ID or insulation
-        ID.
+    :rtype: float
+    :raises: KeyError when passed an unknown subcategory ID or insulation ID.
     """
+    _insulation_id: int = attributes["insulation_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+    _temperature_hot_spot: float = attributes["temperature_hot_spot"]
+
     _dic_factors = {
         1: {
             1: [0.0018, 15.6],
@@ -280,10 +116,16 @@ def calculate_part_stress_lambda_b(
         },
     }
 
-    _ref_temp = REF_TEMPS[subcategory_id][insulation_id]
-    _f0 = _dic_factors[subcategory_id][insulation_id][0]
-    _f1 = _dic_factors[subcategory_id][insulation_id][1]
-    return _f0 * exp(((temperature_hot_spot + 273.0) / _ref_temp) ** _f1)
+    try:
+        _ref_temp = REF_TEMPS[_subcategory_id][_insulation_id]
+        _f0 = _dic_factors[_subcategory_id][_insulation_id][0]
+        _f1 = _dic_factors[_subcategory_id][_insulation_id][1]
+        return _f0 * exp(((_temperature_hot_spot + 273.0) / _ref_temp) ** _f1)
+    except KeyError:
+        raise KeyError(
+            f"calculate_part_stress_lambda_b: Invalid subcategory ID {_subcategory_id} "
+            f"or insulation ID {_insulation_id}."
+        )
 
 
 def calculate_temperature_rise_input_power_weight(
@@ -297,11 +139,17 @@ def calculate_temperature_rise_input_power_weight(
 
     :param power_input: the input power in W.
     :param weight: the weight of the xfmr in lbf.
-    :retur: _temperature_rise; the calculated temperature rise in C.
+    :returm: _temperature_rise; the calculated temperature rise in C.
     :rtype: float
-    :raise: ZeroDivisionError if passed a weight=0.0.
+    :raises: ZeroDivisionError if passed a weight=0.0.
     """
-    return 2.1 * (power_input / weight**0.6766)
+    try:
+        return 2.1 * (power_input / weight**0.6766)
+    except ZeroDivisionError:
+        raise ZeroDivisionError(
+            "calculate_temperature_rise_input_power_weight: Inductive device weight "
+            "may not be zero."
+        )
 
 
 def calculate_temperature_rise_power_loss_surface(
@@ -313,9 +161,16 @@ def calculate_temperature_rise_power_loss_surface(
     :param power_operating: the power loss in W.
     :param area: the radiating surface area of the case in sq. inches.
     :return: _temperature_rise; the calculated temperature rise in C.
-    :rtype: float :raise: ZeroDivisionError if passed an area=0.0.
+    :rtype: float
+    :raises: ZeroDivisionError if passed an area=0.0.
     """
-    return 125.0 * power_operating / area
+    try:
+        return 125.0 * power_operating / area
+    except ZeroDivisionError:
+        raise ZeroDivisionError(
+            "calculate_temperature_rise_power_loss_surface: Inductive device area "
+            "must not be zero."
+        )
 
 
 def calculate_temperature_rise_power_loss_weight(
@@ -327,16 +182,45 @@ def calculate_temperature_rise_power_loss_weight(
     :param power_operating: the power loss in W.
     :param weight: the weight of the device in lbf.
     :return: _temperature_rise; the calculated temperature rise in C.
-    :rtype: float :raise: ZeroDivisionError if passed a weight=0.0.
+    :rtype: float
+    :raises: ZeroDivisionError if passed a weight=0.0.
     """
-    return 11.5 * (power_operating / weight**0.6766)
+    try:
+        return 11.5 * (power_operating / weight**0.6766)
+    except ZeroDivisionError:
+        raise ZeroDivisionError(
+            "calculate_temperature_rise_power_loss_weight: Inductive device weight "
+            "may not be zero."
+        )
 
 
-def get_part_count_lambda_b(
-    subcategory_id: int,
-    environment_active_id: int,
-    family_id: int,
-) -> float:
+def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the dict containing the inductive device hardware attributes.
+    :return: the environment factor for the passed environment ID.
+    :rtype: float
+    :raises: IndexError if passed an invalid environment ID.
+    :raises: KeyError if passed an invalid subcategory ID.
+    """
+    _environment_id: int = attributes["environment_active_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
+    try:
+        return PI_E[_subcategory_id][_environment_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_environment_factor: Invalid inductive device environment "
+            f"ID {_environment_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_environment_factor: Invalid inductive device subcategory "
+            f"ID {_subcategory_id}."
+        )
+
+
+def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -366,37 +250,82 @@ def get_part_count_lambda_b(
     These keys return a list of base hazard rates.  The hazard rate to use is
     selected from the list depending on the active environment.
 
-    :param subcategory_id: the subcategory ID for the inductive device being calculated.
-    :param environment_active_id: the active operating environment ID for the inductive
-        device being calculated.
-    :param family_id: the family ID for the inductive device being calculated.
+    :param attributes: the dict containing the inductive device hardware attributes.
     :return: _base_hr; the part count base hazard rate.
     :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID or family ID.
-    :raise: IndexError if passed an unknown active environment ID.
+    :raises: KeyError if passed an unknown subcategory ID or family ID.
+    :raises: IndexError if passed an unknown active environment ID.
     """
-    return PART_COUNT_LAMBDA_B[subcategory_id][family_id][environment_active_id - 1]
+    _environment_id = attributes["environment_active_id"]
+    _family_id = attributes["family_id"]
+    _subcategory_id = attributes["subcategory_id"]
+
+    try:
+        return PART_COUNT_LAMBDA_B[_subcategory_id][_family_id][_environment_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid inductive device environment "
+            f"ID {_environment_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid inductive device family "
+            f"ID {_family_id} or subcategory ID {_subcategory_id}."
+        )
+
+
+def get_part_count_quality_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> float:
+    """Retrieve the quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the inductive device hardware attributes dict.
+    :return: the value of the quality factor.
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id = attributes["quality_id"]
+
+    try:
+        return PART_COUNT_PI_Q[_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_quality_factor: Invalid inductive device quality "
+            f"ID {_quality_id}."
+        )
 
 
 def get_part_stress_quality_factor(
-    subcategory_id: int,
-    quality_id: int,
-    family_id: int,
+    attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Select the MIL-HDBK-217F quality factor for the inductor device.
+    """Select the MIL-HDBK-217F quality factor for the inductive device.
 
-    :param subcategory_id: the subcategory identifier.
-    :param quality_id: the quality level identifier.
-    :param family_id: the device family identifier.
+    :param attributes: the dict containing the inductive device hardware attributes.
     :return: _pi_q; the selected quality factor
-    :rtype: float :raise: IndexError if passed an unknown quality ID. :raise: KeyError
-        if passed an unknown subcategory ID or family ID.
+    :rtype: float
+    :raises: IndexError if passed an unknown quality ID.
+    :raises: KeyError if passed an unknown subcategory ID or family ID.
     """
-    return (
-        PART_STRESS_PI_Q[subcategory_id][family_id][quality_id - 1]
-        if subcategory_id == 1
-        else PART_STRESS_PI_Q[subcategory_id][quality_id - 1]
-    )
+    _family_id = attributes["family_id"]
+    _quality_id = attributes["quality_id"]
+    _subcategory_id = attributes["subcategory_id"]
+
+    try:
+        return (
+            PART_STRESS_PI_Q[_subcategory_id][_family_id][_quality_id - 1]
+            if _subcategory_id == 1
+            else PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
+        )
+    except IndexError:
+        raise IndexError(
+            f"get_part_stress_quality_factor: Invalid inductive device quality "
+            f"ID {_quality_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_stress_quality_factor: Invalid inductive device "
+            f"family ID {_family_id} or subcategory ID {_subcategory_id}."
+        )
 
 
 def get_temperature_rise_spec_sheet(page_number: int) -> float:
@@ -404,28 +333,35 @@ def get_temperature_rise_spec_sheet(page_number: int) -> float:
 
     :param page_number: the spec sheet to retrieve the temperature rise for.
     :return: _temperature_rise; the spec sheet temperature rise.
-    :rtype: float :raise: KeyError if an unknown spec sheet is passed.
+    :rtype: float
+    :raises: KeyError if an unknown spec sheet is passed.
     """
-    return {
-        1: 15.0,
-        2: 15.0,
-        3: 15.0,
-        4: 35.0,
-        5: 15.0,
-        6: 35.0,
-        7: 15.0,
-        8: 35.0,
-        9: 15.0,
-        10: 15.0,
-        11: 35.0,
-        12: 35.0,
-        13: 15.0,
-        14: 15.0,
-    }[page_number]
+    try:
+        return {
+            1: 15.0,
+            2: 15.0,
+            3: 15.0,
+            4: 35.0,
+            5: 15.0,
+            6: 35.0,
+            7: 15.0,
+            8: 35.0,
+            9: 15.0,
+            10: 15.0,
+            11: 35.0,
+            12: 35.0,
+            13: 15.0,
+            14: 15.0,
+        }[page_number]
+    except KeyError:
+        raise KeyError(
+            f"get_temperature_rise_spec_sheet: Invalid inductive device "
+            f"page number {page_number}."
+        )
 
 
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]],
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 
@@ -434,7 +370,7 @@ def set_default_values(
     :rtype: dict
     """
     if attributes["rated_temperature_max"] <= 0.0:
-        attributes["rated_temperature_max"] = _set_default_max_rated_temperature(
+        attributes["rated_temperature_max"] = _set_default_rated_temperature(
             attributes["subcategory_id"]
         )
 
@@ -447,7 +383,7 @@ def set_default_values(
     return attributes
 
 
-def _set_default_max_rated_temperature(subcategory_id: int) -> float:
+def _set_default_rated_temperature(subcategory_id: int) -> float:
     """Set the default maximum rated temperature.
 
     :param subcategory_id: the subcategory ID of the inductive device with missing
