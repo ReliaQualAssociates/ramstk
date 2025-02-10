@@ -651,8 +651,7 @@ def test_calculate_part_stress(
 def test_calculate_part_stress_missing_attribute_key(
     test_attributes_capacitor,
 ):
-    """calculate_part_stress() should raise a KeyError when a required attribute is
-    missing."""
+    """Raises a KeyError when a required attribute is missing."""
     test_attributes_capacitor.pop("capacitance")
     with pytest.raises(
         KeyError,
