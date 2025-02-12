@@ -11,811 +11,144 @@
 from math import exp
 from typing import Dict, List, Tuple, Union
 
-PART_COUNT_LAMBDA_B = {
-    1: [
-        0.0005,
-        0.0022,
-        0.0071,
-        0.0037,
-        0.012,
-        0.0052,
-        0.0065,
-        0.016,
-        0.025,
-        0.025,
-        0.00025,
-        0.0098,
-        0.035,
-        0.36,
-    ],
-    2: {
-        1: [
-            0.0012,
-            0.0027,
-            0.011,
-            0.0054,
-            0.020,
-            0.0063,
-            0.013,
-            0.018,
-            0.033,
-            0.030,
-            0.00025,
-            0.014,
-            0.044,
-            0.69,
-        ],
-        2: [
-            0.0012,
-            0.0027,
-            0.011,
-            0.0054,
-            0.020,
-            0.0063,
-            0.013,
-            0.018,
-            0.033,
-            0.030,
-            0.00025,
-            0.014,
-            0.044,
-            0.69,
-        ],
-        3: [
-            0.0014,
-            0.0031,
-            0.013,
-            0.0061,
-            0.023,
-            0.0072,
-            0.014,
-            0.021,
-            0.038,
-            0.034,
-            0.00028,
-            0.016,
-            0.050,
-            0.78,
-        ],
-        4: [
-            0.0014,
-            0.0031,
-            0.013,
-            0.0061,
-            0.023,
-            0.0072,
-            0.014,
-            0.021,
-            0.038,
-            0.034,
-            0.00028,
-            0.016,
-            0.050,
-            0.78,
-        ],
-    },
-    3: [
-        0.012,
-        0.025,
-        0.13,
-        0.062,
-        0.21,
-        0.078,
-        0.10,
-        0.19,
-        0.24,
-        0.32,
-        0.0060,
-        0.18,
-        0.47,
-        8.2,
-    ],
-    4: [
-        0.0023,
-        0.0066,
-        0.031,
-        0.013,
-        0.055,
-        0.022,
-        0.043,
-        0.077,
-        0.15,
-        0.10,
-        0.0011,
-        0.055,
-        0.15,
-        1.7,
-    ],
-    5: [
-        0.0085,
-        0.018,
-        0.10,
-        0.045,
-        0.16,
-        0.15,
-        0.17,
-        0.30,
-        0.38,
-        0.26,
-        0.0068,
-        0.13,
-        0.37,
-        5.4,
-    ],
-    6: {
-        1: [
-            0.014,
-            0.031,
-            0.16,
-            0.077,
-            0.26,
-            0.073,
-            0.15,
-            0.19,
-            0.39,
-            0.42,
-            0.0042,
-            0.21,
-            0.62,
-            9.4,
-        ],
-        2: [
-            0.013,
-            0.028,
-            0.15,
-            0.070,
-            0.24,
-            0.065,
-            0.13,
-            0.18,
-            0.35,
-            0.38,
-            0.0038,
-            0.19,
-            0.56,
-            8.6,
-        ],
-    },
-    7: [
-        0.008,
-        0.18,
-        0.096,
-        0.045,
-        0.15,
-        0.044,
-        0.088,
-        0.12,
-        0.24,
-        0.25,
-        0.004,
-        0.13,
-        0.37,
-        5.5,
-    ],
-    8: [
-        0.065,
-        0.32,
-        1.4,
-        0.71,
-        1.6,
-        0.71,
-        1.9,
-        1.0,
-        2.7,
-        2.4,
-        0.032,
-        1.3,
-        3.4,
-        62.0,
-    ],
-    9: [
-        0.025,
-        0.055,
-        0.35,
-        0.15,
-        0.58,
-        0.16,
-        0.26,
-        0.35,
-        0.58,
-        1.1,
-        0.013,
-        0.52,
-        1.6,
-        24.0,
-    ],
-    10: [
-        0.33,
-        0.73,
-        7.0,
-        2.9,
-        12.0,
-        3.5,
-        5.3,
-        7.1,
-        9.8,
-        23.0,
-        0.16,
-        11.0,
-        33.0,
-        510.0,
-    ],
-    11: [
-        0.15,
-        0.35,
-        3.1,
-        1.2,
-        5.4,
-        1.9,
-        2.8,
-        0.0,
-        0.0,
-        9.0,
-        0.075,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    12: [
-        0.15,
-        0.34,
-        2.9,
-        1.2,
-        5.0,
-        1.6,
-        2.4,
-        0.0,
-        0.0,
-        7.6,
-        0.076,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    13: [
-        0.043,
-        0.15,
-        0.75,
-        0.35,
-        1.3,
-        0.39,
-        0.78,
-        1.8,
-        2.8,
-        2.5,
-        0.21,
-        1.2,
-        3.7,
-        49.0,
-    ],
-    14: [
-        0.05,
-        0.11,
-        1.1,
-        0.45,
-        1.7,
-        2.8,
-        4.6,
-        4.6,
-        7.5,
-        3.3,
-        0.025,
-        1.5,
-        4.7,
-        67.0,
-    ],
-    15: [
-        0.048,
-        0.16,
-        0.76,
-        0.36,
-        1.3,
-        0.36,
-        0.72,
-        1.4,
-        2.2,
-        2.3,
-        0.024,
-        1.2,
-        3.4,
-        52.0,
-    ],
-}
-PART_COUNT_PI_Q = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
-PART_STRESS_PI_Q = {
-    1: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-    2: [0.03, 0.1, 0.3, 1.0, 5.0, 5.0, 15.0],
-    3: [1.0, 3.0],
-    4: [1.0, 3.0],
-    5: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-    6: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-    7: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
-    8: [1.0, 15.0],
-    9: [0.02, 0.06, 0.2, 0.6, 3.0, 10.0],
-    10: [2.5, 5.0],
-    11: [2.0, 4.0],
-    12: [2.0, 4.0],
-    13: [0.02, 0.06, 0.2, 0.6, 3.0, 10.0],
-    14: [2.5, 5.0],
-    15: [2.0, 4.0],
-}
-PI_C = {10: [2.0, 1.0, 3.0, 1.5], 12: [2.0, 1.0]}
-PI_E = {
-    1: [
-        1.0,
-        3.0,
-        8.0,
-        5.0,
-        13.0,
-        4.0,
-        5.0,
-        7.0,
-        11.0,
-        19.0,
-        0.5,
-        11.0,
-        27.0,
-        490.0,
-    ],
-    2: [
-        1.0,
-        2.0,
-        8.0,
-        4.0,
-        14.0,
-        4.0,
-        8.0,
-        10.0,
-        18.0,
-        19.0,
-        0.2,
-        10.0,
-        28.0,
-        510.0,
-    ],
-    3: [
-        1.0,
-        2.0,
-        10.0,
-        5.0,
-        17.0,
-        6.0,
-        8.0,
-        14.0,
-        18.0,
-        25.0,
-        0.5,
-        14.0,
-        36.0,
-        660.0,
-    ],
-    4: [
-        1.0,
-        2.0,
-        10.0,
-        5.0,
-        17.0,
-        6.0,
-        8.0,
-        14.0,
-        18.0,
-        25.0,
-        0.5,
-        14.0,
-        36.0,
-        660.0,
-    ],
-    5: [
-        1.0,
-        2.0,
-        11.0,
-        5.0,
-        18.0,
-        15.0,
-        18.0,
-        28.0,
-        35.0,
-        27.0,
-        0.8,
-        14.0,
-        38.0,
-        610.0,
-    ],
-    6: [
-        1.0,
-        2.0,
-        10.0,
-        5.0,
-        16.0,
-        4.0,
-        8.0,
-        9.0,
-        18.0,
-        23.0,
-        0.3,
-        13.0,
-        34.0,
-        610.0,
-    ],
-    7: [
-        1.0,
-        2.0,
-        10.0,
-        5.0,
-        16.0,
-        4.0,
-        8.0,
-        9.0,
-        18.0,
-        23.0,
-        0.5,
-        13.0,
-        34.0,
-        610.0,
-    ],
-    8: [
-        1.0,
-        5.0,
-        21.0,
-        11.0,
-        24.0,
-        11.0,
-        30.0,
-        16.0,
-        42.0,
-        37.0,
-        0.5,
-        20.0,
-        53.0,
-        950.0,
-    ],
-    9: [
-        1.0,
-        2.0,
-        12.0,
-        6.0,
-        20.0,
-        5.0,
-        8.0,
-        9.0,
-        15.0,
-        33.0,
-        0.5,
-        18.0,
-        48.0,
-        870.0,
-    ],
-    10: [
-        1.0,
-        2.0,
-        18.0,
-        8.0,
-        30.0,
-        8.0,
-        12.0,
-        13.0,
-        18.0,
-        53.0,
-        0.5,
-        29.0,
-        76.0,
-        1400.0,
-    ],
-    11: [
-        1.0,
-        2.0,
-        16.0,
-        7.0,
-        28.0,
-        8.0,
-        12.0,
-        0.0,
-        0.0,
-        38.0,
-        0.5,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    12: [
-        1.0,
-        3.0,
-        16.0,
-        7.0,
-        28.0,
-        8.0,
-        12.0,
-        0.0,
-        0.0,
-        38.0,
-        0.5,
-        0.0,
-        0.0,
-        0.0,
-    ],
-    13: [
-        1.0,
-        3.0,
-        14.0,
-        6.0,
-        24.0,
-        5.0,
-        7.0,
-        12.0,
-        18.0,
-        39.0,
-        0.5,
-        22.0,
-        57.0,
-        1000.0,
-    ],
-    14: [
-        1.0,
-        2.0,
-        19.0,
-        8.0,
-        29.0,
-        40.0,
-        65.0,
-        48.0,
-        78.0,
-        46.0,
-        0.5,
-        25.0,
-        66.0,
-        1200.0,
-    ],
-    15: [
-        1.0,
-        3.0,
-        14.0,
-        7.0,
-        24.0,
-        6.0,
-        12.0,
-        20.0,
-        30.0,
-        39.0,
-        0.5,
-        22.0,
-        57.0,
-        1000.0,
-    ],
-}
-PI_R = {
-    1: [1.0, 1.1, 1.6, 2.5],
-    2: [1.0, 1.1, 1.6, 2.5],
-    3: [1.0, 1.2, 1.3, 3.5],
-    5: [1.0, 1.7, 3.0, 5.0],
-    6: [
-        [
-            [1.0, 1.0, 1.2, 1.2, 1.6, 1.6, 1.6, 0.0],
-            [1.0, 1.0, 1.0, 1.2, 1.6, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2, 1.6],
-            [1.0, 1.2, 1.6, 1.6, 0.0, 0.0, 0.0, 0.0],
-            [1.0, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-            [1.0, 1.6, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.1, 1.2, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0],
-        ],
-        [
-            [1.0, 1.0, 1.0, 1.0, 1.2, 1.6],
-            [1.0, 1.0, 1.0, 1.2, 1.6, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 2.0, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 2.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 2.0, 0.0, 0.0],
-            [1.0, 1.2, 1.4, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.6, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 2.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.2, 0.0, 0.0],
-            [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-            [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.5, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 1.6, 0.0],
-            [1.0, 1.0, 1.0, 1.4, 1.6, 2.0],
-            [1.0, 1.0, 1.0, 1.4, 1.6, 2.0],
-            [1.0, 1.0, 1.4, 2.4, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 2.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-            [1.0, 1.2, 1.4, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.0, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-            [1.0, 1.2, 1.5, 0.0, 0.0, 0.0],
-            [1.0, 1.2, 0.0, 0.0, 0.0, 0.0],
-        ],
-    ],
-    7: [
-        [
-            [1.0, 1.2, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.2, 1.6, 0.0],
-            [1.0, 1.0, 1.0, 1.1, 1.2, 1.6],
-            [1.0, 1.0, 1.0, 1.0, 1.2, 1.6],
-            [1.0, 1.0, 1.0, 1.0, 1.2, 1.6],
-        ],
-        [
-            [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-            [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-            [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-            [1.0, 1.0, 1.1, 1.2, 1.4, 0.0],
-            [1.0, 1.0, 1.0, 1.2, 1.6, 0.0],
-            [1.0, 1.0, 1.0, 1.1, 1.4, 0.0],
-        ],
-    ],
-    9: [1.0, 1.4, 2.0],
-    10: [1.0, 1.1, 1.4, 2.0, 2.5, 3.5],
-    11: [1.0, 1.4, 2.0],
-    12: [1.0, 1.4, 2.0],
-    13: [1.0, 1.1, 1.2, 1.4, 1.8],
-    14: [1.0, 1.1, 1.2, 1.4, 1.8],
-    15: [1.0, 1.1, 1.2, 1.4, 1.8],
-}
-PI_V = {
-    9: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
-    10: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
-    11: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
-    12: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
-    13: [1.0, 1.05, 1.2],
-    14: [1.0, 1.05, 1.2],
-    15: [1.0, 1.05, 1.2],
-}
-REF_TEMPS: Dict[int, float] = {
-    1: 343.0,
-    3: 298.0,
-    5: 398.0,
-    6: 298.0,
-    7: 298.0,
-    9: 358.0,
-    10: 358.0,
-    11: 313.0,
-    12: 298.0,
-    13: 358.0,
-    14: 343.0,
-    15: 343.0,
-}
-REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the connection being calculated.
-    :return: _base_hr; the parts count base hazard rates.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(
-        attributes["subcategory_id"],
-        attributes["environment_active_id"],
-        attributes["specification_id"],
-    )
+# RAMSTK Package Imports
+from ramstk.constants.resistor import (
+    PART_COUNT_LAMBDA_B,
+    PART_COUNT_PI_Q,
+    PART_STRESS_PI_Q,
+    PI_C,
+    PI_E,
+    PI_R,
+    PI_V,
+    REF_TEMPS,
+    REF_TEMPS_FILM,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress hazard rate for a resistor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
 
-    :return: (attributes, _msg); the keyword argument (hardware attribute) dictionary
-        with updated values and the error message, if any.
-    :rtype: (dict, str)
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the hardware attributes dict with updated values.
+    :rtype: dict
+    :raises: KeyError if the attribute dict is missing one or more keys.
     """
-    attributes["lambda_b"] = calculate_part_stress_lambda_b(
-        attributes["subcategory_id"],
-        attributes["specification_id"],
-        attributes["type_id"],
-        attributes["temperature_active"],
-        attributes["power_ratio"],
-    )
-    attributes["piR"] = get_resistance_factor(
-        attributes["subcategory_id"],
-        attributes["specification_id"],
-        attributes["family_id"],
-        attributes["resistance"],
-    )
-    attributes["temperature_case"], attributes["piT"] = calculate_temperature_factor(
-        attributes["temperature_active"],
-        attributes["power_ratio"],
-    )
-
-    # Calculate the voltage factor and taps factor (piTAPS).
-    if attributes["subcategory_id"] in [9, 10, 11, 12, 13, 14, 15]:
-        attributes["piV"] = get_voltage_factor(
+    try:
+        attributes["piR"] = get_resistance_factor(
             attributes["subcategory_id"],
-            attributes["voltage_ratio"],
+            attributes["specification_id"],
+            attributes["family_id"],
+            attributes["resistance"],
         )
-        attributes["piTAPS"] = (attributes["n_elements"] ** 1.5 / 25.0) + 0.792
-
-    # Determine the consruction class factor (piC).
-    if attributes["subcategory_id"] in [10, 12]:
-        attributes["piC"] = PI_C[attributes["subcategory_id"]][
-            attributes["construction_id"] - 1
-        ]
-
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
-    )
-    if attributes["subcategory_id"] == 4:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piT"]
-            * attributes["n_elements"]
-        )
-    elif attributes["subcategory_id"] in [9, 11, 13, 14, 15]:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piTAPS"]
-            * attributes["piR"]
-            * attributes["piV"]
-        )
-    elif attributes["subcategory_id"] in [10, 12]:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piTAPS"]
-            * attributes["piC"]
-            * attributes["piR"]
-            * attributes["piV"]
-        )
-    elif attributes["subcategory_id"] != 8:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piR"]
+        attributes["temperature_case"], attributes["piT"] = (
+            calculate_temperature_factor(
+                attributes["temperature_active"],
+                attributes["power_ratio"],
+            )
         )
 
-    return attributes
+        # Calculate the voltage factor and taps factor (piTAPS).
+        if attributes["subcategory_id"] in [9, 10, 11, 12, 13, 14, 15]:
+            attributes["piV"] = get_voltage_factor(
+                attributes["subcategory_id"],
+                attributes["voltage_ratio"],
+            )
+            attributes["piTAPS"] = (attributes["n_elements"] ** 1.5 / 25.0) + 0.792
+
+        # Determine the construction class factor (piC).
+        if attributes["subcategory_id"] in [10, 12]:
+            attributes["piC"] = PI_C[attributes["subcategory_id"]][
+                attributes["construction_id"] - 1
+            ]
+
+        if attributes["subcategory_id"] == 4:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piT"]
+                * attributes["n_elements"]
+            )
+        elif attributes["subcategory_id"] in [9, 11, 13, 14, 15]:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piTAPS"]
+                * attributes["piR"]
+                * attributes["piV"]
+            )
+        elif attributes["subcategory_id"] in [10, 12]:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piTAPS"]
+                * attributes["piC"]
+                * attributes["piR"]
+                * attributes["piV"]
+            )
+        elif attributes["subcategory_id"] != 8:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"] * attributes["piR"]
+            )
+
+        return attributes
+    except KeyError as err:
+        raise KeyError(
+            f"calculate_part_stress: Missing required resistor attribute: {err}."
+        )
 
 
 # pylint: disable=too-many-locals
 def calculate_part_stress_lambda_b(
-    subcategory_id: int,
-    specification_id: int,
-    type_id: int,
-    temperature_active: float,
-    power_ratio: float,
+    attributes: Dict[str, Union[float, int, str]]
 ) -> float:
     """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts stress
     method.
 
-    :param subcategory_id: the subcategory ID for the resistor being calculated.
-    :param specification_id: the specification ID for the resistor being calculated.
-    :param type_id: the type ID for the resistor being calculated.
-    :param temperature_active: the active (surface) temperature for the resistor being
-        calculated.
-    :param power_ratio: the opearting to rated power ratio for the resistor being
-        calculated.
+    :param attributes: the hardware attributes dict for the resistor to be calculated.
     :return _lambda_b: the calculated base hazard rate.
-    :rtype: float :raise: IndexError if passed an unknown quality ID or application ID.
-        :raise: KeyError is passed an unknown construction ID.
+    :rtype: float
+    :raises: IndexError if passed an invalid type ID.
+    :raises: KeyError is passed an invalid specification ID or subcategpry ID.
     """
-    if subcategory_id == 4:
-        return 0.00006
+    _power_ratio = attributes["power_ratio"]
+    _specification_id = attributes["specification_id"]
+    _subcategory_id = attributes["subcategory_id"]
+    _temperature_active = attributes["temperature_active"]
+    _type_id = attributes["type_id"]
 
-    if subcategory_id == 8:
-        return _get_type_factor(type_id)
+    try:
+        if _subcategory_id == 4:
+            return 0.00006
 
-    if subcategory_id == 2:
-        factors, ref_temp = _get_film_factors_and_temp(specification_id)
-    else:
-        factors, ref_temp = _get_factors_and_temp(subcategory_id)
+        if _subcategory_id == 8:
+            return _get_type_factor(_type_id)
 
-    return _do_calculate_lambda_b(factors, ref_temp, temperature_active, power_ratio)
+        if _subcategory_id == 2:
+            _factors, _ref_temp = _get_film_factors_and_temp(_specification_id)
+        else:
+            _factors, _ref_temp = _get_factors_and_temp(_subcategory_id)
+
+        _f0, _f1, _f2, _f3, _f4, _f5 = _factors
+        return (
+            _f0
+            * exp(_f1 * ((_temperature_active + 273.0) / _ref_temp)) ** _f2
+            * exp(
+                ((_power_ratio / _f3) * ((_temperature_active + 273.0) / 273.0)) ** _f4
+            )
+            ** _f5
+        )
+    except IndexError:
+        raise IndexError(
+            f"calculate_part_stress_lambda_b: Invalid resistor type ID {_type_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"calculate_part_stress_lambda_b: Invalid resistor "
+            f"specification ID {_specification_id} or subcategory_id {_subcategory_id}."
+        )
 
 
 def calculate_temperature_factor(
@@ -837,11 +170,33 @@ def calculate_temperature_factor(
     return _temperature_case, _pi_t
 
 
-def get_part_count_lambda_b(
-    subcategory_id: int,
-    environment_active_id: int,
-    specification_id: int,
-) -> Dict[str, Union[float, int, str]]:
+def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the environment factor (piE) for the passed environment ID.
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
+    _environment_active_id = attributes["environment_active_id"]
+    _subcategory_id = attributes["subcategory_id"]
+
+    try:
+        return PI_E[_subcategory_id][_environment_active_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_environment_factor: Invalid resistor environment ID "
+            f"{_environment_active_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_environment_id: Invalid resistor subcategory ID "
+            f"{_subcategory_id}."
+        )
+
+
+def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
@@ -902,19 +257,80 @@ def get_part_count_lambda_b(
     |                | Film and Precision (RQ, RVC)  |                 |
     +----------------+-------------------------------+-----------------+
 
-    :param subcategory_id: the subcategory identifier.
-    :param environment_active_id: the active environment identifier.
-    :param specification_id: the resistor spectification identifier.
-    :return: _base_hr; the parts count base hazard rate.
+    :param attributes: the hardware attrobutes dict for the resistor being calculated.
+    :return: the parts count base hazard rate.
     :rtype: float
-    :raise: IndexError if passed an unknown active environment ID.
-    :raise: KeyError if passed an unknown subcategory ID or specification ID:
+    :raises: IndexError if passed an invalid active environment ID.
+    :raises: KeyError if passed an invalid subcategory ID or specification ID:
     """
-    if subcategory_id in {2, 6}:
-        return PART_COUNT_LAMBDA_B[subcategory_id][specification_id][
-            environment_active_id - 1
-        ]
-    return PART_COUNT_LAMBDA_B[subcategory_id][environment_active_id - 1]
+    _environment_active_id = attributes["environment_active_id"]
+    _specification_id = attributes["specification_id"]
+    _subcategory_id = attributes["subcategory_id"]
+
+    try:
+        if _subcategory_id in {2, 6}:
+            return PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
+                _environment_active_id - 1
+            ]
+        return PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid resistor environment ID "
+            f"{_environment_active_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid resistor specification ID "
+            f"{_specification_id} or subcategory ID {_subcategory_id}."
+        )
+
+
+def get_part_count_quality_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> float:
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the part count quality factor (piQ) for the passed quality ID.
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id = attributes["quality_id"]
+
+    try:
+        return PART_COUNT_PI_Q[_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_count_quality_factor: Invalid resistor quality ID {_quality_id}."
+        )
+
+
+def get_part_stress_quality_factor(
+    attributes: Dict[str, Union[float, int, str]]
+) -> float:
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the quality factor (piQ) for the passed quality ID.
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
+    _quality_id = attributes["quality_id"]
+    _subcategory_id = attributes["subcategory_id"]
+
+    try:
+        return PART_STRESS_PI_Q[_subcategory_id][_quality_id - 1]
+    except IndexError:
+        raise IndexError(
+            f"get_part_stress_quality_factor: Invalid resistor quality "
+            f"ID {_quality_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_stress_quality_factor: Invalid resistor subcategory "
+            f"ID {_subcategory_id}."
+        )
 
 
 def get_resistance_factor(
@@ -929,56 +345,68 @@ def get_resistance_factor(
     :param specification_id: the resistor's governing specification identifier.
     :param family_id: the resistor family identifier.
     :param resistance: the resistance in ohms of the resistor.
-    :return: _pi_r; the calculated resistance factor value.
-    :rtype: float :raise: IndexError if passed an unknown specification ID or family ID.
-        :raise: KeyError if passed an unknown subcategory ID.
+    :return: the calculated resistance factor value.
+    :rtype: float
+    :raises: IndexError if passed an invalid family ID or specification ID.
+    :raises: KeyError if passed an invalid subcategory ID.
     """
     _pi_r = 0.0
+    _dic_breakpoints = {
+        1: [1.0e5, 1.0e6, 1.0e7],
+        2: [1.0e5, 1.0e6, 1.0e7],
+        3: [100.0, 1.0e5, 1.0e6],
+        5: [1.0e4, 1.0e5, 1.0e6],
+        6: [
+            [500.0, 1.0e3, 5.0e3, 7.5e3, 1.0e4, 1.5e4, 2.0e4],
+            [100.0, 1.0e3, 1.0e4, 1.0e5, 1.5e5, 2.0e5],
+        ],
+        7: [500.0, 1.0e3, 5.0e3, 1.0e4, 2.0e4],
+        9: [2.0e3, 5.0e3],
+        10: [1.0e4, 2.0e4, 5.0e4, 1.0e5, 2.0e5],
+        11: [2.0e3, 5.0e3],
+        12: [2.0e3, 5.0e3],
+        13: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
+        14: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
+        15: [1.0e4, 5.0e4, 2.0e5, 1.0e6],
+    }
 
-    if subcategory_id not in [4, 8]:
-        _index = -1
-        _dic_breakpoints = {
-            1: [1.0e5, 1.0e6, 1.0e7],
-            2: [1.0e5, 1.0e6, 1.0e7],
-            3: [100.0, 1.0e5, 1.0e6],
-            5: [1.0e4, 1.0e5, 1.0e6],
-            6: [
-                [500.0, 1.0e3, 5.0e3, 7.5e3, 1.0e4, 1.5e4, 2.0e4],
-                [100.0, 1.0e3, 1.0e4, 1.0e5, 1.5e5, 2.0e5],
-            ],
-            7: [500.0, 1.0e3, 5.0e3, 1.0e4, 2.0e4],
-            9: [2.0e3, 5.0e3],
-            10: [1.0e4, 2.0e4, 5.0e4, 1.0e5, 2.0e5],
-            11: [2.0e3, 5.0e3],
-            12: [2.0e3, 5.0e3],
-            13: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
-            14: [5.0e4, 1.0e5, 2.0e5, 5.0e5],
-            15: [1.0e4, 5.0e4, 2.0e5, 1.0e6],
-        }
-        if subcategory_id == 6:
-            _breaks = _dic_breakpoints[subcategory_id][specification_id - 1]
-        else:
-            _breaks = _dic_breakpoints[subcategory_id]
+    try:
+        if subcategory_id not in [4, 8]:
+            _index = -1
+            if subcategory_id == 6:
+                _breaks = _dic_breakpoints[subcategory_id][specification_id - 1]
+            else:
+                _breaks = _dic_breakpoints[subcategory_id]
 
-        for _index, _value in enumerate(_breaks):
-            _diff = _value - resistance
-            if (len(_breaks) == 1 and _diff < 0) or _diff >= 0:
-                break
+            for _index, _value in enumerate(_breaks):
+                _diff = _value - resistance
+                if (len(_breaks) == 1 and _diff < 0) or _diff >= 0:
+                    break
 
-        # Resistance factor (piR) dictionary of values.  The key is the
-        # subcategory ID.  The index in the returned list is the resistance
-        # range breakpoint (breakpoint values are in _lst_breakpoints below).
-        # For subcategory ID 6 and 7, the specification ID selects the correct
-        # set of lists, then the style ID selects the proper list of piR values
-        # and then the resistance range breakpoint is used to select
-        if subcategory_id in {6, 7}:
-            _pi_r = PI_R[subcategory_id][specification_id - 1][family_id - 1][
-                _index + 1
-            ]
-        else:
-            _pi_r = PI_R[subcategory_id][_index + 1]
+            # Resistance factor (piR) dictionary of values.  The key is the
+            # subcategory ID.  The index in the returned list is the resistance
+            # range breakpoint (breakpoint values are in _lst_breakpoints below).
+            # For subcategory ID 6 and 7, the specification ID selects the correct
+            # set of lists, then the style ID selects the proper list of piR values
+            # and then the resistance range breakpoint is used to select
+            if subcategory_id in {6, 7}:
+                _pi_r = PI_R[subcategory_id][specification_id - 1][family_id - 1][
+                    _index + 1
+                ]
+            else:
+                _pi_r = PI_R[subcategory_id][_index + 1]
 
-    return _pi_r
+        return _pi_r
+    except IndexError:
+        raise IndexError(
+            f"get_resistance_factor: Invalid resistor family ID "
+            f"{family_id} or specification ID {specification_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_resistance_factor: Invalid resistor subcategory ID "
+            f"{subcategory_id}."
+        )
 
 
 def get_voltage_factor(
@@ -990,7 +418,8 @@ def get_voltage_factor(
     :param subcategory_id: the subcategory identifier.
     :param voltage_ratio: the ratio of voltages on each half of the potentiometer.
     :return: _pi_v; the selected voltage factor.
-    :rtype: float :raise: KeyError if passed an unknown subcategory ID.
+    :rtype: float
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     _index = -1
     _breaks = [0.0]
@@ -1008,11 +437,16 @@ def get_voltage_factor(
         ):
             break
 
-    return PI_V[subcategory_id][_index]
+    try:
+        return PI_V[subcategory_id][_index]
+    except KeyError:
+        raise KeyError(
+            f"get_voltage_factor: Invalid resistor subcategory ID {subcategory_id}."
+        )
 
 
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value of various parameters.
 
@@ -1036,21 +470,6 @@ def set_default_values(
         attributes["temperature_case"] = attributes["temperature_active"] + 28.0
 
     return attributes
-
-
-def _do_calculate_lambda_b(
-    factors: List[float],
-    ref_temp: float,
-    temperature_active: float,
-    power_ratio: float,
-) -> float:
-    """Calculate the base hazard rate using the part stress method."""
-    f0, f1, f2, f3, f4, f5 = factors
-    return (
-        f0
-        * exp(f1 * ((temperature_active + 273.0) / ref_temp)) ** f2
-        * exp(((power_ratio / f3) * ((temperature_active + 273.0) / 273.0)) ** f4) ** f5
-    )
 
 
 def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
@@ -1124,7 +543,7 @@ def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
 def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
     """Set the default number of elements for resistors.
 
-    :param resistance: the current number of elements.
+    :param n_elements: the current number of elements.
     :param subcategory_id: the subcategory ID of the resistor with missing defaults.
     :return: _n_elements
     :rtype: int

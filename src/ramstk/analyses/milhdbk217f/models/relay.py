@@ -32,33 +32,39 @@ def calculate_part_stress(
     :param attributes: the hardware attributes dict for the relay being calculated.
     :return: the hardware attributes dict with updated values.
     :rtype: dict
+    :raises: KeyError if the attribute dict is missing one or more keys.
     """
-    attributes["piCYC"] = _calculate_cycling_factor(
-        attributes["quality_id"], attributes["n_cycles"]
-    )
-    attributes["piL"] = _calculate_load_stress_factor(
-        attributes["technology_id"], attributes["current_ratio"]
-    )
-    attributes["piF"] = _get_application_construction_factor(
-        attributes["quality_id"],
-        attributes["contact_rating_id"],
-        attributes["construction_id"],
-        attributes["application_id"],
-    )
-
-    if attributes["subcategory_id"] == 1:
-        attributes["piC"] = PI_C[attributes["subcategory_id"]][
-            attributes["contact_form_id"] - 1
-        ]
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piL"]
-            * attributes["piC"]
-            * attributes["piCYC"]
-            * attributes["piF"]
+    try:
+        attributes["piCYC"] = _calculate_cycling_factor(
+            attributes["quality_id"], attributes["n_cycles"]
+        )
+        attributes["piL"] = _calculate_load_stress_factor(
+            attributes["technology_id"], attributes["current_ratio"]
+        )
+        attributes["piF"] = _get_application_construction_factor(
+            attributes["quality_id"],
+            attributes["contact_rating_id"],
+            attributes["construction_id"],
+            attributes["application_id"],
         )
 
-    return attributes
+        if attributes["subcategory_id"] == 1:
+            attributes["piC"] = PI_C[attributes["subcategory_id"]][
+                attributes["contact_form_id"] - 1
+            ]
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piL"]
+                * attributes["piC"]
+                * attributes["piCYC"]
+                * attributes["piF"]
+            )
+
+        return attributes
+    except KeyError as err:
+        raise KeyError(
+            f"calculate_part_stress: Missing required relay attribute: {err}."
+        )
 
 
 def calculate_part_stress_lambda_b(
