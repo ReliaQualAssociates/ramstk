@@ -622,3 +622,18 @@ def test_calculate_part_stress(
         assert test_attributes_relay["hazard_rate_active"] == pytest.approx(
             0.0064130981
         )
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_relay")
+def test_calculate_part_stress_missing_attribute_key(
+    test_attributes_relay,
+):
+    """Raises a KeyError when a required attribute is missing."""
+    test_attributes_relay.pop("n_cycles")
+    with pytest.raises(
+        KeyError,
+        match=r"calculate_part_stress: Missing required relay attribute: "
+        r"'n_cycles'.",
+    ):
+        relay.calculate_part_stress(test_attributes_relay)
