@@ -1,13 +1,13 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
-PART_COUNT_LAMBDA_B: Any
-PART_COUNT_PI_Q: Any
-PART_STRESS_PI_Q: Any
-PI_C: Any
-PI_E: Any
-PI_R: Any
-PI_V: Any
+PART_COUNT_LAMBDA_B: Dict[int, List[float]]
+PART_COUNT_PI_Q: List[float]
+PART_STRESS_PI_Q: Dict[int, List[float]]
+PI_C: Dict[int, List[float]]
+PI_E: Dict[int, List[float]]
+PI_R: Dict[int, List[float] | List[List[float]]]
+PI_V: Dict[int, List[float]]
 REF_TEMPS: Dict[int, float]
 REF_TEMPS_FILM: Dict[int, float]
 

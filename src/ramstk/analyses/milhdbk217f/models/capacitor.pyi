@@ -1,13 +1,16 @@
 # Standard Library Imports
 from typing import Any, Dict, List, Union
 
-PART_COUNT_LAMBDA_B: Dict[int, Any]
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | List[float]]
 PART_COUNT_PI_Q: List[float]
 PART_STRESS_PI_Q: Dict[int, List[float]]
 PI_C: Dict[int, float]
 PI_CF: Dict[int, float]
 PI_E: List[float]
 REF_TEMPS: Dict[float, float]
+DEFAULT_CAPACITANCE: Dict[int, float | List[float]]
+CAPACITANCE_FACTORS: Dict[int, List[float]]
+LAMBDA_B_FACTORS: Dict[int, List[float]]
 
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]

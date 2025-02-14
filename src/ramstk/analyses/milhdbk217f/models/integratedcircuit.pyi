@@ -1,10 +1,10 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Tuple, Union
+from typing import Dict, List, Tuple, Union
 
-ACTIVATION_ENERGY: Dict[int, Any]
+ACTIVATION_ENERGY: Dict[int, float | List[float]]
 C1: Dict[int, List[List[float]]]
 C2: Dict[int, List[float]]
-PART_COUNT_LAMBDA_B: Dict[int, Any]
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | Dict[int, List[float]]]
 PI_A: Dict[int, List[float]]
 PI_E: List[float]
 PI_PT: Dict[int, float]

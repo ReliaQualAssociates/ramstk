@@ -1,9 +1,9 @@
 # Standard Library Imports
-from typing import Any, Dict, List, Union
+from typing import Dict, List, Union
 
 PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]]
 PART_COUNT_PI_Q: List[float]
-PART_STRESS_PI_Q: Dict[int, Any]
+PART_STRESS_PI_Q: Dict[int, Dict[int, List[float]] | List[float]]
 PI_E: Dict[int, List[float]]
 REF_TEMPS: Dict[int, Dict[int, float]]
 
