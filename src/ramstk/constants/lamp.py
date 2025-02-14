@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Lamp MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = {
+# Standard Library Imports
+from typing import Dict, List
+
+PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         3.9,
         7.8,
@@ -41,4 +44,19 @@ PART_COUNT_LAMBDA_B = {
         350.0,
     ],
 }
-PI_E = [1.0, 2.0, 3.0, 3.0, 4.0, 4.0, 4.0, 5.0, 6.0, 5.0, 0.7, 4.0, 6.0, 27.0]
+PI_E: List[float] = [
+    1.0,
+    2.0,
+    3.0,
+    3.0,
+    4.0,
+    4.0,
+    4.0,
+    5.0,
+    6.0,
+    5.0,
+    0.7,
+    4.0,
+    6.0,
+    27.0,
+]

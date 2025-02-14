@@ -376,7 +376,7 @@ PART_COUNT_LAMBDA_B_DICT: Dict[int, Dict[int, List[float]]] = {
         ],
     },
 }
-PART_COUNT_LAMBDA_B_LIST = {
+PART_COUNT_LAMBDA_B_LIST: Dict[int, List[float]] = {
     4: [
         0.014,
         0.099,
@@ -530,8 +530,6 @@ PART_STRESS_PI_Q_HF_DIODE: Dict[int, List[float]] = {
     5: [0.5, 1.0, 1.8, 2.5],
     6: [0.5, 1.0, 5.0, 25.0, 50.0],
 }
-
-# Constants used to calculate the temperature factor (piT)
 PI_T_DICT: Dict[int, List[float]] = {
     1: [2903.0, 0.1, 2.0],
     2: [5794.0, 0.38, 7.55],
@@ -552,9 +550,7 @@ PI_T_SCALAR: Dict[int, float] = {
     12: 2790.0,
     13: 4635.0,
 }
-
-# Constants used to calculate the junction temperature.
-CASE_TEMPERATURE = [
+CASE_TEMPERATURE: List[float] = [
     35.0,
     45.0,
     50.0,
@@ -570,7 +566,7 @@ CASE_TEMPERATURE = [
     60.0,
     45.0,
 ]
-THETA_JC = [
+THETA_JC: List[float] = [
     70.0,
     10.0,
     70.0,
@@ -637,11 +633,8 @@ THETA_JC = [
     70.0,
     70.0,
 ]
-
-# Constants used to calculate the construction factor (piC).
-PI_C = [1.0, 2.0]
-
-PI_E = {
+PI_C: List[float] = [1.0, 2.0]
+PI_E: Dict[int, List[float]] = {
     1: [
         1.0,
         6.0,
@@ -851,6 +844,4 @@ PI_E = {
         450.0,
     ],
 }
-
-# Constants used to calculate the matching factor (piM).
-PI_M = [1.0, 2.0, 4.0]
+PI_M: List[float] = [1.0, 2.0, 4.0]

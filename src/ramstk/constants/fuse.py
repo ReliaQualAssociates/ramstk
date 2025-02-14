@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Fuse MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = [
+# Standard Library Imports
+from typing import List
+
+PART_COUNT_LAMBDA_B: List[float] = [
     0.01,
     0.02,
     0.06,
@@ -23,7 +26,7 @@ PART_COUNT_LAMBDA_B = [
     0.21,
     2.3,
 ]
-PI_E = [
+PI_E: List[float] = [
     1.0,
     2.0,
     8.0,

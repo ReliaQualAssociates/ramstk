@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Integrated circuit MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-ACTIVATION_ENERGY = {
+ACTIVATION_ENERGY: Dict[int, float | List[float]] = {
     1: 0.65,
     2: [
         0.4,
@@ -36,7 +38,7 @@ ACTIVATION_ENERGY = {
     9: [1.5, 1.4],
     10: 0.35,
 }
-C1 = {
+C1: Dict[int, List[List[float]]] = {
     1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
     2: [
         [0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
@@ -50,14 +52,14 @@ C1 = {
     8: [[0.0078, 0.016, 0.031, 0.062], [0.0052, 0.011, 0.021, 0.042]],
     9: [[4.5, 7.2], [25.0, 51.0]],
 }
-C2 = {
+C2: Dict[int, List[float]] = {
     1: [2.8e-4, 1.08],
     2: [9.0e-5, 1.51],
     3: [3.0e-5, 1.82],
     4: [3.0e-5, 2.01],
     5: [3.6e-4, 1.08],
 }
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | Dict[int, List[float]]] = {
     1: {
         1: [
             0.0095,
@@ -1017,8 +1019,8 @@ PART_COUNT_LAMBDA_B = {
         },
     },
 }
-PI_A = {1: [1.0, 3.0, 3.0], 2: [1.0]}
-PI_E = [
+PI_A: Dict[int, List[float]] = {1: [1.0, 3.0, 3.0], 2: [1.0]}
+PI_E: List[float] = [
     0.5,
     2.0,
     4.0,
@@ -1034,5 +1036,5 @@ PI_E = [
     12.0,
     220.0,
 ]
-PI_PT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
-PI_Q = [0.25, 1.0, 2.0]
+PI_PT: Dict[int, float] = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
+PI_Q: List[float] = [0.25, 1.0, 2.0]

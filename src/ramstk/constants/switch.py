@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Switch MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         0.0010,
         0.0030,
@@ -74,7 +76,7 @@ PART_COUNT_LAMBDA_B = {
         670.0,
     ],
 }
-PART_COUNT_LAMBDA_B_BREAKER = {
+PART_COUNT_LAMBDA_B_BREAKER: Dict[int, List[float]] = {
     1: [
         0.11,
         0.23,
@@ -108,24 +110,24 @@ PART_COUNT_LAMBDA_B_BREAKER = {
         0.0,
     ],
 }
-PART_COUNT_PI_Q = {
+PART_COUNT_PI_Q: Dict[int, List[float]] = {
     1: [1.0, 20.0],
     2: [1.0, 20.0],
     3: [1.0, 50.0],
     4: [1.0, 10.0],
     5: [1.0, 8.4],
 }
-PART_STRESS_LAMBDA_B_TOGGLE = {
+PART_STRESS_LAMBDA_B_TOGGLE: Dict[int, List[float]] = {
     1: [0.00045, 0.034],
     2: [0.0027, 0.04],
 }
-PART_STRESS_LAMBDA_B_BREAKER = [0.02, 0.038, 0.038]
-PART_STRESS_PI_Q = [1.0, 8.4]
-PI_C = {
+PART_STRESS_LAMBDA_B_BREAKER: List[float] = [0.02, 0.038, 0.038]
+PART_STRESS_PI_Q: List[float] = [1.0, 8.4]
+PI_C: Dict[int, List[float]] = {
     1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
     5: [1.0, 2.0, 3.0, 4.0],
 }
-PI_E = {
+PI_E: Dict[int, List[float]] = {
     1: [
         1.0,
         3.0,

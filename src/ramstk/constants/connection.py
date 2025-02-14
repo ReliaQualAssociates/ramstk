@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Connection MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = {
+# Standard Library Imports
+from typing import Dict, List
+
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
             0.011,
@@ -205,13 +208,13 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
 }
-PART_COUNT_PI_Q = [1.0, 2.0]
-PART_STRESS_LAMBDA_B = {
+PART_COUNT_PI_Q: List[float] = [1.0, 2.0]
+PART_STRESS_LAMBDA_B: Dict[int, List[float]] = {
     4: [0.000041, 0.00026],
     5: [0.0026, 0.00014, 0.00026, 0.00005, 0.0000035, 0.00012, 0.000069],
 }
-PART_STRESS_PI_Q = {4: [1.0, 2.0], 5: [1.0, 1.0, 2.0, 20.0]}
-PI_E = {
+PART_STRESS_PI_Q: Dict[int, List[float]] = {4: [1.0, 2.0], 5: [1.0, 1.0, 2.0, 20.0]}
+PI_E: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
             1.0,
@@ -329,17 +332,23 @@ PI_E = {
         420.0,
     ],
 }
-PI_K = [1.0, 1.5, 2.0, 3.0, 4.0]
-REF_TEMPS = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
-INSERT_TEMP_FACTORS = {12: 0.1, 16: 0.274, 20: 0.64, 22: 0.989, 26: 2.1}
-LAMBDA_B_FACTORS = {
+PI_K: List[float] = [1.0, 1.5, 2.0, 3.0, 4.0]
+REF_TEMPS: Dict[int, float] = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0, 5: 423.0}
+INSERT_TEMP_FACTORS: Dict[int, float] = {
+    12: 0.1,
+    16: 0.274,
+    20: 0.64,
+    22: 0.989,
+    26: 2.1,
+}
+LAMBDA_B_FACTORS: Dict[int, List[float]] = {
     1: [0.2, -1592.0, 5.36],
     2: [0.431, -2073.6, 4.66],
     3: [0.19, -1298.0, 4.25],
     4: [0.77, -1528.8, 4.72],
     5: [0.216, -2073.6, 4.66],
 }
-FACTOR_KEYS = {
+FACTOR_KEYS: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [2, 2, 2, 2, 2, 2],
         2: [2, 2, 2, 2, 2, 2],

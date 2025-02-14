@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Electronic Filter MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         0.022,
         0.044,
@@ -58,8 +60,8 @@ PART_COUNT_LAMBDA_B = {
         32.0,
     ],
 }
-PART_STRESS_LAMBDA_B = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
-PI_E = [
+PART_STRESS_LAMBDA_B: Dict[int, float] = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
+PI_E: List[int, float] = [
     1.0,
     2.0,
     6.0,
@@ -75,4 +77,4 @@ PI_E = [
     15.0,
     120.0,
 ]
-PI_Q = [1.0, 2.9]
+PI_Q: List[int, float] = [1.0, 2.9]

@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Resistor MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, List[float]] = {
     1: [
         0.0005,
         0.0022,
@@ -318,8 +320,8 @@ PART_COUNT_LAMBDA_B = {
         52.0,
     ],
 }
-PART_COUNT_PI_Q = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
-PART_STRESS_PI_Q = {
+PART_COUNT_PI_Q: List[float] = [0.030, 0.10, 0.30, 1.0, 3.0, 10.0]
+PART_STRESS_PI_Q: Dict[int, List[float]] = {
     1: [0.03, 0.1, 0.3, 1.0, 5.0, 15.0],
     2: [0.03, 0.1, 0.3, 1.0, 5.0, 5.0, 15.0],
     3: [1.0, 3.0],
@@ -336,8 +338,8 @@ PART_STRESS_PI_Q = {
     14: [2.5, 5.0],
     15: [2.0, 4.0],
 }
-PI_C = {10: [2.0, 1.0, 3.0, 1.5], 12: [2.0, 1.0]}
-PI_E = {
+PI_C: Dict[int, List[float]] = {10: [2.0, 1.0, 3.0, 1.5], 12: [2.0, 1.0]}
+PI_E: Dict[int, List[float]] = {
     1: [
         1.0,
         3.0,
@@ -579,7 +581,7 @@ PI_E = {
         1000.0,
     ],
 }
-PI_R = {
+PI_R: Dict[int, List[float] | List[List[float]]] = {
     1: [1.0, 1.1, 1.6, 2.5],
     2: [1.0, 1.1, 1.6, 2.5],
     3: [1.0, 1.2, 1.3, 3.5],
@@ -659,7 +661,7 @@ PI_R = {
     14: [1.0, 1.1, 1.2, 1.4, 1.8],
     15: [1.0, 1.1, 1.2, 1.4, 1.8],
 }
-PI_V = {
+PI_V: Dict[int, List[float]] = {
     9: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
     10: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
     11: [1.1, 1.05, 1.0, 1.1, 1.22, 1.4, 2.0],
@@ -668,7 +670,7 @@ PI_V = {
     14: [1.0, 1.05, 1.2],
     15: [1.0, 1.05, 1.2],
 }
-REF_TEMPS = {
+REF_TEMPS: Dict[int, float] = {
     1: 343.0,
     3: 298.0,
     5: 398.0,
@@ -682,4 +684,4 @@ REF_TEMPS = {
     14: 343.0,
     15: 343.0,
 }
-REF_TEMPS_FILM = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}
+REF_TEMPS_FILM: Dict[int, float] = {1: 343.0, 2: 343.0, 3: 398.0, 4: 398.0}

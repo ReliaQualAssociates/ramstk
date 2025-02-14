@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Meter MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
             10.0,
@@ -94,10 +96,10 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
 }
-PART_COUNT_PI_Q = {1: [1.0, 1.0], 2: [1.0, 3.4]}
-PART_STRESS_LAMBDA_B = {1: [20.0, 30.0, 80.0], 2: 0.09}
-PART_STRESS_PI_Q = [1.0, 3.4]
-PI_E = {
+PART_COUNT_PI_Q: Dict[int, List[float]] = {1: [1.0, 1.0], 2: [1.0, 3.4]}
+PART_STRESS_LAMBDA_B: Dict[int, List[float] | float] = {1: [20.0, 30.0, 80.0], 2: 0.09}
+PART_STRESS_PI_Q: List[float] = [1.0, 3.4]
+PI_E: Dict[int, List[float]] = {
     1: [
         1.0,
         2.0,
@@ -131,4 +133,4 @@ PI_E = {
         0.0,
     ],
 }
-PI_F = [1.0, 1.0, 2.8]
+PI_F: List[float] = [1.0, 1.0, 2.8]

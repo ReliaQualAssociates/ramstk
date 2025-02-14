@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Crystal MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = [
+# Standard Library Imports
+from typing import List
+
+PART_COUNT_LAMBDA_B: List[float] = [
     0.032,
     0.096,
     0.32,
@@ -23,9 +26,9 @@ PART_COUNT_LAMBDA_B = [
     1.0,
     16.0,
 ]
-PART_COUNT_PI_Q = [1.0, 3.4]
-PART_STRESS_PI_Q = [1.0, 2.1]
-PI_E = [
+PART_COUNT_PI_Q: List[float] = [1.0, 3.4]
+PART_STRESS_PI_Q: List[float] = [1.0, 2.1]
+PI_E: List[float] = [
     1.0,
     3.0,
     10.0,

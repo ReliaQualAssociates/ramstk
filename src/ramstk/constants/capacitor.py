@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Capacitor MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = {
+# Standard Library Imports
+from typing import Dict, List
+
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
             0.0036,
@@ -331,8 +334,8 @@ PART_COUNT_LAMBDA_B = {
         0.0,
     ],
 }
-PART_COUNT_PI_Q = [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
-PART_STRESS_PI_Q = {
+PART_COUNT_PI_Q: List[float] = [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
+PART_STRESS_PI_Q: Dict[int, List[float]] = {
     1: [3.0, 7.0],
     2: [1.0, 3.0, 10.0],
     3: [0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0],
@@ -353,9 +356,9 @@ PART_STRESS_PI_Q = {
     18: [5.0, 20.0],
     19: [3.0, 20.0],
 }
-PI_C = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
-PI_CF = {1: 0.1, 2: 1.0}
-PI_E = [
+PI_C: Dict[int, float] = {1: 0.3, 2: 1.0, 3: 2.0, 4: 2.5, 5: 3.0}
+PI_CF: Dict[int, float] = {1: 0.1, 2: 1.0}
+PI_E: List[float] = [
     1.0,
     6.0,
     9.0,
@@ -371,7 +374,7 @@ PI_E = [
     32.0,
     320.0,
 ]
-REF_TEMPS = {
+REF_TEMPS: Dict[float, float] = {
     65.0: 338.0,
     70.0: 343.0,
     85.0: 358.0,
@@ -382,7 +385,7 @@ REF_TEMPS = {
     175.0: 448.0,
     200.0: 473.0,
 }
-DEFAULT_CAPACITANCE = {
+DEFAULT_CAPACITANCE: Dict[int, float | List[float]] = {
     1: 0.15e-6,
     2: 0.061e-6,
     3: [0.027e-6, 0.033e-6],
@@ -403,7 +406,7 @@ DEFAULT_CAPACITANCE = {
     18: 0.0,
     19: 0.0,
 }
-CAPACITANCE_FACTORS = {
+CAPACITANCE_FACTORS: Dict[int, List[float]] = {
     1: [1.2, 0.095],
     2: [1.4, 0.12],
     3: [1.6, 0.13],
@@ -424,7 +427,7 @@ CAPACITANCE_FACTORS = {
     18: [1.0, 0.0],
     19: [1.0, 0.0],
 }
-LAMBDA_B_FACTORS = {
+LAMBDA_B_FACTORS: Dict[int, List[float]] = {
     1: [0.00086, 0.4, 5.0, 2.5, 1.8],
     2: [0.00115, 0.4, 5.0, 2.5, 1.8],
     3: [0.0005, 0.4, 5.0, 2.5, 1.8],

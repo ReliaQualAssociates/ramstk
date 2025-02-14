@@ -7,8 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Relay MIL-HDBK-217F Constants Module."""
 
+# Standard Library Imports
+from typing import Dict, List
 
-PART_COUNT_LAMBDA_B = {
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
             0.13,
@@ -142,10 +144,13 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
 }
-PART_COUNT_PI_Q = {1: [0.6, 3.0, 9.0], 2: [0.0, 1.0, 4.0]}
-PART_STRESS_PI_Q = {1: [0.1, 0.3, 0.45, 0.6, 1.0, 1.5, 3.0], 2: [1.0, 4.0]}
-PI_C = {1: [1.0, 1.5, 1.75, 2.0, 2.5, 3.0, 4.25, 5.5, 8.0]}
-PI_E = {
+PART_COUNT_PI_Q: Dict[int, List[float]] = {1: [0.6, 3.0, 9.0], 2: [0.0, 1.0, 4.0]}
+PART_STRESS_PI_Q: Dict[int, List[float]] = {
+    1: [0.1, 0.3, 0.45, 0.6, 1.0, 1.5, 3.0],
+    2: [1.0, 4.0],
+}
+PI_C: Dict[int, List[float]] = {1: [1.0, 1.5, 1.75, 2.0, 2.5, 3.0, 4.25, 5.5, 8.0]}
+PI_E: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
             1.0,
@@ -197,7 +202,7 @@ PI_E = {
         590.0,
     ],
 }
-PI_F = {
+PI_F: Dict[int, Dict[int, Dict[int, List[float]]]] = {
     1: {
         1: {
             1: [4.0, 8.0],

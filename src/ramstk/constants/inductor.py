@@ -7,7 +7,10 @@
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Inductive devices MIL-HDBK-217F Constants Module."""
 
-PART_COUNT_LAMBDA_B = {
+# Standard Library Imports
+from typing import Dict, List
+
+PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
     1: {
         1: [
             0.0035,
@@ -109,12 +112,12 @@ PART_COUNT_LAMBDA_B = {
         ],
     },
 }
-PART_COUNT_PI_Q = [0.25, 1.0, 10.0]
-PART_STRESS_PI_Q = {
+PART_COUNT_PI_Q: List[int, float] = [0.25, 1.0, 10.0]
+PART_STRESS_PI_Q: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {1: [1.5, 5.0], 2: [3.0, 7.5], 3: [8.0, 30.0], 4: [12.0, 30.0]},
     2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
 }
-PI_E = {
+PI_E: Dict[int, List[float]] = {
     1: [
         1.0,
         6.0,
@@ -148,7 +151,7 @@ PI_E = {
         610.0,
     ],
 }
-REF_TEMPS = {
+REF_TEMPS: Dict[int, Dict[int, float]] = {
     1: {1: 329.0, 2: 352.0, 3: 364.0, 4: 400.0, 5: 398.0, 6: 477.0},
     2: {1: 329.0, 2: 352.0, 3: 364.0, 4: 409.0},
 }
