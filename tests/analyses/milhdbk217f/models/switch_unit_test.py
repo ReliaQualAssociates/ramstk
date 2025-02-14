@@ -590,6 +590,7 @@ def test_calculate_part_stress_picyc_one(
     test_attributes_switch["application_id"] = 1
     test_attributes_switch["hazard_rate_active"] = 0.00045
     test_attributes_switch["n_cycles"] = 1.0
+    test_attributes_switch["piCYC"] = 1.0
     _attributes = switch.calculate_part_stress(test_attributes_switch)
 
     assert isinstance(_attributes, dict)

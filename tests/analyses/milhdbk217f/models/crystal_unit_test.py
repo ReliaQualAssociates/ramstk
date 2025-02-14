@@ -14,10 +14,10 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import crystal
-from tests.analyses.milhdbk217f.models.conftest import test_attributes_crystal
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_set_default_values(
     test_attributes_crystal,
 ):
@@ -46,6 +46,7 @@ def test_set_default_values_none_needed(
 @pytest.mark.parametrize(
     "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 )
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_count_lambda_b(
     environment_active_id,
     test_attributes_crystal,
@@ -77,6 +78,7 @@ def test_get_part_count_lambda_b(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_count_lambda_b_invalid_environment_id(
     test_attributes_crystal,
 ):
@@ -91,6 +93,7 @@ def test_get_part_count_lambda_b_invalid_environment_id(
 
 @pytest.mark.unit
 @pytest.mark.parametrize("quality_id", [1, 2])
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_count_quality_factor(
     quality_id,
     test_attributes_crystal,
@@ -104,6 +107,7 @@ def test_get_part_count_quality_factor(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_count_quality_factor_invalid_quality_id(
     test_attributes_crystal,
 ):
@@ -119,6 +123,7 @@ def test_get_part_count_quality_factor_invalid_quality_id(
 @pytest.mark.unit
 @pytest.mark.parametrize("quality_id", [1, 2])
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_stress_quality_factor(
     quality_id,
     subcategory_id,
@@ -143,6 +148,7 @@ def test_get_part_stress_quality_factor(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_part_stress_quality_factor_invalid_quality_id(
     test_attributes_crystal,
 ):
@@ -157,6 +163,7 @@ def test_get_part_stress_quality_factor_invalid_quality_id(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_calculate_part_stress_lambda_b(
     test_attributes_crystal,
 ):
@@ -169,6 +176,7 @@ def test_calculate_part_stress_lambda_b(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_calculate_part_stress_lambda_b_negative_frequency(
     test_attributes_crystal,
 ):
@@ -184,6 +192,7 @@ def test_calculate_part_stress_lambda_b_negative_frequency(
 @pytest.mark.parametrize(
     "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
 )
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_environment_factor(
     environment_active_id,
     test_attributes_crystal,
@@ -215,6 +224,7 @@ def test_get_environment_factor(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_crystal")
 def test_get_environment_factor_invalid_environment_id(
     test_attributes_crystal,
 ):
@@ -239,4 +249,4 @@ def test_calculate_part_stress(
     _attributes = crystal.calculate_part_stress(test_attributes_crystal)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.2781723)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.022077167)

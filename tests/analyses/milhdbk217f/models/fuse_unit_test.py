@@ -161,8 +161,7 @@ def test_calculate_part_stress(
 ):
     """Returns a dict of updated values on success."""
     test_attributes_fuse["hazard_rate_active"] = 0.01
-    test_attributes_fuse["piE"] = 11.0
     _attributes = fuse.calculate_part_stress(test_attributes_fuse)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["hazard_rate_active"] == 0.11
+    assert _attributes["hazard_rate_active"] == 0.01

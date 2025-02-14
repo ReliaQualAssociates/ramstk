@@ -324,8 +324,8 @@ def test_calculate_part_stress_lambda_b_invalid_subcategory_id(
     test_attributes_inductor["subcategory_id"] = 101
     with pytest.raises(
         KeyError,
-        match=r"calculate_part_stress_lambda_b: Invalid subcategory ID 101 or "
-        r"insulation ID 3.",
+        match=r"calculate_part_stress_lambda_b: Invalid inductive device subcategory "
+        r"ID 101 or insulation ID 3.",
     ):
         inductor.calculate_part_stress_lambda_b(test_attributes_inductor)
 
@@ -339,8 +339,8 @@ def test_calculate_part_stress_lambda_b_invalid_insulation_id(
     test_attributes_inductor["insulation_id"] = 41
     with pytest.raises(
         KeyError,
-        match=r"calculate_part_stress_lambda_b: Invalid subcategory ID 1 or "
-        r"insulation ID 41.",
+        match=r"calculate_part_stress_lambda_b: Invalid inductive device subcategory "
+        r"ID 1 or insulation ID 41.",
     ):
         inductor.calculate_part_stress_lambda_b(test_attributes_inductor)
 
@@ -576,7 +576,7 @@ def test_calculate_temperature_rise_power_loss_weight_zero_weight():
     with pytest.raises(
         ZeroDivisionError,
         match=r"calculate_temperature_rise_power_loss_weight: Inductive device weight "
-        r"may not be zero.",
+        r"must not be zero.",
     ):
         inductor.calculate_temperature_rise_power_loss_weight(0.387, 0.0)
 
@@ -598,7 +598,7 @@ def test_calculate_temperature_rise_input_power_weight_zero_weight():
     with pytest.raises(
         ZeroDivisionError,
         match=r"calculate_temperature_rise_input_power_weight: Inductive device "
-        r"weight may not be zero.",
+        r"weight must not be zero.",
     ):
         inductor.calculate_temperature_rise_input_power_weight(0.387, 0.0)
 

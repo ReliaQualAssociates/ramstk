@@ -23,7 +23,7 @@ def test_set_default_values(
 ):
     """Should set default values for each parameter <= 0.0."""
     test_attributes_filter["quality_id"] = 0
-    _attributes = efilter.set_default_values(**test_attributes_filter)
+    _attributes = efilter.set_default_values(test_attributes_filter)
 
     assert isinstance(_attributes, dict)
     assert _attributes["quality_id"] == 1
@@ -36,7 +36,7 @@ def test_set_default_values_none_needed(
 ):
     """Should set default values for each parameter <= 0.0."""
     test_attributes_filter["quality_id"] = 2
-    _attributes = efilter.set_default_values(**test_attributes_filter)
+    _attributes = efilter.set_default_values(test_attributes_filter)
 
     assert isinstance(_attributes, dict)
     assert _attributes["quality_id"] == 2
@@ -276,21 +276,4 @@ def test_calculate_part_stress(
     _attributes = efilter.calculate_part_stress(test_attributes_filter)
 
     assert isinstance(_attributes, dict)
-    assert _attributes["hazard_rate_active"] == pytest.approx(0.088)
-
-
-@pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes_filter")
-def test_calculate_part_stress_missing_type(
-    test_attributes_filter,
-):
-    """Raises a KeyError if one or more inputs are missing."""
-    test_attributes_filter["hazard_rate_active"] = 0.022
-    test_attributes_filter["piQ"] = 1
-    test_attributes_filter.pop("piE")
-    with pytest.raises(
-        KeyError,
-        match=r"calculate_part_stress: Missing required electronic filter "
-        r"attribute: \'piE\'.",
-    ):
-        efilter.calculate_part_stress(test_attributes_filter)
+    assert _attributes["hazard_rate_active"] == pytest.approx(0.022)

@@ -112,7 +112,7 @@ PART_COUNT_LAMBDA_B: Dict[int, Dict[int, List[float]]] = {
         ],
     },
 }
-PART_COUNT_PI_Q: List[int, float] = [0.25, 1.0, 10.0]
+PART_COUNT_PI_Q: List[float] = [0.25, 1.0, 10.0]
 PART_STRESS_PI_Q: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {1: [1.5, 5.0], 2: [3.0, 7.5], 3: [8.0, 30.0], 4: [12.0, 30.0]},
     2: [0.03, 0.1, 0.3, 1.0, 4.0, 20.0],
