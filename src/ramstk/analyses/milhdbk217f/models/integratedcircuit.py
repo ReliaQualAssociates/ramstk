@@ -28,14 +28,16 @@ from ramstk.constants.integrated_circuit import (
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress active hazard rate for a integrated circuit.
+    """Calculate the part stress active hazard rate for an integrated circuit.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
-    :param attributes: the hardware attribute dict for the integrated circuit to be
+    :param attributes: the hardware attributes dict for the integrated circuit being
         calculated.
-    :return: attributes; the hardware attribute dict with updated values..
+    :return: the hardware attributes dict with updated values.
     :rtype: dict
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
     try:
         attributes["temperature_junction"] = calculate_junction_temperature(
@@ -165,12 +167,12 @@ def calculate_part_stress(
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Calculate the part stress base hazard rate.
+    """Calculate the part stress base hazard rate (lambdaB).
 
     This is always zero for integrated circuits, but we keep this function so the
-    functions in milhdbk217f work.
+    milhdbk217f._get_lambda_b function works.
 
-    :param attributes: the hardware attribute dict for the integrated circuit to be
+    :param attributes: the hardware attributes dict for the integrated circuit being
         calculated.
     :return: 0.0
     :rtype: float
@@ -184,11 +186,11 @@ def calculate_die_complexity_factor(
 ) -> float:
     """Calculate the die complexity correction factor (piCD).
 
-    :param area: the area of the die in sq. cm.
-    :param feature_size: the size of the die features in microns.
-    :return: _pi_cd; the die complexity factor.
+    :param area: the area of the integrated circuit die in square centimeters.
+    :param feature_size: the size of the integrated circuit die features in microns.
+    :return: the calculated die complexity factor (piCD).
     :rtype: float
-    :raises: ZeroDivisionError if feature_size is zero.
+    :raises: ZeroDivisionError when passed a feature_size = 0.0.
     """
     try:
         return ((area / 0.21) * (2.0 / feature_size) ** 2.0 * 0.64) + 0.36
@@ -202,8 +204,8 @@ def calculate_die_complexity_factor(
 def calculate_eos_hazard_rate(voltage_esd: float) -> float:
     """Calculate the electrical overstress hazard rate (lambdaEOS).
 
-    :param voltage_esd: the ESD withstand voltage.
-    :return: _lambda_eos; the electrical overstress hazard rate.
+    :param voltage_esd: the integrated circuit ESD withstand voltage.
+    :return: the calculated electrical overstress hazard rate (lambdaEOS).
     :rtype: float
     """
     return (-log(1.0 - 0.00057 * exp(-0.0002 * voltage_esd))) / 0.00876
@@ -216,10 +218,10 @@ def calculate_junction_temperature(
 ) -> float:
     """Calculate the junction temperature (Tj).
 
-    :param temperature_case: the temperature of the IC case in C.
-    :param power_operating: the operating power if the IC in W.
-    :param theta_jc: the junction-case thermal resistance in C / W.
-    :return: _t_j; the calculate junction temperature in C.
+    :param temperature_case: the temperature of the integrated circuit case in C.
+    :param power_operating: the operating power if the integrated circuit in watts.
+    :param theta_jc: the junction-case thermal resistance in C / watt.
+    :return: the calculated junction temperature in C.
     :rtype: float
     """
     return temperature_case + power_operating * theta_jc
@@ -234,9 +236,9 @@ def calculate_lambda_cyclic_factors(
     """Calculate the write cycle hazard rate A and B factors for EEPROMs.
 
     :param n_cycles: the expected number of lifetime write cycles.
-    :param construction_id: the construction type identifier.
+    :param construction_id: the integrated circuit construction type ID.
     :param n_elements: the number of elements (bits) in the memory device.
-    :param temperature_junction: the junction temperature in C.
+    :param temperature_junction: the integrated circuit junction temperature in C.
     :return: (_a_1, _a_2, _b_1, _b_2); the calculated factors.
     :rtype: tuple
     """
@@ -278,7 +280,7 @@ def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
     """Calculate the package base hazard rate (lambdaBP).
 
     :param n_active_pins: the number of active (current carrying) pins.
-    :return: _lambda_bd; the calculated package base hazard rate.
+    :return: the calculated package base hazard rate (lambdaP).
     :rtype: float
     """
     return 0.0022 + (1.72e-5 * n_active_pins)
@@ -290,10 +292,9 @@ def calculate_package_factor(
 ) -> float:
     """Calculate the package factor (C2).
 
-    :param package_id: the package type identifier.
-    :param n_active_pins: the number of active (current carying) pins in the
-        application.
-    :return: _c2; the calculated package factor.
+    :param package_id: the integrated circuit package type ID.
+    :param n_active_pins: the number of active (current carrying) pins.
+    :return: the calculated package factor (C2).
     :rtype: float
     """
     if package_id in {1, 2, 3}:
@@ -321,14 +322,14 @@ def calculate_temperature_factor(
 ) -> float:
     """Calculate the temperature factor (piT).
 
-    :param subcategory_id: the subcategory identifier.
-    :param family_id: the IC family identifier.
-    :param type_id: the IC type identifier.
-    :param temperature_junction: the junction temperature in C.
-    :return: _pi_t; the calculated temperature factor.
+    :param subcategory_id: the integrated circuit subcategory ID.
+    :param family_id: the integrated circuit family ID.
+    :param type_id: the integrated circuit type ID.
+    :param temperature_junction: the integrated circuit junction temperature in C.
+    :return: the calculated temperature factor (pIT).
     :rtype: float
-    :raises: KeyError if passed an unknown subcategory ID.
-    :raises: IndexError if passed an unknown family ID or type ID.
+    :raises: IndexError when passed an invalid family ID or type ID.
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     try:
         if subcategory_id == 2:
@@ -363,12 +364,12 @@ def get_application_factor(
 ) -> float:
     """Retrieve the application factor (piA).
 
-    :param type_id: the IC type identifier.
-    :param application_id: the IC application identifier.
-    :return: _pi_a; the retrieved application factor.
+    :param type_id: the integrated circuit type identifier.
+    :param application_id: the integrated circuit application identifier.
+    :return: the selected application factor (piA).
     :rtype: float
-    :raises: IndexError if passed an unknown application ID.
-    :raises: KeyError if passed an unknown type ID.
+    :raises: IndexError when passed an invalid application ID.
+    :raises: KeyError when passed an invalid type ID.
     """
     try:
         return PI_A[type_id][application_id - 1]
@@ -384,10 +385,10 @@ def get_application_factor(
 
 
 def get_die_base_hazard_rate(type_id: int) -> float:
-    """Retrieve the base hazard rate for a VHISC/VLSI die.
+    """Retrieve the base hazard rate for a VHISC/VLSI die (lambdaBD).
 
-    :param type_id: the VHISC/VLSI type identifier.
-    :return: _lambda_bd; the base die hazard rate.
+    :param type_id: the integrated circuit type ID.
+    :return: the selected base die hazard rate (lambdBD).
     :rtype: float
     """
     return 0.16 if type_id == 1 else 0.24
@@ -401,15 +402,16 @@ def get_die_complexity_factor(
 ) -> float:
     """Retrieve the die complexity hazard rate (C1).
 
-    :param subcategory_id: the subcategory identifier.
-    :param technology_id: the technology identifier.
-    :param application_id: the application identifier.
-    :param n_elements: the number of elements (transistors/gates) in the device.
-    :return: _c1; the selected die complexity factor.
+    :param subcategory_id: the integrated circuit subcategory ID.
+    :param technology_id: the integrated circuit technology ID.
+    :param application_id: the integrated circuit application ID.
+    :param n_elements: the number of elements (transistors/gates) in the integrated
+        circuit.
+    :return: the selected die complexity factor (C1).
     :rtype: float
-    :raises: KeyError if passed an unknown subcategory ID, technology ID, or application
-        ID.
-    :raises: ValueError if passed a number of elements not associated with the
+    :raises: KeyError when passed an invalid subcategory ID, technology ID, or
+        application ID.
+    :raises: ValueError when passed a number of elements not associated with the
         breakpoints in MIL-HDBK-217F.
     """
     _dic_breakpoints = {
@@ -463,7 +465,14 @@ def get_die_complexity_factor(
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
-    """Retrieve the environment factor (piE) for the passed environment ID."""
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the hardware attributes dict for the integrated circuit being
+        calculated.
+    :return: the selected environment factor (pIE).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    """
     _environment_id = attributes["environment_active_id"]
 
     try:
@@ -478,10 +487,10 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
 def get_error_correction_factor(type_id: int) -> float:
     """Retrieve the error code correction factor (piECC).
 
-    :param type_id: the error correction type identifier.
-    :return: _pi_ecc; the value of piECC.
+    :param type_id: the integrated circuit error correction type ID.
+    :return: the selected error correction code factor (piECC).
     :rtype: float
-    :raises: KeyError if passed an invalid type_id.
+    :raises: KeyError when passed an invalid type_id.
     """
     try:
         return {1: 1.0, 2: 0.72, 3: 0.68}[type_id]
@@ -493,10 +502,10 @@ def get_error_correction_factor(type_id: int) -> float:
 
 
 def get_manufacturing_process_factor(manufacturing_id: int) -> float:
-    """Retrieve teh the manufacturing process correction factor (piMFG).
+    """Retrieve the manufacturing process correction factor (piMFG).
 
-    :param manufacturing_id: the manufacturing process identifier.
-    :return: _pi_mfg; the manufacturing process correction factor.
+    :param manufacturing_id: the integrated circuit manufacturing process identifier.
+    :return: the selected manufacturing process correction factor (piMFG).
     :rtype: float
     """
     return 0.55 if manufacturing_id == 1 else 2.0
@@ -505,10 +514,10 @@ def get_manufacturing_process_factor(manufacturing_id: int) -> float:
 def get_package_type_correction_factor(package_id: int) -> float:
     """Retrieve the package type correction factor (piPT).
 
-    :param package_id: the package type identifier.
-    :return: _pi_pt; the package type correction factor.
+    :param package_id: the integrated circuit package type ID.
+    :return: the selected package type correction factor (piPT).
     :rtype: float
-    :raises: KeyError if passed an unknown package ID.
+    :raises: KeyError when passed an invalid package ID.
     """
     try:
         return PI_PT[package_id]
@@ -520,20 +529,15 @@ def get_package_type_correction_factor(package_id: int) -> float:
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Calculate parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. technology id; if the IC subcategory is NOT technology dependent,
-            then the second key will be zero.
+        #. technology id; if the IC subcategory is technology dependent.
 
     Current subcategory IDs are:
 
@@ -564,12 +568,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     :param attributes: the hardware attributes dict for the integrated circuit being
         calculated.
-    :return: _base_hr; the parts count base hazard rate.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError if passed an invalid active environment ID.
-    :raises: KeyError if passed an invalid subcategory ID or technology ID
-        (where used).
-    :raises: ValueError if passed a number of elements not associated with the
+    :raises: IndexError when passed an invalid active environment ID.
+    :raises: KeyError when passed an invalid subcategory ID or technology ID.
+    :raises: ValueError when passed a number of elements not associated with the
         breakpoints in MIL-HDBK-217F.
     """
     _environment_id = attributes["environment_active_id"]
@@ -637,11 +640,13 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the quality factor (piQ).
+    """Retrieve the quality factor (piQ) for the passed quality ID.
+
+    This function is used for both MIL-HDBK-217FN2 part count and part stress methods.
 
     :param attributes: the hardware attributes dict for the integrated circuit being
         calculated.
-    :return: the quality factor for the passed quality ID.
+    :return: the selected quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     """
@@ -658,10 +663,11 @@ def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various integrated circuit parameters.
 
-    :param attributes: the attribute dict for the integrated circuit being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the integrated circuit being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["years_in_production"] <= 0.0:
@@ -684,14 +690,12 @@ def _set_default_junction_temperature(
     temperature_case: float,
     environment_active_id: int,
 ) -> float:
-    """Set the default junction temperature for integrated circuits.
+    """Set the default junction temperature.
 
-    :param temperature_junction: the current junction temperature.
-    :param temperature_case: the current case temperature of the integrated circuit with
-        missing defaults.
-    :param environment_active_id: the active operating environment ID of the integrated
-        circuit with missing defaults.
-    :return: _temperature_junction
+    :param temperature_junction: the integrated circuit junction temperature.
+    :param temperature_case: the integrated circuit case temperature.
+    :param environment_active_id: the integrated circuit environment ID.
+    :return: the default junction temperature.
     :rtype: float
     """
     if temperature_junction > 0.0:

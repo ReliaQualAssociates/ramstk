@@ -24,13 +24,15 @@ from ramstk.constants.meter import (
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a meter.
+    """Calculate the part stress active hazard rate for a meter.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the hardware attribute dict with updated values.
+    :return: the hardware attributes dict with updated values.
     :rtype: dict
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
     try:
         attributes["piT"] = get_temperature_stress_factor(
@@ -65,7 +67,7 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the environment factor (piE) for the passed environment ID.
+    :return: the selected environment factor (pIE).
     :rtype: float
     :raises: IndexError when passed an invalid environment ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -88,15 +90,11 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
@@ -114,10 +112,10 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     +----------------+-------------------------------+-----------------+
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the parts count base hazard rate.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError if passed an unknown active environment ID.
-    :raises: KeyError if passed an unknown subcategory ID or type ID.
+    :raises: IndexError when passed an invalid active environment ID.
+    :raises: KeyError when passed an invalid subcategory ID or type ID.
     """
     _environment_active_id = attributes["environment_active_id"]
     _subcategory_id = attributes["subcategory_id"]
@@ -142,13 +140,13 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 def get_part_count_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the part count quality factor (piQ).
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the part count quality factor (piQ).
+    :return: the selected part count quality factor (piQ).
     :rtype: float
-    :raises: IndexError if passed an invalid quality ID.
-    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: IndexError when passed an invalid quality ID.
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     _quality_id: int = attributes["quality_id"]
     _subcategory_id: int = attributes["subcategory_id"]
@@ -168,16 +166,14 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part stress base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
-    method.
+    This function retrieves the MIL-HDBK-217F part stress base hazard rate.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the part stress base hazard rate or 0.0 if an invalid subcategory ID is
-        passed.
+    :return: the selected part stress base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError when passed an unknown type ID.
+    :raises: IndexError when passed an invalid type ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _type_id = attributes["type_id"]
@@ -195,10 +191,10 @@ def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> f
 def get_part_stress_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the quality factor (piQ) for the passed quality ID.
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
-    :return: the part stress quality factor (piQ) for the passed quality ID.
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     """
@@ -220,12 +216,12 @@ def get_temperature_stress_factor(
 ) -> float:
     """Retrieve the temperature stress factor (piT).
 
-    :param temperature_active: the operating ambient temperature in C.
-    :param temperature_rated_max: the maximum rated operating temperature in C.
-    :return: _pi_t; the value of piT associated with the operating temperature.
+    :param temperature_active: the meter operating ambient temperature in C.
+    :param temperature_rated_max: the meter maximum rated operating temperature in C.
+    :return: the selected temperature stress factor (piT).
     :rtype: float
-    :raises: TypeError if passed a string for either temperature.
-    :raises: ZeroDivisionError if passed a rated maximum temperature = 0.0.
+    :raises: TypeError when passed a string for either temperature.
+    :raises: ZeroDivisionError when passed a rated maximum temperature = 0.0.
     """
     _pi_t = 0.0
 
@@ -260,13 +256,13 @@ def get_temperature_stress_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various meter parameters.
 
     MIL-HDBK-217F has no defaults for meters.  This function is needed as a placeholder
     only.
 
-    :param attributes: the attribute dict for the meter being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the hardware attributes dict.
     :rtype: dict
     """
     return attributes

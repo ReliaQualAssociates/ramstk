@@ -38,19 +38,20 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a semiconductor.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
     :param attributes: the hardware attributes dict for the semiconductor being
         calculated.
-    :return: the hardware attributes dict for the semiconductor with updated values.
+    :return: the hardware attributes dict with updated values.
     :rtype: dict
     :raises: IndexError when passed an invalid construction ID or matching ID.
     :raises: KeyError when the attribute dict is missing one or more keys.
     """
-    _construction_id = attributes["construction_id"]
-    _matching_id = attributes["matching_id"]
-
     try:
+        _construction_id = attributes["construction_id"]
+        _matching_id = attributes["matching_id"]
+
         attributes["temperature_junction"] = calculate_junction_temperature(
             attributes["environment_active_id"],
             attributes["package_id"],
@@ -141,10 +142,11 @@ def calculate_part_stress(
 def calculate_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the application factor (piA) for the semiconductor device.
+    """Calculate the application factor (piA).
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     :raises: IndexError when passed an invalid application ID.
     :raises: ValueError when passed a duty cycle less than 0.0.
@@ -179,10 +181,11 @@ def calculate_application_factor(
 def calculate_electrical_stress_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the electrical stress factor (piS) for the semiconductor device.
+    """Calculate the electrical stress factor (piS).
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     :raises: KeyError when passed an invalid subcategory ID or type ID.
     """
@@ -215,7 +218,7 @@ def calculate_junction_temperature(
     theta_jc: float,
     power_operating: float,
 ) -> float:
-    """Calculate the junction temperature of the semiconductor device.
+    """Calculate the junction temperature.
 
     .. note:: This function will also estimate the case temperature if it is
         passed in at less than or equal to zero.
@@ -223,15 +226,12 @@ def calculate_junction_temperature(
     .. note:: This function will also estimate the junction-case thermal
         resistance (thetaJC) if it is passed in at less than or equal to zero.
 
-    :param environment_active_id: the active operating environment ID of the
-        semiconductor being calculated.
-    :param package_id: the package ID of the semiconductor being calculated.
-    :param temperature_case: the case (surface) temperature of the semiconductor
-        being calculated.
-    :param theta_jc: the junction-case thermal resistance of the semiconductor being
-        calculated.
-    :param power_operating: the operating power of the semiconductor being calculated.
-    :return _temperature_junction: the calcaulated junction temperature.
+    :param environment_active_id: the semiconductor environment ID.
+    :param package_id: the semiconductor package ID.
+    :param temperature_case: the semiconductor case temperature.
+    :param theta_jc: the semiconductor junction-case thermal resistance.
+    :param power_operating: the semiconductor operating power.
+    :return the calculated junction temperature.
     :rtype: float
     :raises: IndexError when passed an invalid active environment ID when the case
         temperature is passed at <=0.0 or an invalid package ID when the
@@ -256,10 +256,14 @@ def calculate_junction_temperature(
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
+    """Retrieve the part stress base hazard rate (lambdaB).
+
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts stress
+    method.
 
     :param attributes: the hardware attributes dict for the semiconductor being
-        calculated. :return the calculated part stress base hazard rate.
+        calculated.
+    :return: the calculated part stress base hazard rate (lambdaB).
     :rtype: float
     :raises: IndexError when passed an invalid type ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -336,13 +340,14 @@ def calculate_part_stress_lambda_b(
 def calculate_power_rating_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the power rating factor for the semiconductor device.
+    """Calculate the power rating factor (piR).
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
-    :raises: TypeError if passed a string for the rated power or rated current.
-    :raises: ValueError if passed a rated power <=0.0.
+    :raises: TypeError when passed a string for the rated power or rated current.
+    :raises: ValueError when passed a rated power <=0.0.
     """
     _rated_current = attributes["current_rated"]
     _rated_power = attributes["power_rated"]
@@ -378,15 +383,13 @@ def calculate_temperature_factor(
     voltage_ratio: float,
     temperature_junction: float,
 ) -> float:
-    """Calculate the temperature factor for the semiconductor device.
+    """Calculate the temperature factor (piT).
 
-    :param subcategory_id: the subcategory ID of the semiconductor being calculated.
-    :param type_id: the type ID of the semiconductor being calculated.
-    :param voltage_ratio: the ratio of operating to rated voltage of the semiconductor
-        being calculated.
-    :param temperature_junction: the junction temperature of the semiconductor being
-        calculated.
-    :return _pi_t: the calculated temperature factor.
+    :param subcategory_id: the semiconductor subcategory ID.
+    :param type_id: the semiconductor type ID.
+    :param voltage_ratio: the semiconductor ratio of operating to rated voltage.
+    :param temperature_junction: the semiconductor junction temperature. :return the
+        temperature factor (piT).
     :rtype: float
     :raises: IndexError when passed an invalid type ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -429,7 +432,7 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
     :param attributes: the hardware attributes dict for the semiconductor being
         calculated.
-    :return: the environment factor (piE) for the passed environment ID.
+    :return: the selected environment factor (pIE).
     :rtype: float
     :raises: IndexError when passed an invalid environment ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -452,15 +455,15 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve MIL-HDBK-217F base hazard rate for the semiconductor device.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function retrieves the MIL-HDBK-217F hazard rate from the dictionary
-    PART_COUNT_LAMBDA_B.  Keys are for PART_COUNT_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.
+    The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. type id; if the semiconductor subcategory is NOT type dependent,
-            then the second key will be zero.
+        #. type id; if the semiconductor subcategory is type dependent.
 
     Current subcategory IDs are:
 
@@ -503,11 +506,12 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     |       13       | Optoelectronic, Laser Diode   |       6.13      |
     +----------------+-------------------------------+-----------------+
 
-    :param attributes: the hardware attributes for the semiconductor being calculated.
-    :return: the parts count base hazard rate.
+    :param attributes: the hardware attributes dict for the semiconductor being
+    calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raise: IndexError if passed an invalid active environment ID.
-    :raise: KeyError if passed an invalid subcategory ID or type ID.
+    :raise: IndexError when passed an invalid active environment ID.
+    :raise: KeyError when passed an invalid subcategory ID or type ID.
     """
     _environment_active_id = attributes["environment_active_id"]
     _subcategory_id = attributes["subcategory_id"]
@@ -537,7 +541,8 @@ def get_part_count_quality_factor(
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the semiconductor being
-        calculated. :return the quality factor (piQ) for the passed quality ID.
+        calculated.
+    :return: the selected part count quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -567,13 +572,14 @@ def get_part_count_quality_factor(
 def get_part_stress_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Select the part stress quality factor for the semiconductor device.
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the semiconductor being
-        calculates. :return the quality factor for the semiconductor being calculated.
+        calculated.
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
-    :raises: IndexError when passed an invalid quality ID. :raise: KeyError when passed
-        an invalid subcategory ID or type ID.
+    :raises: IndexError when passed an invalid quality ID.
+    :raises: KeyError when passed an invalid subcategory ID or type ID.
     """
     _quality_id = attributes["quality_id"]
     _subcategory_id = attributes["subcategory_id"]
@@ -598,10 +604,11 @@ def get_part_stress_quality_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various semiconductor parameters.
 
-    :param attributes: the attribute dict for the semiconductor being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["subcategory_id"] in {4, 9} and attributes["type_id"] <= 0:
@@ -634,13 +641,14 @@ def set_default_values(
 def _get_section_6_1_electrical_stress_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piS and set default values for LF diodes.
+    """Get piS and set default values for low frequency diodes.
 
     This function is for MIL-HDBK-217F, Section 6.2 devices.  The voltage stress ratio
     default value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["type_id"] < 5:
@@ -658,13 +666,14 @@ def _get_section_6_1_electrical_stress_factor(
 def _get_section_6_2_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piA and set default values for HF diodes.
+    """Get piA and set default values for high frequency diodes.
 
     This function is for MIL-HDBK-217F, Section 6.2 devices.  The application ID default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = attributes["application_id"] or 2
@@ -684,13 +693,14 @@ def _get_section_6_2_application_factor(
 def _get_section_6_2_power_rating_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piR and set default values for HF diodes.
+    """Get piR and set default values for high frequency diodes.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The rated power default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["type_id"] == 4:
@@ -705,13 +715,14 @@ def _get_section_6_2_power_rating_factor(
 def _get_section_6_3_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piA and set default values for LF, LP BJT.
+    """Get piA and set default values for low frequency, low power BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The application ID default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = (
@@ -734,13 +745,14 @@ def _get_section_6_3_application_factor(
 def _get_section_6_3_electrical_stress_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piS and set default values for LF, LP BJT.
+    """Get piS and set default values for low frequency, low power BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The voltage stress ratio
     default value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["voltage_ratio"] = (
@@ -760,13 +772,14 @@ def _get_section_6_3_electrical_stress_factor(
 def _get_section_6_3_power_rating_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piR and set default values for LF, LP BJT.
+    """Get piR and set default values for low frequency, low power BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.3 devices.  The rated power default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["power_rated"] = (
@@ -789,13 +802,14 @@ def _get_section_6_3_power_rating_factor(
 def _get_section_6_4_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piA and set default values for LF Si FET.
+    """Get piA and set default values for low frequency silicon FET transistors.
 
     This function is for MIL-HDBK-217F, Section 6.4 devices.  The application ID default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = attributes["application_id"] or 2
@@ -815,13 +829,14 @@ def _get_section_6_4_application_factor(
 def _get_section_6_6_electrical_stress_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piS and set default values for HF, LN BJT.
+    """Get piS and set default values for high frequency, low noise BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.6 devices.  The voltage stress ratio
     default value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["voltage_ratio"] = attributes["voltage_ratio"] or 0.7
@@ -834,13 +849,14 @@ def _get_section_6_6_electrical_stress_factor(
 def _get_section_6_6_power_rating_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piR and set default values for HF, LN BJT.
+    """Get piR and set default values for high frequency, low noise BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.6 devices.  The rated power default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["power_rated"] = attributes["power_rated"] or 0.5
@@ -856,13 +872,14 @@ def _get_section_6_6_power_rating_factor(
 def _get_section_6_7_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piA and set default values for HF and HP BJT devices.
+    """Get piA and set default values for high frequency and high power BJT transistors.
 
     This function is for MIL-HDBK-217F, Section 6.7 devices.  The application ID and the
     duty cycle default values are also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = attributes["application_id"] or 2
@@ -879,13 +896,14 @@ def _get_section_6_7_application_factor(
 def _get_section_6_8_application_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Get piA and set default values for GaAs FET.
+    """Get piA and set default values for GaAs FET transistors.
 
     This function is for MIL-HDBK-217F, Section 6.8 devices.  The application ID default
     value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = attributes["application_id"] or 1
@@ -906,8 +924,9 @@ def _get_section_6_10_electrical_stress_factor(
     This function is for MIL-HDBK-217F, Section 6.10 devices.  The rated current and
     voltage stress ratio default value is also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["current_rated"] = attributes["current_rated"] or 1.0
@@ -929,8 +948,9 @@ def _get_section_6_13_application_factor(
     This function is for MIL-HDBK-217F, Section 6.13 devices.  The application ID and
     the duty cycle default values are also set.
 
-    :param attributes: the attributes of the semiconductor being calculated.
-    :return attributes: the updated attributes of the semiconductor being calculated.
+    :param attributes: the hardware attributes dict for the semiconductor being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["application_id"] = attributes["application_id"] or 2
@@ -949,13 +969,12 @@ def _set_default_application_id(
     subcategory_id: int,
     type_id: int,
 ) -> int:
-    """Set the default application ID for semiconductors.
+    """Set the default application ID.
 
-    :param application_id: the current application ID.
-    :param subcategory_id: the subcategory ID of the semiconductor with missing
-        defaults.
-    :param type_id: the type ID of the semiconductor with missing defaults.
-    :return: _application_id
+    :param application_id: the semiconductor application ID.
+    :param subcategory_id: the semiconductor subcategory ID.
+    :param type_id: the semiconductor type ID.
+    :return: the default application ID.
     :rtype: int
     """
     if application_id > 0:
@@ -988,13 +1007,12 @@ def _set_default_application_id(
 def _set_default_rated_power(
     power_rated: float, subcategory_id: int, type_id: int
 ) -> float:
-    """Set the default rated power for semiconductors.
+    """Set the default rated power.
 
-    :param power_rated: the current rated power.
-    :param subcategory_id: the subcategory ID of the semiconductor with missing
-        defaults.
-    :param type_id: the type ID of the semiconductor with missing defaults.
-    :return: _power_rated
+    :param power_rated: the semiconductor rated power.
+    :param subcategory_id: the semiconductor subcategory ID.
+    :param type_id: the semiconductor type ID.
+    :return: the default rated power.
     :rtype: float
     """
     if power_rated > 0.0:
@@ -1026,13 +1044,12 @@ def _set_default_rated_power(
 def _set_default_voltage_ratio(
     voltage_ratio: float, subcategory_id: int, type_id: int
 ) -> float:
-    """Set the default voltage ratio for semiconductors.
+    """Set the default voltage ratio.
 
-    :param voltage_ratio: the current voltage ratio.
-    :param subcategory_id: the subcategory ID of the semiconductor with missing
-        defaults.
-    :param type_id: the type ID of the semiconductor with missing defaults.
-    :return: _voltage_ratio
+    :param voltage_ratio: the semiconductor voltage ratio.
+    :param subcategory_id: the semiconductor subcategory ID.
+    :param type_id: the semiconductor type ID.
+    :return: the default voltage ratio.
     :rtype: float
     """
     if voltage_ratio > 0.0:

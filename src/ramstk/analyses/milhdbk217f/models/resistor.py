@@ -28,14 +28,15 @@ from ramstk.constants.resistor import (
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a resistor.
+    """Calculate the part stress active hazard rate for a resistor.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
     :param attributes: the hardware attributes dict for the resistor being calculated.
     :return: the hardware attributes dict with updated values.
     :rtype: dict
-    :raises: KeyError if the attribute dict is missing one or more keys.
+    :raises: KeyError when the attribute dict is missing one or more keys.
     """
     try:
         attributes["piR"] = get_resistance_factor(
@@ -102,16 +103,16 @@ def calculate_part_stress(
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate the part stress base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts stress
     method.
 
     :param attributes: the hardware attributes dict for the resistor to be calculated.
-    :return _lambda_b: the calculated base hazard rate.
+        :return the calculated part stress base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError if passed an invalid type ID.
-    :raises: KeyError is passed an invalid specification ID or subcategpry ID.
+    :raises: IndexError when passed an invalid type ID.
+    :raises: KeyError when passed an invalid specification ID or subcategory ID.
     """
     _power_ratio = attributes["power_ratio"]
     _specification_id = attributes["specification_id"]
@@ -155,13 +156,11 @@ def calculate_temperature_factor(
     temperature_active: float,
     power_ratio: float,
 ) -> Tuple[float, float]:
-    """Calculate the temperature factor (piT).
+    """Calculate the case temperature and temperature factor (piT).
 
-    :param temperature_active: the ambient operating temperature of the resistor in C.
-    :param power_ratio: the ratio of operating to rated power of the resistor being
-        calculated.
-    :return: (temperature_case, _pi_c); the calculated surface temperature of the
-        resistor and it's resistance factor.
+    :param temperature_active: the resistor ambient operating temperature in C.
+    :param power_ratio: the resistor ratio of operating to rated power.
+    :return: the calculated case temperature and the temperature factor (piT).
     :rtype: tuple
     """
     _temperature_case: float = temperature_active + 55.0 * power_ratio
@@ -174,7 +173,7 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the resistor being calculated.
-    :return: the environment factor (piE) for the passed environment ID.
+    :return: the selected environment factor (pIE).
     :rtype: float
     :raises: IndexError when passed an invalid environment ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -197,20 +196,15 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. specification id; if the resistor subcategory is NOT specification
-            dependent, then the second key will be zero.
+        #. specification id; if the resistor subcategory is specification dependent.
 
     Current subcategory IDs are:
 
@@ -257,11 +251,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     |                | Film and Precision (RQ, RVC)  |                 |
     +----------------+-------------------------------+-----------------+
 
-    :param attributes: the hardware attrobutes dict for the resistor being calculated.
-    :return: the parts count base hazard rate.
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError if passed an invalid active environment ID.
-    :raises: KeyError if passed an invalid subcategory ID or specification ID:
+    :raises: IndexError when passed an invalid active environment ID.
+    :raises: KeyError when passed an invalid subcategory ID or specification ID:
     """
     _environment_active_id = attributes["environment_active_id"]
     _specification_id = attributes["specification_id"]
@@ -291,7 +285,7 @@ def get_part_count_quality_factor(
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the resistor being calculated.
-    :return: the part count quality factor (piQ) for the passed quality ID.
+    :return: the selected part count quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     """
@@ -311,7 +305,7 @@ def get_part_stress_quality_factor(
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the resistor being calculated.
-    :return: the quality factor (piQ) for the passed quality ID.
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -341,14 +335,14 @@ def get_resistance_factor(
 ) -> float:
     """Retrieve the resistance factor (piR).
 
-    :param subcategory_id: the subcategory identifier.
-    :param specification_id: the resistor's governing specification identifier.
-    :param family_id: the resistor family identifier.
-    :param resistance: the resistance in ohms of the resistor.
-    :return: the calculated resistance factor value.
+    :param subcategory_id: the resistor subcategory ID.
+    :param specification_id: the resistor's governing specification ID.
+    :param family_id: the resistor family ID.
+    :param resistance: the resistor's resistance in ohms.
+    :return: the selected resistance factor (piR)).
     :rtype: float
-    :raises: IndexError if passed an invalid family ID or specification ID.
-    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: IndexError when passed an invalid family ID or specification ID.
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     _pi_r = 0.0
     _dic_breakpoints = {
@@ -415,9 +409,10 @@ def get_voltage_factor(
 ) -> float:
     """Retrieve the voltage factor (piV).
 
-    :param subcategory_id: the subcategory identifier.
-    :param voltage_ratio: the ratio of voltages on each half of the potentiometer.
-    :return: _pi_v; the selected voltage factor.
+    :param subcategory_id: the resistor subcategory ID.
+    :param voltage_ratio: the resistor's ratio of voltages on each half of the
+        potentiometer.
+    :return: the selected voltage factor (piV).
     :rtype: float
     :raises: KeyError when passed an invalid subcategory ID.
     """
@@ -448,10 +443,10 @@ def get_voltage_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various resistor parameters.
 
-    :param attributes: the attribute dict for the resustor being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the resistor being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["power_ratio"] <= 0.0:
@@ -473,7 +468,12 @@ def set_default_values(
 
 
 def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
-    """Retrieve factors and reference temperature for non-film resistors."""
+    """Retrieve factors and reference temperature for non-film resistors.
+
+    :param subcategory_id: the resistor subcategory ID.
+    :return: the list of calculation factors and the reference temperature.
+    :rtype: tuple
+    """
     _dic_factors: Dict[int, List[float]] = {
         1: [4.5e-9, 12.0, 1.0, 0.6, 1.0, 1.0],
         3: [7.33e-3, 0.202, 2.6, 1.45, 0.89, 1.3],
@@ -495,7 +495,12 @@ def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
 
 
 def _get_film_factors_and_temp(specification_id: int) -> Tuple[List[float], float]:
-    """Retrieve factors and reference temperature for film resistors."""
+    """Retrieve factors and reference temperature for film resistors.
+
+    :param specification_id: the resistor specification ID.
+    :return: the list of calculation factors and the reference temperature.
+    :rtype: tuple
+    """
     _dic_factors_film: Dict[int, List[float]] = {
         1: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
         2: [3.25e-4, 1.0, 3.0, 1.0, 1.0, 1.0],
@@ -507,16 +512,21 @@ def _get_film_factors_and_temp(specification_id: int) -> Tuple[List[float], floa
 
 
 def _get_type_factor(type_id: int) -> float:
-    """Retrieve the type factor for subcategory 8."""
+    """Retrieve the type factor for subcategory 8.
+
+    :param type_id: the resistor type ID.
+    :return: the selected type factor.
+    :rtype: float
+    """
     return [0.021, 0.065, 0.105][type_id - 1]
 
 
 def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
-    """Set the default resistance for resistors.
+    """Set the default resistance.
 
-    :param resistance: the current resistance.
-    :param subcategory_id: the subcategory ID of the resistor with missing defaults.
-    :return: _resistance
+    :param resistance: the resistor's resistance.
+    :param subcategory_id: the resistor subcategory ID.
+    :return: the default resistance.
     :rtype: float
     """
     if resistance > 0.0:
@@ -541,11 +551,11 @@ def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
 
 
 def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
-    """Set the default number of elements for resistors.
+    """Set the default number of elements.
 
-    :param n_elements: the current number of elements.
-    :param subcategory_id: the subcategory ID of the resistor with missing defaults.
-    :return: _n_elements
+    :param n_elements: the resistor number of elements.
+    :param subcategory_id: the resistor subcategory ID.
+    :return: the default number of elements.
     :rtype: int
     """
     if n_elements > 0:

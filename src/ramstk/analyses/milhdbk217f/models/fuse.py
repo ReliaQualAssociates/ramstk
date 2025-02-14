@@ -17,27 +17,28 @@ from ramstk.constants.fuse import PART_COUNT_LAMBDA_B, PI_E
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a fuse.
+    """Calculate the part stress active hazard rate for a fuse.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.  Because the part stress model for a fuse is simply the product of the based
+    hazard rate (lambdaB) and the environment factor (piE), this function only needs to
+    return the hardware attributes dict as this calculation is performed in the
+    milhdbk217f._do_calculate_part_stress() function.
 
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    :param attributes: the hardware attributes dict for the fuse being calculated.
+    :return: the hardware attributes dict.
     :rtype: dict
     """
-    attributes["hazard_rate_active"] *= attributes["piE"]
-
     return attributes
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: the environment factor.
+    :param attributes: the hardware attributes dict for the fuse being calculated.
+    :return: the selected environment factor (pIE).
     :rtype: float
-    :raises: IndexError when passed an invalid active environment ID.
+    :raises: IndexError when passed an invalid environment ID.
     """
     _environment_id = attributes["environment_active_id"]
 
@@ -50,10 +51,14 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the part count base hazard rate.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: the part count base hazard rate.
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate. The list
+    PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base hazard rates.  The
+    index for PART_COUNT_LAMBDA_B is the environment ID.
+
+    :param attributes: the hardware attributes dict for the fuse being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
     :raises: IndexError when passed an invalid active environment ID.
     """
@@ -68,10 +73,12 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the part stress base hazard rate.
+    """Retrieve the part stress base hazard rate (lambdaB).
 
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: the part count base hazard rate.
+    This function retrieves the MIL-HDBK-217FN2 part stress base hazard rate.
+
+    :param attributes: the hardware attributes dict for the fuse being calculated.
+    :return: the selected part stress base hazard rate (lambdaB).
     :rtype: float
     """
     return 0.010
@@ -80,12 +87,14 @@ def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> f
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various fuse parameters.
+    """Set the default value for various fuse parameters.
 
-    :param attributes: the attribute dict for the electronic filter being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the fuse being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
+    attributes["piQ"] = 1.0
+
     if attributes["lambda_b"] <= 0.0:
         attributes["lambda_b"] = 0.01
 

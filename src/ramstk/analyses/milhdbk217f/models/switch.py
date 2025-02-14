@@ -1,7 +1,7 @@
 # type: ignore
 # -*- coding: utf-8 -*-
 #
-#       ramstk.analyses.mildhdbk217f.models.switch.py is part of the RAMSTK Project
+#       ramstk.analyses.milhdbk217f.models.switch.py is part of the RAMSTK Project
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
@@ -27,18 +27,16 @@ from ramstk.constants.switch import (
 def calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a switch.
+    """Calculate the part stress active hazard rate for a switch.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
     :return attributes: the updated hardware attributes dict.
     :rtype: dict
-    :raises: KeyError if the attribute dict is missing one or more keys.
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
-    attributes["piC"] = 1.0
-    attributes["piCYC"] = 1.0
-
     try:
         attributes["piL"] = calculate_load_stress_factor(
             attributes["application_id"],
@@ -95,10 +93,9 @@ def calculate_load_stress_factor(
 ) -> float:
     """Calculate the load stress factor (piL).
 
-    :param application_id: the application ID of the switch being calculated.
-    :param current_ratio: the ratio of operating to rated current for the switch being
-        calculated.
-    :return: the calculated load factor (piL).
+    :param application_id: the switch application ID.
+    :param current_ratio: the ratio of switch operating to switch rated current.
+    :return: the calculated load stress factor (piL).
     :rtype: float
     """
     _pi_l = 0.0
@@ -115,17 +112,17 @@ def calculate_load_stress_factor(
 
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
-) -> float:
-    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+) -> float | None:
+    """Calculate the part stress base hazard rate (lambda b).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts stress
     method.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
     :return: the calculated part stress base hazard rate (lambdaB).
     :rtype: float
-    :raises: IndexError if passed an unknown application ID or quality ID.
-    :raises: KeyError is passed an unknown construction ID or subcategory ID.
+    :raises: IndexError when passed an invalid application ID or quality ID.
+    :raises: KeyError when passed an invalid construction ID or subcategory ID.
     """
     _application_id: int = attributes["application_id"]
     _construction_id: int = attributes["construction_id"]
@@ -173,7 +170,7 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
-    :return: the environment factor (pIE) for the passed environment ID.
+    :return: the selected environment factor (pIE).
     :rtype: float
     :raises: IndexError when passed an invalid environment ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -196,20 +193,15 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. construction_id; if the switch subcategory is NOT construction
-            dependent, then the second key will be zero.
+        #. construction_id; if the switch subcategory is construction dependent.
 
     Current subcategory IDs are:
 
@@ -229,7 +221,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     +----------------+-------------------------------+-----------------+
 
     :param attributes: the hardware attributes dict for the switch being calculated.
-    :return: the part count base hazard rate.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
     :raise: IndexError when passed an invalid active environment ID.
     :raise: KeyError when passed an invalid construction ID or  subcategory ID.
@@ -262,7 +254,7 @@ def get_part_count_quality_factor(
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
-    :return: the quality factor (piQ) for the passed quality ID.
+    :return: the selected part count quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -289,7 +281,7 @@ def get_part_stress_quality_factor(
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
-    :return: the quality factor (piQ) for the passed quality ID>
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
     :raises: IndexError when passed an invalid quality ID.
     """
@@ -310,12 +302,15 @@ def get_part_stress_quality_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various switch parameters.
 
-    :param attributes: the attribute dict for the switch being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the switch being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
+    attributes["piC"] = 1.0
+    attributes["piCYC"] = 1.0
+
     if attributes["application_id"] <= 0:
         attributes["application_id"] = 1
 
@@ -349,11 +344,11 @@ def set_default_values(
 
 
 def _set_default_construction_id(construction_id: int, subcategory_id: int) -> int:
-    """Set the default construction ID for switches.
+    """Set the default construction ID.
 
-    :param construction_id: the current construction ID.
-    :param subcategory_id: the subcategory ID of the switch with missing defaults.
-    :return: _construction_id
+    :param construction_id: the current switch construction ID.
+    :param subcategory_id: the switch subcategory ID.
+    :return: the default construction ID.
     :rtype: int
     """
     if construction_id > 0:
@@ -369,11 +364,11 @@ def _set_default_construction_id(construction_id: int, subcategory_id: int) -> i
 
 
 def _set_default_contact_form_id(contact_form_id: int, subcategory_id: int) -> int:
-    """Set the default contact foem ID for switches.
+    """Set the default contact form ID.
 
-    :param contact_form_id: the current contact form ID.
-    :param subcategory_id: the subcategory ID of the switch with missing defaults.
-    :return: _contact_form_id
+    :param contact_form_id: the current switch contact form ID.
+    :param subcategory_id: the switch subcategory ID.
+    :return: the default contact form ID.
     :rtype: int
     """
     if contact_form_id > 0:
@@ -389,11 +384,11 @@ def _set_default_contact_form_id(contact_form_id: int, subcategory_id: int) -> i
 
 
 def _set_default_cycle_rate(cycle_rate: float, subcategory_id: int) -> float:
-    """Set the default cycling rate for switches.
+    """Set the default cycling rate.
 
-    :param cycle_rate: the current cycling rate.
-    :param subcategory_id: the subcategory ID of the switch with missing defaults.
-    :return: _n_cycles
+    :param cycle_rate: the current switch cycling rate.
+    :param subcategory_id: the switch subcategory ID.
+    :return: the default number of hourly cycles.
     :rtype: float
     """
     if cycle_rate > 0.0:
@@ -411,11 +406,11 @@ def _set_default_cycle_rate(cycle_rate: float, subcategory_id: int) -> float:
 
 
 def _set_default_active_contacts(active_contacts: int, subcategory_id: int) -> int:
-    """Set the default active number of contacts for switches.
+    """Set the default active number of contacts.
 
-    :param active_contacts: the current active number of contacts.
-    :param subcategory_id: the subcategory ID of the switch with missing defaults.
-    :return: _n_cycles
+    :param active_contacts: the current switch active number of contacts.
+    :param subcategory_id: the switch subcategory ID.
+    :return: the default number of active contacts.
     :rtype: float
     """
     if active_contacts > 0:

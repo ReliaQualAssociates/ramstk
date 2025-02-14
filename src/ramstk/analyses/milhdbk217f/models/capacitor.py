@@ -31,11 +31,13 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a capacitor.
 
-    :param attributes: the attributes for the capacitor being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
+
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the hardware attributes dict with updated values.
     :rtype: dict
-    :raises: KeyError if the attribute dict is missing one or more keys.
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
     try:
         attributes["piCV"] = calculate_capacitance_factor(
@@ -82,11 +84,11 @@ def calculate_capacitance_factor(
 ) -> float:
     """Calculate the capacitance factor (piCV).
 
-    :param subcategory_id: the capacitor subcategory identifier.
-    :param capacitance: the capacitance value in Farads.
-    :return: _pi_cv; the calculated capacitance factor.
+    :param subcategory_id: the capacitor subcategory ID.
+    :param capacitance: the capacitor's capacitance value in Farads.
+    :return: the calculated capacitance factor (piCV).
     :rtype: float
-    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     try:
         _f0, _f1 = CAPACITANCE_FACTORS[subcategory_id]
@@ -101,12 +103,15 @@ def calculate_capacitance_factor(
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]],
 ) -> float:
-    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate the part stress base hazard rate (lambdaB).
 
-    :param attributes: the attributes dict for the component being calculated.
-    :return: _lambda_b; the calculated base hazard rate.
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts stress
+    method.
+
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the calculated part stress base hazard rate (lambdaB).
     :rtype: float
-    :raises: KeyError if passed an invalid subcategory ID.
+    :raises: KeyError when passed an invalid subcategory ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _temperature_active = attributes["temperature_active"]
@@ -135,14 +140,13 @@ def calculate_series_resistance_factor(
 ) -> float:
     """Calculate the series resistance factor (piSR).
 
-    :param resistance: the equivalent series resistance of the capacitor.
-    :param voltage_dc_operating: the operating DC voltage.
-    :param voltage_ac_operating: the operating ac voltage (ripple voltage).
-    :return: _pi_sr, _error_msg; the series resistance factor and any error message
-        raised by this function.
+    :param resistance: the capacitor's equivalent series resistance.
+    :param voltage_dc_operating: the capacitor operating DC voltage.
+    :param voltage_ac_operating: the capacitor operating ac voltage (ripple voltage).
+    :return: the calculated series resistance factor (piSR).
     :rtype: tuple
-    :raises: TypeError if passed a non-numerical input.
-    :raises: ZeroDivisionError if passed both ac and DC voltages = 0.0.
+    :raises: TypeError when passed a non-numerical input.
+    :raises: ZeroDivisionError when passed both ac and DC voltages = 0.0.
     """
     if not all(
         isinstance(x, (int, float)) and x >= 0
@@ -174,12 +178,12 @@ def calculate_series_resistance_factor(
 
 
 def get_configuration_factor(configuration_id: int) -> float:
-    """Retrieve the configuration factor (piCF) for the capacitor.
+    """Retrieve the configuration factor (piCF) for the passed construction ID.
 
-    :param configuration_id: the capacitor configuration identifier.
-    :return: _pi_cf; the configuration factor value.
+    :param configuration_id: the capacitor configuration ID.
+    :return: the selected configuration factor (piCF).
     :rtype: float
-    :raises: KeyError if passed an unknown configuration ID.
+    :raises: KeyError when passed an invalid configuration ID.
     """
     try:
         return PI_CF[configuration_id]
@@ -191,12 +195,12 @@ def get_configuration_factor(configuration_id: int) -> float:
 
 
 def get_construction_factor(construction_id: int) -> float:
-    """Retrieve the configuration factor (piC) for the capacitor.
+    """Retrieve the configuration factor (piC) for the passed construction ID.
 
-    :param construction_id: the capacitor construction identifier.
-    :return: _pi_c; the construction factor value.
+    :param construction_id: the capacitor construction ID.
+    :return: the selected construction factor (piC).
     :rtype: float
-    :raises: KeyError if passed an unknown construction ID.
+    :raises: KeyError when passed an invalid construction ID.
     """
     try:
         return PI_C[construction_id]
@@ -208,12 +212,12 @@ def get_construction_factor(construction_id: int) -> float:
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the MIL-HDBK-217F environment factor (pi E).
+    """Retrieve the environment factor (piE) for the passed environment ID.
 
-    :param attributes: the dict of capacitor attributes.
-    :return: _pi_e; the environment factor.
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the selected environment factor (pIE).
     :rtype: float
-    :raises: IndexError when passed an unknown environment ID.
+    :raises: IndexError when passed an invalid environment ID.
     """
     _environment_id = attributes["environment_active_id"]
 
@@ -227,15 +231,15 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the MIL-HDBK-217F parts count base hazard rate (lambda b).
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217F parts count
-    base hazard rates.  Keys are for PART_COUNT_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. specification id; if the capacitor subcategory is NOT specification
-           dependent, then pass -1 for the specification ID key.
+        #. specification id; if the capacitor subcategory is specification dependent.
 
     Subcategory IDs are:
 
@@ -295,13 +299,10 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     |                | Vacuum (CG)                   |                 |
     +----------------+-------------------------------+-----------------+
 
-    These keys return a list of base hazard rates.  The hazard rate to use is
-    selected from the list depending on the active environment.
-
-    :param attributes: the dict of capacitor attributes.
-    :return: _lambda_b; the MIL-HDBK-217F part count base hazard rate.
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID or specification ID.
+    :raise: KeyError when passed an invalid subcategory ID or specification ID.
     """
     _environment_active_id: int = attributes["environment_active_id"]
     _specification_id: int = attributes["specification_id"]
@@ -325,12 +326,12 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 def get_part_count_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the part count quality factor.
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
-    :param attributes: the dict of capacitor attributes.
-    :return: _pi_q: the quality factor.
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the selected part count quality factor (pIQ).
     :rtype: float
-    :raises: IndexError if passed an unknown quality ID.
+    :raises: IndexError when passed an invalid quality ID.
     """
     _quality_id = attributes["quality_id"]
 
@@ -346,13 +347,13 @@ def get_part_count_quality_factor(
 def get_part_stress_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the quality factor for the given quality ID.
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
-    :param attributes: the dict of capacitor attributes.
-    :return: _pi_q: the quality factor.
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
-    :raises: KeyError if passed an invalid subcategory ID.
-    :raises: IndexError if passed an invalid quality ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    :raises: IndexError when passed an invalid quality ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _quality_id = attributes["quality_id"]
@@ -374,10 +375,10 @@ def get_part_stress_quality_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various capacitor parameters.
 
-    :param attributes: the attribute dict for the capacitor being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the capacitor being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes.get("capacitance", 0) <= 0.0:
@@ -405,14 +406,14 @@ def _set_default_capacitance(
     subcategory_id: int,
     style_id: int,
 ) -> float:
-    """Set the default value of the capacitance.
+    """Set the default value for the capacitance.
 
-    :param subcategory_id:
-    :param style_id:
-    :return: _capacitance
+    :param subcategory_id: the capacitor subcategory ID.
+    :param style_id: the capacitor style ID.
+    :return: the default capacitance.
     :rtype: float
-    :raises: KeyError if passed an invalid subcategory ID.
-    :raises: IndexError if passed an invalid style ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    :raises: IndexError when passed an invalid style ID.
     """
     try:
         return (
@@ -432,10 +433,10 @@ def _set_default_capacitance(
 
 
 def _set_default_capacitance_factor(subcategory_id: int) -> float:
-    """Set the default capacitance factor (piCV) value.
+    """Set the default value for the capacitance factor (piCV).
 
-    :param subcategory_id: the subcategory ID of the capacitor with missing defaults.
-    :return: _pi_cv
+    :param subcategory_id: the capacitor subcategory ID.
+    :return: the default capacitance factor (piCV).
     :rtype: float
     """
     return 1.3 if subcategory_id in {14, 15} else 0.0 if subcategory_id > 15 else 1.0
@@ -445,13 +446,13 @@ def _set_default_rated_temperature(
     subcategory_id: int,
     style_id: int,
 ) -> float:
-    """Set the default capacitor rated temperature.
+    """Set the default value for the rated temperature.
 
     :param subcategory_id: the capacitor subcategory ID.
     :param style_id: the capacitor style ID.
-    :return: the default rated temperature for the capacitor.
+    :return: the default rated temperature.
     :rtype: float
-    :raises: IndexError if passed an invalid style ID.
+    :raises: IndexError when passed an invalid style ID.
     """
     try:
         return (

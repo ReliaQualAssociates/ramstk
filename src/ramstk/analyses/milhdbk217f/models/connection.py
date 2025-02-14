@@ -31,12 +31,13 @@ def calculate_part_stress(
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a connection.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
-    :param attributes: the attributes for the connection being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: attributes; the hardware attributes dict with updated values.
     :rtype: dict
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
     try:
         attributes["piK"] = _get_mate_unmate_factor(attributes["n_cycles"])
@@ -64,24 +65,26 @@ def calculate_part_stress(
 
         return attributes
     except KeyError as err:
-        raise KeyError(f"Missing required attribute: {err}")
+        raise KeyError(
+            f"calculate_part_stress: Missing connection required attribute: {err}"
+        )
 
 
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Calculate part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Calculate the part stress base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F base hazard rate for the parts
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts
     stress method.
 
     .. important:: the contact temperature must be calculated by the calling
-        function as it is not an attribute of a Connection.
+        function as it is not an attribute of a connection.
 
-    :param attributes: the dict of connection attributes.
-    :return: _base_hr; the calculates base hazard rate.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the calculated part stress base hazard rate (lambdaB).
     :rtype: float
-    :raise: KeyError if passed an unknown type ID.
+    :raise: KeyError when passed an invalid type ID.
     """
     _insert_id: int = attributes["insert_id"]
     _specification_id: int = attributes["specification_id"]
@@ -113,7 +116,14 @@ def calculate_part_stress_lambda_b(
 
 
 def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the piE value based on category and subcategory."""
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the selected environment factor (pIE).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
     _category_id = attributes["category_id"]
     _subcategory_id = attributes["subcategory_id"]
     _environment_id = attributes["environment_active_id"]
@@ -123,29 +133,28 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
             return PI_E[_category_id][_subcategory_id][_environment_id - 1]
         elif _category_id in {3, 4, 5}:
             return PI_E[_category_id][_environment_id - 1]
-    except KeyError:
-        raise KeyError(
-            f"get_environment_factor: Invalid connection subcategory ID {_subcategory_id}."
-        )
     except IndexError:
         raise IndexError(
             f"get_environment_factor: Invalid environment ID {_environment_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_environment_factor: Invalid connection subcategory ID {_subcategory_id}."
         )
 
     return 1.0
 
 
 def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function retrieves the MIL-HDBK-217F parts count base hazard rate.
-    The dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217F parts count
-    base hazard rates.  Keys are for PART_COUNT_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
-        #. type id; if the connection subcategory is NOT type dependent, then
-            the second key will be zero.
+        #. type id; if the connection subcategory is type dependent.
 
     Current subcategory IDs are:
 
@@ -165,11 +174,11 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
     |        5       | Non-PTH                       |       17.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param attributes: the dict of connection attributes.
-    :return: _base_hr; the parts count base hazard rate.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raise: KeyError if passed an unknown subcategory ID or type ID.
-    :raise: IndexError if passed an unknown active environment ID.
+    :raise: IndexError when passed an invalid environment ID.
+    :raise: KeyError when passed an invalid subcategory ID or type ID.
     """
     _subcategory_id = attributes["subcategory_id"]
     _type_id = attributes["type_id"]
@@ -181,27 +190,27 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 _environment_active_id - 1
             ]
         return PART_COUNT_LAMBDA_B[_subcategory_id][_environment_active_id - 1]
-    except KeyError:
-        raise KeyError(
-            f"get_part_count_lamda_b: Invalid connection subcategory "
-            f"ID {_subcategory_id} or type ID {_type_id}."
-        )
     except IndexError:
         raise IndexError(
             f"get_part_count_lamda_b: Invalid environment "
             f"ID {_environment_active_id} for subcategory {_subcategory_id}."
+        )
+    except KeyError:
+        raise KeyError(
+            f"get_part_count_lamda_b: Invalid connection subcategory "
+            f"ID {_subcategory_id} or type ID {_type_id}."
         )
 
 
 def get_part_count_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the part count quality factor.
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
-    :param attributes: the dict of connection attributes.
-    :return: _pi_q: the quality factor.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the selected part count quality factor (piQ).
     :rtype: float
-    :raises: IndexError when passed an unknown quality ID.
+    :raises: IndexError when passed an invalid quality ID.
     """
     _quality_id = attributes["quality_id"]
 
@@ -216,12 +225,12 @@ def get_part_count_quality_factor(
 def get_part_stress_quality_factor(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
-    """Retrieve the part stress quality factor.
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
-    :param attributes: the dict of connection attributes.
-    :return: _pi_q: the quality factor.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the selected part stress quality factor (piQ).
     :rtype: float
-    :raises: IndexError when passed an unknown quality ID.
+    :raises: IndexError when passed an invalid quality ID.
     """
     _quality_id: int = attributes["quality_id"]
     _subcategory_id: int = attributes["subcategory_id"]
@@ -240,10 +249,10 @@ def get_part_stress_quality_factor(
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various connection parameters.
 
-    :param attributes: the attribute dict for the connection being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the connection being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     attributes["temperature_rise"] = (
@@ -271,7 +280,7 @@ def _calculate_active_pins_factor(n_active_pins: int) -> float:
     """Calculate the active pins factor (piP).
 
     :param n_active_pins: the number of active pins in the connector.
-    :return: _pi_p; the calculated value of piP.
+    :return: the calculated active pins factor (piP).
     :rtype: float
     """
     return exp(((n_active_pins - 1) / 10.0) ** 0.51064)
@@ -281,7 +290,7 @@ def _calculate_complexity_factor(n_circuit_planes: int) -> float:
     """Calculate the complexity factor (piC).
 
     :param n_circuit_planes: the number of planes in the PCB/PWA.
-    :return: _pi_c; the calculated value of the complexity factor.
+    :return: the calculated complexity factor (piC).
     :rtype: float
     """
     return 0.65 * n_circuit_planes**0.63 if n_circuit_planes > 2 else 1.0
@@ -311,13 +320,11 @@ def _calculate_insert_temperature(
     TypeError: unsupported operand type(s) for ** or pow(): 'str' and 'float'
 
     :param contact_gauge: the standard gauge of the connection contact.
-    :param current_operating: the nominal current carried by each
-        connection contact.
-    :return: _temperature_rise; the calculated temperature of the connection's
-        insert.
+    :param current_operating: the nominal current carried by each connection contact.
+    :return: the calculated temperature of the connection's insert.
     :rtype: float
-    :raise: KeyError when an unknown contact gauge is passed.
-    :raise: TypeError when the operating current is passed as a string.
+    :raise: KeyError when passed an invalid contact gauge.
+    :raise: TypeError when passed the operating current as a string.
     """
     try:
         _fo = INSERT_TEMP_FACTORS[contact_gauge]
@@ -340,10 +347,10 @@ def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
     :param type_id: the connection type identifier.
     :param specification_id: the connection governing specification identifier.
     :param insert_id: the insert material identifier.
-    :return: _key; the key to use to select the reference temperature and other factors.
+    :return: the key to use to select the reference temperature and other factors.
     :rtype: int
-    :raises: KeyError when passed an unknown type ID or specification ID.
-    :raises: IndexError when passed an unknown insert ID.
+    :raises: KeyError when passed an invalid type ID or specification ID.
+    :raises: IndexError when passed an invalid insert ID.
     """
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  To get the reference temperature
@@ -364,9 +371,9 @@ def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
 def _get_mate_unmate_factor(n_cycles: float) -> float:
     """Retrieve the mating/unmating factor (piK).
 
-    :param n_cycles: the average number of mate/unmate cycles expected per hour of
-        operation.
-    :return: _pi_k; the mate_unmate_factor.
+    :param n_cycles: the average number of connection mate/unmate cycles expected per
+        hour of operation.
+    :return: the selected mating/unmating factor (piK).
     :rtype: float
     """
     if n_cycles <= 0.05:
@@ -385,10 +392,11 @@ def _set_default_active_pins(
     subcategory_id: int,
     type_id: int,
 ) -> int:
-    """Set the default number of active pins value.
+    """Set the default value for the number of active pins.
 
-    :param subcategory_id: the subcategory ID of the connection with missing defaults.
-    :return: _n_active_pins
+    :param subcategory_id: the connection subcategory ID.
+    :param type_id: the connection type ID.
+    :return: the default number of active pins.
     :rtype: int
     """
     _thresholds = {
@@ -411,10 +419,11 @@ def _set_default_temperature_rise(
     subcategory_id: int,
     type_id: int,
 ) -> float:
-    """Set the default temperature rise value.
+    """Set the default value for the temperature rise.
 
-    :param subcategory_id: the subcategory ID of the connection with missing defaults.
-    :return: _temperature_rise
+    :param subcategory_id: the connection subcategory ID.
+    :param type_id: the connection type ID.
+    :return: the default temperature rise.
     :rtype: float
     """
     if subcategory_id == 1 and type_id in {1, 2, 3}:
