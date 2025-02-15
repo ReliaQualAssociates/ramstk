@@ -14,7 +14,6 @@ import pytest
 
 # RAMSTK Package Imports
 from ramstk.analyses.milhdbk217f import connection
-from tests.analyses.milhdbk217f.models.conftest import test_attributes_connection
 
 
 @pytest.mark.unit
@@ -38,6 +37,7 @@ def test_set_default_temperature_rise():
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_set_default_values(
     test_attributes_connection,
 ):
@@ -56,6 +56,7 @@ def test_set_default_values(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_set_default_values_none_needed(
     test_attributes_connection,
 ):
@@ -74,6 +75,7 @@ def test_set_default_values_none_needed(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_set_default_values_partial_needed(
     test_attributes_connection,
 ):
@@ -99,6 +101,7 @@ def test_set_default_values_partial_needed(
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
 @pytest.mark.parametrize("type_id", [1, 2])
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_lambda_b(
     subcategory_id,
     environment_active_id,
@@ -132,6 +135,7 @@ def test_get_part_count_lambda_b(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_lambda_b_unknown_subcategory_id(
     test_attributes_connection,
 ):
@@ -147,6 +151,7 @@ def test_get_part_count_lambda_b_unknown_subcategory_id(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_lambda_b_unknown_type_id(
     test_attributes_connection,
 ):
@@ -162,6 +167,7 @@ def test_get_part_count_lambda_b_unknown_type_id(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_lambda_b_unknown_environment_id(
     test_attributes_connection,
 ):
@@ -182,6 +188,7 @@ def test_get_part_count_lambda_b_unknown_environment_id(
     "quality_id",
     [1, 2],
 )
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_quality_factor(
     quality_id,
     test_attributes_connection,
@@ -193,6 +200,7 @@ def test_get_part_count_quality_factor(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_count_quality_factor_unknown_quality_id(
     test_attributes_connection,
 ):
@@ -279,6 +287,7 @@ def test_get_factor_key_unknown_insert_id():
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 3, 5])
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_calculate_part_stress_lambda_b(
     subcategory_id,
     test_attributes_connection,
@@ -303,6 +312,7 @@ def test_calculate_part_stress_lambda_b(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_calculate_part_stress_lambda_b_unknown_type_id(
     test_attributes_connection,
 ):
@@ -324,67 +334,69 @@ def test_calculate_part_stress_lambda_b_unknown_type_id(
     "environment_active_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
 )
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_environment_factor(
     environment_active_id,
     test_attributes_connection,
 ):
-    test_attributes_connection["category_id"] = 2
+    test_attributes_connection["quality_id"] = 2
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = environment_active_id
     _pi_e = connection.get_environment_factor(test_attributes_connection)
 
     assert (
         _pi_e
-        == {
-            1: 2.0,
-            2: 7.0,
-            3: 17.0,
-            4: 10.0,
-            5: 26.0,
-            6: 14.0,
-            7: 22.0,
-            8: 14.0,
-            9: 22.0,
-            10: 37.0,
-            11: 0.8,
-            12: 20.0,
-            13: 54.0,
-            14: 970.0,
-        }[environment_active_id]
+        == [
+            2.0,
+            7.0,
+            17.0,
+            10.0,
+            26.0,
+            14.0,
+            22.0,
+            14.0,
+            22.0,
+            37.0,
+            0.8,
+            20.0,
+            54.0,
+            970.0,
+        ][environment_active_id - 1]
     )
 
 
 @pytest.mark.unit
-def test_get_environment_factor_invalid_category_id(
+@pytest.mark.usefixtures("test_attributes_connection")
+def test_get_environment_factor_invalid_quality_id(
     test_attributes_connection,
 ):
-    test_attributes_connection["category_id"] = 22
+    test_attributes_connection["quality_id"] = 22
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = 2
-
-    assert connection.get_environment_factor(
-        test_attributes_connection
-    ) == pytest.approx(1.0)
-
-
-@pytest.mark.unit
-def test_get_environment_factor_invalid_subcategory_id(
-    test_attributes_connection,
-):
-    test_attributes_connection["category_id"] = 2
-    test_attributes_connection["subcategory_id"] = 22
-    test_attributes_connection["environment_active_id"] = 2
     with pytest.raises(
-        KeyError, match=r"get_environment_factor: Invalid connection subcategory ID 22."
+        KeyError, match=r"get_environment_factor: Invalid connection quality ID 22."
     ):
         connection.get_environment_factor(test_attributes_connection)
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
+def test_get_environment_factor_invalid_subcategory_id(
+    test_attributes_connection,
+):
+    test_attributes_connection["quality_id"] = 2
+    test_attributes_connection["subcategory_id"] = 22
+    test_attributes_connection["environment_active_id"] = 2
+
+    assert connection.get_environment_factor(test_attributes_connection) == 1.0
+
+
+@pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_environment_factor_invalid_environment_id(
     test_attributes_connection,
 ):
-    test_attributes_connection["category_id"] = 2
+    test_attributes_connection["quality_id"] = 2
     test_attributes_connection["subcategory_id"] = 2
     test_attributes_connection["environment_active_id"] = 22
     with pytest.raises(
@@ -394,6 +406,7 @@ def test_get_environment_factor_invalid_environment_id(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_stress_quality_factor(
     test_attributes_connection,
 ):
@@ -422,6 +435,7 @@ def test_get_part_stress_quality_factor(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_stress_quality_factor_invalid_subcategory_id(
     test_attributes_connection,
 ):
@@ -430,6 +444,7 @@ def test_get_part_stress_quality_factor_invalid_subcategory_id(
 
 
 @pytest.mark.unit
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_get_part_stress_quality_factor_invalid_quality_id(
     test_attributes_connection,
 ):
@@ -490,6 +505,7 @@ def test_calculate_complexity_factor(
 
 @pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 3, 4, 5])
+@pytest.mark.usefixtures("test_attributes_connection")
 def test_calculate_part_stress(
     subcategory_id,
     test_attributes_connection,

@@ -16,14 +16,20 @@ from ramstk.analyses.milhdbk217f import milhdbk217f
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("category_id", [1, 3, 4, 5, 6, 7, 8, 9, 10])
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_get_part_count_quality_factor(category_id, subcategory_id, test_attributes):
-    """_get_part_count_quality_factor() should return a float value for piQ on
-    success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_get_part_count_quality_factor(
+    category_id,
+    subcategory_id,
+    test_attributes,
+):
+    """Returns a float value for the quality factor (piQ) on success."""
+    test_attributes["category_id"] = category_id
+    test_attributes["hazard_rate_method_id"] = 1
+    test_attributes["subcategory_id"] = subcategory_id
     test_attributes["type_id"] = 1
-    _pi_q = milhdbk217f._get_part_count_quality_factor(category_id, subcategory_id, 2)
+    _pi_q = milhdbk217f._get_quality_factor(test_attributes)
 
     assert isinstance(_pi_q, float)
     if category_id == 6 and subcategory_id == 1:
@@ -55,13 +61,14 @@ def test_get_part_count_quality_factor(category_id, subcategory_id, test_attribu
         )
 
 
-# ----- ----- ----- ----- BEGIN PARTS COUNT TESTS ----- ----- ----- ----- #
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
-def test_do_calculate_part_count_integrated_circuit(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the integratedcircuit attribute dict
-    with updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_integrated_circuit(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 1
     test_attributes["technology_id"] = 2
     if subcategory_id in [1, 2, 9]:
@@ -73,7 +80,7 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id, test_attribu
     elif subcategory_id in [5, 6, 7, 8]:
         test_attributes["n_elements"] = 64000
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -93,16 +100,18 @@ def test_do_calculate_part_count_integrated_circuit(subcategory_id, test_attribu
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
-def test_do_calculate_part_count_semiconductor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Semiconductor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_semiconductor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 2
     test_attributes["type_id"] = 1
     test_attributes["quality_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -144,16 +153,18 @@ def test_do_calculate_part_count_semiconductor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize(
     "subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
-def test_do_calculate_part_count_resistor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Resistor attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_resistor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 3
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -179,17 +190,19 @@ def test_do_calculate_part_count_resistor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize(
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-def test_do_calculate_part_count_capacitor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Capacitor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_capacitor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 4
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -219,14 +232,16 @@ def test_do_calculate_part_count_capacitor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_count_inductor(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Inductor attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_inductor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 5
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -239,14 +254,16 @@ def test_do_calculate_part_count_inductor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_count_relay(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Relay attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_relay(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 6
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -259,14 +276,16 @@ def test_do_calculate_part_count_relay(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
-def test_do_calculate_part_count_switch(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Switch attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_switch(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 7
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -282,14 +301,16 @@ def test_do_calculate_part_count_switch(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
-def test_do_calculate_part_count_connection(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Connection attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_connection(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 8
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -305,14 +326,16 @@ def test_do_calculate_part_count_connection(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_count_meter(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the Meter attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_meter(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 9
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -325,14 +348,16 @@ def test_do_calculate_part_count_meter(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
-def test_do_calculate_part_count_miscellaneous(subcategory_id, test_attributes):
-    """_do_calculate_part_count() should return the misscellaneous component attribute
-    dict with updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_count_miscellaneous(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 10
     test_attributes["subcategory_id"] = subcategory_id
-    attributes = milhdbk217f._do_calculate_part_count(**test_attributes)
+    attributes = milhdbk217f._do_calculate_part_count(test_attributes)
 
     assert isinstance(attributes, dict)
     assert (
@@ -346,128 +371,424 @@ def test_do_calculate_part_count_miscellaneous(subcategory_id, test_attributes):
     )
 
 
-# ----- ----- ----- ----- END PARTS COUNT TESTS ----- ----- ----- ----- #
-
-
 @pytest.mark.unit
+@pytest.mark.parametrize("category_id", [1, 4])
+@pytest.mark.parametrize(
+    "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+)
 @pytest.mark.usefixtures("test_attributes")
-@pytest.mark.parametrize("category_id", [1, 2, 3, 4, 5, 7, 8, 9, 10])
-@pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
-def test_get_environment_factor(category_id, subcategory_id, test_attributes):
-    """_get_environment_factor() should return a float value on success."""
-    if category_id == 9 and subcategory_id in [3, 4]:
-        subcategory_id = subcategory_id - 2
-    _pi_e = milhdbk217f._get_environment_factor(category_id, subcategory_id, 1, 1)
+def test_get_environment_factor_pi_e_list(
+    category_id,
+    environment_active_id,
+    test_attributes,
+):
+    """Returns a float value for the environment factor (piE) on success.
+
+    This tests the component types with environment factors lists that are not
+    subcategory dependent.
+    """
+    test_attributes["category_id"] = category_id
+    test_attributes["environment_active_id"] = environment_active_id
+    _pi_e = milhdbk217f._get_environment_factor(test_attributes)
 
     assert isinstance(_pi_e, float)
     assert (
         _pi_e
         == {
-            1: {
-                1: 0.5,
-                2: 2.0,
-                3: 4.0,
-                4: 4.0,
-            },
-            2: {
-                1: 1.0,
-                2: 6.0,
-                3: 9.0,
-                4: 9.0,
-            },
-            3: {
-                1: 1.0,
-                2: 3.0,
-                3: 8.0,
-                4: 5.0,
-            },
-            4: {
-                1: 1.0,
-                2: 6.0,
-                3: 9.0,
-                4: 9.0,
-            },
-            5: {
-                1: 1.0,
-                2: 6.0,
-                3: 12.0,
-                4: 5.0,
-            },
-            7: {
-                1: 1.0,
-                2: 3.0,
-                3: 18.0,
-                4: 8.0,
-            },
-            8: {
-                1: 1.0,
-                2: 1.0,
-                3: 8.0,
-                4: 5.0,
-            },
-            9: {
-                1: 1.0,
-                2: 2.0,
-            },
-            10: {
-                1: 1.0,
-                2: 3.0,
-                3: 10.0,
-                4: 6.0,
-            },
-        }[category_id][subcategory_id]
+            1: [
+                0.5,
+                2.0,
+                4.0,
+                4.0,
+                6.0,
+                4.0,
+                5.0,
+                5.0,
+                8.0,
+                8.0,
+                0.5,
+                5.0,
+                12.0,
+                220.0,
+            ],
+            4: [
+                1.0,
+                6.0,
+                9.0,
+                9.0,
+                19.0,
+                13.0,
+                29.0,
+                20.0,
+                43.0,
+                24.0,
+                0.5,
+                14.0,
+                32.0,
+                320.0,
+            ],
+        }[category_id][environment_active_id - 1]
     )
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
-@pytest.mark.parametrize("category_id", [1, 3, 4, 6, 7, 8, 9, 10])
+@pytest.mark.parametrize("category_id", [2, 3, 5, 7, 9, 10])
+@pytest.mark.parametrize(
+    "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+)
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_get_part_stress_quality_factor(category_id, subcategory_id, test_attributes):
-    """_get_part_stress_quality_factor() should return a float value for piQ on
-    success."""
-    if category_id == 7:
-        subcategory_id = 5
-    elif category_id == 8:
-        subcategory_id = subcategory_id + 3
-    elif category_id == 9:
-        subcategory_id = 2
-    _pi_q = milhdbk217f._get_part_stress_quality_factor(category_id, subcategory_id, 2)
+@pytest.mark.usefixtures("test_attributes")
+def test_get_environment_factor_pi_e_dict(
+    category_id,
+    environment_active_id,
+    subcategory_id,
+    test_attributes,
+):
+    """Returns a float value for the environment factor (piE) on success.
 
-    assert isinstance(_pi_q, float)
-    if category_id == 1:
-        assert _pi_q == 1.0
-    elif category_id == 3:
-        assert _pi_q == 0.1
-    elif category_id == 4 and subcategory_id == 1:
-        assert _pi_q == 7.0
-    elif category_id == 4 and subcategory_id == 2:
-        assert _pi_q == 3.0
-    elif category_id == 6 and subcategory_id == 1:
-        assert _pi_q == 0.3
-    elif category_id == 6 and subcategory_id == 2:
-        assert _pi_q == 4.0
-    elif category_id == 7:
-        assert _pi_q == 8.4
-    elif category_id == 8 and subcategory_id == 4:
-        assert _pi_q == 2.0
-    elif category_id == 8 and subcategory_id == 5:
-        assert _pi_q == 1.0
-    elif category_id == 9:
-        assert _pi_q == 3.4
-    elif category_id == 10 and subcategory_id == 1:
-        assert _pi_q == 2.1
-    elif category_id == 10 and subcategory_id == 2:
-        assert _pi_q == 2.9
+    This tests the component types with environment factors lists that are subcategory
+    dependent.
+    """
+    test_attributes["category_id"] = category_id
+    test_attributes["environment_active_id"] = environment_active_id
+    test_attributes["subcategory_id"] = subcategory_id
+    _pi_e = milhdbk217f._get_environment_factor(test_attributes)
+
+    assert isinstance(_pi_e, float)
+    assert (
+        _pi_e
+        == {
+            2: {
+                1: [
+                    1.0,
+                    6.0,
+                    9.0,
+                    9.0,
+                    19.0,
+                    13.0,
+                    29.0,
+                    20.0,
+                    43.0,
+                    24.0,
+                    0.5,
+                    14.0,
+                    32.0,
+                    320.0,
+                ],
+                2: [
+                    1.0,
+                    2.0,
+                    5.0,
+                    4.0,
+                    11.0,
+                    4.0,
+                    5.0,
+                    7.0,
+                    12.0,
+                    16.0,
+                    0.5,
+                    9.0,
+                    24.0,
+                    250.0,
+                ],
+            },
+            3: {
+                1: [
+                    1.0,
+                    3.0,
+                    8.0,
+                    5.0,
+                    13.0,
+                    4.0,
+                    5.0,
+                    7.0,
+                    11.0,
+                    19.0,
+                    0.5,
+                    11.0,
+                    27.0,
+                    490.0,
+                ],
+                2: [
+                    1.0,
+                    2.0,
+                    8.0,
+                    4.0,
+                    14.0,
+                    4.0,
+                    8.0,
+                    10.0,
+                    18.0,
+                    19.0,
+                    0.2,
+                    10.0,
+                    28.0,
+                    510.0,
+                ],
+            },
+            5: {
+                1: [
+                    1.0,
+                    6.0,
+                    12.0,
+                    5.0,
+                    16.0,
+                    6.0,
+                    8.0,
+                    7.0,
+                    9.0,
+                    24.0,
+                    0.5,
+                    13.0,
+                    34.0,
+                    610.0,
+                ],
+                2: [
+                    1.0,
+                    4.0,
+                    12.0,
+                    5.0,
+                    16.0,
+                    5.0,
+                    7.0,
+                    6.0,
+                    8.0,
+                    24.0,
+                    0.5,
+                    13.0,
+                    34.0,
+                    610.0,
+                ],
+            },
+            7: {
+                1: [
+                    1.0,
+                    3.0,
+                    18.0,
+                    8.0,
+                    29.0,
+                    10.0,
+                    18.0,
+                    13.0,
+                    22.0,
+                    46.0,
+                    0.5,
+                    25.0,
+                    67.0,
+                    1200.0,
+                ],
+                2: [
+                    1.0,
+                    3.0,
+                    18.0,
+                    8.0,
+                    29.0,
+                    10.0,
+                    18.0,
+                    13.0,
+                    22.0,
+                    46.0,
+                    0.5,
+                    25.0,
+                    67.0,
+                    1200.0,
+                ],
+            },
+            9: {
+                1: [
+                    1.0,
+                    2.0,
+                    12.0,
+                    7.0,
+                    18.0,
+                    5.0,
+                    8.0,
+                    16.0,
+                    25.0,
+                    26.0,
+                    0.5,
+                    14.0,
+                    38.0,
+                    0.0,
+                ],
+                2: [
+                    1.0,
+                    4.0,
+                    25.0,
+                    12.0,
+                    35.0,
+                    28.0,
+                    42.0,
+                    58.0,
+                    73.0,
+                    60.0,
+                    1.1,
+                    60.0,
+                    0.0,
+                    0.0,
+                ],
+            },
+            10: {
+                1: [
+                    1.0,
+                    3.0,
+                    10.0,
+                    6.0,
+                    16.0,
+                    12.0,
+                    17.0,
+                    22.0,
+                    28.0,
+                    23.0,
+                    0.5,
+                    13.0,
+                    32.0,
+                    500.0,
+                ],
+                2: [
+                    1.0,
+                    2.0,
+                    6.0,
+                    4.0,
+                    9.0,
+                    7.0,
+                    9.0,
+                    11.0,
+                    13.0,
+                    11.0,
+                    0.8,
+                    7.0,
+                    15.0,
+                    120.0,
+                ],
+            },
+        }[category_id][subcategory_id][environment_active_id - 1]
+    )
 
 
 @pytest.mark.unit
+@pytest.mark.parametrize(
+    "environment_active_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+)
 @pytest.mark.usefixtures("test_attributes")
+def test_get_environment_factor_pi_e_list_or_dict(
+    environment_active_id,
+    test_attributes,
+):
+    """Returns a float value for the environment factor (piE) on success.
+
+    This tests the component types with environment factors lists that are sometimes
+    subcategory dependent and sometimes subcategory with another parameter dependent.
+    """
+    test_attributes["category_id"] = 6
+    test_attributes["environment_active_id"] = environment_active_id
+    test_attributes["quality_id"] = 1
+    test_attributes["subcategory_id"] = 1
+    _pi_e = milhdbk217f._get_environment_factor(test_attributes)
+
+    assert isinstance(_pi_e, float)
+    assert (
+        _pi_e
+        == [
+            1.0,
+            2.0,
+            15.0,
+            8.0,
+            27.0,
+            7.0,
+            9.0,
+            11.0,
+            12.0,
+            46.0,
+            0.50,
+            25.0,
+            66.0,
+            0.0,
+        ][environment_active_id - 1]
+    )
+
+    test_attributes["environment_active_id"] = environment_active_id
+    test_attributes["subcategory_id"] = 2
+    _pi_e = milhdbk217f._get_environment_factor(test_attributes)
+
+    assert isinstance(_pi_e, float)
+    assert (
+        _pi_e
+        == [
+            1.0,
+            3.0,
+            12.0,
+            6.0,
+            17.0,
+            12.0,
+            19.0,
+            21.0,
+            32.0,
+            23.0,
+            0.4,
+            12.0,
+            33.0,
+            590.0,
+        ][environment_active_id - 1]
+    )
+    test_attributes["category_id"] = 8
+    test_attributes["environment_active_id"] = environment_active_id
+    test_attributes["quality_id"] = 1
+    test_attributes["subcategory_id"] = 1
+    _pi_e = milhdbk217f._get_environment_factor(test_attributes)
+
+    assert isinstance(_pi_e, float)
+    assert (
+        _pi_e
+        == [
+            1.0,
+            1.0,
+            8.0,
+            5.0,
+            13.0,
+            3.0,
+            5.0,
+            8.0,
+            12.0,
+            19.0,
+            0.5,
+            10.0,
+            27.0,
+            490.0,
+        ][environment_active_id - 1]
+    )
+
+
+@pytest.mark.unit
+@pytest.mark.parametrize("category_id", [1, 2, 3, 4, 6, 7, 9])
+@pytest.mark.usefixtures("test_attributes")
+def test_get_part_stress_quality_factor(
+    category_id,
+    test_attributes,
+):
+    """Returns a float value for the quality factor (piQ) on success."""
+    test_attributes["category_id"] = category_id
+    test_attributes["hazard_rate_method_id"] = 2
+    test_attributes["quality_id"] = 1
+    test_attributes["subcategory_id"] = 1
+    _pi_q = milhdbk217f._get_quality_factor(test_attributes)
+
+    assert isinstance(_pi_q, float)
+    assert (
+        _pi_q == {1: 0.25, 2: 0.7, 3: 0.03, 4: 3.0, 6: 0.1, 7: 1.0, 9: 1.0}[category_id]
+    )
+
+
+@pytest.mark.unit
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9])
-def test_do_calculate_part_stress_integrated_circuit(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the integratedcircuit attribute dict
-    with updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_integrated_circuit(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 1
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["technology_id"] = 2
     if subcategory_id in [1, 2, 9]:
         test_attributes["n_elements"] = 1000
@@ -478,7 +799,7 @@ def test_do_calculate_part_stress_integrated_circuit(subcategory_id, test_attrib
     elif subcategory_id in [5, 6, 7, 8]:
         test_attributes["n_elements"] = 64000
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["hazard_rate_active"] == pytest.approx(
@@ -497,14 +818,18 @@ def test_do_calculate_part_stress_integrated_circuit(subcategory_id, test_attrib
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
-def test_do_calculate_part_stress_semiconductor(subcategory_id, test_attributes):
-    """_do_calculate_stress_count() should return the Semiconductor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_semiconductor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 2
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    test_attributes["type_id"] = 1
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert (
@@ -528,16 +853,19 @@ def test_do_calculate_part_stress_semiconductor(subcategory_id, test_attributes)
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize(
     "subcategory_id", [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
 )
-def test_do_calculate_part_stress_resistor(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Resistor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_resistor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 3
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(
@@ -562,17 +890,20 @@ def test_do_calculate_part_stress_resistor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize(
     "subcategory_id",
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19],
 )
-def test_do_calculate_part_stress_capacitor(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Capacitor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_capacitor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 4
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(
@@ -601,14 +932,18 @@ def test_do_calculate_part_stress_capacitor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_stress_inductor(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Inductor attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_inductor(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 5
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    test_attributes["temperature_hot_spot"] = 103.4
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(
@@ -617,14 +952,17 @@ def test_do_calculate_part_stress_inductor(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_stress_relay(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Relay attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_relay(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 6
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == pytest.approx(
@@ -633,63 +971,76 @@ def test_do_calculate_part_stress_relay(subcategory_id, test_attributes):
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 5])
-def test_do_calculate_part_stress_switch(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Switch attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_switch(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 7
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == {1: 0.034, 5: 0.02}[subcategory_id]
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
-def test_do_calculate_part_stress_connection(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Connection attribute dict with
-    updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_connection(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 8
+    test_attributes["hazard_rate_method_id"] = 2
+    test_attributes["lambda_b"] = 0.004963485
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["hazard_rate_active"] == pytest.approx(
-        {1: 0.015571943, 2: 0.0078040363, 3: 0.0013176662, 4: 0.020558237, 5: 0.0026}[
+        {1: 0.004963485, 2: 0.004963485, 3: 0.003952999, 4: 0.03083736, 5: 0.0078}[
             subcategory_id
         ]
     )
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2])
-def test_do_calculate_part_stress_meter(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the Meter attribute dict with updated
-    values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_meter(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 9
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["lambda_b"] == {1: 20.0, 2: 0.09}[subcategory_id]
 
 
 @pytest.mark.unit
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4])
-def test_do_calculate_part_stress_miscellaneous(subcategory_id, test_attributes):
-    """_do_calculate_part_stress() should return the misscellaneous component attribute
-    dict with updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_part_stress_miscellaneous(
+    subcategory_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["category_id"] = 10
+    test_attributes["hazard_rate_method_id"] = 2
     test_attributes["piE"] = 10.0
     test_attributes["subcategory_id"] = subcategory_id
-    _attributes = milhdbk217f._do_calculate_part_stress(**test_attributes)
+    _attributes = milhdbk217f._do_calculate_part_stress(test_attributes)
 
     assert isinstance(_attributes, dict)
     assert _attributes["hazard_rate_active"] == pytest.approx(
-        {1: 0.029968406, 2: 0.0638, 3: 0.01, 4: 1.82547348}[subcategory_id]
+        {1: 0.01427067, 2: 0.0638, 3: 0.01, 4: 1.82547348}[subcategory_id]
     )

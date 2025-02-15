@@ -18,11 +18,13 @@ from ramstk.analyses.milhdbk217f import milhdbk217f
 
 
 @pytest.mark.integration
-@pytest.mark.usefixtures("test_attributes")
 @pytest.mark.parametrize("hazard_rate_method_id", [1, 2, 3])
-def test_do_calculate_active_hazard_rate(hazard_rate_method_id, test_attributes):
-    """do_calculate_active_hazard_rate() should return the component attribute dict
-    with updated values on success."""
+@pytest.mark.usefixtures("test_attributes")
+def test_do_calculate_active_hazard_rate(
+    hazard_rate_method_id,
+    test_attributes,
+):
+    """Returns the hardware attributes dict with updated values on success."""
     test_attributes["hazard_rate_method_id"] = hazard_rate_method_id
 
     def on_message(attributes):
@@ -35,19 +37,20 @@ def test_do_calculate_active_hazard_rate(hazard_rate_method_id, test_attributes)
         )
         print(
             f"\033[36m\n\tsucceed_predict_reliability topic was broadcast for "
-            f"hazard rate method {attributes['hazard_rate_method_id']}."
+            f"hazard rate method {hazard_rate_method_id}."
         )
 
     pub.subscribe(on_message, "succeed_predict_reliability")
 
-    milhdbk217f.do_predict_active_hazard_rate(**test_attributes)
+    milhdbk217f.do_predict_active_hazard_rate(test_attributes)
 
 
 @pytest.mark.integration
 @pytest.mark.usefixtures("test_attributes")
-def test_do_calculate_active_hazard_rate_negative_input(test_attributes):
-    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed a
-    negative input for various components."""
+def test_do_calculate_active_hazard_rate_none_type_input(
+    test_attributes,
+):
+    """Raises a ZeroDivisionError when passed NOne inputs for various parameters."""
     test_attributes["category_id"] = 2
     test_attributes["subcategory_id"] = 2
     test_attributes["n_elements"] = None
@@ -57,27 +60,26 @@ def test_do_calculate_active_hazard_rate_negative_input(test_attributes):
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to predict MIL-HDBK-217F hazard rate for "
-            "hardware ID 12; one or more inputs has a "
-            "negative or missing value. Hardware item "
-            "category ID=2, subcategory ID=2, rated "
-            "power=0.75, number of elements=None."
+            "Failed to predict MIL-HDBK-217F hazard rate for hardware ID 12; category "
+            "ID = 2, subcategory ID = 2.  Error message was: unsupported operand "
+            "type(s) for *: 'float' and 'NoneType'."
         )
         print(
-            "\033[35m\n\tfail_predict_reliability topic was broadcast on negative "
+            "\033[35m\n\tfail_predict_reliability topic was broadcast on None type "
             "input."
         )
 
     pub.subscribe(on_message, "fail_predict_reliability")
 
-    milhdbk217f.do_predict_active_hazard_rate(**test_attributes)
+    milhdbk217f.do_predict_active_hazard_rate(test_attributes)
 
 
 @pytest.mark.integration
 @pytest.mark.usefixtures("test_attributes")
-def test_do_calculate_active_hazard_rate_zero_input(test_attributes):
-    """do_calculate_active_hazard_rate() should raise a ZeroDivisionError when passed
-    an input equal to 0.0 for various components."""
+def test_do_calculate_active_hazard_rate_zero_input(
+    test_attributes,
+):
+    """Raises a ZeroDivisionError when passed 0.0 input for various components."""
     test_attributes["category_id"] = 4
     test_attributes["subcategory_id"] = 12
     test_attributes["voltage_ac_operating"] = 0.0
@@ -86,11 +88,10 @@ def test_do_calculate_active_hazard_rate_zero_input(test_attributes):
 
     def on_message(error_message):
         assert error_message == (
-            "Failed to predict MIL-HDBK-217F hazard rate for hardware ID 12; one or "
-            "more inputs has a value of 0.0.  Hardware item category ID=4, subcategory "
-            "ID=12, operating ac voltage=0.0, operating DC voltage=0.0, operating "
-            "temperature=45.0, temperature rise=10.0, rated maximum temperature=105.0, "
-            "feature size=1.5, surface area=1.5, and item weight=0.5."
+            "Failed to predict MIL-HDBK-217F hazard rate for hardware ID 12; "
+            "category ID = 4, subcategory ID = 12.  Error message was: "
+            "calculate_series_resistance_factor: Capacitor ac voltage and DC voltage "
+            "cannot both be zero."
         )
         print(
             "\033[35m\n\tfail_predict_reliability topic was broadcast on zero "
@@ -99,4 +100,4 @@ def test_do_calculate_active_hazard_rate_zero_input(test_attributes):
 
     pub.subscribe(on_message, "fail_predict_reliability")
 
-    milhdbk217f.do_predict_active_hazard_rate(**test_attributes)
+    milhdbk217f.do_predict_active_hazard_rate(test_attributes)
