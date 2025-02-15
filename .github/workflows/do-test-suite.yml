@@ -54,7 +54,7 @@ jobs:
       - name: Update and install system packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends apt-utils git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest python3-numpy python3-scipy xauth xvfb
+          sudo apt-get install -y --no-install-recommends apt-utils cairo git libgirepository1.0-dev gir1.2-gtk-3.0 python3-gi python3-gi-cairo python3-pytest python3-numpy python3-scipy xauth xvfb
 
       - name: Install RAMSTK and test with coverage
         id: test
