@@ -48,10 +48,10 @@ def calculate_part_stress(
     :raises: IndexError when passed an invalid construction ID or matching ID.
     :raises: KeyError when the attribute dict is missing one or more keys.
     """
-    try:
-        _construction_id = attributes["construction_id"]
-        _matching_id = attributes["matching_id"]
+    _construction_id = attributes["construction_id"]
+    _matching_id = attributes["matching_id"]
 
+    try:
         attributes["temperature_junction"] = calculate_junction_temperature(
             attributes["environment_active_id"],
             attributes["package_id"],
@@ -231,7 +231,7 @@ def calculate_junction_temperature(
     :param temperature_case: the semiconductor case temperature.
     :param theta_jc: the semiconductor junction-case thermal resistance.
     :param power_operating: the semiconductor operating power.
-    :return the calculated junction temperature.
+    :return: the calculated junction temperature.
     :rtype: float
     :raises: IndexError when passed an invalid active environment ID when the case
         temperature is passed at <=0.0 or an invalid package ID when the
@@ -275,12 +275,14 @@ def calculate_part_stress_lambda_b(
     _subcategory_id = attributes["subcategory_id"]
     _type_id = attributes["type_id"]
 
+    # noinspection SpellCheckingInspection
     _dic_lambdab_scalar: Dict[int, float] = {
         3: 0.00074,
         5: 0.0083,
         6: 0.18,
         10: 0.0022,
     }
+    # noinspection SpellCheckingInspection
     _dic_lambdab_list: Dict[int, List[float]] = {
         1: [0.0038, 0.0010, 0.069, 0.003, 0.005, 0.0013, 0.0034, 0.002],
         2: [0.22, 0.18, 0.0023, 0.0081, 0.027, 0.0025, 0.0025],
@@ -388,8 +390,8 @@ def calculate_temperature_factor(
     :param subcategory_id: the semiconductor subcategory ID.
     :param type_id: the semiconductor type ID.
     :param voltage_ratio: the semiconductor ratio of operating to rated voltage.
-    :param temperature_junction: the semiconductor junction temperature. :return the
-        temperature factor (piT).
+    :param temperature_junction: the semiconductor junction temperature.
+    :return: the calculated temperature factor (piT).
     :rtype: float
     :raises: IndexError when passed an invalid type ID.
     :raises: KeyError when passed an invalid subcategory ID.

@@ -72,6 +72,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         )
 
 
+# noinspection PyUnusedLocal
 def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 

@@ -86,18 +86,15 @@ def calculate_part_stress_lambda_b(
     _temperature_active = attributes["temperature_active"]
     _type_id = attributes["type_id"]
 
-    _dic_factors = {
-        1: [[0.00555, 352.0, 15.7], [0.0054, 377.0, 10.4]],
-        2: [0.4, 0.5, 0.5],
-    }
     _lambda_b = 0.0
-
     try:
         if _subcategory_id == 1:
-            _f0, _f1, _f2 = _dic_factors[_subcategory_id][_type_id - 1]
+            _f0, _f1, _f2 = [[0.00555, 352.0, 15.7], [0.0054, 377.0, 10.4]][
+                _subcategory_id
+            ][_type_id - 1]
             return _f0 * exp(((_temperature_active + 273.0) / _f1) ** _f2)
         elif _subcategory_id == 2:
-            return _dic_factors[_subcategory_id][_type_id - 1]
+            return [0.4, 0.5, 0.5][_type_id - 1]
         else:
             raise KeyError(
                 f"calculate_part_stress_lambda_b: Invalid relay subcategory "

@@ -164,6 +164,7 @@ def calculate_part_stress(
         )
 
 
+# noinspection PyUnusedLocal
 def calculate_part_stress_lambda_b(
     attributes: Dict[str, Union[float, int, str]]
 ) -> float:
@@ -615,6 +616,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
                 + 1
             )
 
+        # noinspection PyUnresolvedReferences
         return (
             PART_COUNT_LAMBDA_B[_subcategory_id][_index][_environment_id - 1]
             if _subcategory_id == 1

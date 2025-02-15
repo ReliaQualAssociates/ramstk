@@ -109,7 +109,7 @@ def calculate_part_stress_lambda_b(
     method.
 
     :param attributes: the hardware attributes dict for the resistor to be calculated.
-        :return the calculated part stress base hazard rate (lambdaB).
+    :return: the calculated part stress base hazard rate (lambdaB).
     :rtype: float
     :raises: IndexError when passed an invalid type ID.
     :raises: KeyError when passed an invalid specification ID or subcategory ID.
@@ -263,6 +263,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
     try:
         if _subcategory_id in {2, 6}:
+            # noinspection PyUnresolvedReferences
             return PART_COUNT_LAMBDA_B[_subcategory_id][_specification_id][
                 _environment_active_id - 1
             ]
@@ -339,7 +340,7 @@ def get_resistance_factor(
     :param specification_id: the resistor's governing specification ID.
     :param family_id: the resistor family ID.
     :param resistance: the resistor's resistance in ohms.
-    :return: the selected resistance factor (piR)).
+    :return: the selected resistance factor (piR).
     :rtype: float
     :raises: IndexError when passed an invalid family ID or specification ID.
     :raises: KeyError when passed an invalid subcategory ID.
@@ -384,6 +385,7 @@ def get_resistance_factor(
             # set of lists, then the style ID selects the proper list of piR values
             # and then the resistance range breakpoint is used to select
             if subcategory_id in {6, 7}:
+                # noinspection PyUnresolvedReferences
                 _pi_r = PI_R[subcategory_id][specification_id - 1][family_id - 1][
                     _index + 1
                 ]
