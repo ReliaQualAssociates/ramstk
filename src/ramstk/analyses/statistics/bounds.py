@@ -12,7 +12,8 @@ from typing import Callable, List, Tuple
 
 # Third Party Imports
 import numpy as np
-from scipy import misc, stats
+from numdifftools import Derivative
+from scipy import stats
 
 
 def do_calculate_beta_bounds(
@@ -104,8 +105,5 @@ def do_calculate_fisher_information(
 
 def _partial_derivative(record, model, param_dict, param_name):
     """Calculate the partial derivative."""
-    return misc.derivative(
-        lambda p: model(record, **{**param_dict, param_name: p}),
-        param_dict[param_name],
-        dx=1.0e-6,
-    )
+    _dfdx = Derivative(lambda p: model(record, **{**param_dict, param_name: p}))
+    return _dfdx(1.0)
