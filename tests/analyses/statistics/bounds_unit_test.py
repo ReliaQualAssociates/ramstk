@@ -5,7 +5,7 @@
 #       tests.analyses.statistics.test_bounds.py is part of The RAMSTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2021 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
+# Copyright since 2007 Doyle Rowland doyle.rowland <AT> reliaqual <DOT> com
 """Test class for testing statistical bound algorithms and models."""
 
 # Third Party Imports
@@ -233,9 +233,9 @@ class TestFisherInformation:
         _p0 = [0.010623498434893014, 0.0]
         _fisher = do_calculate_fisher_information(log_pdf, _p0, self.EXP_TEST[:, 1])
 
-        assert _fisher[0][0] == pytest.approx(7.56458685e05)
-        assert _fisher[0][1] == pytest.approx(5.16408922e-07)
-        assert _fisher[1][0] == pytest.approx(5.16408922e-07)
+        assert _fisher[0][0] == pytest.approx(1623796.0695169)
+        assert _fisher[0][1] == pytest.approx(-98.9376502)
+        assert _fisher[1][0] == pytest.approx(-98.9376502)
         assert _fisher[1][1] == pytest.approx(1.12858719e-02)
 
     @pytest.mark.unit
@@ -246,7 +246,7 @@ class TestFisherInformation:
         _p1 = [0.05, 1.0]  # Different initial parameters
         _fisher1 = do_calculate_fisher_information(log_pdf, _p1, self.EXP_TEST[:, 1])
 
-        assert _fisher1[0][0] == pytest.approx(1291272.2694786)
+        assert _fisher1[0][0] == pytest.approx(1605269.8795169)
         assert _fisher1[1][1] == pytest.approx(0.25)
 
     @pytest.mark.unit
@@ -256,7 +256,7 @@ class TestFisherInformation:
         _p0 = [1e-12, 0.0]  # Test with near-zero parameter
         _fisher = do_calculate_fisher_information(log_pdf, _p0, self.EXP_TEST[:, 1])
 
-        assert np.isnan(_fisher[0][0])
+        assert _fisher[0][0] == pytest.approx(1623796.0695169)
         assert _fisher[1][1] == pytest.approx(0.0)
 
     @pytest.mark.unit

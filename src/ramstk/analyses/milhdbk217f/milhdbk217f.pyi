@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Callable, Dict, Optional, TypedDict, Union
+from typing import Callable, Dict, Optional, Union
 
 # RAMSTK Local Imports
 from .models import capacitor as capacitor
@@ -21,7 +21,7 @@ def do_predict_active_hazard_rate(
 ) -> float: ...
 def _do_calculate_part_count(
     attributes: Dict[str, Union[float, int, str]]
-) -> TypedDict: ...
+) -> Dict[str, Union[float, int, str]]: ...
 def _do_calculate_part_stress(
     attributes: Dict[str, Union[float, int, str]]
 ) -> Dict[str, Union[float, int, str]]: ...
