@@ -1,5 +1,5 @@
 # Standard Library Imports
-from typing import Any, Dict
+from typing import Callable, Dict, Optional, TypedDict, Union
 
 # RAMSTK Local Imports
 from .models import capacitor as capacitor
@@ -16,18 +16,26 @@ from .models import resistor as resistor
 from .models import semiconductor as semiconductor
 from .models import switch as switch
 
-def do_predict_active_hazard_rate(**attributes: Dict[str, Any]) -> float: ...
-def _do_calculate_part_count(**attributes: Dict[str, Any]) -> Dict[str, Any]: ...
-def _do_calculate_part_stress(**attributes: Dict[str, Any]) -> Dict[str, Any]: ...
-def _get_environment_factor(
-    category_id: int,
-    environment_active_id: int,
-    subcategory_id: int = ...,
-    quality_id: int = ...,
+def do_predict_active_hazard_rate(
+    attributes: Dict[str, Union[float, int, str]]
 ) -> float: ...
-def _get_part_count_quality_factor(
-    category_id: int, subcategory_id: int, quality_id: int
-) -> float: ...
-def _get_part_stress_quality_factor(
-    category_id: int, subcategory_id: int, quality_id: int
-) -> float: ...
+def _do_calculate_part_count(
+    attributes: Dict[str, Union[float, int, str]]
+) -> TypedDict: ...
+def _do_calculate_part_stress(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]: ...
+def _do_handle_prediction_failure(
+    error_type: str,
+    attributes: Dict[str, Union[float, int, str]],
+    additional_info: str = "",
+) -> None: ...
+def _get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def _get_function(
+    func_dict: Dict, category_id: int, subcategory_id: Optional[int] = None
+) -> Callable: ...
+def _get_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def _get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def _set_default_values(
+    attributes: Dict[str, Union[float, int, str]]
+) -> Dict[str, Union[float, int, str]]: ...

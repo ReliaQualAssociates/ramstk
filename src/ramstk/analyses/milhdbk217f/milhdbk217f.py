@@ -86,7 +86,9 @@ def do_predict_active_hazard_rate(
 
 
 # noinspection PyTypeChecker
-def _do_calculate_part_count(attributes: TypedDict) -> TypedDict:
+def _do_calculate_part_count(
+    attributes: Dict[str, Union[float, int, str]]
+) -> TypedDict:
     """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
     :param attributes: the hardware attributes dict for the component being calculated.
@@ -148,7 +150,9 @@ def _do_calculate_part_stress(
 
 
 def _do_handle_prediction_failure(
-    error_type: str, attributes: TypedDict, additional_info: str = ""
+    error_type: str,
+    attributes: Dict[str, Union[float, int, str]],
+    additional_info: str = "",
 ) -> None:
     """Handle the failure of a hazard rate prediction and publish an error message.
 
