@@ -119,27 +119,27 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the connection being calculated.
-    :return: the selected environment factor (pIE).
+    :return: the selected environment factor (piE).
     :rtype: float
     :raises: IndexError when passed an invalid environment ID.
-    :raises: KeyError when passed an invalid subcategory ID.
+    :raises: KeyError when passed an invalid quality ID.
     """
-    _category_id = attributes["category_id"]
-    _subcategory_id = attributes["subcategory_id"]
-    _environment_id = attributes["environment_active_id"]
+    _quality_id: int = attributes["quality_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+    _environment_id: int = attributes["environment_active_id"]
 
     try:
-        if _category_id in {1, 2}:
-            return PI_E[_category_id][_subcategory_id][_environment_id - 1]
-        elif _category_id in {3, 4, 5}:
-            return PI_E[_category_id][_environment_id - 1]
+        if _subcategory_id in {1, 2}:
+            return PI_E[_subcategory_id][_quality_id][_environment_id - 1]
+        elif _subcategory_id in {3, 4, 5}:
+            return PI_E[_subcategory_id][_environment_id - 1]
     except IndexError:
         raise IndexError(
             f"get_environment_factor: Invalid environment ID {_environment_id}."
         )
     except KeyError:
         raise KeyError(
-            f"get_environment_factor: Invalid connection subcategory ID {_subcategory_id}."
+            f"get_environment_factor: Invalid connection quality ID {_quality_id}."
         )
 
     return 1.0

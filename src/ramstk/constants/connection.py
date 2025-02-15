@@ -214,6 +214,15 @@ PART_STRESS_LAMBDA_B: Dict[int, List[float]] = {
     5: [0.0026, 0.00014, 0.00026, 0.00005, 0.0000035, 0.00012, 0.000069],
 }
 PART_STRESS_PI_Q: Dict[int, List[float]] = {4: [1.0, 2.0], 5: [1.0, 1.0, 2.0, 20.0]}
+
+# The environment factor lists are:
+#      1. Connectors, General, MIL-SPEC [subcategory ID = 1, quality ID = 1]
+#      2. Connectors, General, Lower Quality [subcategory ID = 1, quality ID = 2]
+#      3. Connectors, PCB, MIL-SPEC [subcategory ID = 2, quality ID = 1]
+#      4. Connectors, PCB, Lower Quality [subcategory ID = 2, quality ID = 2]
+#      5. Connectors, IC Socket [subcategory ID = 3]
+#      6. Interconnections, Plated Through Hole [subcategory ID = 4]
+#      7. Connections, Other [subcategory ID = 5]
 PI_E: Dict[int, Dict[int, List[float]] | List[float]] = {
     1: {
         1: [
@@ -348,7 +357,7 @@ LAMBDA_B_FACTORS: Dict[int, List[float]] = {
     4: [0.77, -1528.8, 4.72],
     5: [0.216, -2073.6, 4.66],
 }
-FACTOR_KEYS: Dict[int, Dict[int, List[float]]] = {
+FACTOR_KEYS: Dict[int, Dict[int, List[int]]] = {
     1: {
         1: [2, 2, 2, 2, 2, 2],
         2: [2, 2, 2, 2, 2, 2],

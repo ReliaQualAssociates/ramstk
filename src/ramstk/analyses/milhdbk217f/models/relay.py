@@ -113,7 +113,7 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the relay being calculated.
-    :return: the selected environment factor (pIE).
+    :return: the selected environment factor (piE).
     :rtype: float
     :raises: IndexError when passed an invalid active environment ID.
     :raises: KeyError when passed an invalid subcategory ID.
