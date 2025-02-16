@@ -23,7 +23,7 @@ from ramstk.constants.relay import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a relay.
 
@@ -69,7 +69,7 @@ def calculate_part_stress(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -106,7 +106,9 @@ def calculate_part_stress_lambda_b(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the relay being calculated.
@@ -138,7 +140,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -187,7 +191,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -214,7 +218,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -362,7 +366,9 @@ def _get_application_construction_factor(
         ) from exc
 
 
-def _set_default_quality(subcategory_id: int) -> int:
+def _set_default_quality(
+    subcategory_id: int,
+) -> int:
     """Set the default quality ID.
 
     :param subcategory_id: the relay subcategory ID.
@@ -372,7 +378,10 @@ def _set_default_quality(subcategory_id: int) -> int:
     return 5 if subcategory_id == 4 else 1
 
 
-def _set_default_load_type(technology_id: int, type_id: int) -> int:
+def _set_default_load_type(
+    technology_id: int,
+    type_id: int,
+) -> int:
     """Set the default load type ID.
 
     :param technology_id: the relay technology ID (represents the load type).
@@ -385,7 +394,10 @@ def _set_default_load_type(technology_id: int, type_id: int) -> int:
     return 1 if type_id in {1, 3, 4, 6} else 2
 
 
-def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
+def _set_default_contact_form(
+    contact_form_id: int,
+    type_id: int,
+) -> int:
     """Set the default contact form ID.
 
     :param contact_form_id: the relay contact form ID.
@@ -398,7 +410,10 @@ def _set_default_contact_form(contact_form_id: int, type_id: int) -> int:
     return 1 if type_id in {4, 5} else 6
 
 
-def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
+def _set_default_contact_rating(
+    contact_rating_id: int,
+    type_id: int,
+) -> int:
     """Set the default contact rating.
 
     :param contact_rating_id: the relay contact rating ID.
@@ -411,7 +426,10 @@ def _set_default_contact_rating(contact_rating_id: int, type_id: int) -> int:
     return {1: 2, 2: 4, 3: 2, 4: 1, 5: 2, 6: 2}[type_id]
 
 
-def _set_default_application(application_id: int, type_id: int) -> int:
+def _set_default_application(
+    application_id: int,
+    type_id: int,
+) -> int:
     """Set the default application ID.
 
     :param application_id: the relay application ID.
@@ -424,7 +442,10 @@ def _set_default_application(application_id: int, type_id: int) -> int:
     return {1: 1, 2: 1, 3: 8, 4: 1, 5: 6, 6: 3}[type_id]
 
 
-def _set_default_construction(construction_id: int, type_id: int) -> int:
+def _set_default_construction(
+    construction_id: int,
+    type_id: int,
+) -> int:
     """Set the default construction ID.
 
     :param construction_id: the relay construction ID.
@@ -437,7 +458,10 @@ def _set_default_construction(construction_id: int, type_id: int) -> int:
     return {1: 2, 2: 4, 3: 2, 4: 2, 5: 1, 6: 2}[type_id]
 
 
-def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
+def _set_default_duty_cycle(
+    duty_cycle: float,
+    type_id: int,
+) -> float:
     """Set the default duty cycle.
 
     :param duty_cycle: the relay duty cycle.
@@ -450,7 +474,10 @@ def _set_default_duty_cycle(duty_cycle: float, type_id: int) -> float:
     return 20.0 if type_id == 4 else 10.0
 
 
-def _set_default_rated_temperature(rated_temperature_max: float, type_id: int) -> float:
+def _set_default_rated_temperature(
+    rated_temperature_max: float,
+    type_id: int,
+) -> float:
     """Set the default maximum rated temperature.
 
     :param rated_temperature_max: the relay maximum rated temperature.

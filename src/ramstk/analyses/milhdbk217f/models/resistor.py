@@ -26,7 +26,7 @@ from ramstk.constants.resistor import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a resistor.
 
@@ -101,7 +101,7 @@ def calculate_part_stress(
 
 # pylint: disable=too-many-locals
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -169,7 +169,9 @@ def calculate_temperature_factor(
     return _temperature_case, _pi_t
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the resistor being calculated.
@@ -195,7 +197,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -281,7 +285,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -301,7 +305,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -443,7 +447,7 @@ def get_voltage_factor(
 
 
 def set_default_values(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set the default value for various resistor parameters.
 
@@ -469,7 +473,9 @@ def set_default_values(
     return attributes
 
 
-def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
+def _get_factors_and_temp(
+    subcategory_id: int,
+) -> Tuple[List[float], float]:
     """Retrieve factors and reference temperature for non-film resistors.
 
     :param subcategory_id: the resistor subcategory ID.
@@ -496,7 +502,9 @@ def _get_factors_and_temp(subcategory_id: int) -> Tuple[List[float], float]:
     return _dic_factors[subcategory_id], ref_temp
 
 
-def _get_film_factors_and_temp(specification_id: int) -> Tuple[List[float], float]:
+def _get_film_factors_and_temp(
+    specification_id: int,
+) -> Tuple[List[float], float]:
     """Retrieve factors and reference temperature for film resistors.
 
     :param specification_id: the resistor specification ID.
@@ -513,7 +521,9 @@ def _get_film_factors_and_temp(specification_id: int) -> Tuple[List[float], floa
     return _dic_factors_film[specification_id], ref_temp
 
 
-def _get_type_factor(type_id: int) -> float:
+def _get_type_factor(
+    type_id: int,
+) -> float:
     """Retrieve the type factor for subcategory 8.
 
     :param type_id: the resistor type ID.
@@ -523,7 +533,10 @@ def _get_type_factor(type_id: int) -> float:
     return [0.021, 0.065, 0.105][type_id - 1]
 
 
-def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
+def _set_default_resistance(
+    resistance: float,
+    subcategory_id: int,
+) -> float:
     """Set the default resistance.
 
     :param resistance: the resistor's resistance.
@@ -552,7 +565,10 @@ def _set_default_resistance(resistance: float, subcategory_id: int) -> float:
     }[subcategory_id]
 
 
-def _set_default_elements(n_elements: int, subcategory_id: int) -> float:
+def _set_default_elements(
+    n_elements: int,
+    subcategory_id: int,
+) -> float:
     """Set the default number of elements.
 
     :param n_elements: the resistor number of elements.

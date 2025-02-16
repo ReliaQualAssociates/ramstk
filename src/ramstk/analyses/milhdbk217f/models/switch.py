@@ -25,7 +25,7 @@ from ramstk.constants.switch import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a switch.
 
@@ -111,7 +111,7 @@ def calculate_load_stress_factor(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float | None:
     """Calculate the part stress base hazard rate (lambda b).
 
@@ -166,7 +166,9 @@ def calculate_part_stress_lambda_b(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the switch being calculated.
@@ -192,7 +194,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -249,7 +253,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -276,7 +280,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -343,7 +347,10 @@ def set_default_values(
     return attributes
 
 
-def _set_default_construction_id(construction_id: int, subcategory_id: int) -> int:
+def _set_default_construction_id(
+    construction_id: int,
+    subcategory_id: int,
+) -> int:
     """Set the default construction ID.
 
     :param construction_id: the current switch construction ID.
@@ -363,7 +370,10 @@ def _set_default_construction_id(construction_id: int, subcategory_id: int) -> i
         return 0
 
 
-def _set_default_contact_form_id(contact_form_id: int, subcategory_id: int) -> int:
+def _set_default_contact_form_id(
+    contact_form_id: int,
+    subcategory_id: int,
+) -> int:
     """Set the default contact form ID.
 
     :param contact_form_id: the current switch contact form ID.
@@ -383,7 +393,10 @@ def _set_default_contact_form_id(contact_form_id: int, subcategory_id: int) -> i
         return 0
 
 
-def _set_default_cycle_rate(cycle_rate: float, subcategory_id: int) -> float:
+def _set_default_cycle_rate(
+    cycle_rate: float,
+    subcategory_id: int,
+) -> float:
     """Set the default cycling rate.
 
     :param cycle_rate: the current switch cycling rate.
@@ -405,7 +418,10 @@ def _set_default_cycle_rate(cycle_rate: float, subcategory_id: int) -> float:
         return 0.0
 
 
-def _set_default_active_contacts(active_contacts: int, subcategory_id: int) -> int:
+def _set_default_active_contacts(
+    active_contacts: int,
+    subcategory_id: int,
+) -> int:
     """Set the default active number of contacts.
 
     :param active_contacts: the current switch active number of contacts.

@@ -33,7 +33,7 @@ from .models import (
 
 # noinspection PyTypeChecker
 def do_predict_active_hazard_rate(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the active hazard rate for a hardware item.
 
@@ -87,7 +87,7 @@ def do_predict_active_hazard_rate(
 
 # noinspection PyTypeChecker
 def _do_calculate_part_count(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> TypedDict:
     """Calculate the MIL-HDBK-217F parts count active hazard rate.
 
@@ -107,7 +107,7 @@ def _do_calculate_part_count(
 
 # noinspection PyTypeChecker
 def _do_calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the MIL-HDBK-217F parts stress active hazard rate.
 
@@ -171,7 +171,9 @@ def _do_handle_prediction_failure(
     pub.sendMessage(f"fail_predict_{error_type}", error_message=error_message)
 
 
-def _get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def _get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve environment factor (piE).
 
     :param attributes: the hardware attributes dict for the component being calculated.
@@ -203,7 +205,9 @@ def _get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def _get_function(
-    func_dict: Dict, category_id: int, subcategory_id: Optional[int] = None
+    func_dict: Dict,
+    category_id: int,
+    subcategory_id: Optional[int] = None,
 ) -> Callable:
     """Retrieve the appropriate function based on category and subcategory IDs.
 
@@ -225,7 +229,9 @@ def _get_function(
         ) from exc
 
 
-def _get_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def _get_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve base hazard rate (lambdaB) for part count or part stress calculations.
 
     :param attributes: the hardware attributes dict for the component being calculated.
@@ -277,7 +283,9 @@ def _get_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
     return lambda_b_func(attributes)
 
 
-def _get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def _get_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve quality factor (piQ) for part count or part stress calculation.
 
     :param attributes: the hardware attributes dict for the component being calculated.
@@ -335,7 +343,7 @@ def _get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
 
 
 def _set_default_values(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Set default values for parameters <= 0.0.
 

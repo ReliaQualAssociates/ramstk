@@ -15,7 +15,7 @@ from ramstk.constants.lamp import PART_COUNT_LAMBDA_B, PI_E
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a lamp.
 
@@ -54,7 +54,7 @@ def calculate_part_stress(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -68,7 +68,9 @@ def calculate_part_stress_lambda_b(
     return 0.074 * attributes["voltage_rated"] ** 1.29
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the lamp being calculated.
@@ -86,7 +88,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The

@@ -22,7 +22,7 @@ from ramstk.constants.meter import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a meter.
 
@@ -63,7 +63,9 @@ def calculate_part_stress(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the meter being calculated.
@@ -89,7 +91,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -138,7 +142,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -165,7 +169,9 @@ def get_part_count_quality_factor(
         ) from exc
 
 
-def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_stress_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217F part stress base hazard rate.
@@ -191,7 +197,7 @@ def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> f
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 

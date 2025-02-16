@@ -34,7 +34,7 @@ from ramstk.constants.semiconductor import (
 
 # pylint: disable=too-many-locals
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a semiconductor.
 
@@ -140,7 +140,7 @@ def calculate_part_stress(
 
 
 def calculate_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the application factor (piA).
 
@@ -179,7 +179,7 @@ def calculate_application_factor(
 
 
 def calculate_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the electrical stress factor (piS).
 
@@ -252,7 +252,7 @@ def calculate_junction_temperature(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 
@@ -338,7 +338,7 @@ def calculate_part_stress_lambda_b(
 
 
 def calculate_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the power rating factor (piR).
 
@@ -427,7 +427,9 @@ def calculate_temperature_factor(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the semiconductor being
@@ -454,7 +456,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.
@@ -536,7 +540,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -570,7 +574,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -639,7 +643,7 @@ def set_default_values(
 
 
 def _get_section_6_1_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for low frequency diodes.
 
@@ -664,7 +668,7 @@ def _get_section_6_1_electrical_stress_factor(
 
 
 def _get_section_6_2_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for high frequency diodes.
 
@@ -691,7 +695,7 @@ def _get_section_6_2_application_factor(
 
 
 def _get_section_6_2_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for high frequency diodes.
 
@@ -713,7 +717,7 @@ def _get_section_6_2_power_rating_factor(
 
 
 def _get_section_6_3_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for low frequency, low power BJT transistors.
 
@@ -743,7 +747,7 @@ def _get_section_6_3_application_factor(
 
 
 def _get_section_6_3_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for low frequency, low power BJT transistors.
 
@@ -770,7 +774,7 @@ def _get_section_6_3_electrical_stress_factor(
 
 
 def _get_section_6_3_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for low frequency, low power BJT transistors.
 
@@ -800,7 +804,7 @@ def _get_section_6_3_power_rating_factor(
 
 
 def _get_section_6_4_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for low frequency silicon FET transistors.
 
@@ -827,7 +831,7 @@ def _get_section_6_4_application_factor(
 
 
 def _get_section_6_6_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for high frequency, low noise BJT transistors.
 
@@ -847,7 +851,7 @@ def _get_section_6_6_electrical_stress_factor(
 
 
 def _get_section_6_6_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piR and set default values for high frequency, low noise BJT transistors.
 
@@ -870,7 +874,7 @@ def _get_section_6_6_power_rating_factor(
 
 
 def _get_section_6_7_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for high frequency and high power BJT transistors.
 
@@ -894,7 +898,7 @@ def _get_section_6_7_application_factor(
 
 
 def _get_section_6_8_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for GaAs FET transistors.
 
@@ -917,7 +921,7 @@ def _get_section_6_8_application_factor(
 
 
 def _get_section_6_10_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piS and set default values for thyristors and SCR.
 
@@ -941,7 +945,7 @@ def _get_section_6_10_electrical_stress_factor(
 
 
 def _get_section_6_13_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Get piA and set default values for laser diodes.
 
@@ -1005,7 +1009,9 @@ def _set_default_application_id(
 
 
 def _set_default_rated_power(
-    power_rated: float, subcategory_id: int, type_id: int
+    power_rated: float,
+    subcategory_id: int,
+    type_id: int,
 ) -> float:
     """Set the default rated power.
 
@@ -1042,7 +1048,9 @@ def _set_default_rated_power(
 
 
 def _set_default_voltage_ratio(
-    voltage_ratio: float, subcategory_id: int, type_id: int
+    voltage_ratio: float,
+    subcategory_id: int,
+    type_id: int,
 ) -> float:
     """Set the default voltage ratio.
 

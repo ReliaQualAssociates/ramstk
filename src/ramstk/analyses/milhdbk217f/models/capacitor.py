@@ -27,7 +27,7 @@ from ramstk.constants.capacitor import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a capacitor.
 
@@ -177,7 +177,9 @@ def calculate_series_resistance_factor(
     )
 
 
-def get_configuration_factor(configuration_id: int) -> float:
+def get_configuration_factor(
+    configuration_id: int,
+) -> float:
     """Retrieve the configuration factor (piCF) for the passed construction ID.
 
     :param configuration_id: the capacitor configuration ID.
@@ -194,7 +196,9 @@ def get_configuration_factor(configuration_id: int) -> float:
         ) from exc
 
 
-def get_construction_factor(construction_id: int) -> float:
+def get_construction_factor(
+    construction_id: int,
+) -> float:
     """Retrieve the configuration factor (piC) for the passed construction ID.
 
     :param construction_id: the capacitor construction ID.
@@ -211,7 +215,9 @@ def get_construction_factor(construction_id: int) -> float:
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the capacitor being calculated.
@@ -230,7 +236,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -324,7 +332,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -345,7 +353,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -432,7 +440,9 @@ def _set_default_capacitance(
         ) from exc
 
 
-def _set_default_capacitance_factor(subcategory_id: int) -> float:
+def _set_default_capacitance_factor(
+    subcategory_id: int,
+) -> float:
     """Set the default value for the capacitance factor (piCV).
 
     :param subcategory_id: the capacitor subcategory ID.

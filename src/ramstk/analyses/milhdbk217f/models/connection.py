@@ -27,7 +27,7 @@ from ramstk.constants.connection import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a connection.
 
@@ -71,7 +71,7 @@ def calculate_part_stress(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -115,7 +115,9 @@ def calculate_part_stress_lambda_b(
     )
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the connection being calculated.
@@ -203,7 +205,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -224,7 +226,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -278,7 +280,9 @@ def set_default_values(
     return attributes
 
 
-def _calculate_active_pins_factor(n_active_pins: int) -> float:
+def _calculate_active_pins_factor(
+    n_active_pins: int,
+) -> float:
     """Calculate the active pins factor (piP).
 
     :param n_active_pins: the number of active pins in the connector.
@@ -288,7 +292,9 @@ def _calculate_active_pins_factor(n_active_pins: int) -> float:
     return exp(((n_active_pins - 1) / 10.0) ** 0.51064)
 
 
-def _calculate_complexity_factor(n_circuit_planes: int) -> float:
+def _calculate_complexity_factor(
+    n_circuit_planes: int,
+) -> float:
     """Calculate the complexity factor (piC).
 
     :param n_circuit_planes: the number of planes in the PCB/PWA.
@@ -299,7 +305,8 @@ def _calculate_complexity_factor(n_circuit_planes: int) -> float:
 
 
 def _calculate_insert_temperature(
-    contact_gauge: int, current_operating: float
+    contact_gauge: int,
+    current_operating: float,
 ) -> float:
     """Calculate the insert temperature.
 
@@ -343,7 +350,11 @@ def _calculate_insert_temperature(
         ) from exc
 
 
-def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
+def _get_factor_key(
+    type_id: int,
+    specification_id: int,
+    insert_id: int,
+) -> int:
     """Retrieve the reference temperature key for the connection.
 
     :param type_id: the connection type identifier.
@@ -372,7 +383,9 @@ def _get_factor_key(type_id: int, specification_id: int, insert_id: int) -> int:
         ) from exc
 
 
-def _get_mate_unmate_factor(n_cycles: float) -> float:
+def _get_mate_unmate_factor(
+    n_cycles: float,
+) -> float:
     """Retrieve the mating/unmating factor (piK).
 
     :param n_cycles: the average number of connection mate/unmate cycles expected per

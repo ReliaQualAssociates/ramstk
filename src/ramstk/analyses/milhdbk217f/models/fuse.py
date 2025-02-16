@@ -15,7 +15,7 @@ from ramstk.constants.fuse import PART_COUNT_LAMBDA_B, PI_E
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a fuse.
 
@@ -32,7 +32,9 @@ def calculate_part_stress(
     return attributes
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the fuse being calculated.
@@ -50,7 +52,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate. The list
@@ -74,7 +78,9 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 # noinspection PyUnusedLocal
 # pylint: disable=unused-argument
-def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_stress_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part stress base hazard rate.

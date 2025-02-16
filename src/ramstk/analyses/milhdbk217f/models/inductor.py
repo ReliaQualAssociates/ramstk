@@ -22,7 +22,7 @@ from ramstk.constants.inductor import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for an inductive device.
 
@@ -102,7 +102,7 @@ def calculate_hot_spot_temperature(
 
 
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -215,7 +215,9 @@ def calculate_temperature_rise_power_loss_weight(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the inductive device being
@@ -242,7 +244,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.
@@ -294,7 +298,7 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
 
 
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part count quality factor (piQ) for the passed quality ID.
 
@@ -316,7 +320,7 @@ def get_part_count_quality_factor(
 
 
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Retrieve the part stress quality factor (piQ) for the passed quality ID.
 
@@ -349,7 +353,9 @@ def get_part_stress_quality_factor(
         ) from exc
 
 
-def get_temperature_rise_spec_sheet(page_number: int) -> float:
+def get_temperature_rise_spec_sheet(
+    page_number: int,
+) -> float:
     """Retrieve the temperature rise.
 
     :param page_number: the inductive device specification sheet to retrieve the
@@ -406,7 +412,9 @@ def set_default_values(
     return attributes
 
 
-def _set_default_rated_temperature(subcategory_id: int) -> float:
+def _set_default_rated_temperature(
+    subcategory_id: int,
+) -> float:
     """Set the default maximum rated temperature.
 
     :param subcategory_id: the inductive device subcategory ID.

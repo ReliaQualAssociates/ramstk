@@ -20,7 +20,7 @@ from ramstk.constants.efilter import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a filter.
 
@@ -37,7 +37,9 @@ def calculate_part_stress(
     return attributes
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the filter being calculated.
@@ -56,7 +58,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> flo
         ) from exc
 
 
-def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the quality factor (piQ) for the passed quality ID.
 
     This function is used for both MIL-HDBK-217FN2 part count and part stress methods.
@@ -76,7 +80,9 @@ def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate. The
@@ -107,7 +113,9 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         ) from exc
 
 
-def get_part_stress_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_stress_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part stress base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part stress base hazard rate.

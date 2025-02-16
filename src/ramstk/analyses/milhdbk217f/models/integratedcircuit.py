@@ -26,7 +26,7 @@ from ramstk.constants.integrated_circuit import (
 
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for an integrated circuit.
 
@@ -167,7 +167,7 @@ def calculate_part_stress(
 # noinspection PyUnusedLocal
 # pylint: disable=unused-argument
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
     """Calculate the part stress base hazard rate (lambdaB).
 
@@ -203,7 +203,9 @@ def calculate_die_complexity_factor(
         ) from exc
 
 
-def calculate_eos_hazard_rate(voltage_esd: float) -> float:
+def calculate_eos_hazard_rate(
+    voltage_esd: float,
+) -> float:
     """Calculate the electrical overstress hazard rate (lambdaEOS).
 
     :param voltage_esd: the integrated circuit ESD withstand voltage.
@@ -278,7 +280,9 @@ def calculate_lambda_cyclic_factors(
     return _a_1, _a_2, _b_1, _b_2
 
 
-def calculate_package_base_hazard_rate(n_active_pins: int) -> float:
+def calculate_package_base_hazard_rate(
+    n_active_pins: int,
+) -> float:
     """Calculate the package base hazard rate (lambdaBP).
 
     :param n_active_pins: the number of active (current carrying) pins.
@@ -386,7 +390,9 @@ def get_application_factor(
         ) from exc
 
 
-def get_die_base_hazard_rate(type_id: int) -> float:
+def get_die_base_hazard_rate(
+    type_id: int,
+) -> float:
     """Retrieve the base hazard rate for a VHISC/VLSI die (lambdaBD).
 
     :param type_id: the integrated circuit type ID.
@@ -466,7 +472,9 @@ def get_die_complexity_factor(
         ) from exc
 
 
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the environment factor (piE) for the passed environment ID.
 
     :param attributes: the hardware attributes dict for the integrated circuit being
@@ -486,7 +494,9 @@ def get_environment_factor(attributes: Dict[str, Union[float, int, str]]):
         ) from exc
 
 
-def get_error_correction_factor(type_id: int) -> float:
+def get_error_correction_factor(
+    type_id: int,
+) -> float:
     """Retrieve the error code correction factor (piECC).
 
     :param type_id: the integrated circuit error correction type ID.
@@ -503,7 +513,9 @@ def get_error_correction_factor(type_id: int) -> float:
         ) from exc
 
 
-def get_manufacturing_process_factor(manufacturing_id: int) -> float:
+def get_manufacturing_process_factor(
+    manufacturing_id: int,
+) -> float:
     """Retrieve the manufacturing process correction factor (piMFG).
 
     :param manufacturing_id: the integrated circuit manufacturing process identifier.
@@ -513,7 +525,9 @@ def get_manufacturing_process_factor(manufacturing_id: int) -> float:
     return 0.55 if manufacturing_id == 1 else 2.0
 
 
-def get_package_type_correction_factor(package_id: int) -> float:
+def get_package_type_correction_factor(
+    package_id: int,
+) -> float:
     """Retrieve the package type correction factor (piPT).
 
     :param package_id: the integrated circuit package type ID.
@@ -530,7 +544,9 @@ def get_package_type_correction_factor(package_id: int) -> float:
         ) from exc
 
 
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the part count base hazard rate (lambdaB).
 
     This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
@@ -642,7 +658,9 @@ def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> fl
         ) from exc
 
 
-def get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float:
+def get_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
     """Retrieve the quality factor (piQ) for the passed quality ID.
 
     This function is used for both MIL-HDBK-217FN2 part count and part stress methods.
