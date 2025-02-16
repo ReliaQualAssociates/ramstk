@@ -17,25 +17,33 @@ from .models import semiconductor as semiconductor
 from .models import switch as switch
 
 def do_predict_active_hazard_rate(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float: ...
 def _do_calculate_part_count(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _do_calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _do_handle_prediction_failure(
     error_type: str,
     attributes: Dict[str, Union[float, int, str]],
     additional_info: str = "",
 ) -> None: ...
-def _get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def _get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float: ...
 def _get_function(
-    func_dict: Dict, category_id: int, subcategory_id: Optional[int] = None
+    func_dict: Dict,
+    category_id: int,
+    subcategory_id: Optional[int] = None,
 ) -> Callable: ...
-def _get_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float: ...
-def _get_quality_factor(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def _get_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float: ...
+def _get_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float: ...
 def _set_default_values(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...

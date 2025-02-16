@@ -17,13 +17,13 @@ PI_E: Dict[int, List[float]]
 PI_M: List[float]
 
 def calculate_part_stress(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def calculate_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def calculate_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def calculate_junction_temperature(
     environment_active_id: int,
@@ -33,63 +33,70 @@ def calculate_junction_temperature(
     power_operating: float,
 ) -> float: ...
 def calculate_part_stress_lambda_b(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float: ...
 def calculate_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def calculate_temperature_factor(
-    subcategory_id: int, type_id: int, voltage_ratio: float, temperature_junction: float
+    subcategory_id: int,
+    type_id: int,
+    voltage_ratio: float,
+    temperature_junction: float,
 ) -> float: ...
-def get_environment_factor(attributes: Dict[str, Union[float, int, str]]) -> float: ...
-def get_part_count_lambda_b(attributes: Dict[str, Union[float, int, str]]) -> float: ...
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float: ...
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float: ...
 def get_part_count_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float: ...
 def get_part_stress_quality_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float: ...
 def set_default_values(
     attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_1_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_2_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_2_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_3_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_3_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_3_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_4_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_6_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_6_power_rating_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_7_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_8_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_10_electrical_stress_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _get_section_6_13_application_factor(
-    attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]: ...
 def _set_default_application_id(
     application_id: int,
@@ -97,8 +104,12 @@ def _set_default_application_id(
     type_id: int,
 ) -> int: ...
 def _set_default_rated_power(
-    power_rated: float, subcategory_id: int, type_id: int
+    power_rated: float,
+    subcategory_id: int,
+    type_id: int,
 ) -> float: ...
 def _set_default_voltage_ratio(
-    voltage_ratio: float, subcategory_id: int, type_id: int
+    voltage_ratio: float,
+    subcategory_id: int,
+    type_id: int,
 ) -> float: ...
