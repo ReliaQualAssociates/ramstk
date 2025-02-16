@@ -24,6 +24,8 @@ def test_attributes_capacitor():
         "piCV": 0.0,
         "piSR": 0.0,
         "hazard_rate_active": 0.0,
+        "quality_id": 1,
+        "environment_id": 3,
     }
 
 
@@ -51,6 +53,8 @@ def test_attributes_connection():
         "piK": 0.0,
         "piP": 0.0,
         "hazard_rate_active": 0.0,
+        "quality_id": 1,
+        "environment_id": 3,
     }
 
 
@@ -63,6 +67,8 @@ def test_attributes_crystal():
         "frequency_operating": 10.0,
         "piE": 1.0,
         "piQ": 1.0,
+        "quality_id": 1,
+        "environment_id": 3,
     }
 
 
@@ -106,6 +112,7 @@ def test_attributes_inductor():
         "voltage_dc_operating": 3.3,
         "current_operating": 0.00108778877888,
         "temperature_active": 43.2,
+        "temperature_hot_spot": 95.0,
         "piE": 5.0,
         "lambda_b": 0.0,
     }

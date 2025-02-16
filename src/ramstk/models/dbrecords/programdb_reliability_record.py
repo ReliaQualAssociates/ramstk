@@ -501,7 +501,7 @@ class RAMSTKReliabilityRecord(RAMSTK_BASE, RAMSTKBaseRecord):  # type: ignore
         :rtype: None
         """
         return (
-            milhdbk217f.do_predict_active_hazard_rate(**attributes)  # type: ignore
+            milhdbk217f.do_predict_active_hazard_rate(attributes)  # type: ignore
             if attributes["part"] == 1 and self.hazard_rate_method_id in [1, 2]
             else 0.0
         )

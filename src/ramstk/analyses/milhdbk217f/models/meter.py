@@ -10,202 +10,95 @@
 # Standard Library Imports
 from typing import Dict, Union
 
-PART_COUNT_LAMBDA_B = {
-    1: {
-        1: [
-            10.0,
-            20.0,
-            120.0,
-            70.0,
-            180.0,
-            50.0,
-            80.0,
-            160.0,
-            250.0,
-            260.0,
-            5.0,
-            140.0,
-            380.0,
-            0.0,
-        ],
-        2: [
-            15.0,
-            30.0,
-            180.0,
-            105.0,
-            270.0,
-            75.0,
-            120.0,
-            240.0,
-            375.0,
-            390.0,
-            7.5,
-            210.0,
-            570.0,
-            0.0,
-        ],
-        3: [
-            40.0,
-            80.0,
-            480.0,
-            280.0,
-            720.0,
-            200.0,
-            320.0,
-            640.0,
-            1000.0,
-            1040.0,
-            20.0,
-            560.0,
-            1520.0,
-            0.0,
-        ],
-    },
-    2: {
-        1: [
-            0.09,
-            0.36,
-            2.3,
-            1.1,
-            3.2,
-            2.5,
-            3.8,
-            5.2,
-            6.6,
-            5.4,
-            0.099,
-            5.4,
-            0.0,
-            0.0,
-        ],
-        2: [
-            0.15,
-            0.61,
-            2.8,
-            1.8,
-            5.4,
-            4.3,
-            6.4,
-            8.9,
-            11.0,
-            9.2,
-            0.17,
-            9.2,
-            0.0,
-            0.0,
-        ],
-    },
-}
-PART_COUNT_PI_Q = {1: [1.0, 1.0], 2: [1.0, 3.4]}
-PART_STRESS_LAMBDA_B = {1: [20.0, 30.0, 80.0], 2: 0.09}
-PART_STRESS_PI_Q = {2: [1.0, 3.4]}
-PI_E = {
-    1: [
-        1.0,
-        2.0,
-        12.0,
-        7.0,
-        18.0,
-        5.0,
-        8.0,
-        16.0,
-        25.0,
-        26.0,
-        0.5,
-        14.0,
-        38.0,
-        0.0,
-    ],
-    2: [
-        1.0,
-        4.0,
-        25.0,
-        12.0,
-        35.0,
-        28.0,
-        42.0,
-        58.0,
-        73.0,
-        60.0,
-        1.1,
-        60.0,
-        0.0,
-        0.0,
-    ],
-}
-PI_F = [1.0, 1.0, 2.8]
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the connection being calculated.
-    :return: _base_hr; the parts count base hazard rates.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(
-        attributes["subcategory_id"],
-        attributes["type_id"],
-        attributes["environment_active_id"],
-    )
+# RAMSTK Package Imports
+from ramstk.constants.meter import (
+    PART_COUNT_LAMBDA_B,
+    PART_COUNT_PI_Q,
+    PART_STRESS_LAMBDA_B,
+    PART_STRESS_PI_Q,
+    PI_E,
+    PI_F,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a meter.
+    """Calculate the part stress active hazard rate for a meter.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.
 
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the hardware attributes dict with updated values.
     :rtype: dict
+    :raises: KeyError when the hardware attributes dict is missing one or more keys.
     """
-    attributes["lambda_b"] = get_part_stress_lambda_b(
-        attributes["subcategory_id"], attributes["type_id"]
-    )
-    attributes["piT"] = get_temperature_stress_factor(
-        attributes["temperature_active"], attributes["temperature_rated_max"]
-    )
-
-    # Determine the application factor (piA) and function factor (piF).
-    if attributes["subcategory_id"] == 2:
-        attributes["piA"] = 1.7 if attributes["type_id"] - 1 else 1.0
-        attributes["piF"] = PI_F[attributes["application_id"] - 1]
-
-    attributes["hazard_rate_active"] = attributes["lambda_b"] * attributes["piE"]
-    if attributes["subcategory_id"] == 2:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"]
-            * attributes["piA"]
-            * attributes["piF"]
-            * attributes["piQ"]
-        )
-    elif attributes["subcategory_id"] == 1:
-        attributes["hazard_rate_active"] = (
-            attributes["hazard_rate_active"] * attributes["piT"]
+    try:
+        attributes["piT"] = get_temperature_stress_factor(
+            attributes["temperature_active"], attributes["temperature_rated_max"]
         )
 
-    return attributes
+        # Determine the application factor (piA) and function factor (piF).
+        if attributes["subcategory_id"] == 2:
+            attributes["piA"] = 1.7 if attributes["type_id"] - 1 else 1.0
+            attributes["piF"] = PI_F[attributes["application_id"] - 1]
+
+        if attributes["subcategory_id"] == 2:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"]
+                * attributes["piA"]
+                * attributes["piF"]
+                * attributes["piQ"]
+            )
+        elif attributes["subcategory_id"] == 1:
+            attributes["hazard_rate_active"] = (
+                attributes["hazard_rate_active"] * attributes["piT"]
+            )
+
+        return attributes
+    except KeyError as exc:
+        raise KeyError(
+            f"calculate_part_stress: Missing required meter attribute: {exc}."
+        ) from exc
+
+
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the selected environment factor (pIE).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
+    _environment_id: int = attributes["environment_active_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
+    try:
+        return PI_E[_subcategory_id][_environment_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_environment_factor: Invalid meter environment ID "
+            f"{_environment_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"get_environment_factor: Invalid meter subcategory ID "
+            f"{_subcategory_id}."
+        ) from exc
 
 
 def get_part_count_lambda_b(
-    subcategory_id: int,
-    type_id: int,
-    environment_active_id: int,
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
-    """Retrieve the parts count base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part count base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.
-
-    This function calculates the MIL-HDBK-217F hazard rate using the parts
-    count method.  The dictionary PART_COUNT_217F_LAMBDA_B contains the
-    MIL-HDBK-217F parts count base hazard rates.  Keys are for
-    PART_COUNT_217F_LAMBDA_B are:
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate.  The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base
+    hazard rates.  Keys for PART_COUNT_LAMBDA_B are:
 
         #. subcategory_id
         #. environment_active_id
@@ -222,37 +115,107 @@ def get_part_count_lambda_b(
     |        2       | Panel                         |       18.1      |
     +----------------+-------------------------------+-----------------+
 
-    :param subcategory_id: the subcategory identifier.
-    :param type_id: the type of meter identifier.
-    :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the parts count base hazard rate.
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
     :rtype: float
-    :raise: IndexError if passed an unknown active environment ID.
-    :raise: KeyError if passed an unknown subcategory ID or type ID.
+    :raises: IndexError when passed an invalid active environment ID.
+    :raises: KeyError when passed an invalid subcategory ID or type ID.
     """
-    return PART_COUNT_LAMBDA_B[subcategory_id][type_id][environment_active_id - 1]
+    _environment_active_id = attributes["environment_active_id"]
+    _subcategory_id = attributes["subcategory_id"]
+    _type_id = attributes["type_id"]
+
+    try:
+        return PART_COUNT_LAMBDA_B[_subcategory_id][_type_id][
+            _environment_active_id - 1
+        ]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid meter environment ID "
+            f"{_environment_active_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid meter subcategory ID "
+            f"{_subcategory_id} or type ID {_type_id}."
+        ) from exc
+
+
+def get_part_count_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the selected part count quality factor (piQ).
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    :raises: KeyError when passed an invalid subcategory ID.
+    """
+    _quality_id: int = attributes["quality_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
+    try:
+        return PART_COUNT_PI_Q[_subcategory_id][_quality_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_count_quality_factor: Invalid meter quality ID "
+            f"{_quality_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"get_part_count_quality_factor: Invalid meter subcategory ID "
+            f"{_subcategory_id}."
+        ) from exc
 
 
 def get_part_stress_lambda_b(
-    subcategory_id: int,
-    type_id: int,
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
-    """Retrieve the part stress base hazard rate (lambda b) from MIL-HDBK-217F.
+    """Retrieve the part stress base hazard rate (lambdaB).
 
-    This function calculates the MIL-HDBK-217F hazard rate using the parts stress
-    method.
+    This function retrieves the MIL-HDBK-217F part stress base hazard rate.
 
-    :param subcategory_id: the subcategory identifier.
-    :param type_id: the meter type identifier.
-    :return: _lambda_b; the part stress base hazard rate or 0.0 if an unknown
-        subcategory ID is passed.
-    :rtype: float :raise: IndexError when passed an unknown type ID.
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the selected part stress base hazard rate (lambdaB).
+    :rtype: float
+    :raises: IndexError when passed an invalid type ID.
     """
-    if subcategory_id == 1:
-        return PART_STRESS_LAMBDA_B[1][type_id - 1]
-    elif subcategory_id == 2:
-        return PART_STRESS_LAMBDA_B[2]
-    return 0.0
+    _subcategory_id = attributes["subcategory_id"]
+    _type_id = attributes["type_id"]
+
+    try:
+        if _subcategory_id == 1:
+            return PART_STRESS_LAMBDA_B[1][_type_id - 1]
+        elif _subcategory_id == 2:
+            return PART_STRESS_LAMBDA_B[2]
+        return 0.0
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_stress_lambda_b: Invalid meter type ID {_type_id}."
+        ) from exc
+
+
+def get_part_stress_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the selected part stress quality factor (piQ).
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id: int = attributes["quality_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
+    try:
+        return PART_STRESS_PI_Q[_quality_id - 1] if _subcategory_id == 2 else 1.0
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_stress_quality_factor: Invalid meter quality ID "
+            f"{_quality_id}."
+        ) from exc
 
 
 def get_temperature_stress_factor(
@@ -261,14 +224,30 @@ def get_temperature_stress_factor(
 ) -> float:
     """Retrieve the temperature stress factor (piT).
 
-    :param temperature_active: the operating ambient temperature in C.
-    :param temperature_rated_max: the maxmimum rated operating temperature in C.
-    :return: _pi_t; the value of piT associated with the operating temperature.
-    :rtype: float :raise: TypeError if passed a string for either temperature. :raise:
-        ZeroDivisionError if passed a rated maximum temperature = 0.0.
+    :param temperature_active: the meter operating ambient temperature in C.
+    :param temperature_rated_max: the meter maximum rated operating temperature in C.
+    :return: the selected temperature stress factor (piT).
+    :rtype: float
+    :raises: TypeError when passed a string for either temperature.
+    :raises: ZeroDivisionError when passed a rated maximum temperature = 0.0.
     """
     _pi_t = 0.0
-    _temperature_ratio = temperature_active / temperature_rated_max
+
+    try:
+        _temperature_ratio = temperature_active / temperature_rated_max
+    except TypeError as exc:
+        _active_type = type(temperature_active)
+        _max_type = type(temperature_rated_max)
+        raise TypeError(
+            f"get_temperature_stress_factor: Meter active temperature {_active_type} "
+            f"and maximum rated temperature {_max_type} must both be non-negative "
+            f"numbers."
+        ) from exc
+    except ZeroDivisionError as exc:
+        raise ZeroDivisionError(
+            "get_temperature_stress_factor: Meter maximum rated temperature cannot "
+            "be zero."
+        ) from exc
 
     if 0.0 < _temperature_ratio <= 0.5:
         _pi_t = 0.5
@@ -283,15 +262,15 @@ def get_temperature_stress_factor(
 
 
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]],
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various meter parameters.
 
-    MIL-HDBK-217F has no defaults for metere.  This function is needed as a placeholder
+    MIL-HDBK-217F has no defaults for meters.  This function is needed as a placeholder
     only.
 
-    :param attributes: the attribute dict for the meter being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the meter being calculated.
+    :return: the hardware attributes dict.
     :rtype: dict
     """
     return attributes

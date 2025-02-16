@@ -5,98 +5,152 @@
 #
 # All rights reserved.
 # Copyright since 2007 Doyle "weibullguy" Rowland doyle.rowland <AT> reliaqual <DOT> com
-"""Crystal MIL-HDBK-217F Constants and Calculations Module."""
+"""Crystal MIL-HDBK-217F Calculations Module."""
 
 # Standard Library Imports
 from typing import Dict, Union
 
-PART_COUNT_LAMBDA_B = [
-    0.032,
-    0.096,
-    0.32,
-    0.19,
-    0.51,
-    0.38,
-    0.54,
-    0.70,
-    0.90,
-    0.74,
-    0.016,
-    0.42,
-    1.0,
-    16.0,
-]
-PART_COUNT_PI_Q = [1.0, 3.4]
-PART_STRESS_PI_Q = [1.0, 2.1]
-PI_E = [
-    1.0,
-    3.0,
-    10.0,
-    6.0,
-    16.0,
-    12.0,
-    17.0,
-    22.0,
-    28.0,
-    23.0,
-    0.5,
-    13.0,
-    32.0,
-    500.0,
-]
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the crystal being calculated.
-    :return: _base_hr; the list of base hazard rates.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(attributes["environment_active_id"])
+# RAMSTK Package Imports
+from ramstk.constants.crystal import (
+    PART_COUNT_LAMBDA_B,
+    PART_COUNT_PI_Q,
+    PART_STRESS_PI_Q,
+    PI_E,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Calculate the part stress hazard rate for a crystal.
+    """Calculate the part stress active hazard rate for a crystal.
 
-    This function calculates the MIL-HDBK-217F hazard rate using the part stress method.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.  Because the part stress model for a crystal is simply the based hazard rate
+    (lambdaB) multiplied by the environment factor (piE) and quality factor (piQ), this
+    function only needs to return the hardware attributes dict as this calculation is
+    performed in the milhdbk217f._do_calculate_part_stress() function.
 
-    :param attributes: the attributes for the crystal being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the hardware attributes dict.
     :rtype: dict
     """
-    attributes["lambda_b"] = 0.013 * attributes["frequency_operating"] ** 0.23
-
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
-    )
-
     return attributes
 
 
-def get_part_count_lambda_b(environment_active_id: int) -> float:
-    """Retrieve the part count base hazard rate for a crystal.
+def calculate_part_stress_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Calculate the part stress base hazard rate (lambdaB).
 
-    :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the part count base hazard rate for the active environment.
-    :rtype: float :raise: IndexError if passed an unknown active environment ID.
+    This function calculates the MIL-HDBK-217FN2 base hazard rate for the parts stress
+    method.
+
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the calculated part stress base hazard rate (lambdaB).
+    :rtype: float
     """
-    return PART_COUNT_LAMBDA_B[environment_active_id - 1]
+    if attributes["frequency_operating"] >= 0.0:
+        return 0.013 * attributes["frequency_operating"] ** 0.23
+    else:
+        return 0.0
+
+
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the environment factor (piE) for the passed environment ID.
+
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the selected environment factor (pIE).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    """
+    _environment_id = attributes["environment_active_id"]
+
+    try:
+        return PI_E[_environment_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_environment_factor: Invalid crystal environment ID {_environment_id}."
+        ) from exc
+
+
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part count base hazard rate (lambdaB).
+
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate. The list
+    PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base hazard rates.  The
+    index for PART_COUNT_LAMBDA_B is the environment ID.
+
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    """
+    _environment_id = attributes["environment_active_id"]
+
+    try:
+        return PART_COUNT_LAMBDA_B[_environment_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid crystal environment ID "
+            f"{_environment_id}."
+        ) from exc
+
+
+def get_part_count_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part count quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the selected part count quality factor (piQ).
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id = attributes["quality_id"]
+
+    try:
+        return PART_COUNT_PI_Q[_quality_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_count_quality_factor: Invalid crystal quality ID {_quality_id}."
+        ) from exc
+
+
+def get_part_stress_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part stress quality factor (piQ) for the passed quality ID.
+
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the selected part stress quality factor (piQ).
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id: int = attributes["quality_id"]
+    _subcategory_id: int = attributes["subcategory_id"]
+
+    try:
+        if _subcategory_id in {4, 5}:
+            return PART_STRESS_PI_Q[_quality_id - 1]
+        else:
+            return 1.0
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_stress_quality_factor: Invalid crystal quality ID {_quality_id}."
+        ) from exc
 
 
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]],
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various crystal parameters.
 
-    :param attributes: the attribute dict for the crystal being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the crystal being calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
     if attributes["frequency_operating"] <= 0.0:

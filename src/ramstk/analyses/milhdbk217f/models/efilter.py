@@ -10,135 +10,142 @@
 # Standard Library Imports
 from typing import Dict, Union
 
-PART_COUNT_LAMBDA_B = {
-    1: [
-        0.022,
-        0.044,
-        0.13,
-        0.088,
-        0.20,
-        0.15,
-        0.20,
-        0.24,
-        0.29,
-        0.24,
-        0.018,
-        0.15,
-        0.33,
-        2.6,
-    ],
-    2: [
-        0.12,
-        0.24,
-        0.72,
-        0.48,
-        1.1,
-        0.84,
-        1.1,
-        1.3,
-        1.6,
-        1.3,
-        0.096,
-        0.84,
-        1.8,
-        1.4,
-    ],
-    3: [
-        0.27,
-        0.54,
-        1.6,
-        1.1,
-        2.4,
-        1.9,
-        2.4,
-        3.0,
-        3.5,
-        3.0,
-        0.22,
-        1.9,
-        4.1,
-        32.0,
-    ],
-}
-PART_STRESS_LAMBDA_B = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
-PI_E = [
-    1.0,
-    2.0,
-    6.0,
-    4.0,
-    9.0,
-    7.0,
-    9.0,
-    11.0,
-    13.0,
-    11.0,
-    0.8,
-    7.0,
-    15.0,
-    120.0,
-]
-PI_Q = [1.0, 2.9]
-
-
-def calculate_part_count(**attributes: Dict[str, Union[float, int, str]]) -> float:
-    """Wrap get_part_count_lambda_b().
-
-    This wrapper allows us to pass an attribute dict from a generic parts count
-    function.
-
-    :param attributes: the attributes for the filter being calculated.
-    :return: _base_hr; the parts count base hazard rate.
-    :rtype: float
-    """
-    return get_part_count_lambda_b(
-        attributes["type_id"], attributes["environment_active_id"]
-    )
+# RAMSTK Package Imports
+from ramstk.constants.efilter import (
+    PART_COUNT_LAMBDA_B,
+    PART_STRESS_LAMBDA_B,
+    PI_E,
+    PI_Q,
+)
 
 
 def calculate_part_stress(
-    **attributes: Dict[str, Union[float, int, str]]
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
     """Calculate the part stress active hazard rate for a filter.
 
-    :param attributes: the attributes for the filter being calculated.
-    :return: attributes; the keyword argument (hardware attribute) dictionary with
-        updated values.
-    :rtype: dict :raise: KeyError if an unknown type ID is passed.
+    This function calculates the MIL-HDBK-217FN2 hazard rate using the part stress
+    method.  Because the part stress model for a filter is simply the based hazard rate
+    (lambdaB) multiplied by the environment factor (piE) and quality factor (piQ), this
+    function only needs to return the hardware attributes dict as this calculation is
+    performed in the milhdbk217f._do_calculate_part_stress() function.
+
+    :param attributes: the hardware attributes dict for the filter being calculated.
+    :return: the hardware attributes dict.
+    :rtype: dict
     """
-    attributes["lambda_b"] = PART_STRESS_LAMBDA_B[attributes["type_id"]]
-
-    attributes["hazard_rate_active"] = (
-        attributes["lambda_b"] * attributes["piQ"] * attributes["piE"]
-    )
-
     return attributes
 
 
-def get_part_count_lambda_b(
-    type_id: int,
-    environment_active_id: int,
+def get_environment_factor(
+    attributes: Dict[str, Union[float, int, str]],
 ) -> float:
-    """Retrievee the part count base hazard rate for a filter.
+    """Retrieve the environment factor (piE) for the passed environment ID.
 
-    :param type_id: the filter type identifer.
-    :param environment_active_id: the active environment identifier.
-    :return: _base_hr; the part count base hazard rate for the active environment.
-    :rtype: float :raise: IndexError if an unknown active environment ID is passed.
-        :raise: KeyError if an unknown type ID is passed.
+    :param attributes: the hardware attributes dict for the filter being calculated.
+    :return: the selected environment factor (pIE).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
     """
-    return PART_COUNT_LAMBDA_B[type_id][environment_active_id - 1]
+    _environment_id = attributes["environment_active_id"]
+
+    try:
+        return PI_E[_environment_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_environment_factor: Invalid electronic filter environment "
+            f"ID {_environment_id}."
+        ) from exc
+
+
+def get_quality_factor(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the quality factor (piQ) for the passed quality ID.
+
+    This function is used for both MIL-HDBK-217FN2 part count and part stress methods.
+
+    :param attributes: the hardware attributes dict for the filter being calculated.
+    :return: the selected quality factor (piQ).
+    :rtype: float
+    :raises: IndexError when passed an invalid quality ID.
+    """
+    _quality_id = attributes["quality_id"]
+
+    try:
+        return PI_Q[_quality_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_quality_factor: Invalid electronic filter quality ID {_quality_id}."
+        ) from exc
+
+
+def get_part_count_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part count base hazard rate (lambdaB).
+
+    This function retrieves the MIL-HDBK-217FN2 part count base hazard rate. The
+    dictionary PART_COUNT_LAMBDA_B contains the MIL-HDBK-217FN2 part count base hazard
+    rates.  The keys for PART_COUNT_LAMBDA_B are:
+
+    #. type_id #. environment_active_id
+
+    :param attributes: the hardware attributes dict for the filter being calculated.
+    :return: the selected part count base hazard rate (lambdaB).
+    :rtype: float
+    :raises: IndexError when passed an invalid environment ID.
+    :raises: KeyError when passed an invalid type ID.
+    """
+    _environment_id = attributes["environment_active_id"]
+    _type_id = attributes["type_id"]
+
+    try:
+        return PART_COUNT_LAMBDA_B[_type_id][_environment_id - 1]
+    except IndexError as exc:
+        raise IndexError(
+            f"get_part_count_lambda_b: Invalid electronic filter environment "
+            f"ID {_environment_id}."
+        ) from exc
+    except KeyError as exc:
+        raise KeyError(
+            f"get_part_count_lambda_b: Invalid electronic filter type ID {_type_id}."
+        ) from exc
+
+
+def get_part_stress_lambda_b(
+    attributes: Dict[str, Union[float, int, str]],
+) -> float:
+    """Retrieve the part stress base hazard rate (lambdaB).
+
+    This function retrieves the MIL-HDBK-217FN2 part stress base hazard rate.
+
+    :param attributes: the attributes for the filter being calculated.
+    :return: the selected part stress base hazard rate (lambdaB).
+    :rtype: float
+    :raises: KeyError when passed an invalid type ID.
+    """
+    _type_id = attributes["type_id"]
+
+    try:
+        return PART_STRESS_LAMBDA_B[_type_id]
+    except KeyError as exc:
+        raise KeyError(
+            f"get_part_stress_lambda_b: Invalid electronic filter type ID {_type_id}."
+        ) from exc
 
 
 def set_default_values(
-    **attributes: Dict[str, Union[float, int, str]],
+    attributes: Dict[str, Union[float, int, str]],
 ) -> Dict[str, Union[float, int, str]]:
-    """Set the default value of various parameters.
+    """Set the default value for various electronic filter parameters.
 
-    :param attributes: the attribute dict for the electronic filter being calculated.
-    :return: attributes; the updated attribute dict.
+    :param attributes: the hardware attributes dict for the electronic filter being
+        calculated.
+    :return: the updated hardware attributes dict.
     :rtype: dict
     """
-    if attributes["quality_id"] <= 0:
+    if attributes.get("quality_id", 0) <= 0:
         attributes["quality_id"] = 1
 
     return attributes
